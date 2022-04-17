@@ -10,19 +10,19 @@
 # to the package.m4 target in Makefile.am.
 
 # Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
-# the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
+# the pathname to the test directory in the AC_INIT() macro, you will make it much easier
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 AT_TESTED([besstandalone])
 
-AT_ARG_OPTION_ARG([baselines],
+AT_ARG_OPTION_ARG([baselines b],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
      baselines=$at_arg_baselines],[baselines=])
 
-AT_ARG_OPTION_ARG([conf],
+AT_ARG_OPTION_ARG([conf c],
     [--conf=<file>   Use <file> for the bes.conf file],
-    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [echo "bes configuration file set to $at_arg_conf"; bes_conf=$at_arg_conf],
     [bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
@@ -57,6 +57,46 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+# This new macro expects that the bes.conf file used with besstandalone will be
+# the second argument. This provides a more compact way to run tests with several
+# different bes.conf files. Using the "BES.Include = <other file>" we can tweak
+# parameters without copying the base bes.conf file. jhrg 3/11/22
+m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    # Here the bes_conf var is set using parameter number 2. This shadows the
+    # value that can be set using the optional -c (--conf) argument (see the top
+    # of this file). We might improve on this! jhrg 3/11/22
+    bes_conf=$abs_builddir/$2
+    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
+    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
+    # expanded. jhrg 3.20.20
+    pass=$3
+    repeat=$4
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -139,6 +179,44 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+# Usage: AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+# The last two params are optional.
+m4_define([AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd error])
+
+    input=$abs_srcdir/$1
+
+    dnl By making this just $2 we can use exactly the same text as the original macro
+    dnl except for the bes_conf and baseline values - refactor.
+
+    bes_conf=$2
+    baseline=$abs_srcdir/$1.$2.baseline
+
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -417,6 +495,25 @@ m4_define([REMOVE_DATE_TIME], [dnl
     < $1 > $1.sed
     mv $1.sed $1
 ])
+
+dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
+dnl or <Value>libdap-3.20.8</Value> in that file and put "removed version" in its
+dnl place. This hack keeps the baselines more or less true to form without the
+dnl obvious issue of baselines being broken when versions of the software are changed.
+dnl
+dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
+dnl
+dnl Note that the macro depends on the baseline being a file.
+dnl
+dnl jhrg 12/29/21
+
+m4_define([REMOVE_VERSIONS], [dnl
+      sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
+      < $1 > $1.sed
+      mv $1.sed $1
+  ])
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we don't have issues with comparing data values

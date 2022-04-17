@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tvdatasvgroups_SD.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="DataSet_1_dim_0" type="Container">
+        <Attribute name="Valid_range_1" type="Float32">
+            <value>2.000000000</value>
+            <value>10.00000000</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>fakeDim0</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DataSet_1_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DataSet_2_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DataSet_2_dim_1" type="Container">
+        <Attribute name="Unit" type="String">
+            <value>Seconds</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>fakeDim3</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DataSet_3_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim4</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DataSet_3_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>fakeDim5</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata_1" type="Container"/>
+    <Array name="DataSet_1">
+        <Attribute name="long_name" type="String">
+            <value>DataSet_1</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="fakeDim0" size="10"/>
+        <dimension name="fakeDim1" size="10"/>
+    </Array>
+    <Array name="DataSet_2">
+        <Attribute name="long_name" type="String">
+            <value>DataSet_2</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="fakeDim2" size="10"/>
+        <dimension name="fakeDim3" size="10"/>
+    </Array>
+    <Array name="DataSet_3">
+        <Attribute name="long_name" type="String">
+            <value>DataSet_3</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="fakeDim4" size="10"/>
+        <dimension name="fakeDim5" size="10"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

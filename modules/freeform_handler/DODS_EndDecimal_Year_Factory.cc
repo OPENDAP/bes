@@ -37,7 +37,7 @@
 static char rcsid[]#include "config_ff.h"
 ="$Id$";
 
-#include "Error.h"
+#include <libdap/Error.h>
 #include "DODS_EndDecimal_Year_Factory.h"
 
 // Build DODS_EndDate_Factory and DODS_EndTime_Factory objects using the DAS

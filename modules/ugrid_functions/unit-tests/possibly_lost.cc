@@ -37,14 +37,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "debug.h"
-#include "util.h"
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
-#include "GetOpt.h"
-#include "BaseType.h"
-#include "Str.h"
-#include "DDS.h"
-#include "ServerFunction.h"
+#include <unistd.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 
 static pthread_once_t instance_control = PTHREAD_ONCE_INIT;
 static bool debug = false;
@@ -254,9 +254,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(PossiblyLost);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -274,17 +273,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = PossiblyLost::suite()->getName().append("::").append(argv[i]);

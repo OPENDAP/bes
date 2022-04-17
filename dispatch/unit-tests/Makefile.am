@@ -19,8 +19,7 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 
-# These are not used by automake but are often useful for certain types of
-# debugging. 
+# These are not used by automake but are often useful for certain types of debugging.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 
 AM_CXXFLAGS=
@@ -38,17 +37,17 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
-BESCatalogListTest AllowedHostsTest CatalogNodeTest CatalogItemTest \
+BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
 
-# Debugging code is compiled if the project when
+# Debugging code is compiled out of the project when
 # BES_DEVELOPER is not set, and so running the debugT tests
 # produces no useful result.
 if BES_DEVELOPER
 TESTS += debugT
 endif
 
-# This is tool to look at CatalogEntry objects. jhrg 3.5.18
+# This is a tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister agglistT 
 
 if LIBDAP
@@ -68,8 +67,8 @@ check-local:
 	@echo ""
 endif
 
-# This limits the files copied to just these eliminating the files
-# created when tests are run. jhrg 5/13/07
+# Limit the files copied to just these, eliminating the files created when tests are run.
+# jhrg 5/13/07
 CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
 
 EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
@@ -82,7 +81,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-	bes.conf.in remote_access_test.ini
+	bes.conf.in
 
 DISTCLEANFILES = 
 
@@ -98,17 +97,17 @@ CLEANFILES = *.log *.sum real* test_config.h bes.conf
 #
 # Changed test_config.h.in tp $(srcdir)/test_config.h.in. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
 bes.conf: $(srcdir)/bes.conf.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 		-e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > bes.conf
@@ -167,9 +166,6 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
-AllowedHostsTest_SOURCES = AllowedHostsTest.cc
-AllowedHostsTest_LDADD = ../AllowedHosts.o $(LDADD)
-
 CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
 CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
 
@@ -196,8 +192,6 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
-
-
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)

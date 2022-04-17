@@ -30,7 +30,7 @@
 #define __NCML_MODULE__RENAMED_ARRAY_WRAPPER_H__
 
 #include "config.h"
-#include <Array.h>
+#include <libdap/Array.h>
 #include <vector>
 
 using namespace libdap;

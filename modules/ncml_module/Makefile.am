@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.5.2
+M_VER=1.5.4
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -65,7 +65,6 @@ NCML_SRCS = \
 		NetcdfElement.cc \
 		OtherXMLParser.cc \
 		RCObject.cc \
-		RCObjectInterface.cc \
 		ReadMetadataElement.cc \
 		RemoveElement.cc \
 		RenamedArrayWrapper.cc \
@@ -79,7 +78,10 @@ NCML_SRCS = \
 		ValuesElement.cc \
 		VariableAggElement.cc \
 		VariableElement.cc \
-		XMLHelpers.cc 
+		XMLHelpers.cc
+
+# 		RCObjectInterface.cc
+
 
 NCML_HDRS = \
 		AggMemberDataset.h \

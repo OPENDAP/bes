@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="special_char_file_attr_sds" space="catalog">/data/special_char_file_attr_sds.hdf</setContainer>
+    <define name="d">
+	<container name="special_char_file_attr_sds" />
+    </define>
+    <get type="das" definition="d" />
+</request>

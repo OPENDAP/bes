@@ -33,7 +33,7 @@
 
 #include <cstring>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include <BESDebug.h>
 
@@ -54,8 +54,8 @@
  * @param ingrid true if the FONcArray was created in the context of a
  * grid, false otherwise
  */
-FONcMap::FONcMap( FONcArray *a, bool ingrid )
-    : _arr( a ), _ingrid( ingrid ), _defined( false ), _ref( 1 )
+FONcMap::FONcMap(FONcArray *a, bool ingrid)
+        : _arr(a), _ingrid(ingrid), _defined(false), _ref(1)
 {
 }
 
@@ -68,10 +68,9 @@ FONcMap::FONcMap( FONcArray *a, bool ingrid )
  */
 FONcMap::~FONcMap()
 {
-    if( _ingrid )
-    {
-	delete _arr ;
-	_arr = 0 ;
+    if (_ingrid) {
+        delete _arr;
+        _arr = 0;
     }
 }
 
@@ -85,8 +84,8 @@ FONcMap::~FONcMap()
 void
 FONcMap::decref()
 {
-    _ref-- ;
-    if( !_ref ) delete this ;
+    _ref--;
+    if (!_ref) delete this;
 }
 
 /** @brief a method to compare two grid maps, or possible grid maps.
@@ -102,13 +101,14 @@ FONcMap::decref()
  * @param tomap compare the saved map to this provided map
  * @return true if they are the same (shared) or false otherwise
  */
-bool FONcMap::compare(Array *tomap) {
+bool FONcMap::compare(libdap::Array *tomap)
+{
     bool isequal = true;
 
-    Array *map = _arr->array();
+    libdap::Array *map = _arr->array();
 
-    BESDEBUG( "fonc", "FONcMap::compare - comparing " << tomap->name()
-        << " to " << map->name() << endl );
+    BESDEBUG("fonc", "FONcMap::compare - comparing " << tomap->name()
+                                                     << " to " << map->name() << endl);
 
     // compare the name
     if (isequal && tomap->name() != map->name()) {
@@ -149,137 +149,27 @@ bool FONcMap::compare(Array *tomap) {
         // compare the values of the array
         char *map_buf = map->get_buf();
         char *tomap_buf = tomap->get_buf();
-        int cmpres = memcmp(map_buf, tomap_buf, map->width());
-        if (0 != cmpres) {
+
+        // Only compare the values if both the value vectors are not null.
+        // Optimizations in this handler might cause one of these to be
+        // null, resulting in a segmenation fault. If one or both are null,
+        // assume that by this point in the series of tests, the two maps
+        // are equal. jhrg 6/8/21
+        if (map_buf && tomap_buf && 0 != memcmp(map_buf, tomap_buf, map->width()))
             isequal = false;
-        }
     }
-#if 0
-        switch (tomap->var()->type()) {
-            case dods_byte_c: {
-                dods_byte my_values[map->length()];
-                map->value(my_values);
-                dods_byte to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_int16_c: {
-                dods_int16 my_values[map->length()];
-                map->value(my_values);
-                dods_int16 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_uint16_c: {
-                dods_uint16 my_values[map->length()];
-                map->value(my_values);
-                dods_uint16 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_int32_c: {
-                dods_int32 my_values[map->length()];
-                map->value(my_values);
-                dods_int32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_uint32_c: {
-                dods_uint32 my_values[map->length()];
-                map->value(my_values);
-                dods_uint32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_float32_c: {
-                dods_float32 my_values[map->length()];
-                map->value(my_values);
-                dods_float32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_float64_c: {
-                dods_float64 my_values[map->length()];
-                map->value(my_values);
-                dods_float64 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_str_c:
-            case dods_url_c: {
-                vector<string> my_values;
-                map->value(my_values);
-                vector<string> to_values;
-                tomap->value(to_values);
-                vector<string>::const_iterator mi = my_values.begin();
-                vector<string>::const_iterator me = my_values.end();
-                vector<string>::const_iterator ti = to_values.begin();
-                for (; mi != me; mi++, ti++) {
-                    if ((*mi) != (*ti)) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            default:    // Elide unknown types; this is the current behavior
-                        // but I made it explicit. jhrg 12.27.2011
-            break;
-        }
-#endif
+
     BESDEBUG("fonc",
-        "FONcMap::compare - done comparing " << tomap->name() << " to " << map->name() << ": " << isequal << endl);
+             "FONcMap::compare - done comparing " << tomap->name() << " to " << map->name() << ": " << isequal << endl);
     return isequal;
 }
 
 /** @brief Add the name of the grid as a grid that uses this map
  */
 void
-FONcMap::add_grid( const string &name )
+FONcMap::add_grid(const string &name)
 {
-    _shared_by.push_back( name );
+    _shared_by.push_back(name);
 }
 
 /** @brief clear the embedded names for the FONcArray kept by this
@@ -288,7 +178,7 @@ FONcMap::add_grid( const string &name )
 void
 FONcMap::clear_embedded()
 {
-    _arr->clear_embedded() ;
+    _arr->clear_embedded();
 }
 
 /** @brief define the map in the netcdf file by calling define on the
@@ -297,12 +187,11 @@ FONcMap::clear_embedded()
  * @param ncid The id of the netcdf file
  */
 void
-FONcMap::define( int ncid )
+FONcMap::define(int ncid)
 {
-    if( !_defined )
-    {
-	_arr->define( ncid ) ;
-	_defined = true ;
+    if (!_defined) {
+        _arr->define(ncid);
+        _defined = true;
     }
 }
 
@@ -312,9 +201,9 @@ FONcMap::define( int ncid )
  * @param ncid The id of the netcdf file
  */
 void
-FONcMap::write( int ncid )
+FONcMap::write(int ncid)
 {
-    _arr->write( ncid ) ;
+    _arr->write(ncid);
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -325,34 +214,31 @@ FONcMap::write( int ncid )
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcMap::dump( ostream &strm ) const
+FONcMap::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "FONcMap::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "array:" ;
-    if( _arr )
-    {
-	strm << endl ;
-	BESIndent::Indent() ;
-	_arr->dump( strm ) ;
-	BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "array:";
+    if (_arr) {
+        strm << endl;
+        BESIndent::Indent();
+        _arr->dump(strm);
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << " not set" << endl ;
+    else {
+        strm << " not set" << endl;
     }
-    strm << BESIndent::LMarg << "shared by: " ;
-    vector<string>::const_iterator i = _shared_by.begin() ;
-    vector<string>::const_iterator e = _shared_by.end() ;
-    bool first = true ;
-    for( ; i != e; i++ )
-    {
-	if( !first ) strm << ", " ;
-	strm << (*i) ;
-	first = false ;
+    strm << BESIndent::LMarg << "shared by: ";
+    vector<string>::const_iterator i = _shared_by.begin();
+    vector<string>::const_iterator e = _shared_by.end();
+    bool first = true;
+    for (; i != e; i++) {
+        if (!first) strm << ", ";
+        strm << (*i);
+        first = false;
     }
-    strm << endl ;
-    BESIndent::UnIndent() ;
+    strm << endl;
+    BESIndent::UnIndent();
 }
 

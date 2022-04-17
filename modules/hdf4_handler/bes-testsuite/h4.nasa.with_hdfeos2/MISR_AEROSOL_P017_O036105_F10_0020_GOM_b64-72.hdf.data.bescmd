@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" space="catalog">/data/MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf</setContainer>
+    <define name="d">
+	<container name="MISR_AEROSOL_P017_O036105_F10_0020_GOM_b64-72.hdf" />
+        <constraint>RegBestEstimateSpectralOptDepthUnc[65][1][12][3],RetrAppMask[0:66:66][0:90:90][0:108:108][0:3:3][0:3:3],vdata_PerBlockMetadataCommon_vdf_Block_coor_ulc_som_meter_x[0:160:160],vdata_PerBlockMetadataTime_vdf_BlockCenterTime[63:1:64]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

@@ -29,7 +29,7 @@
 #ifndef _xdbyte_h
 #define _xdbyte_h 1
 
-#include <Byte.h>
+#include <libdap/Byte.h>
 #include "XDOutput.h"
 
 class XDByte: public libdap::Byte, public XDOutput {

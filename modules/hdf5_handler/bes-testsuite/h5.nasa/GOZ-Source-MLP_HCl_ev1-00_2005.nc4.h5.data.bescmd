@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4" space="catalog">/data/GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5</setContainer>
+    <define name="d">
+	<container name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4" >
+           <constraint>
+                HALOE_lat_max[0:11:11][0:24:24][0:17:17],HALOE_lst_min[0:11:11][0:17:17],HALOE_days_used[0:11:11][0:24:24][0:17:17][0:30:30],ACE_FTS_days_used[0:11:11][0:24:24][0:17:17][0:30:30],ACE_FTS_lat[0:17:17],ACE_FTS_lev[0:24:24],ACE_FTS_time[0:11:11],HALOE_dayInBin[0:30:30]
+           </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
+

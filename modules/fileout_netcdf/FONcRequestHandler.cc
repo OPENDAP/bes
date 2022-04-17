@@ -67,12 +67,16 @@
 #define FONC_NO_GLOBAL_ATTRS false
 #define FONC_NO_GLOBAL_ATTRS_KEY "FONc.NoGlobalAttrs"
 
+#define FONC_REQUEST_MAX_SIZE_KB 0
+#define FONC_REQUEST_MAX_SIZE_KB_KEY "FONc.RequestMaxSizeKB"
+
 std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
-int FONcRequestHandler::chunk_size;
+size_t FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::no_global_attrs;
+size_t FONcRequestHandler::request_max_size_kb;
 
 using namespace std;
 
@@ -106,14 +110,14 @@ static void read_key_value(const string &key_name, string &key, const string &de
     TheBESKeys::TheKeys()->get_value(key_name, key, key_found);
     // 'key' holds the string value at this point if key_found is true
     if (key_found) {
-        if (key[key.length() - 1] == '/') key.erase(key.length() - 1);
+        BESUtil::trim_if_trailing_slash(key);
     }
     else {
         key = default_value;
     }
 }
 
-static void read_key_value(const string &key_name, int &key, const int default_value)
+static void read_key_value(const string &key_name, size_t &key, const int default_value)
 {
     bool key_found = false;
     string value;
@@ -122,7 +126,8 @@ static void read_key_value(const string &key_name, int &key, const int default_v
     if (key_found) {
         istringstream iss(value);
         iss >> key;
-        if (iss.eof() || iss.bad() || iss.fail()) key = default_value;
+        // if (iss.eof() || iss.bad() || iss.fail()) key = default_value;
+        if (iss.bad() || iss.fail()) key = default_value;
     }
     else {
         key = default_value;
@@ -159,12 +164,15 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
 
     read_key_value(FONC_NO_GLOBAL_ATTRS_KEY, FONcRequestHandler::no_global_attrs, FONC_NO_GLOBAL_ATTRS);
 
+    read_key_value(FONC_REQUEST_MAX_SIZE_KB_KEY, FONcRequestHandler::request_max_size_kb, FONC_REQUEST_MAX_SIZE_KB);
+
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_compression: " << FONcRequestHandler::use_compression << endl);
     BESDEBUG("fonc", "FONcRequestHandler::chunk_size: " << FONcRequestHandler::chunk_size << endl);
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
     BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::request_max_size_kb: " << FONcRequestHandler::request_max_size_kb << endl);
 }
 
 /** @brief Any cleanup that needs to take place

@@ -38,7 +38,7 @@
 #ifndef _ncurl_h
 #define _ncurl_h 1
 
-#include "Url.h"
+#include <libdap/Url.h>
 
 using namespace libdap ;
 

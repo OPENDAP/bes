@@ -42,10 +42,10 @@
  * @param b A DAP BaseType that should be a Sequence
  * @throws BESInternalError if the BaseType is not a Sequence
  */
-FONcSequence::FONcSequence(BaseType *b) :
+FONcSequence::FONcSequence(libdap::BaseType *b) :
     FONcBaseType(), _s(0)
 {
-    _s = dynamic_cast<Sequence *>(b);
+    _s = dynamic_cast<libdap::Sequence *>(b);
     if (!_s) {
         throw BESInternalError("File out netcdf, FONcSequence was passed a variable that is not a DAP Sequence", __FILE__, __LINE__);
     }
@@ -69,9 +69,9 @@ FONcSequence::~FONcSequence()
  * @throws BESInternalError if there is a problem converting the
  * Byte
  */
-void FONcSequence::convert(vector<string> embed,bool is_dap4_group)
+void FONcSequence::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
-    FONcBaseType::convert(embed,is_dap4_group);
+    FONcBaseType::convert(embed,_dap4,is_dap4_group);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 }
 
@@ -109,6 +109,7 @@ void FONcSequence::define(int ncid)
  */
 void FONcSequence::write(int /*ncid*/)
 {
+    //FIXME implement this function. jhrg/sbl 5.14.21
 }
 
 string FONcSequence::name()

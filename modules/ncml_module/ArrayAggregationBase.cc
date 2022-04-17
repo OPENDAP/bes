@@ -29,35 +29,36 @@
 
 #include "config.h"
 
+#include <libdap/Marshaller.h>
+#include <libdap/ConstraintEvaluator.h>
+
 #include "ArrayAggregationBase.h"
 #include "NCMLDebug.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
-#include "Marshaller.h"
-#include "ConstraintEvaluator.h"
 
 // BES debug channel we output to
-static const string DEBUG_CHANNEL("agg_util");
+#define DEBUG_CHANNEL "agg_util"
 
+#if 0
 // Local flag for whether to print constraints, to help debugging
 static const bool PRINT_CONSTRAINTS = false;
-
-//using libdap::Array;
+#endif
 
 using namespace libdap;
+using namespace std;
 
 namespace agg_util {
-ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, const AMDList& aggMembers,
-    std::auto_ptr<ArrayGetterInterface>& arrayGetter) :
-    Array(proto), _pSubArrayProto(static_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
-    _pArrayGetter(arrayGetter), _datasetDescs(aggMembers)
+ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, AMDList aggMembers, unique_ptr<ArrayGetterInterface> arrayGetter) :
+    Array(proto), _pSubArrayProto(dynamic_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
+    _pArrayGetter(std::move(arrayGetter)), _datasetDescs(std::move(aggMembers))
 {
 }
 
 ArrayAggregationBase::ArrayAggregationBase(const ArrayAggregationBase& rhs) :
-    Array(rhs), _pSubArrayProto(0) // duplicate() handles this
-        , _pArrayGetter(0) // duplicate() handles this
-        , _datasetDescs()
+    Array(rhs)// , _pSubArrayProto(0) // duplicate() handles this
+        //, _pArrayGetter(0) // duplicate() handles this
+        // , _datasetDescs()
 {
     BESDEBUG(DEBUG_CHANNEL, "ArrayAggregationBase() copy ctor called!" << endl);
     duplicate(rhs);
@@ -112,18 +113,22 @@ bool ArrayAggregationBase::read()
         return true;
     }
 
+#if 0
     if (PRINT_CONSTRAINTS) {
         BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
         printConstraints(*this);
     }
+#endif
 
     // call subclass impl
     transferOutputConstraintsIntoGranuleTemplateHook();
 
+#if 0
     if (PRINT_CONSTRAINTS) {
         BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
         printConstraints(getGranuleTemplateArray());
     }
+#endif
 
     // Call the subclass specific algorithms to do the read
     // and stream
@@ -166,19 +171,16 @@ ArrayAggregationBase::getArrayGetterInterface() const
 void ArrayAggregationBase::duplicate(const ArrayAggregationBase& rhs)
 {
     // Clone the template if it isn't null.
-    std::auto_ptr<Array> pTemplateClone(
-        ((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (0)));
-    _pSubArrayProto = pTemplateClone;
+    _pSubArrayProto.reset(((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (nullptr)));
 
     // Clone the ArrayGetterInterface as well.
-    std::auto_ptr<ArrayGetterInterface> pGetterClone((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (0));
-    _pArrayGetter = pGetterClone;
+    _pArrayGetter.reset(((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (nullptr)));
 
     // full copy, will do the proper thing with refcounts.
     _datasetDescs = rhs._datasetDescs;
 }
 
-void ArrayAggregationBase::cleanup() throw ()
+void ArrayAggregationBase::cleanup() noexcept
 {
     _datasetDescs.clear();
     _datasetDescs.resize(0);

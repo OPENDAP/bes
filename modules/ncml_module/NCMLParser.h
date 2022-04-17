@@ -37,7 +37,7 @@
 #include <string>
 #include <vector>
 
-#include <AttrTable.h> // needed due to parameter with AttrTable::Attr_iter
+#include <libdap/AttrTable.h> // needed due to parameter with AttrTable::Attr_iter
 
 #include "DDSLoader.h"
 #include "NCMLElement.h" // NCMLElement::Factory
@@ -202,7 +202,7 @@ public:
      *  @return a new response object with the transformed DDS in it.  The caller assumes ownership of the returned object.
      *  It will be of type BESDDSResponse or BESDataDDSResponse depending on the request being processed.
      */
-    std::auto_ptr<BESDapResponse> parse(const std::string& ncmlFilename, agg_util::DDSLoader::ResponseType type);
+    std::unique_ptr<BESDapResponse> parse(const std::string& ncmlFilename, agg_util::DDSLoader::ResponseType type);
 
     /** @brief Same as parse, but the response object to parse into is passed down by the caller
      * rather than created.

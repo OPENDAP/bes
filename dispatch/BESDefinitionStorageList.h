@@ -34,6 +34,7 @@
 #define I_BESDefinitionStorageList_H 1
 
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -68,7 +69,11 @@ class BESInfo;
  */
 class BESDefinitionStorageList: public BESObj {
 private:
-    static BESDefinitionStorageList * _instance;
+    static BESDefinitionStorageList * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
 
     typedef struct _persistence_list {
         BESDefinitionStorage *_persistence_obj;
@@ -77,9 +82,9 @@ private:
     } persistence_list;
 
     BESDefinitionStorageList::persistence_list *_first;
-protected:
-    BESDefinitionStorageList();
+
 public:
+    BESDefinitionStorageList();
     virtual ~BESDefinitionStorageList();
 
     virtual bool add_persistence(BESDefinitionStorage *p);

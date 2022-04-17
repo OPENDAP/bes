@@ -27,25 +27,27 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <unistd.h>
 
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
 
-#include <GetOpt.h>
-#include <GNURegex.h>
-#include <util.h>
-#include <mime_util.h>
-#include <debug.h>
+#include <libdap/GNURegex.h>
+#include <libdap/util.h>
+#include <libdap/mime_util.h>
+#include <libdap/debug.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4ParserSax2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4ParserSax2.h>
+
 #include <test/D4TestTypeFactory.h>
 
 #include "TheBESKeys.h"
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
+#include "BESRegex.h"
 #include "BESDebug.h"
 
 #include "test_utils.h"
@@ -167,7 +169,7 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -175,7 +177,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -316,10 +318,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(StoredDap4ResultTest);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != EOF)
+    while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -337,17 +337,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = StoredDap4ResultTest::suite()->getName().append("::").append(argv[i]);

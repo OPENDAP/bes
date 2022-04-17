@@ -42,9 +42,9 @@ using std::ostringstream;
 
 // #define DODS_DEBUG
 
-#include <D4Attributes.h>
-#include <Error.h>
-#include <debug.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
 
 #include "FFStr.h"
 #include "FFSequence.h"

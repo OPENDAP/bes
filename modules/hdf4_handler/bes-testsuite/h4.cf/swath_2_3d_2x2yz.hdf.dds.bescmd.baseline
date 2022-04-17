@@ -1,0 +1,8 @@
+Dataset {
+    Float32 Swath1_Geolocation_Fields_Latitude[xtrack_Swath1 = 4][ytrack_Swath1 = 8];
+    Float32 Swath1_Geolocation_Fields_Longitude[xtrack_Swath1 = 4][ytrack_Swath1 = 8];
+    Float32 Swath1_Data_Fields_temperature[ZDim_Swath1 = 4][xtrack_Swath1 = 4][ytrack_Swath1 = 8];
+    Float32 Swath2_Geolocation_Fields_Latitude[xtrack_Swath2 = 8][ytrack_Swath2 = 16];
+    Float32 Swath2_Geolocation_Fields_Longitude[xtrack_Swath2 = 8][ytrack_Swath2 = 16];
+    Float32 Swath2_Data_Fields_temperature[ZDim_Swath2 = 8][xtrack_Swath2 = 8][ytrack_Swath2 = 16];
+} swath_2_3d_2x2yz.hdf;

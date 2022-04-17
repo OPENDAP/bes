@@ -37,8 +37,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-#include <util.h>
+#include <unistd.h>
+#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -175,7 +175,7 @@ namespace http {
             http::url target_url(url);
 
             value = target_url.protocol();
-            expected_value = "https";
+            expected_value = HTTPS_PROTOCOL;
             if(debug) cerr << prolog << "target_url.protocol(): " << value << " expected: " << expected_value << endl;
             CPPUNIT_ASSERT( value == expected_value );
 
@@ -261,8 +261,9 @@ namespace http {
                   "&Expires=1592946176";
 
             http::url target_url(url);
+
             value = target_url.protocol();
-            expected_value = "https";
+            expected_value = HTTPS_PROTOCOL;
             if(debug) cerr << prolog << "target_url.protocol(): " << value << " expected: " << expected_value << endl;
             CPPUNIT_ASSERT( value == expected_value );
 
@@ -346,9 +347,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbD");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbD")) != -1)
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a static global
@@ -363,18 +363,21 @@ int main(int argc, char*argv[])
                 break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     /*cerr << "    debug: " << (debug?"enabled":"disabled") << endl;
     cerr << "    Debug: " << (Debug?"enabled":"disabled") << endl;
     cerr << "bes_debug: " << (bes_debug?"enabled":"disabled") << endl;*/
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = http::HttpUtilsTest::suite()->getName().append("::").append(argv[i]);

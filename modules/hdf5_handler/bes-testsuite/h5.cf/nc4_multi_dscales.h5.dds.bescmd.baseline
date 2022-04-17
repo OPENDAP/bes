@@ -1,0 +1,5 @@
+Dataset {
+    Int32 FakeDim0[FakeDim0 = 2];
+    Int32 FakeDim1[FakeDim1 = 2];
+    Int32 FakeDim2[FakeDim2 = 2];
+} nc4_multi_dscales.h5;

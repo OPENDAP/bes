@@ -1,0 +1,4 @@
+The data:
+Byte Sea_Ice_by_Reflectance_NP[XDim = 3][YDim = 3] = {{253, 253, 253},{253, 0, 253},{253, 253, 253}};
+Float32 Ice_Surface_Temperature_NP[XDim = 3][YDim = 3] = {{8, 8, 8},{8, 0, 8},{8, 8, 8}};
+

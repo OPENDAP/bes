@@ -4,6 +4,10 @@ dimensions:
 	x = 2 ;
 variables:
 	ushort data(x, y) ;
+
+// global attributes:
+		:history = "removed date-timex simple_nc4.nc.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"simple_nc4.nc.h5\"}]}]" ;
 data:
 
  data =

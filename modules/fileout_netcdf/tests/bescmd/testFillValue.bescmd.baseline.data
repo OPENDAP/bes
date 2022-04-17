@@ -85,8 +85,6 @@ variables:
 		:creator_institution = "University of Maryland, College Park" ;
 		:creator_name = "Kai Yang" ;
 		:creator_type = "person" ;
-		:history = "removed date-time: Original file created by Ozone SIPS\n",
-			"removed date-timex OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5?" ;
 		:id = "OMPS_NPP_NMNO2_L2" ;
 		:institution = "NASA Goddard Space Flight Center and University of Maryland" ;
 		:keywords = "NASA, Goddard Space Flight Center, GSFC, Atmospheric Chemistry, University of Maryland, UMCP, Nitrogen Dioxide, Suomi NPP, Ozone Mapping and Profiler Suite, OMPS" ;
@@ -114,6 +112,10 @@ variables:
 		:time_coverage_end = "removed date-time" ;
 		:time_coverage_start = "removed date-time" ;
 		:TAI93At0zOfGranule = 757382410. ;
+		:history = "removed date-time: Original file created by Ozone SIPS\n",
+			"removed date-timex OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5\"}]}]" ;
 		:_GeolocationData_.HDF5_OBJ_FULLPATH = "/GeolocationData/" ;
 		:_GeolocationData_.SunEarthDistance = 147105223823.723 ;
 		:_GeolocationData_.SunEarthDistance_units = "m" ;

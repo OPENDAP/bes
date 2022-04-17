@@ -34,11 +34,17 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/resource.h>
 
+#include <fcntl.h>
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
+
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+#include <string>     // std::string, std::stol
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
@@ -47,18 +53,9 @@
 #include <cassert>
 #include <vector>
 #include <list>
-
 #include <sstream>
 #include <iostream>
-
-using std::stringstream;
-using std::istringstream;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using std::list;
-using std::ostream;
+#include <algorithm>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -69,12 +66,65 @@ using std::ostream;
 #include "BESLog.h"
 #include "BESCatalogList.h"
 
+using namespace std;
+
 #define CRLF "\r\n"
 
-#define debug_key "util"
+#define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
+
+/**
+ * @brief Get the Resident Set Size in KB
+ * @return The RSS or 0 if getrusage() returns an error
+ */
+long
+BESUtil::get_current_memory_usage() noexcept
+{
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
+#ifdef __APPLE__
+        // get the max size (man page says it is in bytes). This function returns the
+        // size in KB like Linux. jhrg 3/29/22
+        return usage.ru_maxrss / 1024;
+#else
+        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+#endif
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
+ * @brief If the string ends in a slash, remove it
+ * This function works for empty strings (doing nothing). If the string
+ * ends in a '/' it will be removed.
+ * @note See https://stackoverflow.com/questions/2310939/remove-last-character-from-c-string
+ * @param value The string, modified in place
+ */
+void BESUtil::trim_if_trailing_slash(string &value)
+{
+    if (!value.empty() && value.back() == '/')
+        value.pop_back();   // requires C++-11
+    // value.erase(value.end () -1);
+}
+
+/**
+ * @brief Remove double quotes around a string
+ * This function will remove a leading and/or trailing double quote surrounding a
+ * string.
+ * @param value The string, modified
+ */
+void BESUtil::trim_if_surrounding_quotes(std::string &value)
+{
+    if (!value.empty() && value[0] == '"')
+        value.erase(0, 1);
+    if (!value.empty() && value.back() == '"')
+        value.pop_back();   // requires C++-11
+    // value.erase(value.end () -1);
+}
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
 
@@ -160,16 +210,17 @@ static const char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
  */
 string BESUtil::rfc822_date(const time_t t)
 {
-    struct tm *stm = gmtime(&t);
+    struct tm stm{};
+    gmtime_r(&t, &stm);
     char d[256];
 
-    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], stm->tm_mday, months[stm->tm_mon], 1900 + stm->tm_year, stm->tm_hour,
-        stm->tm_min, stm->tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm.tm_wday], stm.tm_mday,
+             months[stm.tm_mon], 1900 + stm.tm_year, stm.tm_hour, stm.tm_min, stm.tm_sec);
     d[255] = '\0';
-    return string(d);
+    return {d};
 }
 
-string BESUtil::unhexstring(string s)
+string BESUtil::unhexstring(const string& s)
 {
     int val;
     istringstream ss(s);
@@ -177,7 +228,7 @@ string BESUtil::unhexstring(string s)
     char tmp_str[2];
     tmp_str[0] = static_cast<char>(val);
     tmp_str[1] = '\0';
-    return string(tmp_str);
+    return {tmp_str};
 }
 
 // I modified this to mirror the version in libdap. The change allows several
@@ -230,206 +281,131 @@ string BESUtil::unescape(const string &s)
 }
 
 /**
- * @brief Check if the specified path is valid
- *
- * Checks to see if the specified path is a valid path or not. The root
- * directory specified is assumed to be valid, so we don't check that
- * part of the path. The path parameter is relative to the root
- * directory.
- *
- * If follow_sym_links is false, then if any part of the specified path
- * is a symbolic link, this function will return false, set the passed
- * has_sym_link parameter. No error message is specified.
- *
- * If there is a problem accessing the specified path then the error
- * string will be filled with whatever system error message is provided.
- *
- * param path path to check
- * param root root directory path, assumed to be valid
- * param follow_sym_links specifies whether allowed to follow symbolic links
- * throws BESForbiddenError if the user is not allowed to traverse the path
- * throws BESNotFoundError if there is a problem accessing the path or the
- * path does not exist.
- **/
-void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links)
+ * @brief convenience routine for check_path() error messages.
+ * @param pathname The pathname that failed
+ * @param error_number The error number (from errno)
+ */
+static void throw_access_error(const string &pathname, long error_number)
 {
-    // if nothing is passed in path, then the path checks out since root is
-    // assumed to be valid.
-    if (path == "") return;
-
-    // Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
-    // We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
-    // function for the eval operation.
-    int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
-    if (follow_sym_links) {
-        BESDEBUG(debug_key, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
-        ye_old_stat_function = &stat;
-    }
-    else {
-        BESDEBUG(debug_key, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
-        ye_old_stat_function = &lstat;
-    }
-
-    // make sure there are no ../ in the directory, backing up in any way is
-    // not allowed.
-    string::size_type dotdot = path.find("..");
-    if (dotdot != string::npos) {
-        string s = (string) "You are not allowed to access the node " + path;
-        throw BESForbiddenError(s, __FILE__, __LINE__);
-    }
-
-    // What I want to do is to take each part of path and check to see if it
-    // is a symbolic link and it is accessible. If everything is ok, add the
-    // next part of the path.
-    bool done = false;
-
-    // what is remaining to check
-    string rem = path;
-    if (rem[0] == '/') rem = rem.substr(1); // substr(1, rem.length() - 1); jhrg 3/5/18
-    if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
-
-    // full path of the thing to check
-    string fullpath = root;
-    if (fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
-    }
-
-    // path checked so far
-    //string checked;
-    while (!done) {
-        size_t slash = rem.find('/');
-        if (slash == string::npos) {
-            // fullpath = fullpath + "/" + rem; jhrg 3/5/18
-            fullpath.append("/").append(rem);
-            // checked = checked + "/" + rem;
-            done = true;
-        }
-        else {
-            // fullpath = fullpath + "/" + rem.substr(0, slash);
-            fullpath.append("/").append(rem.substr(0, slash));
-            // checked = checked + "/" + rem.substr(0, slash);
-            //checked.append("/").append(rem.substr(0, slash));
-            rem = rem.substr(slash + 1, rem.length() - slash);
+    switch(error_number) {
+        case ENOENT:
+        case ENOTDIR: {
+            string message = string("Failed to locate '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESNotFoundError(message, __FILE__, __LINE__);
         }
 
-        //checked = fullpath;
+        default: {
+            string message = string("Not allowed to access '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESForbiddenError(message, __FILE__, __LINE__);
+        }
+    }
+}
 
+/**
+ * @param path Look for symbolic links in this path
+ * @param search_limit Search only the first N nodes of path. Used to avoid searching
+ * a root component of path that is known to be free of sym links.
+ * @return Return true if the any part of the given pathname contains a symbolic link
+ */
+bool pathname_contains_symlink(const string &path, int search_limit)
+{
+    // This kludge to remove a trailing '/' is needed because lstat and readlinkat fail
+    // to detect a dir symlink when the dir name ends in '/'. On OSX readlinkat (and readlink)
+    // does detect embedded links, but not on Linux. The lstat() service doesn't detect
+    // embedded links anywhere. jhrg 1/3/22
+    string pathname = path;
+    if (!pathname.empty() && pathname.back() == '/') {
+        pathname.pop_back();
+    }
+
+    bool is_link = false;
+    size_t pos;
+    int i = 0; // used with search_limit
+    do {
+        // test pathname
         struct stat buf;
-        int statret = ye_old_stat_function(fullpath.c_str(), &buf);
-        if (statret == -1) {
-            int errsv = errno;
-            // stat failed, so not accessible. Get the error string,
-            // store in error, and throw exception
-            char *s_err = strerror(errsv);
-            //string error = "Unable to access node " + checked + ": ";
-            string error = "Unable to access node " + fullpath + ": ";
-            if (s_err)
-                error.append(s_err);
-            else
-                error.append("unknown error");
-
-            BESDEBUG(debug_key, "check_path() - error: "<< error << "   errno: " << errno << endl);
-
-            // ENOENT means that the node wasn't found.
-            // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-            // Otherwise, access is being denied for some other reason
-            if (errsv == ENOENT || errsv == ENOTDIR) {
-                // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-                throw BESNotFoundError(error, __FILE__, __LINE__);
-            }
-            else {
-                throw BESForbiddenError(error, __FILE__, __LINE__);
-            }
+        int status = lstat(pathname.c_str(), &buf);
+        if (status == 0) {
+            is_link = S_ISLNK(buf.st_mode);
         }
         else {
-            // The call to (stat | lstat) was successful, now check to see if it's a symlink.
-            // Note that if follow_symlinks is true then this will never evaluate as true
-            // because we'll be using 'stat' and not 'lstat' and stat will follow the link
-            // and return information about the file/dir pointed to by the symlink
-            if (S_ISLNK(buf.st_mode)) {
-                //string error = "You do not have permission to access " + checked;
-                throw BESForbiddenError(string("You do not have permission to access ") + fullpath, __FILE__, __LINE__);
-            }
+            string msg = "Could not resolve path when testing for symbolic links: ";
+            msg.append(strerror(errno));
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
         }
-    }
+
+        // remove the last part of pathname, including the trailing '/'
+        pos = pathname.find_last_of('/');
+        if (pos != string::npos)    // find_last_of returns npos if the char is not found
+            pathname.erase(pos);
+    } while (++i < search_limit && !is_link && pos != string::npos && !pathname.empty());
+
+    return is_link;
 
 #if 0
-    while (!done) {
-        size_t slash = rem.find('/');
-        if (slash == string::npos) {
-            fullpath = fullpath + "/" + rem;
-            checked = checked + "/" + rem;
-            done = true;
-        }
-        else {
-            fullpath = fullpath + "/" + rem.substr(0, slash);
-            checked = checked + "/" + rem.substr(0, slash);
-            rem = rem.substr(slash + 1, rem.length() - slash);
-        }
-
-        if (!follow_sym_links) {
-            struct stat buf;
-            int statret = lstat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-            else {
-                // lstat was successful, now check if sym link
-                if (S_ISLNK( buf.st_mode )) {
-                    string error = "You do not have permission to access "
-                    + checked;
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-        }
-        else {
-            // just do a stat and see if we can access the thing. If we
-            // can't, get the error information and throw an exception
-            struct stat buf;
-            int statret = stat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
+    // ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsiz);
+    // readlinkat (or readlink) can be used to detect sym links in a path or to get the path
+    // to the linked file. Here we used it to test for sym links. 1/3/22 jhrg
+    ssize_t len = readlinkat(AT_FDCWD, pathname.c_str(), nullptr, 0);
+    if (len == -1) {
+        // either errno is EINVAL meaning this is not a link or there's really an error
+        switch (errno) {
+            case EINVAL:
+                return false;
+            default:
+                string msg = "Could not resolve path when testing for symbolic links: ";
+                msg.append(strerror(errno));
+                throw BESInternalError(msg, __FILE__, __LINE__);
         }
     }
 
+    return true;    // If readlinkat() does not return -1, it's a symlink
 #endif
+}
+
+/**
+ * @brief Is the combination of root + path a pathname the BES can/should access?
+ *
+ * @note If follow_sym_links is false and any part of the specified path is a
+ * symbolic link, this function will return false.
+ *
+ * @param path The path relative to the BES catalog root directory
+ * @param root The BES catalog root directory
+ * @param follow_sym_links True if the bes conf allows symbolic links, false by default
+ */
+void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links) {
+    // if nothing is passed in path, then the path checks out since root is assumed to be valid.
+    if (path == "") return;
+
+    if (path.find("..") != string::npos) {
+        throw_access_error(path, EACCES);   // use the code for 'access would be denied'
+    }
+
+    // Check if the combination of root + path exists on this machine. If so, check if it
+    // has symbolic links. Return BESNotFoundError if it does not exist and BESForbiddenError
+    // if it does exist but contains symbolic links and follow_sym_links is false. jhrg 12/30/21
+
+    string pathname = root;
+
+    if (pathname.back() != '/' && path.front() != '/')
+        pathname.append("/");
+
+    pathname.append(path);
+    if (access(pathname.c_str(), R_OK) != 0) {
+        throw_access_error(pathname, errno);
+    }
+
+    if (follow_sym_links == false) {
+        auto n = count(path.begin(), path.end(), '/');
+        // using 'n' for the search_limit may not be optimal (when path ends in '/', an extra
+        // component may be searched) but it's better than testing for a trailing '/' on every call.
+        if (pathname_contains_symlink(pathname, n)) {
+            throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
+        }
+    }
 }
 
 char *
@@ -776,7 +752,7 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
     string sep(1,separator);
 
     // make sure there are not multiple slashes at the end of the first part...
-    // Note that this removes all of the slashes. jhrg 9/27/16
+    // Note that this removes all the slashes. jhrg 9/27/16
     while (!first.empty() && *first.rbegin() == separator) {
         // C++-11 first.pop_back();
         first = first.substr(0, first.length() - 1);
@@ -809,130 +785,43 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ *
  * @param firstPart The first string to concatenate.
  * @param secondPart The second string to concatenate.
  * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
  *  If the value of leadingSlash is false then the first character  of the returned string will
- *  be the first character of the passed firstPart.
+ *  be the first character of the passed firstPart, which _may_ be a slash. Default False.
  *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
  *   trailingSlash is false, then the returned string will not end with a slash. If trailing
- *   slash(es) need to be removed to accomplish this, then they will be removed.
+ *   slash(es) need to be removed to accomplish this, then they will be removed. Default False.
  */
 string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
-#if 0
-    assert(!firstPart.empty());
+    BESDEBUG(MODULE, prolog << "firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG(MODULE, prolog << "secondPart: '" << secondPart << "'" << endl);
 
-    // This version works but does not remove duplicate slashes
-    string first = firstPart;
-    string second = secondPart;
-
-    // add a leading slash if needed
-    if (ensureLeadingSlash && first[0] != '/')
-    first = "/" + first;
-
-    // if 'second' start with a slash, remove it
-    if (second[0] == '/')
-    second = second.substr(1);
-
-    // glue the two parts together, adding a slash if needed
-    if (first.back() == '/')
-    return first.append(second);
-    else
-    return first.append("/").append(second);
-#endif
-
-#if 1
-    BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
-    BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
-
-#if 0
-    // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
-
-    string first = firstPart;
-    string second = secondPart;
-
-    // make sure there are not multiple slashes at the end of the first part...
-    // Note that this removes all of the slashes. jhrg 9/27/16
-    while (!first.empty() && *first.rbegin() == '/') {
-        // C++-11 first.pop_back();
-        first = first.substr(0, first.length() - 1);
-    }
-
-    // make sure second part does not BEGIN with a slash
-    while (!second.empty() && second[0] == '/') {
-        // erase is faster? second = second.substr(1);
-        second.erase(0, 1);
-    }
-
-    string newPath;
-
-    if (first.empty()) {
-        newPath = second;
-    }
-    else if (second.empty()) {
-        newPath = first;
-    }
-    else {
-        newPath = first.append("/").append(second);
-    }
-#endif
-
-    string newPath = BESUtil::pathConcat(firstPart,secondPart);
+    string newPath = BESUtil::pathConcat(firstPart, secondPart);
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
         }
-        else if (newPath.compare(0, 1, "/")) {
+        else if (newPath.front() != '/') {
             newPath = "/" + newPath;
         }
     }
 
     if (trailingSlash) {
-        if (newPath.compare(newPath.length(), 1, "/")) {
-            newPath = newPath.append("/");
+        if (newPath.empty() || newPath.back() != '/') {
+            newPath.append("/");
         }
     }
     else {
-        while(newPath.length()>1 &&  *newPath.rbegin() == '/')
-            newPath = newPath.substr(0,newPath.length()-1);
+        while (!newPath.empty() && newPath.back() == '/')
+            newPath.erase(newPath.length()-1);
     }
-    BESDEBUG(debug_key, prolog << "newPath: "<< newPath << endl);
+
+    BESDEBUG(MODULE, prolog << "newPath: " << newPath << endl);
     return newPath;
-#endif
-
-#if 0
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
-
-    string first = firstPart;
-    string second = secondPart;
-
-    if (ensureLeadingSlash) {
-        if (*first.begin() != '/') first = "/" + first;
-    }
-
-    // make sure there are not multiple slashes at the end of the first part...
-    while (*first.rbegin() == '/' && first.length() > 0) {
-        first = first.substr(0, first.length() - 1);
-    }
-
-    // make sure first part ends with a "/"
-    if (*first.rbegin() != '/') {
-        first += "/";
-    }
-
-    // make sure second part does not BEGIN with a slash
-    while (*second.begin() == '/' && second.length() > 0) {
-        second = second.substr(1);
-    }
-
-    string newPath = first + second;
-
-    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-
-    return newPath;
-#endif
 }
 
 /**
@@ -950,13 +839,19 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
 }
 
 /**
- * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
- * timeout. The intent of this is to stop the timeout counter once the
+ * @brief Checks if the timeout alarm should be canceled based on the value of the BES key BES.CancelTimeoutOnSend
+ *
+ * If the value of the BES Key BES.CancelTimeoutOnSend is false || no, then
+ * do not cancel the timeout alarm.
+ * The intent of this is to stop the timeout counter once the
  * BES starts sending data back since, the network link used by a remote
  * client may be low-bandwidth and data providers might want to ensure those
  * users get their data (and don't submit second, third, ..., requests when/if
  * the first one fails). The timeout is initiated in the BES framework when it
  * first processes the request.
+ *
+ * Default: If the BES key BES.CancelTimeoutOnSend is not set, or if it is set
+ * to true || yes then the timeout alrm will be canceled.
  *
  * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
  * in the 'int BESInterface::execute_request(const string &from)' method.
@@ -966,18 +861,19 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
  */
 void BESUtil::conditional_timeout_cancel()
 {
-    bool cancel_timeout_on_send = false;
-    bool found = false;
-    string doset = "";
-    const string dosettrue = "true";
-    const string dosetyes = "yes";
+    const string false_str = "false";
+    const string no_str = "no";
 
-    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, doset, found);
-    if (true == found) {
-        doset = BESUtil::lowercase(doset);
-        if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
+    bool cancel_timeout_on_send = true;
+    bool found = false;
+    string value;
+
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, value, found);
+    if (found) {
+        value = BESUtil::lowercase(value);
+        if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
-    BESDEBUG(debug_key, __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
     if (cancel_timeout_on_send) alarm(0);
 }
 
@@ -986,15 +882,18 @@ void BESUtil::conditional_timeout_cancel()
  * 'find_this' with the value of the string 'replace_with_this'
  * @param
  */
-void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
+unsigned int BESUtil::replace_all(string &s, string find_this, string replace_with_this)
 {
+    unsigned int replace_count = 0;
     size_t pos = s.find(find_this);
     while (pos != string::npos) {
         // Replace current matching substring
         s.replace(pos, find_this.size(), replace_with_this);
         // Get the next occurrence from current position
-        pos = s.find(find_this, pos + find_this.size());
+        pos = s.find(find_this, pos + replace_with_this.size());
+        replace_count++;
     }
+    return replace_count;
 }
 
 /**
@@ -1099,10 +998,15 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     //
     // UTC is the default. Override to local time based on the
     // passed parameter 'use_local_time'
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+    struct tm result{};
+    if (!use_local_time) {
+        gmtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
+    else {
+        localtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
 
     if (!status) {
         ERROR_LOG(prolog + "Error formatting time value!");
@@ -1134,13 +1038,6 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
             continue;
 
         tokens.push_back(item);
-
-#if 0
-        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
-        if (skip_empty && !item.empty())
-            tokens.push_back(item);
-#endif
-
     }
 
     return tokens;
@@ -1153,7 +1050,7 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
 
     // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
     string path = BESUtil::normalize_path(ppath, false, false);
-    BESDEBUG(debug_key, prolog << "Normalized path: " << path << endl);
+    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
 
     // Because we may need to alter the container/file/resource name by removing
     // a catalog name from the first node in the path we use "use_container" to store
@@ -1163,20 +1060,333 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
     // Breaks path into tokens
     BESUtil::tokenize(path, path_tokens);
     if (!path_tokens.empty()) {
-        BESDEBUG(debug_key, "First path token: " << path_tokens[0] << endl);
+        BESDEBUG(MODULE, "First path token: " << path_tokens[0] << endl);
         catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
         if (catalog) {
-            BESDEBUG(debug_key, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            BESDEBUG(MODULE, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
             // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
             ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
-            BESDEBUG(debug_key, prolog << "Modified container/path value to:  " << use_container << endl);
+            BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << use_container << endl);
         }
     }
 
     return catalog;
 }
 
+void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
+    msg << " {ios.good()=" << (ios_ref.good() ? "true" : "false") << "}";
+    msg << " {ios.eof()="  <<  (ios_ref.eof()?"true":"false") << "}";
+    msg << " {ios.fail()=" << (ios_ref.fail()?"true":"false") << "}";
+    msg << " {ios.bad()="  <<  (ios_ref.bad()?"true":"false") << "}";
+}
+
+// size of the buffer used to read from the temporary file built on disk and
+// send data to the client over the network connection (socket/stream)
+#define OUTPUT_FILE_BLOCK_SIZE 4096
+
+/**
+ * @brief Copies the contents of the file identified by file_name to the stream o_strm
+ *
+ * Thanks to O'Reilly: https://www.oreilly.com/library/view/c-cookbook/0596007612/ch10s08.html
+ * @param file_name
+ * @param o_strm
+ */
+void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
+{
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!i_stream.good()){
+        stringstream msg;
+        msg << prolog << "Failed to open file " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    uint64_t tcount = 0;
+    while (i_stream.good() && o_strm.good()){
+        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        tcount += i_stream.gcount();
+    }
+    o_strm.flush();
+
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
+    if(i_stream.fail() && !i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // If we're not at the eof of the input stream then we have failed.
+    if (!i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
+        ios_state_msg(o_strm, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
+    }
+
+    msg.str("");
+    msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    BESDEBUG(MODULE,msg.str());
+    INFO_LOG(msg.str());
+}
+
+uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
+
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!i_stream.good()){
+        stringstream msg;
+        msg << prolog << "Failed to open file " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // this is where we advance to the last byte that was read
+    i_stream.seekg(byteCount);
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    while (i_stream.good() && o_strm.good()){
+        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        BESDEBUG(MODULE, "i_stream: " << i_stream.gcount() << endl);
+        byteCount += i_stream.gcount();
+    }
+    o_strm.flush();
+
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
+    if(i_stream.fail() && !i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << byteCount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // If we're not at the eof of the input stream then we have failed.
+    if (!i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << byteCount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << byteCount  << " bytes.";
+        ios_state_msg(o_strm, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
+    }
+
+    msg.str(prolog);
+    msg << "Sent "<< byteCount << " bytes from file '" << file_name<< "'. " << endl;
+    BESDEBUG(MODULE,msg.str());
+    INFO_LOG(msg.str());
+
+    i_stream.close();
+
+    return byteCount;
+}
 
 
+// I added this because maybe using the low-level file calls was important. I'm not
+// sure and the iostreams in C++ are safer. jhrg 6/4/21
+#define FILE_CALLS 0
+
+/**
+ * *brief child thread/task to stream a netCDF file as it is built
+ * @param file_name
+ * @param o_strm
+ */
+uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done, std::ostream &o_strm) {
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str());
+
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+
+    // this hack gets the code past the tests when the task is launched
+    // using the async policy. It's not needed if the task is run as a
+    // deferred task. jhrg 6/4/21
+    //sleep(1);
+
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);
+#if FILE_CALLS
+    int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
+    int eof = false;
+#endif
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    BESDEBUG(MODULE, "Starting transfer" << endl);
+    uint64_t tcount = 0;
+    while (!i_stream.bad() && !i_stream.fail() && o_strm.good()) {
+        if (file_write_done && i_stream.eof()) {
+            BESDEBUG(MODULE, "breaking out of loop" << endl);
+            break;
+        }
+        else {
+            i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+
+#if FILE_CALLS
+            int status = read(fd, &rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);
+            if (status == 0) {
+                eof = true;
+            }
+            else if (status == -1) {
+                BESDEBUG(MODULE, "read() call error: " << errno << endl);
+            }
+
+            o_strm.write(&rbuffer[0], status); // buf, then write the buf to
+            tcount += status;
+#endif
+
+            o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+            tcount += i_stream.gcount();
+            BESDEBUG(MODULE, "transfer bytes " << tcount << endl);
+        }
+    }
+
+#if FILE_CALLS
+    close(fd);
+#endif
+    o_strm.flush();
+
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
+        ios_state_msg(o_strm, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        INFO_LOG(msg.str());
+    }
+
+    msg.str(prolog);
+    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    BESDEBUG(MODULE,msg.str());
+    INFO_LOG(msg.str());
+
+    return tcount;
+}
+
+#if 0
+/// Stolen from our friends at Stack Overflow and modified for our use.
+/// This is far faster than the istringstream code it replaces (for one
+/// test, run time for parse_chunk_position_in_array_string() dropped from
+/// 20ms to ~3ms). It also fixes a test we could never get to pass.
+/// jhrg 11/5/21
+
+/**
+ * @brief Split a string using delimiter. Store values as unsigned long longs
+ * @param s The string to split
+ * @param delimiter The delimiter
+ * @param res Return the result in this vector
+ */
+void BESUtil::split(const string &s, const string &delimiter, vector<uint64_t> &res)
+{
+    const size_t delim_len = delimiter.length();
+
+    size_t pos_start = 0, pos_end;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        res.push_back (stoull(s.substr(pos_start, pos_end - pos_start)));
+        pos_start = pos_end + delim_len;
+    }
+
+    res.push_back (stoull(s.substr (pos_start)));
+}
+
+/**
+ * @brief Split a string using delimiter. Store values as strings
+ * @param s The string to split
+ * @param delimiter The delimiter
+ * @param res Return the result in this vector
+ *
+ * @note Maybe we could combine this and the previous function using a lambda
+ * to wrap stoull()? jhrg 11/9/21
+ */
+void BESUtil::split(const string &s, const string &delimiter, vector<string> &res)
+{
+    const size_t delim_len = delimiter.length();
+
+    size_t pos_start = 0, pos_end;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        res.push_back(s.substr(pos_start, pos_end - pos_start));
+        pos_start = pos_end + delim_len;
+    }
+
+    res.push_back(s.substr (pos_start));
+}
+#endif

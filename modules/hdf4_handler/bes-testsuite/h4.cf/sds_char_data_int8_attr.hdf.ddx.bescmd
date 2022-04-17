@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="nscat" space="catalog">/data/sds_char_data_int8_attr.hdf </setContainer>
+    <define name="d">
+	<container name="nscat" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

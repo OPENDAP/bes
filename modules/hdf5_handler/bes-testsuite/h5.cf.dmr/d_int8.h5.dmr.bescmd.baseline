@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_size8.h5">
+    <Int8 name="temp">
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-127</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temp</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/temp</Value>
+        </Attribute>
+    </Int8>
+</Dataset>

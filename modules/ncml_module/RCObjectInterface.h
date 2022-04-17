@@ -39,7 +39,7 @@ namespace agg_util {
 class RCObjectInterface {
 public:
 
-    virtual ~RCObjectInterface() = 0;
+    virtual ~RCObjectInterface() = default;
 
     /** Increase the reference count by one.
      * const since we do not consider the ref count part of the semantic constness of the rep */

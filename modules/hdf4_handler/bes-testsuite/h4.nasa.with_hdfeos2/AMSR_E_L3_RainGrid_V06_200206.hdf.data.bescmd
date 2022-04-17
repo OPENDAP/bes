@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AMSR_E_L3_RainGrid_V06_200206.hdf" space="catalog">/data/AMSR_E_L3_RainGrid_V06_200206.hdf</setContainer>
+    <define name="d">
+	<container name="AMSR_E_L3_RainGrid_V06_200206.hdf" />
+	<constraint> TbOceanRain[0:13:27][0:35:71],Latitude[0:13:27],Longitude[0:35:71]
+	</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

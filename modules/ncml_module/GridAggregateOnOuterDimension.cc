@@ -28,12 +28,12 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <sstream>
-#include <memory> // auto_ptr
+#include <memory> // unique_ptr
 
 
-#include "DataDDS.h" // libdap
-#include "DDS.h" // libdap
-#include "Grid.h" // libdap
+#include <libdap/DataDDS.h> // libdap
+#include <libdap/DDS.h> // libdap
+#include <libdap/Grid.h> // libdap
 
 #include "DDSLoader.h" // agg_util
 #include "Dimension.h" // agg_util
@@ -44,7 +44,7 @@
 
 #include "AggregationException.h"
 #include "AggregationUtil.h" // agg_util
-#include "Array.h" // libdap
+#include <libdap/Array.h> // libdap
 #include "ArrayAggregateOnOuterDimension.h" // agg_util
 
 using libdap::Array;
@@ -54,11 +54,7 @@ using libdap::Grid;
 
 namespace agg_util {
 
-// Local flag for whether to print constraints, to help debugging
-// unused jhrg 4/16/14 static const bool PRINT_CONSTRAINTS = true;
-
-// BES Debug output channel for this file.
-static const string DEBUG_CHANNEL("ncml:2");
+#define DEBUG_CHANNEL "ncml:2"
 
 // Copy local data
 void GridAggregateOnOuterDimension::duplicate(const GridAggregateOnOuterDimension& rhs)
@@ -115,30 +111,32 @@ void GridAggregateOnOuterDimension::createRep(const AMDList& memberDatasets)
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Replacing the Grid's data Array with an ArrayAggregateOnOuterDimension..." << endl);
 
     // This is the prototype we need.  It will have been set in the ctor.
-    Array* pArr = static_cast<Array*>(array_var());
+    const auto pArr = dynamic_cast<Array*>(array_var());
     NCML_ASSERT_MSG(pArr, "Expected to find a contained data Array but we did not!");
 
     // Create the Grid version of the read getter and make a new AAOOD from our state.
-    std::auto_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
+    unique_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
 
     // Create the subclass that does the work and replace our data array with it.
     // Note this ctor will prepend the new dimension itself, so we do not.
-    std::auto_ptr<ArrayAggregateOnOuterDimension> aggDataArray(new ArrayAggregateOnOuterDimension(*pArr, // prototype, already should be setup properly _without_ the new dim
-        memberDatasets, arrayGetter, _newDim));
+    //
+    // pArr is a prototype, already should be setup properly _without_ the new dim
+    unique_ptr<ArrayAggregateOnOuterDimension> aggDataArray(new ArrayAggregateOnOuterDimension(*pArr,
+        memberDatasets, std::move(arrayGetter), _newDim));
 
     // Make sure null since sink function
-    // called on the auto_ptr
+    // called on the unique_ptr
     NCML_ASSERT(!(arrayGetter.get()));
 
     // Replace our data Array with this one.  Will delete old one and may throw.
     set_array(aggDataArray.get());
 
     // Release here on successful set since set_array uses raw ptr only.
-    // In case we threw then auto_ptr cleans up itself.
+    // In case we threw then unique_ptr cleans up itself.
     aggDataArray.release();
 }
 
-void GridAggregateOnOuterDimension::cleanup() throw ()
+void GridAggregateOnOuterDimension::cleanup() const noexcept
 {
 }
 

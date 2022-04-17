@@ -43,7 +43,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 #include "BESInternalError.h"
 #include "TheBESKeys.h"
@@ -61,7 +61,6 @@
 
 using namespace std;
 
-// FIXME Reset these to false before merging this code to master. jhrg 9/25/20
 static bool debug = false;
 static bool bes_debug = false;
 
@@ -84,9 +83,8 @@ public:
         return;
     }
 
-    virtual std::string get_data_url() const  override
-    {
-        return "https://httpbin.org/";
+    virtual shared_ptr<http::url> get_data_url() const override {
+        return shared_ptr<http::url>(new  http::url("https://httpbin.org/"));
     }
 
     virtual unsigned long long get_bytes_read() const  override
@@ -156,11 +154,8 @@ public:
         append_dim(10, "mock_dim");
     }
 
-    bool is_deflate_compression() const override
-    { return false; }
-
-    bool is_shuffle_compression() const override
-    { return false; }
+    bool is_filters_empty() const override
+    { return true; }
 
     virtual void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
                               shared_ptr<Chunk>, const vector<unsigned long long> &) override

@@ -28,18 +28,27 @@
 #include <utility>
 #include <vector>
 #include <memory>
-#include "util.h"
+
+// BES
+#include "url_impl.h"
+
+// libdap4
+#include <libdap/util.h>
+
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
 #define S3_TRACKING_CONTEXT "cloudydap"
+#define ENABLE_TRACKING_QUERY_PARAMETER 0
 
 namespace dmrpp {
 
 // Callback functions used by chunk readers
 size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
+
+void process_s3_error_response(const std::shared_ptr<http::url> &data_url, const std::string &xml_message);
 
 /**
  * This class is used to encapsulate the state and behavior needed for reading
@@ -49,7 +58,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
  */
 class Chunk {
 private:
-    std::string d_data_url;
+    std::shared_ptr<http::url> d_data_url;
     std::string d_query_marker;
     std::string d_byte_order;
     unsigned long long d_size;
@@ -87,6 +96,7 @@ private:
 
     // static const std::string tracking_context;
 
+
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
@@ -123,7 +133,7 @@ public:
      * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(""), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0),
+        d_data_url(nullptr), d_size(0), d_offset(0),
         d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
@@ -139,14 +149,57 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(std::string data_url, std::string order, unsigned long long size, unsigned long long offset,
+    Chunk(
+            std::shared_ptr<http::url> data_url,
+            std::string order,
+            unsigned long long size,
+            unsigned long long offset,
             const std::string &pia_str = "") :
-            d_data_url(std::move(data_url)), d_query_marker(""),
-            d_byte_order(std::move(order)), d_size(size), d_offset(offset),
-            d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
-            d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
+            d_data_url(std::move(data_url)),
+            d_byte_order(std::move(order)),
+            d_size(size),
+            d_offset(offset),
+            d_read_buffer_is_mine(true),
+            d_bytes_read(0),
+            d_read_buffer(nullptr),
+            d_read_buffer_size(0),
+            d_is_read(false),
+            d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
+        set_position_in_array(pia_str);
+    }
+
+    /**
+     * @brief Get a chunk initialized with values, the data URL will not be set.
+     *
+     * @param data_url Where to read this chunk's data
+     * @param order The data storage byte_order
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_str A string that provides the logical position of this chunk
+     * in an Array. Has the syntax '[1,2,3,4]'.
+     */
+    Chunk(
+            std::string order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::string &pia_str = "") :
+            d_byte_order(std::move(order)),
+            d_size(size),
+            d_offset(offset),
+            d_read_buffer_is_mine(true),
+            d_bytes_read(0),
+            d_read_buffer(nullptr),
+            d_read_buffer_size(0),
+            d_is_read(false),
+            d_is_inflated(false)
+    {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
         set_position_in_array(pia_str);
     }
 
@@ -160,15 +213,61 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(std::string data_url, std::string order, unsigned long long size,
-            unsigned long long offset, const std::vector<unsigned long long> &pia_vec) :
-            d_data_url(std::move(data_url)), d_query_marker(""), d_byte_order(std::move(order)), d_size(size), d_offset(offset),
-            d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
-            d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
+    Chunk(
+            std::shared_ptr<http::url> data_url,
+            std::string order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &pia_vec) :
+            d_data_url(std::move(data_url)),
+            d_byte_order(std::move(order)),
+            d_size(size),
+            d_offset(offset),
+            d_read_buffer_is_mine(true),
+            d_bytes_read(0),
+            d_read_buffer(nullptr),
+            d_read_buffer_size(0),
+            d_is_read(false),
+            d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
         set_position_in_array(pia_vec);
     }
+
+
+    /**
+     * @brief Get a chunk initialized with values, the data URl will not be set.
+     *
+     * @param data_url Where to read this chunk's data
+     * @param order The data storage byte order
+     * @param size The number of bytes to read
+     * @param offset Read \arg size bytes starting from this offset
+     * @param pia_vec The logical position of this chunk in an Array; a std::vector
+     * of unsigned ints.
+     */
+    Chunk(
+            std::string order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::vector<unsigned long long> &pia_vec) :
+            d_query_marker(""),
+            d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset),
+            d_read_buffer_is_mine(true),
+            d_bytes_read(0),
+            d_read_buffer(nullptr),
+            d_read_buffer_size(0),
+            d_is_read(false),
+            d_is_inflated(false)
+    {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_vec);
+    }
+
 
     Chunk(const Chunk &h4bs)
     {
@@ -221,16 +320,16 @@ public:
     }
 
     /**
-     * @brief Get the data url string for this Chunk's data block
+     * @brief Get the data url for this Chunk's data block
      */
-    virtual std::string get_data_url() const;
+    virtual std::shared_ptr<http::url>  get_data_url() const;
 
     /**
-     * @brief Set the data url string for this Chunk's data block
+     * @brief Set the data url for this Chunk's data block
      */
-    virtual void set_data_url(const std::string &data_url)
+    virtual void set_data_url(std::shared_ptr<http::url> data_url)
     {
-        d_data_url = data_url;
+        d_data_url = std::move(data_url);
     }
 
     /**
@@ -353,6 +452,7 @@ public:
         return d_chunk_position_in_array;
     }
 
+
     void add_tracking_query_param();
 
     void set_position_in_array(const std::string &pia);
@@ -360,7 +460,7 @@ public:
 
     virtual void read_chunk();
 
-    virtual void inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size, unsigned long long elem_width);
+    virtual void filter_chunk(const std::string &filters, unsigned long long chunk_size, unsigned long long elem_width);
 
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }

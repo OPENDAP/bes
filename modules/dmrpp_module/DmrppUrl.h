@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Url.h>
+#include <libdap/Url.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,20 +37,24 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppUrl: public libdap::Url, public DmrppCommon {
-    void _duplicate(const DmrppUrl &ts);
 
 public:
-    DmrppUrl(const std::string &n);
-    DmrppUrl(const std::string &n, const std::string &d);
-    DmrppUrl(const DmrppUrl &rhs);
+    DmrppUrl(const std::string &n) : libdap::Url(n), DmrppCommon() { }
+    DmrppUrl(const std::string &n, const std::string &d) : libdap::Url(n, d), DmrppCommon() { }
+    DmrppUrl(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Url(n), DmrppCommon(dmz) { }
+    DmrppUrl(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Url(n, d), DmrppCommon(dmz) { }
+    DmrppUrl(const DmrppUrl &) = default;
 
-    virtual ~DmrppUrl() {}
+    virtual ~DmrppUrl() = default;
 
     DmrppUrl &operator=(const DmrppUrl &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppUrl(*this);
+    }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

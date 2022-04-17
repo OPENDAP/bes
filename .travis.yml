@@ -1,7 +1,7 @@
 #
 # The bes build
 #
-# Initial Travic-CI control file. 6.5.15 jhrg
+# Initial Travis-CI control file. 6.5.15 jhrg
 # Hacked quite a bit; added support for parallel autotest tests
 # and removed unused parts. jhrg 8.23.17
 #
@@ -13,15 +13,26 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: xenial          # or bionic | xenial | trusty | precise with xenial as default
+dist: xenial            # or bionic | xenial | trusty | precise with xenial as default
+
+# Added vm size upgrade. This costs extra $s
+vm:
+  size: x-large
 
 language: cpp
-
 compiler: gcc
 
 branches:
   only:
   - master
+  - /^(.*-test-deploy)$/
+
+# This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
+# Each branch gets its own cache. The three different sonar scan runs each use their own cache
+# directory set in the three sonar-bes-*.properties files. jhrg 1/13/22
+cache:
+  directories:
+    - ./.cache/sonar/
 
 addons:
   sonarcloud: true
@@ -44,13 +55,14 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.7-16
+    - LIBDAP_RPM_VERSION=3.20.9-0
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
     # SONAR_SUBMODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_SUBMODULES_LOGIN=Q4aWrvS..."
     - secure: "Q4aWrvSlKUY7413FNI6tHlWJdhVtjJxrtSBApJRe5fGTn/HEmod5n3O4o0elFhuYh0O57aYsYclD7t0lriKMPvPdY/s8CFAaIPSANhNRkD44MWYWCPyivl83BBUlhWgkqgWFcCEaTqCpF/8A0HlOF1TsE1KKyQSns7snqgWTfSA="    # AWS_ACCESS_KEY_ID
+    # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
     # AWS_SECRET_ACCESS_KEY
@@ -59,11 +71,11 @@ env:
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
-    - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
-    # WOO_UID for travis
-    # - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
-    # travis encrypt --org -r OPENDAP/bes WOO_PSWD=... Use with sshpass -p $WOO_PSWD scp ...
-    # - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
+    - secure: "VArqBZEPauJderb2tNbv7RdKFZRtb97wpIpDUDWA0WEFEMNcymosjYV20tfbSL/lyGn6w+wWVfbqymhixCQqr8hJ1okDCR10lE2jzIFhn96/GdLrRseHmNRt+KivOZnOcLS2Yd3og+uUdlA4bgAp/WOt0nCxERg1Bf36mI5wtqc="
+    # DOCKER_HUB_UID for travis
+    - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
+    # DOCKER_HUB_PSWD for travis
+    - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
@@ -79,11 +91,9 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
+  - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
 
 before_script:
-  # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
-  # and hopefully that will be true here too. jhrg 3/24/21
-  # - autoreconf --force --install --verbose
   - source travis/travis_bes_build_offset.sh
   - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
@@ -92,121 +102,156 @@ before_script:
   - printenv
 
 
-# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
-# but do not run the scan.
+# We have varied our approach to scanning over time. As of 7/23/21, we do not
+# use Travis to run our sonarcloud scans. These are very time-consuming and
+# can be done on the SonarScan.com website in a way that links those results
+# to the GitHub PR page. That linkage provides the required behavior that a
+# failed scan can block merging a PR onto the main branch.
+#
+# I have left the sonarscan stages in this file because we might decide they
+# are needed after all, and it'll be a pain to redo them, even with the miracle
+# of git. jhrg 7/23/21
+#
+# Update: it's back in. There may be a way to skip the scan for a DRAFT pull request,
+# but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
+#
+# Change: We filter branches (see line 25 above) so this script is only run for
+# the master branch or for a *-test-deploy branch. So, the conditionals for the
+# stages can be simplified. jhrg 3/2/22
+
 stages:
-  - name: build
-    if: branch = master
+  - name: build-and-package
   - name: scan
     if:  branch = master
-  - name: package
-    if: branch = master
   - name: hyrax-olfs-trigger
-    if: branch = master AND type != pull_request
+    if: type != pull_request OR branch =~ ^(.*-test-deploy)$
 
 jobs:
   include:
-  - stage: scan
-    name: "scan bes"
-    script:
-    - export BES_BUILD=sonar-bes-framework
-    - autoreconf --force --install --verbose
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+    - stage: build-and-package
+      name: "check"
+      script:
+        - export BES_BUILD=main
+        # - export RUNTESTFLAGS="-v"
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - make check -j7
-    - make coverage
+    - stage: build-and-package
+      name: "distcheck"
+      script:
+        - export BES_BUILD=distcheck
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - make distcheck -j16 GZIP_ENV=--fast
 
-    - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-    - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
+      # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
+      # or the name of the branch for a regular push. The reason for this is not that we want special
+      # packages for branches, but we want to be able to test builds without making pushes to master
+      # and that means having the build-rpm.sh use the spec files on a branch.
 
-  - stage: scan
-    name: "scan bes-modules"
-    script:
-      - export BES_BUILD=sonar-bes-modules
+    - stage: build-and-package
+      name: "CentOS-7 RPMs"
+      script:
+        - export BES_BUILD=centos7
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env OS=centos7
+          --env DIST=el7
+          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          opendap/centos7_hyrax_builder:1.7 /root/travis/travis/build-rpm.sh
+
+    - stage: build-and-package
+      name: "CentOS-Stream8 RPMs"
+      script:
+        - export BES_BUILD=centos-stream8
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild 
+            --volume $TRAVIS_BUILD_DIR:/root/travis
+            --env OS=centos-stream8
+            --env DIST=el8
+            --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+            --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+            --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
+
+    - stage: build-and-package
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+
+    - stage: scan
+      name: "scan bes"
+      script:
+      - export BES_BUILD=sonar-bes-framework
       - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
-      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+      # only compute coverage for merges to master; PRs and branch builds often are
+      # done over an over with little change.
+      - |
+        if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+          make check -j16
+          make coverage
+        fi
+      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
-      - make check -j7
-      - make coverage
+    - stage: scan
+      name: "scan bes-modules"
+      script:
+        - export BES_BUILD=sonar-bes-modules
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+        - |
+          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+            make check -j16
+            make coverage
+          fi
+        - sonar-scanner -X -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-      - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
+    - stage: scan
+      name: "scan bes-hdf-handlers"
+      script:
+        - export BES_BUILD=sonar-bes-hdf-handlers
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+        - |
+          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+            make check -j16
+            make coverage
+          fi
+        - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+        # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
+        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
-  - stage: scan
-    name: "scan bes-submodules"
-    script:
-      - export BES_BUILD=sonar-bes-submodules
-      - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
-      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-
-      - make check -j7
-      - make coverage
-
-      - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
-      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
-
-  - stage: build
-    name: "check"
-    script: 
-    - export BES_BUILD=main
-    - autoreconf --force --install --verbose
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
-
-  - stage: build
-    name: "distcheck"
-    script:
-    - export BES_BUILD=distcheck
-    - autoreconf --force --install --verbose
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make distcheck -j7
-
-    # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
-    # or the name of the branch for a regular push. The reason for this is not that we want special
-    # packages for branches, but we want to be able to test builds without making pushes to master
-    # and that means having the build-rpm.sh use the spec files on a branch.
-
-  - stage: package
-    name: "CentOS-7 RPMs"
-    script: 
-    - export BES_BUILD=centos7
-    - mkdir -p $prefix/rpmbuild
-    - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env OS=centos7
-                 --env DIST=el7
-                 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                 --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                 opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
-
-  - stage: package
-    name: "dist"
-    script:
-      - export BES_BUILD=srcdist
-      - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-      - make dist -j7
-      # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-      # other operations that use the bes source code. Note that the VERSION file holds a
-      # string that is the version number as set by the configure script and the build
-      # number passed into configure when it is run. jhrg 3/23/21
-      - SOURCE_VERSION=$(cat VERSION)
-      - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-      - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
-
-  - stage: hyrax-olfs-trigger
-    name: "Hyrax OLFS Trigger"
-    script:
-      - export STAGE=hyrax-olfs
-      - echo $STAGE
-      - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-      - ./travis/trigger-olfs-build.sh
+    - stage: hyrax-olfs-trigger
+      name: "Hyrax OLFS Trigger"
+      script:
+        - export STAGE=hyrax-olfs
+        - echo $STAGE
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - ./travis/trigger-olfs-build.sh
 
 after_script:
   - ./travis/upload-test-results.sh
@@ -219,6 +264,8 @@ before_deploy:
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
   # CentOS-7  distribution prep
   - if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
+  # CentOS-Stream8  distribution prep
+  - if test "$BES_BUILD" = "centos-stream8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
   # Check for the stuff...
   - ls -l $TRAVIS_BUILD_DIR/package
 
@@ -232,5 +279,5 @@ deploy:
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
-      branch: master
-      condition: $BES_BUILD =~ ^centos7|srcdist$
+      all_branches: true
+      condition: $BES_BUILD =~ ^centos7|centos-stream8|srcdist$

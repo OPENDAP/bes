@@ -37,30 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppInt64::_duplicate(const DmrppInt64 &)
-{
-}
-
-DmrppInt64::DmrppInt64(const string &n) : Int64(n), DmrppCommon()
-{
-}
-
-DmrppInt64::DmrppInt64(const string &n, const string &d) : Int64(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppInt64::ptr_duplicate()
-{
-    return new DmrppInt64(*this);
-}
-
-DmrppInt64::DmrppInt64(const DmrppInt64 &rhs) : Int64(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppInt64 &
 DmrppInt64::operator=(const DmrppInt64 &rhs)
 {
@@ -69,8 +45,8 @@ DmrppInt64::operator=(const DmrppInt64 &rhs)
 
     dynamic_cast<Int64 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -79,6 +55,9 @@ bool
 DmrppInt64::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    if (!get_chunks_loaded())
+        load_chunks(this);
 
     if (read_p())
         return true;
@@ -94,6 +73,14 @@ DmrppInt64::read()
 
 }
 
+void
+DmrppInt64::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Int64::set_send_p(state);
+}
 
 void DmrppInt64::dump(ostream & strm) const
 {

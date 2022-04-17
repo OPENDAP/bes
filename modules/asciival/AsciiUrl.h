@@ -36,7 +36,7 @@
 #ifndef _asciiurl_h
 #define _asciiurl_h 1
 
-#include "Url.h"
+#include <libdap/Url.h>
 #include "AsciiOutput.h"
 
 class AsciiUrl: public Url, public AsciiOutput {

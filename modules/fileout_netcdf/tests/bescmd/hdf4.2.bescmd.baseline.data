@@ -40,7 +40,7 @@ variables:
 		NSCAT_Rev_20.Num_Sigma0:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Sigma0:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Sigma0:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Sigma0:valid_range = 0b, 19b ;
+		NSCAT_Rev_20.Num_Sigma0:valid_range = 0s, 19s ;
 		NSCAT_Rev_20.Num_Sigma0:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Sigma0:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Sigma0:dim_1.name = "WVC" ;
@@ -54,7 +54,7 @@ variables:
 		NSCAT_Rev_20.Num_Beam_12:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Beam_12:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Beam_12:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Beam_12:valid_range = 0b, 6b ;
+		NSCAT_Rev_20.Num_Beam_12:valid_range = 0s, 6s ;
 		NSCAT_Rev_20.Num_Beam_12:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Beam_12:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Beam_12:dim_1.name = "WVC" ;
@@ -68,7 +68,7 @@ variables:
 		NSCAT_Rev_20.Num_Beam_34:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Beam_34:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Beam_34:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Beam_34:valid_range = 0b, 6b ;
+		NSCAT_Rev_20.Num_Beam_34:valid_range = 0s, 6s ;
 		NSCAT_Rev_20.Num_Beam_34:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Beam_34:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Beam_34:dim_1.name = "WVC" ;
@@ -82,7 +82,7 @@ variables:
 		NSCAT_Rev_20.Num_Beam_56:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Beam_56:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Beam_56:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Beam_56:valid_range = 0b, 6b ;
+		NSCAT_Rev_20.Num_Beam_56:valid_range = 0s, 6s ;
 		NSCAT_Rev_20.Num_Beam_56:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Beam_56:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Beam_56:dim_1.name = "WVC" ;
@@ -96,7 +96,7 @@ variables:
 		NSCAT_Rev_20.Num_Beam_78:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Beam_78:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Beam_78:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Beam_78:valid_range = 0b, 6b ;
+		NSCAT_Rev_20.Num_Beam_78:valid_range = 0s, 6s ;
 		NSCAT_Rev_20.Num_Beam_78:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Beam_78:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Beam_78:dim_1.name = "WVC" ;
@@ -109,7 +109,7 @@ variables:
 		NSCAT_Rev_20.WVC_Quality_Flag:add_offset = 0. ;
 		NSCAT_Rev_20.WVC_Quality_Flag:add_offset_err = 0. ;
 		NSCAT_Rev_20.WVC_Quality_Flag:calibrated_nt = 21 ;
-		NSCAT_Rev_20.WVC_Quality_Flag:valid_range = 0b, 3b ;
+		NSCAT_Rev_20.WVC_Quality_Flag:valid_range = 0s, 3s ;
 		NSCAT_Rev_20.WVC_Quality_Flag:dim_0.name = "row" ;
 		NSCAT_Rev_20.WVC_Quality_Flag:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.WVC_Quality_Flag:dim_1.name = "WVC" ;
@@ -216,7 +216,7 @@ variables:
 		NSCAT_Rev_20.Num_Ambigs:add_offset = 0. ;
 		NSCAT_Rev_20.Num_Ambigs:add_offset_err = 0. ;
 		NSCAT_Rev_20.Num_Ambigs:calibrated_nt = 21 ;
-		NSCAT_Rev_20.Num_Ambigs:valid_range = 0b, 4b ;
+		NSCAT_Rev_20.Num_Ambigs:valid_range = 0s, 4s ;
 		NSCAT_Rev_20.Num_Ambigs:dim_0.name = "row" ;
 		NSCAT_Rev_20.Num_Ambigs:dim_0.long_name = "WVC row" ;
 		NSCAT_Rev_20.Num_Ambigs:dim_1.name = "WVC" ;
@@ -250,7 +250,9 @@ variables:
 		:HDF_Conversion_Organization = "JPL PO.DAAC\\000" ;
 		:HDF_Conversion_Time = "1996-320T17:32:34       " ;
 		:Data_Format_Type = "HDF\\000" ;
-		:history = "removed date-timex S2000415.HDF?" ;
+		:history = "removed date-timex S2000415.HDF\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S2000415.HDF\"}]}]" ;
 data:
 
  NSCAT_Rev_20.WVC_Lat =

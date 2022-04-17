@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="d_regref" space="catalog">/data/d_regref.h5</setContainer>
+    <define name="d">
+	<container name="d_regref" />
+    </define>
+    <get type="das" definition="d" />
+</request>

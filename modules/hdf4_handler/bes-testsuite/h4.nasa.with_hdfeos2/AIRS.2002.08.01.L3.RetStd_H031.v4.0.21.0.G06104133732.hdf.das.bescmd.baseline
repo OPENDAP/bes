@@ -1,0 +1,850 @@
+Attributes {
+    TotalCounts_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotalCounts_A";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotO3_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfAirTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfSkinTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfPres_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A_ct";
+        Int16 _FillValue 0;
+    }
+    OLR_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A_ct";
+        Int16 _FillValue 0;
+    }
+    ClrOLR_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_A {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_A_ct {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A_ct";
+        Int16 _FillValue 0;
+    }
+    EmisIR_A_sdev {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_A {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_A_ct {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_A_sdev {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudFrc_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopPres_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumid_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A_ct";
+        Int16 _FillValue 0;
+    }
+    H2OVapMMR_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_A {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_A_ct {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_A_sdev {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrcVis_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrcVis_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrcVis_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrcVis_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudFrcVis_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrcVis_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls {
+        String long_name "ascending:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls {
+        String long_name "ascending:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    EmisLvls {
+        String long_name "ascending:EmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotalCounts_D";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotO3_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfAirTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfSkinTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfPres_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D_ct";
+        Int16 _FillValue 0;
+    }
+    OLR_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D_ct";
+        Int16 _FillValue 0;
+    }
+    ClrOLR_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_D {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_D_ct {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D_ct";
+        Int16 _FillValue 0;
+    }
+    EmisIR_D_sdev {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_D {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_D_ct {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_D_sdev {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D_ct";
+        Int16 _FillValue 0;
+    }
+    CloudFrc_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopPres_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumid_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D_ct";
+        Int16 _FillValue 0;
+    }
+    H2OVapMMR_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_D {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_D_ct {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_D_sdev {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_1 {
+        String long_name "descending:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_1 {
+        String long_name "descending:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    EmisLvls_1 {
+        String long_name "descending:EmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_MW_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotalCounts_MW_A";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_MW_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_A {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_A_ct {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    EmisMW_MW_A_sdev {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_A {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_A_ct {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_MW_A_sdev {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_A {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_A_ct {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_MW_A_sdev {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_2 {
+        String long_name "ascending_MW_only:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_2 {
+        String long_name "ascending_MW_only:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    MWEmisLvls {
+        String long_name "ascending_MW_only:MWEmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_MW_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotalCounts_MW_D";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_MW_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_D {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_D_ct {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    EmisMW_MW_D_sdev {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_D {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_D_ct {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_MW_D_sdev {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_D {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_D_ct {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_MW_D_sdev {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_3 {
+        String long_name "descending_MW_only:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_3 {
+        String long_name "descending_MW_only:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    MWEmisLvls_1 {
+        String long_name "descending_MW_only:MWEmisLvls(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "location:Latitude";
+        Float32 _FillValue -9999.000000;
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "location:Longitude";
+        Float32 _FillValue -9999.000000;
+        String units "degrees_east";
+    }
+    LandSeaMask {
+        String coordinates "Latitude Longitude";
+        String long_name "location:LandSeaMask";
+        Int16 _FillValue 0;
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AIRS.2002.08.01.L3.RetStd_H031.v4.0.21.0.G06104133732.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-04-14T17:37:32.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Unspecified";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                    QAFLAGS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            String VALUE "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            Int32 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Surface Skin Temperature", "Surface Air Temperature", "Atmospheric Temperature", "Water Vapor Mass Mixing Ratio", "Total Precipitable Water Vapor", "Ozone Volume Mixing Ratio", "Total Ozone Burden", "Spectral IR Surface Emissivities", "Spectral IR Surf Bidirect Reflectivity", "MW Surface Brightness", "MW Emissivity", "Total Cloud Water", "Cloud Top Temperature", "Cloud Top Pressure", "Effective Cloud Fraction", "Geopotential Heights", "Geopotential Height of Surface";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 3;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AIRH3STM";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 50;
+                    String VALUE "LGID:AIRH3STD:003:AIRS.2002.08.30.L3.RetStd_H001.v4.0.21.0.G06104085233.hdf", "LGID:AIRH3STD:003:AIRS.2002.08.31.L3.RetStd_H001.v4.0.21.0.G06102141859.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Global";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-08-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59.000000Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2002-08-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "4.0.21.0";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "HSB Channel 1", "HSB Channel 2", "HSB Channel 3", "HSB Channel 4", "HSB Channel 5", "AMSU-A Channel 3", "AMSU-A Channel 4", "AMSU-A Channel 5", "AMSU-A Channel 6", "AMSU-A Channel 7", "AMSU-A Channel 8", "AMSU-A Channel 9", "AMSU-A Channel 10", "AMSU-A Channel 11", "AMSU-A Channel 12", "AMSU-A Channel 13", "AMSU-A Channel 14", "AMSU-A Channel 15", "AMSU-A Channel 1", "AMSU-A Channel 2", "M1a Detector Array", "M1b Detector Array", "M2a Detector Array", "M2b Detector Array", "M3 Detector Array", "M4a Detector Array", "M4b Detector Array", "M4c Detector Array", "M4d Detector Array", "M5 Detector Array", "M6 Detector Array", "M7 Detector Array", "M8 Detector Array", "M9 Detector Array", "M10 Detector Array", "M11 Detector Array", "M12 Detector Array", "VNIR Channel 1", "VNIR Channel 2", "VNIR Channel 3", "VNIR Channel 4";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua";
+                    }
+                    OPERATIONMODE {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "HSB", "HSB", "HSB", "HSB", "HSB", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "NumBadData", "NumSpecialData", "NumProcessData", "NumMissingData", "NumTotalData", "NumFpe", "ProductGenerationFacility", "InputGranuleCount", "NumDaysPlanned", "StartDayInAquaRepeat", "AIRSRunTag";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11";
+                            String VALUE "33978", "0", "589722", "0", "623700", "0", "G", "2", "31", "9", "06104133732";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.12";
+    }
+    location {
+        Int32 Year 2002;
+        Int32 Month 8;
+        Int32 Day 30;
+        Int32 NumOfDays 2;
+        String AscendingGridStartTimeUTC "2002-08-30T01:30:00.000000Z";
+        String AscendingGridEndTimeUTC "2002-09-01T01:29:59.999999Z";
+        String DescendingGridStartTimeUTC "2002-08-29T13:30:00.000000Z";
+        String DescendingGridEndTimeUTC "2002-08-31T13:29:59.999999Z";
+        Int32 TempPresLvlNum 24;
+        Float32 TempPresLvls 1000.000000, 925.0000000, 850.0000000, 700.0000000, 600.0000000, 500.0000000, 400.0000000, 300.0000000, 250.0000000, 200.0000000, 150.0000000, 100.0000000, 70.00000000, 50.00000000, 30.00000000, 20.00000000, 15.00000000, 10.00000000, 7.000000000, 5.000000000, 3.000000000, 2.000000000, 1.500000000, 1.000000000;
+        Int32 H2OPresLvlNum 12;
+        Float32 H2OPresLvls 1000.000000, 925.0000000, 850.0000000, 700.0000000, 600.0000000, 500.0000000, 400.0000000, 300.0000000, 250.0000000, 200.0000000, 150.0000000, 100.0000000;
+        Float32 IREmisFreqs 832.0000000, 961.0000000, 1203.000000, 2616.000000;
+        Float32 MWEmisFreqs 23.79999924, 50.29999924, 89.00000000;
+    }
+}

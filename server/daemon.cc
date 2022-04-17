@@ -38,12 +38,10 @@
 #include <pwd.h>    // for getpwnam
 
 #include <sys/wait.h>  // for waitpid
-#include <sys/types.h>
 #include <sys/stat.h>  // for chmod
-#include <ctype.h> // for isdigit
-#include <signal.h>
+#include <cctype> // for isdigit
+#include <csignal>
 
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -52,17 +50,6 @@
 #include <cerrno>
 #include <map>
 #include <vector>
-
-using std::ifstream;
-using std::ofstream;
-using std::cout;
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::string;
-using std::map;
-using std::ostringstream;
-using std::vector;
 
 #include "ServerExitConditions.h"
 #include "SocketListener.h"
@@ -78,14 +65,17 @@ using std::vector;
 #include "TheBESKeys.h"
 #include "BESLog.h"
 #include "BESDaemonConstants.h"
+#include "BESUtil.h"
 
 #define BES_SERVER "/beslistener"
 #define BES_SERVER_PID "/bes.pid"
 #define DAEMON_PORT_STR "BES.DaemonPort"
 #define DAEMON_UNIX_SOCK_STR "BES.DaemonUnixSocket"
 
+using namespace std;
+
 // Defined in setgroups.c
-extern "C" int set_sups(const int target_sups_size, const gid_t* const target_sups_list);
+extern "C" int set_sups(int target_sups_size, gid_t* target_sups_list);
 
 // These are called from DaemonCommandHandler
 void block_signals();
@@ -101,16 +91,18 @@ static string file_for_daemon_pid;
 
 // This can be used to see if HUP or TERM has been sent to the master bes
 volatile int master_beslistener_status = BESLISTENER_STOPPED;
+#if 0
 volatile int num_children = 0;
+#endif
 static volatile int master_beslistener_pid = -1; // This is also the process group id
 
 typedef map<string, string> arg_map;
 static arg_map global_args;
-static string debug_sink = "";
+static string debug_sink;
 
-static TcpSocket *my_socket = 0;
-static UnixSocket *unix_socket = 0;
-static PPTServer *command_server = 0;
+static TcpSocket *my_socket = nullptr;
+static UnixSocket *unix_socket = nullptr;
+static PPTServer *command_server = nullptr;
 
 // These are set to 1 by their respective handlers and then processed in the
 // signal processing loop. jhrg 3/5/14
@@ -231,7 +223,7 @@ bool stop_all_beslisteners(int sig)
 
     BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid " << master_beslistener_pid << endl);
     // Send 'sig' to all members of the process group with/of the master bes.
-    // The master beslistener pid is the group id of all of the beslisteners.
+    // The master beslistener pid is the group id of all the beslisteners.
     int status = killpg(master_beslistener_pid, sig);
     switch (status) {
     case EINVAL:
@@ -268,7 +260,9 @@ bool stop_all_beslisteners(int sig)
     BESDEBUG("besdaemon", "besdaemon: done catching listeners (last pid:" << pid << ")" << endl);
 
     unblock_signals();
+
     BESDEBUG("besdaemon", "besdaemon: unblocking signals " << endl);
+
     return mbes_status_caught;
 }
 
@@ -350,7 +344,7 @@ int start_master_beslistener()
         // daemon process both stdin and out have been closed so these descriptors
         // are available. Using higher numbers can cause problems (see ticket
         // 1783). jhrg 7/15/11
-        if (dup2(pipefd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
+        if (dup2(pipefd[1], MASTER_TO_DAEMON_PIPE_FD) != MASTER_TO_DAEMON_PIPE_FD) {
             cerr << errno_str(": dup2 error ");
             return 0;
         }
@@ -363,7 +357,7 @@ int start_master_beslistener()
 
         // Close the socket for the besdaemon here. This keeps it from being
         // passed into the master beslistener and then entering the state
-        // CLOSE_WAIT once the besdaemon's client closes it's end.
+        // CLOSE_WAIT once the besdaemon's client closes its end.
         if (command_server) command_server->closeConnection();
 
         // This is where beslistener - the master listener - is started
@@ -385,7 +379,7 @@ int start_master_beslistener()
 
     // Read the status from the child (beslistener).
     int beslistener_start_status;
-    int status = read(pipefd[0], &beslistener_start_status, sizeof(beslistener_start_status));
+    long status = read(pipefd[0], &beslistener_start_status, sizeof(beslistener_start_status));
 
     if (status < 0) {
         cerr << "Could not read master beslistener status; the master pid was not changed." << endl;
@@ -430,21 +424,21 @@ static void cleanup_resources()
 // Note that SIGCHLD, SIGTERM and SIGHUP are blocked while in these three
 // signal handlers below.
 
-static void CatchSigChild(int signal)
+static void catch_sig_child(int signal)
 {
     if (signal == SIGCHLD) {
         sigchild = 1;
     }
 }
 
-static void CatchSigHup(int signal)
+static void catch_sig_hup(int signal)
 {
     if (signal == SIGHUP) {
         sighup = 1;
     }
 }
 
-static void CatchSigTerm(int signal)
+static void catch_sig_term(int signal)
 {
     if (signal == SIGTERM) {
         sigterm = 1;
@@ -480,7 +474,7 @@ static void process_signals()
     // beslistener, forcing a re-read of the config file. Note that the daemon
     // does not re-read the config file.
 
-    // When the daemon gets the HUP signal, it forwards that onto each beslistener.
+    // When the daemon gets the HUP signal, it forwards that to each beslistener.
     // They then all exit, returning the 'restart' code so that the daemon knows
     // to restart the master beslistener.
     if (sighup) {
@@ -502,7 +496,7 @@ static void process_signals()
     // to each beslistener. This will cause the beslisteners to all exit with a zero
     // value (the code for 'do not restart').
     if (sigterm) {
-        // Stop all of the beslistener(s); read their exit status
+        // Stop all the beslistener(s); read their exit status
         stop_all_beslisteners(SIGTERM);
 
         // FIXME jhrg 3/5/14
@@ -534,7 +528,7 @@ static int start_command_processor(DaemonCommandHandler &handler)
 
         string port_str;
         bool port_found;
-        int port = 0;
+        long port = 0;
         TheBESKeys::TheKeys()->get_value(DAEMON_PORT_STR, port_str, port_found);
         if (port_found) {
             char *ptr;
@@ -575,9 +569,6 @@ static int start_command_processor(DaemonCommandHandler &handler)
 
             command_server->initConnection();
         }
-
-        // Once the handler exits, close sockets and free memory
-        command_server->closeConnection();
     }
     catch (BESError &se) {
         cerr << "daemon: " << se.get_message() << endl;
@@ -586,14 +577,17 @@ static int start_command_processor(DaemonCommandHandler &handler)
         cerr << "daemon: " << "caught unknown exception" << endl;
     }
 
+    // Once the handler exits, close sockets and free memory
+    command_server->closeConnection();
+
     delete command_server;
-    command_server = 0;
+    command_server = nullptr;
 
     // delete closes the sockets
     delete my_socket;
-    my_socket = 0;
+    my_socket = nullptr;
     delete unix_socket;
-    unix_socket = 0;
+    unix_socket = nullptr;
 
     // When/if the command interpreter exits, stop the all listeners.
     stop_all_beslisteners(SIGTERM);
@@ -613,7 +607,7 @@ static void register_signal_handlers()
 {
     struct sigaction act;
 
-    // block chld, term and hup in the handlers
+    // block child, term and hup in the handlers
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
     sigaddset(&act.sa_mask, SIGTERM);
@@ -624,19 +618,19 @@ static void register_signal_handlers()
     act.sa_flags |= SA_RESTART;
 #endif
 
-    act.sa_handler = CatchSigChild;
+    act.sa_handler = catch_sig_child;
     if (sigaction(SIGCHLD, &act, 0)) {
         cerr << "Could not register a handler to catch beslistener status." << endl;
         exit(1);
     }
 
-    act.sa_handler = CatchSigTerm;
+    act.sa_handler = catch_sig_term;
     if (sigaction(SIGTERM, &act, 0) < 0) {
         cerr << "Could not register a handler to catch the terminate signal." << endl;
         exit(1);
     }
 
-    act.sa_handler = CatchSigHup;
+    act.sa_handler = catch_sig_hup;
     if (sigaction(SIGHUP, &act, 0) < 0) {
         cerr << "Could not register a handler to catch the hang-up signal." << endl;
         exit(1);
@@ -673,9 +667,6 @@ static void store_daemon_id(int pid)
         cerr << errno_str(": unable to create pid file " + file_for_daemon_pid + ": ");
     }
     else {
-        // systemd/systemctl (CentOS 7 and elsewhere) expects just a PID number as text.
-        // jhrg 1/31/19
-        // f << "PID: " << pid << " UID: " << getuid() << endl;
         f << pid << endl;
         f.close();
         mode_t new_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
@@ -732,7 +723,7 @@ static bool load_names(const string &install_dir, const string &pid_dir)
         }
     }
 
-    if (beslistener_path == "") {
+    if (beslistener_path.empty()) {
         beslistener_path = ".";
         if (file_for_daemon_pid.empty()) {
             file_for_daemon_pid = "./run";
@@ -795,16 +786,23 @@ static void set_group_id()
     }
     else {
         // specified group is a group name
+#if 0
         struct group *ent;
+        // FIXME replace getgrname() and getpwnam() with the _r versions. jhrg 8/11/21
         ent = getgrnam(group_str.c_str());
-        if (!ent) {
+#endif
+        struct group in;
+        struct group *result = nullptr;
+        vector<char> buffer(1024);
+        int rc = getgrnam_r(group_str.c_str(), &in, &buffer[0], buffer.size(), &result);
+        if (rc != 0 || result == nullptr) {
             BESDEBUG("server", "beslistener: FAILED" << endl);
-            string err = (string) "FAILED: Group " + group_str + " does not exist";
+            string err = string( "FAILED: Group ") + group_str + " does not exist (" + strerror(errno) + ").";
             cerr << err << endl;
             ERROR_LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
-        new_gid = ent->gr_gid;
+        new_gid = result->gr_gid;
     }
 
     if (new_gid < 1) {
@@ -856,7 +854,7 @@ static void set_user_id()
 
     if (!found || user_str.empty()) {
         BESDEBUG("server", "beslistener: FAILED" << endl);
-        string err = (string) "FAILED: User not specified in BES config file";
+        auto err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
         ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -870,22 +868,29 @@ static void set_user_id()
         new_id = atoi(user_str_c);
     }
     else {
+#if 0
         struct passwd *ent;
         ent = getpwnam(user_str.c_str());
-        if (!ent) {
+#endif
+
+        struct passwd in;
+        struct passwd *result = nullptr;
+        vector<char> buffer(1024);
+        int rc = getpwnam_r(user_str.c_str(), &in, &buffer[0], buffer.size(), &result);
+        if (rc != 0 || result == nullptr) {
             BESDEBUG("server", "beslistener: FAILED" << endl);
-            string err = (string) "FAILED: Bad user name specified: " + user_str;
+            string err = (string) "FAILED: Bad user name specified: " + user_str + "(" + strerror(errno) + ").";
             cerr << err << endl;
             ERROR_LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
-        new_id = ent->pw_uid;
+        new_id = result->pw_uid;
     }
 
     // new user id cannot be root (0)
     if (!new_id) {
         BESDEBUG("server", "beslistener: FAILED" << endl);
-        string err = (string) "FAILED: BES cannot run as root";
+        auto err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
         ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
@@ -917,8 +922,8 @@ static void set_user_id()
     BESDEBUG("server", "OK" << endl);
 }
 
-/** Run the daemon.
-
+/**
+ * Run the daemon.
  */
 int main(int argc, char *argv[])
 {
@@ -951,7 +956,7 @@ int main(int argc, char *argv[])
     try {
         // Most of the argument processing is just for vetting the arguments
         // that will be passed onto the beslistener(s), but we do grab some info
-        string config_file = "";
+        string config_file;
         // argv[0] is the name of the program, so start num_args at 1
         unsigned short num_args = 1;
 
@@ -974,7 +979,7 @@ int main(int argc, char *argv[])
                 break;
             case 'i': // BES install directory
                 install_dir = optarg;
-                if (BESScrub::pathname_ok(install_dir, true) == false) {
+                if (!BESScrub::pathname_ok(install_dir, true)) {
                     cout << "The specified install directory (-i option) "
                         << "is incorrectly formatted. Must be less than "
                         << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
@@ -989,7 +994,7 @@ int main(int argc, char *argv[])
                 break;
             case 'r': // where to write the pid file
                 pid_dir = optarg;
-                if (BESScrub::pathname_ok(pid_dir, true) == false) {
+                if (!BESScrub::pathname_ok(pid_dir, true)) {
                     cout << "The specified state directory (-r option) "
                         << "is incorrectly formatted. Must be less than "
                         << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
@@ -1000,7 +1005,7 @@ int main(int argc, char *argv[])
                 break;
             case 'c': // configuration file
                 config_file = optarg;
-                if (BESScrub::pathname_ok(config_file, true) == false) {
+                if (!BESScrub::pathname_ok(config_file, true)) {
                     cout << "The specified configuration file (-c option) "
                         << "is incorrectly formatted. Must be less than "
                         << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
@@ -1012,7 +1017,7 @@ int main(int argc, char *argv[])
             case 'u': // unix socket
             {
                 string check_path = optarg;
-                if (BESScrub::pathname_ok(check_path, true) == false) {
+                if (!BESScrub::pathname_ok(check_path, true)) {
                     cout << "The specified unix socket (-u option) " << "is incorrectly formatted. Must be less than "
                         << "255 characters and include the characters " << "[0-9A-z_./-]" << endl;
                     return 1;
@@ -1037,7 +1042,7 @@ int main(int argc, char *argv[])
             case 'd': // debug
             {
                 string check_arg = optarg;
-                if (BESScrub::command_line_arg_ok(check_arg) == false) {
+                if (!BESScrub::command_line_arg_ok(check_arg)) {
                     cout << "The specified debug options \"" << check_arg << "\" contains invalid characters" << endl;
                     return 1;
                 }
@@ -1074,9 +1079,7 @@ int main(int argc, char *argv[])
         // was passed, then use the -i option to construct
         // the path to the config file
         if (config_file.empty() && !install_dir.empty()) {
-            if (install_dir[install_dir.length() - 1] != '/') {
-                install_dir += '/';
-            }
+            BESUtil::trim_if_trailing_slash(install_dir);
             string conf_file = install_dir + "etc/bes/bes.conf";
             TheBESKeys::ConfigFile = conf_file;
         }
@@ -1087,7 +1090,7 @@ int main(int argc, char *argv[])
         cerr << "Caught BES Error while processing the daemon's options: " << e.get_message() << endl;
         return 1;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         cerr << "Caught C++ error while processing the daemon's options: " << e.what() << endl;
         return 2;
     }
@@ -1154,7 +1157,6 @@ int main(int argc, char *argv[])
         // the log file from the bes.conf file or the name "LOG".
         if (global_args.count("-d") == 0) {
             bool found = false;
-            // string log_file_name;
             TheBESKeys::TheKeys()->get_value("BES.LogName", debug_sink, found);
             if (!found) {
                 // This is a crude fallback that avoids a value without any name
@@ -1190,12 +1192,10 @@ int main(int argc, char *argv[])
         BESDEBUG("besdaemon", "besdaemon: master_beslistener_pid: " << master_beslistener_pid << endl);
     }
     catch (BESError &e) {
-        // (*BESLog::TheLog())
-        // BESLog::TheLog throws exceptions...
         cerr << "Caught BES Error during initialization: " << e.get_message() << endl;
         return 1;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         cerr << "Caught C++ error during initialization: " << e.what() << endl;
         return 2;
     }
@@ -1240,7 +1240,7 @@ int main(int argc, char *argv[])
         // BESLog::TheLog throws exceptions...
         cerr << "Caught BES Error while starting the command handler: " << e.get_message() << endl;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         status = 2;
         cerr << "Caught C++ error while starting the command handler: " << e.what() << endl;
     }

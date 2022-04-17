@@ -54,7 +54,7 @@ using std::ios_base;
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
-#include <util.h>       // libdap; for open_temp_fstream()
+#include <libdap/util.h>       // libdap; for open_temp_fstream()
 
 using namespace std;
 

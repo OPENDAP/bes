@@ -176,7 +176,7 @@ private:
 #if 1
     // Leak fix. jhrg 6/21/19
     /** Clean the _context and any other state */
-    void cleanupParser() throw ();
+    void cleanupParser() noexcept;
 #endif
 
 

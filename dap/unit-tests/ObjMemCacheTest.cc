@@ -25,14 +25,12 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <unistd.h>
 
-#include <GetOpt.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
 
-#include <DDS.h>
-
-#include <GNURegex.h>
-#include <debug.h>
-
+#include "BESRegex.h"
 #include "ObjMemCache.h"
 
 static bool debug = false;
@@ -49,18 +47,13 @@ using namespace libdap;
 
 class DDSMemCacheTest: public TestFixture {
 private:
-    ObjMemCache *dds_cache;
-    DDS *dds;
+    ObjMemCache *dds_cache = nullptr;
+    DDS *dds = nullptr;
 
 public:
-    DDSMemCacheTest() :
-        dds_cache(0), dds(0)
-    {
-    }
+    DDSMemCacheTest() = default;
 
-    ~DDSMemCacheTest()
-    {
-    }
+    ~DDSMemCacheTest() override = default;
 
     void setUp()
     {
@@ -70,7 +63,7 @@ public:
 
         // Load in 10 DDS*s and then purge
         BaseTypeFactory factory;
-        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
+        unique_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
         ostringstream oss;
         for (int i = 0; i < 10; ++i) {
@@ -116,7 +109,7 @@ public:
 
         const string name = "first DDS";
         BaseTypeFactory factory;
-        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
+        unique_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
         cache->add(new DDS(*dds.get()), name);
 
@@ -167,6 +160,7 @@ public:
         string name = "0_DDS";
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
 
+        // dds here is a weak pointer. jhrg 3/30/22
         DDS *dds = static_cast<DDS*>(dds_cache->get(name));
 
         CPPUNIT_ASSERT(dds != 0);
@@ -192,7 +186,7 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.size() == 7);
     }
 
-CPPUNIT_TEST_SUITE( DDSMemCacheTest );
+    CPPUNIT_TEST_SUITE( DDSMemCacheTest );
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(add_one_test);
@@ -201,18 +195,15 @@ CPPUNIT_TEST_SUITE( DDSMemCacheTest );
     CPPUNIT_TEST(test_get_obj);
     CPPUNIT_TEST(remove_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DDSMemCacheTest);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dDh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -233,17 +224,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = DDSMemCacheTest::suite()->getName().append("::").append(argv[i]);

@@ -1,19 +1,23 @@
 netcdf test {
 dimensions:
-        y = 2 ;
-        x = 2 ;
+	y = 2 ;
+	x = 2 ;
 variables:
-        ushort data(x, y) ;
+	ushort data(x, y) ;
+
+// global attributes:
+		:history = "removed date-timex simple_nc4.nc.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"simple_nc4.nc.h5\"}]}]" ;
 
 group: grp2 {
   dimensions:
-        y = 3 ;
+  	y = 3 ;
 
   group: grp3 {
     dimensions:
-        z = 2 ;
+    	z = 2 ;
     variables:
-        float grp3_data(x, /y, z) ;
+    	float grp3_data(x, /y, z) ;
     } // group grp3
   } // group grp2
 }

@@ -1,0 +1,28 @@
+Dataset {
+    Float32 Seconds_in_Day[ntime = 177387];
+    Float32 Pressure_Grid[nprs = 9];
+    Float32 Solar_Zenith_Angle[ntime = 177387];
+    Float32 Satellite_Zenith_Angle[ntime = 177387];
+    Float32 Surface_Pressure[ntime = 177387];
+    Float32 Retrieved_Surface_Temperature[ntime = 177387][ntwo = 2];
+    Float32 Retrieved_Surface_Emissivity[ntime = 177387][ntwo = 2];
+    Float32 Retrieved_CO_Mixing_Ratio_Profile[ntime = 177387][nprs = 9][ntwo = 2];
+    Float32 Retrieved_CO_Surface_Mixing_Ratio[ntime = 177387][ntwo = 2];
+    Float32 Retrieved_CO_Total_Column[ntime = 177387][ntwo = 2];
+    Float32 Retrieved_CO_Total_Column_Diagnostics[ntime = 177387][ntwo = 2];
+    Float32 Retrieval_Averaging_Kernel_Matrix[ntime = 177387][nprs2 = 10][nprs2 = 10];
+    Float32 A_Priori_Surface_Temperature[ntime = 177387][ntwo = 2];
+    Float32 A_Priori_Surface_Emissivity[ntime = 177387][ntwo = 2];
+    Float32 A_Priori_CO_Mixing_Ratio_Profile[ntime = 177387][nprs = 9][ntwo = 2];
+    Float32 A_Priori_CO_Surface_Mixing_Ratio[ntime = 177387][ntwo = 2];
+    Float32 Degrees_of_Freedom_for_Signal[ntime = 177387];
+    Int32 Surface_Index[ntime = 177387];
+    Int32 Cloud_Description[ntime = 177387];
+    Float32 Water_Vapor_Climatology_Content[ntime = 177387];
+    Int32 Retrieval_Iterations[ntime = 177387];
+    Float64 Time[ntime = 177387];
+    Float32 Latitude[ntime = 177387];
+    Float32 Longitude[ntime = 177387];
+    Int32 nprs2[nprs2 = 10];
+    Int32 ntwo[ntwo = 2];
+} MOP02-20120801-L2V8.2.2.prov.hdf;

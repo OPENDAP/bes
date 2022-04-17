@@ -36,8 +36,13 @@
 
 #include <curl/curl.h>
 
+<<<<<<< HEAD
 #include <GNURegex.h>
+#include <libdap/util.h>
+=======
+#include "BESRegex.h"
 #include <util.h>
+>>>>>>> master
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -228,13 +233,7 @@ void HttpdCatalogUtils::get_type_from_disposition(const string &disp, string &ty
                 filename = disp.substr(pos + 1);
             }
 
-            // now see if it's wrapped in quotes
-            if (filename[0] == '"') {
-                filename = filename.substr(1);
-            }
-            if (filename[filename.length() - 1] == '"') {
-                filename = filename.substr(0, filename.length() - 1);
-            }
+            BESUtil::trim_if_surrounding_quotes(filename);
 
             // we have the filename now, run it through
             // the type match to get the file type.

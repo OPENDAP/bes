@@ -31,22 +31,21 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <unistd.h>
 
-#include <Array.h>
-#include <Byte.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <DDXParserSAX2.h>
-#include <DMR.h>
-#include <D4ParserSax2.h>
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DDXParserSAX2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4ParserSax2.h>
 
-#include <GetOpt.h>
-#include <GNURegex.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
-#include <BaseTypeFactory.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
@@ -56,7 +55,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESNotFoundError.h"
-
+#include "BESRegex.h"
 #include "GlobalMetadataStore.h"
 
 #include "test_utils.h"
@@ -2137,10 +2136,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GlobalMetadataStoreTest);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dbkh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbkh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -2165,17 +2162,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = bes::GlobalMetadataStoreTest::suite()->getName().append("::").append(argv[i]);

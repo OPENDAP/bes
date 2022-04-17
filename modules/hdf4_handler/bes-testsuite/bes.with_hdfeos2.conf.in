@@ -1,0 +1,439 @@
+#-----------------------OPeNDAP BES Initialization file-----------------#
+#                                                                       #
+#       National Center for Atmospheric Research (NCAR)                 #
+#       High Altitude Observatory (HAO)	                                #
+#       Key entries for OPeNDAP BES run time behavior                   #
+#                                                                       #
+#-----------------------------------------------------------------------#
+  
+#-----------------------------------------------------------------------#
+# Who is the administrator for this OPeNDAP back-end server             #
+# Please replace this with the email address to use that gets displayed #
+# to users of your server when errors occur.                            #
+#-----------------------------------------------------------------------#
+BES.ServerAdministrator=admin.email.address@your.domain.name
+
+#-----------------------------------------------------------------------#
+# User and Group to run the BES as					#
+#-----------------------------------------------------------------------#
+# Notes:
+# 1. The user_name and group_name can be user and group ids. To use
+# a user or group id specify the id with the '#' character in front.
+# For example:
+# BES.User=#172
+# BES.Group=#14
+BES.User=user_name
+BES.Group=group_name
+
+#-----------------------------------------------------------------------#
+# Where we log the stuff...and how much we log                          #
+#-----------------------------------------------------------------------#
+BES.LogName=./bes.log
+BES.LogVerbose=no
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+# Notes: 
+# 1. When the handlers are built, the handler's 'make' builds the
+# handler executable for Server3 and the shared object module for
+# Hyrax. The Hyrax shared object modules are installed (using 'make
+# install') in<prefix>/lib/bes. Make sure you point to the Hyrax
+# modules and not the Server3 'handlers'. The Hyrax modules all have
+# '_module' in their names.
+# 2. The commands that the BES responds to are also provided by modules,
+# so make sure that those are loaded in as well. Two modules are
+# required for use with Hyrax, the dap and cmd modules.
+# 3. If you want ascii, info, and html responses provided by the bes, just
+# as in the Server3 handlers, then include the ascii, usage, and www
+# modules.
+# 4. Order matters. Include the dap, cmd, ascii, usage, www first before
+# including handler modules like nc, hdf4, ff.
+# 
+# Here's an example of the configuration for three handlers (Netcdf,
+# hdf4 and FreeForm) and the DAP basic and command modules:
+#
+# BES.modules=dap,cmd,ascii,usage,www,nc,h4,ff
+# BES.module.dap=@modulesdir@/libdap_module.so
+# BES.module.cmd=@modulesdir@/libdap_xml_module.so
+# BES.module.ascii=@modulesdir@/libascii_module.so
+# BES.module.usage=@modulesdir@/libusage_module.so
+# BES.module.www=@modulesdir@/libwww_module.so
+# BES.module.nc=@modulesdir@/libnc_module.so
+# BES.module.h4=@modulesdir@/libhdf4_module.so
+# BES.module.ff=@modulesdir@/libff_module.so
+
+BES.modules=dap,cmd,h4
+BES.module.dap=@modulesdir@/libdap_module.so
+BES.module.cmd=@modulesdir@/libdap_xml_module.so
+BES.module.h4=@abs_top_builddir@/.libs/libhdf4_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data location
+#-----------------------------------------------------------------------#
+ 
+# There are two ways the BES can be used. It can serve as a standalone
+# data server or it can work with the OLFS (i.e., as one component of
+# the OPeNDAP 4 Data Server). How you point to data differs for each of
+# the two cases. If you are using the BES as part of the OPeNDAP 4 Data
+# Server, then set 'BES.Catalog.catalog.RootDirectory' to point to the 
+# root directory that contains the data you want to serve. In this case
+# the value of the 'BES.Data.RootDirectory' parameter doesn't matter, so
+# long as it has some value.
+#
+# If you intend to use the BES as a standalone server, set the value of
+# 'BES.Data.RootDirectory' to point to your data and disregard the 
+# 'BES.Catalog.catalog.RootDirectory' parameter.
+#
+# The default value of RootDirectory works with the sample data we include
+# with various format handlers distributed for use with the BES. You'll need
+# to change this to point to your data! At this time the BES does not support
+# multiple RootDirectory values. 3/5/07 jhrg
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
+BES.Data.RootDirectory=/dev/null
+
+# The TypeMatch parameter is a list of handler/module names and a regular
+# expression separated by a colon. If the regular expression matches an item,
+# then the BES uses the associated handler/module. Each <handler>:<regular
+# expression> pair is followed by a semicolon. This is used when creating
+# containers in the BES (the 'set container' command). The example regular
+# expression says to use the 'h4' handler for any file with an extension of
+# 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
+# case the file will be treated as a compressed file.
+
+# BES.Catalog.catalog.TypeMatch=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;h4.*\.(hdf|HDF|eos)(\.gz|\.bz2|\.Z)?$;
+
+BES.Catalog.catalog.TypeMatch=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
+
+# Normally, when a client asks for a data catalog, all files and directories
+# are shown. Use the following two parameters to customize this behavior.
+# Each parameter is a list of regular expressions, each followed by a
+# semicolon (last one must also end with a semicolon as in the example
+# below.) First, the Include parameter is applied to the node, and
+# then the Exclude parameter is applied. All collections of nodes are shown.
+# In the default values below, all nodes with the file extension .nc
+# are included (the Include parameter) except those that begin with a dot
+# (the Exclud parameter).
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+# Is the BES allowed to follow symbolic links when requesting catalog
+# information. The default is to not allow the BES to follow symbolic links.
+# The values can be either No or Yes. If set to No, and the user requests
+# catalog information on a symbolic link then an error is reported and if a
+# symbolic link is contained within a collection, it is not included in the
+# response. If set to Yes then the requested node in the catalog is treated
+# like any other node.
+#
+# BES.FollowSymLinks parameter is for non-catalog containers and is used in
+# conjunction with the BES.RootDirectory above. It is NOT a general setting.
+# BES.Catalog.catalog.FollowSymLinks is for catalog requests and data
+# containers in the catalog and is used in conjunction with the
+# BES.Catalog.catalog.RootDirectory parameter above.
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
+
+#-----------------------------------------------------------------------#
+# connection information, unix socket, port number, and whether server  #
+# is secure or not. If you are using this option, make sure the BES is  #
+# behind a firewall which blocks the BES.ServerPort unless you intend   #
+# to provide direct access to the BES for the world. In general, if     #
+# that is the case, you should configure the BES to use SSL.            #
+#-----------------------------------------------------------------------#
+BES.ServerPort=10002
+# BES.ServerUnixSocket=/tmp/bes.socket
+
+#-----------------------------------------------------------------------#
+# Security information for this server. ServerSecure specifies whether  #
+# the server is secure or not and requires authentication of the client #
+# using SSL certificates and keys. The default secure connection port   #
+# is 10003. Then specify the full path to the certificate and key files.#
+# An initialization file can be created for both the client and server  #
+# side.                                                                 #
+#-----------------------------------------------------------------------#
+BES.ServerSecure=no
+BES.ServerSecurePort=10003
+BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
+BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
+BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
+BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
+
+#-----------------------------------------------------------------------#
+# help file locations, for text, html, and xml versions                 #
+#-----------------------------------------------------------------------#
+BES.Help.TXT=@pkgdatadir@/bes_help.txt
+BES.Help.HTML=@pkgdatadir@/bes_help.html
+BES.Help.XML=@pkgdatadir@/bes_help.txt
+
+DAP.Help.TXT=@pkgdatadir@/dap_help.txt
+DAP.Help.HTML=@pkgdatadir@/dap_help.html
+DAP.Help.XML=@pkgdatadir@/dap_help.txt
+
+#-----------------------------------------------------------------------#
+# Should informational response objects be buffered, or streamed        #
+# Should informational objects be formatted as text, html, or xml       #
+#-----------------------------------------------------------------------#
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+#-----------------------------------------------------------------------#
+# Cache and compression configuration                                   #
+#                                                                       #
+# If a data file is compressed the BES will attempt to uncompress it.   #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+# Currently the bz2 and gz file compression methods are understood by the
+# BES. We will add support for Z (Unix compress) if there's demand for it.
+
+# All of the following five parameters must be set in this file.
+
+# BES.UncompressCache.dir: Where should the result of decompressing a 
+# file be stored?  We've set the value to '/tmp' but you might want to 
+# change that to /tmp/bes, /var/cache/bes, et c., depending on the 
+# server-host's organization.
+
+# BES.UncompressCache.prefix: Prefix for the name of the file used to 
+# store the result of decompression.
+
+# BES.UncompressCache.size: Size of the cache in megabytes. When the size 
+# of the cached files exceeds this value, the cache will be purged using a
+# last-accessed-first-removed approach. Because it's usually impossible to
+# determine the sizes of data files before decompressing them, there may be
+# times when the cache holds more data than this value. Ideally this value
+# should be several times the size of the largest file you plan to serve. 
+
+# BES.Uncompress.Retry: When waiting for the cache lock, how long should the
+# BES wait before trying to get the lock again if previous attempts have
+# failed? 
+
+# BES.Uncompress.NumTries: How many times should the BES try to acquire the
+# lock before it signals an error?
+
+# The BES cache directory is locked to prevent the different beslistener
+# processes from simultaneously removing files and leaving the cache in an
+# inconsistent state. Use the Retry and NumTries parameters to tune this
+# behavior. Generally, NumTries should be set to about 10. The units of Retry
+# are microseconds. To tune the NumTries and Retry, use the formula Retry =
+# (0.2s/Average_file_sizeMB)/NumTries. So if your average file size is 10MB
+# and you've settled on a NumTries of 10, (0.2s/10MB)/10 = 0.002s or 2000
+# microseconds. If you have really large files (e.g., decompressed they are
+# 500MB), try setting NumTries to 100.
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.Uncompress.Retry=2000
+BES.Uncompress.NumTries=10
+
+#-----------------------------------------------------------------------#
+# If the symbolic name cannot be found in persistence, nice means simply#
+# log an error, strict means throw an exception                         #
+#-----------------------------------------------------------------------#
+BES.Container.Persistence=strict
+
+#-----------------------------------------------------------------------#
+# Defines size of system global memory pool                             #
+#-----------------------------------------------------------------------#
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+
+#-----------------------------------------------------------------------#
+# This key is set to either single or multiple mode.            	#
+#                                                                       #
+# In single mode the listener handles the client request itself, and    #
+# only one client can connect at a time                                 #
+#                                                                       #
+# In multiple mode the listener listens for client connections. When a  #
+# connection is made it forks another bes process to handle that client #
+# connection and goes back to listening for more connections. More than #
+# one client can connect at a time                                      #
+#-----------------------------------------------------------------------#
+BES.ProcessManagerMethod=multiple
+
+#-----------------------------------------------------------------------#
+# Is the client using the GET or POST method of making requests to a    #
+# back-end server that is a built-in web server module. If the back-end #
+# server is not a web server module, this key/value pair is not used    #
+#-----------------------------------------------------------------------#
+BES.DefaultResponseMethod=POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+# HDF4 handler specific parameters
+# CacheDir: Cache directory used by the HDF4 data handler.
+# Suggestion: Consider making this '/tmp/bes'; see the comment at
+#-----------------------------------------------------------------------#
+# EnableCF: Handle HDF data to follow the CF conventions
+#          (true,yes|false,no, defaults to true)
+# Since most centers  would like to handle HDF4 data that follows CF now,
+# EnableCF is set to be true, KY 2012-6-5
+#
+#   If this key's value is false, the handler will behave same as the default 
+#  handler. The output will not follow basic CF conventions and most of NASA 
+# products cannot be visualized by netCDF visualization tools such as IDV and 
+# Panoply. The rest of keys below relies on this option and it must be set
+# to be "true" to have effects on the handler's output. Thus, this is the most 
+# important key to turn it on first.
+H4.EnableCF=true
+
+H4.EnablePassFileID=true
+
+
+# When turning on this key, the handler will handle AIRS level 3 version 6 products
+# and MOD08_M3-like products in a speedy way by taking advantage of the special data
+# structures in these two products. Using this key requires the use of HDF-EOS2 lib.
+# now although HDF-EOS2 lib. will not be called. By turning on this key, potentially
+# HDF-EOS2 files that provide dimension scales for all dimensions may also be handled
+# quickly. By default, this key should be set to true.
+H4.EnableSpecialEOS=true
+
+# DisableScaleOffsetComp: Disable Scale and offset computation  
+#
+# Some NASA HDF4(MODIS etc.) products don't follow the CF rule to pack the data.
+# To avoid the confusion for OPeNDAP's clients , the handler may adopt the following two approaches:
+
+# 1) Apply the scale and offset computation to the individual data point if the scale 
+#    and offset rule doesn't follow CF in the handler.
+#
+# 2) If possible, transform the scale and offset rule to CF rule.
+#
+# Since approach 1 may degrade the performance of fetching large size data by heavy computation,
+# we recommend approach 2, which is indicated by setting this key to be true.   
+# By default, this key should always be true.  
+H4.DisableScaleOffsetComp=true
+
+# By turning on this key, the handler will check if the datatype of scale_factor and offset is the same.
+# This is required by CF.
+# if they don't share the same datatype, the handler will make the data type of offset be the same as that of scale_factor.
+#Since we haven't found the data type inconsistencies of scale_factor and offset, in order not affect the 
+# performance, this key will be set to false by default. 
+H4.EnableCheckScaleOffsetType = false
+
+# Disable StructMetadata 
+H4.DisableStructMetaAttr=true
+
+# This key is for MODIS swath that uses the dimension map.
+# If this key is set to be true, the handler will search the directory where the data files reside and see
+# if corresponding MODIS geolocation files(MOD03 or MYD03) can be found, if yes, the handler will use 
+# the corresponding MODIS geolocation files for latitude and longitude.
+H4.EnableCheckMODISGeoFile=false
+
+#   If this key's value is false, additional Vdata such as "Level 1B Swath 
+#  Metadta" in LAADS MYD021KM product will not be processed and visible 
+#  in the DAS/DDS output. Those additional Vdatas are added directly using 
+#  HDF4 APIs and HDF-EOS2 APIs cannot access them.
+H4.EnableHybridVdata=true
+
+# Some CERES products(CER_AVG,CER_ES4,CER_SRB and CER_ZAVG, see description
+# in the HDFSP.h) have  many SDS fields and some Vdata fields. Correspondingly,
+# the DDS and DAS page may be very long. The performance of accessing such
+# products with visualization clients may be greatly affected. 
+# It may potentially  even choke netCDF java clients.
+# To avoid such cases, we will not map vdata to DAP in such products by default.
+# Users can turn on this key to check vdata information of some CERES products.
+# This key will not affect the access of other products.
+H4.EnableCERESVdata=false
+
+#   If this key's value is false, small Vdata datasets will be mapped to 
+# arrays in DDS output instead of attributes in DAS. 
+#   If this key's value is true, Vdata is mapped to attribute if there are less than 
+# or equal to 10 records.
+H4.EnableVdata_to_Attr=true
+
+#   If this key's value is false, the short dataset name becomes long name with
+# Vgroup prefixed and fullpath attribute will not be printed in DAS output.
+#   For example, the DAS output for Region_Number dataset
+#
+#      Region_Number {
+#          String coordinates "Colatitude Longitude";
+#          String fullpath "/Monthly Hourly Averages/Time And Position/Region Nu\
+# mber";
+#     }
+#
+# becomes
+#    
+#     Monthly_Hourly_Averages_Time_And_Position_Region_Number {
+#          String coordinates "Monthly_Hourly_Averages_Time_And_Position_Colatit\
+# ude Monthly_Hourly_Averages_Time_And_Position_Longitude";
+#     }
+#
+# in CER_AVG_Aqua-FM3-MODIS_Edition2B_007005.200510.hdf.
+H4.EnableCERESMERRAShortName=true
+
+#   If this key's value is false, handler will check if there's any Vdata that 
+#  has the same name as SDS. We haven't found such case in NASA products so it's 
+# safe to disable this to improve performance.
+H4.DisableVdataNameclashingCheck=true
+
+#   If this key's value is true, handler will generate Vdata's attributes. By 
+#     default, it's turned off because most NASA hybrid products do not seem to store
+#  important information in Vdata attributes. If you serve pure HDF4 files, it's 
+#     recommended to turn this value to true so that users can see all data. This
+#  key will not affect the behavior of the handler triggered by the 
+#     H4.EnableVdata_to_Attr key in section 3.3 except the Vdata attributes of
+#  small Vdatas that are mapped to DAS instead of DDS. They will be also turned
+#     off from the DAS output.
+#  If Vdata doesn't have any attribute or field attribute, the description
+
+#         String hdf4_vd_desc "This is an HDF4 Vdata.";
+
+#  will not appear in the attribute for that Vdata although the key is true.
+#     The attribute container of the Vdata will always appear regardless of this key.
+H4.EnableVdataDescAttr=false
+
+
+# When the following cache key is turned on,  
+# DDS and DAS of special products(currently AIRS version 6 only) will be  
+# written to local files of the server under the H4.Cache.metadata.path directory. 
+# DDS and DAS will be read directly from the server since the second time.
+# Note: no total file size under the directory is enforced since
+# DDS and DAS are relatively small and each HDF4 file may only have
+# 2-3 DAS and DDS local files.
+H4.EnableMetaDataCacheFile=false
+H4.Cache.metadata.path=/tmp/md
+
+#
+# When the following cache key is turned on, data opened by the HDF4 SDS API will write
+# into a local file in the server under the HDF4.Cache directory. Data will be read in
+# from the cached file since the second time.
+# The cached parameters(path, prefix, size) are the same as
+# the H4.EnableEOSGeoCacheFile. 
+H4.EnableDataCacheFile=false
+
+# Cache to store the lat/lon of an HDF-EOS grid.
+H4.EnableEOSGeoCacheFile=true
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+#The size of the cache in megabytes, currently ~20GB cache for lat,lon
+HDF4.Cache.latlon.size=20000
+#
+##By turning off this key, DAS output will NOT include vgroup attributes. Since
+##we haven't added the mapping of vgroup attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 vgroup attribute output.
+## we provide this key for data centers that don't want to
+## generate vgroup attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on.
+H4.EnableVgroupAttr=true
+#
+##By turning off this key, DAS output will NOT include grid and swath object attributes. Since
+##we haven't added the mapping of grid and swath object attributes to DAP2 for the CF option in the past
+## and some data centers may not desire the DAP2 grid and swath attribute output.
+## we provide this key for data centers that don't want to
+## generate grid and swath attributes for whatever reasons. they can simply comment out the following
+## line. By default, this key is turned on. This key is only active when configuring with the HDF-EOS2 library.
+## Note: swath and grid object attributes are not the same as the swath/grid field attributes. We have supported
+## the mapping of swath and grid field attributes since the beginning of CF option support.
+H4.EnableSwathGridAttr=true
+
+H4.DisableSwathDimMap=false
+#

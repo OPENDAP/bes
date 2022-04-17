@@ -27,6 +27,7 @@
 #ifndef _bes_http_EffectiveUrlCache_h_
 #define _bes_http_EffectiveUrlCache_h_ 1
 
+#include <memory>
 #include <map>
 #include <string>
 #include <mutex>
@@ -35,7 +36,6 @@
 #include "BESDataHandlerInterface.h"
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
-
 
 namespace http {
 
@@ -52,7 +52,7 @@ private:
     static EffectiveUrlCache * d_instance;
     std::mutex d_cache_lock_mutex;
 
-    std::map<std::string , http::EffectiveUrl *> d_effective_urls;
+    std::map<std::string , std::shared_ptr<http::EffectiveUrl>> d_effective_urls;
 
     // Things that match get skipped.
     BESRegex *d_skip_regex;
@@ -62,8 +62,7 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
-    friend class EffectiveUrlCacheTest;
-    http::EffectiveUrl *get(const std::string  &source_url);
+    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url_key);
     BESRegex *get_skip_regex();
     bool is_enabled();
 
@@ -71,11 +70,13 @@ private:
 
     ~EffectiveUrlCache() override;
 
+    friend class EffectiveUrlCacheTest;
+
 public:
 
     static EffectiveUrlCache *TheCache();
 
-    std::string get_effective_url(const std::string &source_url);
+    std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
@@ -84,5 +85,5 @@ public:
 
 } // namespace http
 
-#endif // BES_http_EffectiveUrlCache_h_
+#endif // _bes_http_EffectiveUrlCache_h_
 

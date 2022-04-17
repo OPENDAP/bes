@@ -32,17 +32,17 @@
 
 #include <BESDapTransmit.h>
 #if 0
-#include <DODSFilter.h>
+#include <libdap/DODSFilter.h>
 #endif
 #include <BESWWWTransmit.h>
-// #include <DODSFilter.h>
+// #include <libdap/DODSFilter.h>
 #include <BESContainer.h>
 #include <BESDapNames.h>
 #include <BESWWWNames.h>
-#include <mime_util.h>
+#include <libdap/mime_util.h>
 #include <BESWWW.h>
-#include <util.h>
-#include <InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/InternalErr.h>
 #include <BESError.h>
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>

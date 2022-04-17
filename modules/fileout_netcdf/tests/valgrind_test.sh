@@ -73,6 +73,8 @@ valgrind besstandalone -c tests/bes.conf -i tests/bescmd/fnoc.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/t_string.0.bescmd
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/t_string.1.bescmd >test.nc
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/t_string.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/t_wrong_fvalue_type_all_classic.h5.bescmd >test.nc
+
 
 #dnl Tests that require handlers other than dapreader
 
@@ -145,7 +147,14 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_dim_n
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd>gr.nc4
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_to_4_ce_empty.h5.2.bescmd>gr_d4.nc4
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_group_dap4_ce_empty.h5.2.bescmd>d_group.nc4
+valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/t_wrong_fvalue_type_dap4_all.bescmd>d_group.nc4
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_wrong_fvalue_type_dap4_all_nocf.bescmd>d_group.nc4
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_mlls_cf.h5.bescmd>d_group.nc4
+valgrind besstandalone -c tests/bes.conf -i tests/bescmd/gridT.3.compression.bescmd>d_group.nc4
 
 
 
 rm -rf test.nc
+rm -rf gr.nc4
+rm -rf gr_d4.nc4
+rm -rf d_group.nc4

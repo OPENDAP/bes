@@ -46,45 +46,48 @@ namespace ngap {
  *
  * @see NgapContainerStorage
  */
-    enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
+enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-    class NgapContainer: public BESContainer {
+class NgapContainer: public BESContainer {
 
-    private:
-        http::RemoteResource *d_dmrpp_rresource;
+private:
+    http::RemoteResource *d_dmrpp_rresource;
 
-        // std::vector<std::string> d_collections;
-        // std::vector<std::string> d_facets;
+    // std::vector<std::string> d_collections;
+    // std::vector<std::string> d_facets;
 
-        NgapContainer() :
-                BESContainer(), d_dmrpp_rresource(0)
-        {
-        }
-        bool inject_data_url();
+    virtual void initialize();
+
+    bool inject_data_url();
 
 
-    protected:
-        void _duplicate(NgapContainer &copy_to);
+protected:
+    void _duplicate(NgapContainer &copy_to);
 
-    public:
-        NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    NgapContainer() :
+            BESContainer(), d_dmrpp_rresource(nullptr)
+    {
+    }
 
-        NgapContainer(const NgapContainer &copy_from);
+public:
+    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
-        // void get_granule_path(const std::string &path) const ;
+    NgapContainer(const NgapContainer &copy_from);
 
-        static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
+    // void get_granule_path(const std::string &path) const ;
 
-        virtual ~NgapContainer();
+    static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
 
-        virtual BESContainer * ptr_duplicate();
+    virtual ~NgapContainer();
 
-        virtual std::string access();
+    virtual BESContainer * ptr_duplicate();
 
-        virtual bool release();
+    virtual std::string access();
 
-        virtual void dump(std::ostream &strm) const;
-    };
+    virtual bool release();
+
+    virtual void dump(std::ostream &strm) const;
+};
 
 } // namespace ngap
 

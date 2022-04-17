@@ -48,7 +48,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
+#include <unistd.h>
 
 #include "BESCatalogList.h"
 #include "BESCatalog.h"
@@ -603,10 +603,6 @@ public:
         DBG(cerr << "Returning from catT::run" << endl);
     }
 
-
-
-
-
     void get_node_test()
     {
         TheBESKeys::TheKeys()->set_key(string("BES.Catalog.nt1.RootDirectory=") + TEST_SRC_DIR + root_dir);
@@ -614,7 +610,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(0);
+        unique_ptr<BESCatalog> catalog(nullptr);
         try {
             catalog.reset(new BESCatalogDirectory("nt1"));
             CPPUNIT_ASSERT(catalog.get());
@@ -625,7 +621,7 @@ public:
         }
 
         try {
-            auto_ptr<CatalogNode> node(catalog->get_node("/"));
+            unique_ptr<CatalogNode> node(catalog->get_node("/"));
 
             ostringstream oss;
             node->dump(oss);
@@ -669,11 +665,11 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt2.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt2.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt2"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt2"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
-            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
+            unique_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
 
             ostringstream oss;
             node->dump(oss);
@@ -718,10 +714,10 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
 
         try {
-            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
+            unique_ptr<CatalogNode> node(catalog->get_node("/child_dir"));
             ostringstream oss;
             node->dump(oss);
 
@@ -765,7 +761,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm1.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm1.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm1"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm1"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -793,10 +789,10 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt3.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("nt3"));
 
         try {
-            auto_ptr<CatalogNode> node(catalog->get_node("/child_dir/child_file.conf"));
+            unique_ptr<CatalogNode> node(catalog->get_node("/child_dir/child_file.conf"));
             ostringstream oss;
             node->dump(oss);
 
@@ -844,7 +840,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.Include=.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.Exclude=README;not_used$;_build;bes-[0-9.]*;.*\\.o;.*\\.Po;.*\\.html;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm2"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm2"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -874,7 +870,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm3.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm3.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm3"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm3"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -902,7 +898,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm4.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm4.Exclude=README;");
 
-        auto_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm4"));
+        unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm4"));
         CPPUNIT_ASSERT(catalog.get());
 
         try {
@@ -928,10 +924,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(catT);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dDhb");
     int option_char;
-    while ((option_char = getopt()) != EOF)
+    while ((option_char = getopt(argc, argv, "dDhb")) != EOF)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -958,17 +952,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = catT::suite()->getName().append("::").append(argv[i++]);

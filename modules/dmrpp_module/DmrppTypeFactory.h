@@ -26,20 +26,26 @@
 #define _dmrpp_type_factory_h
 
 #include <string>
+#include <memory>
 
-#include <D4BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 namespace dmrpp {
 
+class DMZ;
 /**
  * A factory for the DAP4 DmrppByte, ...,  types.
  *
  * @author James Gallagher
  */
 class DmrppTypeFactory : public libdap::D4BaseTypeFactory {
+    std::shared_ptr<DMZ> d_dmz;
+
 public:
-    DmrppTypeFactory() {}
-    virtual ~DmrppTypeFactory() {}
+    DmrppTypeFactory() = default;
+    DmrppTypeFactory(std::shared_ptr<DMZ> dmz) : d_dmz(dmz) { }
+
+    virtual ~DmrppTypeFactory() = default;
 
     virtual BaseTypeFactory *ptr_duplicate() const { return new DmrppTypeFactory; }
 

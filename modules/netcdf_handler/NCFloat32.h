@@ -39,7 +39,7 @@
 #ifndef _ncfloat32_h
 #define _ncfloat32_h 1
 
-#include <Float32.h>
+#include <libdap/Float32.h>
 
 using namespace libdap ;
 

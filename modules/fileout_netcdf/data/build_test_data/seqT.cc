@@ -10,12 +10,12 @@ using std::cerr;
 using std::endl;
 using std::ostringstream;
 
-#include <DataDDS.h>
-#include <Sequence.h>
-#include <Int32.h>
-#include <Str.h>
-#include <ConstraintEvaluator.h>
-#include <Error.h>
+#include <libdap/DataDDS.h>
+#include <libdap/Sequence.h>
+#include <libdap/Int32.h>
+#include <libdap/Str.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/Error.h>
 
 using namespace libdap;
 

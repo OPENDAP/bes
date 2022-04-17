@@ -34,7 +34,7 @@
 
 #include <memory>
 
-#include <DAS.h>
+#include <libdap/DAS.h>
 
 #include "BESDASResponseHandler.h"
 #include "BESDASResponse.h"
@@ -101,21 +101,21 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
         BESRequestHandlerList::TheList()->execute_each(dhi);
 
 #if ANNOTATION_SYSTEM
-            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
-            if (!d_annotation_service_url.empty()) {
-                // resp_dds is a convenience object
-                BESDASResponse *resp_das = static_cast<BESDASResponse *>(d_response_object);
+        // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+        if (!d_annotation_service_url.empty()) {
+            // resp_dds is a convenience object
+            BESDASResponse *resp_das = static_cast<BESDASResponse *>(d_response_object);
 
-                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
-                AttrTable *dods_extra = resp_das->get_das()->get_table(DODS_EXTRA_ATTR_TABLE);
-                if (dods_extra)
-                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-                else {
-                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
-                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-                    resp_das->get_das()->add_table(DODS_EXTRA_ATTR_TABLE, new_dods_extra.release());
-                }
+            // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+            AttrTable *dods_extra = resp_das->get_das()->get_table(DODS_EXTRA_ATTR_TABLE);
+            if (dods_extra)
+                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+            else {
+                unique_ptr<AttrTable> new_dods_extra(new AttrTable);
+                new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                resp_das->get_das()->add_table(DODS_EXTRA_ATTR_TABLE, new_dods_extra.release());
             }
+        }
 #endif
         // The DDS and DMR ResponseHandler code stores those responses when the
         // MDS is configured (*mds is not null) and can make all of the DDS, DAS

@@ -658,7 +658,7 @@ public:
         AllocatorType::Free(itemsTuple_);
 #if RAPIDJSON_SCHEMA_HAS_REGEX
         if (pattern_) {
-            pattern_->~RegexType();
+            pattern_->~BESRegexType();
             AllocatorType::Free(pattern_);
         }
 #endif
@@ -1070,11 +1070,11 @@ private:
     };
 
 #if RAPIDJSON_SCHEMA_USE_INTERNALREGEX
-        typedef internal::GenericRegex<EncodingType, AllocatorType> RegexType;
+        typedef internal::GenericRegex<EncodingType, AllocatorType> BESRegexType;
 #elif RAPIDJSON_SCHEMA_USE_STDREGEX
-        typedef std::basic_regex<Ch> RegexType;
+        typedef std::basic_regex<Ch> BESRegexType;
 #else
-        typedef char RegexType;
+        typedef char BESRegexType;
 #endif
 
     struct SchemaArray {
@@ -1128,11 +1128,11 @@ private:
 
 #if RAPIDJSON_SCHEMA_USE_INTERNALREGEX
     template <typename ValueType>
-    RegexType* CreatePattern(const ValueType& value) {
+    BESRegexType* CreatePattern(const ValueType& value) {
         if (value.IsString()) {
-            RegexType* r = new (allocator_->Malloc(sizeof(RegexType))) RegexType(value.GetString(), allocator_);
+            BESRegexType* r = new (allocator_->Malloc(sizeof(BESRegexType))) BESRegexType(value.GetString(), allocator_);
             if (!r->IsValid()) {
-                r->~RegexType();
+                r->~BESRegexType();
                 AllocatorType::Free(r);
                 r = 0;
             }
@@ -1141,17 +1141,17 @@ private:
         return 0;
     }
 
-    static bool IsPatternMatch(const RegexType* pattern, const Ch *str, SizeType) {
-        GenericRegexSearch<RegexType> rs(*pattern);
+    static bool IsPatternMatch(const BESRegexType* pattern, const Ch *str, SizeType) {
+        GenericRegexSearch<BESRegexType> rs(*pattern);
         return rs.Search(str);
     }
 #elif RAPIDJSON_SCHEMA_USE_STDREGEX
     template <typename ValueType>
-    RegexType* CreatePattern(const ValueType& value) {
+    BESRegexType* CreatePattern(const ValueType& value) {
         if (value.IsString()) {
-            RegexType *r = static_cast<RegexType*>(allocator_->Malloc(sizeof(RegexType)));
+            BESRegexType *r = static_cast<BESRegexType*>(allocator_->Malloc(sizeof(BESRegexType)));
             try {
-                return new (r) RegexType(value.GetString(), std::size_t(value.GetStringLength()), std::regex_constants::ECMAScript);
+                return new (r) BESRegexType(value.GetString(), std::size_t(value.GetStringLength()), std::regex_constants::ECMAScript);
             }
             catch (const std::regex_error&) {
                 AllocatorType::Free(r);
@@ -1160,15 +1160,15 @@ private:
         return 0;
     }
 
-    static bool IsPatternMatch(const RegexType* pattern, const Ch *str, SizeType length) {
+    static bool IsPatternMatch(const BESRegexType* pattern, const Ch *str, SizeType length) {
         std::match_results<const Ch*> r;
         return std::regex_search(str, str + length, r, *pattern);
     }
 #else
     template <typename ValueType>
-    RegexType* CreatePattern(const ValueType&) { return 0; }
+    BESRegexType* CreatePattern(const ValueType&) { return 0; }
 
-    static bool IsPatternMatch(const RegexType*, const Ch *, SizeType) { return true; }
+    static bool IsPatternMatch(const BESRegexType*, const Ch *, SizeType) { return true; }
 #endif // RAPIDJSON_SCHEMA_USE_STDREGEX
 
     void AddType(const ValueType& type) {
@@ -1385,12 +1385,12 @@ private:
         PatternProperty() : schema(), pattern() {}
         ~PatternProperty() { 
             if (pattern) {
-                pattern->~RegexType();
+                pattern->~BESRegexType();
                 AllocatorType::Free(pattern);
             }
         }
         const SchemaType* schema;
-        RegexType* pattern;
+        BESRegexType* pattern;
     };
 
     AllocatorType* allocator_;
@@ -1428,7 +1428,7 @@ private:
     bool additionalItems_;
     bool uniqueItems_;
 
-    RegexType* pattern_;
+    BESRegexType* pattern_;
     SizeType minLength_;
     SizeType maxLength_;
 

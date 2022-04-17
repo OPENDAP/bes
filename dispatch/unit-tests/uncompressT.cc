@@ -36,14 +36,10 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
 
-#include <cerrno>
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
-#include <dirent.h>
-#include <GetOpt.h>
+#include <unistd.h>
 
 #include "BESUncompressManager3.h"
 #include "BESUncompressCache.h"
@@ -51,15 +47,15 @@ using namespace CppUnit;
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
-#include <test_config.h>
+#include "test_config.h"
+
+using namespace CppUnit;
 
 using std::cerr;
 using std::endl;
 using std::ifstream;
 using std::string;
 
-
-#define BES_CACHE_CHAR '#'
 static bool debug = false;
 static bool bes_debug = false;
 
@@ -277,9 +273,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( uncompressT );
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dbh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -300,17 +295,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = uncompressT::suite()->getName().append("::").append(argv[i]);

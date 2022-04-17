@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MOP03T-20131129-L3V4.2.1" space="catalog">/data/MOP03T-20131129-L3V4.2.1.h5</setContainer>
+    <define name="d">
+	<container name="MOP03T-20131129-L3V4.2.1" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

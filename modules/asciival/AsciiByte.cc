@@ -55,7 +55,7 @@
 
 #include <string>
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "AsciiByte.h"
 
 BaseType *

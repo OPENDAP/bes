@@ -32,7 +32,7 @@
 #define _ffuint16_h 1
 
 
-#include "UInt16.h"
+#include <libdap/UInt16.h>
 
 using namespace libdap ;
 

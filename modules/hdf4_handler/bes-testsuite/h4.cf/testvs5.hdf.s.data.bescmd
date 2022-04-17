@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="testvs5" space="catalog">/hdf-testfiles/testvs5.hdf</setContainer>
+     <define name="d">
+ 	<container name="testvs5">
+            <constraint>
+Main_Vgroup_Array_Vgroup_SDS_Array[0:1:4],Main_Vgroup_Grid_Vgroup_SDS_Grid[0:1:4],fakeDim1[0:1:4]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

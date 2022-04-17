@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <UInt16.h>
+#include <libdap/UInt16.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,20 +37,24 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppUInt16: public libdap::UInt16, public DmrppCommon {
-    void _duplicate(const DmrppUInt16 &ts);
 
 public:
-    DmrppUInt16(const std::string &n);
-    DmrppUInt16(const std::string &n, const std::string &d);
-    DmrppUInt16(const DmrppUInt16 &rhs);
+    DmrppUInt16(const std::string &n) : libdap::UInt16(n), DmrppCommon() { }
+    DmrppUInt16(const std::string &n, const std::string &d) : libdap::UInt16(n, d), DmrppCommon() { }
+    DmrppUInt16(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::UInt16(n), DmrppCommon(dmz) { }
+    DmrppUInt16(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::UInt16(n, d), DmrppCommon(dmz) { }
+    DmrppUInt16(const DmrppUInt16 &) = default;
 
-    virtual ~DmrppUInt16() {}
+    virtual ~DmrppUInt16()= default;
 
     DmrppUInt16 &operator=(const DmrppUInt16 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppUInt16(*this);
+    }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

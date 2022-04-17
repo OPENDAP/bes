@@ -29,6 +29,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 #ifndef I_StandAloneClient_H
 #define I_StandAloneClient_H 1
 
@@ -41,31 +42,28 @@ class StandAloneClient;
 
 class StandAloneApp : public BESModuleApp {
 private:
-
-    StandAloneClient *_client;
+    StandAloneClient *_client {nullptr};
     std::vector<std::string> _command_file_names;
     std::string _cmd;
-    std::ofstream *_outputStrm;
-    std::ifstream *_inputStrm;
-    bool _createdInputStrm;
-    int _repeat;
+    std::ofstream *_outputStrm {nullptr};
+    int _repeat {0};
 
     void showVersion();
 
     void showUsage();
 
 public:
-    StandAloneApp();
+    StandAloneApp() = default;
 
-    virtual            ~StandAloneApp();
+    ~StandAloneApp() override;
 
-    virtual int initialize(int argC, char **argV);
+    int initialize(int argC, char **argV) override;
 
-    virtual int run();
+    int run() override;
 
-    virtual int terminate(int sig = 0);
+    int terminate(int sig = 0) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     StandAloneClient *client() { return _client; }
 };

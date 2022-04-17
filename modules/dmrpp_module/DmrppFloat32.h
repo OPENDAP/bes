@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Float32.h>
+#include <libdap/Float32.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,20 +37,24 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppFloat32: public libdap::Float32, public DmrppCommon {
-    void _duplicate(const DmrppFloat32 &ts);
 
 public:
-    DmrppFloat32(const std::string &n);
-    DmrppFloat32(const std::string &n, const std::string &d);
-    DmrppFloat32(const DmrppFloat32 &rhs);
+    DmrppFloat32(const std::string &n) : Float32(n), DmrppCommon() { }
+    DmrppFloat32(const std::string &n, const std::string &d) : Float32(n, d), DmrppCommon() { }
+    DmrppFloat32(const std::string &n, std::shared_ptr<DMZ> dmz) : Float32(n), DmrppCommon(dmz) { }
+    DmrppFloat32(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : Float32(n, d), DmrppCommon(dmz) { }
+    DmrppFloat32(const DmrppFloat32 &) = default;
 
-    virtual ~DmrppFloat32() {}
+    virtual ~DmrppFloat32() = default;
 
     DmrppFloat32 &operator=(const DmrppFloat32 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppFloat32(*this);
+    }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

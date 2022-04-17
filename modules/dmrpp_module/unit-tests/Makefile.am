@@ -9,13 +9,12 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS) $(OPENSSL_INC)
-
-# FIXME with configure.ac jhrg 9/2/20
-BES_DAP_LIB_STATIC = $(abs_top_builddir)/dap/.libs/libdap_module.a
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
+$(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB_STATIC) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
@@ -32,12 +31,16 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
+
+noinst_PROGRAMS = pugi_xml_test
+
+pugi_xml_test_SOURCES = pugi_xml_test.cc
 
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
@@ -62,9 +65,9 @@ BES_CONF_IN = bes.conf.in
 BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
@@ -73,12 +76,12 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
 bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
 
@@ -92,7 +95,7 @@ $(CREDS_CONF):
 
 if CPPUNIT
 UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
-DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
+DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest
 else
 UNIT_TESTS =
 
@@ -138,3 +141,6 @@ DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+DMZTest_SOURCES = DMZTest.cc
+DMZTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

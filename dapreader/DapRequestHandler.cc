@@ -46,22 +46,22 @@
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 #include <test/TestTypeFactory.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 #include <test/D4TestTypeFactory.h>
 #include <test/TestCommon.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Connect.h>
-#include <D4ParserSax2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Connect.h>
+#include <libdap/D4ParserSax2.h>
 
-#include <Ancillary.h>
-#include <Connect.h>
-#include <Response.h>
-#include <InternalErr.h>
-#include <mime_util.h>
+#include <libdap/Ancillary.h>
+#include <libdap/Connect.h>
+#include <libdap/Response.h>
+#include <libdap/InternalErr.h>
+#include <libdap/mime_util.h>
 
 using namespace libdap;
 
@@ -135,12 +135,12 @@ void DapRequestHandler::load_dds_from_data_file(const string &accessed, DDS &dds
         //valgrind shows the leaking caused by the following line. KY 2019-12-12
         //dds.set_factory(new BaseTypeFactory);
 
-    auto_ptr<Connect> url(new Connect(accessed));
+    unique_ptr<Connect> url(new Connect(accessed));
     Response r(fopen(accessed.c_str(), "r"), 0);
     if (!r.get_stream()) throw Error(string("The input source: ") + accessed + string(" could not be opened"));
     url->read_data_no_mime(dds, &r);
 
-    auto_ptr<DAS> das(new DAS);
+    unique_ptr<DAS> das(new DAS);
     Ancillary::read_ancillary_das(*das, accessed);
 
     if (das->get_size() > 0) dds.transfer_attributes(das.get());
@@ -148,7 +148,7 @@ void DapRequestHandler::load_dds_from_data_file(const string &accessed, DDS &dds
     // This is needed for the values read to show up. Without it the default
     // behavior of the TestTypes will take over and the values from the data files
     // will be ignored.
-    for (DDS::Vars_iter i = dds.var_begin(), e = dds.var_end(); i != e; i++) {
+    for (auto i = dds.var_begin(), e = dds.var_end(); i != e; i++) {
         (*i)->set_read_p(true);
     }
 }
@@ -231,7 +231,7 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, bool explici
         parser.intern(in, dmr);
     }
     else if (extension_match(accessed, ".dap")) {
-        auto_ptr<D4Connect> url(new D4Connect(accessed));
+        unique_ptr<D4Connect> url(new D4Connect(accessed));
         fstream f(accessed.c_str(), std::ios_base::in);
         if (!f.is_open() || f.bad() || f.eof()) throw Error((string) ("Could not open: ") + accessed);
 
@@ -243,18 +243,18 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, bool explici
     else if (extension_match(accessed, ".dds") || extension_match(accessed, ".dods")
             || extension_match(accessed, ".data")) {
 
-        auto_ptr<DDS> dds(new DDS(0 /*factory*/));
+        unique_ptr<DDS> dds(new DDS(0 /*factory*/));
 
         build_dds_from_file(accessed, explicit_containers, dds.get());
 
         dmr->build_using_dds(*dds);
     }
     else {
-        dmr->set_factory(0);
+        dmr->set_factory(nullptr);
         throw Error("The dapreader module can only return DMR/DAP responses for files ending in .dmr, .xml or .dap");
     }
 
-    dmr->set_factory(0);
+    dmr->set_factory(nullptr);
 }
 
 /**

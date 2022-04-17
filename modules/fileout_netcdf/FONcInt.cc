@@ -31,8 +31,8 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Int32.h>
-#include <UInt32.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
 
 #include "FONcInt.h"
 #include "FONcUtils.h"
@@ -50,15 +50,39 @@ FONcInt::FONcInt( BaseType *b )
     : FONcBaseType(), _bt( b )
 {
     Int32 *i32 = dynamic_cast<Int32 *>(b) ;
-    UInt32 *u32 = dynamic_cast<UInt32 *>(b) ;
-    if( !i32 && !u32 )
+    if( !i32) 
     {
 	string s = (string)"File out netcdf, FONcInt was passed a "
 		   + "variable that is not a DAP Int32 or UInt32" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
+    _unsigned_short = false;
 }
 
+FONcInt::FONcInt( BaseType *b ,bool unsigned_short)
+    : FONcBaseType(), _bt( b ), _unsigned_short(unsigned_short)
+{
+
+  if(!_unsigned_short) {
+    Int32 *i32 = dynamic_cast<Int32 *>(b) ;
+    if( !i32)
+    {
+	string s = (string)"File out netcdf, FONcInt was passed a "
+		   + "variable that is not a DAP Int32 " ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+    }
+  }
+  else {
+    UInt16 *ui16 = dynamic_cast<UInt16 *>(b) ;
+    if( !ui16 )
+    {
+	string s = (string)"File out netcdf, FONcInt was passed a "
+		   + "variable that is not a DAP UInt16" ;
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+    }
+
+  }
+}
 /** @brief Destructor that cleans up the instance
  *
  * The DAP Int32 or UInt32 instance does not belong to the FONcByte
@@ -85,6 +109,16 @@ FONcInt::define( int ncid )
 
     if( !_defined )
     {
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _bt->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_INT);   
+        }
+        else {
+            AttrTable &attrs = _bt->get_attr_table();  
+            updateAttrType(attrs,NC_INT); 
+        }
+
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
@@ -105,9 +139,27 @@ FONcInt::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcInt::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
-    int *data = new int ;
-    _bt->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_int( ncid, _varid, var_index, data ) ;
+    int stax = 0;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
+    if(_unsigned_short) {
+         unsigned short * sdata = new unsigned short;
+        _bt->buf2val( (void**)&sdata ) ;
+         BESDEBUG( "fonc", "FONcInt::write for short value " << *sdata << endl ) ;
+        int temps = (int)(*sdata);
+        stax = nc_put_var1_int( ncid, _varid, var_index, &temps ) ;
+        delete sdata;
+    }
+    else {
+         int *data = new int ;
+        _bt->buf2val( (void**)&data ) ;
+         stax = nc_put_var1_int( ncid, _varid, var_index, data ) ;
+         delete data;
+    }
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -115,7 +167,7 @@ FONcInt::write( int ncid )
 		     + _varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
+    
     BESDEBUG( "fonc", "FONcInt::done write for var " << _varname << endl ) ;
 }
 

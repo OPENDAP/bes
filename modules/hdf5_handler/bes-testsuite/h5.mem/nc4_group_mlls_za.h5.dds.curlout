@@ -1,0 +1,8 @@
+Dataset {
+    Float32 g1_lat1[lat = 2];
+    Float32 g1_lon1[lat = 2];
+    Float32 g1_pres2[lat = 2][zdim = 3];
+    Float32 pres1[lat = 2][zdim = 3];
+    Float32 lat[lat = 2];
+    Int32 zdim[zdim = 3];
+} nc4_group_mlls_za.h5;

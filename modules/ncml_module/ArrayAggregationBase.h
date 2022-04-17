@@ -29,10 +29,12 @@
 #ifndef __AGG_UTIL__ARRAY_AGGREGATION_BASE_H__
 #define __AGG_UTIL__ARRAY_AGGREGATION_BASE_H__
 
+#include <memory> // std
+
+#include <libdap/Array.h> // libdap
+
 #include "AggMemberDataset.h" // agg_util
 #include "AggregationUtil.h" // agg_util
-#include <Array.h> // libdap
-#include <memory> // std
 
 namespace libdap {
     class ConstraintEvaluator;
@@ -58,25 +60,25 @@ namespace agg_util
      *                      Note: for joinExisting the array size
      *                      may not be correct!
      * @param memberDatasets the granules to use in the agg
-     * @param arrayGetter auto_ptr to the data array getter for the variable.
-     *                    Note the auto_ptr ref is sunk by the ctor so don't
+     * @param arrayGetter unique_ptr to the data array getter for the variable.
+     *                    Note the unique_ptr ref is sunk by the ctor so don't
      *                    delete/release from the caller.
      * @return
      */
     ArrayAggregationBase(
         const libdap::Array& granuleProto, // prototype for granule
-        const AMDList& memberDatasets, // granule descs to use for the agg
-        std::auto_ptr<ArrayGetterInterface>& arrayGetter // way to get the data array
+        AMDList memberDatasets, // granule descs to use for the agg
+        std::unique_ptr<ArrayGetterInterface> arrayGetter // way to get the data array
         );
 
     ArrayAggregationBase(const ArrayAggregationBase& rhs);
 
-    virtual ~ArrayAggregationBase();
+    ~ArrayAggregationBase() override;
 
     ArrayAggregationBase& operator=(const ArrayAggregationBase& rhs);
 
     /** virtual constructor i.e. clone */
-    virtual ArrayAggregationBase* ptr_duplicate();
+    ArrayAggregationBase* ptr_duplicate() override;
 
     /**
      * Base implementation that works for both joinNew and joinExisting.
@@ -93,7 +95,7 @@ namespace agg_util
      *
      * @return whether it works
      */
-    virtual bool read();
+    bool read() override;
 
     /**
     * Get the list of AggMemberDataset's that comprise this aggregation
@@ -136,7 +138,7 @@ namespace agg_util
     void duplicate(const ArrayAggregationBase& rhs);
 
     /** Clean up any local state */
-    void cleanup() throw();
+    void cleanup() noexcept;
 
     ////////////////////////////////////////////////////////////////////
     /// Data Rep
@@ -145,11 +147,11 @@ namespace agg_util
      *  It will be used to constrain and validate other
      *  dataset aggVar's as they are loaded.
      */
-    std::auto_ptr<libdap::Array> _pSubArrayProto;
+    std::unique_ptr<libdap::Array> _pSubArrayProto;
 
     /**Gets the constrained, read data out
     for aggregating into this object. */
-    std::auto_ptr<ArrayGetterInterface> _pArrayGetter;
+    std::unique_ptr<ArrayGetterInterface> _pArrayGetter;
 
     /**
      * Entries contain information on loading the individual datasets

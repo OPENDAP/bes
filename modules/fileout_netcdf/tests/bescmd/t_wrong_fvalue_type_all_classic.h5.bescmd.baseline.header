@@ -1,0 +1,86 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	dim4 = 2 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	dim7 = 2 ;
+variables:
+	float _f32(dim1) ;
+		_f32:HDF5_OBJ_FULLPATH = "/f32" ;
+		_f32:_FillValue = 65535.f ;
+		_f32:fonc_original_name = "/f32" ;
+	double _f64(dim2) ;
+		_f64:HDF5_OBJ_FULLPATH = "/f64" ;
+		_f64:_FillValue = -1.299999952 ;
+		_f64:fonc_original_name = "/f64" ;
+	short _i16(dim3) ;
+		_i16:HDF5_OBJ_FULLPATH = "/i16" ;
+		_i16:_FillValue = -100s ;
+		_i16:fonc_original_name = "/i16" ;
+	int _i32(dim4) ;
+		_i32:HDF5_OBJ_FULLPATH = "/i32" ;
+		_i32:_FillValue = -65535 ;
+		_i32:fonc_original_name = "/i32" ;
+	short _i8(dim5) ;
+		_i8:HDF5_OBJ_FULLPATH = "/i8" ;
+		_i8:_FillValue = 128s ;
+		_i8:fonc_original_name = "/i8" ;
+	float _s_f32 ;
+		_s_f32:HDF5_OBJ_FULLPATH = "/s_f32" ;
+		_s_f32:_FillValue = -999.f ;
+		_s_f32:fonc_original_name = "/s_f32" ;
+	double _s_f64 ;
+		_s_f64:HDF5_OBJ_FULLPATH = "/s_f64" ;
+		_s_f64:_FillValue = 9999. ;
+		_s_f64:fonc_original_name = "/s_f64" ;
+	short _s_int16 ;
+		_s_int16:HDF5_OBJ_FULLPATH = "/s_int16" ;
+		_s_int16:_FillValue = -32768s ;
+		_s_int16:fonc_original_name = "/s_int16" ;
+	int _s_int32 ;
+		_s_int32:HDF5_OBJ_FULLPATH = "/s_int32" ;
+		_s_int32:_FillValue = 2147483647 ;
+		_s_int32:fonc_original_name = "/s_int32" ;
+	short _s_int8 ;
+		_s_int8:HDF5_OBJ_FULLPATH = "/s_int8" ;
+		_s_int8:_FillValue = 128s ;
+		_s_int8:fonc_original_name = "/s_int8" ;
+	int _s_uint16 ;
+		_s_uint16:HDF5_OBJ_FULLPATH = "/s_uint16" ;
+		_s_uint16:_FillValue = 0 ;
+		_s_uint16:fonc_original_name = "/s_uint16" ;
+	short _s_uint8 ;
+		_s_uint8:HDF5_OBJ_FULLPATH = "/s_uint8" ;
+		_s_uint8:_FillValue = 0s ;
+		_s_uint8:fonc_original_name = "/s_uint8" ;
+	int _ui16(dim6) ;
+		_ui16:HDF5_OBJ_FULLPATH = "/ui16" ;
+		_ui16:_FillValue = 65535 ;
+		_ui16:fonc_original_name = "/ui16" ;
+	short _ui8(dim7) ;
+		_ui8:HDF5_OBJ_FULLPATH = "/ui8" ;
+		_ui8:_FillValue = 255s ;
+		_ui8:fonc_original_name = "/ui8" ;
+
+// global attributes:
+		:HDF5_ROOT_GROUP.Dataset = "f32\n",
+			"f64\n",
+			"i16\n",
+			"i32\n",
+			"i8\n",
+			"s_f32\n",
+			"s_f64\n",
+			"s_int16\n",
+			"s_int32\n",
+			"s_int8\n",
+			"s_uint16\n",
+			"s_uint8\n",
+			"ui16\n",
+			"ui8" ;
+		:history = "removed date-timex t_wrong_fvalue_type_all_classic.h5\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_wrong_fvalue_type_all_classic.h5\"}]}]" ;
+}

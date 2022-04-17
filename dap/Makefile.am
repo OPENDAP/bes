@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = $(XML2_CFLAGS) -I$(top_srcdir)/xmlcommand $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch \
+AM_CPPFLAGS = $(XML2_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/xmlcommand $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch \
 $(DAP_CFLAGS)
 
 #  -I$(top_srcdir)/modules/dmrpp_module
@@ -55,12 +55,12 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDataDDSResponse.cc \
 	BESDMRResponse.cc \
 	BESDapError.cc \
-	BESDapErrorInfo.cc \
 	BESDapService.cc \
 	BESDapResponseBuilder.cc \
 	BESDapFunctionResponseCache.cc \
 	BESStoredDapResultCache.cc \
 	DapFunctionUtils.cc \
+	DapUtils.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
 	TempFile.cc \
@@ -70,7 +70,7 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	ShowPathInfoResponseHandler.cc \
 	GlobalMetadataStore.cc
 
-#	BESDapNullAggregationServer.cc 
+#	BESDapNullAggregationServer.cc BESDapErrorInfo.cc
 
 BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDDSResponseHandler.h \
@@ -89,12 +89,12 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDMRResponse.h \
 	BESDataDDSResponse.h \
 	BESDapError.h \
-	BESDapErrorInfo.h \
 	BESDapService.h \
 	BESDapResponseBuilder.h \
 	BESDapFunctionResponseCache.h \
 	BESStoredDapResultCache.h \
 	DapFunctionUtils.h \
+	DapUtils.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
 	TempFile.h \
@@ -104,7 +104,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	GlobalMetadataStore.h \
 	ShowPathInfoResponseHandler.h
 
-# 	BESDapNullAggregationServer.h
+# 	BESDapNullAggregationServer.h BESDapErrorInfo.h
 
 libdap_module_la_SOURCES = $(BESDAP_SRCS) $(BESDAP_HDRS)
 # libdap_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)

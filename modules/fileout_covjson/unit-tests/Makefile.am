@@ -6,6 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/fileout_covjson $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
+AM_CPPFLAGS += -Wno-vla-extension
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LIBADD += $(CPPUNIT_LIBS)
@@ -40,8 +42,8 @@ noinst_HEADERS = test_config.h
 # are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
@@ -66,7 +68,10 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapCovJsonTransform.o ../focovjson_utils.o
+# Instead of using explict object code, use the static archive version of the
+# module. See below. This reduces linker errors as the test(s) are expanded.
+# jhrg 2/5/22
+# OBJS = ../FoCovJsonRequestHandler.o ../FoDapCovJsonTransform.o ../focovjson_utils.o
 
 FoCovJsonTest_SOURCES = FoCovJsonTest.cc
-FoCovJsonTest_LDADD = $(OBJS) $(LIBADD)
+FoCovJsonTest_LDADD = ../.libs/libfocovjson_module.a $(LIBADD)

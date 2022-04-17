@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5">
+    <Dimension name="nspecies" size="5"/>
+    <Dimension name="sddim" size="12"/>
+    <Dimension name="nlyrs" size="28"/>
+    <Dimension name="ntemps" size="21"/>
+    <Dimension name="nprf" size="100"/>
+    <Dimension name="nscan" size="2962"/>
+    <Dimension name="npixel" size="221"/>
+    <Byte name="GprofDHeadr_speciesDescription">
+        <Dim name="/nspecies"/>
+        <Dim name="/sddim"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nspecies,sddim</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>50</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>speciesDescription</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GprofDHeadr/speciesDescription</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="GprofDHeadr_hgtTopLayer">
+        <Dim name="/nlyrs"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlyrs</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>hgtTopLayer</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GprofDHeadr/hgtTopLayer</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GprofDHeadr_temperatureDescriptions">
+        <Dim name="/ntemps"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>ntemps</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>C</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temperatureDescriptions</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GprofDHeadr/temperatureDescriptions</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GprofDHeadr_clusterProfiles">
+        <Dim name="/nprf"/>
+        <Dim name="/nlyrs"/>
+        <Dim name="/ntemps"/>
+        <Dim name="/nspecies"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nprf,nlyrs,ntemps,nspecies</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>clusterProfiles</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GprofDHeadr/clusterProfiles</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_totalColumnWaterVapor">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>totalColumnWaterVapor</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/totalColumnWaterVapor</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="S1_pixelStatus">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>pixelStatus</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/pixelStatus</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="S1_qualityFlag">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>qualityFlag</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/qualityFlag</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="S1_orographicLiftIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>orographicLiftIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/orographicLiftIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Int16 name="S1_ScanTime_MilliSecond">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>ms</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MilliSecond</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/MilliSecond</Value>
+        </Attribute>
+    </Int16>
+    <Int8 name="S1_ScanTime_Minute">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>minutes</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>62</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Minute</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/Minute</Value>
+        </Attribute>
+    </Int8>
+    <Int16 name="S1_ScanTime_Year">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>years</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Year</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/Year</Value>
+        </Attribute>
+    </Int16>
+    <Float64 name="S1_ScanTime_SecondOfDay">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="S1_ScanTime_Second">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Second</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/Second</Value>
+        </Attribute>
+    </Int8>
+    <Int16 name="S1_ScanTime_DayOfYear">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>days</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DayOfYear</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/DayOfYear</Value>
+        </Attribute>
+    </Int16>
+    <Int8 name="S1_ScanTime_Hour">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>hours</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>109</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Hour</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/Hour</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="S1_ScanTime_Month">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>months</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>101</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Month</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/Month</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="S1_ScanTime_DayOfMonth">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>days</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DayOfMonth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/ScanTime/DayOfMonth</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="S1_spareIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>spareIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/spareIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="S1_profileScale">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Dim name="/nspecies"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel,nspecies</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>profileScale</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/profileScale</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude nspecies</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="S1_databaseExpansionIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>databaseExpansionIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/databaseExpansionIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="S1_precip2ndTertial">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>precip2ndTertial</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/precip2ndTertial</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_precip1stTertial">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>precip1stTertial</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/precip1stTertial</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="S1_numOfSignificantProf">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>numOfSignificantProf</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/numOfSignificantProf</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Int8 name="S1_retrievalType">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>retrievalType</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/retrievalType</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Int16 name="S1_SCstatus_SCorientation">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SCorientation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/SCstatus/SCorientation</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="S1_SCstatus_SClatitude">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SClatitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/SCstatus/SClatitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_SCstatus_SClongitude">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SClongitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/SCstatus/SClongitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_SCstatus_SCaltitude">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SCaltitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/SCstatus/SCaltitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="S1_SCstatus_FractionalGranuleNumber">
+        <Dim name="/nscan"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FractionalGranuleNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/SCstatus/FractionalGranuleNumber</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="S1_iceWaterPath">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>iceWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/iceWaterPath</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="S1_sunGlintAngle">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sunGlintAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/sunGlintAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="S1_surfacePrecipitation">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>surfacePrecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/surfacePrecipitation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="S1_snowCoverIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>snowCoverIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/snowCoverIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Int16 name="S1_spare">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>spare</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/spare</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="S1_cloudWaterPath">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>cloudWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/cloudWaterPath</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="S1_totalColumnWaterVaporIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>totalColumnWaterVaporIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/totalColumnWaterVaporIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="S1_mixedWaterPath">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>mixedWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/mixedWaterPath</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_probabilityOfPrecip">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>probabilityOfPrecip</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/probabilityOfPrecip</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="S1_temp2mIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temp2mIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/temp2mIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="S1_mostLikelyPrecipitation">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>mostLikelyPrecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/mostLikelyPrecipitation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="S1_surfaceSkinTempIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>surfaceSkinTempIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/surfaceSkinTempIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int16>
+    <Int8 name="S1_surfaceTypeIndex">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>surfaceTypeIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/surfaceTypeIndex</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="S1_liquidPrecipFraction">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>liquidPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/liquidPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_rainWaterPath">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rainWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/rainWaterPath</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_convectPrecipFraction">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>convectPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/convectPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="S1_profileNumber">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Dim name="/nspecies"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel,nspecies</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>profileNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/profileNumber</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>S1_Longitude S1_Latitude nspecies</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="S1_Longitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_Latitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nlyrs">
+        <Dim name="/nlyrs"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nprf">
+        <Dim name="/nprf"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nspecies">
+        <Dim name="/nspecies"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="ntemps">
+        <Dim name="/ntemps"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="sddim">
+        <Dim name="/sddim"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/GMI/GPM/GPROF2A;
+AlgorithmID=2AGPROFGMI;
+AlgorithmVersion=S1V1-4.1406;
+FileName=2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.HDF5;
+SatelliteName=GPM;
+InstrumentName=GMI;
+GenerationDateTime=2014-09-22T17:02:14.000Z;
+StartGranuleDateTime=2014-09-21T00:20:02.000Z;
+StopGranuleDateTime=2014-09-21T01:52:34.000Z;
+GranuleNumber=003195;
+NumberOfSwaths=1;
+NumberOfGrids=0;
+GranuleStart=SOUTHERNMOST_LATITUDE;
+TimeInterval=ORBIT;
+ProcessingSystem=PPS;
+ProductVersion=V03C;
+EmptyGranule=NOT_EMPTY;
+MissingData=0;
+</Value>
+    </Attribute>
+    <Attribute name="InputRecord" type="String">
+        <Value>InputFileNames=1C-R.GPM.GMI.XCAL2014-N.20140921-S002001-E015234.003195.V03B.HDF5,GPM_IP_2AGPROF_GPM_GMI_20140921_3195_merge.bin (binary);
+InputAlgorithmVersions=2014-N-CO-REGv1.0;
+InputGenerationDateTimes=2014-09-21T08:48:15.000Z;
+</Value>
+    </Attribute>
+    <Attribute name="NavigationRecord" type="String">
+        <Value>LongitudeOnEquator=71.071056;
+UTCDateTimeOnEquator=2014-09-21T00:43:10.373Z;
+MeanSolarBetaAngle=-63.892107;
+EphemerisFileName=GPMCORE.20140921.002001309_20140921.015235550.001.EPHEM.txt;
+AttitudeFileName=GPMCORE.20140921.002001309_20140921.015235550.001.ATT.txt;
+GeoControlFileName=Control_Parameters_GMI_20140817.V03A.txt;
+EphemerisSource=7_PVT_WITH_FALLBACK_AS_FLAGGED;
+AttitudeSource=1_ON_BOARD_CALCULATED_PITCH_ROLL_YAW;
+GeoToolkitVersion=V3.6  05.15.2014 for delivery;
+SensorAlignmentFirstRotationAngle=179.964996;
+SensorAlignmentSecondRotationAngle=0.004000;
+SensorAlignmentThirdRotationAngle=0.001000;
+SensorAlignmentFirstRotationAxis=1;
+SensorAlignmentSecondRotationAxis=2;
+SensorAlignmentThirdRotationAxis=3;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=an;
+TKCodeBuildVersion=2;
+MetadataVersion=ao;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V1.2AGPROFGMI.blueprint.xml;
+BlueprintVersion=BV_34;
+TKIOVersion=3.60.4;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="GprofInfo" type="String">
+        <Value>Satellite=GPM;
+Sensor=GMI;
+PreProcessorVersion=GMI_1406g;
+PostProcessorVersion=gprof2014PPS_pp_1_4_2;
+ProfileDatabaseFilename=GMI_V1-4;
+OriginalRadiometerFilename=1C-R.GPM.GMI.XCAL2014-N.20140921-S002001-E015234.003195.V03B.HDF5;
+ProfileStructureFlag=0;
+</Value>
+    </Attribute>
+    <Attribute name="GprofDHeadr" type="Container"/>
+    <Attribute name="S1" type="Container">
+        <Attribute name="SwathHeader" type="String">
+            <Value>NumberScansInSet=1;
+MaximumNumberScansTotal=3100;
+NumberScansBeforeGranule=0;
+NumberScansGranule=2962;
+NumberScansAfterGranule=0;
+NumberPixels=221;
+ScanType=CONICAL;
+</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="S1_ScanTime" type="Container"/>
+    <Attribute name="S1_SCstatus" type="Container"/>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

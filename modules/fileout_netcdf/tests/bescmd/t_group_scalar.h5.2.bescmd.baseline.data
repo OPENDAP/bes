@@ -16,6 +16,8 @@ variables:
 		:unsigned_char = 127UB ;
 		:int16 = 32676s ;
 		:int32 = 2147483647 ;
+		:history = "removed date-timex t_group_scalar.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_group_scalar.h5\"}]}]" ;
 data:
 
  string = "Parting is such sweet sorrow." ;

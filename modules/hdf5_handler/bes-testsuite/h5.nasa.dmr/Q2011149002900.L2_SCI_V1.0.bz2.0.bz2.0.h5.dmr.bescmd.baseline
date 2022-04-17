@@ -1,0 +1,1952 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5">
+    <Float32 name="Aquarius_Data_Kpc_HH_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for ANT HH NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_HH_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_HH_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_HH_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for TOA HH NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_HH_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_HH_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_HV_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for ANT HV NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_HV_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_HV_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_HV_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for TOA HV NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_HV_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_HV_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_VH_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for ANT VH NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_VH_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_VH_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_VH_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for TOA VH NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_VH_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_VH_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_VV_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for ANT VV NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_VV_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_VV_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_VV_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Kpc statistical uncertainty for TOA VV NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_VV_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_VV_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_Kpc_total">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Statistical uncertainty for total power NRCS</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Kpc_total</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/Kpc_total</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_SSS">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sea Surface Salinity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>PSU</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SSS</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/SSS</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_SSS_error">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sea Surface Salinity error</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>PSU</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SSS_error</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/SSS_error</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_SSS_land">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sea Surface Salinity Land Corr</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>PSU</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SSS_land</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/SSS_land</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_SSS">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sea surface salinity climatology</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>PSU</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_SSS</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_SSS</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_Tb_dw">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Downwelling atmospheric brightness temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_Tb_dw</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_Tb_dw</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_Tb_up">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Upwelling atmospheric brightness temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_Tb_up</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_Tb_up</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_cwat">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Cloud Water</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>kg m-2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_cwat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_cwat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_surface_pressure">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Surface Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Pascals</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_surface_pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_surface_pressure</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_surface_temp">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Surface Temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_surface_temp</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_surface_temp</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_trans">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Atmospheric Transmittance</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_trans</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_trans</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_wind_dir">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ancillary Wind Direction 10m above surface</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_wind_dir</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_wind_dir</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_anc_wind_speed">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ancillary Wind Speed 10m above surface</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters/sec</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>anc_wind_speed</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/anc_wind_speed</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_dTB_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>delta Tb from scatterometer for H pol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>dTB_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/dTB_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_dTB_H_uncertainty">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Uncertainty in delta Tb-H</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>dTB_H_uncertainty</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/dTB_H_uncertainty</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_dTB_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>delta Tb from scatterometer for V pol</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>dTB_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/dTB_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_dTB_V_uncertainty">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Uncertainty in delta Tb-V</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>dTB_V_uncertainty</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/dTB_V_uncertainty</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_Ta3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_Ta3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_Ta3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_TaH">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta H polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_TaH</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_TaH</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_TaV">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta V polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_TaV</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_TaV</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_TbH">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Earth surface Tb H polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_TbH</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_TbH</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_TbV">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Earth surface Tb V polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_TbV</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_TbV</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_exp_Ta3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta 3rd Stokes (expected)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_exp_Ta3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_exp_Ta3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_exp_TaH">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta H (expected)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_exp_TaH</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_exp_TaH</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_exp_TaV">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Ta V (expected)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_exp_TaV</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_exp_TaV</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_far_TaH">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Faraday Angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_far_TaH</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_far_TaH</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_dir_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Direct Corr 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_dir_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_dir_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_dir_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Direct Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_dir_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_dir_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_dir_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Direct Corr V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_dir_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_dir_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_ref_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Reflect Corr 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_ref_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_ref_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_ref_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Reflect Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_ref_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_ref_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_galact_Ta_ref_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Galactic Reflect Corr V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_galact_Ta_ref_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_galact_Ta_ref_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_ice_frac">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Fraction of ice contamination (radiometer)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_ice_frac</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_ice_frac</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_land_frac">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Fraction of land contamination (radiometer)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_land_frac</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_land_frac</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_land_toa_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOA Land Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_land_toa_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_land_toa_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_land_toa_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOA Land Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_land_toa_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_land_toa_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_moon_Ta_ref_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Lunar Reflect Corr 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_moon_Ta_ref_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_moon_Ta_ref_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_moon_Ta_ref_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Lunar Reflect Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_moon_Ta_ref_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_moon_Ta_ref_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_moon_Ta_ref_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Lunar Reflect Corr V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_moon_Ta_ref_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_moon_Ta_ref_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_bak_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Back Scattered 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_bak_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_bak_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_bak_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Back Scattered H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_bak_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_bak_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_bak_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Back Scattered V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_bak_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_bak_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_dir_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Direct Corr 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_dir_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_dir_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_dir_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Direct Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_dir_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_dir_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_dir_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Direct Corr V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_dir_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_dir_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_ref_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Reflect Corr 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_ref_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_ref_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_ref_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Reflect Corr H polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_ref_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_ref_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_solar_Ta_ref_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer Solar Reflect Corr V polar</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_solar_Ta_ref_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_solar_Ta_ref_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_toa_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOA Tb H polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_toa_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_toa_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_toa_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOA Tb V polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_toa_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_toa_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_toi_3">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOI Tb 3rd Stokes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_toi_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_toi_3</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_toi_H">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOI Tb H polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_toi_H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_toi_H</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_rad_toi_V">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer TOI Tb V polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Kelvin</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_toi_V</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/rad_toi_V</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_HH_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOI Scatterometer NRCS for HH polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_HH_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_HH_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_HH_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOA Scatterometer NRCS for HH polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_HH_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_HH_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_HV_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOI Scatterometer NRCS for HV polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_HV_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_HV_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_HV_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOA Scatterometer NRCS for HV polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_HV_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_HV_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_VH_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOI Scatterometer NRCS for VH polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_VH_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_VH_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_VH_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOA Scatterometer NRCS for VH polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_VH_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_VH_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_VV_ant">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOI Scatterometer NRCS for VV polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_VV_ant</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_VV_ant</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_VV_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOA Scatterometer NRCS for VV polarization</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_VV_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_VV_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_ice_frac">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Fraction of ice contamination (scatterometer)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_ice_frac</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_ice_frac</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_land_frac">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Fraction of land contamination (scatterometer)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_land_frac</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_land_frac</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_tot_toa">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOA Scatterometer (Total)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>db</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_tot_toa</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_tot_toa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_scat_wind_speed">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer Wind Speed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters/sec</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_wind_speed</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/scat_wind_speed</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aquarius_Data_wind_uncertainty">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Estimated wind speed error</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters/sec</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>wind_uncertainty</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Data/wind_uncertainty</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="Aquarius_Flags_rad_rfi_flags">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Dim size="12"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer RFI flags</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_rfi_flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Flags/rad_rfi_flags</Value>
+        </Attribute>
+    </Byte>
+    <UInt32 name="Aquarius_Flags_radiometer_flags">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer data quality flags</Value>
+        </Attribute>
+        <Attribute name="f01_name" type="String">
+            <Value>RFI</Value>
+        </Attribute>
+        <Attribute name="f02_name" type="String">
+            <Value>RAIN</Value>
+        </Attribute>
+        <Attribute name="f03_name" type="String">
+            <Value>LAND</Value>
+        </Attribute>
+        <Attribute name="f04_name" type="String">
+            <Value>ICE</Value>
+        </Attribute>
+        <Attribute name="f05_name" type="String">
+            <Value>WINDFOAM</Value>
+        </Attribute>
+        <Attribute name="f06_name" type="String">
+            <Value>TEMP</Value>
+        </Attribute>
+        <Attribute name="f07_name" type="String">
+            <Value>FLUX</Value>
+        </Attribute>
+        <Attribute name="f08_name" type="String">
+            <Value>FLARE</Value>
+        </Attribute>
+        <Attribute name="f09_name" type="String">
+            <Value>DAYLIT</Value>
+        </Attribute>
+        <Attribute name="f10_name" type="String">
+            <Value>MOON</Value>
+        </Attribute>
+        <Attribute name="f11_name" type="String">
+            <Value>GALACTIC</Value>
+        </Attribute>
+        <Attribute name="f12_name" type="String">
+            <Value>GAIN</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiometer_flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Flags/radiometer_flags</Value>
+        </Attribute>
+    </UInt32>
+    <Byte name="Aquarius_Flags_scat_rfi_flags">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="2"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer RFI flags</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_rfi_flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Flags/scat_rfi_flags</Value>
+        </Attribute>
+    </Byte>
+    <UInt32 name="Aquarius_Flags_scatterometer_flags">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer data quality flags</Value>
+        </Attribute>
+        <Attribute name="f01_name" type="String">
+            <Value>RFI</Value>
+        </Attribute>
+        <Attribute name="f02_name" type="String">
+            <Value>RAIN</Value>
+        </Attribute>
+        <Attribute name="f03_name" type="String">
+            <Value>NEGSIG</Value>
+        </Attribute>
+        <Attribute name="f04_name" type="String">
+            <Value>BADATT</Value>
+        </Attribute>
+        <Attribute name="f05_name" type="String">
+            <Value>FARADAY</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scatterometer_flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aquarius Flags/scatterometer_flags</Value>
+        </Attribute>
+    </UInt32>
+    <UInt16 name="Block_Attributes_rad_samples">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Number of radiometer samples per average</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_samples</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Block Attributes/rad_samples</Value>
+        </Attribute>
+    </UInt16>
+    <UInt16 name="Block_Attributes_scat_samples">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Number of scatterometer samples per average</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_samples</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Block Attributes/scat_samples</Value>
+        </Attribute>
+    </UInt16>
+    <Float64 name="Block_Attributes_sec">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Block time, seconds of day</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sec</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Block Attributes/sec</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Block_Attributes_secGPS">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Block time, GPS time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>secGPS</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Block Attributes/secGPS</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Converted_Telemetry_rad_caltemps">
+        <Dim size="4042"/>
+        <Dim size="85"/>
+        <Attribute name="long_name" type="String">
+            <Value>Radiometer calibration temperatures</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rad_caltemps</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Converted Telemetry/rad_caltemps</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_att_ang">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spacecraft roll, pitch, yaw</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-180.00000000000000</Value>
+            <Value>180.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>att_ang</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/att_ang</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Navigation_beam_clat">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Beam Center Latitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>beam_clat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/beam_clat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_beam_clon">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Beam Center Longitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>beam_clon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/beam_clon</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_cellatfoot">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Geodectic Latitudes (3 dB)</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>cellatfoot</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/cellatfoot</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_cellonfoot">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>East Longitudes (3 dB)</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>cellonfoot</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/cellonfoot</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_celphi">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Boresight Earth Azimuth Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>celphi</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/celphi</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_celtht">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Boresight Earth Incidence Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>celtht</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/celtht</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_glxlat">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Galaxy Declination (J2000)</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>glxlat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/glxlat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_glxlon">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Galaxy Right Ascention (J2000)</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>glxlon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/glxlon</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_moond">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Earth-to-Moon unit vector (eci)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>moond</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/moond</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Navigation_moonglt">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Moon Glint Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>moonglt</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/moonglt</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_orb_pos">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Orbital position vector</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-7100000.0000000000</Value>
+            <Value>7100000.0000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>orb_pos</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/orb_pos</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Navigation_orb_vel">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Orbital velocity vector</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-7600.0000000000000</Value>
+            <Value>7600.0000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters per second</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>orb_vel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/orb_vel</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Navigation_scalt">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spacecraft altitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scalt</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/scalt</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Navigation_scat_beam_clat">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer Beam Center Latitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_beam_clat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/scat_beam_clat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_scat_beam_clon">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer Beam Center Longitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>360.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_beam_clon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/scat_beam_clon</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_scat_latfoot">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer Latitude Footprint</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_latfoot</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/scat_latfoot</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_scat_lonfoot">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scatterometer Longitude Footprint</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>360.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>scat_lonfoot</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/scat_lonfoot</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_sclat">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spacecraft nadir point latitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-90.000000000000000</Value>
+            <Value>90.000000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sclat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sclat</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Navigation_sclon">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spacecraft nadir point longitude</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>0.0000000000000000</Value>
+            <Value>360.00000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sclon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sclon</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Navigation_sund">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Earth-to-Sun unit vector (eci)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sund</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sund</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Navigation_sunglt">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sun Glint Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sunglt</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sunglt</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Navigation_sunphi">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sun Vector Earth Azimuth Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sunphi</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sunphi</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_sunr">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sun reflection unit vector (eci)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sunr</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/sunr</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="Navigation_suntht">
+        <Dim size="4042"/>
+        <Dim size="3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Sun Vector Earth Incidence Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>suntht</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/suntht</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Navigation_zang">
+        <Dim size="4042"/>
+        <Attribute name="long_name" type="String">
+            <Value>Intra-Orbit Angle</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-180.00000000000000</Value>
+            <Value>180.00000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>zang</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Navigation/zang</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="Product_Name" type="String">
+        <Value>Q2011149002900.L2_SCI_V1.0</Value>
+    </Attribute>
+    <Attribute name="Title" type="String">
+        <Value>Aquarius Level 2 Data</Value>
+    </Attribute>
+    <Attribute name="Data_Center" type="String">
+        <Value>NASA/GSFC Aquarius Data Processing Center</Value>
+    </Attribute>
+    <Attribute name="Mission" type="String">
+        <Value>SAC-D Aquarius</Value>
+    </Attribute>
+    <Attribute name="Mission_Characteristics" type="String">
+        <Value>Nominal orbit: inclination=98.0 (Sun-synchronous); node=6PM (ascending); eccentricity=&lt;0.002; altitude=657 km; ground speed=6.825 km/sec</Value>
+    </Attribute>
+    <Attribute name="Sensor" type="String">
+        <Value>Aquarius</Value>
+    </Attribute>
+    <Attribute name="Sensor_Characteristics" type="String">
+        <Value>Number of beams=3; channels per receiver=4; frequency 1.413 GHz; bits per sample=16; instatntaneous field of view=6.5 degrees; science data block period=1.44 sec.</Value>
+    </Attribute>
+    <Attribute name="Data_Type" type="String">
+        <Value>SCI</Value>
+    </Attribute>
+    <Attribute name="Software_ID" type="String">
+        <Value>0.980</Value>
+    </Attribute>
+    <Attribute name="Processing_Version" type="String">
+        <Value>V1.0</Value>
+    </Attribute>
+    <Attribute name="Processing_Time" type="String">
+        <Value>2011158093352000</Value>
+    </Attribute>
+    <Attribute name="Input_Files" type="String"/>
+    <Attribute name="Processing_Control" type="String">
+        <Value>l2gen_aquarius par=/data1/sdpsoper/vdc/vpu0/workbuf/Q2011149002900.L2_SCI_V1.0.param</Value>
+    </Attribute>
+    <Attribute name="Number_of_Beams" type="Int32">
+        <Value>3</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Polarizations" type="Int32">
+        <Value>4</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Subcycles" type="Int32">
+        <Value>12</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Signals_per_Subcycle" type="Int32">
+        <Value>5</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Long_Accumulations" type="Int32">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="Scatterometer_Polarizations" type="Int32">
+        <Value>6</Value>
+    </Attribute>
+    <Attribute name="Scatterometer_Subcycles" type="Int32">
+        <Value>8</Value>
+    </Attribute>
+    <Attribute name="Start_Time" type="String">
+        <Value>2011149002900240</Value>
+    </Attribute>
+    <Attribute name="Start_Year" type="Int32">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="Start_Day" type="Int32">
+        <Value>149</Value>
+    </Attribute>
+    <Attribute name="Start_Millisec" type="Int32">
+        <Value>1740240</Value>
+    </Attribute>
+    <Attribute name="End_Year" type="Int32">
+        <Value>2011</Value>
+    </Attribute>
+    <Attribute name="End_Day" type="Int32">
+        <Value>149</Value>
+    </Attribute>
+    <Attribute name="End_Millisec" type="Int32">
+        <Value>7559280</Value>
+    </Attribute>
+    <Attribute name="Product_Center_Time" type="String">
+        <Value>1995260001423620</Value>
+    </Attribute>
+    <Attribute name="Node_Crossing_Time" type="String">
+        <Value>2011149005330000</Value>
+    </Attribute>
+    <Attribute name="Orbit_Node_Longitude" type="Float32">
+        <Value>-102.5159378</Value>
+    </Attribute>
+    <Attribute name="Latitude_Units" type="String">
+        <Value>degrees North</Value>
+    </Attribute>
+    <Attribute name="Longitude_Units" type="String">
+        <Value>degrees East</Value>
+    </Attribute>
+    <Attribute name="Orbit_Number" type="Int32">
+        <Value>23717</Value>
+    </Attribute>
+    <Attribute name="Cycle_Number" type="Int32">
+        <Value>230</Value>
+    </Attribute>
+    <Attribute name="Pass_Number" type="Int32">
+        <Value>89</Value>
+    </Attribute>
+    <Attribute name="Number_of_Blocks" type="Int32">
+        <Value>4042</Value>
+    </Attribute>
+    <Attribute name="End_Time" type="String">
+        <Value>2011149020559280</Value>
+    </Attribute>
+    <Attribute name="Percent_Water" type="Float32">
+        <Value>0.6453784108</Value>
+    </Attribute>
+    <Attribute name="Percent_RFI" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="Cold_Sky_Calibration" type="String">
+        <Value>TBD</Value>
+    </Attribute>
+    <Attribute name="ANCILLARY_FILE1" type="String">
+        <Value>y2011052900.h5:N2011148_SST_OIV2AVAM_24h.nc,N2011149_SST_OIV2AVAM_24h.nc,N201114900_QATM_NCEP_6h.h5,N201114900_QMET_NCEP_6h,N201114900_SEAICE_NCEP_24h.hdf,N201115000_SEAICE_NCEP_24h.hdf,N201114800_SALINITY_HYCOM_24h.h5,N201114900_SALINITY_HYCOM_24h.h5</Value>
+    </Attribute>
+    <Attribute name="ANCILLARY_FILE2" type="String">
+        <Value>y2011052906.h5:N2011148_SST_OIV2AVAM_24h.nc,N2011149_SST_OIV2AVAM_24h.nc,N201114906_QATM_NCEP_6h.h5,N201114906_QMET_NCEP_6h,N201114900_SEAICE_NCEP_24h.hdf,N201115000_SEAICE_NCEP_24h.hdf,N201114800_SALINITY_HYCOM_24h.h5,N201114900_SALINITY_HYCOM_24h.h5</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Calibration_Files" type="String">
+        <Value>coeff_loss_v2.txt,coeff_nl.txt</Value>
+    </Attribute>
+    <Attribute name="Radiometer_Data_Tables" type="String">
+        <Value>land_tables.h5,gain_ice.h5,tausq.h5,ocean_reflectance.h5,mk_sss_algo_tables.h5,sun_tables.h5,sun_bak_tables.h5,galaxy_wind_tables.h5,apc_matrix_051211.h5</Value>
+    </Attribute>
+    <Attribute name="Scatterometer_Coefficient_Files" type="String">
+        <Value>atc_prt_convert_v3.txt,ext_temps_constants_convert_v3.txt,scat_temps_convert_v1.txt,radiometer_constants_convert_v2.txt,cmd_gn.dat</Value>
+    </Attribute>
+    <Attribute name="Aquarius_Data" type="Container"/>
+    <Attribute name="Aquarius_Flags" type="Container"/>
+    <Attribute name="Block_Attributes" type="Container"/>
+    <Attribute name="Converted_Telemetry" type="Container"/>
+    <Attribute name="Navigation" type="Container"/>
+</Dataset>

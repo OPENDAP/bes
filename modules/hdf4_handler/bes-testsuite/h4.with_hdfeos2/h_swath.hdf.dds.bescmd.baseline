@@ -1,0 +1,7 @@
+Dataset {
+    Float32 temperature[ZDim = 4][NDim = 8];
+    Float32 pressure[ZDim = 4];
+    Float32 Latitude[NDim = 8];
+    Float32 Longitude[NDim = 8];
+    Float32 temperature_NONEOS[fakeDim2 = 4][fakeDim3 = 8];
+} h_swath.hdf;

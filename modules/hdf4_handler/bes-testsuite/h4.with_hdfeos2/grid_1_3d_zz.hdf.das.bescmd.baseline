@@ -1,0 +1,24 @@
+Attributes {
+    pressure {
+        String long_name "pressure";
+    }
+    level {
+        String coordinates "pressure";
+        String long_name "level";
+    }
+    temperature {
+        String coordinates "pressure Latitude Longitude";
+        String long_name "temperature";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

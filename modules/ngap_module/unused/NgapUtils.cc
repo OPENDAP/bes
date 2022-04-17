@@ -50,8 +50,13 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
+<<<<<<< HEAD
 #include <GNURegex.h>
+#include <libdap/util.h>
+=======
+#include "BESRegex.h"
 #include <util.h>
+>>>>>>> master
 
 using namespace libdap;
 using namespace ngap;
@@ -242,7 +247,7 @@ NgapUtils::Get_tempfile_template( char *file_template )
 {
 #ifdef WIN32
     // white list for a WIN32 directory
-    Regex directory("[-a-zA-Z0-9_\\]*");
+    BESRegex directory("[-a-zA-Z0-9_\\]*");
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
@@ -253,7 +258,7 @@ NgapUtils::Get_tempfile_template( char *file_template )
     goto valid_temp_directory;
 #else
     // white list for a directory
-    Regex directory("[-a-zA-Z0-9_/]*");
+    BESRegex directory("[-a-zA-Z0-9_/]*");
 
     string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length())
@@ -329,13 +334,7 @@ void NgapUtils::Get_type_from_disposition(const string &disp, string &type)
                 filename = disp.substr(pos + 1);
             }
 
-            // now see if it's wrapped in quotes
-            if (filename[0] == '"') {
-                filename = filename.substr(1);
-            }
-            if (filename[filename.length() - 1] == '"') {
-                filename = filename.substr(0, filename.length() - 1);
-            }
+            BESUtil::trim_if_surrounding_quotes(filename);
 
             // we have the filename now, run it through
             // the type match to get the file type

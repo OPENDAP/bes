@@ -26,27 +26,28 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "config.h"
 
 #include "MyBaseTypeFactory.h"
 
-#include "BaseType.h"
-#include "BaseTypeFactory.h"
+#include <libdap/BaseType.h>
+#include <libdap/BaseTypeFactory.h>
 
-#include "Array.h"
-#include "Byte.h"
-#include "Float32.h"
-#include "Float64.h"
-#include "Grid.h"
-#include "Int16.h"
-#include "Int32.h"
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Grid.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
 #include "NCMLArray.h"
-#include "Sequence.h"
-#include "Str.h"
-#include "Structure.h"
-#include "UInt16.h"
-#include "UInt32.h"
-#include "Url.h"
+#include <libdap/Sequence.h>
+#include <libdap/Str.h>
+#include <libdap/Structure.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Url.h>
 
 using namespace libdap;
 using namespace std;
@@ -56,6 +57,7 @@ namespace ncml_module {
 /* static */
 libdap::BaseTypeFactory* MyBaseTypeFactory::_spFactory = new BaseTypeFactory();
 
+#if 0
 MyBaseTypeFactory::MyBaseTypeFactory()
 {
 }
@@ -63,44 +65,45 @@ MyBaseTypeFactory::MyBaseTypeFactory()
 MyBaseTypeFactory::~MyBaseTypeFactory()
 {
 }
+#endif
 
-auto_ptr<libdap::BaseType> MyBaseTypeFactory::makeVariable(const libdap::Type& t, const string &name)
+unique_ptr<libdap::BaseType> MyBaseTypeFactory::makeVariable(const libdap::Type& t, const string &name)
 {
     switch (t) {
     case dods_byte_c:
-        return auto_ptr<BaseType>(_spFactory->NewByte(name));
+        return unique_ptr<BaseType>(_spFactory->NewByte(name));
         break;
 
     case dods_int16_c:
-        return auto_ptr<BaseType>(_spFactory->NewInt16(name));
+        return unique_ptr<BaseType>(_spFactory->NewInt16(name));
         break;
 
     case dods_uint16_c:
-        return auto_ptr<BaseType>(_spFactory->NewUInt16(name));
+        return unique_ptr<BaseType>(_spFactory->NewUInt16(name));
         break;
 
     case dods_int32_c:
-        return auto_ptr<BaseType>(_spFactory->NewInt32(name));
+        return unique_ptr<BaseType>(_spFactory->NewInt32(name));
         break;
 
     case dods_uint32_c:
-        return auto_ptr<BaseType>(_spFactory->NewUInt32(name));
+        return unique_ptr<BaseType>(_spFactory->NewUInt32(name));
         break;
 
     case dods_float32_c:
-        return auto_ptr<BaseType>(_spFactory->NewFloat32(name));
+        return unique_ptr<BaseType>(_spFactory->NewFloat32(name));
         break;
 
     case dods_float64_c:
-        return auto_ptr<BaseType>(_spFactory->NewFloat64(name));
+        return unique_ptr<BaseType>(_spFactory->NewFloat64(name));
         break;
 
     case dods_str_c:
-        return auto_ptr<BaseType>(_spFactory->NewStr(name));
+        return unique_ptr<BaseType>(_spFactory->NewStr(name));
         break;
 
     case dods_url_c:
-        return auto_ptr<BaseType>(_spFactory->NewUrl(name));
+        return unique_ptr<BaseType>(_spFactory->NewUrl(name));
         break;
 
     case dods_array_c:
@@ -108,28 +111,31 @@ auto_ptr<libdap::BaseType> MyBaseTypeFactory::makeVariable(const libdap::Type& t
         break;
 
     case dods_structure_c:
-        return auto_ptr<BaseType>(_spFactory->NewStructure(name));
+        return unique_ptr<BaseType>(_spFactory->NewStructure(name));
         break;
 
     case dods_sequence_c:
-        return auto_ptr<BaseType>(_spFactory->NewSequence(name));
+        return unique_ptr<BaseType>(_spFactory->NewSequence(name));
         break;
 
     case dods_grid_c:
-        return auto_ptr<BaseType>(_spFactory->NewGrid(name));
+        return unique_ptr<BaseType>(_spFactory->NewGrid(name));
         break;
 
     default:
-        return auto_ptr<BaseType>(0);
+        THROW_NCML_INTERNAL_ERROR("MyBaseTypeFactory::makeVariable(): request to make an unknown variable type.");
+#if 0
+            return unique_ptr<BaseType>(0);
+#endif
     }
 }
 
-auto_ptr<libdap::BaseType> MyBaseTypeFactory::makeVariable(const string& type, const std::string& name)
+unique_ptr<libdap::BaseType> MyBaseTypeFactory::makeVariable(const string& type, const std::string& name)
 {
     if (isArrayTemplate(type)) {
-        // create the template var by default... if the caller readds it, this one will
+        // create the template var by default... if the caller reads it, this one will
         // be deleted.  Better safe than bus error.
-        return auto_ptr<BaseType>(makeArrayTemplateVariable(type, name, true).release());
+        return unique_ptr<BaseType>(makeArrayTemplateVariable(type, name, true).release());
     }
     else {
         return makeVariable(getType(type), name);
@@ -215,17 +221,14 @@ bool MyBaseTypeFactory::isSimpleType(const string& name)
 
 bool MyBaseTypeFactory::isArrayTemplate(const string& typeName)
 {
-    // Just check for the form.We won't typecheck the template arg here sicne we'll just match strings.
+    // Just check for the form. We won't typecheck the template arg here since we'll just match strings.
     return (typeName.find("Array<") == 0 && (typeName.at(typeName.size() - 1) == '>'));
 }
 
-std::auto_ptr<libdap::Array> MyBaseTypeFactory::makeArrayTemplateVariable(const string& type, const string& name,
-    bool makeTemplateVar)
+std::unique_ptr<libdap::Array>
+MyBaseTypeFactory::makeArrayTemplateVariable(const string& type, const string& name, bool makeTemplateVar)
 {
-    // For the add_var's here, we use the auto_ptr get() since it's copied
-    // in add_var and we want the factoried one to destroy right afterwards.
-    // TODO when we have non copy adds in libdap, tighten this up with release().
-    Array* pNew = 0;
+    Array* pNew = nullptr;
     if (type == "Array<Byte>") {
         pNew = new NCMLArray<dods_byte>(name);
         if (makeTemplateVar) {
@@ -289,6 +292,7 @@ std::auto_ptr<libdap::Array> MyBaseTypeFactory::makeArrayTemplateVariable(const 
         THROW_NCML_INTERNAL_ERROR(
             "MyBaseTypeFactory::makeArrayTemplateVariable(): failed to allocate memory for type=" + type);
     }
-    return auto_ptr<Array>(pNew);
+
+    return unique_ptr<Array>(pNew);
 }
 } // namespace ncml_module

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="za_1_3d_yzt" space="catalog">/data/za_1_3d_yzt.h5</setContainer>
+    <define name="d">
+	<container name="za_1_3d_yzt" />
+    </define>
+    <get type="dods" definition="d" />
+</request>

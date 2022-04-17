@@ -32,9 +32,12 @@
 #ifndef FONcStructure_h_
 #define FONcStructure_h_ 1
 
-#include <Structure.h>
+#include <libdap/Structure.h>
 
-using namespace libdap ;
+namespace libdap {
+    class Structure;
+    class BaseType;
+}
 
 #include "FONcBaseType.h"
 
@@ -48,13 +51,13 @@ using namespace libdap ;
 class FONcStructure : public FONcBaseType
 {
 private:
-    Structure *			_s ;
+    libdap::Structure *			_s ;
     vector<FONcBaseType *>	_vars ;
 public:
-    				FONcStructure( BaseType *b ) ;
+    				FONcStructure( libdap::BaseType *b ) ;
     virtual			~FONcStructure() ;
 
-    virtual void		convert( vector<string> embed ,bool is_dap4_group=false) ;
+    virtual void		convert( vector<string> embed ,bool _dap4=false, bool is_dap4_group=false) ;
     virtual void		define( int ncid ) ;
     virtual void		write( int ncid ) ;
 

@@ -36,7 +36,7 @@
 #ifndef _asciiuint16_h
 #define _asciiuint16_h 1
 
-#include "UInt16.h"
+#include <libdap/UInt16.h>
 #include "AsciiOutput.h"
 
 class AsciiUInt16: public UInt16, public AsciiOutput {

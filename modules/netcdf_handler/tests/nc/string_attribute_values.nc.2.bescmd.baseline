@@ -1,0 +1,16 @@
+Attributes {
+    lat {
+        String units "degrees_north";
+    }
+    lon {
+        String units "degrees_east";
+    }
+    NC_GLOBAL {
+        String title "Hyrax/netcdf handler test file for string attribute values";
+        Float64 version 1.000000000000000;
+        String description "Test string attribute values in a data handler.";
+        String test_backslash "Escape a URL: http:\\/\\/machine\\/host\\/file.txt";
+        String test_embedded_dquote "Escape a double quote \\\"json makes me happy\\\".";
+        String test_null_value "";
+    }
+}

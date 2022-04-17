@@ -38,7 +38,7 @@
 #ifndef _asciibyte_h
 #define _asciibyte_h 1
 
-#include "Byte.h"
+#include <libdap/Byte.h>
 #include "AsciiOutput.h"
 
 class AsciiByte: public Byte, public AsciiOutput {

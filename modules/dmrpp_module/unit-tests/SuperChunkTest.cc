@@ -30,9 +30,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-#include <util.h>
-#include <debug.h>
+#include <unistd.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "BESContextManager.h"
 #include "BESError.h"
@@ -102,7 +102,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
@@ -140,7 +141,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
@@ -176,20 +178,17 @@ public:
             }
 
         }
-        catch( BESError be){
+        catch( BESError &be){
             stringstream msg;
             msg << prolog << "CAUGHT BESError: " << be.get_verbose_message() << endl;
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
-        catch( std::exception se ){
+        catch( std::exception &se ){
             stringstream msg;
-            msg << "CAUGHT std::exception: " << se.what() << endl;
+            msg << "CAUGHT std::exception message: " << se.what() << endl;
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
-        }
-        catch( ... ){
-            cerr << "CAUGHT Unknown Exception." << endl;
         }
         DBG( cerr << prolog << "END" << endl);
     }
@@ -198,7 +197,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // this_is_a_test.txt is 1106 bytes and contains human readable text chunk content.
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
@@ -337,9 +337,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dD");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dD")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -352,14 +351,17 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = dmrpp::SuperChunkTest::suite()->getName().append("::").append(argv[i]);

@@ -32,8 +32,8 @@
 
 #include "config.h"
 
-#include <DDS.h>
-#include <DataDDS.h>
+#include <libdap/DDS.h>
+#include <libdap/DataDDS.h>
 
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"
@@ -132,7 +132,7 @@ void BESDataResponseHandler::execute(BESDataHandlerInterface &dhi)
     // the BaseTypeFactory. It is set to NULL here
     DDS *dds = new DDS(NULL, "virtual");
     if (rsl_found)
-        dds->set_response_limit(response_size_limit); // The default for this is zero
+        dds->set_response_limit_kb(response_size_limit); // The default for this is zero
 
     BESDataDDSResponse *bdds = new BESDataDDSResponse(dds);
 

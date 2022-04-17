@@ -33,23 +33,23 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <math.h>       /* atan */
 
-#include <GetOpt.h>
-#include <DataDDS.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
+#include <unistd.h>
+#include <libdap/DataDDS.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/UInt16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
 
-#include <Structure.h>
-#include <Sequence.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Sequence.h>
+#include <libdap/Grid.h>
 
-#include <debug.h>
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -104,20 +104,13 @@ public:
     }
 
     // Called at the end of the test
-    ~FoCovJsonTest()
-    {
-        DBG(cerr << "FoCovJsonTest - Destructor" << endl);
-    }
+    virtual ~FoCovJsonTest() = default;
 
-    // Called before each test
-    void setUp()
-    {
-    }
+    // Called before each test - use the default impls for these
+    // void setUp()
 
     // Called after each test
-    void tearDown()
-    {
-    }
+    // void tearDown()
 
     CPPUNIT_TEST_SUITE(FoCovJsonTest);
 
@@ -182,11 +175,11 @@ public:
             cerr << "BESInternalError: " << e.get_message() << endl;
             CPPUNIT_ASSERT(false);
         }
-        catch (libdap::Error &e) {
+        catch (const libdap::Error &e) {
             cerr << "Error: " << e.get_error_message() << endl;
             CPPUNIT_ASSERT(false);
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             DBG(cerr << "std::exception: " << e.what() << endl);
             CPPUNIT_FAIL("Caught std::exception");
         }
@@ -940,20 +933,24 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FoCovJsonTest);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true;  // debug is a static global
             cerr << "##### DEBUG is ON" << endl;
             break;
         case 'h': {     // Help - show test names
             std::cerr << "Usage: FoCovJsonTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = focovjson::FoCovJsonTest::suite()->getTests();
-            unsigned int prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
-            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            size_t prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
+#if 0
+            for (auto i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+#endif
+            for (auto &test: tests) {
+                std::cerr << test->getName().replace(0, prefix_len, "") << std::endl;
             }
             break;
         }
@@ -963,17 +960,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // Run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) {
                 cerr << "Running " << argv[i] << endl;

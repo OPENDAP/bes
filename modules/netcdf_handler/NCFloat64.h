@@ -39,7 +39,7 @@
 #ifndef _ncfloat64_h
 #define _ncfloat64_h 1
 
-#include <Float64.h>
+#include <libdap/Float64.h>
 
 using namespace libdap ;
 

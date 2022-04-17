@@ -41,7 +41,7 @@
 static char rcsid[] not_used ={"$Id$"};
 
 #include <netcdf.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "NCRequestHandler.h"
 #include "NCInt16.h"
@@ -94,11 +94,9 @@ bool NCInt16::read() {
     if (errstat != NC_NOERR)
         throw Error(errstat, "Could not get variable ID for '" + name() + "'.");
 
-    // TODO Accommodate the NC>PromoteByteToShort stuff - see ticket 1850
+    // NC.PromoteByteToShort issue is fixed. Tests for both netCDF-3 and netCDF-4 were added. 
+    // See Hyrax-476 KY 2021-12-22
     short sht;
-#if NETCDF_VERSION >= 4
-    errstat = nc_get_var(ncid, varid, &sht);
-#else
     size_t cor[MAX_NC_DIMS]; /* corner coordinates */
     int num_dim; /* number of dim. in variable */
     nc_type datatype; /* variable data type */
@@ -120,8 +118,14 @@ bool NCInt16::read() {
         cor[id] = 0;
     }
 
-    errstat = nc_get_var1_short(ncid, varid, cor, &sht);
-#endif
+    if (NCRequestHandler::get_promote_byte_to_short()) {
+        signed char tmp;
+        errstat = nc_get_var1_schar(ncid,varid, cor, &tmp);
+        sht =(short)tmp;
+
+    }
+    else 
+        errstat = nc_get_var1_short(ncid, varid, cor, &sht);
 
     if (errstat != NC_NOERR)
         throw Error(errstat, string("Could not read the variable `") + name() + string("'."));

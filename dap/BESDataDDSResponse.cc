@@ -30,8 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include "BESDataDDSResponse.h"
 

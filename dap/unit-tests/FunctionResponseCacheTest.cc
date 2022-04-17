@@ -37,23 +37,23 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <unistd.h>
 
-#include <Array.h>
-#include <Byte.h>
-#include <ServerFunctionsList.h>
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <DDXParserSAX2.h>
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/ServerFunctionsList.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DDXParserSAX2.h>
 
-#include <GetOpt.h>
-#include <GNURegex.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 
 #include "BESDapFunctionResponseCache.h"
+#include "BESRegex.h"
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
@@ -184,7 +184,7 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -192,7 +192,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -384,10 +384,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(FunctionResponseCacheTest);
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dbkh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbkh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -412,17 +410,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = FunctionResponseCacheTest::suite()->getName().append("::").append(argv[i]);

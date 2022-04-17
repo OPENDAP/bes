@@ -26,7 +26,7 @@
 #ifndef _ffd4sequence_h
 #define _ffd4sequence_h 1
 
-#include <D4Sequence.h>
+#include <libdap/D4Sequence.h>
 
 using namespace libdap ;
 

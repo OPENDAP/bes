@@ -32,23 +32,22 @@
 #ifndef FONcTransfrom_h_
 #define FONcTransfrom_h_ 1
 
-#include <netcdf.h>
-
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
 
-#include <DDS.h>
-#include <DMR.h>
-#include <Array.h>
-
-using namespace::libdap ;
-
 #include <BESObj.h>
-#include <BESDataHandlerInterface.h>
 
-class FONcBaseType ;
+namespace libdap {
+class DDS;
+class DMR;
+class D4Group;
+}
+
+class FONcBaseType;
+class BESResponseObject;
+class BESDataHandlerInterface;
 
 /** @brief Transformation object that converts an OPeNDAP DataDDS to a
  * netcdf file
@@ -59,16 +58,18 @@ class FONcBaseType ;
  */
 class FONcTransform: public BESObj {
 private:
-	int _ncid;
-	DDS *_dds;
-    DMR *_dmr;
-	string _localfile;
-	string _returnAs;
-	vector<FONcBaseType *> _fonc_vars;
-	vector<FONcBaseType *> _total_fonc_vars_in_grp;
-    set<string> _included_grp_names;
-    map<string,unsigned long> GFQN_dimname_to_dimsize;
-    map<string,unsigned long> VFQN_dimname_to_dimsize;
+	int _ncid = {0};
+	libdap::DDS *_dds = {nullptr};
+    libdap::DMR *_dmr = {nullptr};
+    BESResponseObject *d_obj = {nullptr};
+    BESDataHandlerInterface *d_dhi = {nullptr};
+	std::string _localfile;
+	std::string _returnAs;
+    std::vector<FONcBaseType *> _fonc_vars;
+    std::vector<FONcBaseType *> _total_fonc_vars_in_grp;
+    std::set<std::string> _included_grp_names;
+    std::map<std::string,unsigned long> GFQN_dimname_to_dimsize;
+    std::map<std::string,unsigned long> VFQN_dimname_to_dimsize;
     
 
 public:
@@ -82,23 +83,27 @@ public:
 	 * @param localfile
 	 * @param netcdfVersion
 	 */
-	FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
-	FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
-	virtual ~FONcTransform();
-	virtual void transform();
+	FONcTransform(libdap::DDS *dds, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
+	FONcTransform(libdap::DMR *dmr, BESDataHandlerInterface &dhi, const std::string &localfile, const std::string &netcdfVersion = "netcdf");
+    FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
+    virtual ~FONcTransform();
+	virtual void transform_dap2(ostream &strm);
 	virtual void transform_dap4();
 
-
 	virtual void dump(ostream &strm) const;
+
 private:
     virtual void transform_dap4_no_group();
-    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&,std::vector<int>&);
-    virtual void transform_dap4_group_internal(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&,std::vector<int>&);
-    virtual void check_and_obtain_dimensions(D4Group*grp,bool);
-    virtual void check_and_obtain_dimensions_internal(D4Group*grp);
+    virtual void transform_dap4_group(libdap::D4Group*,bool is_root, int par_grp_id, std::map<std::string, int>&, std::vector<int>&);
+    virtual void transform_dap4_group_internal(libdap::D4Group*, bool is_root, int par_grp_id, std::map<std::string, int>&, std::vector<int>&);
+    virtual void check_and_obtain_dimensions(libdap::D4Group *grp, bool);
+    virtual void check_and_obtain_dimensions_internal(libdap::D4Group *grp);
     virtual bool check_group_support();
-    virtual void gen_included_grp_list(D4Group*grp);
+    virtual void gen_included_grp_list(libdap::D4Group *grp);
 
+    virtual bool is_streamable();
+    virtual bool is_dds_streamable();
+    virtual bool is_dmr_streamable(libdap::D4Group *group);
 
 };
 

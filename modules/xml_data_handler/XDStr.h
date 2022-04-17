@@ -33,7 +33,7 @@
 #ifndef _xdstr_h
 #define _xdstr_h 1
 
-#include "Str.h"
+#include <libdap/Str.h>
 #include "XDOutput.h"
 
 class XDStr: public libdap::Str, public XDOutput {

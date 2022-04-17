@@ -1,0 +1,23 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    GeoGrid_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    GeoGrid_Data_Fields_temperature_dim_0 {
+        String name "YDim:GeoGrid";
+    }
+    GeoGrid_Data_Fields_temperature_dim_1 {
+        String name "XDim:GeoGrid";
+    }
+    temperature {
+        String long_name "temperature";
+    }
+    temperature_dim_0 {
+        String name "fakeDim2";
+    }
+    temperature_dim_1 {
+        String name "fakeDim3";
+    }
+}

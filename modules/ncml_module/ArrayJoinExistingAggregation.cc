@@ -31,7 +31,7 @@
 
 #include <sstream>
 
-#include <Marshaller.h>
+#include <libdap/Marshaller.h>
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -42,18 +42,14 @@
 #include "AggregationUtil.h" // agg_util
 #include "NCMLDebug.h"
 
-static const string DEBUG_CHANNEL(NCML_MODULE_DBG_CHANNEL_2);
-static const bool PRINT_CONSTRAINTS = false;
-
-// Timeouts are now handled in/by the BES framework in BESInterface.
-// jhrg 12/29/15
-#undef USE_LOCAL_TIMEOUT_SCHEME
+#define DEBUG_CHANNEL "ncml:2"
 
 namespace agg_util {
 
 ArrayJoinExistingAggregation::ArrayJoinExistingAggregation(const libdap::Array& granuleTemplate,
-    const AMDList& memberDatasets, std::auto_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& joinDim) :
-    ArrayAggregationBase(granuleTemplate, memberDatasets, arrayGetter), _joinDim(joinDim)
+    AMDList memberDatasets, std::unique_ptr<ArrayGetterInterface> arrayGetter, const Dimension& joinDim) :
+    ArrayAggregationBase(granuleTemplate, std::move(memberDatasets), std::move(arrayGetter)),
+    _joinDim(joinDim)
 {
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Making the aggregated outer dimension be: " + joinDim.toString() + "\n");
 
@@ -70,10 +66,7 @@ ArrayJoinExistingAggregation::ArrayJoinExistingAggregation(const libdap::Array& 
 
     ostringstream oss;
     AggregationUtil::printDimensions(oss, *this);
-    if (PRINT_CONSTRAINTS) {
-        // constraints as well to ensure reset worked.
-        AggregationUtil::printConstraints(oss, *this);
-    }
+
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Constrained Dims after set are: " + oss.str());
 }
 
@@ -141,18 +134,8 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
         // *** copy lines from AggregationBase::read() into here in place
         // *** of the call to read()
 
-        if (PRINT_CONSTRAINTS) {
-            BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
-            printConstraints(*this);
-        }
-
         // call subclass impl
         transferOutputConstraintsIntoGranuleTemplateHook();
-
-        if (PRINT_CONSTRAINTS) {
-            BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
-            printConstraints(getGranuleTemplateArray());
-        }
 
         // *** Inserted code from readConstrainedGranuleArraysAndAggregateDataHook here
 
@@ -239,26 +222,9 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
                     // mapped endpoint clamped within this granule
                     granuleConstraintTemplate.add_constraint(outerDimIt, localGranuleIndex, clampedStride,
                         granuleStopIndex);
-#if USE_LOCAL_TIMEOUT_SCHEME
-                    dds.timeout_on();
-#endif
-#if 0
-                    // Do the constrained read and copy it into this output buffer
-                    agg_util::AggregationUtil::addDatasetArrayDataToAggregationOutputArray(*this,// into the output buffer of this object
-                        nextOutputBufferElementIndex,// into the next open slice
-                        getGranuleTemplateArray(),// constraints we just setup
-                        name(),// aggvar name
-                        const_cast<AggMemberDataset&>(*pCurrDataset),// Dataset who's DDS should be searched
-                        getArrayGetterInterface(), DEBUG_CHANNEL);
-#endif
-
                     Array* pDatasetArray = AggregationUtil::readDatasetArrayDataForAggregation(
                         getGranuleTemplateArray(), name(), const_cast<AggMemberDataset&>(*pCurrDataset),
                         getArrayGetterInterface(), DEBUG_CHANNEL);
-#if USE_LOCAL_TIMEOUT_SCHEME
-                    dds.timeout_off();
-#endif
-
 #if PIPELINING
                     m.put_vector_part(pDatasetArray->get_buf(), getGranuleTemplateArray().length(), var()->width(),
                         var()->type());
@@ -306,7 +272,7 @@ void ArrayJoinExistingAggregation::duplicate(const ArrayJoinExistingAggregation&
     _joinDim = rhs._joinDim;
 }
 
-void ArrayJoinExistingAggregation::cleanup() throw ()
+void ArrayJoinExistingAggregation::cleanup() noexcept
 {
 }
 

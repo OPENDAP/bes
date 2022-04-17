@@ -37,7 +37,7 @@
 #include "AggMemberDataset.h" // agg_util
 #include "Dimension.h" // agg_util
 #include "DDSLoader.h" // agg_util
-#include <Grid.h> // libdap
+#include <libdap/Grid.h> // libdap
 #include "GridAggregationBase.h" // agg_util
 
 namespace libdap {
@@ -122,7 +122,7 @@ private:
     void duplicate(const GridAggregateOnOuterDimension& rhs);
 
     /** Delete any heap memory */
-    void cleanup() throw ();
+    void cleanup() const noexcept;
 
     /**
      * Helper for constructor to create replace our data array
@@ -135,7 +135,6 @@ private:
     void transferConstraintsToSubGridMaps(Grid* pSubGrid);
     void transferConstraintsToSubGridArray(Grid* pSubGrid);
 
-private:
     // data rep
     // The new outer dimension description
     Dimension _newDim;

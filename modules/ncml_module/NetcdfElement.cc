@@ -29,7 +29,7 @@
 
 #include "config.h"
 
-#include <BaseType.h> // libdap
+#include <libdap/BaseType.h> // libdap
 #include <BESDapResponse.h> // bes
 
 #include "AggMemberDataset.h" // agg_util
@@ -270,7 +270,7 @@ void NetcdfElement::createResponseObject(DDSLoader::ResponseType type)
     VALID_PTR(_parser);
 
     // Make a new response and store the raw ptr, noting that we need to delete it in dtor.
-    std::auto_ptr<BESDapResponse> newResponse = _parser->getDDSLoader().makeResponseForType(type);
+    std::unique_ptr<BESDapResponse> newResponse = _parser->getDDSLoader().makeResponseForType(type);
     VALID_PTR(newResponse.get());
     _response = newResponse.release();
     _weOwnResponse = true;

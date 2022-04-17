@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="TTT" space="catalog">/data/swath_3_3d_dimmap.hdf</setContainer>
+    <define name="d">
+	<container name="TTT" />
+        <constraint>Latitude_Swath1[0:1:3][0:1:7],Longitude_Swath1[0:1:3][0:1:7],Latitude_Swath1_1[0:1:7][0:1:15],Longitude_Swath1_1[0:1:7][0:1:15],Latitude_Swath1_2[0:1:15][0:1:31],Longitude_Swath1_2[0:1:15][0:1:31], Latitude_Swath2[0:1:3][0:1:7],Longitude_Swath2[0:1:3][0:1:7],Latitude_Swath2_1[0:1:7][0:1:15],Longitude_Swath2_1[0:1:7][0:1:15],Latitude_Swath3[0:1:7][0:1:15],Longitude_Swath3[0:1:7][0:1:15]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

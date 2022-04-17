@@ -25,9 +25,10 @@
 #ifndef _dmrpp_d4opaque_h
 #define _dmrpp_d4opaque_h 1
 
+#include <memory>
 #include <string>
 
-#include <D4Opaque.h>
+#include <libdap/D4Opaque.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,21 +38,23 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
-    void _duplicate(const DmrppD4Opaque &ts);
-
     void insert_chunk(std::shared_ptr<Chunk>  chunk);
     void read_chunks();
 
 public:
-    DmrppD4Opaque(const std::string &n);
-    DmrppD4Opaque(const std::string &n, const std::string &d);
-    DmrppD4Opaque(const DmrppD4Opaque &rhs);
+    DmrppD4Opaque(const std::string &n) : libdap::D4Opaque(n), DmrppCommon() { }
+    DmrppD4Opaque(const std::string &n, const std::string &d) : libdap::D4Opaque(n, d), DmrppCommon() { }
+    DmrppD4Opaque(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n), DmrppCommon(dmz) { }
+    DmrppD4Opaque(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n, d), DmrppCommon(dmz) { }
+    DmrppD4Opaque(const DmrppD4Opaque &) = default;
 
-    virtual ~DmrppD4Opaque() {}
+    virtual ~DmrppD4Opaque() = default;
 
     DmrppD4Opaque &operator=(const DmrppD4Opaque &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppD4Opaque(*this);
+    }
 
     /**
      * @brief Get a pointer to start of the Opaque data buffer
@@ -74,7 +77,8 @@ public:
         d_buf.resize(size);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

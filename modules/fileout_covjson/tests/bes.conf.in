@@ -7,18 +7,22 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,covjson,nc
+BES.modules=dap,cmd,dapreader,covjson,nc,h5,h4
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 
 BES.module.covjson=@abs_top_builddir@/modules/fileout_covjson/.libs/libfocovjson_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.h4=@abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_covjson
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc$
+BES.Catalog.catalog.TypeMatch=dapreader:.*\.das$;dapreader:.*\.dods$;nc:.*\.nc$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
@@ -66,3 +70,17 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
+H5.EnableCF=true
+H4.EnableCF=true
+H4.EnablePassFileID=true
+H4.EnableSpecialEOS=true
+H4.DisableScaleOffsetComp=true
+H4.DisableStructMetaAttr=true
+H4.EnableCheckMODISGeoFile=false
+H4.EnableEOSGeoCacheFile=false
+HDF4.Cache.latlon.path=/tmp/latlon
+HDF4.Cache.latlon.prefix=l
+H4.DisableSwathDimMap=false
+H5.DisableStructMetaAttr=true
+#FoCovJson.MAY_IGNORE_Z_AXIS=true
+#FoCovJson.SIMPLE_GEO=true

@@ -33,7 +33,7 @@
 #ifndef _xdgrid_h
 #define _xdgrid_h 1
 
-#include <Grid.h>
+#include <libdap/Grid.h>
 #include "XDOutput.h"
 
 class XDGrid: public libdap::Grid, public XDOutput {

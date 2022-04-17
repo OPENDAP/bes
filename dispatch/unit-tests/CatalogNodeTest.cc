@@ -26,7 +26,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
+#include <unistd.h>
 
 #include "TheBESKeys.h"
 #include "BESXMLInfo.h"
@@ -90,7 +90,7 @@ public:
     void encode_node_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESXMLInfo);
+            unique_ptr<BESInfo> info(new BESXMLInfo);
 
             BESDataHandlerInterface dhi;
             info->begin_response("showNode", dhi);
@@ -120,7 +120,7 @@ public:
     void encode_node_text_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESTextInfo);
+            unique_ptr<BESInfo> info(new BESTextInfo);
 
             BESDataHandlerInterface dhi;
             info->begin_response("showNode", dhi);
@@ -154,11 +154,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CatalogNodeTest);
 
 int main(int argc, char*argv[])
 {
-
     int start = 0;
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != EOF)
+    while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd': {
             debug = 1;  // debug is a static global
@@ -178,17 +176,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = CatalogNodeTest::suite()->getName().append("::").append(argv[i]);

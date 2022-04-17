@@ -40,25 +40,19 @@
  */
 class BESTimeoutError : public BESError
 {
-protected:
-    BESTimeoutError() {}
 public:
-    BESTimeoutError( const std::string &s,
-					  const std::string &file,
-					  unsigned int line )
-			    : BESError( s, BES_TIMEOUT_ERROR,
-			                file, line ) {}
-    virtual		~BESTimeoutError() {}
+    BESTimeoutError(std::string s, std::string file, unsigned int line )
+        : BESError( std::move(s), BES_TIMEOUT_ERROR, std::move(file), line ) { }
 
-    virtual void	dump( std::ostream &strm ) const
-			{
-			    strm << "BESTimeoutError::dump - ("
-			         << (void *)this << ")" << std::endl ;
-			    BESIndent::Indent() ;
-			    BESError::dump( strm ) ;
-			    BESIndent::UnIndent() ;
-			}
+    ~BESTimeoutError() override = default;
 
+    void dump( std::ostream &strm ) const override
+    {
+        strm << "BESTimeoutError::dump - (" << (void *)this << ")" << std::endl ;
+        BESIndent::Indent() ;
+        BESError::dump( strm ) ;
+        BESIndent::UnIndent() ;
+    }
 };
 
 #endif // BESTimeoutError_h_

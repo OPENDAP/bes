@@ -6,7 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cm
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB)\
+STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB)\
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 if CPPUNIT
@@ -42,8 +43,8 @@ noinst_HEADERS = test_config.h
 # are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
@@ -59,7 +60,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@echo "# abs_top_builddir: $(abs_top_builddir)" 
 	@echo "# abs_builddir: $(abs_builddir)" 
 	@echo "# builddir: $(builddir)" 
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316" space="catalog">/data/MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5</setContainer>
+    <define name="d">
+	<container name="MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316">
+	     <constraint>Temperature_Latitude[0:1747:3494],Temperature_Longitude[0:1747:3494],Temperature_Pressure[0:27:54],Temperature_Convergence[0],Temperature_Status[3494],Temperature_L2gpPrecision[0:1747:3494][54:54:54],Temperature_L2gpValue[0:1747:3494][0:1:54]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

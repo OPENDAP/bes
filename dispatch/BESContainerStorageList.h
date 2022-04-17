@@ -34,6 +34,7 @@
 #define I_BESContainerStorageList_H 1
 
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -70,7 +71,8 @@ class BESInfo;
  */
 class BESContainerStorageList: public BESObj {
 private:
-    static BESContainerStorageList * _instance;
+    static BESContainerStorageList * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
 
     typedef struct _persistence_list {
         BESContainerStorage *_persistence_obj;
@@ -80,9 +82,11 @@ private:
 
     BESContainerStorageList::persistence_list *_first;
 
-protected:
-    BESContainerStorageList();
+    static void initialize_instance();
+    static void delete_instance();
+
 public:
+    BESContainerStorageList();
     virtual ~BESContainerStorageList();
 
     virtual bool add_persistence(BESContainerStorage *p);

@@ -98,8 +98,9 @@ TheBESKeys *TheBESKeys::TheKeys()
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-    return d_instance;
-}
+        return d_instance;
+    }
+
     throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
 
@@ -146,13 +147,13 @@ void TheBESKeys::initialize_keys()
 {
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
     *d_the_original_keys = *d_the_keys;
+    BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
     BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 }
 
 void TheBESKeys::clean()
 {
-
     if (d_the_keys && d_own_keys) {
         delete d_the_keys;
         d_the_keys = 0;
@@ -426,7 +427,9 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
     TheBESKeys::TheKeys()->get_value(key, value, found);
     // 'value' holds the string value at this point if found is true
     if (found) {
-        if (value[value.length() - 1] == '/') value.erase(value.length() - 1);
+        // Wrote and used this in place of the more cumbersome if(...) since this
+        // same operation is performed in many places in our software. jhrg 1/26/22
+        BESUtil::trim_if_trailing_slash(value);
         return value;
     }
     else {
@@ -521,6 +524,30 @@ string TheBESKeys::dump() const
     return ss.str();
 }
 
+
+string TheBESKeys::get_as_config() const
+{
+    stringstream ss;
+    ss << endl;
+    ss << "# TheBESKeys::get_as_config()" << endl;
+    if (d_the_keys && d_the_keys->size()) {
+        Keys_citer i = d_the_keys->begin();
+        Keys_citer ie = d_the_keys->end();
+        for (; i != ie; i++) {
+            string name = (*i).first;
+            vector<string> values = (*i).second;
+            bool first = true;
+            for(string value: values){
+                ss << name << (first?"=":"+=") << value << endl;
+                first = false;
+            }
+        }
+    }
+    else {
+        ss << "# TheBESKeys are empty()" << endl;
+    }
+    return ss.str();
+}
 
 
 #define MAP_SEPARATOR ":"
@@ -648,7 +675,6 @@ bool TheBESKeys::using_dynamic_config(){
     return d_dynamic_config_in_use;
 }
 
-
 /**
  * @brief Loads the the applicable dynamic configuration or nothing if no configuration is applicable.
  * @param name
@@ -656,7 +682,6 @@ bool TheBESKeys::using_dynamic_config(){
 void TheBESKeys::load_dynamic_config(const string name)
 {
 #if DYNAMIC_CONFIG_ENABLED
-
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Clear the active keys and copy the original keys into

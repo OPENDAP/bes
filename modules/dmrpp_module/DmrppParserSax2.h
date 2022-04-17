@@ -28,8 +28,9 @@
 
 #define ATTR 1
 
-#include <string.h>
+#include <cstring>
 
+#include <memory>
 #include <string>
 #include <iostream>
 #include <map>
@@ -38,8 +39,9 @@
 
 #include <libxml/parserInternals.h>
 
-#include <Type.h>   // from libdap
+#include <libdap/Type.h>   // from libdap
 #include "BESRegex.h"
+#include "url_impl.h"
 #include "EffectiveUrlCache.h"
 
 #define CRLF "\r\n"
@@ -71,8 +73,7 @@ private:
 
         inside_dataset,
 
-        // inside_group is the state just after parsing the start of a Group
-        // element.
+        // inside_group is the state just after parsing the start of a Group element.
         inside_group,
 
         inside_attribute_container,
@@ -94,9 +95,6 @@ private:
 
         inside_constructor,
 
-        // inside_sequence, Removed from merged code jhrg 5/2/14
-
-        // FIXMEinside_dmrpp_byte_stream,
         not_dap4_element,
         inside_dmrpp_object,
         inside_dmrpp_chunkDimensionSizes_element,
@@ -117,10 +115,6 @@ private:
     // This is passed into the parser using the intern() methods.
     libdap::DMR *d_dmr;   // dump DMR here
     libdap::DMR *dmr() const { return d_dmr; }
-
-
-
-
 
     // These stacks hold the state of the parse as it progresses.
     std::stack<ParseState> s; // Current parse state
@@ -173,10 +167,9 @@ private:
     std::string char_data;  // char data in value elements; null after use
     std::string root_ns;     // What is the namespace of the root node (Group)
 
-
     bool d_strict;
 
-    std::string dmrpp_dataset_href;
+    std::shared_ptr<http::url> dmrpp_dataset_href;
 
     class XMLAttribute {
         public:
@@ -266,7 +259,7 @@ public:
             error_msg(""), context(0),
             dods_attr_name(""), dods_attr_type(""),
             char_data(""), root_ns(""), d_strict(true),
-            dmrpp_dataset_href("")
+            dmrpp_dataset_href(nullptr)
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));

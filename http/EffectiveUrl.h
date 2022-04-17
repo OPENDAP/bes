@@ -29,47 +29,90 @@
 #ifndef HYRAX_GIT_EFFECTIVEURL_H
 #define HYRAX_GIT_EFFECTIVEURL_H
 
+#include <chrono>
+
+#include <memory>
 #include <string>
 #include <map>
+#include <utility>
 
+#include "HttpNames.h"
 #include "url_impl.h"
 
 namespace http {
 
+/**
+ * An EffectiveUrl is always acquired by following redirects and so may include response
+ * headers received with the final redirect response.
+ */
+class EffectiveUrl : public url {
+private:
+
+    // We need order so we use two vectors instead of a map to hold the header "map"
+    std::vector<std::string> d_response_header_names;
+    std::vector<std::string> d_response_header_values;
+
+    // Raw headers
+    std::vector<std::string> d_resp_hdr_lines;
+
+public:
+
+    explicit EffectiveUrl();
+
+    explicit EffectiveUrl(const std::string &url_s, bool trusted=false) : http::url(url_s,trusted), d_response_header_names(), d_response_header_values() {};
+
+    explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs, bool trusted=false) : http::url(url_s,trusted) {
+        ingest_response_headers(resp_hdrs);
+    };
+
     /**
-     * An EffectiveUrl is always acquired by following redirects and so may include response
-     * headers received with the final redirect response.
+     * Copy constructor
+     * @param src_url
      */
-    class EffectiveUrl : public url {
-    private:
+    EffectiveUrl(EffectiveUrl const &src_url) : http::url(src_url) {
+        d_response_header_values = src_url.d_response_header_values;
+        d_response_header_names = src_url.d_response_header_names;
+        d_resp_hdr_lines = src_url.d_resp_hdr_lines;
+    }
 
-        // We need order so we use two vectors instead of a map to hold the header "map"
-        std::vector<std::string> d_response_header_names;
-        std::vector<std::string> d_response_header_values;
+    /**
+     * Copy constructor
+     * @param src_url
+     */
+    explicit EffectiveUrl(
+            http::url const &src_url) :
+            http::url(src_url),
+            d_response_header_names(),
+            d_response_header_values() {
+    }
 
-        // Raw headers
-        std::vector<std::string> d_resp_hdr_lines;
+    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url): http::url(source_url) {
+        d_response_header_values = source_url->d_response_header_values;
+        d_response_header_names = source_url->d_response_header_names;
+        d_resp_hdr_lines = source_url->d_resp_hdr_lines;
+    }
 
-    public:
+    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url, bool trusted): http::url(source_url,trusted) {
+        d_response_header_values = source_url->d_response_header_values;
+        d_response_header_names = source_url->d_response_header_names;
+        d_resp_hdr_lines = source_url->d_resp_hdr_lines;
+    }
 
-        explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs) : http::url(url_s) {
-            ingest_response_headers(resp_hdrs);
-        };
+    explicit EffectiveUrl(
+            std::shared_ptr<http::url> source_url):
+            http::url(std::move(source_url)),
+            d_response_header_names(),
+            d_response_header_values()
+        {
+    }
 
-        explicit EffectiveUrl(const std::string &url_s) : http::url(url_s), d_response_header_names(), d_response_header_values() {};
-        explicit EffectiveUrl() : http::url(""), d_response_header_names(), d_response_header_values() {};
-
-        virtual ~EffectiveUrl(){ }
+    virtual ~EffectiveUrl(){ }
 
         bool is_expired() override;
 
         void get_header(const std::string &name, std::string &value, bool &found );
 
         void ingest_response_headers(const std::vector<std::string> &resp_hdrs);
-
-        void url(std::string url){
-            parse(url);
-        }
 
         std::string dump() override;
     };

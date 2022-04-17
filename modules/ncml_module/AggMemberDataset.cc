@@ -29,51 +29,43 @@
 #include "AggMemberDataset.h"
 
 #include "BESDataDDSResponse.h" // bes
-#include "DataDDS.h"
-#include "DDS.h" // libdap
+#include <libdap/DataDDS.h>
+#include <libdap/DDS.h> // libdap
 #include "DDSLoader.h" // agg_util
-#include "NCMLDebug.h" // ncml_module
-#include "NCMLUtil.h" // ncml_module
 
-namespace agg_util
+namespace agg_util {
+
+AggMemberDataset::AggMemberDataset(std::string location)
+        : RCObject(nullptr), _location(std::move(location))
 {
-
-  AggMemberDataset::AggMemberDataset(const std::string& location)
-  : RCObject(0)
-  , _location(location)
-  {
     // no rep yet
-  }
+}
 
-  AggMemberDataset::AggMemberDataset(const AggMemberDataset& proto)
-  : RCObjectInterface()
-  , RCObject(proto)
-  {
-      _location = proto._location;	// jhrg 3/16/11
+AggMemberDataset::AggMemberDataset(const AggMemberDataset &proto)
+        : RCObjectInterface(), RCObject(proto), _location(proto._location)
+{
     // no rep yet
-  }
+}
 
-  AggMemberDataset::~AggMemberDataset()
-  {
+AggMemberDataset::~AggMemberDataset()
+{
     _location = "";
-  }
+}
 
-  const std::string&
-  AggMemberDataset::getLocation() const
-  {
+const std::string &
+AggMemberDataset::getLocation() const
+{
     return _location;
-  }
+}
 
-  AggMemberDataset&
-  AggMemberDataset::operator=(const AggMemberDataset& rhs)
-  {
-    if (&rhs == this)
-      {
+AggMemberDataset &
+AggMemberDataset::operator=(const AggMemberDataset &rhs)
+{
+    if (&rhs == this) {
         return *this;
-      }
+    }
     _location = rhs._location;
     return *this;
-  }
-
+}
 
 }

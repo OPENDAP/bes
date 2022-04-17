@@ -45,7 +45,7 @@ using namespace CppUnit;
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
-#include <GetOpt.h>
+#include <unistd.h>
 
 using std::cerr;
 using std::endl;
@@ -527,10 +527,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(cacheT);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "db6ph");
     int option_char;
     bool purge = true;    // the default
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "db6ph")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -564,6 +563,9 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     // Do this AFTER we process the command line so debugging in the test constructor
     // (which does a one time construction of the test cache) will work.
 
@@ -574,12 +576,12 @@ int main(int argc, char*argv[])
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = cacheT::suite()->getName().append("::").append(argv[i]);

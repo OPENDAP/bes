@@ -10,17 +10,38 @@
 # the installed headers. This might make for some consistency issues if the
 # libdap code is edited and not installed. jhrg 12/5/19
 include_directories(../libdap4)
+include_directories(../libdap4/d4_ce)
+include_directories(../libdap4/d4_function)
+include_directories(../libdap4/geo)
 
 # Does including this _and_ the above bork CLion? jhrg 1.15.20
-include_directories(../build/include/libdap)
+#include_directories(../build/include/libdap)
 
-include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
-include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
+# Added for the sql handler and its use of unixODBC
+if (EXISTS /usr/local/Cellar/openssl/1.0.2r/include/)
+	include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
+endif()
+
 include_directories(/usr/local/include/)
+include_directories(/usr/local/include/c++)
+include_directories(/usr/include/libxml2)
+include_directories(/usr/include/curl)
+
+# Added.
+if (EXISTS /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+	include_directories(/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/)
+endif()
+
+if (EXISTS /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
+	include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2)
+	include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/curl)
+endif()
 
 # Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
+include_directories(../build/include)
+include_directories(../build/include/libdap)
 
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
@@ -40,6 +61,8 @@ include_directories(dapreader)
 include_directories(dispatch)
 include_directories(http)
 include_directories(rapidjson)
+include_directories(rapidxml)
+include_directories(pugixml/src)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)
@@ -104,17 +127,20 @@ include_directories(modules/netcdf_handler/win32)
 
 include_directories(modules/ngap_module)
 
-#include_directories(modules/sql_handler)
-#include_directories(modules/sql_handler/action)
-#include_directories(modules/sql_handler/connector)
-#include_directories(modules/sql_handler/container)
-#include_directories(modules/sql_handler/DEM)
-#include_directories(modules/sql_handler/DTM)
-#include_directories(modules/sql_handler/handler)
-#include_directories(modules/sql_handler/handler/connector)
-#include_directories(modules/sql_handler/templates)
-#include_directories(modules/sql_handler/unixODBC)
-#include_directories(modules/sql_handler/utils)
+if (EXISTS modules/sql_handler)
+include_directories(modules/sql_handler)
+include_directories(modules/sql_handler/action)
+include_directories(modules/sql_handler/connector)
+include_directories(modules/sql_handler/container)
+include_directories(modules/sql_handler/DEM)
+include_directories(modules/sql_handler/DTM)
+include_directories(modules/sql_handler/handler)
+include_directories(modules/sql_handler/handler/connector)
+include_directories(modules/sql_handler/templates)
+include_directories(modules/sql_handler/unixODBC)
+include_directories(modules/sql_handler/utils)
+endif()
+
 include_directories(modules/ugrid_functions)
 
 include_directories(modules/ugrid_functions/unit-tests)
@@ -139,9 +165,12 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
-
 add_executable(bes
     config.h
+
+	rapidjson/rapidjson.h
+	pugixml/src/pugixml.hpp
+
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
     cmdln/CmdApp.cc
@@ -164,14 +193,6 @@ add_executable(bes
     dap/unit-tests/test_utils.cc
     dap/unit-tests/test_utils.h
     dap/unit-tests/TestFunction.h
-#    dap/unused/BESDapNullAggregationServer.cc
-#    dap/unused/BESDapNullAggregationServer.h
-#    dap/unused/BESDapResponseCache.cc
-#    dap/unused/BESDapResponseCache.h
-#    dap/unused/BESDapSequenceAggregationServer.cc
-#    dap/unused/BESDapSequenceAggregationServer.h
-#    dap/unused/BESHandlerUtil.cc
-#    dap/unused/BESHandlerUtil.h
     dap/BESDap4ResponseHandler.cc
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
@@ -233,6 +254,8 @@ add_executable(bes
     dap/ShowPathInfoResponseHandler.h
     dap/TempFile.cc
     dap/TempFile.h
+		dap/DapUtils.cc
+		dap/DapUtils.h
 
     dapreader/DapModule.cc
     dapreader/DapModule.h
@@ -287,7 +310,6 @@ add_executable(bes
     dispatch/unit-tests/uncompressT.cc
     dispatch/unit-tests/urlT.cc
     dispatch/unit-tests/utilT.cc
-        dispatch/unit-tests/AllowedHostsTest.cc
     dispatch/BESAbstractModule.h
     dispatch/BESApp.cc
     dispatch/BESApp.h
@@ -471,9 +493,9 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-    dispatch/AllowedHosts.cc
-    dispatch/AllowedHosts.h
 
+    http/AllowedHosts.cc
+    http/AllowedHosts.h
     http/url_impl.cc
     http/url_impl.h
     http/CurlUtils.cc
@@ -496,110 +518,7 @@ add_executable(bes
     http/unit-tests/EffectiveUrlCacheTest.cc
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
-
-#    functions/geo-functions/unused/NC_GOES_Dataset.cpp
-#    functions/geo-functions/unused/NC_GOES_Dataset.h
-    functions/geo-functions/AbstractDataset.cpp
-    functions/geo-functions/AbstractDataset.h
-    functions/geo-functions/BoundingBox.cpp
-    functions/geo-functions/BoundingBox.h
-    functions/geo-functions/DAP_Dataset.cpp
-    functions/geo-functions/DAP_Dataset.h
-    functions/geo-functions/Geo2DArray.cc
-    functions/geo-functions/Geo2DArray.h
-    functions/geo-functions/reproj_functions.cc
-    functions/geo-functions/reproj_functions.h
-    functions/geo-functions/wcs_error.cpp
-    functions/geo-functions/wcs_error.h
-    functions/geo-functions/wcsUtil.cpp
-    functions/geo-functions/wcsUtil.h
-
-    functions/stare/build_sidecar.cc
-    functions/stare/StareFunctions.cc
-    functions/stare/StareFunctions.h
-    functions/stare/unit-tests/StareFunctionsTest.cc
-
-    functions/tests/gse-test.cc
-    functions/unit-tests/BBoxCombFunctionTest.cc
-    functions/unit-tests/BBoxFunctionTest.cc
-    functions/unit-tests/BBoxUnionFunctionTest.cc
-    functions/unit-tests/CEFunctionsTest.cc
-    functions/unit-tests/Dap4_CEFunctionsTest.cc
-    functions/unit-tests/Dap4_TabularFunctionTest.cc
-    functions/unit-tests/GridGeoConstraintTest.cc
-    functions/unit-tests/MakeMaskFunctionTest.cc
-    functions/unit-tests/MaskArrayFunctionTest.cc
-    functions/unit-tests/OdometerTest.cc
-    functions/unit-tests/RangeFunctionTest.cc
-    functions/unit-tests/RoiFunctionTest.cc
-    functions/unit-tests/ScaleUtilTest.cc
-    functions/unit-tests/ScaleUtilTest3D.cc
-    functions/unit-tests/TabularFunctionTest.cc
-    functions/unit-tests/test_config.h
-    functions/unit-tests/test_utils.cc
-    functions/unit-tests/test_utils.h
-    functions/BBoxCombFunction.cc
-    functions/BBoxCombFunction.h
-    functions/BBoxFunction.cc
-    functions/BBoxFunction.h
-    functions/BBoxUnionFunction.cc
-    functions/BBoxUnionFunction.h
-    functions/BindNameFunction.cc
-    functions/BindNameFunction.h
-    functions/BindShapeFunction.cc
-    functions/BindShapeFunction.h
-    functions/DapFunctions.cc
-    functions/DapFunctions.h
-    functions/DapFunctionsRequestHandler.cc
-    functions/DapFunctionsRequestHandler.h
-    functions/DilateArrayFunction.cc
-    functions/DilateArrayFunction.h
-    functions/functions_util.cc
-    functions/functions_util.h
-    functions/GeoConstraint.cc
-    functions/GeoConstraint.h
-    functions/GeoGridFunction.cc
-    functions/GeoGridFunction.h
-    functions/grid_utils.cc
-    functions/grid_utils.h
-    functions/GridFunction.cc
-    functions/GridFunction.h
-    functions/GridGeoConstraint.cc
-    functions/GridGeoConstraint.h
-    functions/gse_parser.h
-    functions/GSEClause.cc
-    functions/GSEClause.h
-
-    functions/LinearScaleFunction.cc
-    functions/LinearScaleFunction.h
-    functions/MakeArrayFunction.cc
-    functions/MakeArrayFunction.h
-    functions/MakeMaskFunction.cc
-    functions/MakeMaskFunction.h
-    functions/MaskArrayFunction.cc
-    functions/MaskArrayFunction.h
-    functions/Odometer.cc
-    functions/Odometer.h
-    functions/RangeFunction.cc
-    functions/RangeFunction.h
-    functions/roi_util.cc
-    functions/roi_util.h
-    functions/RoiFunction.cc
-    functions/RoiFunction.h
-    functions/scale_util.cc
-    functions/ScaleGrid.cc
-    functions/ScaleGrid.h
-    functions/TabularFunction.cc
-    functions/TabularFunction.h
-    functions/TabularSequence.cc
-    functions/TabularSequence.h
-    functions/VersionFunction.cc
-    functions/VersionFunction.h
-
-	functions/stare/StareFunctions.cc
-	functions/stare/StareFunctions.h
-	functions/stare/build_sidecar.cc
-	functions/stare/unit-tests/StareFunctionsTest.cc
+    http/unit-tests/AllowedHostsTest.cc
 
 	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
@@ -792,6 +711,11 @@ add_executable(bes
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
     modules/dmrpp_module/DmrppNames.h
+
+	modules/dmrpp_module/DMZ.h
+	modules/dmrpp_module/DMZ.cc
+	modules/dmrpp_module/unit-tests/DMZTest.cc
+
     modules/dmrpp_module/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
     modules/dmrpp_module/AccessCredentials.h
@@ -911,6 +835,8 @@ add_executable(bes
     modules/fileout_netcdf/FONcTransmitter.h
     modules/fileout_netcdf/FONcUtils.cc
     modules/fileout_netcdf/FONcUtils.h
+        modules/fileout_netcdf/unit-tests/HistoryUtilsTest.cc
+    modules/fileout_netcdf/unit-tests/test_config.h
 
     modules/fits_handler/BESAutoPtr.h
     modules/fits_handler/fits_read_attributes.cc
@@ -1599,7 +1525,7 @@ add_executable(bes
     modules/ncml_module/OtherXMLParser.h
     modules/ncml_module/RCObject.cc
     modules/ncml_module/RCObject.h
-    modules/ncml_module/RCObjectInterface.cc
+    # modules/ncml_module/RCObjectInterface.cc
     modules/ncml_module/RCObjectInterface.h
     modules/ncml_module/ReadMetadataElement.cc
     modules/ncml_module/ReadMetadataElement.h
@@ -1678,116 +1604,15 @@ add_executable(bes
 	modules/ngap_module/NgapContainerStorage.h
 	modules/ngap_module/NgapContainer.cc
 	modules/ngap_module/NgapContainer.h
-	modules/ngap_module/NgapError.h
+	# modules/ngap_module/NgapError.h
 	modules/ngap_module/NgapModule.cc
 	modules/ngap_module/NgapModule.h
 	modules/ngap_module/NgapNames.h
 	modules/ngap_module/NgapRequestHandler.cc
     modules/ngap_module/NgapRequestHandler.h
-	modules/ngap_module/unit-tests/NgapApiTest.cc
+    modules/ngap_module/unit-tests/NgapApiTest.cc
+    # modules/ngap_module/unit-tests/NgapContainerTest.cc
 
-	#modules/sql_handler/action/SQLAction.h
-    #modules/sql_handler/action/SQLActionFactory.h
-    #modules/sql_handler/action/SQLActionList.h
-    #modules/sql_handler/action/SQLActionManager.h
-    #modules/sql_handler/action/SQLDynamicActionFactory.h
-    #modules/sql_handler/action/SQLDynamicActionList.h
-    #modules/sql_handler/action/SQLObjectAction.h
-    #modules/sql_handler/action/SQLObjectActionFactory.h
-    #modules/sql_handler/action/SQLObjectActionList.h
-    #modules/sql_handler/action/SQLStaticAction.h
-    #modules/sql_handler/action/SQLStaticActionList.h
-    #modules/sql_handler/connector/SQLConnector.h
-    #modules/sql_handler/connector/SQLErrorConnector.h
-    #modules/sql_handler/connector/SQLHandleConnector.h
-    #modules/sql_handler/connector/SQLSimpleConnector.h
-    #modules/sql_handler/connector/SQLTypeConnector.h
-    #modules/sql_handler/container/SQLAttribute.h
-    #modules/sql_handler/container/SQLConstraint.h
-    #modules/sql_handler/container/SQLContainer.cc
-    #modules/sql_handler/container/SQLContainer.h
-    #modules/sql_handler/container/SQLContainerDefinitions.h
-    #modules/sql_handler/container/SQLContainerFactory.cc
-    #modules/sql_handler/container/SQLContainerFactory.h
-    #modules/sql_handler/container/SQLContainerStorage.h
-    #modules/sql_handler/container/SQLContainerStorageVolatile.cc
-    #modules/sql_handler/container/SQLContainerStorageVolatile.h
-    #modules/sql_handler/container/SQLDataHandlerInterface.h
-    #modules/sql_handler/container/SQLQuery.cc
-    #modules/sql_handler/container/SQLQuery.h
-    #modules/sql_handler/container/SQLQueryDefinitions.h
-    #modules/sql_handler/container/SQLTextContainer.cc
-    #modules/sql_handler/container/SQLTextContainer.h
-    #modules/sql_handler/container/SQLTextDefinitions.h
-    #modules/sql_handler/DEM/SQLCheckPoint.cc
-    #modules/sql_handler/DEM/SQLCheckPoint.h
-    #modules/sql_handler/DEM/SQLDefaultErrorAction.h
-    #modules/sql_handler/DEM/SQLErrorFactory.h
-    #modules/sql_handler/DEM/SQLErrorManager.h
-    #modules/sql_handler/DEM/SQLInternalError.h
-    #modules/sql_handler/DEM/SQLInternalFatalError.h
-    #modules/sql_handler/DTM/SQLBaseType.h
-    #modules/sql_handler/DTM/SQLCastAction.h
-    #modules/sql_handler/DTM/SQLComplexType.h
-    #modules/sql_handler/DTM/SQLDummySimpleType.h
-    #modules/sql_handler/DTM/SQLDynamicTypeFactory.h
-    #modules/sql_handler/DTM/SQLObjectTypeFactory.h
-    #modules/sql_handler/DTM/SQLSequence.h
-    #modules/sql_handler/DTM/SQLSimpleType.h
-    #modules/sql_handler/DTM/SQLTypeFactoryComponent.h
-    #modules/sql_handler/DTM/SQLTypeManager.h
-    #modules/sql_handler/handler/connector/SQLCloseAction.h
-    #modules/sql_handler/handler/connector/SQLConnectAction.h
-    #modules/sql_handler/handler/connector/SQLNextTypeAction.h
-    #modules/sql_handler/handler/connector/SQLQueryAction.h
-    #modules/sql_handler/handler/SQLBuildDAS.h
-    #modules/sql_handler/handler/SQLBuildDATA.h
-    #modules/sql_handler/handler/SQLBuildDDS.h
-    #modules/sql_handler/templates/Connector.cc
-    #modules/sql_handler/templates/Connector.h
-    #modules/sql_handler/templates/ErrorFactoryComponent.cc
-    #modules/sql_handler/templates/ErrorFactoryComponent.h
-    #modules/sql_handler/templates/Module.cc
-    #modules/sql_handler/templates/Module.h
-    #modules/sql_handler/templates/Plugin.cc
-    #modules/sql_handler/templates/Plugin.h
-    #modules/sql_handler/templates/PluginLoader.cc
-    #modules/sql_handler/templates/PluginLoader.h
-    #modules/sql_handler/templates/ResponseNames.h
-    #modules/sql_handler/templates/TypeFactoryComponent.cc
-    #modules/sql_handler/templates/TypeFactoryComponent.h
-    #modules/sql_handler/templates/Types.h
-    #modules/sql_handler/unixODBC/ODBCConnector.cc
-    #modules/sql_handler/unixODBC/ODBCConnector.h
-    #modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.cc
-    #modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.h
-    #modules/sql_handler/unixODBC/ODBCPlugin.cc
-    #modules/sql_handler/unixODBC/ODBCPlugin.h
-    #modules/sql_handler/unixODBC/ODBCPluginLoader.cc
-    #modules/sql_handler/unixODBC/ODBCPluginLoader.h
-    #modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.cc
-    #modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.h
-    #modules/sql_handler/unixODBC/ODBCTypes.h
-    #modules/sql_handler/utils/Clone.h
-    #modules/sql_handler/utils/Delete.h
-    #modules/sql_handler/utils/SmartCast.h
-    #modules/sql_handler/utils/SmartCheck.h
-    #modules/sql_handler/utils/SmartList.h
-    #modules/sql_handler/utils/SmartMap.h
-    #modules/sql_handler/utils/StringMatch.cc
-    #modules/sql_handler/utils/StringMatch.h
-    #modules/sql_handler/config.h
-    #modules/sql_handler/sql_config.h
-    #modules/sql_handler/SQLDefinitions.h
-    #modules/sql_handler/SQLLinker.h
-    #modules/sql_handler/SQLModule.cc
-    #modules/sql_handler/SQLModule.h
-    #modules/sql_handler/SQLPlugin.cc
-    #modules/sql_handler/SQLPlugin.h
-    #modules/sql_handler/SQLPluginList.h
-    #modules/sql_handler/SQLRequestHandler.cc
-    #modules/sql_handler/SQLRequestHandler.h
-    #modules/sql_handler/SQLResponseNames.h
     modules/ugrid_functions/unit-tests/BindTest.cc
     modules/ugrid_functions/unit-tests/GFTests.cc
     modules/ugrid_functions/unit-tests/NDimArrayTest.cc
@@ -1806,8 +1631,6 @@ add_executable(bes
     modules/ugrid_functions/ugrid_utils.h
     modules/ugrid_functions/UgridFunctions.cc
     modules/ugrid_functions/UgridFunctions.h
-
-
 
     modules/usage/BESUsage.h
     modules/usage/BESUsageModule.cc
@@ -1950,8 +1773,7 @@ add_executable(bes
     ppt/PPTConnection.h
     ppt/PPTMarkFinder.cc
     ppt/PPTMarkFinder.h
-    ppt/PPTProtocol.cc
-    ppt/PPTProtocol.h
+    ppt/PPTProtocolNames.h
     ppt/PPTServer.cc
     ppt/PPTServer.h
     ppt/PPTStreamBuf.cc
@@ -2078,4 +1900,111 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-)
+	modules/fileout_netcdf/history_utils.cc
+	modules/fileout_netcdf/history_utils.h)
+
+if (EXISTS modules/sql_handler)
+	add_executable(bes
+		modules/sql_handler/action/SQLAction.h
+		modules/sql_handler/action/SQLActionFactory.h
+		modules/sql_handler/action/SQLActionList.h
+		modules/sql_handler/action/SQLActionManager.h
+		modules/sql_handler/action/SQLDynamicActionFactory.h
+		modules/sql_handler/action/SQLDynamicActionList.h
+		modules/sql_handler/action/SQLObjectAction.h
+		modules/sql_handler/action/SQLObjectActionFactory.h
+		modules/sql_handler/action/SQLObjectActionList.h
+		modules/sql_handler/action/SQLStaticAction.h
+		modules/sql_handler/action/SQLStaticActionList.h
+		modules/sql_handler/connector/SQLConnector.h
+		modules/sql_handler/connector/SQLErrorConnector.h
+		modules/sql_handler/connector/SQLHandleConnector.h
+		modules/sql_handler/connector/SQLSimpleConnector.h
+		modules/sql_handler/connector/SQLTypeConnector.h
+		modules/sql_handler/container/SQLAttribute.h
+		modules/sql_handler/container/SQLConstraint.h
+		modules/sql_handler/container/SQLContainer.cc
+		modules/sql_handler/container/SQLContainer.h
+		modules/sql_handler/container/SQLContainerDefinitions.h
+		modules/sql_handler/container/SQLContainerFactory.cc
+		modules/sql_handler/container/SQLContainerFactory.h
+		modules/sql_handler/container/SQLContainerStorage.h
+		modules/sql_handler/container/SQLContainerStorageVolatile.cc
+		modules/sql_handler/container/SQLContainerStorageVolatile.h
+		modules/sql_handler/container/SQLDataHandlerInterface.h
+		modules/sql_handler/container/SQLQuery.cc
+		modules/sql_handler/container/SQLQuery.h
+		modules/sql_handler/container/SQLQueryDefinitions.h
+		modules/sql_handler/container/SQLTextContainer.cc
+		modules/sql_handler/container/SQLTextContainer.h
+		modules/sql_handler/container/SQLTextDefinitions.h
+		modules/sql_handler/DEM/SQLCheckPoint.cc
+		modules/sql_handler/DEM/SQLCheckPoint.h
+		modules/sql_handler/DEM/SQLDefaultErrorAction.h
+		modules/sql_handler/DEM/SQLErrorFactory.h
+		modules/sql_handler/DEM/SQLErrorManager.h
+		modules/sql_handler/DEM/SQLInternalError.h
+		modules/sql_handler/DEM/SQLInternalFatalError.h
+		modules/sql_handler/DTM/SQLBaseType.h
+		modules/sql_handler/DTM/SQLCastAction.h
+		modules/sql_handler/DTM/SQLComplexType.h
+		modules/sql_handler/DTM/SQLDummySimpleType.h
+		modules/sql_handler/DTM/SQLDynamicTypeFactory.h
+		modules/sql_handler/DTM/SQLObjectTypeFactory.h
+		modules/sql_handler/DTM/SQLSequence.h
+		modules/sql_handler/DTM/SQLSimpleType.h
+		modules/sql_handler/DTM/SQLTypeFactoryComponent.h
+		modules/sql_handler/DTM/SQLTypeManager.h
+		modules/sql_handler/handler/connector/SQLCloseAction.h
+		modules/sql_handler/handler/connector/SQLConnectAction.h
+		modules/sql_handler/handler/connector/SQLNextTypeAction.h
+		modules/sql_handler/handler/connector/SQLQueryAction.h
+		modules/sql_handler/handler/SQLBuildDAS.h
+		modules/sql_handler/handler/SQLBuildDATA.h
+		modules/sql_handler/handler/SQLBuildDDS.h
+		modules/sql_handler/templates/Connector.cc
+		modules/sql_handler/templates/Connector.h
+		modules/sql_handler/templates/ErrorFactoryComponent.cc
+		modules/sql_handler/templates/ErrorFactoryComponent.h
+		modules/sql_handler/templates/Module.cc
+		modules/sql_handler/templates/Module.h
+		modules/sql_handler/templates/Plugin.cc
+		modules/sql_handler/templates/Plugin.h
+		modules/sql_handler/templates/PluginLoader.cc
+		modules/sql_handler/templates/PluginLoader.h
+		modules/sql_handler/templates/ResponseNames.h
+		modules/sql_handler/templates/TypeFactoryComponent.cc
+		modules/sql_handler/templates/TypeFactoryComponent.h
+		modules/sql_handler/templates/Types.h
+		modules/sql_handler/unixODBC/ODBCConnector.cc
+		modules/sql_handler/unixODBC/ODBCConnector.h
+		modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.cc
+		modules/sql_handler/unixODBC/ODBCErrorFactoryComponent.h
+		modules/sql_handler/unixODBC/ODBCPlugin.cc
+		modules/sql_handler/unixODBC/ODBCPlugin.h
+		modules/sql_handler/unixODBC/ODBCPluginLoader.cc
+		modules/sql_handler/unixODBC/ODBCPluginLoader.h
+		modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.cc
+		modules/sql_handler/unixODBC/ODBCTypeFactoryComponent.h
+		modules/sql_handler/unixODBC/ODBCTypes.h
+		modules/sql_handler/utils/Clone.h
+		modules/sql_handler/utils/Delete.h
+		modules/sql_handler/utils/SmartCast.h
+		modules/sql_handler/utils/SmartCheck.h
+		modules/sql_handler/utils/SmartList.h
+		modules/sql_handler/utils/SmartMap.h
+		modules/sql_handler/utils/StringMatch.cc
+		modules/sql_handler/utils/StringMatch.h
+		modules/sql_handler/config.h
+		modules/sql_handler/sql_config.h
+		modules/sql_handler/SQLDefinitions.h
+		modules/sql_handler/SQLLinker.h
+		modules/sql_handler/SQLModule.cc
+		modules/sql_handler/SQLModule.h
+		modules/sql_handler/SQLPlugin.cc
+		modules/sql_handler/SQLPlugin.h
+		modules/sql_handler/SQLPluginList.h
+		modules/sql_handler/SQLRequestHandler.cc
+		modules/sql_handler/SQLRequestHandler.h
+		modules/sql_handler/SQLResponseNames.h)
+endif()

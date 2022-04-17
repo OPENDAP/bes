@@ -44,25 +44,14 @@
  * @param b A DAP BaseType that should be a byte
  * @throws BESInternalError if the BaseType is not a Byte
  */
-FONcByte::FONcByte( BaseType *b )
-    : FONcBaseType(), _b( 0 )
-{
-    _b = dynamic_cast<Byte *>(b) ;
-    if( !_b )
-    {
-	string s = (string)"File out netcdf, FONcByte was passed a "
-		   + "variable that is not a DAP Byte" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+FONcByte::FONcByte(BaseType *b)
+        : FONcBaseType(), _b(nullptr) {
+    _b = dynamic_cast<Byte *>(b);
+    if (!_b) {
+        string s = (string) "File out netcdf, FONcByte was passed a "
+                   + "variable that is not a DAP Byte";
+        throw BESInternalError(s, __FILE__, __LINE__);
     }
-}
-
-/** @brief Destructor that cleans up the byte
- *
- * The DAP Byte instance does not belong to the FONcByte instance, so it
- * is not deleted.
- */
-FONcByte::~FONcByte()
-{
 }
 
 /** @brief define the DAP Byte in the netcdf file
@@ -76,17 +65,23 @@ FONcByte::~FONcByte()
  * Byte
  */
 void
-FONcByte::define( int ncid )
-{
-    FONcBaseType::define( ncid ) ;
+FONcByte::define(int ncid) {
+    FONcBaseType::define(ncid);
 
-    if( !_defined )
-    {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+    if (!_defined) {
+        if (is_dap4) {
+            D4Attributes *d4_attrs = _b->attributes();
+            updateD4AttrType(d4_attrs, NC_UBYTE);
+        }
+        else {
+            AttrTable &attrs = _b->get_attr_table();
+            updateAttrType(attrs, NC_UBYTE);
+        }
 
-	_defined = true ;
+        FONcAttributes::add_variable_attributes(ncid, _varid, _b, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
+
+        _defined = true;
     }
 }
 
@@ -100,41 +95,24 @@ FONcByte::define( int ncid )
  * to the netcdf file
  */
 void
-FONcByte::write( int ncid )
-{
-    BESDEBUG( "fonc", "FOncByte::write for var " << _varname << endl ) ;
-    size_t var_index[] = {0} ;
-    unsigned char *data = new unsigned char ;
-    _b->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_uchar( ncid, _varid, var_index, data ) ;
-    if( stax != NC_NOERR )
-    {
-	string err = (string)"fileout.netcdf - "
-		     + "Failed to write byte data for "
-		     + _varname ;
-	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
+FONcByte::write(int ncid) {
+    BESDEBUG("fonc", "FOncByte::write for var " << _varname << endl);
+
+    if (is_dap4)
+        _b->intern_data();
+    else
+        _b->intern_data(*get_eval(), *get_dds());
+
+    // For scalar types, assign the value to a local variable. Eliminate the
+    // allocation of dynamic memory as well as the delete call. The amount of
+    // memory used in this case is too small to warrant any more optimization.
+    unsigned char data = _b->value();
+    size_t var_index[] = {0};
+    int stax = nc_put_var1_uchar(ncid, _varid, var_index, &data);
+    if (stax != NC_NOERR) {
+        string err = string("fileout.netcdf - Failed to write byte data for ") + _varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
-    delete data ;
-}
-
-/** @brief returns the name of the DAP Byte
- *
- * @returns The name of the DAP Byte
- */
-string
-FONcByte::name()
-{
-    return _b->name() ;
-}
-
-/** @brief returns the netcdf type of the DAP Byte
- *
- * @returns The nc_type of NC_BYTE
- */
-nc_type
-FONcByte::type()
-{
-    return NC_BYTE ;
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -144,12 +122,11 @@ FONcByte::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcByte::dump( ostream &strm ) const
-{
+FONcByte::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "FONcByte::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _b->name()  << endl ;
-    BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name = " << _b->name() << endl;
+    BESIndent::UnIndent();
 }
 

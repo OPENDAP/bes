@@ -36,8 +36,8 @@
 
 #include <string>
 
-#include "dods-datatypes.h"
-#include "BaseType.h"
+#include <libdap/dods-datatypes.h>
+#include <libdap/BaseType.h>
 
 using namespace libdap ;
 

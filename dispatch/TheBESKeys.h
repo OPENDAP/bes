@@ -69,7 +69,7 @@
 
  #
  # Default server port and unix socket information and whether the server
- #is secure or not.
+ # is secure or not.
  #
  BES.ServerPort=10022
  BES.ServerUnixSocket=/tmp/bes.socket
@@ -177,6 +177,7 @@ public:
     virtual void dump(std::ostream &strm) const;
     virtual std::string dump() const;
 
+    std::string get_as_config() const;
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.

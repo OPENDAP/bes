@@ -29,8 +29,8 @@ BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.ServerPort=10002
 
@@ -72,6 +72,7 @@ FONc.ClassicModel=false
 H5.EnableCF=false
 H5.DefaultHandleDimension=true
 
+NC.PromoteByteToShort=true
 # For HDF4
 
 # Note that changing H4.EnableCF will change the output of the HDF4 tests.

@@ -24,13 +24,13 @@
 
 #include "config.h"
 
-#include <D4RValue.h>
-#include <DMR.h>
-#include <DDS.h>
-#include <BaseType.h>
-#include <Str.h>
-#include <Structure.h>
-#include <D4Group.h>
+#include <libdap/D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/DDS.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
+#include <libdap/Structure.h>
+#include <libdap/D4Group.h>
 
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -199,6 +199,7 @@ libdap::BaseType *wrapitup_worker(vector<libdap::BaseType*> argv, libdap::AttrTa
 
         libdap::AttrTable *newDatasetAttrTable = new libdap::AttrTable(globals);
         dapResult->set_attr_table(*newDatasetAttrTable);
+        delete newDatasetAttrTable;
         BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
 
     }

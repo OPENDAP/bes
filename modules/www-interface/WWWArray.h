@@ -36,7 +36,7 @@
 #ifndef _wwwarray_h
 #define _wwwarray_h 1
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 using namespace libdap ;
 

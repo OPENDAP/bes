@@ -30,11 +30,11 @@
 #include <memory>
 #include <sstream>
 
-#include <Array.h>
-#include <BaseType.h>
-#include <Structure.h>
-#include <Grid.h>
-#include <dods-limits.h>
+#include <libdap/Array.h>
+#include <libdap/BaseType.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
+#include <libdap/dods-limits.h>
 
 
 #include "MyBaseTypeFactory.h"
@@ -51,7 +51,7 @@
 
 using namespace libdap;
 using std::vector;
-using std::auto_ptr;
+using std::unique_ptr;
 
 namespace ncml_module {
 
@@ -360,7 +360,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         }
     }
 
-    auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+    unique_ptr<BaseType> pCopy = unique_ptr<BaseType>(pOrgVar->ptr_duplicate());
     pCopy->set_name(_name);
     if (pCopy->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
 
@@ -373,11 +373,11 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         AggregationElement* pAgg = pCdf->getChildAggregation();
         pAgg->addAggregationVariable(_name);
     }
-    // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+    // Add the new, which copies under the hood.  unique_ptr will clean pCopy.
     p.addCopyOfVariableAtCurrentScope(*pCopy);
 
 #if 0
-        auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+        unique_ptr<BaseType> pCopy = unique_ptr<BaseType>(pOrgVar->ptr_duplicate());
         pCopy->set_name(_name);
         if (pCopy->type() == libdap::dods_grid_c) dynamic_cast<libdap::Grid*>(pCopy.get())->array_var()->set_name(_name);
 
@@ -390,7 +390,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
             AggregationElement* pAgg = pCdf->getChildAggregation();
             pAgg->addAggregationVariable(_name);
         }
-        // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+        // Add the new, which copies under the hood.  unique_ptr will clean pCopy.
         p.addCopyOfVariableAtCurrentScope(*pCopy);
     }
     else {
@@ -398,7 +398,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // so we need to remove and read even if we don't convert to preserve order!
 
         // Need to copy unfortunately, since delete will kill storage...
-        auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+        unique_ptr<BaseType> pCopy = unique_ptr<BaseType>(pOrgVar->ptr_duplicate());
 
         pCopy->set_name(_name);
         if (pCopy->type() == libdap::dods_grid_c)
@@ -413,7 +413,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
             AggregationElement* pAgg = pCdf->getChildAggregation();
             pAgg->addAggregationVariable(_name);
         }
-        // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+        // Add the new, which copies under the hood.  unique_ptr will clean pCopy.
         p.addCopyOfVariableAtCurrentScope(*pCopy);
     }
 #endif
@@ -486,7 +486,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
         // This (Vector::set_name()) was fixed long ago. jhrg 7/10/18
 
         // Need to copy unfortunately, since delete will kill storage...
-        auto_ptr<BaseType> pCopy = auto_ptr<BaseType>(pOrgVar->ptr_duplicate());
+        unique_ptr<BaseType> pCopy = unique_ptr<BaseType>(pOrgVar->ptr_duplicate());
 
         NCMLUtil::setVariableNameProperly(pCopy.get(), _name);
 
@@ -502,7 +502,7 @@ void VariableElement::processRenameVariable(NCMLParser& p)
             AggregationElement* pAgg = pCdf->getChildAggregation();
             pAgg->addAggregationVariable(_name);
         }
-        // Add the new, which copies under the hood.  auto_ptr will clean pCopy.
+        // Add the new, which copies under the hood.  unique_ptr will clean pCopy.
         p.addCopyOfVariableAtCurrentScope(*pCopy);
     }
 #endif
@@ -570,11 +570,11 @@ void VariableElement::processNewStructure(NCMLParser& p)
             "TypedScope='" + p.getTypedScopeString()+"'");
     }
 
-    auto_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable("Structure", _name);
+    unique_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable("Structure", _name);
     NCML_ASSERT_MSG(pNewVar.get(),
         "VariableElement::processNewStructure: factory failed to make a new Structure variable for name='" + _name +"'");
 
-    // Add the copy, let auto_ptr clean up
+    // Add the copy, let unique_ptr clean up
     p.addCopyOfVariableAtCurrentScope(*pNewVar);
 
     // Lookup the variable we just added since it is added as a copy!
@@ -608,7 +608,7 @@ void VariableElement::processNewArray(NCMLParser& p, const std::string& dapType)
         "VariableElement::processNewArray: Expected non-null getCurrentVariable() in parser but got NULL!");
 
     // Now make the template variable of the array entry type with the same name and add it
-    auto_ptr<BaseType> pTemplateVar = MyBaseTypeFactory::makeVariable(dapType, _name);
+    unique_ptr<BaseType> pTemplateVar = MyBaseTypeFactory::makeVariable(dapType, _name);
 #if 0
     pNewVar->add_var(pTemplateVar.get());
 #endif
@@ -646,7 +646,7 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
     BESDEBUG("ncml", "VariableElement::replaceArray if needed.  Renaming an Array means we need to convert it to NCMLArray." << endl);
 
     // Make a copy of it
-    auto_ptr<NCMLBaseArray> pNewArray = NCMLBaseArray::createFromArray(*pOrgArray);
+    unique_ptr<NCMLBaseArray> pNewArray = NCMLBaseArray::createFromArray(*pOrgArray);
     VALID_PTR(pNewArray.get());
 
     // Remove the old one.
@@ -656,7 +656,7 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
     NCMLUtil::setVariableNameProperly(pNewArray.get(), name);
 
     // Add the new one.  Unfortunately this copies it under the libdap hood. ARGH!
-    // So just use the get() and let the auto_ptr kill our copy.
+    // So just use the get() and let the unique_ptr kill our copy.
     p.addCopyOfVariableAtCurrentScope(*(pNewArray.get()));
 
     return p.getVariableInCurrentVariableContainer(name);
@@ -676,7 +676,7 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
         "VariableElement::replaceArray if needed.  Renaming an Array means we need to wrap it with RenamedArrayWrapper!" << endl);
 
     // Must make a clone() since deleteVariableAtCurrentScope from container below will destroy pOrgArray!
-    auto_ptr<RenamedArrayWrapper> pNewArray = auto_ptr<RenamedArrayWrapper>(
+    unique_ptr<RenamedArrayWrapper> pNewArray = unique_ptr<RenamedArrayWrapper>(
         new RenamedArrayWrapper(static_cast<Array*>(pOrgArray->ptr_duplicate())));
     p.deleteVariableAtCurrentScope(pOrgArray->name());
 
@@ -689,7 +689,7 @@ VariableElement::replaceArrayIfNeeded(NCMLParser& p, libdap::BaseType* pOrgVar, 
          dynamic_cast<libdap::Grid*>(pNewArray.get())->array_var()->set_name(name);
 
     // Add the new one.  Unfortunately this copies it under the libdap hood. ARGH!
-    // So just use the get() and let the auto_ptr kill our copy.
+    // So just use the get() and let the unique_ptr kill our copy.
     p.addCopyOfVariableAtCurrentScope(*(pNewArray.get()));
 
     return p.getVariableInCurrentVariableContainer(name);
@@ -703,8 +703,8 @@ void VariableElement::addNewVariableAndEnterScope(NCMLParser& p, const std::stri
             "Cannot add a new scalar variable at current scope!  TypedScope='" + p.getTypedScopeString()+"'");
     }
 
-    // Destroy it no matter what sicne add_var copies it
-    auto_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable(dapType, _name);
+    // Destroy it no matter what since add_var copies it
+    unique_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable(dapType, _name);
     NCML_ASSERT_MSG(pNewVar.get(),
         "VariableElement::addNewVariable: factory failed to make a new variable of type: '" + dapType + "' for element: '"
             + toString() +"'");

@@ -29,7 +29,7 @@
 
 #include <BESObj.h>
 
-#include <Type.h>
+#include <libdap/Type.h>
 
 class FONgTransform;
 

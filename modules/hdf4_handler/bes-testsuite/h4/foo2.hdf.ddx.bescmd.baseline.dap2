@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="foo2.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Array name="x">
+        <Attribute name="Description" type="String">
+            <value>Test coordinate variable x.</value>
+        </Attribute>
+        <Attribute name="dim_0" type="Container">
+            <Attribute name="name" type="String">
+                <value>x</value>
+            </Attribute>
+        </Attribute>
+        <Int32/>
+        <dimension name="x" size="3"/>
+    </Array>
+    <Array name="time">
+        <Attribute name="Description" type="String">
+            <value>Test coordinate variable time.</value>
+        </Attribute>
+        <Attribute name="dim_0" type="Container">
+            <Attribute name="name" type="String">
+                <value>time</value>
+            </Attribute>
+        </Attribute>
+        <Int32/>
+        <dimension name="time" size="1"/>
+    </Array>
+    <Array name="v">
+        <Attribute name="Description" type="String">
+            <value>Test output data array v</value>
+        </Attribute>
+        <Attribute name="dim_0" type="Container">
+            <Attribute name="name" type="String">
+                <value>time</value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="dim_1" type="Container">
+            <Attribute name="name" type="String">
+                <value>x</value>
+            </Attribute>
+        </Attribute>
+        <Float32/>
+        <dimension name="time" size="1"/>
+        <dimension name="x" size="3"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

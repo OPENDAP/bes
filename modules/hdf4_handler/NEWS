@@ -1,0 +1,366 @@
+News for version 1.16.5
+* No news is good news.
+
+News for version 1.16.4
+* No news is good news.
+
+News for version 1.16.3
+* Updates to
+* Swath dimension processing controls
+* Compiler compatibility.
+* Log usage and internal timing metrics.
+
+News for version 1.16.2
+Updates since 2020-02-06, mainly clean up compiler warnings.
+
+News for version 1.16.1
+Note: since the hyrax 1.13.2, HDF4 handler has been just treated as a BES module.
+      The hyrax release version has been used.
+Updates since 2019-07-09, mainly fix a memory leaking in the default option.
+
+News for version 3.13.1
+
+Updates since 2017-05-17, see the ChangeLog
+
+News for version 3.13.0
+
+Updates since 2017-05-15, see the ChangeLog
+
+News for Hyrax 1.13.4
+
+Updates since 2017-01-09, see the ChangeLog
+
+News for version 3.12.3
+
+Updates since 2016-09-23, see the ChangeLog
+
+News for version 3.12.2
+
+Updates since 2016-05-20, see the ChangeLog
+
+News for version 3.12.1
+
+Updates since 2016-01-07
+
+Improve the calculation of XDim and YDim for the sinusodial projection
+
+Bug fix for the case when the _FillValue is NaN. More information,
+please check "Updated for version 3.12.1" in README.
+
+News for version 3.12.0
+
+Minor updates, see the ChangeLog
+
+News for version 3.11.9
+
+Minor updates, see the ChangeLog
+
+Version 3.11.8
+
+Add 1-D horizontal CF cv variables and corresponding CF attributes for
+the HDF-EOS2 sinussoidal projection products.
+
+Improve the performance of special NASA products: 
+
+ * Fixes a bug when casting values via pointers between different
+   datatypes. This is revealed via gcc 4.8.2 at CentOS 6.
+
+ * Fixes the missing attributes under "Geolocation Fields" of HDF-EOS2
+   swath.
+
+ * Also fixes a bug to access TRMM version 7 3A25 products.
+
+Version 3.11.7 (15 September 2015)
+
+  Added DDS/DAS cache support for AIRS version 6 products.
+  Added data cache support for variables read by HDF SD interaces.
+  Added 1-D coordinate variables and grid_mapping CF attributes for HDF-EOS2 Sinusoidal projection products.
+
+Version 3.11.6 (15 November 2014)
+
+  Added support for geo-location cache for HDF-EOS2 products.
+  Implement an option not to pass file ids for the compatibility with NcML modules.
+  Performance tuning for DDS/DAS builds
+  Support the mapping of vgroup and HDF-EOS2 swath/grid object(vgroup-like) attributes to DAP.
+     
+Version 3.11.5 (25 April 2014)
+
+  Fixed the mapping of 8-bit HDF4 data type to DAP2.
+
+Version 3.11.4 (1 April 2014)
+
+  Added support for TRMM version 7 products. 
+
+Version 3.11.3 (1 February 2014)
+
+  Optimized handler for MOD08 M3 and AIRS version 6 products with new BES keys.
+
+Version 3.11.2 (18 October 2013)
+
+  Works with libdap 3.12.1 and the documented behavior for BaseType::read().
+
+Version 3.11.1 (10 September 2013)
+
+  Internal code refinements.
+
+Version 3.11.0 (30 May 2013)
+
+  This version fixed several bugs in handling MODIS (including version 6) and 
+MEaSUREs VIP products. It also improved the CF attributes handling such as 
+valid_range and scale/offset and the archive metadata handling. It provides a 
+new testsuite that users can download and test sample NASA files. The codes
+ are cleaned up as well to improve readibility.
+
+Version 3.10.1 (27 Nov 2012)
+
+  This version changes the _FillValue datatype to be consistent with the 
+variable datatype. This is not required by CF, however, netCDF-3 has this 
+requirement. This change makes fileout_netcdf work smoothly for some NASA 
+products.
+
+
+Version 3.10.0 (30 Sep 2012)
+
+  Added BESkey for enabling CF option. 
+
+  Fixed many bugs in handling NASA products under CF option.
+
+  Using HDF-EOS2 library is now optional for pure HDF4 products to genereate
+outputs that meet CF-conventions. Configuring with HDF-EOS2 library is
+strongly recommended for all HDF-EOS2 products and HDF4+HDF-EOS2 hybrid 
+products.
+
+  Please read README for new features, bug fixes, limitations and known issues.
+
+Version 3.9.4 (19 Jan, 2011)
+
+  Fixed the bug in uint16/uint32 type attribute handling.
+
+  Correced the handling the scale/offset for MODIS products because the 
+MODIS scale/offset equation is quite different from the CF standard.
+
+  Added the support for LAMAZ projection data.
+
+  Fixed memory release error that occurs on iMac (OS X Lion) with the STL 
+string:string Map.
+
+Version 3.9.3 (21 Aug. 2011)
+
+  Fixed tickets 1793 (HDF-EOS parse error when the hanfdler is not
+linked with the hdf-eos2 library) and 1797 (dim_0 attribute container
+added twice to the same variable); these two issues caused a host of
+problems so other bugs like the gateway not working or the netcdf
+fileout ersponse not working (for hdf4 files) are now fixed.
+
+Version 3.9.2 (17 Mar. 2011)
+
+  Build fixes, particularly for HDF-EOS2 on OS/X
+
+  Support the extra SDS objects for a hybrid HDF-EOS2 files.
+
+  Add support to treat HDF-EOS2 files as HDF4 files(for MERRA data)
+
+  Add support for HDF4 files that use SDS dimension scales. The HDF4
+files should kind of follow CF conventions. I have to patch for AVHRR
+files. They use "unit" instead of "units".
+
+Version 3.9.1.eospatch (16 Mar 2011)
+
+  This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+
+Version 3.9.1 (14 Sept 2010)
+
+  This is the 3.9.0 handler with build updates for libdap 3.11 and bes 3.9
+
+Version 3.9.0 (26 August 2010)
+
+  The handler now supports the access of many NASA HDF-EOS2 and HDF4
+products via visualization clients. To take advantage of this, one
+must configure with the HDF-EOS2 library and use the correct RPMs.
+
+Version 3.8.1 (5 May 2010)
+
+  The handler now implements its own transfer_attributes code to merge
+attributes from its DAS response into the DDS.
+
+Version 3.8.0 (1 Feb 2010)
+
+  Bug fixes from the last release.
+
+Version 3.7.15 (5 Oct 2009)
+
+  This version builds with the Hyrax 1.5.x libdap & bes and contains
+special tests for HDF-EOS2 files. To use these options, or rather, to
+build the handler so they are supported, use the --enable-cf and
+--with-hdfeos2=<path to library> options to configure. In other words,
+these options require that you not only have hdf4 present but that you
+have the hdfeos2 library as well.
+
+Version 3.7.14 (9 June 2009)
+
+  Fix for the tests - missing baseline file.
+
+  Fix for gcc 4.3 (missing include files)
+
+Version 3.7.13 (12 May 2009)
+  
+  Build fix.
+
+  String attributes now cache correctly - before quotes were being added to the
+values. Also, it's now possible to turn off caching by setting hte value of
+HDF4.CacheDir to an empty value (HDF4.CacheDir="").
+
+Version 3.7.12 (8 April 2009)
+
+  Many memory leaks found and fixed. A bug reported by Fan Fang where the
+handler's performance degraded for large files accessed repeatedly has been
+fixed. There re likely leaks still from opening the file, but that are
+'fixed' size leaks.
+
+version 3.7.11 (16 March 2009)
+
+  Fixes for the constraint, service interface and XML responses.
+
+Version 3.7.10 (29 Jan 2009)
+
+  Bug fixes and updates for the new versions of libdap and bes.
+
+Version 3.7.8 (14 March 2008)
+
+  This version (3.7.8) contains a know problem when several SDSs use the same
+name. This bug is encountered when a Vgroup contains a Vgroup and that inner
+Vgroup contains an SDS, if that SDS's name matches the name of another SDS
+nested in a *second set of objects with the same structure*, the 'first' SDS
+will always be returned. This is ticket #905. Since this version of the
+handler fixes a number of other problems, and this bug affects only a smal
+number of data sets, we're releasing this version now and will release an
+update in a few weeks. It's likely that this bug has been present for some
+time if not since the handler was first written.
+
+  OS/X Build improved.
+
+  Many fixes, Escpecially in the error/exception processing software.
+
+  Works with BES 3.6.0 (and thus as part of Hyrax 1.4).
+
+Version 3.7.7 (14 Nov 2007)
+
+  pkg and rpm build fixes
+
+Version 3.7.6 (14 Nov 2007)
+
+  Don't edit bes.conf during make install, but document the bes-hdf4-dap.sh
+script and the bes-conf make target in README.
+
+  pkg-config support added
+
+  Various bug fixes.
+
+Version 3.7.5 (13 March 2007)
+
+  Added automatic configuration of the handler using 'make install.' Now the
+handler is automatically configured in the bes.conf file in the default
+location. Test data are also installed, so after installing this handler
+Hyrax will have data to serve providing an easy way to test your new install
+and to see how the a working bes.conf should look. To use this, make sure
+that you first install the bes, and that dap-server gets intalled too.
+Finally, every time you install or reinstall handlers, make sure to restart
+the BES and OLFS.
+
+Version 3.7.4
+
+  Build fixes.
+
+  Added test data.
+
+Version 3.7.3
+
+  Updates for the 1.4 release of Server 4. Also included are bug fixes, memory
+leak fixes, and performance enhencements.
+
+Version 3.7.2
+
+  Now builds and works on OS/X
+
+  Now works with the netcdf handler.
+
+  Now the handler name is set inthe BES, not hardcoded here.
+
+  Now builds as a (libtool) module
+
+Version 3.7.1
+
+  Build fixes (now finds the BES using the same logic as the netcdf and
+freeform handlers).
+
+  The hdfclass library is shared, not static to avoid a warning about potential
+incompatibilities. 
+
+  Fixes to the help response.
+
+  Removed an extraneous directory.
+
+Version 3.7.0
+
+  The handler now builds with BES 3.1. The build makes a Server3 executable
+(but has not been tested) and a Server4 shared object module.
+
+  If the HDF4 handler's cache directory is not passed to the handler, the
+default  is now to not cache the files. The old behavior was to throwing an
+exception. 
+
+Version 3.6.1
+
+  The handler has never been very good about situations where the cache
+directory is bad or missing. That is, if the handler was not told where to
+write files it caches, it was writing them in same directory that holds the
+data. The problem with this is/was that the server often does not have write
+access to that directory. Furtermore, the server always cached parts of some
+responses, even if built with the NO_CACHE compile-time option. Bummer. This,
+combined with the first problem meant that a misconfigured server would often
+crash (and return a particularly inscrutable error message as well). This has
+been fixed. The server now checks to see if the cache directory is writable
+and defaults to not caching DAS and DDS objects when caching won't work. This
+does degrade the performance of the server, so an error message is written to
+the httpd error log.
+
+Version 3.6.0
+
+  Due to a fix in the handling of HDFEOS files, this handler requires at least
+libdap 3.6.0.
+
+Version 3.5.0
+
+  This handler can return the DDX response (which is an experimental feature,
+not to be relied upon).
+
+  This version of the software has been converted to work with the 3.5.x version
+of the OPeNDAP data server.
+
+  It uses automake and includes a spec file that can be used to build RPM
+packages.
+
+  Some of the test files have been modified because they included images 
+compressed using a lossy algorithm (JPEG). It's hard to verify that the 
+values in the files are correct, so I've removed those from the files.
+
+  Known problems:
+
+  An issue with HDF 4.2r1 and earlier versions of HDF4 has been discovered. In
+some cases a file written using an older vesion of HDF4 that contains CHAR8
+or UCHAR8 SDSs may not be correctly represented as a DAP2 Grid. Instead it
+show up as an Array.
+
+  Bug #61: Vlens (which are one-dimensional arrays with an undeclared length
+and cannot be subsampled) appear as Sequences. In version 3.4 access to
+these using the [] array access notation was broken. Requesting [0:4] returned 
+the first four elements, not the first five. That problem has been fixed, but
+the larger issue of representing vlens as sequences has not. 
+
+  Bug #71: The dot (.) character is 'overloaded' in that it can be both a 
+separater and a regular character in an identifier. If a Structure name 
+contains a dot, trying to access a field using 'name.field' breaks since
+'name' contians a dot itself and the parser thinks it's a separator. The 
+fix for this will be introduced in DAP3. Until then, use the shorthand 
+variable referencing notation where a field is requested using the
+unqualified field name.

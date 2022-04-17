@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010" space="catalog">/data/MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010.he5</setContainer>
+    <define name="d">
+	<container name="MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010">
+           <constraint>
+ Convergence[0:23:45],
+ L2gpPrecision[0:23:45][0:27:54],
+ L2gpValue[0:23:45][0:27:54],
+ Quality[0:23:45],
+ Status[0:23:45],
+ ChunkNumber[0:23:45],
+ LineOfSightAngle[0:23:45],
+ LocalSolarTime[0:23:45],
+ Longitude[0:23:45],
+ OrbitGeodeticAngle[0:23:45],
+ SolarZenithAngle[0:23:45],
+ Time[0:23:45],
+ StructMetadata_0,
+ coremetadata_0,
+ xmlmetadata,
+ Latitude[0:23:45],
+ Pressure[0:27:54]
+           </constraint>          
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

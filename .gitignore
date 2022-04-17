@@ -7,6 +7,12 @@
 autom4te.cache
 /bes-*
 docs
+.idea/
+bes_VERSION
+cookies
+gcovr_report.txt
+make_files.txt
+merged.txt
 
 ## files
 *~
@@ -45,6 +51,7 @@ Makefile.in
 doxy.conf
 doxygen_warnings.txt
 main_page.doxygen
+bes.spec.all_static
 
 conf/compile
 conf/config.guess

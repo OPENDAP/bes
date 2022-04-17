@@ -1,0 +1,22 @@
+Dataset {
+    Int32 SDS_DFNT_INT32[Axis_DFNT_INT32 = 5];
+    Int32 Axis_DFNT_INT32[Axis_DFNT_INT32 = 5];
+    UInt32 SDS_DFNT_UINT32[Axis_DFNT_UINT32 = 3];
+    UInt32 Axis_DFNT_UINT32[Axis_DFNT_UINT32 = 3];
+    Int16 SDS_DFNT_INT16[Axis_DFNT_INT16 = 5];
+    Int16 Axis_DFNT_INT16[Axis_DFNT_INT16 = 5];
+    UInt16 SDS_DFNT_UINT16[Axis_DFNT_UINT16 = 3];
+    UInt16 Axis_DFNT_UINT16[Axis_DFNT_UINT16 = 3];
+    Int32 SDS_DFNT_INT8[Axis_DFNT_INT8 = 5];
+    Int32 Axis_DFNT_INT8[Axis_DFNT_INT8 = 5];
+    Byte SDS_DFNT_UINT8[Axis_DFNT_UINT8 = 3];
+    Byte Axis_DFNT_UINT8[Axis_DFNT_UINT8 = 3];
+    Float32 SDS_DFNT_FLOAT32[Axis_DFNT_FLOAT32 = 7];
+    Float32 Axis_DFNT_FLOAT32[Axis_DFNT_FLOAT32 = 7];
+    Float64 SDS_DFNT_FLOAT64[Axis_DFNT_FLOAT64 = 7];
+    Float64 Axis_DFNT_FLOAT64[Axis_DFNT_FLOAT64 = 7];
+    String SDS_DFNT_CHAR8;
+    String Axis_DFNT_CHAR8;
+    Byte SDS_DFNT_UCHAR8[Axis_DFNT_UCHAR8 = 3];
+    Byte Axis_DFNT_UCHAR8[Axis_DFNT_UCHAR8 = 3];
+} testsds5.hdf;

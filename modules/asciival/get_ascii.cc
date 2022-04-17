@@ -33,7 +33,7 @@
 using std::cerr ;
 using std::endl ;
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 
 #include <BESDebug.h>
 

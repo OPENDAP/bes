@@ -22,19 +22,19 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config.h"
+//#include "config.h"
 
 #include <string>
 
-#include <D4Enum.h>
-#include <D4EnumDefs.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Group.h>
-#include <XMLWriter.h>
+//#include <libdap/D4Enum.h>
+//#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
+#include <libdap/XMLWriter.h>
 
 #include <BESError.h>
-#include <BESDebug.h>
+//#include <BESDebug.h>
 
 #include "DmrppD4Group.h"
 
@@ -42,30 +42,6 @@ using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
-
-void
-DmrppD4Group::_duplicate(const DmrppD4Group &)
-{
-}
-
-DmrppD4Group::DmrppD4Group(const string &n) : D4Group(n), DmrppCommon()
-{
-}
-
-DmrppD4Group::DmrppD4Group(const string &n, const string &d) : D4Group(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppD4Group::ptr_duplicate()
-{
-    return new DmrppD4Group(*this);
-}
-
-DmrppD4Group::DmrppD4Group(const DmrppD4Group &rhs) : D4Group(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
 
 DmrppD4Group &
 DmrppD4Group::operator=(const DmrppD4Group &rhs)
@@ -75,58 +51,19 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
 
     dynamic_cast<D4Group &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
 
     return *this;
 }
 
-#if 0
 void
-DmrppD4Group::print_dap4(XMLWriter &xml, bool constrained)
+DmrppD4Group::set_send_p(bool state)
 {
-    if (!name().empty() && name() != "/") {
-        // For named groups, if constrained is true only print if this group
-        // has variables that are marked for transmission. For the root group
-        // this test is not made.
-        if (constrained && !send_p())
-        return;
+    if (state && !get_attributes_loaded())
+        load_attributes(this);
 
-        if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar*) type_name().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write " + type_name() + " element");
-
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "name", (const xmlChar*) name().c_str()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
-    }
-
-    // dims
-    if (!dims()->empty())
-    dims()->print_dap4(xml, constrained);
-
-    // enums
-    if (!enum_defs()->empty())
-    enum_defs()->print_dap4(xml, constrained);
-
-    // variables
-    Constructor::Vars_iter v = var_begin();
-    while (v != var_end())
-    (*v++)->print_dap4(xml, constrained);
-
-    // attributes
-    attributes()->print_dap4(xml);
-
-    // groups
-    groupsIter g = d_groups.begin();
-    while (g != d_groups.end())
-    (*g++)->print_dap4(xml, constrained);
-
-    if (!name().empty() && name() != "/") {
-        if (xmlTextWriterEndElement(xml.get_writer()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
-    }
+    D4Group::set_send_p(state);
 }
-#endif
-
 
 void DmrppD4Group::dump(ostream & strm) const
 {

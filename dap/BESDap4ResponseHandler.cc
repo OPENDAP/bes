@@ -24,7 +24,7 @@
 
 #include <memory>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
 #include "BESDap4ResponseHandler.h"
 #include "BESDMRResponse.h"
@@ -83,13 +83,13 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-	auto_ptr<DMR> dmr(new DMR());
+	  unique_ptr<DMR> dmr(new DMR());
 
     bool found;
     int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
 
 	if (found)
-	    dmr->set_response_limit(response_size_limit);
+	    dmr->set_response_limit_kb(response_size_limit);
 
 	d_response_object = new BESDMRResponse(dmr.release());
 

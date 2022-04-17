@@ -33,6 +33,8 @@ variables:
 		:root_attr_int64_scalar = 9223372036854775807LL ;
 		:grp_int64.grp_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
 		:grp_int64.grp_attr_int64_scalar = 9223372036854775807LL ;
+		:history = "removed date-timex t_int64_dap4.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_int64_dap4.h5\"}]}]" ;
 		:grp_int64.fullnamepath = "/grp_int64" ;
 data:
 

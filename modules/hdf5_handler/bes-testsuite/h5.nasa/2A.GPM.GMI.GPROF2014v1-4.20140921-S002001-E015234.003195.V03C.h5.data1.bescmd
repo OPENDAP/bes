@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C" space="catalog">/data/2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5</setContainer>
+     <define name="d">
+ 	<container name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C">
+            <constraint>
+             S1_Latitude[0:1000:2961][0:100:220]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

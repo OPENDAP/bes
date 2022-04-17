@@ -33,18 +33,18 @@
 
 #include <libxml/parserInternals.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Enum.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4BaseTypeFactory.h>
 
-#include <DapXmlNamespaces.h>
-#include <util.h>
+#include <libdap/DapXmlNamespaces.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -55,6 +55,8 @@
 #include <TheBESKeys.h>
 #include <BESRegex.h>
 
+#include "DmrppRequestHandler.h"
+#include "DMRpp.h"
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 #include "DmrppStr.h"
@@ -62,12 +64,14 @@
 #include "DmrppArray.h"
 
 #include "CurlUtils.h"
+#include "HttpNames.h"
 
 #include "Base64.h"
 
-#define FIVE_12K  524288;
-#define ONE_MB   1048576;
-#define MAX_INPUT_LINE_LENGTH ONE_MB;
+#define FIVE_12K  524288
+#define ONE_MB   1048576
+#define MAX_INPUT_LINE_LENGTH ONE_MB
+#define INCLUDE_BESDEBUG_ISSET 0
 
 #define prolog std::string("DmrppParserSax2::").append(__func__).append("() - ")
 
@@ -546,7 +550,7 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
         map_source = top_group()->find_map_source(map_name);
 
     // Change: If the parser is in 'strict' mode (the default) and the Array named by
-    // the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
+    // the Map cannot be found, it is an error. If 'strict' mode is false (permissive
     // mode), then this is not an error. However, the Array referenced by the Map will
     // be null. This is a change in the parser's behavior to accommodate requests for
     // Arrays that include Maps that do not also include the Map(s) in the request.
@@ -839,12 +843,14 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
+#if INCLUDE_BESDEBUG_ISSET
     if(BESDebug::IsSet(PARSER)){
         ostream *os = BESDebug::GetStrm();
         *os << prolog << "parser->top_group() BEGIN " << endl;
         parser->top_group()->dump(*os);
         *os << endl << prolog << "parser->top_group() END " << endl;
     }
+#endif
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
@@ -898,10 +904,28 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         parser->transfer_xml_attrs(attributes, nb_attributes);
 #endif
 
-        if (parser->check_required_attribute(string("name"), attributes, nb_attributes)) parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
+        if (parser->check_required_attribute(string("name"), attributes, nb_attributes))
+            parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
+
+        // Record the DMR++ builder version number. For now, if this is present, we have a 'new'
+        // DMR++ and if it is not present, we have an old DMR++. One (the?) important difference
+        // between the two is that the new version has the order of the filters correct and the
+        // current version of the handler code _expects_ this. The old version of the DMR++ had
+        // the order reversed (at least for most - all? - data). So we have this kludge to enable
+        // those old DMR++ files to work. See DmrppCommon::set_filter() for the other half of the
+        // hack. Note that the attribute 'version' is in the dmrpp xml namespace. jhrg 11/9/21
+        if (parser->check_attribute("version", attributes, nb_attributes)) {
+            auto dmrpp = dynamic_cast<DMRpp*>(parser->dmr());
+            if (dmrpp)
+                dmrpp->set_version(parser->get_attribute_val("version", attributes, nb_attributes));
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
+        }
+        else {
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
+        }
 
         if (parser->check_attribute("dapVersion", attributes, nb_attributes))
-            parser->dmr()->set_dap_version(parser->get_attribute_val("dapVersion", attributes, nb_attributes));
+        parser->dmr()->set_dap_version(parser->get_attribute_val("dapVersion", attributes, nb_attributes));
 
         if (parser->check_attribute("dmrVersion", attributes, nb_attributes))
             parser->dmr()->set_dmr_version(parser->get_attribute_val("dmrVersion", attributes, nb_attributes));
@@ -912,12 +936,31 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << parser->dmr()->request_xml_base() << "'" << endl);
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
-            parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
-            BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-            string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
-            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
+            bool trusted = false;
+            if (parser->check_attribute("trust", attributes, nb_attributes)) {
+                string value = parser->get_attribute_val("trust", attributes, nb_attributes);
+                trusted = value == "true";
+            }
+            string href  = parser->get_attribute_val("href", attributes, nb_attributes);
+            parser->dmrpp_dataset_href  = shared_ptr<http::url>(new http::url(href,trusted));
+            BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << parser->dmrpp_dataset_href->str() << (trusted?"(trusted)":"") << endl);
+
+            //######################################################################################################
+            // Stop parser EffectiveUrl resolution (ndp - 08/27/2021)
+            // I dropped this because:
+            // - The Chunk::get_data_url() method calls EffectiveUrlCache::TheCache()->get_effective_url(data_url)
+            // - EffectiveUrlCache::TheCache()->get_effective_url(data_url) method is thread safe
+            // - By dropping these calls from the parser, which is in a single threaded section of the code we can
+            //   resolve the URL during a multithreaded operation (reading the chunks) and reduce the overall
+            //   time cost of resolving all of the chunk URLs with concurrency.
+            // -----------------------------------------------------------------------------------------------------
+            //BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href->str() << endl);
+            //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
+            //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+            //######################################################################################################
+
         }
-        BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
+        BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href->str() << "'" << endl);
 
         if (!parser->root_ns.empty()) parser->dmr()->set_namespace(parser->root_ns);
 
@@ -1126,22 +1169,37 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         }
         // Ingest an dmrpp:chunk element and its attributes
         else if (strcmp(localname, "chunk") == 0) {
-            string data_url = "unknown_data_location";
-            if (parser->check_attribute("href", attributes, nb_attributes)) {
-#if 0
-                istringstream data_url_ss(parser->xml_attrs["href"].value);
-                data_url = data_url_ss.str();
-                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " <<
-                data_url_ss.str() << endl);
-#endif
+            string data_url_str = "unknown_data_location";
+            shared_ptr<http::url> data_url;
 
-                data_url = parser->get_attribute_val("href", attributes, nb_attributes);
-                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
+            if (parser->check_attribute("href", attributes, nb_attributes)) {
+                bool trusted = false;
+                if (parser->check_attribute("trust", attributes, nb_attributes)) {
+                    string value = parser->get_attribute_val("trust", attributes, nb_attributes);
+                    trusted = value == "true";
+                }
+
+                // This is the chunk elements href that we check.
+                data_url_str = parser->get_attribute_val("href", attributes, nb_attributes);
+                data_url = shared_ptr<http::url> ( new http::url(data_url_str,trusted));
+                BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << data_url->str() << (trusted?"":"(trusted)") << endl);
+                //######################################################################################################
+                // Stop parser EffectiveUrl resolution (ndp - 08/27/2021)
+                // I dropped this because:
+                // - The Chunk::get_data_url() method calls EffectiveUrlCache::TheCache()->get_effective_url(data_url)
+                // - EffectiveUrlCache::TheCache()->get_effective_url(data_url) method is thread safe
+                // - By dropping these calls from the parser, which is in a single threaded section of the code, we can
+                //   resolve the URL during a multi-threaded operation (reading the chunks) and reduce the overall
+                //   time cost of resolving all of the chunk URLs with concurrency.
+                // -----------------------------------------------------------------------------------------------------
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
-                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
+
+                //BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
+                //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+                //######################################################################################################
+
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
@@ -1150,19 +1208,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 data_url = parser->dmrpp_dataset_href;
                 // We don't have to conditionally cache parser->dmrpp_dataset_href  here because that was
                 // done in the evaluation of the parser_start case.
-                BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl);
+                BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url->str() << "'" << endl);
             }
-            // First we see if it's an HTTP URL, and if not we
-            // make a local file url based on the Catalog Root
-#if 0
-            std::string http("http://");
-            std::string https("https://");
-            std::string file("file://");
-            if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)
-                && data_url.compare(0, file.size(), file))
-#endif
 
-            if (data_url.find("http://") != 0 && data_url.find("https://") != 0 && data_url.find("file://") != 0) {
+            if (data_url->protocol() != HTTP_PROTOCOL && data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != FILE_PROTOCOL) {
                 BESDEBUG(PARSER, prolog << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
                     "Retrieving default catalog root directory" << endl);
 
@@ -1177,12 +1226,13 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
                     BESDEBUG(PARSER, prolog << "Found default catalog root_dir: '" << utils->get_root_dir() << "'" << endl);
 
-                    data_url = BESUtil::assemblePath(utils->get_root_dir(), data_url, true);
-                    data_url = "file://" + data_url;
+                    data_url_str = BESUtil::assemblePath(utils->get_root_dir(), data_url_str, true);
+                    data_url_str = FILE_PROTOCOL + data_url_str;
+                    data_url = shared_ptr<http::url> ( new http::url(data_url_str));
                 }
             }
 
-            BESDEBUG(PARSER, prolog << "Processed data_url: '" << data_url << "'" << endl);
+            BESDEBUG(PARSER, prolog << "Processed data_url: '" << data_url->str() << "'" << endl);
 
             unsigned long long offset = 0;
             unsigned long long size = 0;
@@ -1237,9 +1287,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
     BESDEBUG(PARSER, prolog << "Start element exit state: " << states[parser->get_state()] << endl);
 }
-
-
-
 
 void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI)
 {

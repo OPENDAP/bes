@@ -20,6 +20,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#include "config.h"
 
 #include <memory>
 #include <cstdio>
@@ -31,9 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-#include <util.h>
-#include <HttpCache.h>
+#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -45,6 +44,7 @@
 #include "RemoteResource.h"
 #include "HttpNames.h"
 #include "HttpCache.h"
+#include "url_impl.h"
 
 #include "test_config.h"
 
@@ -214,7 +214,7 @@ public:
         if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http");
+        if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
         if(!token.empty()){
             if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
@@ -263,10 +263,11 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        string url = "file://";
+        string url = FILE_PROTOCOL;
         url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
         if(debug) cerr << prolog << "url: " << url << endl;
-        RemoteResource rhr(url);
+        shared_ptr<http::url> url_ptr(new http::url(url));
+        RemoteResource rhr(url_ptr);
         if(debug) cerr << prolog << "rhr created" << endl;
         try {
             rhr.load_hdrs_from_file();
@@ -317,14 +318,15 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         try {
-            RemoteResource rhr("http://google.com", "foobar");
+            std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
+            RemoteResource rhr(target_url, "foobar");
             if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
 
             rhr.d_resourceCacheFileName = d_temp_file;
             if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
 
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
-            rhr.d_remoteResourceUrl = source_url;
+            rhr.d_remoteResourceUrl = shared_ptr<http::url>(new http::url(source_url));
             if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
 
             // Get a pointer to the singleton cache instance for this process.
@@ -372,7 +374,8 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -407,7 +410,8 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
         string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -447,7 +451,8 @@ public:
                         "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
 
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -477,7 +482,8 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string data_file_url = get_data_file_url("test_file");
-        http::RemoteResource rhr(data_file_url);
+        std::shared_ptr<http::url> url_ptr(new http::url(data_file_url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -512,7 +518,8 @@ public:
          if(debug) cerr << prolog << "BEGIN" << endl;
 
          try {
-             RemoteResource rhr("http://google.com", "foobar", 1);
+             std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
+             RemoteResource rhr(target_url, "foobar", 1);
              if(debug) cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl;
 
              rhr.d_resourceCacheFileName = d_temp_file;
@@ -534,7 +541,7 @@ public:
 
              sleep(2);
 
-             bool refresh = rhr.is_cached_resource_expired(rhr.d_resourceCacheFileName, rhr.d_uid);
+             bool refresh = rhr.cached_resource_is_expired();
              if(debug) cerr << prolog << "is_cached_resource_expired() called, refresh: " << refresh << endl;
 
              CPPUNIT_ASSERT(refresh);
@@ -597,50 +604,6 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-    /**
- * Test of the RemoteResource content filtering method.
- */
-    void replace_all_test() {
-        if(debug) cerr << prolog << "BEGIN" << endl;
-
-        string source_file = BESUtil::pathConcat(d_data_dir,"ATL08_20200716202251.h5.dmrpp");
-        if(debug) cerr << prolog << "source_file: " << source_file << endl;
-
-        string baseline_file = BESUtil::pathConcat(d_data_dir,"ATL08_20200716202251.h5.dmrpp.baseline");
-        if(debug) cerr << prolog << "baseline_file: " << baseline_file << endl;
-
-        try {
-            string source_str = get_file_as_string(source_file);
-            string baseline_str = get_file_as_string(baseline_file);
-
-            string data_url_template = "OPeNDAP_DMRpp_DATA_ACCESS_URL";
-            string data_url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/sds/staged/ATL08_20200716202251_03280806_003_01.h5";
-
-            string missing_data_url_template = "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL";
-            string missing_data_url="file://missing_file_ref";
-
-            RemoteResource foo;
-            foo.replace_all(source_str, data_url_template, data_url);
-            foo.replace_all(source_str, missing_data_url_template, missing_data_url);
-
-            bool result_matched = source_str == baseline_str;
-
-            stringstream info_msg;
-            info_msg << prolog << "The filtered string " << (result_matched?"MATCHED ":"DID NOT MATCH ")
-                     << "the baseline file: " << baseline_file << endl;
-            if(debug) cerr << info_msg.str();
-            if(Debug && !result_matched) cerr << prolog << "Filtered Source Content:" << endl << source_str << endl;
-            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
-        }
-        catch(BESError be){
-            stringstream msg;
-            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
-            msg << be.get_file() << " " << be.get_line() << endl;
-            if(debug) cerr << msg.str();
-            CPPUNIT_FAIL(msg.str());
-        }
-        if(debug) cerr << prolog << "END" << endl;
-    }
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -652,7 +615,6 @@ public:
     CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
-    CPPUNIT_TEST(replace_all_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
@@ -670,9 +632,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDPN");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbDPN")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -695,21 +656,24 @@ int main(int argc, char*argv[])
             cerr << "purge_cache enabled" << endl;
             break;
         case 't':
-            token = getopt.optarg; // token is a static global
+            token = optarg; // token is a static global
             cerr << "Authorization header value: " << token << endl;
             break;
         default:
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);

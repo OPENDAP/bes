@@ -31,6 +31,9 @@
 #define HTTPS_PROTOCOL "https://"
 #define FILE_PROTOCOL "file://"
 
+#define HTTP_USER_AGENT_KEY "Http.UserAgent"
+#define HTTP_DEFAULT_USER_AGENT "hyrax"
+
 #define HTTP_MIMELIST_KEY "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"
 #define HTTP_PROXYHOST_KEY "Http.ProxyHost"
@@ -70,6 +73,8 @@
 #define AWS_DATE_HEADER_KEY "X-Amz-Date"
 #define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
 
+#define HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL 300
+#define HTTP_URL_REFRESH_THRESHOLD 60
 
 #define EDL_AUTH_TOKEN_KEY "edl_auth_token"
 #define EDL_ECHO_TOKEN_KEY "edl_echo_token"

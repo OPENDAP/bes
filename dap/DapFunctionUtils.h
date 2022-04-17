@@ -28,8 +28,8 @@
 
 #include <string>
 
-#include <DDS.h>
-#include <ServerFunction.h>
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 #include "BESAbstractModule.h"
 
 /** @brief Utilities used to help in the return of an OPeNDAP DataDDS

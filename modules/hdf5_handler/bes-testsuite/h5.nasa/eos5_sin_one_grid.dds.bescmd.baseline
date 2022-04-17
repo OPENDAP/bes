@@ -1,0 +1,23 @@
+Dataset {
+    Int16 RelativeAzimuth[YDim = 1200][XDim = 1200];
+    Int16 SensorZenith[YDim = 1200][XDim = 1200];
+    Int16 SolarZenith[YDim = 1200][XDim = 1200];
+    UInt16 SurfReflect_Day_Of_Year[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M1[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M10[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M11[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M2[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M3[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M4[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M5[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M7[YDim = 1200][XDim = 1200];
+    Int16 SurfReflect_M8[YDim = 1200][XDim = 1200];
+    UInt32 SurfReflect_QC[YDim = 1200][XDim = 1200];
+    UInt16 SurfReflect_State[YDim = 1200][XDim = 1200];
+    String StructMetadata_0;
+    Float64 lon[YDim = 1200][XDim = 1200];
+    Float64 lat[YDim = 1200][XDim = 1200];
+    Float64 YDim[YDim = 1200];
+    Float64 XDim[XDim = 1200];
+    Byte eos_cf_projection;
+} VNP09A1.A2015257.h29v11.001.2016221164845.h5;

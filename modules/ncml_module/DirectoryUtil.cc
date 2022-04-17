@@ -37,8 +37,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-// libdap
-#include "GNURegex.h"
+#include "BESRegex.h"
 
 // bes
 #include "BESDebug.h"
@@ -212,7 +211,7 @@ void DirectoryUtil::setFilterRegExp(const std::string& regexp)
 {
     clearRegExp();  // avoid leaks
     if (!regexp.empty()) {
-        _pRegExp = new libdap::Regex(regexp.c_str());
+        _pRegExp = new BESRegex(regexp.c_str());
     }
 }
 

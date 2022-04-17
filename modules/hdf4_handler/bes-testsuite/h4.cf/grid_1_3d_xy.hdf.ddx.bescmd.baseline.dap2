@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_1_3d_xy.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_Latitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_Longitude_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid_Data_Fields_temperature_dim_2" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid</value>
+        </Attribute>
+    </Attribute>
+    <Array name="GeoGrid_Data_Fields_Latitude">
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim_GeoGrid" size="4"/>
+    </Array>
+    <Array name="GeoGrid_Data_Fields_Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="XDim_GeoGrid" size="8"/>
+    </Array>
+    <Array name="GeoGrid_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_GeoGrid" size="2"/>
+        <dimension name="YDim_GeoGrid" size="4"/>
+        <dimension name="XDim_GeoGrid" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -42,10 +42,10 @@
 
 #include <unistd.h>
 
-#include <D4Enum.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Group.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -84,7 +84,7 @@ atomic_uint transfer_thread_counter(0);
  *
  * When a valid, ready future is found future::get() is called and the thead_counter is decremented.
  * Returns true when it successfully "get"s a future (joins a thread), or if a future turns up as not valid, then
- * it is discarded and the thread is ":finsihed" and true is returned.
+ * it is discarded and the thread is ":finished" and true is returned.
  *
  * @param futures The list of futures to scan
  * @param thread_counter This counter will be decremented when a future is "finished".
@@ -146,6 +146,7 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                 future_finished = true;
             }
         }
+
         if (futr!=fend && future_finished) {
             futures.erase(futr);
             thread_counter--;
@@ -153,8 +154,10 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                                   << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
                                   futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
         }
+
         done = future_finished || futures.empty();
     }
+
     return future_finished;
 }
 
@@ -188,7 +191,7 @@ bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
     // and child_3_offset - the_one_chunk_offset == 12.
     // Those are the starting locations with in the data buffer of the the_one_chunk
     // where that child chunk should be written.
-    // Note: all of the offset values start at the beginning of the file.
+    // Note: all the offset values start at the beginning of the file.
 
     unsigned long long  offset_within_the_one_chunk = args->child_chunk->get_offset() - args->the_one_chunk->get_offset();
 
@@ -299,7 +302,7 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
 /**
  * @brief Uses std::async() and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
- * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
+ * For each SuperChunk in the queue, retrieve the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
  * DmrppArray's internal data buffer.
  *
@@ -369,7 +372,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
         }
     }
     catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        // Complete all the futures, otherwise we'll have threads out there using up resources
         while(!futures.empty()){
             if(futures.back().valid())
                 futures.back().get();
@@ -386,7 +389,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
 /**
  * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
- * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
+ * For each SuperChunk in the queue, retrieve the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
  * DmrppArray's internal data buffer.
  *
@@ -456,7 +459,7 @@ void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, D
         }
     }
     catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        // Complete all the futures, otherwise we'll have threads out there using up resources
         while(!futures.empty()){
             if(futures.back().valid())
                 futures.back().get();
@@ -537,43 +540,11 @@ static unsigned long multiplier(const vector<unsigned long long> &shape, unsigne
     return multiplier;
 }
 
-
-
-
-//#####################################################################################################################
-//#####################################################################################################################
 //#####################################################################################################################
 //
 // DmrppArray code begins here.
 //
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-
-void DmrppArray::_duplicate(const DmrppArray &)
-{
-}
-
-DmrppArray::DmrppArray(const string &n, BaseType *v) :
-        Array(n, v, true /*is dap4*/), DmrppCommon()
-{
-}
-
-DmrppArray::DmrppArray(const string &n, const string &d, BaseType *v) :
-        Array(n, d, v, true), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppArray::ptr_duplicate()
-{
-    return new DmrppArray(*this);
-}
-
-DmrppArray::DmrppArray(const DmrppArray &rhs) :
-        Array(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
 
 DmrppArray &
 DmrppArray::operator=(const DmrppArray &rhs)
@@ -582,8 +553,8 @@ DmrppArray::operator=(const DmrppArray &rhs)
 
     dynamic_cast<Array &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    // Removed DmrppCommon::m_duplicate_common(rhs); jhrg 11/12/21
 
     return *this;
 }
@@ -599,7 +570,6 @@ bool DmrppArray::is_projected()
 
     return false;
 }
-
 
 /**
  * @brief Return the total number of elements in this Array
@@ -625,7 +595,7 @@ unsigned long long DmrppArray::get_size(bool constrained)
  */
 vector<unsigned long long> DmrppArray::get_shape(bool constrained)
 {
-    Dim_iter dim = dim_begin(), edim = dim_end();
+    auto dim = dim_begin(), edim = dim_end();
     vector<unsigned long long> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
@@ -715,7 +685,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 subset_addr.pop_back();
             }
             else {
-                // We are at the last (inner most) dimension, so it's time to copy values.
+                // We are at the last (innermost) dimension, so it's time to copy values.
                 subset_addr.push_back(myDimIndex);
                 unsigned int sourceIndex = get_index(subset_addr, array_shape);
                 subset_addr.pop_back();
@@ -747,6 +717,9 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  * DmrppRequestHandler::d_contiguous_concurrent_threshold, or if parallel
  * transfers are not enabled, the chunk is transferred in one I/O operation.
  *
+ * @note Currently String Arrays are handled using a different method. Do not
+ * call this with String data. jhrg 3/3/22
+ *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 void DmrppArray::read_contiguous()
@@ -755,31 +728,29 @@ void DmrppArray::read_contiguous()
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
-    auto chunk_refs = get_chunks();
-    if (chunk_refs.size() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
-    auto the_one_chunk = chunk_refs[0];
+    auto the_one_chunk = get_immutable_chunks()[0];
 
     unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
     unsigned long long the_one_chunk_size = the_one_chunk->get_size();
 
     // We only want to read in the Chunk concurrently if:
     // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
-    // - The variables size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    // - The variable's size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
     }
     else {
-
         // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
         // from the child chunks to it.
         the_one_chunk->set_rbuf_to_size();
 
         // The number of child chunks are determined based on the size of the data.
-        // If the size of the the_one_chunk is 3MB then 3 chunks will be made. We will round down
+        // If the size of the the_one_chunk is 3 MB then 3 chunks will be made. We will round down
         // when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.)
         unsigned long long num_chunks = floor(the_one_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
@@ -793,9 +764,9 @@ void DmrppArray::read_contiguous()
         // the remainder here and increase the size of the last chunk by this number of bytes.
         unsigned long long chunk_remainder = the_one_chunk_size % num_chunks;
 
-        string chunk_url = the_one_chunk->get_data_url();
+        auto chunk_url = the_one_chunk->get_data_url();
 
-        // Setup a queue to break up the original the_one_chunk and keep track of the pieces
+        // Set up a queue to break up the original the_one_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;
 
         // Make the Chunk objects
@@ -804,7 +775,7 @@ void DmrppArray::read_contiguous()
             chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
             chunk_offset += chunk_size;
         }
-        // Make the the remainder Chunk, see above for details.
+        // Make the remainder Chunk, see above for details.
         chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
 
         // We maintain a list  of futures to track our parallel activities.
@@ -850,7 +821,7 @@ void DmrppArray::read_contiguous()
             }
         }
         catch (...) {
-            // Complete all of the futures, otherwise we'll have threads out there using up resources
+            // Complete all the futures, otherwise we'll have threads out there using up resources
             while (!futures.empty()) {
                 if (futures.back().valid())
                     futures.back().get();
@@ -861,9 +832,10 @@ void DmrppArray::read_contiguous()
         }
     }
 
-    // Now that the_one_chunk has been read, we do the needful...
-    if (is_deflate_compression() || is_shuffle_compression())
-       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),var()->width());
+    // Now that the_one_chunk has been read, we do what is necessary...
+    if (!is_filters_empty()){
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+    }
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
@@ -960,9 +932,7 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
  */
 void DmrppArray::read_chunks_unconstrained()
 {
-
-    auto chunk_refs = get_chunks();
-    if (chunk_refs.size() < 2)
+    if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -976,7 +946,7 @@ void DmrppArray::read_chunks_unconstrained()
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
-    for(const auto& chunk: get_chunks()){
+    for(const auto& chunk: get_immutable_chunks()){
         bool added = current_super_chunk->add_chunk(chunk);
         if(!added){
             sc_id.str(std::string());
@@ -1009,6 +979,8 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+            // FIXME Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
+            //  jhrg 11/19/21
             super_chunk->read();
         }
     }
@@ -1051,7 +1023,7 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
             first_element_offset = (chunk_origin - thisDim.start) % thisDim.stride;
             // If it's zero great!
             if (first_element_offset != 0) {
-                // otherwise we adjustment to get correct first element.
+                // otherwise, adjust to get correct first element.
                 first_element_offset = thisDim.stride - first_element_offset;
             }
         }
@@ -1243,9 +1215,6 @@ void DmrppArray::insert_chunk(
     }
 }
 
-
-
-
 /**
  * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
  *
@@ -1254,8 +1223,7 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
-    auto chunk_refs = get_chunks();
-    if (chunk_refs.size() < 2)
+    if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1272,7 +1240,7 @@ void DmrppArray::read_chunks()
     //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
-    for(const auto& chunk: get_chunks()){
+    for(const auto& chunk: get_immutable_chunks()){
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed){
@@ -1471,6 +1439,48 @@ void DmrppArray::read_chunks_serial()
 }
 #endif
 
+void
+DmrppArray::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Array::set_send_p(state);
+}
+
+/**
+ * @brief Process String Array so long as it has only one element
+ *
+ * This method is pretty limited, but this is a common case and the DMR++
+ * will need more information for the Dmrpp handler to support the general
+ * case of an N-dimensional array.
+ */
+void DmrppArray::read_contiguous_string()
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+
+    // This is the original chunk for this 'contiguous' variable.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    // Read the the_one_chunk as is. This is the non-parallel I/O case
+    the_one_chunk->read_chunk();
+
+    // Now that the_one_chunk has been read, we do what is necessary...
+    if (!is_filters_empty()){
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+    }
+
+    // FIXME This part will only work if the array contains a single element. See below.
+    //  jhrg 3/3/22
+    vector < string > ss;      // Prepare for the general case
+    string s(reinterpret_cast<char *>(the_one_chunk->get_rbuf()));
+    ss.push_back(s);
+    set_value(ss, ss.size());
+
+    set_read_p(true);
+}
+
 /**
  * @brief Read data for the array
  *
@@ -1484,21 +1494,55 @@ void DmrppArray::read_chunks_serial()
  */
 bool DmrppArray::read()
 {
+    // If the chunks are not loaded, load them now. NB: load_chunks()
+    // reads data for HDF5 COMPACT storage, so read_p() will be true.
+    // Thus, call load_chunks() before testing read_p() to cover that
+    // case. jhrg 11/15/21
+    // String Arrays that use COMPACT storage appear to work. jhrg 3/3/22
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p()) return true;
+
+    // FIXME Strings are a special case and, currently, we do not have enough
+    //  information in the DMR++ to cover most cases that can be present in HDF5
+    //  files. In addition, the way libdap stores string data means that we need
+    //  to build c++ string objects from the raw data we read from the source
+    //  data file. Thus, the code for strings (and URLs) is a special case.
+    //  Currently we can process only arrays with one element. jhrg 3/3/22
+
+    if ((var()->type() == dods_str_c || var()->type() == dods_url_c)) {
+        // FIXME Add support for both of these things once the DMR++ has the needed
+        //  information. jhrg 3/3/22
+        if (is_projected())
+            throw BESInternalError("Subsetting of Sting Arrays is not currently supported.", __FILE__, __LINE__);
+
+        if (length() != 1)
+            throw BESInternalError("Only one dimensional String Arrays are currently supported.", __FILE__, __LINE__);
+
+        if (get_chunks_size() == 1) {
+            read_contiguous_string();    // Throws on various errors
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            //read_chunks_unconstrained();
+            // FIXME Yup, fix this, too. jhrg 3/3/22
+            throw BESInternalError("Chunked String Array data is not currently supported.", __FILE__, __LINE__);
+        }
+
+        // exit here for strings; we only 'twiddle' bytes for integer data.
+        return true;
+    }
 
     // Single chunk and 'contiguous' are the same for this code.
 
-    if (get_immutable_chunks().size() == 1) { // Removed: || get_chunk_dimension_sizes().empty()) {
-        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
+    if (get_chunks_size() == 1) {
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
         if (!is_projected()) {
-            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
             read_chunks_unconstrained();
         }
         else {
-            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
             read_chunks();
         }
     }
@@ -1535,7 +1579,7 @@ bool DmrppArray::read()
                 }
                 break;
             }
-            default: break; // Do nothing for all other types..
+            default: break; // Do nothing for all other types.
         }
     }
 
@@ -1561,7 +1605,7 @@ public:
     void operator()(Array::dimension &d)
     {
         // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
-        // because of the need to print the constrained size of a dimension. I think that
+        // because of the need to print the constrained size of a dimension). I think that
         // the constraint information has to be kept here and not in the dimension (since they
         // are shared dims). Could hack print_dap4() to take the constrained size, however.
         if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) "Dim") < 0)
@@ -1685,15 +1729,15 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
 
-    // Only print the chunks info if there. This is the code added to libdap::Array::print_dap4().
+    // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for
     // the array using base64. Note that strings are a special case; each
     // element of the array is a string and is encoded in its own base64
-    // xml element. So, wghile an array of 10 int32 will be encoded in a
+    // xml element. So, while an array of 10 int32 will be encoded in a
     // single base64 element, an array of 10 strings will use 10 base64
     // elements. This is because the size of each string's value is different.
     // Not so for an int32.
@@ -1718,8 +1762,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                 try {
                     size_t size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
-                    delete[] values;
                     print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
                 }
                 catch (...) {
                     delete[] values;

@@ -1,0 +1,10 @@
+Dataset {
+    Float32 GeoGrid1_Data_Fields_Latitude[YDim_GeoGrid1 = 8];
+    Float32 GeoGrid1_Data_Fields_Longitude[XDim_GeoGrid1 = 16];
+    Float32 GeoGrid1_Data_Fields_pressure[ZDim_GeoGrid1 = 2];
+    Float32 GeoGrid1_Data_Fields_temperature[ZDim_GeoGrid1 = 2][YDim_GeoGrid1 = 8][XDim_GeoGrid1 = 16];
+    Float32 GeoGrid2_Data_Fields_Latitude[YDim_GeoGrid2 = 4];
+    Float32 GeoGrid2_Data_Fields_Longitude[XDim_GeoGrid2 = 8];
+    Float32 GeoGrid2_Data_Fields_pressure[ZDim_GeoGrid2 = 2];
+    Float32 GeoGrid2_Data_Fields_temperature[ZDim_GeoGrid2 = 2][YDim_GeoGrid2 = 4][XDim_GeoGrid2 = 8];
+} grid_2_3d_xyz.hdf;

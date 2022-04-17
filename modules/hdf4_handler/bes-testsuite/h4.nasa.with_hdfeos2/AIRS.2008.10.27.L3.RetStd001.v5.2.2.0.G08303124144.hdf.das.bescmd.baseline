@@ -1,0 +1,1705 @@
+Attributes {
+    TotalCounts_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotalCounts_A";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotCldLiqH2O_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotH2OVap_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotO3_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TotO3_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfAirTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfAirTemp_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfSkinTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfSkinTemp_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    SurfPres_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:SurfPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A_ct";
+        Int16 _FillValue 0;
+    }
+    OLR_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:OLR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A_ct";
+        Int16 _FillValue 0;
+    }
+    ClrOLR_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:ClrOLR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_A {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_A_ct {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A_ct";
+        Int16 _FillValue 0;
+    }
+    EmisIR_A_sdev {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_A_err {
+        String coordinates "EmisLvls Latitude Longitude";
+        String long_name "ascending:EmisIR_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_A {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_A_ct {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_A_sdev {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:GPHeight_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudFrc_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudFrc_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopPres_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopPres_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumid_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumid_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A_ct";
+        Int16 _FillValue 0;
+    }
+    H2OVapMMR_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_A_err {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:H2OVapMMR_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_A {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_A_ct {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_A_sdev {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_A_err {
+        String coordinates "TempPrsLvls Latitude Longitude";
+        String long_name "ascending:Temperature_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_total_column_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_total_column_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_total_column_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_total_column_A_ct";
+        Int16 _FillValue 0;
+    }
+    CO_total_column_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_total_column_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_A {
+        String coordinates "CH4_Layers Latitude Longitude";
+        String long_name "ascending:CH4_VMR_eff_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_A_ct {
+        String coordinates "CH4_Layers Latitude Longitude";
+        String long_name "ascending:CH4_VMR_eff_A_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_VMR_eff_A_sdev {
+        String coordinates "CH4_Layers Latitude Longitude";
+        String long_name "ascending:CH4_VMR_eff_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_A_err {
+        String coordinates "CH4_Layers Latitude Longitude";
+        String long_name "ascending:CH4_VMR_eff_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_A {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_VMR_eff_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_A_ct {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_VMR_eff_A_ct";
+        Int16 _FillValue 0;
+    }
+    CO_VMR_eff_A_sdev {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_VMR_eff_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_A_err {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_VMR_eff_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_dof_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_dof_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_dof_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_dof_A_ct";
+        Int16 _FillValue 0;
+    }
+    CO_dof_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CO_dof_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_dof_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CH4_dof_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_dof_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CH4_dof_A_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_dof_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CH4_dof_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudFrc_A {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudFrc_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudFrc_A_ct {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudFrc_A_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudFrc_A_sdev {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudFrc_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudTemp_A {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudTemp_A_ct {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudTemp_A_sdev {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudPres_A {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudPres_A_ct {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudPres_A_sdev {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CoarseCloudPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    FineCloudFrc_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:FineCloudFrc_A";
+        Float32 _FillValue -9999.000000;
+    }
+    FineCloudFrc_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:FineCloudFrc_A_ct";
+        Int16 _FillValue 0;
+    }
+    FineCloudFrc_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:FineCloudFrc_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_A_err {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:CloudTopTemp_A_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TropPres_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropPres_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TropPres_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropPres_A_ct";
+        Int16 _FillValue 0;
+    }
+    TropPres_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropPres_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TropHeight_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropHeight_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TropHeight_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropHeight_A_ct";
+        Int16 _FillValue 0;
+    }
+    TropHeight_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropHeight_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TropTemp_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropTemp_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TropTemp_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropTemp_A_ct";
+        Int16 _FillValue 0;
+    }
+    TropTemp_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending:TropTemp_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Verticality_A {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Verticality_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Verticality_A_ct {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Verticality_A_ct";
+        Int16 _FillValue 0;
+    }
+    CO_Verticality_A_sdev {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Verticality_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumidLiq_A {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumidLiq_A";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumidLiq_A_ct {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumidLiq_A_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumidLiq_A_sdev {
+        String coordinates "H2OPrsLvls Latitude Longitude";
+        String long_name "ascending:RelHumidLiq_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Eff_Press_A {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Eff_Press_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Eff_Press_A_ct {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Eff_Press_A_ct";
+        Int16 _FillValue 0;
+    }
+    CO_Eff_Press_A_sdev {
+        String coordinates "CO_Layers Latitude Longitude";
+        String long_name "ascending:CO_Eff_Press_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_Eff_Press_A {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CH4_Eff_Press_A";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_Eff_Press_A_ct {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CH4_Eff_Press_A_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_Eff_Press_A_sdev {
+        String coordinates "CoarseCldLyrs Latitude Longitude";
+        String long_name "ascending:CH4_Eff_Press_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls {
+        String long_name "ascending:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls {
+        String long_name "ascending:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    CoarseCldLyrs {
+        String long_name "ascending:CoarseCldLyrs(fake)";
+        String units "level";
+    }
+    CO_Layers {
+        String long_name "ascending:CO_Layers(fake)";
+        String units "level";
+    }
+    CH4_Layers {
+        String long_name "ascending:CH4_Layers(fake)";
+        String units "level";
+    }
+    EmisLvls {
+        String long_name "ascending:EmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotalCounts_D";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotCldLiqH2O_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotCldLiqH2O_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotCldLiqH2O_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotH2OVap_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotO3_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TotO3_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TotO3_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfAirTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfAirTemp_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfAirTemp_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfSkinTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfSkinTemp_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfSkinTemp_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    SurfPres_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    SurfPres_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:SurfPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    OLR_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D_ct";
+        Int16 _FillValue 0;
+    }
+    OLR_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:OLR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    ClrOLR_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D_ct";
+        Int16 _FillValue 0;
+    }
+    ClrOLR_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:ClrOLR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_D {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_D_ct {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D_ct";
+        Int16 _FillValue 0;
+    }
+    EmisIR_D_sdev {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisIR_D_err {
+        String coordinates "EmisLvls_1 Latitude Longitude";
+        String long_name "descending:EmisIR_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_D {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_D_ct {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_D_sdev {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:GPHeight_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D_ct";
+        Int16 _FillValue 0;
+    }
+    CloudFrc_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudFrc_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudFrc_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopPres_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopPres_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopPres_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumid_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumid_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumid_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D_ct";
+        Int16 _FillValue 0;
+    }
+    H2OVapMMR_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    H2OVapMMR_D_err {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:H2OVapMMR_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_D {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_D_ct {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_D_sdev {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_D_err {
+        String coordinates "TempPrsLvls_1 Latitude Longitude";
+        String long_name "descending:Temperature_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_total_column_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_total_column_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_total_column_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_total_column_D_ct";
+        Int16 _FillValue 0;
+    }
+    CO_total_column_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_total_column_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_D {
+        String coordinates "CH4_Layers_1 Latitude Longitude";
+        String long_name "descending:CH4_VMR_eff_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_D_ct {
+        String coordinates "CH4_Layers_1 Latitude Longitude";
+        String long_name "descending:CH4_VMR_eff_D_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_VMR_eff_D_sdev {
+        String coordinates "CH4_Layers_1 Latitude Longitude";
+        String long_name "descending:CH4_VMR_eff_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_VMR_eff_D_err {
+        String coordinates "CH4_Layers_1 Latitude Longitude";
+        String long_name "descending:CH4_VMR_eff_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_D {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_VMR_eff_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_D_ct {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_VMR_eff_D_ct";
+        Int16 _FillValue 0;
+    }
+    CO_VMR_eff_D_sdev {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_VMR_eff_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_VMR_eff_D_err {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_VMR_eff_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_dof_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_dof_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_dof_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_dof_D_ct";
+        Int16 _FillValue 0;
+    }
+    CO_dof_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CO_dof_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_dof_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CH4_dof_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_dof_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CH4_dof_D_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_dof_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CH4_dof_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudFrc_D {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudFrc_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudFrc_D_ct {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudFrc_D_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudFrc_D_sdev {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudFrc_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudTemp_D {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudTemp_D_ct {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudTemp_D_sdev {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudPres_D {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CoarseCloudPres_D_ct {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    CoarseCloudPres_D_sdev {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CoarseCloudPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    FineCloudFrc_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:FineCloudFrc_D";
+        Float32 _FillValue -9999.000000;
+    }
+    FineCloudFrc_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:FineCloudFrc_D_ct";
+        Int16 _FillValue 0;
+    }
+    FineCloudFrc_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:FineCloudFrc_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    CloudTopTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CloudTopTemp_D_err {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:CloudTopTemp_D_err";
+        Float32 _FillValue -9999.000000;
+    }
+    TropPres_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropPres_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TropPres_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropPres_D_ct";
+        Int16 _FillValue 0;
+    }
+    TropPres_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropPres_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TropHeight_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropHeight_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TropHeight_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropHeight_D_ct";
+        Int16 _FillValue 0;
+    }
+    TropHeight_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropHeight_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TropTemp_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropTemp_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TropTemp_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropTemp_D_ct";
+        Int16 _FillValue 0;
+    }
+    TropTemp_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending:TropTemp_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Verticality_D {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Verticality_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Verticality_D_ct {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Verticality_D_ct";
+        Int16 _FillValue 0;
+    }
+    CO_Verticality_D_sdev {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Verticality_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumidLiq_D {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumidLiq_D";
+        Float32 _FillValue -9999.000000;
+    }
+    RelHumidLiq_D_ct {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumidLiq_D_ct";
+        Int16 _FillValue 0;
+    }
+    RelHumidLiq_D_sdev {
+        String coordinates "H2OPrsLvls_1 Latitude Longitude";
+        String long_name "descending:RelHumidLiq_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Eff_Press_D {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Eff_Press_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CO_Eff_Press_D_ct {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Eff_Press_D_ct";
+        Int16 _FillValue 0;
+    }
+    CO_Eff_Press_D_sdev {
+        String coordinates "CO_Layers_1 Latitude Longitude";
+        String long_name "descending:CO_Eff_Press_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_Eff_Press_D {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CH4_Eff_Press_D";
+        Float32 _FillValue -9999.000000;
+    }
+    CH4_Eff_Press_D_ct {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CH4_Eff_Press_D_ct";
+        Int16 _FillValue 0;
+    }
+    CH4_Eff_Press_D_sdev {
+        String coordinates "CoarseCldLyrs_1 Latitude Longitude";
+        String long_name "descending:CH4_Eff_Press_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_1 {
+        String long_name "descending:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_1 {
+        String long_name "descending:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    CoarseCldLyrs_1 {
+        String long_name "descending:CoarseCldLyrs(fake)";
+        String units "level";
+    }
+    CO_Layers_1 {
+        String long_name "descending:CO_Layers(fake)";
+        String units "level";
+    }
+    CH4_Layers_1 {
+        String long_name "descending:CH4_Layers(fake)";
+        String units "level";
+    }
+    EmisLvls_1 {
+        String long_name "descending:EmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_MW_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotalCounts_MW_A";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_A {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_MW_A_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_A_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "ascending_MW_only:TotH2OVap_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_A {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_A_ct {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    EmisMW_MW_A_sdev {
+        String coordinates "MWEmisLvls Latitude Longitude";
+        String long_name "ascending_MW_only:EmisMW_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_A {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_A_ct {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_MW_A_sdev {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:GPHeight_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_A {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_A_ct {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_MW_A_sdev {
+        String coordinates "TempPrsLvls_2 Latitude Longitude";
+        String long_name "ascending_MW_only:Temperature_MW_A_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_2 {
+        String long_name "ascending_MW_only:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_2 {
+        String long_name "ascending_MW_only:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    CoarseCldLyrs_2 {
+        String long_name "ascending_MW_only:CoarseCldLyrs(fake)";
+        String units "level";
+    }
+    CO_Layers_2 {
+        String long_name "ascending_MW_only:CO_Layers(fake)";
+        String units "level";
+    }
+    CH4_Layers_2 {
+        String long_name "ascending_MW_only:CH4_Layers(fake)";
+        String units "level";
+    }
+    MWEmisLvls {
+        String long_name "ascending_MW_only:MWEmisLvls(fake)";
+        String units "level";
+    }
+    TotalCounts_MW_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotalCounts_MW_D";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_D {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    TotH2OVap_MW_D_ct {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    TotH2OVap_MW_D_sdev {
+        String coordinates "Latitude Longitude";
+        String long_name "descending_MW_only:TotH2OVap_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_D {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    EmisMW_MW_D_ct {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    EmisMW_MW_D_sdev {
+        String coordinates "MWEmisLvls_1 Latitude Longitude";
+        String long_name "descending_MW_only:EmisMW_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_D {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    GPHeight_MW_D_ct {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    GPHeight_MW_D_sdev {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:GPHeight_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_D {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D";
+        Float32 _FillValue -9999.000000;
+    }
+    Temperature_MW_D_ct {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D_ct";
+        Int16 _FillValue 0;
+    }
+    Temperature_MW_D_sdev {
+        String coordinates "TempPrsLvls_3 Latitude Longitude";
+        String long_name "descending_MW_only:Temperature_MW_D_sdev";
+        Float32 _FillValue -9999.000000;
+    }
+    TempPrsLvls_3 {
+        String long_name "descending_MW_only:TempPrsLvls(fake)";
+        String units "level";
+    }
+    H2OPrsLvls_3 {
+        String long_name "descending_MW_only:H2OPrsLvls(fake)";
+        String units "level";
+    }
+    CoarseCldLyrs_3 {
+        String long_name "descending_MW_only:CoarseCldLyrs(fake)";
+        String units "level";
+    }
+    CO_Layers_3 {
+        String long_name "descending_MW_only:CO_Layers(fake)";
+        String units "level";
+    }
+    CH4_Layers_3 {
+        String long_name "descending_MW_only:CH4_Layers(fake)";
+        String units "level";
+    }
+    MWEmisLvls_1 {
+        String long_name "descending_MW_only:MWEmisLvls(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "location:Latitude";
+        Float32 _FillValue -9999.000000;
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "location:Longitude";
+        Float32 _FillValue -9999.000000;
+        String units "degrees_east";
+    }
+    LandSeaMask {
+        String coordinates "Latitude Longitude";
+        String long_name "location:LandSeaMask";
+        Int16 _FillValue 0;
+    }
+    Topography {
+        String coordinates "Latitude Longitude";
+        String long_name "location:Topography";
+        Float32 _FillValue -9999.000000;
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AIRS.2008.10.27.L3.RetStd001.v5.2.2.0.G08303124144.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-10-29T16:41:44.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Unspecified";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                    QAFLAGS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            String VALUE "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.", "Based on percentage of product that is good. Suspect used where true quality is not known.";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                            Int32 VALUE 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Surface Skin Temperature", "Surface Air Temperature", "Atmospheric Temperature", "Water Vapor Mass Mixing Ratio", "Total Precipitable Water Vapor", "Ozone Volume Mixing Ratio", "Total Ozone Burden", "Spectral IR Surface Emissivities", "Spectral IR Surf Bidirect Reflectivity", "MW Surface Brightness", "MW Emissivity", "Total Cloud Water", "Cloud Top Temperature", "Cloud Top Pressure", "Effective Cloud Fraction", "Geopotential Heights", "Geopotential Height of Surface";
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AIRX3STD";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 650;
+                    String VALUE "LGID:AIRX2RET:005:AIRS.2008.10.26.055.L2.RetStd.v5.2.2.0.G08302004858.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.056.L2.RetStd.v5.2.2.0.G08302005822.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.057.L2.RetStd.v5.2.2.0.G08302010024.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.058.L2.RetStd.v5.2.2.0.G08302005559.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.059.L2.RetStd.v5.2.2.0.G08302005710.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.060.L2.RetStd.v5.2.2.0.G08302005746.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.061.L2.RetStd.v5.2.2.0.G08302005714.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.062.L2.RetStd.v5.2.2.0.G08302005619.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.063.L2.RetStd.v5.2.2.0.G08302005706.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.064.L2.RetStd.v5.2.2.0.G08302005717.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.065.L2.RetStd.v5.2.2.0.G08302005858.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.066.L2.RetStd.v5.2.2.0.G08302005918.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.067.L2.RetStd.v5.2.2.0.G08302010106.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.068.L2.RetStd.v5.2.2.0.G08302010333.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.069.L2.RetStd.v5.2.2.0.G08302010515.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.070.L2.RetStd.v5.2.2.0.G08302010918.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.071.L2.RetStd.v5.2.2.0.G08302011432.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.072.L2.RetStd.v5.2.2.0.G08302011632.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.073.L2.RetStd.v5.2.2.0.G08302011935.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.074.L2.RetStd.v5.2.2.0.G08302011847.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.075.L2.RetStd.v5.2.2.0.G08302011600.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.076.L2.RetStd.v5.2.2.0.G08302011514.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.077.L2.RetStd.v5.2.2.0.G08302011721.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.078.L2.RetStd.v5.2.2.0.G08302011823.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.079.L2.RetStd.v5.2.2.0.G08302011637.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.080.L2.RetStd.v5.2.2.0.G08302011717.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.081.L2.RetStd.v5.2.2.0.G08302011851.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.082.L2.RetStd.v5.2.2.0.G08302011843.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.083.L2.RetStd.v5.2.2.0.G08302012152.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.084.L2.RetStd.v5.2.2.0.G08302012404.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.085.L2.RetStd.v5.2.2.0.G08302012824.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.086.L2.RetStd.v5.2.2.0.G08302013328.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.087.L2.RetStd.v5.2.2.0.G08302013419.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.088.L2.RetStd.v5.2.2.0.G08302013533.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.089.L2.RetStd.v5.2.2.0.G08302013607.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.090.L2.RetStd.v5.2.2.0.G08302013847.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.091.L2.RetStd.v5.2.2.0.G08302013910.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.092.L2.RetStd.v5.2.2.0.G08302013836.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.093.L2.RetStd.v5.2.2.0.G08302013847.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.094.L2.RetStd.v5.2.2.0.G08302013833.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.095.L2.RetStd.v5.2.2.0.G08302013657.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.096.L2.RetStd.v5.2.2.0.G08302013649.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.097.L2.RetStd.v5.2.2.0.G08302013635.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.098.L2.RetStd.v5.2.2.0.G08302014030.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.099.L2.RetStd.v5.2.2.0.G08302014128.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.100.L2.RetStd.v5.2.2.0.G08302014720.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.101.L2.RetStd.v5.2.2.0.G08302015103.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.102.L2.RetStd.v5.2.2.0.G08302015111.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.103.L2.RetStd.v5.2.2.0.G08302015424.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.104.L2.RetStd.v5.2.2.0.G08302015532.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.105.L2.RetStd.v5.2.2.0.G08302015701.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.106.L2.RetStd.v5.2.2.0.G08302015853.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.107.L2.RetStd.v5.2.2.0.G08302015815.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.108.L2.RetStd.v5.2.2.0.G08302020016.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.109.L2.RetStd.v5.2.2.0.G08302015950.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.110.L2.RetStd.v5.2.2.0.G08302015938.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.111.L2.RetStd.v5.2.2.0.G08302015819.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.112.L2.RetStd.v5.2.2.0.G08302015725.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.113.L2.RetStd.v5.2.2.0.G08302015639.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.114.L2.RetStd.v5.2.2.0.G08302015944.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.115.L2.RetStd.v5.2.2.0.G08302020520.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.116.L2.RetStd.v5.2.2.0.G08302021001.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.117.L2.RetStd.v5.2.2.0.G08302021031.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.118.L2.RetStd.v5.2.2.0.G08302021318.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.119.L2.RetStd.v5.2.2.0.G08301173439.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.120.L2.RetStd.v5.2.2.0.G08302021423.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.121.L2.RetStd.v5.2.2.0.G08302021810.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.122.L2.RetStd.v5.2.2.0.G08302021921.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.123.L2.RetStd.v5.2.2.0.G08302021921.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.124.L2.RetStd.v5.2.2.0.G08302022002.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.125.L2.RetStd.v5.2.2.0.G08302021858.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.126.L2.RetStd.v5.2.2.0.G08302021930.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.127.L2.RetStd.v5.2.2.0.G08302022029.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.128.L2.RetStd.v5.2.2.0.G08302021726.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.129.L2.RetStd.v5.2.2.0.G08302021724.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.130.L2.RetStd.v5.2.2.0.G08302021900.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.131.L2.RetStd.v5.2.2.0.G08302022307.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.132.L2.RetStd.v5.2.2.0.G08302022759.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.133.L2.RetStd.v5.2.2.0.G08302022945.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.134.L2.RetStd.v5.2.2.0.G08302023054.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.135.L2.RetStd.v5.2.2.0.G08302023225.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.136.L2.RetStd.v5.2.2.0.G08302023451.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.137.L2.RetStd.v5.2.2.0.G08302023704.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.138.L2.RetStd.v5.2.2.0.G08302023946.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.139.L2.RetStd.v5.2.2.0.G08302024130.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.140.L2.RetStd.v5.2.2.0.G08302024127.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.141.L2.RetStd.v5.2.2.0.G08302024117.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.142.L2.RetStd.v5.2.2.0.G08302024105.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.143.L2.RetStd.v5.2.2.0.G08302024057.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.144.L2.RetStd.v5.2.2.0.G08302023855.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.145.L2.RetStd.v5.2.2.0.G08302023825.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.146.L2.RetStd.v5.2.2.0.G08302024054.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.147.L2.RetStd.v5.2.2.0.G08302024605.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.148.L2.RetStd.v5.2.2.0.G08302024758.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.149.L2.RetStd.v5.2.2.0.G08302025011.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.150.L2.RetStd.v5.2.2.0.G08302025144.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.151.L2.RetStd.v5.2.2.0.G08302025350.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.152.L2.RetStd.v5.2.2.0.G08302025358.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.153.L2.RetStd.v5.2.2.0.G08302025726.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.154.L2.RetStd.v5.2.2.0.G08302025943.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.155.L2.RetStd.v5.2.2.0.G08302030056.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.156.L2.RetStd.v5.2.2.0.G08302030512.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.157.L2.RetStd.v5.2.2.0.G08302030319.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.158.L2.RetStd.v5.2.2.0.G08302030451.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.159.L2.RetStd.v5.2.2.0.G08302030512.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.160.L2.RetStd.v5.2.2.0.G08302030445.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.161.L2.RetStd.v5.2.2.0.G08302044546.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.162.L2.RetStd.v5.2.2.0.G08302044620.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.163.L2.RetStd.v5.2.2.0.G08302044529.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.164.L2.RetStd.v5.2.2.0.G08302044715.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.165.L2.RetStd.v5.2.2.0.G08302044709.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.166.L2.RetStd.v5.2.2.0.G08302050205.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.167.L2.RetStd.v5.2.2.0.G08302040909.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.168.L2.RetStd.v5.2.2.0.G08302050140.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.169.L2.RetStd.v5.2.2.0.G08302030624.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.170.L2.RetStd.v5.2.2.0.G08302031045.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.171.L2.RetStd.v5.2.2.0.G08302031119.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.172.L2.RetStd.v5.2.2.0.G08302030954.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.173.L2.RetStd.v5.2.2.0.G08302031435.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.174.L2.RetStd.v5.2.2.0.G08302031750.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.175.L2.RetStd.v5.2.2.0.G08302031528.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.176.L2.RetStd.v5.2.2.0.G08302031821.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.177.L2.RetStd.v5.2.2.0.G08302031912.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.178.L2.RetStd.v5.2.2.0.G08302050242.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.179.L2.RetStd.v5.2.2.0.G08302050112.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.180.L2.RetStd.v5.2.2.0.G08302050323.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.181.L2.RetStd.v5.2.2.0.G08302050236.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.182.L2.RetStd.v5.2.2.0.G08302050426.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.183.L2.RetStd.v5.2.2.0.G08302050500.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.184.L2.RetStd.v5.2.2.0.G08302050425.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.185.L2.RetStd.v5.2.2.0.G08302032407.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.186.L2.RetStd.v5.2.2.0.G08302032914.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.187.L2.RetStd.v5.2.2.0.G08302033011.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.188.L2.RetStd.v5.2.2.0.G08302033030.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.189.L2.RetStd.v5.2.2.0.G08302033015.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.190.L2.RetStd.v5.2.2.0.G08302033011.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.191.L2.RetStd.v5.2.2.0.G08302032941.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.192.L2.RetStd.v5.2.2.0.G08302033125.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.193.L2.RetStd.v5.2.2.0.G08302033231.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.194.L2.RetStd.v5.2.2.0.G08302050452.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.195.L2.RetStd.v5.2.2.0.G08302050343.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.196.L2.RetStd.v5.2.2.0.G08302050514.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.197.L2.RetStd.v5.2.2.0.G08302050404.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.198.L2.RetStd.v5.2.2.0.G08302050741.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.199.L2.RetStd.v5.2.2.0.G08302050903.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.200.L2.RetStd.v5.2.2.0.G08302053649.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.201.L2.RetStd.v5.2.2.0.G08302053731.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.202.L2.RetStd.v5.2.2.0.G08302053948.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.203.L2.RetStd.v5.2.2.0.G08302054313.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.204.L2.RetStd.v5.2.2.0.G08302054352.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.205.L2.RetStd.v5.2.2.0.G08302054334.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.206.L2.RetStd.v5.2.2.0.G08302054318.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.207.L2.RetStd.v5.2.2.0.G08302054231.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.208.L2.RetStd.v5.2.2.0.G08302054310.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.209.L2.RetStd.v5.2.2.0.G08302054213.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.210.L2.RetStd.v5.2.2.0.G08302054103.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.211.L2.RetStd.v5.2.2.0.G08302054059.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.212.L2.RetStd.v5.2.2.0.G08302054207.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.213.L2.RetStd.v5.2.2.0.G08302054524.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.214.L2.RetStd.v5.2.2.0.G08302055649.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.215.L2.RetStd.v5.2.2.0.G08302055752.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.216.L2.RetStd.v5.2.2.0.G08302055934.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.217.L2.RetStd.v5.2.2.0.G08302060028.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.218.L2.RetStd.v5.2.2.0.G08302055947.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.219.L2.RetStd.v5.2.2.0.G08302060424.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.220.L2.RetStd.v5.2.2.0.G08302060540.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.221.L2.RetStd.v5.2.2.0.G08302060519.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.222.L2.RetStd.v5.2.2.0.G08302060615.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.223.L2.RetStd.v5.2.2.0.G08302060440.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.224.L2.RetStd.v5.2.2.0.G08302060556.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.225.L2.RetStd.v5.2.2.0.G08302060440.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.226.L2.RetStd.v5.2.2.0.G08302060512.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.227.L2.RetStd.v5.2.2.0.G08302060413.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.228.L2.RetStd.v5.2.2.0.G08302061744.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.229.L2.RetStd.v5.2.2.0.G08302062020.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.230.L2.RetStd.v5.2.2.0.G08302062236.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.231.L2.RetStd.v5.2.2.0.G08302062255.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.232.L2.RetStd.v5.2.2.0.G08302062333.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.233.L2.RetStd.v5.2.2.0.G08302062434.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.234.L2.RetStd.v5.2.2.0.G08302062218.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.235.L2.RetStd.v5.2.2.0.G08302062640.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.236.L2.RetStd.v5.2.2.0.G08302062700.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.237.L2.RetStd.v5.2.2.0.G08302062531.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.26.238.L2.RetStd.v5.2.2.0.G08302063150.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.239.L2.RetStd.v5.2.2.0.G08302064020.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.26.240.L2.RetStd.v5.2.2.0.G08302063846.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.001.L2.RetStd.v5.2.2.0.G08302064253.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.002.L2.RetStd.v5.2.2.0.G08302064418.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.003.L2.RetStd.v5.2.2.0.G08302064129.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.004.L2.RetStd.v5.2.2.0.G08302064104.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.005.L2.RetStd.v5.2.2.0.G08302064104.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.006.L2.RetStd.v5.2.2.0.G08302064304.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.007.L2.RetStd.v5.2.2.0.G08302064312.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.008.L2.RetStd.v5.2.2.0.G08302064553.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.009.L2.RetStd.v5.2.2.0.G08302064611.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.010.L2.RetStd.v5.2.2.0.G08302065004.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.011.L2.RetStd.v5.2.2.0.G08302065544.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.012.L2.RetStd.v5.2.2.0.G08302065958.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.013.L2.RetStd.v5.2.2.0.G08302070220.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.014.L2.RetStd.v5.2.2.0.G08302070333.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.015.L2.RetStd.v5.2.2.0.G08302070414.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.016.L2.RetStd.v5.2.2.0.G08302070229.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.017.L2.RetStd.v5.2.2.0.G08302070355.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.018.L2.RetStd.v5.2.2.0.G08302070043.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.019.L2.RetStd.v5.2.2.0.G08302070321.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.020.L2.RetStd.v5.2.2.0.G08302070207.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.021.L2.RetStd.v5.2.2.0.G08302070237.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.022.L2.RetStd.v5.2.2.0.G08302070310.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.023.L2.RetStd.v5.2.2.0.G08302070403.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.024.L2.RetStd.v5.2.2.0.G08302070501.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.025.L2.RetStd.v5.2.2.0.G08302070852.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.026.L2.RetStd.v5.2.2.0.G08302071414.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.027.L2.RetStd.v5.2.2.0.G08302071840.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.028.L2.RetStd.v5.2.2.0.G08302072206.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.029.L2.RetStd.v5.2.2.0.G08302072307.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.030.L2.RetStd.v5.2.2.0.G08302072436.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.031.L2.RetStd.v5.2.2.0.G08302072447.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.032.L2.RetStd.v5.2.2.0.G08302072522.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.033.L2.RetStd.v5.2.2.0.G08302072457.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.034.L2.RetStd.v5.2.2.0.G08302072347.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.035.L2.RetStd.v5.2.2.0.G08302072435.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.036.L2.RetStd.v5.2.2.0.G08302072312.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.037.L2.RetStd.v5.2.2.0.G08302072227.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.038.L2.RetStd.v5.2.2.0.G08302072316.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.039.L2.RetStd.v5.2.2.0.G08302072357.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.040.L2.RetStd.v5.2.2.0.G08302072718.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.041.L2.RetStd.v5.2.2.0.G08302073401.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.042.L2.RetStd.v5.2.2.0.G08302073547.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.043.L2.RetStd.v5.2.2.0.G08302074404.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.044.L2.RetStd.v5.2.2.0.G08302074512.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.045.L2.RetStd.v5.2.2.0.G08302074556.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.046.L2.RetStd.v5.2.2.0.G08302074628.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.047.L2.RetStd.v5.2.2.0.G08302074809.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.048.L2.RetStd.v5.2.2.0.G08302075037.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.049.L2.RetStd.v5.2.2.0.G08302075319.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.050.L2.RetStd.v5.2.2.0.G08302075756.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.051.L2.RetStd.v5.2.2.0.G08302075833.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.052.L2.RetStd.v5.2.2.0.G08302080100.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.053.L2.RetStd.v5.2.2.0.G08302075924.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.054.L2.RetStd.v5.2.2.0.G08302080209.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.055.L2.RetStd.v5.2.2.0.G08302080213.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.056.L2.RetStd.v5.2.2.0.G08302080234.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.057.L2.RetStd.v5.2.2.0.G08302080332.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.058.L2.RetStd.v5.2.2.0.G08302080209.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.059.L2.RetStd.v5.2.2.0.G08302080438.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.060.L2.RetStd.v5.2.2.0.G08302080543.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.061.L2.RetStd.v5.2.2.0.G08302080711.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.062.L2.RetStd.v5.2.2.0.G08302080643.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.063.L2.RetStd.v5.2.2.0.G08302081135.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.064.L2.RetStd.v5.2.2.0.G08302081444.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.065.L2.RetStd.v5.2.2.0.G08302081940.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.066.L2.RetStd.v5.2.2.0.G08302081724.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.067.L2.RetStd.v5.2.2.0.G08302081645.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.068.L2.RetStd.v5.2.2.0.G08302081931.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.069.L2.RetStd.v5.2.2.0.G08302082135.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.070.L2.RetStd.v5.2.2.0.G08302082000.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.071.L2.RetStd.v5.2.2.0.G08302082012.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.072.L2.RetStd.v5.2.2.0.G08302082040.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.073.L2.RetStd.v5.2.2.0.G08302082202.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.074.L2.RetStd.v5.2.2.0.G08302082314.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.075.L2.RetStd.v5.2.2.0.G08302082506.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.076.L2.RetStd.v5.2.2.0.G08302092754.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.077.L2.RetStd.v5.2.2.0.G08302082849.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.078.L2.RetStd.v5.2.2.0.G08302082825.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.079.L2.RetStd.v5.2.2.0.G08302083236.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.080.L2.RetStd.v5.2.2.0.G08302083740.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.081.L2.RetStd.v5.2.2.0.G08302083824.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.082.L2.RetStd.v5.2.2.0.G08302084158.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.083.L2.RetStd.v5.2.2.0.G08302084005.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.084.L2.RetStd.v5.2.2.0.G08302084136.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.085.L2.RetStd.v5.2.2.0.G08302084303.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.086.L2.RetStd.v5.2.2.0.G08302094019.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.087.L2.RetStd.v5.2.2.0.G08302094055.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.088.L2.RetStd.v5.2.2.0.G08302094052.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.089.L2.RetStd.v5.2.2.0.G08302094207.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.090.L2.RetStd.v5.2.2.0.G08302094432.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.091.L2.RetStd.v5.2.2.0.G08302121349.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.092.L2.RetStd.v5.2.2.0.G08302121111.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.093.L2.RetStd.v5.2.2.0.G08302121216.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.094.L2.RetStd.v5.2.2.0.G08302121341.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.095.L2.RetStd.v5.2.2.0.G08302121353.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.096.L2.RetStd.v5.2.2.0.G08302121554.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.097.L2.RetStd.v5.2.2.0.G08302121606.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.098.L2.RetStd.v5.2.2.0.G08302121609.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.099.L2.RetStd.v5.2.2.0.G08302121543.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.100.L2.RetStd.v5.2.2.0.G08302121459.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.101.L2.RetStd.v5.2.2.0.G08302121504.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.102.L2.RetStd.v5.2.2.0.G08302121247.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.103.L2.RetStd.v5.2.2.0.G08302122932.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.104.L2.RetStd.v5.2.2.0.G08302121232.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.105.L2.RetStd.v5.2.2.0.G08302121318.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.106.L2.RetStd.v5.2.2.0.G08302121238.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.107.L2.RetStd.v5.2.2.0.G08302123058.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.108.L2.RetStd.v5.2.2.0.G08302122927.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.109.L2.RetStd.v5.2.2.0.G08302123104.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.110.L2.RetStd.v5.2.2.0.G08302123130.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.111.L2.RetStd.v5.2.2.0.G08302123224.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.112.L2.RetStd.v5.2.2.0.G08302123401.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.113.L2.RetStd.v5.2.2.0.G08302123522.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.114.L2.RetStd.v5.2.2.0.G08302123501.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.115.L2.RetStd.v5.2.2.0.G08302123641.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.116.L2.RetStd.v5.2.2.0.G08302123701.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.117.L2.RetStd.v5.2.2.0.G08302123618.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.118.L2.RetStd.v5.2.2.0.G08302123542.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.119.L2.RetStd.v5.2.2.0.G08302124142.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.120.L2.RetStd.v5.2.2.0.G08302124726.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.121.L2.RetStd.v5.2.2.0.G08302124657.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.122.L2.RetStd.v5.2.2.0.G08302124759.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.123.L2.RetStd.v5.2.2.0.G08302125018.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.124.L2.RetStd.v5.2.2.0.G08302125110.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.125.L2.RetStd.v5.2.2.0.G08302125126.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.126.L2.RetStd.v5.2.2.0.G08302125205.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.127.L2.RetStd.v5.2.2.0.G08302125338.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.128.L2.RetStd.v5.2.2.0.G08302125520.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.129.L2.RetStd.v5.2.2.0.G08302125719.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.130.L2.RetStd.v5.2.2.0.G08302125907.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.131.L2.RetStd.v5.2.2.0.G08302125849.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.132.L2.RetStd.v5.2.2.0.G08302125857.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.133.L2.RetStd.v5.2.2.0.G08302130253.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.134.L2.RetStd.v5.2.2.0.G08302130906.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.135.L2.RetStd.v5.2.2.0.G08302130603.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.136.L2.RetStd.v5.2.2.0.G08302130625.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.137.L2.RetStd.v5.2.2.0.G08302131029.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.138.L2.RetStd.v5.2.2.0.G08302131248.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.139.L2.RetStd.v5.2.2.0.G08302131401.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.140.L2.RetStd.v5.2.2.0.G08302131547.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.141.L2.RetStd.v5.2.2.0.G08302131729.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.142.L2.RetStd.v5.2.2.0.G08302131647.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.143.L2.RetStd.v5.2.2.0.G08302131626.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.144.L2.RetStd.v5.2.2.0.G08302132220.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.145.L2.RetStd.v5.2.2.0.G08302132518.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.146.L2.RetStd.v5.2.2.0.G08302132736.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.147.L2.RetStd.v5.2.2.0.G08302132902.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.148.L2.RetStd.v5.2.2.0.G08302132940.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.149.L2.RetStd.v5.2.2.0.G08302133020.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.150.L2.RetStd.v5.2.2.0.G08302133047.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.151.L2.RetStd.v5.2.2.0.G08302180328.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.152.L2.RetStd.v5.2.2.0.G08302180141.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.153.L2.RetStd.v5.2.2.0.G08302180202.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.154.L2.RetStd.v5.2.2.0.G08302180104.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.155.L2.RetStd.v5.2.2.0.G08302180310.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.156.L2.RetStd.v5.2.2.0.G08302180305.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.157.L2.RetStd.v5.2.2.0.G08302180257.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.158.L2.RetStd.v5.2.2.0.G08302180321.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.159.L2.RetStd.v5.2.2.0.G08302180056.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.160.L2.RetStd.v5.2.2.0.G08302180250.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.161.L2.RetStd.v5.2.2.0.G08302180522.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.162.L2.RetStd.v5.2.2.0.G08302180433.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.163.L2.RetStd.v5.2.2.0.G08302180510.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.164.L2.RetStd.v5.2.2.0.G08302180529.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.165.L2.RetStd.v5.2.2.0.G08302180558.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.166.L2.RetStd.v5.2.2.0.G08302182211.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.167.L2.RetStd.v5.2.2.0.G08302182244.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.168.L2.RetStd.v5.2.2.0.G08302181914.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.169.L2.RetStd.v5.2.2.0.G08302181850.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.170.L2.RetStd.v5.2.2.0.G08302182106.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.171.L2.RetStd.v5.2.2.0.G08302182125.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.172.L2.RetStd.v5.2.2.0.G08302181923.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.173.L2.RetStd.v5.2.2.0.G08302182217.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.174.L2.RetStd.v5.2.2.0.G08302182150.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.175.L2.RetStd.v5.2.2.0.G08302182119.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.176.L2.RetStd.v5.2.2.0.G08302182150.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.177.L2.RetStd.v5.2.2.0.G08302182605.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.178.L2.RetStd.v5.2.2.0.G08302182700.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.179.L2.RetStd.v5.2.2.0.G08302182703.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.180.L2.RetStd.v5.2.2.0.G08302182819.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.181.L2.RetStd.v5.2.2.0.G08302184028.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.182.L2.RetStd.v5.2.2.0.G08302183925.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.183.L2.RetStd.v5.2.2.0.G08302184029.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.184.L2.RetStd.v5.2.2.0.G08302184054.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.185.L2.RetStd.v5.2.2.0.G08302183826.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.186.L2.RetStd.v5.2.2.0.G08302183755.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.187.L2.RetStd.v5.2.2.0.G08302183804.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.188.L2.RetStd.v5.2.2.0.G08302183849.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.189.L2.RetStd.v5.2.2.0.G08302184101.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.190.L2.RetStd.v5.2.2.0.G08302184104.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.191.L2.RetStd.v5.2.2.0.G08302184106.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.192.L2.RetStd.v5.2.2.0.G08302184357.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.193.L2.RetStd.v5.2.2.0.G08302184738.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.194.L2.RetStd.v5.2.2.0.G08302184906.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.195.L2.RetStd.v5.2.2.0.G08302185014.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.196.L2.RetStd.v5.2.2.0.G08302185950.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.197.L2.RetStd.v5.2.2.0.G08302185847.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.198.L2.RetStd.v5.2.2.0.G08302185914.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.199.L2.RetStd.v5.2.2.0.G08302185938.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.200.L2.RetStd.v5.2.2.0.G08302190014.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.201.L2.RetStd.v5.2.2.0.G08302185748.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.202.L2.RetStd.v5.2.2.0.G08302185705.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.203.L2.RetStd.v5.2.2.0.G08302185640.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.204.L2.RetStd.v5.2.2.0.G08302185816.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.205.L2.RetStd.v5.2.2.0.G08302190000.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.206.L2.RetStd.v5.2.2.0.G08302185912.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.207.L2.RetStd.v5.2.2.0.G08302190254.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.208.L2.RetStd.v5.2.2.0.G08302190508.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.209.L2.RetStd.v5.2.2.0.G08302190740.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.210.L2.RetStd.v5.2.2.0.G08302191228.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.211.L2.RetStd.v5.2.2.0.G08303001604.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.212.L2.RetStd.v5.2.2.0.G08303001638.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.213.L2.RetStd.v5.2.2.0.G08303001543.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.214.L2.RetStd.v5.2.2.0.G08303001441.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.215.L2.RetStd.v5.2.2.0.G08303001525.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.216.L2.RetStd.v5.2.2.0.G08303001355.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.217.L2.RetStd.v5.2.2.0.G08303001219.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.218.L2.RetStd.v5.2.2.0.G08303002834.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.219.L2.RetStd.v5.2.2.0.G08303002849.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.220.L2.RetStd.v5.2.2.0.G08303003030.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.221.L2.RetStd.v5.2.2.0.G08303003235.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.222.L2.RetStd.v5.2.2.0.G08303003249.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.223.L2.RetStd.v5.2.2.0.G08303003236.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.224.L2.RetStd.v5.2.2.0.G08303003302.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.225.L2.RetStd.v5.2.2.0.G08303001045.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.226.L2.RetStd.v5.2.2.0.G08303001529.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.227.L2.RetStd.v5.2.2.0.G08303001515.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.228.L2.RetStd.v5.2.2.0.G08303001345.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.229.L2.RetStd.v5.2.2.0.G08303001642.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.230.L2.RetStd.v5.2.2.0.G08303001550.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.231.L2.RetStd.v5.2.2.0.G08303001431.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.232.L2.RetStd.v5.2.2.0.G08303001555.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.233.L2.RetStd.v5.2.2.0.G08303003621.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.234.L2.RetStd.v5.2.2.0.G08303003240.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.235.L2.RetStd.v5.2.2.0.G08303003327.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.236.L2.RetStd.v5.2.2.0.G08303003321.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.237.L2.RetStd.v5.2.2.0.G08303003358.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.27.238.L2.RetStd.v5.2.2.0.G08303003400.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.239.L2.RetStd.v5.2.2.0.G08303003421.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.27.240.L2.RetStd.v5.2.2.0.G08303003524.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.001.L2.RetStd.v5.2.2.0.G08303004612.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.002.L2.RetStd.v5.2.2.0.G08303004850.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.003.L2.RetStd.v5.2.2.0.G08303005150.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.004.L2.RetStd.v5.2.2.0.G08303005350.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.005.L2.RetStd.v5.2.2.0.G08303005546.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.006.L2.RetStd.v5.2.2.0.G08303005447.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.007.L2.RetStd.v5.2.2.0.G08303005254.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.008.L2.RetStd.v5.2.2.0.G08303005551.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.009.L2.RetStd.v5.2.2.0.G08303005038.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.010.L2.RetStd.v5.2.2.0.G08303005155.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.011.L2.RetStd.v5.2.2.0.G08303005200.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.012.L2.RetStd.v5.2.2.0.G08303005109.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.013.L2.RetStd.v5.2.2.0.G08303005157.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.014.L2.RetStd.v5.2.2.0.G08303005413.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.015.L2.RetStd.v5.2.2.0.G08303005504.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.016.L2.RetStd.v5.2.2.0.G08303010521.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.017.L2.RetStd.v5.2.2.0.G08303010733.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.018.L2.RetStd.v5.2.2.0.G08303010955.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.019.L2.RetStd.v5.2.2.0.G08303011225.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.020.L2.RetStd.v5.2.2.0.G08303011253.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.021.L2.RetStd.v5.2.2.0.G08303011250.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.022.L2.RetStd.v5.2.2.0.G08303011236.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.023.L2.RetStd.v5.2.2.0.G08303011456.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.024.L2.RetStd.v5.2.2.0.G08303011458.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.025.L2.RetStd.v5.2.2.0.G08303011443.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.026.L2.RetStd.v5.2.2.0.G08303011510.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.027.L2.RetStd.v5.2.2.0.G08303011339.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.028.L2.RetStd.v5.2.2.0.G08303011346.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.029.L2.RetStd.v5.2.2.0.G08303011413.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.030.L2.RetStd.v5.2.2.0.G08303011353.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.031.L2.RetStd.v5.2.2.0.G08303061253.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.032.L2.RetStd.v5.2.2.0.G08303061222.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.033.L2.RetStd.v5.2.2.0.G08303062835.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.034.L2.RetStd.v5.2.2.0.G08303063123.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.035.L2.RetStd.v5.2.2.0.G08303061452.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.036.L2.RetStd.v5.2.2.0.G08303061436.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.037.L2.RetStd.v5.2.2.0.G08303061500.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.038.L2.RetStd.v5.2.2.0.G08303061531.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.039.L2.RetStd.v5.2.2.0.G08303061536.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.040.L2.RetStd.v5.2.2.0.G08303061626.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.041.L2.RetStd.v5.2.2.0.G08303061550.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.042.L2.RetStd.v5.2.2.0.G08303061309.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.043.L2.RetStd.v5.2.2.0.G08303063229.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.044.L2.RetStd.v5.2.2.0.G08303063226.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.045.L2.RetStd.v5.2.2.0.G08303063338.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.046.L2.RetStd.v5.2.2.0.G08303063306.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.047.L2.RetStd.v5.2.2.0.G08303063227.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.048.L2.RetStd.v5.2.2.0.G08303063331.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.049.L2.RetStd.v5.2.2.0.G08303063341.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.050.L2.RetStd.v5.2.2.0.G08303063446.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.051.L2.RetStd.v5.2.2.0.G08303063529.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.052.L2.RetStd.v5.2.2.0.G08303063541.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.053.L2.RetStd.v5.2.2.0.G08303061431.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.054.L2.RetStd.v5.2.2.0.G08303061555.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.055.L2.RetStd.v5.2.2.0.G08303061659.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.056.L2.RetStd.v5.2.2.0.G08303061442.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.057.L2.RetStd.v5.2.2.0.G08303061452.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.058.L2.RetStd.v5.2.2.0.G08303063522.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.059.L2.RetStd.v5.2.2.0.G08303063550.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.060.L2.RetStd.v5.2.2.0.G08303063507.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.061.L2.RetStd.v5.2.2.0.G08303064607.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.062.L2.RetStd.v5.2.2.0.G08303064910.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.063.L2.RetStd.v5.2.2.0.G08303065040.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.064.L2.RetStd.v5.2.2.0.G08303064938.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.065.L2.RetStd.v5.2.2.0.G08303065025.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.066.L2.RetStd.v5.2.2.0.G08303065220.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.067.L2.RetStd.v5.2.2.0.G08303065251.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.068.L2.RetStd.v5.2.2.0.G08303065414.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.069.L2.RetStd.v5.2.2.0.G08303065257.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.070.L2.RetStd.v5.2.2.0.G08303065621.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.071.L2.RetStd.v5.2.2.0.G08303065725.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.072.L2.RetStd.v5.2.2.0.G08303065716.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.073.L2.RetStd.v5.2.2.0.G08303065639.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.074.L2.RetStd.v5.2.2.0.G08303065341.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.075.L2.RetStd.v5.2.2.0.G08303065419.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.076.L2.RetStd.v5.2.2.0.G08303070521.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.077.L2.RetStd.v5.2.2.0.G08303070648.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.078.L2.RetStd.v5.2.2.0.G08303070729.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.079.L2.RetStd.v5.2.2.0.G08303070830.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.080.L2.RetStd.v5.2.2.0.G08303070746.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.081.L2.RetStd.v5.2.2.0.G08303071103.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.082.L2.RetStd.v5.2.2.0.G08303071204.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.083.L2.RetStd.v5.2.2.0.G08303071117.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.084.L2.RetStd.v5.2.2.0.G08303071234.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.085.L2.RetStd.v5.2.2.0.G08303071301.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.086.L2.RetStd.v5.2.2.0.G08303071439.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.087.L2.RetStd.v5.2.2.0.G08303071812.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.088.L2.RetStd.v5.2.2.0.G08303071706.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.089.L2.RetStd.v5.2.2.0.G08303071859.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.090.L2.RetStd.v5.2.2.0.G08303071758.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.091.L2.RetStd.v5.2.2.0.G08303121507.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.092.L2.RetStd.v5.2.2.0.G08303121424.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.093.L2.RetStd.v5.2.2.0.G08303123000.hdf", "
+          LGID:AIRX2RET:005:AIRS.2008.10.28.094.L2.RetStd.v5.2.2.0.G08303123048.hdf", "LGID:AIRX2RET:005:AIRS.2008.10.28.095.L2.RetStd.v5.2.2.0.G08303123017.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                    }
+                }
+                GRANULELOCALITY {
+                    LOCALITYVALUE {
+                        Int32 NUM_VAL 1;
+                        String VALUE "Global";
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-10-28";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2008-10-27";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.000000Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.2.2.0";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "HSB Channel 1", "HSB Channel 2", "HSB Channel 3", "HSB Channel 4", "HSB Channel 5", "AMSU-A Channel 3", "AMSU-A Channel 4", "AMSU-A Channel 5", "AMSU-A Channel 6", "AMSU-A Channel 7", "AMSU-A Channel 8", "AMSU-A Channel 9", "AMSU-A Channel 10", "AMSU-A Channel 11", "AMSU-A Channel 12", "AMSU-A Channel 13", "AMSU-A Channel 14", "AMSU-A Channel 15", "AMSU-A Channel 1", "AMSU-A Channel 2", "M1a Detector Array", "M1b Detector Array", "M2a Detector Array", "M2b Detector Array", "M3 Detector Array", "M4a Detector Array", "M4b Detector Array", "M4c Detector Array", "M4d Detector Array", "M5 Detector Array", "M6 Detector Array", "M7 Detector Array", "M8 Detector Array", "M9 Detector Array", "M10 Detector Array", "M11 Detector Array", "M12 Detector Array", "VNIR Channel 1", "VNIR Channel 2", "VNIR Channel 3", "VNIR Channel 4";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua", "Aqua";
+                    }
+                    OPERATIONMODE {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal", "Normal";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "HSB", "HSB", "HSB", "HSB", "HSB", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AMSU-A", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS", "AIRS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "NumBadData", "NumSpecialData", "NumProcessData", "NumMissingData", "NumTotalData", "NumFpe", "ProductGenerationFacility", "InputGranuleCount", "NumDaysPlanned", "NumDaysInCycle", "StartDayInAquaRepeat", "AIRSRunTag", "ProductGenerationHostInformation";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13";
+                            String VALUE "0", "0", "703350", "0", "703350", "0", "G", "521", "1", "1", "0", "08303124144", "airspro2 Linux 2.6.9-78.0.5.ELlargesmp #1_SMP_Wed_Sep_24_05:55:46_EDT_2008 x86_64";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.12";
+    }
+    location {
+        Int32 Year 2008;
+        Int32 Month 10;
+        Int32 Day 27;
+        Int32 NumOfDays 1;
+        String AscendingGridStartTimeUTC "2008-10-27T01:30:00.000000Z";
+        String AscendingGridEndTimeUTC "2008-10-28T01:29:59.999999Z";
+        String DescendingGridStartTimeUTC "2008-10-26T13:30:00.000000Z";
+        String DescendingGridEndTimeUTC "2008-10-27T13:29:59.999999Z";
+        Int32 TempPresLvlNum 24;
+        Float32 TempPresLvls 1000.000000, 925.0000000, 850.0000000, 700.0000000, 600.0000000, 500.0000000, 400.0000000, 300.0000000, 250.0000000, 200.0000000, 150.0000000, 100.0000000, 70.00000000, 50.00000000, 30.00000000, 20.00000000, 15.00000000, 10.00000000, 7.000000000, 5.000000000, 3.000000000, 2.000000000, 1.500000000, 1.000000000;
+        Int32 H2OPresLvlNum 12;
+        Float32 H2OPresLvls 1000.000000, 925.0000000, 850.0000000, 700.0000000, 600.0000000, 500.0000000, 400.0000000, 300.0000000, 250.0000000, 200.0000000, 150.0000000, 100.0000000;
+        Float32 IREmisFreqs 832.0000000, 961.0000000, 1203.000000, 2616.000000;
+        Float32 MWEmisFreqs 23.79999924, 50.29999924, 89.00000000;
+        Int32 CH4TrapLyrNum 3;
+        Int32 CH4_TrapezoidLayers 51, 60, 67;
+        Int32 COTrapLyrNum 7;
+        Int32 CO_TrapezoidLayers 45, 56, 63, 70, 81, 89, 93;
+    }
+}

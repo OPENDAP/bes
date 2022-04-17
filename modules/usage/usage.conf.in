@@ -5,14 +5,13 @@
 #-----------------------------------------------------------------------#
 # Require dap configuration to be loaded first                          #
 #-----------------------------------------------------------------------#
+
 BES.Include=dap.conf
 
 #-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=usage,ascii,www
-BES.module.usage=@bes_modules_dir@/libusage_module.so
-BES.module.ascii=@bes_modules_dir@/libascii_module.so
-BES.module.www=@bes_modules_dir@/libwww_module.so
+BES.modules+=usage
 
+BES.module.usage=@bes_modules_dir@/libusage_module.so

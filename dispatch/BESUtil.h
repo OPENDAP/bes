@@ -38,13 +38,20 @@
 #include <iostream>
 #include <vector>
 #include <BESCatalog.h>
+#include <atomic>
 
 class BESUtil {
 private:
-    static std::string rfc822_date(const time_t t);
+    static std::string rfc822_date(time_t t);
 
     static std::string entity(char c);
+
 public:
+    static long get_current_memory_usage() noexcept;
+
+    static void trim_if_trailing_slash(std::string &value);
+    static void trim_if_surrounding_quotes(std::string &value);
+
     /** These functions are used to create the MIME headers for a message
      from a server to a client.
 
@@ -60,7 +67,7 @@ public:
 
     /** This functions are used to unescape hex characters from strings **/
     static std::string www2id(const std::string &in, const std::string &escape = "%", const std::string &except = "");
-    static std::string unhexstring(std::string s);
+    static std::string unhexstring(const std::string& s);
 
     /** Convert a string to all lower case **/
     static std::string lowercase(const std::string &s);
@@ -108,14 +115,25 @@ public:
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
 
-    static void replace_all(std::string &s, std::string find_this, std::string replace_with_this);
-    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const std::string separator = "/");
+    /** Convert a string to all lower case **/
+    static unsigned int replace_all(std::string &s, std::string find_this, std::string replace_with_this);
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, std::string separator = "/");
     static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
     static std::string get_time(bool use_local_time = false);
     static std::string get_time(time_t the_time, bool use_local_time = false);
     static std::vector<std::string> split(const std::string &s, char delim='/', bool skip_empty=true);
 
     static BESCatalog *separateCatalogFromPath(std::string &path);
+
+    static void file_to_stream(const std::string &file_name, std::ostream &o_strm);
+    static uint64_t file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount);
+    static uint64_t file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done,
+                                        std::ostream &o_strm);
+#if 0
+    // Added jhrg 11/9/21
+    static void split(const std::string &s, const std::string &delimiter, std::vector<uint64_t> &res);
+    static void split(const std::string &s, const std::string &delimiter, std::vector<std::string> &res);
+#endif
 };
 
 #endif // E_BESUtil_h

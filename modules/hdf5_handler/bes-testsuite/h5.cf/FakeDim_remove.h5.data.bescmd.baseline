@@ -1,0 +1,4 @@
+The data:
+Int16 atomic[dima = 4] = {0, 1, 2, 3};
+Int16 dima[dima = 4] = {0, 1, 2, 3};
+

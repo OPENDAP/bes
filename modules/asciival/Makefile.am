@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=asciival
-M_VER=4.2.1
+M_VER=4.2.2
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir) $(DAP_CFLAGS)
 LIBADD = $(BES_DAP_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -33,6 +33,22 @@ libascii_module_la_SOURCES = $(ASCII_SOURCES) $(BES_SOURCES)
 libascii_module_la_LDFLAGS = -avoid-version -module 
 libascii_module_la_LIBADD = $(LIBADD)
 
+CLEANFILES = *~ *.log *.sum
+
+EXTRA_DIST = ascii.conf.in
+
+DISTCLEANFILES = ascii.conf
+
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = ascii.conf
+
+ascii.conf: ascii.conf.in $(top_builddir)/config.status
+
+# Build the module's bes.conf file
+%.conf : %.conf.in
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > $@
+
+
 ASCII_SOURCES = AsciiArray.cc AsciiInt16.cc AsciiStructure.cc		   \
 		AsciiInt32.cc AsciiUInt16.cc AsciiByte.cc AsciiOutput.cc   \
 		AsciiUInt32.cc AsciiFloat32.cc AsciiUrl.cc AsciiFloat64.cc \
@@ -45,23 +61,3 @@ ASCII_SOURCES = AsciiArray.cc AsciiInt16.cc AsciiStructure.cc		   \
 
 BES_SOURCES = BESAsciiModule.cc BESAsciiTransmit.cc BESAsciiRequestHandler.cc \
 	    BESAsciiModule.h BESAsciiTransmit.h BESAsciiRequestHandler.h BESAsciiNames.h
-
-# BESAsciiResponseHandler.cc BESAsciiResponseHandler.h
-EXTRA_DIST = 
-
-CLEANFILES = *~ *.log *.sum
-
-###########################################################################
-
-# Fortify targets.
-
-.PHONY: fortify
-fortify:
-	sourceanalyzer -b @PACKAGE@ $(MAKE) libascii_module.la
-	sourceanalyzer -b @PACKAGE@ -scan -f ../@PACKAGE@-@PACKAGE_VERSION@.fpr
-
-# Use this to clean the fortify project.
-.PHONY: fortifyclean
-fortifyclean:
-	sourceanalyzer -b @PACKAGE@ -clean
-

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121" space="catalog">/data/BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5</setContainer>
+    <define name="d">
+	<container name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

@@ -37,30 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppInt16::_duplicate(const DmrppInt16 &)
-{
-}
-
-DmrppInt16::DmrppInt16(const string &n) : Int16(n), DmrppCommon()
-{
-}
-
-DmrppInt16::DmrppInt16(const string &n, const string &d) : Int16(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppInt16::ptr_duplicate()
-{
-    return new DmrppInt16(*this);
-}
-
-DmrppInt16::DmrppInt16(const DmrppInt16 &rhs) : Int16(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppInt16 &
 DmrppInt16::operator=(const DmrppInt16 &rhs)
 {
@@ -69,8 +45,8 @@ DmrppInt16::operator=(const DmrppInt16 &rhs)
 
     dynamic_cast<Int16 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -80,6 +56,9 @@ DmrppInt16::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -88,10 +67,19 @@ DmrppInt16::read()
     if ( this->twiddle_bytes() ) {
         d_buf = bswap_16(d_buf);
     }
+
     set_read_p(true);
 
     return true;
+}
 
+void
+DmrppInt16::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Int16::set_send_p(state);
 }
 
 void DmrppInt16::dump(ostream & strm) const

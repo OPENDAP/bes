@@ -36,30 +36,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppUrl::_duplicate(const DmrppUrl &)
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n) : Url(n), DmrppCommon()
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n, const string &d) : Url(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppUrl::ptr_duplicate()
-{
-    return new DmrppUrl(*this);
-}
-
-DmrppUrl::DmrppUrl(const DmrppUrl &rhs) : Url(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppUrl &
 DmrppUrl::operator=(const DmrppUrl &rhs)
 {
@@ -68,8 +44,8 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 
     dynamic_cast<Url &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -77,6 +53,9 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -85,6 +64,15 @@ DmrppUrl::read()
     set_value(value);   // sets read_p too
 
     return true;
+}
+
+void
+DmrppUrl::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Url::set_send_p(state);
 }
 
 void DmrppUrl::dump(ostream & strm) const

@@ -77,9 +77,8 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
     chunk->read_chunk();
 
     if(array) {
-        if (array->is_deflate_compression() || array->is_shuffle_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
-                                 array->get_chunk_size_in_elements(), array->var()->width());
+        if (!array->is_filters_empty())
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
 
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
@@ -117,10 +116,9 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
     chunk->read_chunk();
 
     if(array){
-        if (array->is_deflate_compression() || array->is_shuffle_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
-                                 array->get_chunk_size_in_elements(),
-                                 array->var()->width());
+        if (!array->is_filters_empty())
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
+
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
@@ -431,7 +429,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
  */
 bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
     // Are the URLs the same?
-    bool contiguous  = candidate_chunk->get_data_url() == d_data_url;
+    bool contiguous  = candidate_chunk->get_data_url()->str() == d_data_url->str();
     if(contiguous){
         // If the URLs match then see if the locations are matching
         contiguous = (d_offset + d_size) == candidate_chunk->get_offset();

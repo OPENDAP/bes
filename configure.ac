@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.8, support@opendap.org)
+AC_INIT(bes, 3.20.10, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -20,7 +20,7 @@ AC_ARG_WITH([build],
 
 dnl If a build number is given and valid (it must be an integer), use it. If it's
 dnl given but invalid, print a message and exit.
-dnl PACKAGE_VERSION is used in the file VERSION.in - and that file is used to inject
+dnl PACKAGE_VERSION is used in the file bes_VERSION.in - and that file is used to inject
 dnl the version or version-build_number into packages. jhrg 3/24/21
 AS_IF([test -n "$with_build"],
     [AS_IF([echo $build_number | grep '^[[0-9]][[-0-9.]]*$' > /dev/null 2>&1 ],
@@ -58,6 +58,9 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 LT_INIT
 
+AC_DEFINE_UNQUOTED(CVER, "$PACKAGE_VERSION", [Client version number])
+AC_SUBST(CVER)
+
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these 'flag variables'
 dnl to default values otherwise.
@@ -66,45 +69,30 @@ AC_SUBST(host)
 
 dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
-cxx_debug_flags="-g -O2"
+cxx_debug_flags=
 
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl I moved this up to here from the tail end of the file
-dnl because it needs to run before the AC_PROG_CXX macro
-dnl which will also set CXXFLAGS
-dnl jhrg 3/4/15
-dnl AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
-dnl   [AM_CONDITIONAL([BES_DEVELOPER], [true])  cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
-dnl   [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+dnl Removed "-g -O2" jhrg 2/8/22
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
-    [Developer mode: Won't override CXXFLAGS on the command line])]
-)
+    [Developer mode: Won't override CXXFLAGS on the command line])])
+
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
+    [cxx_debug_flags="-g3 -O0 -fno-inline -Wall"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
-      AC_MSG_NOTICE([Developer Mode is disabled.])]
-)
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])],
-dnl     [AM_CONDITIONAL([USE_ASAN], [true])
-dnl      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
-dnl     [AM_CONDITIONAL([USE_ASAN], [false])])
+      AC_MSG_NOTICE([Developer Mode is disabled.])])
 
 AC_ARG_ENABLE([asan],
     [AS_HELP_STRING([--enable-asan],
-    [Use the address sanitizer. Won't override CXXFLAGS on the command line])]
-)
+    [Use the address sanitizer. Won't override CXXFLAGS on the command line])])
+
 AM_CONDITIONAL([USE_ASAN], [test "x$enable_asan" = "xyes"])
 AM_COND_IF([USE_ASAN],
     [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"
         AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
-    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
-)
+    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])])
 
 AC_ARG_ENABLE([coverage],
     [AS_HELP_STRING([--enable-coverage], [Build so tests emit coverage data and enable coverage target (default: no)])])
@@ -123,25 +111,16 @@ AS_IF([test x$enable_coverage = xyes && which gcov],
              [AC_MSG_NOTICE([Check that gcov is on your PATH])])
        AM_CONDITIONAL([ENABLE_COVERAGE], [false])])
 
-# --xml-pretty -o gcovr_ouput.xml
-
 AC_SUBST([GCOVR_FLAGS])
-
-
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
-dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
-dnl    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
 
 AC_ARG_WITH([cmr],
     [AS_HELP_STRING([--without-cmr],
-    [Disable support for the CMR Module (Built by default)])]
-)
+    [Disable support for the CMR Module (Built by default)])])
+
 AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" != "xno"])
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
-    [AC_MSG_NOTICE([Disabled support for the CMR Module])]
-)
+    [AC_MSG_NOTICE([Disabled support for the CMR Module])])
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Enable/Disable new categorized logging output
@@ -180,10 +159,6 @@ dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
 
-dnl Only set CXXFLAGS if the caller didn't supply a value
-
-AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
-
 dnl library visioning: Update these when the interface changes.
 dnl
 dnl How to set these SO variables:
@@ -194,7 +169,7 @@ dnl Interfaces removed or changed (BAD, breaks upward compatibility):
 dnl ==> Increment CURRENT, set AGE and REVISION to 0.
 
 LIB_DIS_CURRENT=18
-LIB_DIS_REVISION=4
+LIB_DIS_REVISION=6
 LIB_DIS_AGE=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_REVISION)
@@ -203,7 +178,7 @@ LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=5
-LIB_PPT_REVISION=2
+LIB_PPT_REVISION=4
 LIB_PPT_AGE=0
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_REVISION)
@@ -212,7 +187,7 @@ LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
 AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=5
-LIB_XML_CMD_REVISION=3
+LIB_XML_CMD_REVISION=5
 LIB_XML_CMD_AGE=0
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -237,6 +212,8 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
+AM_PATH_PYTHON
+
 
 dnl NB: CentOS 6 does not support C++-11 but does support some features:
 dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
@@ -244,19 +221,16 @@ dnl For now, I'm counting 0x as supporting C++-11 in our code.
 
 CXX11_FLAG=""
 
-CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
-
-AS_IF([test -z "$CXX11_FLAG"],
-      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
-
-AS_IF([test -z "$CXX11_FLAG"],
-      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
-      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])
-       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
 
 AC_SUBST(CXX11_FLAG)
 
-AS_IF([test -n "$cxx_debug_flags"], [CXXFLAGS="$cxx_debug_flags"])
+dnl If CXXFLAGS is not set, set it to the empty string.
+AS_IF([test -z ${CXXFLAGS+set}], [CXXFLAGS=])
+
+AS_IF([test -n "$cxx_debug_flags"],
+      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX11_FLAG"],
+      [CXXFLAGS="$CXXFLAGS $CXX11_FLAG"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
@@ -274,7 +248,8 @@ AC_SEARCH_LIBS([uuid_generate], [uuid],
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Perl is used by www-interface during the build
-AC_CHECK_PROG([PERL], [perl], [`which perl`])
+dnl Removed www-interface. jhrg 3/21/22
+dnl AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
 dnl macro is not needed.
@@ -469,6 +444,13 @@ BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
 BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
 AC_SUBST(BES_DAP_LIB)
+
+dnl This enables code to link with the dap_module without a warning. Use this not
+dnl with xxxx_LDADD but with xxxx_LDFLAGS. For test code, which is never installed,
+dnl link with .libs/libdap_module.a instead if that's easier.
+BES_DAP_LIB_LDFLAGS="-L\$(top_builddir)/dap -static -ldap_module -dynamic"
+AC_SUBST(BES_DAP_LIB_LDFLAGS)
+
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
@@ -946,7 +928,7 @@ AH_BOTTOM([
 #endif /* _config_h */])
 
 AC_CONFIG_FILES([Makefile
-		 VERSION
+		 bes_VERSION
 		 bes.spec
 		 bes.spec.all_static
 		 abi_checker.xml
@@ -999,16 +981,8 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
-
-		 functions/Makefile
-		 functions/tests/Makefile
-		 functions/tests/atlocal
-		 functions/unit-tests/Makefile
-		 functions/stare/Makefile
-		 functions/stare/unit-tests/Makefile
-		 functions/stare/tests/Makefile
-		 functions/stare/tests/atlocal
 		 ])
+
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
 dnl		 functions/geo-functions/Makefile
@@ -1028,8 +1002,6 @@ AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
-AC_CONFIG_TESTDIR(functions/tests, [standalone])
-AC_CONFIG_TESTDIR(functions/stare/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
@@ -1064,8 +1036,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/httpd_catalog_module/tests/Makefile
     modules/httpd_catalog_module/tests/atlocal
 
-    modules/www-interface/Makefile
-
     modules/debug_functions/Makefile
     modules/debug_functions/unit-tests/Makefile 
     modules/debug_functions/tests/Makefile 
@@ -1094,6 +1064,15 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
 
+    modules/functions/Makefile
+    modules/functions/tests/Makefile
+    modules/functions/tests/atlocal
+    modules/functions/unit-tests/Makefile
+    modules/functions/stare/Makefile
+    modules/functions/stare/unit-tests/Makefile
+    modules/functions/stare/tests/Makefile
+    modules/functions/stare/tests/atlocal
+
     modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
     modules/xml_data_handler/tests/Makefile
@@ -1105,6 +1084,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 	
     modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
+    modules/fileout_netcdf/unit-tests/Makefile
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	
@@ -1163,9 +1143,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 	
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
-    
+
 	dnl These can stay
-    AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
+    dnl AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
@@ -1191,9 +1171,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
+    AC_CONFIG_TESTDIR(modules/functions/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/functions/stare/tests, [standalone])
+
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
-    
     ]
 )
 

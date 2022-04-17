@@ -32,29 +32,21 @@
 
 #include "config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include <sys/types.h>                  // For umask
-#include <sys/stat.h>
-
-#include <iostream>
-#include <fstream>
 #include <exception>
 #include <sstream>      // std::stringstream
-#include <libgen.h>
+#include <thread>
+#include <future>
 
-#include <DataDDS.h>
-#include <BaseType.h>
-#include <escaping.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/BaseType.h>
+#include <libdap/escaping.h>
 
-#include <TheBESKeys.h>
 #include <BESContextManager.h>
 #include <BESDataDDSResponse.h>
 #include <BESDapNames.h>
@@ -63,13 +55,11 @@
 #include <BESUtil.h>
 #include <TempFile.h>
 
-#include <BESDapResponseBuilder.h>
 
+#include <BESLog.h>
 #include <BESError.h>
 #include <BESDapError.h>
-#include <BESForbiddenError.h>
-#include <BESInternalFatalError.h>
-#include <DapFunctionUtils.h>
+#include <stringbuffer.h>
 
 #include "FONcBaseType.h"
 #include "FONcRequestHandler.h"
@@ -78,10 +68,17 @@
 
 using namespace libdap;
 using namespace std;
+using namespace rapidjson;
 
+#define MODULE "fonc"
+#define prolog string("FONcTransmitter::").append(__func__).append("() - ")
+
+
+#if 0 // Moved to BESUtil.cc
 // size of the buffer used to read from the temporary file built on disk and
 // send data to the client over the network connection (socket/stream)
-#define OUTPUT_FILE_BLOCK_SIZE 4096
+// #define OUTPUT_FILE_BLOCK_SIZE 4096
+#endif
 
 /** @brief Construct the FONcTransmitter, adding it with name netcdf to be
  * able to transmit a data response
@@ -95,227 +92,12 @@ using namespace std;
  * defaults to the macro definition FONC_TEMP_DIR.
  */
 FONcTransmitter::FONcTransmitter() :
-    BESTransmitter()
+        BESTransmitter()
 {
-    add_method(DATA_SERVICE, FONcTransmitter::send_data);
+    add_method(DATA_SERVICE, FONcTransmitter::send_dap2_data);
     add_method(DAP4DATA_SERVICE, FONcTransmitter::send_dap4_data);
 }
 
-/**
- * Hack to ensure the file descriptor for the temporary file is closed.
- */
-struct wrap_temp_descriptor {
-    int d_fd;
-    wrap_temp_descriptor(int fd) : d_fd(fd) {}
-    ~wrap_temp_descriptor() { close(d_fd); }
-};
-
-#if 0
-// Replaced by code in BESHandlerUtil. jhrg 8/25/17
-
-/**
- * Hack to ensure that the temporary file name used with mkstemp() will
- * be 'unlinked' no matter how we exit.
- */
-struct wrap_temp_name {
-    vector<char> d_name;
-    wrap_temp_name(vector<char> &name) : d_name(name) {}
-    ~wrap_temp_name() { unlink(&d_name[0]); }
-};
-#endif
-
-/**
- * Process the "history" attribute.
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *
- * @param dds The DDS to modify
- * @param ce The constraint expression that produced this new netCDF file.
- */
-void updateHistoryAttribute(DDS *dds, const string ce)
-{
-    bool foundIt = false;
-    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
-    if (!foundIt) {
-        // This code will be used only when the 'cf_histroy_context' is not set,
-        // which should be never in an operating server. However, when we are
-        // testing, often only the besstandalone code is running and the existing
-        // baselines don't set the context, so we have this. It must do something
-        // so the tests are not hopelessly obscure and filter out junk that varies
-        // by host (e.g., the names of cached files that have been decompressed).
-        // jhrg 6/3/16
-
-        string request_url = dds->filename();
-        // remove path info
-        request_url = request_url.substr(request_url.find_last_of('/')+1);
-        // remove 'uncompress' cache mangling
-        request_url = request_url.substr(request_url.find_last_of('#')+1);
-        request_url += "?" + ce;
-
-        std::stringstream ss;
-
-        time_t raw_now;
-        struct tm * timeinfo;
-        time(&raw_now); /* get current time; same as: timer = time(NULL)  */
-        timeinfo = localtime(&raw_now);
-
-        char time_str[100];
-        // 2000-6-1 6:00:00
-        strftime(time_str, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        ss << time_str << " " << "Hyrax" << " " << request_url;
-        cf_history_entry = ss.str();
-    }
-
-    BESDEBUG("fonc",
-        "FONcTransmitter::updateHistoryAttribute() - Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
-
-    vector<string> hist_entry_vec;
-    hist_entry_vec.push_back(cf_history_entry);
-    BESDEBUG("fonc",
-        "FONcTransmitter::updateHistoryAttribute() - hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
-
-    // Add the new entry to the "history" attribute
-    // Get the top level Attribute table.
-    AttrTable &globals = dds->get_attr_table();
-
-    // Since many files support "CF" conventions the history tag may already exist in the source data
-    // and we should add an entry to it if possible.
-    bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
-    unsigned int num_attrs = globals.get_size();
-    if (num_attrs) {
-        // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
-        // data ingest handlers place global level attributes found in the source dataset.
-        AttrTable::Attr_iter i = globals.attr_begin();
-        AttrTable::Attr_iter e = globals.attr_end();
-        for (; i != e && !done; i++) {
-            AttrType attrType = globals.get_attr_type(i);
-            string attr_name = globals.get_name(i);
-            // Test the entry...
-            if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // Look promising, but does it have an existing "history" Attribute?
-                AttrTable *source_file_globals = globals.get_attr_table(i);
-                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
-                if (history_attrItr != source_file_globals->attr_end()) {
-                    // Yup! Add our entry...
-                    BESDEBUG("fonc",
-                        "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
-                    source_file_globals->append_attr("history", "string", &hist_entry_vec);
-                    done = true;
-                }
-            }
-        }
-    }
-
-    if (!done) {
-        // We never found an existing location to place the "history" entry, so we'll just stuff it into the top level AttrTable.
-        BESDEBUG("fonc",
-            "FONcTransmitter::updateHistoryAttribute() - Adding history entry to top level AttrTable" << endl);
-        globals.append_attr("history", "string", &hist_entry_vec);
-
-    }
-}
-
-#if 0
-/**
- * Process the "history" attribute.
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *
- * @param dds The DDS to modify
- * @param ce The constraint expression that produced this new netCDF file.
- */
-void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
-{
-    bool foundIt = false;
-    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
-    if (!foundIt) {
-        // This code will be used only when the 'cf_histroy_context' is not set,
-        // which should be never in an operating server. However, when we are
-        // testing, often only the besstandalone code is running and the existing
-        // baselines don't set the context, so we have this. It must do something
-        // so the tests are not hopelessly obscure and filter out junk that varies
-        // by host (e.g., the names of cached files that have been decompressed).
-        // jhrg 6/3/16
-
-        string request_url = dds->filename();
-        // remove path info
-        request_url = request_url.substr(request_url.find_last_of('/')+1);
-        // remove 'uncompress' cache mangling
-        request_url = request_url.substr(request_url.find_last_of('#')+1);
-        request_url += "?" + ce;
-
-        std::stringstream ss;
-
-        time_t raw_now;
-        struct tm * timeinfo;
-        time(&raw_now); /* get current time; same as: timer = time(NULL)  */
-        timeinfo = localtime(&raw_now);
-
-        char time_str[100];
-        // 2000-6-1 6:00:00
-        strftime(time_str, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        ss << time_str << " " << "Hyrax" << " " << request_url;
-        cf_history_entry = ss.str();
-    }
-
-    BESDEBUG("fonc",
-        "FONcTransmitter::update_Dap4_HistoryAttribute() - Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
-
-    vector<string> hist_entry_vec;
-    hist_entry_vec.push_back(cf_history_entry);
-    BESDEBUG("fonc",
-        "FONcTransmitter::update_Dap4_HistoryAttribute() - hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
-
-    // Add the new entry to the "history" attribute
-    // Get the top level Attribute table.
-    //AttrTable &globals = dds->get_attr_table();
-    D4Group* root_grp = dmr->root();
-    //D4Attributes*d4_attrs = root_grp->attributes();
-
-    // Since many files support "CF" conventions the history tag may already exist in the source data
-    // and we should add an entry to it if possible.
-    bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
-    unsigned int num_attrs = globals.get_size();
-    if (num_attrs) {
-        // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
-        // data ingest handlers place global level attributes found in the source dataset.
-        AttrTable::Attr_iter i = globals.attr_begin();
-        AttrTable::Attr_iter e = globals.attr_end();
-        for (; i != e && !done; i++) {
-            AttrType attrType = globals.get_attr_type(i);
-            string attr_name = globals.get_name(i);
-            // Test the entry...
-            if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // Look promising, but does it have an existing "history" Attribute?
-                AttrTable *source_file_globals = globals.get_attr_table(i);
-                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
-                if (history_attrItr != source_file_globals->attr_end()) {
-                    // Yup! Add our entry...
-                    BESDEBUG("fonc",
-                        "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
-                    source_file_globals->append_attr("history", "string", &hist_entry_vec);
-                    done = true;
-                }
-            }
-        }
-    }
-
-    if (!done) {
-        // We never found an existing location to place the "history" entry, so we'll just stuff it into the top level AttrTable.
-        BESDEBUG("fonc",
-            "FONcTransmitter::updateHistoryAttribute() - Adding history entry to top level AttrTable" << endl);
-        globals.append_attr("history", "string", &hist_entry_vec);
-
-    }
-}
-
-#endif
 
 /**
  * @brief The static method registered to transmit OPeNDAP data objects as
@@ -333,66 +115,77 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
  * there are any problems reading the data, writing to a netcdf file, or
  * streaming the netcdf file
  */
-void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fonc", "FONcTransmitter::send_data() - BEGIN" << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
 
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
-        DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
-
-#if 0
-        // TODO Make this code and the two struct classes that wrap the name a fd part of
-        // a utility class or file. jhrg 9/7/16
-
-        string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-        vector<char> temp_file(temp_file_name.length() + 1);
-        string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
-        temp_file[len] = '\0';
-        // cover the case where older versions of mkstemp() create the file using
-        // a mode of 666.
-        mode_t original_mode = umask(077);
-        int fd = mkstemp(&temp_file[0]);
-        umask(original_mode);
-
-        // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
-        // Except if there is a hard crash.. jhrg 3/30/17
-        wrap_temp_name w_temp_file(temp_file);
-        wrap_temp_descriptor w_fd(fd);
-
-        if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
-#endif
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << temp_file.get_name() << endl);
-        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
-        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dds, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
-        ft.transform();
+        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
 
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
+        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+
+#if 0
+        // This is used to signal the BESUtil::file_to_stream_task() this code is done
+        // writing to the file. WIP jhrg 6/4/21
+        atomic<bool> file_write_done(false);
+
+        // Calling the 'packaged_task' here blocks, but we could have run the task in a thread.
+        // See: https://stackoverflow.com/questions/18143661/what-is-the-difference-between-packaged-task-and-async
+        // jhrg 6/4/21
+
+        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
+        std::future<uint64_t> result = task.get_future();
+        task(temp_file.get_name(), file_write_done, strm);
+#endif
+
+#define TOGGLE_TASK 0
+        // TOGGLE_TASK 1 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
+        //      151.13s user 8.75s system 98% cpu 2:41.69 total
+        // TOGGLE_TASK 0 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
+        //      154.71s user 8.99s system 99% cpu 2:45.27 total
+        // TOGGLE_TASK 0 as above, but using BESUtil::file_to_stream(temp_file.get_name(), strm);
+        // and not ESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
+        // 148.61s user 7.54s system 99% cpu 2:36.35 total
+#if TOGGLE_TASK
+        // This code works without the sleep(1) hack in BESUtil::file_to_stream_task().
+        // Because it is marked as deferred, the task does not start until the future's
+        // get() method is run, after transform() has written all the data. jhrg 6/4/21
+        future<uint64_t> result = async(launch::deferred, &BESUtil::file_to_stream_task, temp_file.get_name(),
+                                        std::ref(file_write_done), std::ref(strm));
+#endif
+        ft.transform_dap2(strm);
+
+#if 0
+        file_write_done = true;
+        uint64_t tcount = result.get();
+#endif
+
+         //original call before the 'task' hack was added:
+         //BESUtil::file_to_stream(temp_file.get_name(),strm);
+         //jhrg 6/4/21
+
+#if 0
+        // The task can be called like this right here
+        uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
+
+        // Or it can be run like this...
+        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
+        std::future<uint64_t> result = task.get_future();
+        task(temp_file.get_name(), file_write_done, strm);
+        uint64_t tcount = result.get();
+#endif
+        //BESDEBUG(MODULE,  prolog << "NetCDF file bytes written " << tcount << endl);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -407,7 +200,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fonc", "FONcTransmitter::send_data - done transmitting to netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END Transmitted as netcdf" << endl);
 }
 
 /**
@@ -429,81 +222,37 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
  */
 void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - BEGIN" << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
 
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - Reading data into DMR" << endl);
-        //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-        DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
-
-#if 0
-
-         // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    D4Group* root_grp = loaded_dmr->root();
-    Constructor::Vars_iter v = root_grp->var_begin();
-    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
-        if ((*i)->send_p()) {
-            (*i)->intern_data();
-        }
-    }
-#endif
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        //update_Dap4_HistoryAttribute(dmr, dhi.data[POST_CONSTRAINT]);
-
-#if 0
-        // TODO Make this code and the two struct classes that wrap the name a fd part of
-        // a utility class or file. jhrg 9/7/16
-
-        string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-        vector<char> temp_file(temp_file_name.length() + 1);
-        string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
-        temp_file[len] = '\0';
-        // cover the case where older versions of mkstemp() create the file using
-        // a mode of 666.
-        mode_t original_mode = umask(077);
-        int fd = mkstemp(&temp_file[0]);
-        umask(original_mode);
-
-        // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
-        // Except if there is a hard crash.. jhrg 3/30/17
-        wrap_temp_name w_temp_file(temp_file);
-        wrap_temp_descriptor w_fd(fd);
-
-        if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
-#endif
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Building response file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
         // Call the transform function for DAP4.
         ft.transform_dap4();
 
         ostream &strm = dhi.get_output_stream();
+
+#if !NDEBUG
+        stringstream msg;
+        msg << prolog << "Using ostream: " << (void *) &strm << endl;
+        BESDEBUG(MODULE,  msg.str());
+        INFO_LOG( msg.str());
+#endif
+
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        BESUtil::file_to_stream(temp_file.get_name(),strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -518,27 +267,11 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - done transmitting to netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
 }
 
 
-/** @brief stream the temporary netcdf file back to the requester
- *
- * Streams the temporary netcdf file specified by filename to the specified
- * C++ ostream
- *
- * @param filename The name of the file to stream back to the requester
- * @param strm C++ ostream to write the contents of the file to
- * @throws BESInternalError if problem opening the file
- */
-void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const string &filename, const string &ncVersion)
-{
-    char block[OUTPUT_FILE_BLOCK_SIZE];
 
-    int nbytes = read(fd, block, sizeof block);
-    while (nbytes > 0) {
-        strm.write(block, nbytes /*os.gcount()*/);
-        nbytes = read(fd, block, sizeof block);
-    }
-}
+
+
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="SMAP_L3.h5" space="catalog">/data/SMAP_L3_SM_P_20150406_R14010_001.h5</setContainer>
+    <define name="d">
+	<container name="SMAP_L3.h5" />
+    </define>
+    <get type="das" definition="d" />
+</request>

@@ -49,7 +49,7 @@
 #include "SimpleTimeParser.h"
 #include "XMLHelpers.h"
 
-#include "Error.h" // libdap
+#include <libdap/Error.h> // libdap
 
 // ICU includes for the SimpleDateFormat used in this file only
 #include <unicode/smpdtfmt.h> // class SimpleDateFormat
@@ -490,7 +490,7 @@ std::string ScanElement::extractTimeFromFilename(const std::string& filename) co
     return result;
 }
 
-void ScanElement::deleteDateFormats() throw ()
+void ScanElement::deleteDateFormats() noexcept
 {
     SAFE_DELETE(_pDateFormatters);
 }

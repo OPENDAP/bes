@@ -36,19 +36,19 @@
 #include <fstream>
 #include <sstream>
 
-#include <DDS.h>
-#include <DMR.h>
-#include <DapXmlNamespaces.h>
-#include <ConstraintEvaluator.h>
-#include <DDXParserSAX2.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/DapXmlNamespaces.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DDXParserSAX2.h>
 
 // These are needed because D4ParserSax2.h does not properly declare
 // the classes. I think. Check on that... jhrg 3/28/14
-#include <D4EnumDefs.h>
-#include <D4Dimensions.h>
-#include <D4Group.h>
+#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Dimensions.h>
+#include <libdap/D4Group.h>
 
-#include <D4ParserSax2.h>
+#include <libdap/D4ParserSax2.h>
 
 // DAP2 Stored results are not supported by default. If we do start using this.
 // It would be better to use the CacheMarshaller and CacheUnMarshaller code
@@ -56,16 +56,16 @@
 // may be a bug in the XDRStreamUnMarshaller code - in/with get_opaque() - that
 // breaks Sequence::deserialize(). jhrg 5/25/16
 #ifdef DAP2_STORED_RESULTS
-#include <XDRStreamMarshaller.h>
-#include <XDRStreamUnMarshaller.h>
+#include <libdap/XDRStreamMarshaller.h>
+#include <libdap/XDRStreamUnMarshaller.h>
 #endif
 
-#include <chunked_istream.h>
-#include <D4StreamUnMarshaller.h>
+#include <libdap/chunked_istream.h>
+#include <libdap/D4StreamUnMarshaller.h>
 
-#include <debug.h>
-#include <mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/mime_util.h>	// for last_modified_time() and rfc_822_date()
+#include <libdap/util.h>
 
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
@@ -132,7 +132,7 @@ string BESStoredDapResultCache::getSubDirFromConfig()
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     else {
-        while (*subdir.begin() == '/' && subdir.length() > 0) {
+        while (*subdir.begin() == '/' && !subdir.empty()) {
             subdir = subdir.substr(1);
         }
         // So if it's value is "/" or the empty string then the subdir will default to the root

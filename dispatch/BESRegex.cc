@@ -1,11 +1,11 @@
-// BESRegex.cc
 
-// This file is part of bes, A C++ back-end server implementation framework
-// for the OPeNDAP Data Access Protocol.
+// -*- mode: c++; c-basic-offset:4 -*-
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
-// and James Gallagher <jgallagher@gso.uri.edu>
+// This file is part of libdap, A C++ implementation of the OPeNDAP Data
+// Access Protocol.
+
+// Copyright (c) 2005 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,63 +21,86 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
- 
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
-//      jimg        James Gallagher <jgallagher@gso.uri.edu>
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include <config.h>
 
+//#define DODS_DEBUG
+
+#include "config.h"
+
+#if 0
 #ifndef WIN32
 #include <alloca.h>
 #endif
+#include <stdlib.h>
  
 #include <sys/types.h>
 #include <regex.h>
 
-#include <cstdlib>
 #include <new>
 #include <string>
+#include <vector>
 #include <stdexcept>
+#endif
 
+#include <string>
+#include <vector>
+
+#include <regex.h>
+
+//#include <libdap/Error.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
+
+#include "BESError.h"
 #include "BESRegex.h"
-#include "BESInternalError.h"
-#include "BESScrub.h"
+
+#if 0
+#include "util.h"
+#include "debug.h"
+#endif
 
 using namespace std;
 
 void
 BESRegex::init(const char *t)
 {
-    d_pattern = t;
+#if !USE_CPP_11_REGEX
     d_preg = static_cast<void*>(new regex_t);
-    int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
 
-    if (result != 0) {
-        size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg), static_cast<char*>(NULL),
-            static_cast<size_t>(0));
-        char *msg = new char[msg_len + 1];
-        regerror(result, static_cast<regex_t*>(d_preg), msg, msg_len);
-        string err = string("BESRegex error: ") + string(msg);
-        BESInternalError e(err, __FILE__, __LINE__);
-        delete[] msg;
-        throw e;
+    int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
+    if  (result != 0) {
+        size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg),
+                                  static_cast<char*>(nullptr),
+                                  static_cast<size_t>(0));
+
+        vector<char> msg(msg_len+1);
+        regerror(result, static_cast<regex_t*>(d_preg), &msg[0], msg_len);
+        string err = string("BESRegex error: ") + string(&msg[0], msg_len);
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
+#else
+    d_exp = regex(t);
+#endif
 }
 
+#if 0
+void
+BESRegex::init(const string &t)
+{
+    d_exp = regex(t);
+}
+#endif
+
+#if !USE_CPP_11_REGEX
 BESRegex::~BESRegex()
 {
     regfree(static_cast<regex_t*>(d_preg));
     delete static_cast<regex_t*>(d_preg); d_preg = 0;
-
 }
+#endif
 
+#if 0
 /** Initialize a POSIX regular expression (using the 'extended' features).
 
     @param t The regular expression pattern. */
@@ -92,21 +115,21 @@ BESRegex::BESRegex(const char* t, int)
 {
     init(t);
 }
+#endif
 
-/** @brief Does the regular expression match the string?
-
-    Warning : this function can be used to match strings of zero length
-   	if the regex pattern accepts empty strings. Therefore this function
-   	returns -1 if the pattern does not match.
+/** Does the regular expression match the string? 
 
     @param s The string
     @param len The length of string to consider
     @param pos Start looking at this position in the string
     @return The number of characters that match, -1 if there's no match. */
 int 
-BESRegex::match(const char* s, int len, int pos)
+BESRegex::match(const char *s, int len, int pos) const
 {
-    // TODO re-implement using auto_ptr or unique_ptr. jhrg 7/27/18
+#if !USE_CPP_11_REGEX
+    if (len > 32766)	// Integer overflow protection
+    	return -1;
+    	
     regmatch_t *pmatch = new regmatch_t[len+1];
     string ss = s;
 
@@ -114,13 +137,45 @@ BESRegex::match(const char* s, int len, int pos)
                          ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
 	int matchnum;
     if (result == REG_NOMATCH)
-        matchnum = -1; //returns -1 due to function being able to match strings of 0 length
+        matchnum = -1;
 	else
 		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
 		
 	delete[] pmatch; pmatch = 0;
 
     return matchnum;
+#else
+    if (pos > len)
+        throw Error("Position exceed length in BESRegex::match()");
+
+    smatch match;
+    auto target = string(s+pos, len-pos);
+    bool found = regex_search(target, match, d_exp);
+    if (found)
+        return (int)match.length();
+    else
+        return -1;
+#endif
+}
+
+/**
+ * @brief Search for a match to the regex
+ * @param s The target for the search
+ * @return The length of the matching substring, or -1 if no match was found
+ */
+int
+BESRegex::match(const string &s) const
+{
+#if USE_CPP_11_REGEX
+    smatch match;
+    bool found = regex_search(s, match, d_exp);
+    if (found)
+        return (int)match.length();
+    else
+        return -1;
+#else
+    return match(s.c_str(), s.length(), 0);
+#endif
 }
 
 /** Does the regular expression match the string? 
@@ -131,13 +186,14 @@ BESRegex::match(const char* s, int len, int pos)
     value-result parameter.
     @param pos Start looking at this position in the string
     @return The start position of the first match. This is different from 
-    POSIX regular expressions, which return the start position of the
+    POSIX regular expressions, whcih return the start position of the 
     longest match. */
 int 
-BESRegex::search(const char* s, int len, int& matchlen, int pos)
+BESRegex::search(const char *s, int len, int& matchlen, int pos) const
 {
-	// sanitize allocation
-    if (!BESScrub::size_ok(sizeof(regmatch_t), len+1))
+#if !USE_CPP_11_REGEX
+    // sanitize allocation
+    if (!libdap::size_ok(sizeof(regmatch_t), len+1))
     	return -1;
     	
     // alloc space for len matches, which is theoretical max.
@@ -169,5 +225,41 @@ BESRegex::search(const char* s, int len, int& matchlen, int pos)
     
     delete[] pmatch; pmatch = 0;
     return matchpos;
+#else
+    smatch match;
+    // This is needed because in C++14, the first arg to regex_search() cannot be a
+    // temporary string. It seems the C++11 compilers on some linux dists are using
+    // regex headers that enforce c++14 rules. jhrg 12/2/21
+    auto target = string(s+pos, len-pos);
+    bool found = regex_search(target, match, d_exp);
+    matchlen = (int)match.length();
+    if (found)
+        return (int)match.position();
+    else
+        return -1;
+#endif
+}
+
+/**
+ * @brief Search for a match to the regex
+ * @param s The target for the search
+ * @param matchlen The number of characters that matched
+ * @return The starting position of the first set of matching characters
+ */
+int
+BESRegex::search(const string &s, int& matchlen) const
+{
+#if USE_CPP_11_REGEX
+    smatch match;
+    bool found = regex_search(s, match, d_exp);
+    matchlen = (int)match.length();
+    if (found)
+        return (int)match.position();
+    else
+        return -1;
+#else
+    // search(const char *s, int len, int& matchlen, int pos) const
+    return search(s.c_str(), s.length(), matchlen, 0);
+#endif
 }
 

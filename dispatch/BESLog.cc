@@ -114,7 +114,7 @@ BESLog::BESLog() :
         throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
 
-    if (d_file_name == "") {
+    if (d_file_name.empty()) {
         stringstream err;
         err << prolog << "FATAL ERROR: unable to determine log file name. ";
         err << "Please set BES.LogName in your initialization file" << endl;
@@ -170,40 +170,21 @@ void BESLog::dump_time()
     time_t now;
     time(&now);
 
-#if 0
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
-    int status = 0;
-
-    // From StackOverflow:
-    // This will work too, if your compiler doesn't support %F or %T:
-    // strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%S%Z", gmtime(&now));
-    //
-    // Apologies for the twisted logic - UTC is the default. Override to
-    // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!d_use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
-#endif
-
     char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
-    int status = 0;
     if(d_use_unix_time){
         (*d_file_buffer) << now;
     }
     else {
-        struct tm * dat_time;
+        struct tm date_time;
         if (!d_use_local_time){
-            dat_time = gmtime(&now);
+            gmtime_r(&now, &date_time);
         }
         else{
-            dat_time = localtime(&now);
+            localtime_r(&now, &date_time);
         }
-        status = strftime(buf, sizeof buf, "%FT%T %Z", dat_time);
+        (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
         (*d_file_buffer) << buf;
     }
-
-
 #else
     const time_t sctime = time(NULL);
     const struct tm *sttime = localtime(&sctime);

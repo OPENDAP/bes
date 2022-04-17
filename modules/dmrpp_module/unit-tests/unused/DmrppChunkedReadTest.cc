@@ -25,12 +25,13 @@
 
 #include <memory>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -61,9 +62,9 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppTypeFactory.h"
 
-#include "GetOpt.h"
+//#include "GetOpt.h"
 #include "test_config.h"
-#include "util.h"
+#include <libdap/util.h>
 
 #include "H5Ppublic.h"
 //#include "HDF5RequestHandler.h"
@@ -852,9 +853,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DmrppChunkedReadTest);
 
 int main(int argc, char*argv[])
 {
+#if 0
     GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != -1){
+#endif
+
+        int option_char;
+        while ((option_char = getopt(argc, argv, "dh")) != -1) {
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -878,7 +884,7 @@ int main(int argc, char*argv[])
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
+    int i = optind;
     if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
@@ -888,14 +894,10 @@ int main(int argc, char*argv[])
             if (debug) cerr << "Running " << argv[i] << endl;
             test = dmrpp::DmrppChunkedReadTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
-        ++i;
+            ++i;
         }
     }
 
     return wasSuccessful ? 0 : 1;
-
-
-
-
 }
 

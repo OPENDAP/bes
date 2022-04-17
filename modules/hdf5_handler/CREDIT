@@ -1,0 +1,15 @@
+The calculation of latitude and longitude uses the GCTP library that is distributed by the HDF-EOS5 library. Some functions that calcuate the latitude and longitude are modified based on the HDF-EOS5 library source release. The HDF-EOS5 library can be obtained from http://newsroom.gsfc.nasa.gov/sdptoolkit/toolkit.html
+
+The following lines are from HDF-EOS5 library source release doc/README, which require any use of the HDF-EOS5 to include.
+
+-------------------------------------------------------------------------------------------------------------
+
+
+Copyright (C) 1996 Hughes and Applied Research Corporation
+
+Permission to use, modify, and distribute this software and its documentation 
+for any purpose without fee is hereby granted, provided that the above 
+copyright notice appear in all copies and that both that copyright notice and 
+this permission notice appear in supporting documentation.
+
+

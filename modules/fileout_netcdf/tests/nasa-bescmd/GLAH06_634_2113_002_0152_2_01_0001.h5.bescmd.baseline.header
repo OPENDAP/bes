@@ -1,0 +1,2958 @@
+netcdf test {
+
+// global attributes:
+		:featureType = "timeSeries" ;
+		:title = "GLAS/ICESat L1B Global Elevation Data (HDF5)" ;
+		:comment = "Data granules contain approximately 23 minutes (1/4 orbit) and include the surface elevation, surface roughness assuming no slope, surface slope assuming no roughness and geodetic and atmospheric corrections for the range at the full 40/sec resolution." ;
+		:summary = "Scientists investigating surface elevation, slope, reflection, and other surface characteristics can use the GLAH06 data. The data values were used in the creation of the surface-specific altimeter products (GLAH12-15). Each GLAH06 file was created from an equivalent GLA06 binary formatted file. Users that want to access the data used to create the GLAH06 values can use the equivalent GLAHxx files for the GLAxx files as shown in the provenance metadata for the history that created the GLA06." ;
+		:license = "http://nsidc.org/data/icesat/disclaimer.html" ;
+		:references = "http://nsidc.org/data/docs/daac/glas_icesat_l1_l2_global_altimetry.gd.html (Guide Document for this product at NSIDC), http://nsidc.org/daac/icesat/index.html (GLAS Product page at NSIDC)" ;
+		:AccessConstraints = "Data may not be reproduced or distributed without including the CitationForExternalPublication for this product included in this Metadata. Data may not be distributed in an altered form without the written permission of the GLAS Science Team." ;
+		:CitationforExternalPublication = "The data used in this study were produced by the GLAS Science Team at the ICESat Science Investigator-led Processing System (I-SIPS) at NASA/GSFC. The data archive site is the NSIDC DAAC." ;
+		:contributor_role = "Data Originator, Investigator, Producer, Producer" ;
+		:contributor_name = "David W. Hancock (David.W.Hancock@nasa.gov), Bob E Schutz (schutz@utcsr.ae.utexas.edu), Jay Zwally (Jay.Zwally@nasa.gov), John P DiMarzio (John.P.Dimarzio.1@nasa.gov)" ;
+		:creator_name = "ICESat Science Investigator-led Processing System (I-SIPS)" ;
+		:creator_email = "David.W.Hancock@nasa.gov" ;
+		:publisher_name = "NSIDC User Services" ;
+		:publisher_email = "nsidc@nsidc.org" ;
+		:publisher_url = "http://nsidc.org/daac/icesat/index.html" ;
+		:platform = "Ice, Cloud, and Land Elevation Satellite (ICESat)" ;
+		:instrument = "Geoscience Laser Altimeter System (GLAS)" ;
+		:processing_level = "1B" ;
+		:date_created = "removed date-time" ;
+		:spatial_coverage_type = "Horizontal" ;
+		:history = "removed date-time_alt 6.1 GLA06_634_2113_002_0152_2_01_0001.DAT, removed date-time06_h5_convert Version 1.4.1 (September 2014) ./GLAH06_634_2113_002_0152_2_01_0001.H5\000\nremoved date-timex GLAH06_634_2113_002_0152_2_01_0001.h5\n" ;
+		:geospatial_lat_min = "-90.0" ;
+		:geospatial_lat_max = "90.0" ;
+		:geospatial_lon_min = "-180.0" ;
+		:geospatial_lon_max = "180.0" ;
+		:geospatial_lat_units = "degrees_north" ;
+		:geospatial_lon_units = "degrees_east" ;
+		:keywords = "Earth Science > Land Surface > Topography > Terrain Elevation > Laser Reflectance, Earth Science > Land Surface > Topography > Surface Roughness > Laser Reflectance, Earth Science > Cryosphere > Glaciers/Ice Sheets > Glacier Elevation/Ice Sheet Elevation > Laser Reflectance, Earth Science > Hydrosphere > Glaciers/Ice Sheets > Glacier Elevation/Ice Sheet Elevation, Earth Science > Oceans > Sea Surface Topography > Sea Surface Slope > Laser Reflectance, Earth Science > Cryosphere > Sea Ice > Reflectance > Laser Reflectance, Earth Science > Land Surface > Surface Radiative Properties > Reflectance > Laser Reflectance, Earth Science > Oceans > Sea Ice > Reflectance > Laser Reflectance, Earth Science > Cryosphere > Sea Ice > Ice Roughness, Earth Science > Oceans > Sea Ice > Ice Roughness, Earth Science > Oceans > Sea Surface Topography > Sea Surface Height" ;
+		:keywords_vocabulary = "GCMD Science Keywords Version 6.0" ;
+		:naming_authority = "http://dx.doi.org" ;
+		:project = "Ice, Cloud, and Land Elevation Satellite (GLAS_HDF)" ;
+		:time_type = "UTC" ;
+		:date_type = "J2000" ;
+		:time_coverage_start = "removed date-time" ;
+		:time_coverage_end = "removed date-time" ;
+		:time_coverage_duration = "1620" ;
+		:source = "Satellite Measurements" ;
+		:HDFVersion = "HDF5 1.8.9" ;
+		:identifier_product_type = "GLAH06" ;
+		:identifier_product_format_version = "1.0" ;
+		:Conventions = "CF-1.6" ;
+		:institution = "National Aeronautics and Space Administration (NASA)" ;
+		:ReprocessingPlanned = "no further update anticipated" ;
+		:ReprocessingActual = "reprocessed" ;
+		:LocalGranuleID = "GLAH06_634_2113_002_0152_2_01_0001.H5" ;
+		:ProductionDateTime = "removed date-time" ;
+		:LocalVersionID = "634" ;
+		:PGEVersion = "Version 1.4.1" ;
+		:OrbitNumber = "15314" ;
+		:StartOrbitNumber = "15314" ;
+		:StopOrbitNumber = "15314" ;
+		:EquatorCrossingLongitude = "-53.503357" ;
+		:EquatorCrossingTime = "23:24:54" ;
+		:EquatorCrossingDate = "2005-11-05" ;
+		:ShortName = "GLAH06" ;
+		:VersionID = "34" ;
+		:InputPointer = "CTL00_000_20140927_2876202_01_gla06_h5_convert.ctl, tai-utc.dat, GLA06_634_2113_002_0152_2_01_0001.DAT, DsESDTGlGLAH06.034.desc" ;
+		:RangeBeginningTime = "23:59:44" ;
+		:RangeEndingTime = "00:26:34" ;
+		:RangeBeginningDate = "2005-11-05" ;
+		:RangeEndingDate = "2005-11-06" ;
+		:PercentGroundHit = "0" ;
+		:OrbitQuality = "6" ;
+		:Track = "152" ;
+		:Track_Segment = "2" ;
+		:Instrument_State = "373340" ;
+		:ReferenceOrbit = "1" ;
+		:Cycle = "2" ;
+		:SP_ICE_PATH_NO = "3174" ;
+		:SP_ICE_GLAS_StartBlock = "NOT SET" ;
+		:SP_ICE_GLAS_EndBlock = "NOT SET" ;
+		:Instance = "13" ;
+		:Range_Bias = "0" ;
+		:Instrument_State_Date = "2005-10-21" ;
+		:Instrument_State_Time = "00:00:00" ;
+		:Range_Bias_Date = "2005-10-21" ;
+		:Range_Bias_Time = "00:00:00" ;
+		:Timing_Bias = "0" ;
+		:Timing_Bias_Date = "2005-10-21" ;
+		:Timing_Bias_Time = "00:00:00" ;
+		:identifier_product_doi = "10.5067/ICESAT/GLAS/DATA109" ;
+		:identifier_file_uuid = "1a178d80-fe8f-4000-99c5-2602b0fdba85" ;
+		:identifier_product_doi_authority = "http://dx.doi.org" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"GLAH06_634_2113_002_0152_2_01_0001.h5\"}]}]" ;
+
+group: Data_40HZ {
+  dimensions:
+  	DS_DEMhiresArElv = 9 ;
+  	DS_UTCTime_40 = 43920 ;
+  variables:
+  	int DS_DEMhiresArElv(DS_DEMhiresArElv) ;
+  		DS_DEMhiresArElv:hertz = "1" ;
+  		DS_DEMhiresArElv:long_name = "Location index for D_DEMhiresArElv" ;
+  		DS_DEMhiresArElv:description = "This array indicates the relative position of each d_DEMhiresArElv measurement.  Direction is relative to the spot and indicated in cardinal points. The position of the spot is indicated as ORIGIN." ;
+  		DS_DEMhiresArElv:source = "Constants" ;
+  		DS_DEMhiresArElv:flag_values = 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+  		DS_DEMhiresArElv:flag_meanings = "NW N NE W ORIGIN E SW S SE" ;
+  	double DS_UTCTime_40(DS_UTCTime_40) ;
+  		DS_UTCTime_40:units = "seconds since removed date-time" ;
+  		DS_UTCTime_40:hertz = "40" ;
+  		DS_UTCTime_40:long_name = "Transmit time of each shot in J2000 seconds" ;
+  		DS_UTCTime_40:standard_name = "time" ;
+  		DS_UTCTime_40:description = "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds." ;
+  		DS_UTCTime_40:source = "Rel 34 GLAS Binary Data" ;
+
+  // group attributes:
+  		:Description = "This group contains data with a rate of 40HZ. 40Hz data may be indexed to the 1HZ data using the i_rec_ndx parameter in each respective time group." ;
+
+  group: Reflectivity {
+    variables:
+    	double d_reflctUC(DS_UTCTime_40) ;
+    		d_reflctUC:hertz = "40" ;
+    		d_reflctUC:long_name = "reflctUC" ;
+    		d_reflctUC:description = "Reflectivity, not corrected for atmospheric effects, is calculated as Refl = R/T, where R is the received energy after it has been scaled for range, and T is the transmitted energy. i_reflctUC has also been calibrated for gain non-linearity (only for non-saturated waveforms), ground truth calibration and boresight shift shadowing (BSS). It is not corrected for saturation effects. If the shot is saturated (satindex above 2) then to correct for saturation the reflectivity estimate needs to be multiplied by the ratio of the corrected energy to the uncorrected energy (sat corrected reflectivity = d_reflctUC * (d_RecNrgAll + d_satNrgCorr)/d_RecNrgAll). The atmospheric corrected reflectivity may be calculated from this uncorrected reflectivity by multiplying it by d_reflCor_atm.  d_reflctUC is invalid where d_satNrgCorr is invalid." ;
+    		d_reflctUC:source = "Rel 34 GLAS Binary Data" ;
+    		d_reflctUC:coordinates = "DS_UTCTime_40" ;
+    		d_reflctUC:valid_min = 0. ;
+    		d_reflctUC:valid_max = 1. ;
+    		d_reflctUC:_FillValue = 1.79769313486232e+308 ;
+    	double d_sDevNsOb1(DS_UTCTime_40) ;
+    		d_sDevNsOb1:units = "volts" ;
+    		d_sDevNsOb1:hertz = "40" ;
+    		d_sDevNsOb1:long_name = "Standard deviation of 1064 nm Background noise, (alternate)" ;
+    		d_sDevNsOb1:description = "The standard deviation of the background noise (alternate parameters)." ;
+    		d_sDevNsOb1:source = "Rel 34 GLAS Binary Data" ;
+    		d_sDevNsOb1:coordinates = "DS_UTCTime_40" ;
+    		d_sDevNsOb1:valid_min = 0. ;
+    		d_sDevNsOb1:valid_max = 3. ;
+    		d_sDevNsOb1:_FillValue = 1.79769313486232e+308 ;
+    	double d_satNrgCorr(DS_UTCTime_40) ;
+    		d_satNrgCorr:units = "joules" ;
+    		d_satNrgCorr:long_name = "Saturation Energy Correction" ;
+    		d_satNrgCorr:description = "Correction to energy for saturated waveforms. This correction has not been applied to the energy. It should be ADDED to any echo pulse energy calculated from the pulse area under the waveform. Also any reflectivity estimates need to be corrected for this error in energy measurement." ;
+    		d_satNrgCorr:source = "Rel 34 GLAS Binary Data" ;
+    		d_satNrgCorr:coordinates = "DS_UTCTime_40" ;
+    		d_satNrgCorr:valid_min = 0. ;
+    		d_satNrgCorr:valid_max = 1.e-15 ;
+    		d_satNrgCorr:_FillValue = 1.79769313486232e+308 ;
+    		d_satNrgCorr:hertz = "40" ;
+    	double d_RecNrgAll(DS_UTCTime_40) ;
+    		d_RecNrgAll:units = "joules" ;
+    		d_RecNrgAll:long_name = "Received Energy signal begin to signal end" ;
+    		d_RecNrgAll:description = "This is calculated by taking the area under the received waveform (referenced to the observed noise) from all responses between the noise crossing before the first threshold crossing and the noise crossing after the last threshold crossing. It is a rescaled value from the GLA01 parameter d_recNrgAll_EU and is not recomputed." ;
+    		d_RecNrgAll:source = "Rel 34 GLAS Binary Data" ;
+    		d_RecNrgAll:coordinates = "DS_UTCTime_40" ;
+    		d_RecNrgAll:valid_min = 0. ;
+    		d_RecNrgAll:valid_max = 3.2e-13 ;
+    		d_RecNrgAll:_FillValue = 1.79769313486232e+308 ;
+    		d_RecNrgAll:hertz = "40" ;
+
+    // group attributes:
+    		:Description = "This group contains reflectivity parameters." ;
+    } // group Reflectivity
+
+  group: Elevation_Offsets {
+    variables:
+    	double d_SigBegOff(DS_UTCTime_40) ;
+    		d_SigBegOff:units = "meters" ;
+    		d_SigBegOff:hertz = "40" ;
+    		d_SigBegOff:long_name = "Signal Begin Range Offset" ;
+    		d_SigBegOff:description = "Offset to be added to d_refRng to give the range in distance to the location of the received echo calculated at the beginning of signal (closest to the spacecraft) using standard parameters." ;
+    		d_SigBegOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_SigBegOff:coordinates = "DS_UTCTime_40" ;
+    		d_SigBegOff:valid_min = -150. ;
+    		d_SigBegOff:valid_max = 0. ;
+    		d_SigBegOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_TrshRngOff(DS_UTCTime_40) ;
+    		d_TrshRngOff:units = "meters" ;
+    		d_TrshRngOff:hertz = "40" ;
+    		d_TrshRngOff:long_name = "Threshold Retracker Range Offset" ;
+    		d_TrshRngOff:description = "Offset to be added to d_refRng to give the range in distance to the threshold retracker location of the received echo using standard parameters." ;
+    		d_TrshRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_TrshRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_TrshRngOff:valid_min = -150. ;
+    		d_TrshRngOff:valid_max = 0. ;
+    		d_TrshRngOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_SigEndOff(DS_UTCTime_40) ;
+    		d_SigEndOff:units = "meters" ;
+    		d_SigEndOff:hertz = "40" ;
+    		d_SigEndOff:long_name = "Signal End Range Offset" ;
+    		d_SigEndOff:description = "Offset to be added to d_refRng to give the range in distance to the location on the received echo calculated at the end of signal (farthest from the spacecraft) using standard parameters." ;
+    		d_SigEndOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_SigEndOff:coordinates = "DS_UTCTime_40" ;
+    		d_SigEndOff:valid_min = -150. ;
+    		d_SigEndOff:valid_max = 0. ;
+    		d_SigEndOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_cntRngOff(DS_UTCTime_40) ;
+    		d_cntRngOff:units = "meters" ;
+    		d_cntRngOff:hertz = "40" ;
+    		d_cntRngOff:long_name = "Centroid Range Offset" ;
+    		d_cntRngOff:description = "Offset to be added to d_refRng to give the range in distance to the location of the centroid of the received echo from signal begin through signal end defined by the standard parameters." ;
+    		d_cntRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_cntRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_cntRngOff:valid_min = -150. ;
+    		d_cntRngOff:valid_max = 0. ;
+    		d_cntRngOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_isRngOff(DS_UTCTime_40) ;
+    		d_isRngOff:units = "meters" ;
+    		d_isRngOff:hertz = "40" ;
+    		d_isRngOff:long_name = "Ice Sheet Range Offset" ;
+    		d_isRngOff:description = "Range offset to be added to d_refRng to calculate the range using the algorithm deemed appropriate for ice sheets." ;
+    		d_isRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_isRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_isRngOff:valid_min = -150. ;
+    		d_isRngOff:valid_max = 0. ;
+    		d_isRngOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_siRngOff(DS_UTCTime_40) ;
+    		d_siRngOff:units = "meters" ;
+    		d_siRngOff:hertz = "40" ;
+    		d_siRngOff:long_name = "Sea Ice Range Offset" ;
+    		d_siRngOff:description = "Range offset to be added to d_refRng to calculate the range using the algorithm deemed appropriate for sea ice." ;
+    		d_siRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_siRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_siRngOff:valid_min = -150. ;
+    		d_siRngOff:valid_max = 0. ;
+    		d_siRngOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_ldRngOff(DS_UTCTime_40) ;
+    		d_ldRngOff:units = "meters" ;
+    		d_ldRngOff:hertz = "40" ;
+    		d_ldRngOff:long_name = "Land Range Offset" ;
+    		d_ldRngOff:description = "Range offset to be added to d_refRng to calculate the range using the algorithm deemed appropriate for land." ;
+    		d_ldRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_ldRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_ldRngOff:valid_min = -150. ;
+    		d_ldRngOff:valid_max = 0. ;
+    		d_ldRngOff:_FillValue = 1.79769313486232e+308 ;
+    	double d_ocRngOff(DS_UTCTime_40) ;
+    		d_ocRngOff:units = "meters" ;
+    		d_ocRngOff:hertz = "40" ;
+    		d_ocRngOff:long_name = "Ocean Range Offset" ;
+    		d_ocRngOff:description = "Range offset to be added to d_refRng to calculate the range using the algorithm deemed appropriate for oceans." ;
+    		d_ocRngOff:source = "Rel 34 GLAS Binary Data" ;
+    		d_ocRngOff:coordinates = "DS_UTCTime_40" ;
+    		d_ocRngOff:valid_min = -150. ;
+    		d_ocRngOff:valid_max = 0. ;
+    		d_ocRngOff:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "The group contains elevation offsets. These offsets allow the elevation for the specific surface types to be derived." ;
+    } // group Elevation_Offsets
+
+  group: Time {
+    dimensions:
+    	d_UTCTime_40 = 43920 ;
+    variables:
+    	int i_shot_count(DS_UTCTime_40) ;
+    		i_shot_count:hertz = "40" ;
+    		i_shot_count:long_name = "GLAS Pulse Index" ;
+    		i_shot_count:description = "Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot." ;
+    		i_shot_count:source = "Rel 34 GLAS Binary Data" ;
+    		i_shot_count:coordinates = "DS_UTCTime_40" ;
+    		i_shot_count:valid_min = 1 ;
+    		i_shot_count:valid_max = 40 ;
+    	int i_rec_ndx(DS_UTCTime_40) ;
+    		i_rec_ndx:hertz = "40" ;
+    		i_rec_ndx:long_name = "GLAS Record Index" ;
+    		i_rec_ndx:description = "Unique index that relates this record to the corresponding record(s) in each GLAS data product." ;
+    		i_rec_ndx:source = "Rel 34 GLAS Binary Data" ;
+    		i_rec_ndx:coordinates = "DS_UTCTime_40" ;
+    		i_rec_ndx:valid_min = 0 ;
+    	double d_UTCTime_40(d_UTCTime_40) ;
+    		d_UTCTime_40:units = "seconds since removed date-time" ;
+    		d_UTCTime_40:hertz = "40" ;
+    		d_UTCTime_40:long_name = "Transmit time of each shot in J2000 seconds" ;
+    		d_UTCTime_40:standard_name = "time" ;
+    		d_UTCTime_40:description = "The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds." ;
+    		d_UTCTime_40:source = "Rel 34 GLAS Binary Data" ;
+    		d_UTCTime_40:HDF5_HARDLINK = "/Data_40HZ/DS_UTCTime_40" ;
+
+    // group attributes:
+    		:Description = "This group contains the 40HZ index and time-related parameters" ;
+    } // group Time
+
+  group: Atmosphere {
+    variables:
+    	double d_FRir_cldtop(DS_UTCTime_40) ;
+    		d_FRir_cldtop:units = "meters" ;
+    		d_FRir_cldtop:hertz = "40" ;
+    		d_FRir_cldtop:long_name = "Full Resolution 1064 Cloud Top" ;
+    		d_FRir_cldtop:description = "Full resolution (40 Hz) cloud top height obtained from the 1064 atmospheric channel. This parameter is in GLA09." ;
+    		d_FRir_cldtop:source = "Rel 34 GLAS Binary Data" ;
+    		d_FRir_cldtop:coordinates = "DS_UTCTime_40" ;
+    		d_FRir_cldtop:valid_min = 0. ;
+    		d_FRir_cldtop:valid_max = 10300. ;
+    		d_FRir_cldtop:_FillValue = 1.79769313486232e+308 ;
+    	byte FRir_qa_flg(DS_UTCTime_40) ;
+    		FRir_qa_flg:hertz = "40" ;
+    		FRir_qa_flg:long_name = "Full Resolution 1064 Quality Flag" ;
+    		FRir_qa_flg:description = "Full resolution 1064 Quality Flag; 0 - 12 indicate Cloud detected by cloud search algorithm with higher numbers indicating a stronger average signal from the region starting at cloud top and extending 500 m below cloud top height; 13 = Indicates the possible presence of a cloud based on the value of the integrated signal parameter (i_FRir_intsig) that was not detected directly by the cloud search algorithm. When this occurs, the 40 Hz cloud top height (i_Frir_cldtop) is set to a value of 10.0 km; 14 = Indicates the likely presence of low clouds (< 150 m) based on elevated signal from the two bins above the ground return bin that were not detected directly by the cloud search algorithm. When this occurs, the 40 Hz cloud top height (i_Frir_cldtop) is set to a value of 0.10; 15 = No clouds" ;
+    		FRir_qa_flg:source = "Rel 34 GLAS Binary Data" ;
+    		FRir_qa_flg:coordinates = "DS_UTCTime_40" ;
+    		FRir_qa_flg:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ;
+    		FRir_qa_flg:flag_meanings = "0 1 2 3 4 5 6 7 8 9 10 11 12 possible likely no_clouds" ;
+    		FRir_qa_flg:valid_min = 0 ;
+    		FRir_qa_flg:valid_max = 15 ;
+    	double d_FRir_intsig(DS_UTCTime_40) ;
+    		d_FRir_intsig:units = "1/(m-sr)" ;
+    		d_FRir_intsig:hertz = "40" ;
+    		d_FRir_intsig:long_name = "Full Resolution 1064 Integrated Signal" ;
+    		d_FRir_intsig:description = "Though called \'integrated signal\' this is actually an average of all bins in the above-ground portion of the 1064 40 Hz profile with values above the threshold of 1.0e-7 (1/(m-sr) units). This parameter is for a 1 second record. This parameter is extracted from the equivalent parameter on GLA09." ;
+    		d_FRir_intsig:source = "Rel 34 GLAS Binary Data" ;
+    		d_FRir_intsig:coordinates = "DS_UTCTime_40" ;
+    		d_FRir_intsig:valid_min = 0. ;
+    		d_FRir_intsig:valid_max = 0.001 ;
+    		d_FRir_intsig:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains atmosphere-related parameters." ;
+    } // group Atmosphere
+
+  group: Geophysical {
+    variables:
+    	double d_ldElv(DS_UTCTime_40) ;
+    		d_ldElv:units = "meters" ;
+    		d_ldElv:long_name = "Load Tide Elevation" ;
+    		d_ldElv:description = "The load tide elevation applied to each shot." ;
+    		d_ldElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_ldElv:coordinates = "DS_UTCTime_40" ;
+    		d_ldElv:valid_min = -10. ;
+    		d_ldElv:valid_max = 10. ;
+    		d_ldElv:_FillValue = 1.79769313486232e+308 ;
+    		d_ldElv:hertz = "40" ;
+    	double d_ocElv(DS_UTCTime_40) ;
+    		d_ocElv:units = "meters" ;
+    		d_ocElv:hertz = "40" ;
+    		d_ocElv:long_name = "Ocean Tide Elevation" ;
+    		d_ocElv:standard_name = "sea_surface_height_amplitude_due_to_non_equilibrium_ocean_tide" ;
+    		d_ocElv:description = "The ocean tide elevation from the TPX07.1 tide model." ;
+    		d_ocElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_ocElv:coordinates = "DS_UTCTime_40" ;
+    		d_ocElv:valid_min = -10. ;
+    		d_ocElv:valid_max = 10. ;
+    		d_ocElv:_FillValue = 1.79769313486232e+308 ;
+    	double d_d2refTrk(DS_UTCTime_40) ;
+    		d_d2refTrk:units = "meters" ;
+    		d_d2refTrk:hertz = "40" ;
+    		d_d2refTrk:long_name = "Distance to the reference ground track" ;
+    		d_d2refTrk:description = "Distance to the reference ground track." ;
+    		d_d2refTrk:source = "Rel 34 GLAS Binary Data" ;
+    		d_d2refTrk:coordinates = "DS_UTCTime_40" ;
+    		d_d2refTrk:valid_min = 0. ;
+    		d_d2refTrk:valid_max = 1000000. ;
+    		d_d2refTrk:_FillValue = 1.79769313486232e+308 ;
+    	double d_poTide(DS_UTCTime_40) ;
+    		d_poTide:units = "meters" ;
+    		d_poTide:hertz = "40" ;
+    		d_poTide:long_name = "Pole Tide" ;
+    		d_poTide:standard_name = "sea_surface_height_amplitude_due_to_pole_tide" ;
+    		d_poTide:description = "Pole tide: an ocean tide which is the result of the Chandler wobble (a free nutation of the Earth caused by fluctuating pressure on the bottom of the ocean, caused by temperature and salinity changes and wind-driven changes in the circulation of the oceans)." ;
+    		d_poTide:source = "Rel 34 GLAS Binary Data" ;
+    		d_poTide:coordinates = "DS_UTCTime_40" ;
+    		d_poTide:valid_min = -10. ;
+    		d_poTide:valid_max = 10. ;
+    		d_poTide:_FillValue = 1.79769313486232e+308 ;
+    	double d_gdHt(DS_UTCTime_40) ;
+    		d_gdHt:units = "meters" ;
+    		d_gdHt:hertz = "40" ;
+    		d_gdHt:long_name = "Geoid" ;
+    		d_gdHt:standard_name = "geoid_height_above_reference_ellipsoid" ;
+    		d_gdHt:description = "The height of the geoid above the ellipsoid. EGM2008 geoid height above the reference ellipsoid." ;
+    		d_gdHt:source = "Rel 34 GLAS Binary Data" ;
+    		d_gdHt:coordinates = "DS_UTCTime_40" ;
+    		d_gdHt:valid_min = -200. ;
+    		d_gdHt:valid_max = 200. ;
+    		d_gdHt:_FillValue = 1.79769313486232e+308 ;
+    	double d_eqElv(DS_UTCTime_40) ;
+    		d_eqElv:units = "meters" ;
+    		d_eqElv:hertz = "40" ;
+    		d_eqElv:long_name = "Equilibrium Tide Elevation" ;
+    		d_eqElv:standard_name = "sea_surface_height_amplitude_due_to_equilibrium_ocean_tide" ;
+    		d_eqElv:description = "The equilibrium (long period) tide at last valid shot over the ocean." ;
+    		d_eqElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_eqElv:coordinates = "DS_UTCTime_40" ;
+    		d_eqElv:valid_min = -10. ;
+    		d_eqElv:valid_max = 10. ;
+    		d_eqElv:_FillValue = 1.79769313486232e+308 ;
+    	double d_ElevBiasCorr(DS_UTCTime_40) ;
+    		d_ElevBiasCorr:units = "meters" ;
+    		d_ElevBiasCorr:hertz = "40" ;
+    		d_ElevBiasCorr:long_name = "Elevation Bias Correction" ;
+    		d_ElevBiasCorr:description = "Correction to elevation based on post flight analysis for biases determined for each campaign. This bias correction has not been applied to the data. To apply it SUBTRACT the correction from the range estimate. To apply the correction to the elevations it must be ADDED to the elevation estimates." ;
+    		d_ElevBiasCorr:source = "Rel 34 GLAS Binary Data" ;
+    		d_ElevBiasCorr:coordinates = "DS_UTCTime_40" ;
+    		d_ElevBiasCorr:valid_min = 0. ;
+    		d_ElevBiasCorr:valid_max = 3. ;
+    		d_ElevBiasCorr:_FillValue = 1.79769313486232e+308 ;
+    	double d_deltaEllip(DS_UTCTime_40) ;
+    		d_deltaEllip:units = "meters" ;
+    		d_deltaEllip:hertz = "40" ;
+    		d_deltaEllip:long_name = "Delta Ellipsoid" ;
+    		d_deltaEllip:description = "Surface elevation(T/P ellipsoid) minus surface elevation (WGS84 ellipsoid)." ;
+    		d_deltaEllip:source = "Rel 34 GLAS Binary Data" ;
+    		d_deltaEllip:coordinates = "DS_UTCTime_40" ;
+    		d_deltaEllip:valid_min = -9. ;
+    		d_deltaEllip:valid_max = 9. ;
+    		d_deltaEllip:_FillValue = 1.79769313486232e+308 ;
+    	double d_erElv(DS_UTCTime_40) ;
+    		d_erElv:units = "meters" ;
+    		d_erElv:hertz = "40" ;
+    		d_erElv:long_name = "Solid Earth Tide Elevation" ;
+    		d_erElv:standard_name = "geoid_height_above_reference_ellipsoid" ;
+    		d_erElv:description = "The solid earth tide elevation." ;
+    		d_erElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_erElv:coordinates = "DS_UTCTime_40" ;
+    		d_erElv:valid_min = -10. ;
+    		d_erElv:valid_max = 10. ;
+    		d_erElv:_FillValue = 1.79769313486232e+308 ;
+    	double d_DEMhiresArElv(DS_UTCTime_40, DS_DEMhiresArElv) ;
+    		d_DEMhiresArElv:units = "meters" ;
+    		d_DEMhiresArElv:hertz = "40" ;
+    		d_DEMhiresArElv:long_name = "DEMhiresArElv" ;
+    		d_DEMhiresArElv:description = "d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center." ;
+    		d_DEMhiresArElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_DEMhiresArElv:coordinates = "DS_UTCTime_40, d_DEMhiresArElv" ;
+    		d_DEMhiresArElv:valid_min = -500. ;
+    		d_DEMhiresArElv:valid_max = 1300. ;
+    		d_DEMhiresArElv:_FillValue = 1.79769313486232e+308 ;
+    	byte i_DEM_hires_src_1(DS_UTCTime_40) ;
+    		i_DEM_hires_src_1:hertz = "40" ;
+    		i_DEM_hires_src_1:long_name = "High Resolution Source Flag" ;
+    		i_DEM_hires_src_1:description = "High resolution DEM source provider; Indicates if no high res source available, unfinished research Shuttle Radar Topography Mission (SRTM) C-band 90m DEM produced by JPL (+-1.1km E-W swath), finished\' SRTM C-band 90 m DEM produced by NGA (+-2.1km E-W swath),  ICESat Greenland V1 1km DEM,  ICESat Antarctica V1 500m DEM, 90m Canadian Digital Elevation Data (CDED), Data in overlap area of SRTM and CDED. Value reported is from finished SRTM C-band 90 m DEM." ;
+    		i_DEM_hires_src_1:source = "Rel 34 GLAS Binary Data" ;
+    		i_DEM_hires_src_1:coordinates = "DS_UTCTime_40" ;
+    		i_DEM_hires_src_1:flag_values = 0, 1, 2, 3, 4, 5, 6 ;
+    		i_DEM_hires_src_1:flag_meanings = "none pre_srtm srtm greenland antarctica cded_90 olap_srtm" ;
+    		i_DEM_hires_src_1:valid_min = 0 ;
+    		i_DEM_hires_src_1:valid_max = 6 ;
+    	double d_DEM_elv(DS_UTCTime_40) ;
+    		d_DEM_elv:units = "meters" ;
+    		d_DEM_elv:long_name = "DEM Elevation" ;
+    		d_DEM_elv:description = "Elevation at the footprint location from the SRTM30 (GTOPO30 + SRTM) Digital Elevation Model (DEM). The reference frame for the DEM elevation was changed to the TOPEX/Poseidon ellipsoid to make it consistent with the GLAS elevations." ;
+    		d_DEM_elv:source = "Rel 34 GLAS Binary Data" ;
+    		d_DEM_elv:coordinates = "DS_UTCTime_40" ;
+    		d_DEM_elv:valid_min = -500. ;
+    		d_DEM_elv:valid_max = 10000. ;
+    		d_DEM_elv:_FillValue = 1.79769313486232e+308 ;
+    		d_DEM_elv:hertz = "40" ;
+
+    // group attributes:
+    		:Description = "This group contains geophysical parameters." ;
+    } // group Geophysical
+
+  group: Elevation_Angles {
+    variables:
+    	double d_beamCoelv(DS_UTCTime_40) ;
+    		d_beamCoelv:units = "degrees" ;
+    		d_beamCoelv:hertz = "40" ;
+    		d_beamCoelv:long_name = "Co-elevation" ;
+    		d_beamCoelv:description = "Co-elevation (CE) is direction from vertical of the laser beam as seen by an observer located at the laser ground spot." ;
+    		d_beamCoelv:source = "Rel 34 GLAS Binary Data" ;
+    		d_beamCoelv:coordinates = "DS_UTCTime_40" ;
+    		d_beamCoelv:valid_min = 0. ;
+    		d_beamCoelv:valid_max = 36. ;
+    		d_beamCoelv:_FillValue = 1.79769313486232e+308 ;
+    	double d_beamAzimuth(DS_UTCTime_40) ;
+    		d_beamAzimuth:units = "degrees" ;
+    		d_beamAzimuth:hertz = "40" ;
+    		d_beamAzimuth:long_name = "Azimuth" ;
+    		d_beamAzimuth:description = "The direction, eastwards from north, of the laser beam vector as seen by an observer at the laser ground spot viewing toward the spacecraft (i.e., the vector from the ground to the spacecraft). When the spacecraft is precisely at the geodetic zenith, the value will be 99999 degrees." ;
+    		d_beamAzimuth:source = "Rel 34 GLAS Binary Data" ;
+    		d_beamAzimuth:coordinates = "DS_UTCTime_40" ;
+    		d_beamAzimuth:valid_min = 0. ;
+    		d_beamAzimuth:valid_max = 36. ;
+    		d_beamAzimuth:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains pointing angle parameters." ;
+    } // group Elevation_Angles
+
+  group: Elevation_Corrections {
+    variables:
+    	double d_dTrop(DS_UTCTime_40) ;
+    		d_dTrop:units = "meters" ;
+    		d_dTrop:hertz = "40" ;
+    		d_dTrop:long_name = "Range Correction, Dry Troposphere" ;
+    		d_dTrop:standard_name = "altimeter_range_correction_due_to_dry_troposphere" ;
+    		d_dTrop:description = "The range correction due to the dry troposphere. Validity is based on results of finding a range with the standard fit." ;
+    		d_dTrop:source = "Rel 34 GLAS Binary Data" ;
+    		d_dTrop:coordinates = "DS_UTCTime_40" ;
+    		d_dTrop:valid_min = -2.5 ;
+    		d_dTrop:valid_max = 0. ;
+    		d_dTrop:_FillValue = 1.79769313486232e+308 ;
+    	double d_satElevCorr(DS_UTCTime_40) ;
+    		d_satElevCorr:units = "meters" ;
+    		d_satElevCorr:hertz = "40" ;
+    		d_satElevCorr:long_name = "Saturation Elevation Correction" ;
+    		d_satElevCorr:description = "Correction to elevation for saturated waveforms. This correction has NOT been applied to the data.  To apply it SUBTRACT the correction from the range estimate. To apply the correction to the elevations it must be ADDED to the elevation estimates." ;
+    		d_satElevCorr:source = "Rel 34 GLAS Binary Data" ;
+    		d_satElevCorr:coordinates = "DS_UTCTime_40" ;
+    		d_satElevCorr:valid_min = 0. ;
+    		d_satElevCorr:valid_max = 3. ;
+    		d_satElevCorr:_FillValue = 1.79769313486232e+308 ;
+    	double d_GmC(DS_UTCTime_40) ;
+    		d_GmC:units = "m" ;
+    		d_GmC:hertz = "40" ;
+    		d_GmC:long_name = "Range correction in m calc from Trans pulse peak loc to centroid" ;
+    		d_GmC:description = "The difference of the Gaussian fit to the transmit pulse and the centroid of it. This correction was applied to the range before the computation of elevation. It is an additive correction to an elevation relative to Tx centroid to make the elevation relative to the Tx Gaussian." ;
+    		d_GmC:source = "Rel 34 GLAS Binary Data" ;
+    		d_GmC:coordinates = "DS_UTCTime_40" ;
+    		d_GmC:valid_min = -2. ;
+    		d_GmC:valid_max = 2. ;
+    		d_GmC:_FillValue = 1.79769313486232e+308 ;
+    	double d_wTrop(DS_UTCTime_40) ;
+    		d_wTrop:units = "meters" ;
+    		d_wTrop:hertz = "40" ;
+    		d_wTrop:long_name = "Range Correction_Wet Troposphere" ;
+    		d_wTrop:standard_name = "altimeter_range_correction_due_to_wet_troposphere" ;
+    		d_wTrop:description = "The range correction due to the wet troposphere. (See ATBDs)" ;
+    		d_wTrop:source = "Rel 34 GLAS Binary Data" ;
+    		d_wTrop:coordinates = "DS_UTCTime_40" ;
+    		d_wTrop:valid_min = -1. ;
+    		d_wTrop:valid_max = 0. ;
+    		d_wTrop:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains elevation-related corrections." ;
+    } // group Elevation_Corrections
+
+  group: Waveform {
+    variables:
+    	double d_skew2(DS_UTCTime_40) ;
+    		d_skew2:hertz = "40" ;
+    		d_skew2:long_name = "Skewness" ;
+    		d_skew2:description = "The skewness of the received echo from signal begin to signal end using standard parameters." ;
+    		d_skew2:source = "Rel 34 GLAS Binary Data" ;
+    		d_skew2:coordinates = "DS_UTCTime_40" ;
+    		d_skew2:valid_min = -100. ;
+    		d_skew2:valid_max = 100. ;
+    		d_skew2:_FillValue = 1.79769313486232e+308 ;
+    	double d_maxRecAmp(DS_UTCTime_40) ;
+    		d_maxRecAmp:units = "volts" ;
+    		d_maxRecAmp:hertz = "40" ;
+    		d_maxRecAmp:long_name = "Max Amplitude of Received Echo" ;
+    		d_maxRecAmp:description = "Maximum amplitude of the received echo." ;
+    		d_maxRecAmp:source = "Rel 34 GLAS Binary Data" ;
+    		d_maxRecAmp:coordinates = "DS_UTCTime_40" ;
+    		d_maxRecAmp:valid_min = -0.03 ;
+    		d_maxRecAmp:valid_max = 3. ;
+    		d_maxRecAmp:_FillValue = 1.79769313486232e+308 ;
+    	double d_maxSmAmp(DS_UTCTime_40) ;
+    		d_maxSmAmp:units = "volts" ;
+    		d_maxSmAmp:long_name = "Peak Amplitude of Smoothed Received Echo" ;
+    		d_maxSmAmp:description = "The peak amplitude of the received echo after it has been smoothed to remove high frequency noise (see ATBD)." ;
+    		d_maxSmAmp:source = "Rel 34 GLAS Binary Data" ;
+    		d_maxSmAmp:coordinates = "DS_UTCTime_40" ;
+    		d_maxSmAmp:valid_min = -0.03 ;
+    		d_maxSmAmp:valid_max = 3. ;
+    		d_maxSmAmp:_FillValue = 1.79769313486232e+308 ;
+    		d_maxSmAmp:hertz = "40" ;
+    	int i_nPeaks1(DS_UTCTime_40) ;
+    		i_nPeaks1:hertz = "40" ;
+    		i_nPeaks1:long_name = "Initial Number of Peaks in received echo (alternate)" ;
+    		i_nPeaks1:description = "The initial number of peaks of the received echo; determined from the smoothed waveform, using alternate parameters." ;
+    		i_nPeaks1:source = "Rel 34 GLAS Binary Data" ;
+    		i_nPeaks1:coordinates = "DS_UTCTime_40" ;
+    		i_nPeaks1:valid_min = 0 ;
+    		i_nPeaks1:valid_max = 50 ;
+    	int i_numPk(DS_UTCTime_40) ;
+    		i_numPk:hertz = "40" ;
+    		i_numPk:long_name = "Number of Peaks found in the Return" ;
+    		i_numPk:description = "The number of peaks in the return echo found by the gaussian fitting procedure, using standard parameters." ;
+    		i_numPk:source = "Rel 34 GLAS Binary Data" ;
+    		i_numPk:coordinates = "DS_UTCTime_40" ;
+    		i_numPk:valid_min = 0 ;
+    		i_numPk:valid_max = 6 ;
+    	double d_kurt2(DS_UTCTime_40) ;
+    		d_kurt2:hertz = "40" ;
+    		d_kurt2:long_name = "Kurtosis of the Received Echo (standard)" ;
+    		d_kurt2:description = "Kurtosis of the received echo from signal begin to signal end using standard parameters" ;
+    		d_kurt2:source = "Rel 34 GLAS Binary Data" ;
+    		d_kurt2:coordinates = "DS_UTCTime_40" ;
+    		d_kurt2:valid_min = -10. ;
+    		d_kurt2:valid_max = 10. ;
+    		d_kurt2:_FillValue = 1.79769313486232e+308 ;
+    	int i_gval_rcv(DS_UTCTime_40) ;
+    		i_gval_rcv:hertz = "40" ;
+    		i_gval_rcv:long_name = "Gain Value used for Received Pulse" ;
+    		i_gval_rcv:description = "Gain value used for received pulse - uncalibrated." ;
+    		i_gval_rcv:source = "Rel 34 GLAS Binary Data" ;
+    		i_gval_rcv:coordinates = "DS_UTCTime_40" ;
+    		i_gval_rcv:valid_min = 0 ;
+    		i_gval_rcv:valid_max = 255 ;
+    		i_gval_rcv:_FillValue = 2147483647 ;
+
+    // group attributes:
+    		:Description = "This group contains waveform-related parameters." ;
+    } // group Waveform
+
+  group: Transmit_Energy {
+    variables:
+    	double d_TxNrg(DS_UTCTime_40) ;
+    		d_TxNrg:units = "joules" ;
+    		d_TxNrg:hertz = "40" ;
+    		d_TxNrg:long_name = "1064 nm Laser Transmit Energy" ;
+    		d_TxNrg:description = "The 1064 nm laser pulse transmitted energy in energy units, computed from the digitized outgoing pulse, and the transmit gain." ;
+    		d_TxNrg:source = "Rel 34 GLAS Binary Data" ;
+    		d_TxNrg:coordinates = "DS_UTCTime_40" ;
+    		d_TxNrg:valid_min = 0. ;
+    		d_TxNrg:valid_max = 0.32766 ;
+    		d_TxNrg:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains transmit energy parameters." ;
+    } // group Transmit_Energy
+
+  group: Elevation_Surfaces {
+    variables:
+    	double d_elev(DS_UTCTime_40) ;
+    		d_elev:units = "meters" ;
+    		d_elev:hertz = "40" ;
+    		d_elev:long_name = "Surface Elevation" ;
+    		d_elev:standard_name = "height_above_reference_ellipsoid" ;
+    		d_elev:description = "Surface elevation with respect to the ellipsoid at the spot location determined by the ice-sheet specific range after instrument corrections, atmospheric delays and tides have been applied. The saturation elevation correction (d_satElevCorr) has not been applied and needs to be added to this elevation. This can be over a one meter correction. If it is invalid then the elevation should not be used. The saturation correction flag (sat_corr_flg) is an important flag to understand the possible quality of the elevation data. The saturation index (i_satNdx) can be used for more understanding of concerns on data quality from saturation effects. Also no correction for pulse spreading from forward scatter has been applied." ;
+    		d_elev:source = "Rel 34 GLAS Binary Data" ;
+    		d_elev:coordinates = "DS_UTCTime_40" ;
+    		d_elev:valid_min = -500. ;
+    		d_elev:valid_max = 10000. ;
+    		d_elev:_FillValue = 1.79769313486232e+308 ;
+    	double d_refRng(DS_UTCTime_40) ;
+    		d_refRng:units = "meters" ;
+    		d_refRng:hertz = "40" ;
+    		d_refRng:long_name = "Reference Range" ;
+    		d_refRng:standard_name = "altimeter_range" ;
+    		d_refRng:description = "Range in distance calculated from the time between the centroid of the transmit pulse and the farthest gate from the spacecraft of the received pulse. See the rngcorrflg to determine any corrections that have been applied." ;
+    		d_refRng:source = "Rel 34 GLAS Binary Data" ;
+    		d_refRng:coordinates = "DS_UTCTime_40" ;
+    		d_refRng:valid_min = 400000. ;
+    		d_refRng:valid_max = 1000000. ;
+    		d_refRng:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains surface-related parameters." ;
+    } // group Elevation_Surfaces
+
+  group: Elevation_Flags {
+    variables:
+    	byte elv_cnt_1_flg(DS_UTCTime_40) ;
+    		elv_cnt_1_flg:hertz = "40" ;
+    		elv_cnt_1_flg:long_name = "Elevation Definition Flag" ;
+    		elv_cnt_1_flg:description = "Standard parameterization; 1 = centroid of received pulse between signal begin and signal end defined for standard parameterization used to calculate elevation." ;
+    		elv_cnt_1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_cnt_1_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_cnt_1_flg:flag_values = 0, 1 ;
+    		elv_cnt_1_flg:flag_meanings = "false true" ;
+    		elv_cnt_1_flg:valid_min = 0 ;
+    		elv_cnt_1_flg:valid_max = 1 ;
+    	byte elv_cnt_2_flg(DS_UTCTime_40) ;
+    		elv_cnt_2_flg:hertz = "40" ;
+    		elv_cnt_2_flg:long_name = "Elevation Definition Flag" ;
+    		elv_cnt_2_flg:description = "Alternate parameterization; 1 = centroid of received pulse between signal begin and signal end defined for alternate parameterization used to calculate elevation." ;
+    		elv_cnt_2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_cnt_2_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_cnt_2_flg:flag_values = 0, 1 ;
+    		elv_cnt_2_flg:flag_meanings = "false true" ;
+    		elv_cnt_2_flg:valid_min = 0 ;
+    		elv_cnt_2_flg:valid_max = 1 ;
+    	byte elv_peak_1_flg(DS_UTCTime_40) ;
+    		elv_peak_1_flg:hertz = "40" ;
+    		elv_peak_1_flg:long_name = "Elevation Definition Flag" ;
+    		elv_peak_1_flg:description = "Standard parameterization; 1 = location of last Gaussian peak in received pulse for standard parameterization used to calculate elevation." ;
+    		elv_peak_1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_peak_1_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_peak_1_flg:flag_values = 0, 1 ;
+    		elv_peak_1_flg:flag_meanings = "false true" ;
+    		elv_peak_1_flg:valid_min = 0 ;
+    		elv_peak_1_flg:valid_max = 1 ;
+    	byte elv_peak_2_flg(DS_UTCTime_40) ;
+    		elv_peak_2_flg:hertz = "40" ;
+    		elv_peak_2_flg:long_name = "Elevation Definition Flag" ;
+    		elv_peak_2_flg:description = "Alternate parameterization; 1 = location of last gaussian peak in received pulse for alternate parameterization used to calculate elevation." ;
+    		elv_peak_2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_peak_2_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_peak_2_flg:flag_values = 0, 1 ;
+    		elv_peak_2_flg:flag_meanings = "false true" ;
+    		elv_peak_2_flg:valid_min = 0 ;
+    		elv_peak_2_flg:valid_max = 1 ;
+    	byte elv_thres_flg(DS_UTCTime_40) ;
+    		elv_thres_flg:hertz = "40" ;
+    		elv_thres_flg:long_name = "Elevation Definition Flag" ;
+    		elv_thres_flg:description = "Threshold retracker; 1 = Location of threshold retracker used to calculate elevation." ;
+    		elv_thres_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_thres_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_thres_flg:flag_values = 0, 1 ;
+    		elv_thres_flg:flag_meanings = "false true" ;
+    		elv_thres_flg:valid_min = 0 ;
+    		elv_thres_flg:valid_max = 1 ;
+    	byte elv_gauss_flg(DS_UTCTime_40) ;
+    		elv_gauss_flg:hertz = "40" ;
+    		elv_gauss_flg:long_name = "Elevation Definition Flag" ;
+    		elv_gauss_flg:description = "Gaussion; 1 = location associated with gaussian with largest peak used to calculate elevation." ;
+    		elv_gauss_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_gauss_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_gauss_flg:flag_values = 0, 1 ;
+    		elv_gauss_flg:flag_meanings = "false true" ;
+    		elv_gauss_flg:valid_min = 0 ;
+    		elv_gauss_flg:valid_max = 1 ;
+    	byte elv_other_flg(DS_UTCTime_40) ;
+    		elv_other_flg:hertz = "40" ;
+    		elv_other_flg:long_name = "Elevation Definition Flag" ;
+    		elv_other_flg:description = "Other algorithm; 1 = other algorithm used to calculate elevation - see software release documentation for details." ;
+    		elv_other_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_other_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_other_flg:flag_values = 0, 1 ;
+    		elv_other_flg:flag_meanings = "false true" ;
+    		elv_other_flg:valid_min = 0 ;
+    		elv_other_flg:valid_max = 1 ;
+    	byte elv_cloud_flg(DS_UTCTime_40) ;
+    		elv_cloud_flg:hertz = "40" ;
+    		elv_cloud_flg:long_name = "Elevation Definition Flag" ;
+    		elv_cloud_flg:description = "Cloud contamination; 1 = Gain > flag value, indicating probable cloud contamination" ;
+    		elv_cloud_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elv_cloud_flg:coordinates = "DS_UTCTime_40" ;
+    		elv_cloud_flg:flag_values = 0, 1 ;
+    		elv_cloud_flg:flag_meanings = "false true" ;
+    		elv_cloud_flg:valid_min = 0 ;
+    		elv_cloud_flg:valid_max = 1 ;
+
+    // group attributes:
+    		:Description = "This group contains flags related to the elevation estimates for each shot." ;
+    } // group Elevation_Flags
+
+  group: Quality {
+    variables:
+    	byte rng_uqf_sigbeg1_flg(DS_UTCTime_40) ;
+    		rng_uqf_sigbeg1_flg:hertz = "40" ;
+    		rng_uqf_sigbeg1_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_sigbeg1_flg:description = "Signal begin range increment flag (standard)" ;
+    		rng_uqf_sigbeg1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_sigbeg1_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_sigbeg1_flg:flag_values = 0, 1 ;
+    		rng_uqf_sigbeg1_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_sigbeg1_flg:valid_min = 0 ;
+    		rng_uqf_sigbeg1_flg:valid_max = 1 ;
+    	byte rng_uqf_sigend2_flg(DS_UTCTime_40) ;
+    		rng_uqf_sigend2_flg:hertz = "40" ;
+    		rng_uqf_sigend2_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_sigend2_flg:description = "Signal end range increment flag (alternate)" ;
+    		rng_uqf_sigend2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_sigend2_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_sigend2_flg:flag_values = 0, 1 ;
+    		rng_uqf_sigend2_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_sigend2_flg:valid_min = 0 ;
+    		rng_uqf_sigend2_flg:valid_max = 1 ;
+    	byte elev_use_flg(DS_UTCTime_40) ;
+    		elev_use_flg:hertz = "40" ;
+    		elev_use_flg:long_name = "Elevation use flag" ;
+    		elev_use_flg:description = "Flag indicating whether the elevations on this record should be used." ;
+    		elev_use_flg:source = "Rel 34 GLAS Binary Data" ;
+    		elev_use_flg:coordinates = "DS_UTCTime_40" ;
+    		elev_use_flg:flag_values = 0, 1 ;
+    		elev_use_flg:flag_meanings = "valid not_valid" ;
+    		elev_use_flg:valid_min = 0 ;
+    		elev_use_flg:valid_max = 1 ;
+    	byte rng_uqf_thres2_flg(DS_UTCTime_40) ;
+    		rng_uqf_thres2_flg:hertz = "40" ;
+    		rng_uqf_thres2_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_thres2_flg:description = "Threshold retracker range increment flag (alternate)" ;
+    		rng_uqf_thres2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_thres2_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_thres2_flg:flag_values = 0, 1 ;
+    		rng_uqf_thres2_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_thres2_flg:valid_min = 0 ;
+    		rng_uqf_thres2_flg:valid_max = 1 ;
+    	byte att_calc_pad_flg(DS_UTCTime_40) ;
+    		att_calc_pad_flg:hertz = "40" ;
+    		att_calc_pad_flg:long_name = "Calc Pad Use Flag" ;
+    		att_calc_pad_flg:description = "Calc PAD Use Flag; Indicates if new PAD or pass-thru PAD was used to determine orbit." ;
+    		att_calc_pad_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_calc_pad_flg:coordinates = "DS_UTCTime_40" ;
+    		att_calc_pad_flg:flag_values = 0, 1 ;
+    		att_calc_pad_flg:flag_meanings = "new pass_thru" ;
+    		att_calc_pad_flg:valid_min = 0 ;
+    		att_calc_pad_flg:valid_max = 1 ;
+    	byte rng_uqf_sigbeg2_flg(DS_UTCTime_40) ;
+    		rng_uqf_sigbeg2_flg:hertz = "40" ;
+    		rng_uqf_sigbeg2_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_sigbeg2_flg:description = "Signal begin range increment flag (alternate)" ;
+    		rng_uqf_sigbeg2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_sigbeg2_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_sigbeg2_flg:flag_values = 0, 1 ;
+    		rng_uqf_sigbeg2_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_sigbeg2_flg:valid_min = 0 ;
+    		rng_uqf_sigbeg2_flg:valid_max = 1 ;
+    	byte rng_uqf_si_flg(DS_UTCTime_40) ;
+    		rng_uqf_si_flg:hertz = "40" ;
+    		rng_uqf_si_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_si_flg:description = "Sea ice range increment flag" ;
+    		rng_uqf_si_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_si_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_si_flg:flag_values = 0, 1 ;
+    		rng_uqf_si_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_si_flg:valid_min = 0 ;
+    		rng_uqf_si_flg:valid_max = 1 ;
+    	byte rng_uqf_is_flg(DS_UTCTime_40) ;
+    		rng_uqf_is_flg:hertz = "40" ;
+    		rng_uqf_is_flg:description = "Ice sheet range increment flag" ;
+    		rng_uqf_is_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_is_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_is_flg:flag_values = 0, 1 ;
+    		rng_uqf_is_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_is_flg:valid_min = 0 ;
+    		rng_uqf_is_flg:valid_max = 1 ;
+    		rng_uqf_is_flg:long_name = "Range Offset Quality/Use Flag" ;
+    	byte sat_corr_flg(DS_UTCTime_40) ;
+    		sat_corr_flg:hertz = "40" ;
+    		sat_corr_flg:long_name = "Saturation Correction Flag" ;
+    		sat_corr_flg:description = "Saturation Correction Flag; Indicates if the saturation is Not Saturated (i_satNdx<2) or No Signal; Inconsequential (i_satNdx>=2 & i_pctSat<2.0); is Applicable (i_satNdx>=2 & i_pctSat>=2.0 & Full Width*<100ns); is Not Computable; is Not Applicable (i_satNdx>=2 & i_pctSat>=2.0 & Full Width*>=100ns)" ;
+    		sat_corr_flg:source = "Rel 34 GLAS Binary Data" ;
+    		sat_corr_flg:coordinates = "DS_UTCTime_40" ;
+    		sat_corr_flg:flag_values = 0, 1, 2, 3, 4, 5 ;
+    		sat_corr_flg:flag_meanings = "not_saturated inconsequential applicable not_computed not_applicable" ;
+    		sat_corr_flg:valid_min = 0 ;
+    		sat_corr_flg:valid_max = 4 ;
+    	byte att_pad_use_flg(DS_UTCTime_40) ;
+    		att_pad_use_flg:hertz = "40" ;
+    		att_pad_use_flg:long_name = "Pad Use Flag" ;
+    		att_pad_use_flg:description = "PAD Use Flag: 1 = PAD used to determine spot location." ;
+    		att_pad_use_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_pad_use_flg:coordinates = "DS_UTCTime_40" ;
+    		att_pad_use_flg:flag_values = 0, 1 ;
+    		att_pad_use_flg:flag_meanings = "used not_used" ;
+    		att_pad_use_flg:valid_min = 0 ;
+    		att_pad_use_flg:valid_max = 1 ;
+    	byte rng_uqf_thres1_flg(DS_UTCTime_40) ;
+    		rng_uqf_thres1_flg:hertz = "40" ;
+    		rng_uqf_thres1_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_thres1_flg:description = "Threshold retracker range increment flag (standard)." ;
+    		rng_uqf_thres1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_thres1_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_thres1_flg:flag_values = 0, 1 ;
+    		rng_uqf_thres1_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_thres1_flg:valid_min = 0 ;
+    		rng_uqf_thres1_flg:valid_max = 1 ;
+    	byte rng_uqf_sigend1_flg(DS_UTCTime_40) ;
+    		rng_uqf_sigend1_flg:hertz = "40" ;
+    		rng_uqf_sigend1_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_sigend1_flg:description = "Signal end range increment flag, (standard)" ;
+    		rng_uqf_sigend1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_sigend1_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_sigend1_flg:flag_values = 0, 1 ;
+    		rng_uqf_sigend1_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_sigend1_flg:valid_min = 0 ;
+    		rng_uqf_sigend1_flg:valid_max = 1 ;
+    	byte rng_uqf_ld_flg(DS_UTCTime_40) ;
+    		rng_uqf_ld_flg:hertz = "40" ;
+    		rng_uqf_ld_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_ld_flg:description = "Land range increment flag" ;
+    		rng_uqf_ld_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_ld_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_ld_flg:flag_values = 0, 1 ;
+    		rng_uqf_ld_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_ld_flg:valid_min = 0 ;
+    		rng_uqf_ld_flg:valid_max = 1 ;
+    	byte rng_uqf_oc_flg(DS_UTCTime_40) ;
+    		rng_uqf_oc_flg:hertz = "40" ;
+    		rng_uqf_oc_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_oc_flg:description = "Ocean range increment flag" ;
+    		rng_uqf_oc_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_oc_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_oc_flg:flag_values = 0, 1 ;
+    		rng_uqf_oc_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_oc_flg:valid_min = 0 ;
+    		rng_uqf_oc_flg:valid_max = 1 ;
+    	double d_pctSAT(DS_UTCTime_40) ;
+    		d_pctSAT:units = "percent" ;
+    		d_pctSAT:hertz = "40" ;
+    		d_pctSAT:long_name = "Percent Saturation" ;
+    		d_pctSAT:description = "Percent saturation (d_pctSAT) is calculated using the formula: d_pctSAT= 100*(saturation index)/ ( signal end - signal begin in nanoseconds). The alternate signal end/begin are used for GLA14 d_pctSAT, while the standard fit values are used for GLA06, 12, 13, and 15. The Saturation elevation correction is not applied in the geolocation processing computation of lat, lon and elev. Because the saturation corrections are small and data is acquired within 5 deg off nadir, effects on lat and lon can be ignored. To apply the saturation elevation correction to the elevations on the products it must be ADDED to the elevation estimates. Reported elevations for returns with invalid d_satElevCorr values and sat_corr_flg values of 3 or 4 are likely to have large, uncorrectable errors and should be excluded from analyses." ;
+    		d_pctSAT:source = "Rel 34 GLAS Binary Data" ;
+    		d_pctSAT:coordinates = "DS_UTCTime_40" ;
+    		d_pctSAT:valid_min = -127. ;
+    		d_pctSAT:valid_max = 127. ;
+    		d_pctSAT:_FillValue = 1.79769313486232e+308 ;
+    	byte att_lpa_flg(DS_UTCTime_40) ;
+    		att_lpa_flg:hertz = "40" ;
+    		att_lpa_flg:long_name = "LPA Problem Flag" ;
+    		att_lpa_flg:description = "LPA Problem Flag; Indicates if LPA is good, missing or noisy." ;
+    		att_lpa_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_lpa_flg:coordinates = "DS_UTCTime_40" ;
+    		att_lpa_flg:flag_values = 0, 1, 2 ;
+    		att_lpa_flg:flag_meanings = "good missing noisy" ;
+    		att_lpa_flg:valid_min = 0 ;
+    		att_lpa_flg:valid_max = 3 ;
+    	int i_satNdx(DS_UTCTime_40) ;
+    		i_satNdx:units = "ns" ;
+    		i_satNdx:hertz = "40" ;
+    		i_satNdx:long_name = "Saturation Index" ;
+    		i_satNdx:description = "The count of the number of gates in a waveform which have an amplitude greater than or equal to i_satNdxTh (set in anc07_0004). The value 126 means 126 or more gates are above the saturation index threshold (i_satNdxth)." ;
+    		i_satNdx:source = "Rel 34 GLAS Binary Data" ;
+    		i_satNdx:coordinates = "DS_UTCTime_40" ;
+    		i_satNdx:valid_min = 0 ;
+    		i_satNdx:valid_max = 126 ;
+    	byte sigma_att_flg(DS_UTCTime_40) ;
+    		sigma_att_flg:hertz = "40" ;
+    		sigma_att_flg:long_name = "Attitude Quality Indicator" ;
+    		sigma_att_flg:description = "Attitude quality indicator flag." ;
+    		sigma_att_flg:source = "Rel 34 GLAS Binary Data" ;
+    		sigma_att_flg:coordinates = "DS_UTCTime_40" ;
+    		sigma_att_flg:flag_values = 0, 50, 100, 127 ;
+    		sigma_att_flg:flag_meanings = "good warning bad not_valid" ;
+    		sigma_att_flg:valid_min = 0 ;
+    		sigma_att_flg:valid_max = 100 ;
+    		sigma_att_flg:_FillValue = 127b ;
+    	byte rng_uqf_cent2_flg(DS_UTCTime_40) ;
+    		rng_uqf_cent2_flg:hertz = "40" ;
+    		rng_uqf_cent2_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_cent2_flg:description = "Centroid retracker range increment flag (alternate)" ;
+    		rng_uqf_cent2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_cent2_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_cent2_flg:flag_values = 0, 1 ;
+    		rng_uqf_cent2_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_cent2_flg:valid_min = 0 ;
+    		rng_uqf_cent2_flg:valid_max = 1 ;
+    	byte rng_uqf_cent1_flg(DS_UTCTime_40) ;
+    		rng_uqf_cent1_flg:hertz = "40" ;
+    		rng_uqf_cent1_flg:long_name = "Range Offset Quality/Use Flag" ;
+    		rng_uqf_cent1_flg:description = "Centroid retracker range increment flag (standard)." ;
+    		rng_uqf_cent1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_uqf_cent1_flg:coordinates = "DS_UTCTime_40" ;
+    		rng_uqf_cent1_flg:flag_values = 0, 1 ;
+    		rng_uqf_cent1_flg:flag_meanings = "valid not_valid" ;
+    		rng_uqf_cent1_flg:valid_min = 0 ;
+    		rng_uqf_cent1_flg:valid_max = 1 ;
+
+    // group attributes:
+    		:Description = "This group contains data quality flags and related parameters." ;
+    } // group Quality
+
+  group: Geolocation {
+    variables:
+    	double d_lat(DS_UTCTime_40) ;
+    		d_lat:units = "degrees_north" ;
+    		d_lat:hertz = "40" ;
+    		d_lat:long_name = "Spot 1 Coordinate Data, Latitude Corrected" ;
+    		d_lat:standard_name = "latitude" ;
+    		d_lat:description = "The geodetic latitude of the laser spot computed from the precision orbit, precision attitude, and ice-sheet specific range after instrument corrections, atmospheric delays and tides have been applied. The values are in degrees north." ;
+    		d_lat:source = "Rel 34 GLAS Binary Data" ;
+    		d_lat:coordinates = "DS_UTCTime_40" ;
+    		d_lat:valid_min = -90. ;
+    		d_lat:valid_max = 90. ;
+    	double d_lon(DS_UTCTime_40) ;
+    		d_lon:units = "degrees_east" ;
+    		d_lon:hertz = "40" ;
+    		d_lon:long_name = "Spot 1 Coordinate Data, Longitude Corrected" ;
+    		d_lon:standard_name = "longitude" ;
+    		d_lon:description = "The longitude of the laser spot computed from the Precision orbit, precision attitude, and ice-sheet specific range after instrument corrections, atmospheric delays and tides have been applied. The values are in degrees east." ;
+    		d_lon:source = "Rel 34 GLAS Binary Data" ;
+    		d_lon:coordinates = "DS_UTCTime_40" ;
+    		d_lon:valid_min = 0. ;
+    		d_lon:valid_max = 360. ;
+
+    // group attributes:
+    		:Description = "This group contains geolocation-related parameters." ;
+    } // group Geolocation
+  } // group Data_40HZ
+
+group: METADATA {
+
+  // group attributes:
+  		:description = "This group contains structured, computer-parseable ECHO-style collection and inventory-level metadata." ;
+  		:HDFVersion = "HDF5 1.8.9" ;
+  		:ControlFile = "cf_name=CTL00_000_20140927_2876202_01_gla06_h5_convert.ctl\nidentifier_file_UUID=1a178d80-fe8f-4000-99c5-2602b0fdba85\nIN_ANC_TAIUTC=tai-utc.dat 184507185 184508795 1 0\nIN_GLA06=GLA06_634_2113_002_0152_2_01_0001.DAT 184507185 184508795 634 1\nIN_ESDT=DsESDTGlGLAH06.034.desc 0 0 634 1\nOUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1" ;
+
+  group: COLLECTIONMETADATA {
+
+    // group attributes:
+    		:DLLName = "libDsESDTGlGLASPoly.001Sh.so" ;
+    		:GranuleTimeDuration = "1620" ;
+    		:SpatialSearchType = "Orbit" ;
+    		:DataFileFormat = "HDF5" ;
+    		:ScienceMimeType = "application/x-hdfeos" ;
+    		:BrowseMimeType = "application/x-hdfeos" ;
+    		:BrowseOnlineMimeType = "image/jpeg" ;
+    		:ShortName = "GLAH06" ;
+    		:LongName = "GLAS/ICESat L1B Global Elevation Data (HDF5)" ;
+    		:CollectionDescription = "Data granules contain approximately 23 minutes (1/4 orbit) and include the surface elevation, surface roughness assuming no slope, surface slope assuming no roughness and geodetic and atmospheric corrections for the range at the full 40/sec resolution." ;
+    		:VersionID = "34" ;
+    		:CitationforExternalPublication = "The data used in this study were produced by the GLAS Science Team at the ICESat Science Investigator-led Processing System (I-SIPS) at NASA/GSFC. The data archive site is the NSIDC DAAC." ;
+    		:CollectionState = "In Work" ;
+    		:MaintenanceandUpdateFrequency = "Daily" ;
+    		:AccessConstraints = "Data may not be reproduced or distributed without including the CitationForExternalPublication for this product included in this Metadata. Data may not be distributed in an altered form without the written permission of the GLAS Science Team." ;
+    		:TemporalKeyword = "Day" ;
+    		:SpatialKeyword = "Global" ;
+
+    group: CSDTDescription {
+
+      // group attributes:
+      		:PrimaryCSDT = "n-Dim Array of Records" ;
+      		:IndirectReference = "tracks/orbits" ;
+      		:Implementation = "HDF" ;
+      		:CSDTComments = "Data for each orbit is divided into four granules.  Lat +50 to +50, Lat +50 to -50, Lat -50 to -50, Lat -50 to +50." ;
+      } // group CSDTDescription
+
+    group: StorageMediumClass {
+
+      // group attributes:
+      		:StorageMedium = "Online" ;
+      } // group StorageMediumClass
+
+    group: AdditionalAttributes {
+
+      // group attributes:
+      		:PercentGroundHit = "AdditionalAttributesContainer" ;
+      		:OrbitQuality = "AdditionalAttributesContainer" ;
+      		:Track = "AdditionalAttributesContainer" ;
+      		:Track_Segment = "AdditionalAttributesContainer" ;
+      		:Instrument_State = "AdditionalAttributesContainer" ;
+      		:ReferenceOrbit = "AdditionalAttributesContainer" ;
+      		:Cycle = "AdditionalAttributesContainer" ;
+      		:SP_ICE_PATH_NO = "AdditionalAttributesContainer" ;
+      		:SP_ICE_GLAS_StartBlock = "AdditionalAttributesContainer" ;
+      		:SP_ICE_GLAS_EndBlock = "AdditionalAttributesContainer" ;
+      		:Instance = "AdditionalAttributesContainer" ;
+      		:Range_Bias = "AdditionalAttributesContainer" ;
+      		:Instrument_State_Date = "AdditionalAttributesContainer" ;
+      		:Instrument_State_Time = "AdditionalAttributesContainer" ;
+      		:Range_Bias_Date = "AdditionalAttributesContainer" ;
+      		:Range_Bias_Time = "AdditionalAttributesContainer" ;
+      		:Timing_Bias = "AdditionalAttributesContainer" ;
+      		:Timing_Bias_Date = "AdditionalAttributesContainer" ;
+      		:Timing_Bias_Time = "AdditionalAttributesContainer" ;
+      		:Timing_Drift = "AdditionalAttributesContainer" ;
+      		:Timing_Drift_Date = "AdditionalAttributesContainer" ;
+      		:Timing_Drift_Time = "AdditionalAttributesContainer" ;
+      		:identifier_product_doi = "AdditionalAttributesContainer" ;
+      		:identifier_file_uuid = "AdditionalAttributesContainer" ;
+      		:identifier_product_doi_authority = "AdditionalAttributesContainer" ;
+
+      group: identifier_product_doi {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "varchar" ;
+        		:AdditionalAttributeDescription = "Digital object identifier that uniquely identifies this data product" ;
+        		:AdditionalAttributeName = "identifier_product_doi" ;
+
+        group: InformationContent {
+
+          // group attributes:
+          		:ParameterValue = "10.5067/ICESAT/GLAS/DATA109" ;
+          } // group InformationContent
+        } // group identifier_product_doi
+
+      group: SP_ICE_PATH_NO {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Number which represents the GLAS path number." ;
+        		:AdditionalAttributeName = "SP_ICE_PATH_NO" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "32768" ;
+        } // group SP_ICE_PATH_NO
+
+      group: identifier_file_uuid {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "varchar" ;
+        		:AdditionalAttributeDescription = "Universally unique identifier for this data product\'s files" ;
+        		:AdditionalAttributeName = "identifier_file_uuid" ;
+        } // group identifier_file_uuid
+
+      group: Track {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "The unique number assigned for each repeat ground track (one orbit) of the reference orbit." ;
+        		:AdditionalAttributeName = "Track" ;
+        		:ParameterUnitsofMeasurement = "counts" ;
+        		:ParameterRangeBegin = "0" ;
+        		:ParameterRangeEnd = "3000" ;
+        } // group Track
+
+      group: Instrument_State {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Flag word that indicates which redundant units (laser, detector, oscillator) of the GLAS instrument are in operation." ;
+        		:AdditionalAttributeName = "Instrument_State" ;
+        		:ParameterUnitsofMeasurement = "Flag word" ;
+        		:ParameterRangeBegin = "0" ;
+        		:ParameterRangeEnd = "5" ;
+        } // group Instrument_State
+
+      group: Timing_Drift_Date {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "date" ;
+        		:AdditionalAttributeDescription = "The date that corresponds to the first valid Timing_Drift.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Timing_Drift_Date" ;
+        } // group Timing_Drift_Date
+
+      group: ReferenceOrbit {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Assigned number for which exact orbital elements describe the exact repeat orbit pattern." ;
+        		:AdditionalAttributeName = "ReferenceOrbit" ;
+        		:ParameterUnitsofMeasurement = "Assigned number" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "30000" ;
+        } // group ReferenceOrbit
+
+      group: SP_ICE_GLAS_StartBlock {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Integer number within GLAS coverage scheme in which granule data starts." ;
+        		:AdditionalAttributeName = "SP_ICE_GLAS_StartBlock" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "360" ;
+        } // group SP_ICE_GLAS_StartBlock
+
+      group: Range_Bias {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "The additive calibration correction in millimeters to apply to range based on the science team cal/val activities." ;
+        		:AdditionalAttributeName = "Range_Bias" ;
+        		:ParameterUnitsofMeasurement = "Millimeters" ;
+        		:ParameterRangeBegin = "-10000" ;
+        		:ParameterRangeEnd = "10000" ;
+        		:ParameterValueAccuracy = "1" ;
+        		:ParameterMeasurementResolution = "1" ;
+        } // group Range_Bias
+
+      group: Timing_Bias_Time {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "time" ;
+        		:AdditionalAttributeDescription = "The time that corresponds to the first valid Timing_Bias.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Timing_Bias_Time" ;
+        } // group Timing_Bias_Time
+
+      group: Instrument_State_Date {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "date" ;
+        		:AdditionalAttributeDescription = "The date that corresponds to the first valid Instrument_State.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Instrument_State_Date" ;
+        } // group Instrument_State_Date
+
+      group: Track_Segment {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Number assigned for the specific latitude segment (1 = +50 to +50, 2 = +50 to -50, 3 = -50 to -50, 4 = -50 to +50) of the track for the data." ;
+        		:AdditionalAttributeName = "Track_Segment" ;
+        		:ParameterUnitsofMeasurement = "counts" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "4" ;
+        } // group Track_Segment
+
+      group: Range_Bias_Time {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "time" ;
+        		:AdditionalAttributeDescription = "The time that corresponds to the first valid Range_Bias.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Range_Bias_Time" ;
+        } // group Range_Bias_Time
+
+      group: Timing_Drift {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "float" ;
+        		:AdditionalAttributeDescription = "This is the ratio of the true time for a one second oscilator tick to nominal one" ;
+        		:AdditionalAttributeName = "Timing_Drift" ;
+        		:ParameterRangeBegin = "-1.0" ;
+        		:ParameterRangeEnd = "+1.0" ;
+        } // group Timing_Drift
+
+      group: identifier_product_doi_authority {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "varchar" ;
+        		:AdditionalAttributeDescription = "URL of the digital object identifier resolving authority" ;
+        		:AdditionalAttributeName = "identifier_product_doi_authority" ;
+
+        group: InformationContent {
+
+          // group attributes:
+          		:ParameterValue = "http://dx.doi.org" ;
+          } // group InformationContent
+        } // group identifier_product_doi_authority
+
+      group: Range_Bias_Date {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "date" ;
+        		:AdditionalAttributeDescription = "The date that corresponds to the first valid Range_Bias.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Range_Bias_Date" ;
+        } // group Range_Bias_Date
+
+      group: SP_ICE_GLAS_EndBlock {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "Integer number within GLAS coverage scheme in which granule data ends." ;
+        		:AdditionalAttributeName = "SP_ICE_GLAS_EndBlock" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "360" ;
+        } // group SP_ICE_GLAS_EndBlock
+
+      group: Instance {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "The number of times that we have returned to a specific reference orbit." ;
+        		:AdditionalAttributeName = "Instance" ;
+        		:ParameterUnitsofMeasurement = "counts" ;
+        		:ParameterRangeBegin = "1" ;
+        		:ParameterRangeEnd = "99" ;
+        } // group Instance
+
+      group: Instrument_State_Time {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "time" ;
+        		:AdditionalAttributeDescription = "The time that corresponds to the first valid Instrument_State.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Instrument_State_Time" ;
+        } // group Instrument_State_Time
+
+      group: Timing_Bias {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "The time tag error determined by the calibration team that was added to the time tags to compute the true time of data as provided on the granule." ;
+        		:AdditionalAttributeName = "Timing_Bias" ;
+        		:ParameterUnitsofMeasurement = "Microseconds" ;
+        		:ParameterRangeBegin = "-1000000" ;
+        		:ParameterRangeEnd = "+1000000" ;
+        } // group Timing_Bias
+
+      group: Timing_Drift_Time {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "time" ;
+        		:AdditionalAttributeDescription = "The time that corresponds to the first valid Timing_Drift.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Timing_Drift_Time" ;
+        } // group Timing_Drift_Time
+
+      group: Timing_Bias_Date {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "date" ;
+        		:AdditionalAttributeDescription = "The date that corresponds to the first valid Timing_Bias.  There are a maximum of two per granule." ;
+        		:AdditionalAttributeName = "Timing_Bias_Date" ;
+        } // group Timing_Bias_Date
+
+      group: OrbitQuality {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "varchar" ;
+        		:AdditionalAttributeDescription = "Status word that states what type of orbit was used during processing of the data for the granule. It specifies the models used in the orbit determination program.  This provides an indication of the quality of the orbits being applied to the data." ;
+        		:AdditionalAttributeName = "OrbitQuality" ;
+        		:ParameterUnitsofMeasurement = "Flag" ;
+        } // group OrbitQuality
+
+      group: PercentGroundHit {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "float" ;
+        		:AdditionalAttributeDescription = "Percent of data for this granule that had a detected ground return of the transmitted laser pulse." ;
+        		:AdditionalAttributeName = "PercentGroundHit" ;
+        		:ParameterUnitsofMeasurement = "Percent" ;
+        		:ParameterRangeBegin = "0.0" ;
+        		:ParameterRangeEnd = "100.0" ;
+        		:ParameterValueAccuracy = "1" ;
+        		:ParameterMeasurementResolution = "1" ;
+        } // group PercentGroundHit
+
+      group: Cycle {
+
+        // group attributes:
+        		:AdditionalAttributeDatatype = "int" ;
+        		:AdditionalAttributeDescription = "A count of the number of exact repeats of this reference orbit." ;
+        		:AdditionalAttributeName = "Cycle" ;
+        		:ParameterUnitsofMeasurement = "counts" ;
+        		:ParameterRangeBegin = "0" ;
+        		:ParameterRangeEnd = "250" ;
+        } // group Cycle
+      } // group AdditionalAttributes
+
+    group: CollectionAssociation {
+
+      // group attributes:
+      		:GLAH05 = "CollectionAssociationContainer" ;
+      		:GLAH01 = "CollectionAssociationContainer" ;
+      		:GLA00 = "CollectionAssociationContainer" ;
+      		:GLAH12 = "CollectionAssociationContainer" ;
+      		:GLAH13 = "CollectionAssociationContainer" ;
+      		:GLAH14 = "CollectionAssociationContainer" ;
+      		:GLAH15 = "CollectionAssociationContainer" ;
+
+      group: GLAH01 {
+
+        // group attributes:
+        		:CollectionType = "Science Associated" ;
+        		:CollectionUse = "Level 1A file containing: altimeter height, waveform data, and other data required to produce the Level 1B waveform products." ;
+        		:ShortName = "GLAH01" ;
+        		:VersionID = "33" ;
+        } // group GLAH01
+
+      group: GLAH05 {
+
+        // group attributes:
+        		:CollectionType = "Input" ;
+        		:CollectionUse = "Level 1B file containing: the range, corrections to the range from the waveform retracking algorithms, the surface roughness estimate, and the reflectance. GLAH05 provides the range corrections and waveform analysis results needed to compute the elevation." ;
+        		:ShortName = "GLAH05" ;
+        		:VersionID = "34" ;
+        } // group GLAH05
+
+      group: GLAH12 {
+
+        // group attributes:
+        		:CollectionType = "Dependent" ;
+        		:CollectionUse = "Level 2 file containing: corrected ice sheet elevations above the reference ellipsoid, surface roughness, reflectance, and the corrections that were used. The product parameters are the result of product-specialized waveform fitting." ;
+        		:ShortName = "GLAH12" ;
+        		:VersionID = "34" ;
+        } // group GLAH12
+
+      group: GLAH13 {
+
+        // group attributes:
+        		:CollectionType = "Dependent" ;
+        		:CollectionUse = "Level 2 file containing: Sea Ice Elevation, Reflectancce, and Roughness, Ice Berg Elevations and Roughness. The product parameters are the result of product-specialized waveform fitting." ;
+        		:ShortName = "GLAH13" ;
+        		:VersionID = "34" ;
+        } // group GLAH13
+
+      group: GLAH14 {
+
+        // group attributes:
+        		:CollectionType = "Dependent" ;
+        		:CollectionUse = "Level 2 file containing: corrected surface elevations above the reference ellipsoid, surface roughness, reflectance, and the corrections that were used.  The product parameters are the result of product-specialized waveform fitting." ;
+        		:ShortName = "GLAH14" ;
+        		:VersionID = "34" ;
+        } // group GLAH14
+
+      group: GLA00 {
+
+        // group attributes:
+        		:CollectionType = "Science Associated" ;
+        		:CollectionUse = "The initial collection of GLAS instrument data downlinked from the spacecraft" ;
+        		:ShortName = "GLA00" ;
+        		:VersionID = "1" ;
+        } // group GLA00
+
+      group: GLAH15 {
+
+        // group attributes:
+        		:CollectionType = "Dependent" ;
+        		:CollectionUse = "Level 2 file containing: corrected Ocean elevations above the reference ellipsoid, surface roughness, reflectance, and the corrections that were used. The product parameters are the result of product-specialized waveform fitting." ;
+        		:ShortName = "GLAH15" ;
+        		:VersionID = "34" ;
+        } // group GLAH15
+      } // group CollectionAssociation
+
+    group: ContactOrganization {
+
+      // group attributes:
+      		:Data_Originator = "ContactOrganizationContainer" ;
+      		:Archive = "ContactOrganizationContainer" ;
+
+      group: Data_Originator {
+
+        // group attributes:
+        		:Role = "Data Originator" ;
+        		:HoursofService = "M-F, 8:00am to 4:30pm Eastern Time" ;
+        		:ContactInstructions = "Contact by e-mail first" ;
+        		:ContactOrganizationName = "ICESat Science Investigator-led Processing System (I-SIPS)" ;
+        		:StreetAddress = "Building 33, NASA Goddard Space Flight Center" ;
+        		:City = "Greenbelt" ;
+        		:StateProvince = "Maryland" ;
+        		:PostalCode = "20771" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "757-864-1238" ;
+        		:TelephoneNumberType = "Voice" ;
+        		:ElectronicMailAddress = "David.W.Hancock@nasa.gov" ;
+        } // group Data_Originator
+
+      group: Archive {
+
+        // group attributes:
+        		:Role = "Archive" ;
+        		:HoursofService = "M-F, 8:00am to 5:00pm, Mountain Time" ;
+        		:ContactInstructions = "For inquiries, contact NSIDC User Services.  Primary first level contact." ;
+        		:ContactOrganizationName = "NSIDC User Services" ;
+        		:StreetAddress = "CIRES/NSIDC University of Colorado Campus, Box 449" ;
+        		:City = "Boulder" ;
+        		:StateProvince = "Colorado" ;
+        		:PostalCode = "80309-0449" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "303-492-2468" ;
+        		:TelephoneNumberType = "Facsimile" ;
+        		:ElectronicMailAddress = "nsidc@nsidc.org" ;
+        } // group Archive
+      } // group ContactOrganization
+
+    group: ContactPerson {
+
+      // group attributes:
+      		:Hancock = "ContactPersonContainer" ;
+      		:Schutz = "ContactPersonContainer" ;
+      		:Zwally = "ContactPersonContainer" ;
+      		:DiMarzio = "ContactPersonContainer" ;
+
+      group: Hancock {
+
+        // group attributes:
+        		:Role = "Data Originator" ;
+        		:HoursofService = "M-F, 8:00am to 4:30pm. Eastern Time." ;
+        		:ContactInstructions = "None" ;
+        		:ContactJobPosition = "Science Software Development Manager." ;
+        		:ContactFirstName = "David" ;
+        		:ContactMiddleName = "W." ;
+        		:ContactLastName = "Hancock" ;
+        		:StreetAddress = "Building N-159, NASA/GSFC Wallops Flight Facility." ;
+        		:City = "Wallops Island" ;
+        		:StateProvince = "Virginia" ;
+        		:PostalCode = "23337" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "757-824-1238" ;
+        		:TelephoneNumberType = "Voice" ;
+        		:ElectronicMailAddress = "David.W.Hancock@nasa.gov" ;
+        } // group Hancock
+
+      group: Zwally {
+
+        // group attributes:
+        		:Role = "Producer" ;
+        		:HoursofService = "M-F, 8:00am to 4:30pm Eastern Time" ;
+        		:ContactInstructions = "None." ;
+        		:ContactJobPosition = "ICESat Project Scientist" ;
+        		:ContactFirstName = "Jay" ;
+        		:ContactLastName = "Zwally" ;
+        		:StreetAddress = "Building 33, Rm A-217" ;
+        		:City = "Greenbelt" ;
+        		:StateProvince = "Maryland" ;
+        		:PostalCode = "20771" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "301-614-5643" ;
+        		:TelephoneNumberType = "Voice" ;
+        		:ElectronicMailAddress = "Jay.Zwally@nasa.gov" ;
+        } // group Zwally
+
+      group: Schutz {
+
+        // group attributes:
+        		:Role = "Investigator" ;
+        		:HoursofService = "M-F, 8:00am to 4:30pm Central Time" ;
+        		:ContactInstructions = "None" ;
+        		:ContactJobPosition = "GLAS Science Team Leader" ;
+        		:ContactFirstName = "Bob" ;
+        		:ContactMiddleName = "E" ;
+        		:ContactLastName = "Schutz" ;
+        		:StreetAddress = "3925 W. Braker Lane, Center for Space Research" ;
+        		:City = "Austin" ;
+        		:StateProvince = "Texas" ;
+        		:PostalCode = "78759-5321" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "512-471-4267" ;
+        		:TelephoneNumberType = "Voice" ;
+        		:ElectronicMailAddress = "schutz@utcsr.ae.utexas.edu" ;
+        } // group Schutz
+
+      group: DiMarzio {
+
+        // group attributes:
+        		:Role = "Producer" ;
+        		:HoursofService = "M-F, 8:00am to 4:30pm Eastern Time" ;
+        		:ContactInstructions = "None" ;
+        		:ContactJobPosition = "Deputy Science Software Development Manager" ;
+        		:ContactFirstName = "John" ;
+        		:ContactMiddleName = "P" ;
+        		:ContactLastName = "DiMarzio" ;
+        		:StreetAddress = "Building 33, Rm. B-209D, NASA/GSFC" ;
+        		:City = "Greenbelt" ;
+        		:StateProvince = "Maryland" ;
+        		:PostalCode = "20771" ;
+        		:Country = "USA" ;
+        		:TelephoneNumber = "301-614-5893" ;
+        		:TelephoneNumberType = "Voice" ;
+        		:ElectronicMailAddress = "John.P.Dimarzio.1@nasa.gov" ;
+        } // group DiMarzio
+      } // group ContactPerson
+
+    group: DisciplineTopicParameters {
+
+      // group attributes:
+      		:Hydrosphere = "DisciplineTopicParametersContainer" ;
+      		:Land_Surface = "DisciplineTopicParametersContainer" ;
+      		:Cryosphere = "DisciplineTopicParametersContainer" ;
+      		:Oceans = "DisciplineTopicParametersContainer" ;
+
+      group: Land_Surface {
+
+        // group attributes:
+        		:ECSDisciplineKeyword = "Earth Science" ;
+        		:ECSTopicKeyword = "Land Surface" ;
+        		:ECSTermKeyword = "Surface Radiative Properties" ;
+        		:ECSVariableKeyword = "Reflectance" ;
+
+        group: ECSParameter {
+
+          // group attributes:
+          		:ECSParameterKeyword = "Laser Reflectance" ;
+          } // group ECSParameter
+        } // group Land_Surface
+
+      group: Hydrosphere {
+
+        // group attributes:
+        		:ECSDisciplineKeyword = "Earth Science" ;
+        		:ECSTopicKeyword = "Hydrosphere" ;
+        		:ECSTermKeyword = "Glaciers/Ice Sheets" ;
+        		:ECSVariableKeyword = "Glacier Elevation/Ice Sheet Elevation" ;
+        } // group Hydrosphere
+
+      group: Cryosphere {
+
+        // group attributes:
+        		:ECSDisciplineKeyword = "Earth Science" ;
+        		:ECSTopicKeyword = "Cryosphere" ;
+        		:ECSTermKeyword = "Sea Ice" ;
+        		:ECSVariableKeyword = "Ice Roughness" ;
+
+        group: ECSParameter {
+
+          // group attributes:
+          		:ECSParameterKeyword = "Laser Reflectance" ;
+          } // group ECSParameter
+        } // group Cryosphere
+
+      group: Oceans {
+
+        // group attributes:
+        		:ECSDisciplineKeyword = "Earth Science" ;
+        		:ECSTopicKeyword = "Oceans" ;
+        		:ECSTermKeyword = "Sea Surface Topography" ;
+        		:ECSVariableKeyword = "Sea Surface Height" ;
+
+        group: ECSParameter {
+
+          // group attributes:
+          		:ECSParameterKeyword = "Laser Reflectance" ;
+          } // group ECSParameter
+        } // group Oceans
+      } // group DisciplineTopicParameters
+
+    group: Spatial {
+
+      // group attributes:
+      		:SpatialCoverageType = "Horizontal" ;
+      		:WestBoundingCoordinate = "-180.0" ;
+      		:NorthBoundingCoordinate = "90.0" ;
+      		:EastBoundingCoordinate = "180.0" ;
+      		:SouthBoundingCoordinate = "-90.0" ;
+      } // group Spatial
+
+    group: ProcessingLevel {
+
+      // group attributes:
+      		:ProcessingLevelDescription = "Geophysical Quantities at the sensor resolution or geolocated" ;
+      		:ProcessingLevelID = "1B" ;
+      } // group ProcessingLevel
+
+    group: Platform {
+
+      // group attributes:
+      		:ICESat = "PlatformContainer" ;
+
+      group: ICESat {
+
+        // group attributes:
+        		:PlatformShortName = "ICESat" ;
+        		:PlatformLongName = "Ice, Cloud, and Land Elevation Satellite" ;
+        		:PlatformType = "Spacecraft" ;
+
+        group: PlatformCharacteristic {
+
+          // group attributes:
+          		:OrbitInclination = "PlatformCharacteristicContainer" ;
+          		:OrbitalPeriod = "PlatformCharacteristicContainer" ;
+
+          group: OrbitInclination {
+
+            // group attributes:
+            		:PlatformCharacteristicName = "OrbitInclination" ;
+            		:PlatformCharacteristicDescription = "Angle between the orbit plane and the Earth\'s equatorial plane" ;
+            		:PlatformCharacteristicDataType = "float" ;
+            		:PlatformCharacteristicUnit = "Degrees" ;
+            		:PlatformCharacteristicValue = "94.0" ;
+            } // group OrbitInclination
+
+          group: OrbitalPeriod {
+
+            // group attributes:
+            		:PlatformCharacteristicName = "OrbitalPeriod" ;
+            		:PlatformCharacteristicDescription = "Orbital period in decimal minutes." ;
+            		:PlatformCharacteristicDataType = "float" ;
+            		:PlatformCharacteristicUnit = "Minutes" ;
+            		:PlatformCharacteristicValue = "96.7" ;
+            } // group OrbitalPeriod
+          } // group PlatformCharacteristic
+
+        group: Instrument {
+
+          // group attributes:
+          		:GLAS = "InstrumentContainer" ;
+          		:GPS = "InstrumentContainer" ;
+
+          group: GLAS {
+
+            // group attributes:
+            		:InstrumentShortName = "GLAS" ;
+            		:InstrumentLongName = "Geoscience Laser Altimeter System" ;
+            		:InstrumentTechnique = "Laser Altimetry and Light Detection and Radar" ;
+            		:NumberofSensors = "3" ;
+
+            group: InstrumentCharacteristic {
+
+              // group attributes:
+              		:SwathWidth = "InstrumentCharacteristicContainer" ;
+
+              group: SwathWidth {
+
+                // group attributes:
+                		:InstrumentCharacteristicName = "SwathWidth" ;
+                		:InstrumentCharacteristicDescription = "The width of the sensor scan as the satellite moves along the ground track." ;
+                		:InstrumentCharacteristicDataType = "int" ;
+                		:InstrumentCharacteristicUnit = "kilometers" ;
+                		:InstrumentCharacteristicValue = "2" ;
+                } // group SwathWidth
+              } // group InstrumentCharacteristic
+
+            group: Sensor {
+
+              // group attributes:
+              		:LA = "SensorContainer" ;
+              		:PC = "SensorContainer" ;
+              		:CD = "SensorContainer" ;
+
+              group: PC {
+
+                // group attributes:
+                		:SensorShortName = "PC" ;
+                		:SensorLongName = "Photon Counter for the 532 nm Aerosol Returns" ;
+                		:SensorTechnique = "Counting of 532nm photon return in 75m bins 40km to surface" ;
+
+                group: SensorCharacteristic {
+
+                  // group attributes:
+                  		:wavelength = "SensorCharacteristicContainer" ;
+
+                  group: wavelength {
+
+                    // group attributes:
+                    		:SensorCharacteristicName = "wavelength" ;
+                    		:SensorCharacteristicDescription = "detector" ;
+                    		:SensorCharacteristicDataType = "varchar" ;
+                    		:SensorCharacteristicUnit = "nanometer" ;
+                    		:SensorCharacteristicValue = "532nm" ;
+                    } // group wavelength
+                  } // group SensorCharacteristic
+                } // group PC
+
+              group: LA {
+
+                // group attributes:
+                		:SensorShortName = "LA" ;
+                		:SensorLongName = "Laser Altimeter" ;
+                		:SensorTechnique = "Exact Measurement of Time between Transmit Pulse and receive ground return" ;
+
+                group: SensorCharacteristic {
+
+                  // group attributes:
+                  		:wavelength = "SensorCharacteristicContainer" ;
+                  		:waveform = "SensorCharacteristicContainer" ;
+
+                  group: wavelength {
+
+                    // group attributes:
+                    		:SensorCharacteristicName = "wavelength" ;
+                    		:SensorCharacteristicDescription = "transmission" ;
+                    		:SensorCharacteristicDataType = "varchar" ;
+                    		:SensorCharacteristicUnit = "nanometer" ;
+                    		:SensorCharacteristicValue = "1064 nm" ;
+                    } // group wavelength
+
+                  group: waveform {
+
+                    // group attributes:
+                    		:SensorCharacteristicName = "waveform" ;
+                    		:SensorCharacteristicDescription = "digitizer" ;
+                    		:SensorCharacteristicDataType = "varchar" ;
+                    		:SensorCharacteristicUnit = "counts" ;
+                    		:SensorCharacteristicValue = "0-255" ;
+                    } // group waveform
+                  } // group SensorCharacteristic
+                } // group LA
+
+              group: CD {
+
+                // group attributes:
+                		:SensorShortName = "CD" ;
+                		:SensorLongName = "Cloud LIDAR" ;
+                		:SensorTechnique = "Measure of 1064nm return energy in 75m bins from 20km to surface" ;
+
+                group: SensorCharacteristic {
+
+                  // group attributes:
+                  		:wavelength = "SensorCharacteristicContainer" ;
+
+                  group: wavelength {
+
+                    // group attributes:
+                    		:SensorCharacteristicName = "wavelength" ;
+                    		:SensorCharacteristicDescription = "detector" ;
+                    		:SensorCharacteristicDataType = "varchar" ;
+                    		:SensorCharacteristicUnit = "nanometer" ;
+                    		:SensorCharacteristicValue = "1064 nm" ;
+                    } // group wavelength
+                  } // group SensorCharacteristic
+                } // group CD
+              } // group Sensor
+            } // group GLAS
+
+          group: GPS {
+
+            // group attributes:
+            		:InstrumentShortName = "GPS" ;
+            		:InstrumentLongName = "Global Positioning System Receiver" ;
+            		:InstrumentTechnique = "Radionavigation" ;
+            		:NumberofSensors = "1" ;
+
+            group: Sensor {
+
+              // group attributes:
+              		:GPS_Receiver = "SensorContainer" ;
+
+              group: GPS_Receiver {
+
+                // group attributes:
+                		:SensorShortName = "GPS Receiver" ;
+                		:SensorLongName = "Dual frequency GPS receiver" ;
+                		:SensorTechnique = "Pseudorange and carrier phase" ;
+                } // group GPS_Receiver
+              } // group Sensor
+            } // group GPS
+          } // group Instrument
+        } // group ICESat
+      } // group Platform
+
+    group: ECSCollection {
+
+      // group attributes:
+      		:RevisionDate = "2013-11-07" ;
+      		:SuggestedUsage = "Scientists investigating surface elevation, slope, reflection, and other surface characteristics can use the GLAH06 data. The data values were used in the creation of the surface-specific altimeter products (GLAH12-15). Each GLAH06 file was created from an equivalent GLA06 binary formatted file. Users that want to access the data used to create the GLAH06 values can use the equivalent GLAHxx files for the GLAxx files as shown in the provenance metadata for the history that created the GLA06." ;
+      		:ProcessingCenter = "GSFC I-SIPS" ;
+      		:ArchiveCenter = "NSIDC" ;
+      		:VersionDescription = "GLASHDF V2.0-Elevations for all products except GLAH14 are now based on the range from the Gaussian fit to the transmit pulse to the Gaussian fit to the received echo. Range used for trop corrections was changed from threshold to centroid.(See Rel Notes)" ;
+      		:DatasetDisclaimerPointer = "http://nsidc.org/data/icesat/disclaimer.html" ;
+      		:ECSCollectionGuidePointer = "http://nsidc.org/data/docs/daac/glas_icesat_l1_l2_global_altimetry.gd.html" ;
+      		:ECSCollectionGuidePointerComment = "Guide Document for this product at NSIDC" ;
+      		:MiscellaneousInformationPointer = "http://nsidc.org/daac/icesat/index.html" ;
+      		:MiscellaneousInformationPointerComment = "GLAS Product page at NSIDC" ;
+      } // group ECSCollection
+
+    group: Temporal {
+
+      // group attributes:
+      		:TimeType = "UTC" ;
+      		:DateType = "J2000" ;
+      		:TemporalRangeType = "Continuous Range" ;
+      		:PrecisionofSeconds = "2" ;
+      		:EndsatPresentFlag = "Y" ;
+      		:RangeBeginningDate = "2003-01-13" ;
+      		:RangeBeginningTime = "00:00:00" ;
+      		:RangeEndingDate = "2010-01-13" ;
+      		:RangeEndingTime = "00:00:00" ;
+      } // group Temporal
+    } // group COLLECTIONMETADATA
+
+  group: INVENTORYMETADATA {
+
+    // group attributes:
+    		:PGEVersion = "Version 1.4.1" ;
+    		:ShortName = "GLAH06" ;
+    		:VersionID = "34" ;
+    		:RangeBeginningTime = "23:59:44" ;
+    		:RangeEndingTime = "00:26:34" ;
+    		:RangeBeginningDate = "2005-11-05" ;
+    		:RangeEndingDate = "2005-11-06" ;
+
+    group: ECSDataGranule {
+
+      // group attributes:
+      		:ReprocessingPlanned = "no further update anticipated" ;
+      		:ReprocessingActual = "reprocessed" ;
+      		:LocalGranuleID = "GLAH06_634_2113_002_0152_2_01_0001.H5" ;
+      		:ProductionDateTime = "removed date-time" ;
+      		:LocalVersionID = "634" ;
+      } // group ECSDataGranule
+
+    group: MeasuredParameter {
+
+      // group attributes:
+      		:ParameterName = "Surface_Elevation, Surface_Reflectance" ;
+      } // group MeasuredParameter
+
+    group: OrbitCalculatedSpatialDomain {
+
+      // group attributes:
+      		:OrbitNumber = "15314" ;
+      		:StartOrbitNumber = "15314" ;
+      		:StopOrbitNumber = "15314" ;
+      		:EquatorCrossingLongitude = "-53.503357" ;
+      		:EquatorCrossingTime = "23:24:54" ;
+      		:EquatorCrossingDate = "2005-11-05" ;
+      } // group OrbitCalculatedSpatialDomain
+
+    group: InputGranule {
+
+      // group attributes:
+      		:InputPointer = "CTL00_000_20140927_2876202_01_gla06_h5_convert.ctl, tai-utc.dat, GLA06_634_2113_002_0152_2_01_0001.DAT, DsESDTGlGLAH06.034.desc" ;
+      } // group InputGranule
+
+    group: ProductSpecificMetadata {
+
+      // group attributes:
+      		:PercentGroundHit = "0" ;
+      		:OrbitQuality = "6" ;
+      		:Track = "152" ;
+      		:Track_Segment = "2" ;
+      		:Instrument_State = "373340" ;
+      		:ReferenceOrbit = "1" ;
+      		:Cycle = "2" ;
+      		:SP_ICE_PATH_NO = "3174" ;
+      		:SP_ICE_GLAS_StartBlock = "NOT SET" ;
+      		:SP_ICE_GLAS_EndBlock = "NOT SET" ;
+      		:Instance = "13" ;
+      		:Range_Bias = "0" ;
+      		:Instrument_State_Date = "2005-10-21" ;
+      		:Instrument_State_Time = "00:00:00" ;
+      		:Range_Bias_Date = "2005-10-21" ;
+      		:Range_Bias_Time = "00:00:00" ;
+      		:Timing_Bias = "0" ;
+      		:Timing_Bias_Date = "2005-10-21" ;
+      		:Timing_Bias_Time = "00:00:00" ;
+      		:identifier_product_doi = "10.5067/ICESAT/GLAS/DATA109" ;
+      		:identifier_file_uuid = "1a178d80-fe8f-4000-99c5-2602b0fdba85" ;
+      		:identifier_product_doi_authority = "http://dx.doi.org" ;
+      } // group ProductSpecificMetadata
+    } // group INVENTORYMETADATA
+
+  group: PROVENANCE {
+
+    group: STEP_1 {
+
+      // group attributes:
+      		:ProcessDateTime = "removed date-time" ;
+
+      group: ProcessInput {
+
+        // group attributes:
+        		:Name = "GLA05_634_2113_002_0152_1_01_0001.DAT, GLA05_634_2113_002_0152_2_01_0001.DAT, GLA09_633_2113_002_0141_0_01_0001.DAT, GLA11_633_2113_002_0141_0_01_0001.DAT, ANC01_006_20051105_120000_01_0000.DAT, ANC01_006_20051105_180000_01_0000.DAT, ANC01_006_20051106_000000_01_0000.DAT, ANC01_006_20051105_120000_01_0002.DAT, ANC01_006_20051105_180000_01_0002.DAT, ANC01_006_20051106_000000_01_0002.DAT, ANC01_006_20051105_120000_01_0003.DAT, ANC01_006_20051105_180000_01_0003.DAT, ANC01_006_20051106_000000_01_0003.DAT, ANC01_006_20051105_120000_01_0004.DAT, ANC01_006_20051105_180000_01_0004.DAT, ANC01_006_20051106_000000_01_0004.DAT, ANC01_006_20051105_120000_01_0001.DAT, ANC01_006_20051105_180000_01_0001.DAT, ANC01_006_20051106_000000_01_0001.DAT, ANC01_006_20051105_120000_01_0005.DAT, ANC01_006_20051105_180000_01_0005.DAT, ANC01_006_20051106_000000_01_0005.DAT, ANC01_006_20051105_120000_01_0006.DAT, ANC01_006_20051105_180000_01_0006.DAT, ANC01_006_20051106_000000_01_0006.DAT, ANC01_006_20051105_120000_01_0007.DAT, ANC01_006_20051105_180000_01_0007.DAT, ANC01_006_20051106_000000_01_0007.DAT, ANC01_006_20051105_120000_01_0008.DAT, ANC01_006_20051105_180000_01_0008.DAT, ANC01_006_20051106_000000_01_0008.DAT, ANC01_006_20051105_120000_01_0009.DAT, ANC01_006_20051105_180000_01_0009.DAT, ANC01_006_20051106_000000_01_0009.DAT, ANC01_006_20051105_120000_01_0010.DAT, ANC01_006_20051105_180000_01_0010.DAT, ANC01_006_20051106_000000_01_0010.DAT, ANC04_007_20051104_235947_01_0001.DAT, ANC04_007_20051105_235947_01_0001.DAT, anc07_034_01_0000.dat, anc07_034_01_0001.dat, anc07_034_01_0002.dat, anc07_034_01_0003.dat, anc07_034_01_0004.dat, anc07_034_01_0005.dat, anc07_034_01_0006.dat, ANC08_015_20051104_235947_01_0001.DAT, ANC08_015_20051105_235947_01_0001.DAT, ANC09_076_20051104_235947_01_0001.DAT, ANC09_076_20051105_235947_01_0001.DAT, anc12_004_01_0000.dat, anc12_004_01_0001.dat, anc13_006_01_0000.dat, anc16_004_01_0000.dat, anc17_004_01_0000.dat, anc25_005_20090101_000000_01_0000.dat, anc27_001_01_0000.dat, anc27_001_01_0001.dat, ANC33_001_20100406_000000_01_0000.DAT, anc41_009_01_0000.dat, anc45_034_01_0001.dat, anc45_034_01_0002.dat, anc45_034_01_0003.dat, anc45_034_01_0004.dat, anc45_034_01_0005.dat, anc45_034_01_0006.dat, anc45_034_01_0007.dat, anc45_034_01_0008.dat, anc45_034_01_0009.dat, anc45_034_01_0010.dat, anc45_034_01_0011.dat, anc45_034_01_0012.dat, anc45_034_01_0013.dat, anc45_034_01_0014.dat, anc45_034_01_0015.dat, anc51_007_01_3163.dat, anc51_007_01_3164.dat, anc51_007_01_3165.dat, anc51_007_01_3166.dat, anc51_007_01_3167.dat, anc51_007_01_3168.dat, anc51_007_01_3169.dat, anc51_007_01_3170.dat, anc51_007_01_3171.dat, anc51_007_01_3172.dat, anc51_007_01_3173.dat, anc51_007_01_3174.dat, anc51_007_01_3175.dat, anc51_007_01_3176.dat, anc51_007_01_3177.dat, anc52_007_01_0001.dat, anc52_007_01_0002.dat, anc54_002_01_0001.dat, anc54_002_01_0002.dat, anc54_002_01_0003.dat, anc54_002_01_0004.dat, anc54_002_01_0005.dat, anc54_002_01_0006.dat, anc55_001_01_0000.dat, ANC56_001_20090707_000000_01_0000.DAT, ANC57_001_20101119_000000_01_0000.DAT, anc58_002_01_3163.dat, anc58_002_01_3164.dat, anc58_002_01_3165.dat, anc58_002_01_3166.dat, anc58_002_01_3167.dat, anc58_002_01_3168.dat, anc58_002_01_3169.dat, anc58_002_01_3170.dat, anc58_002_01_3171.dat, anc58_002_01_3172.dat, anc58_002_01_3173.dat, anc58_002_01_3174.dat, anc58_002_01_3175.dat, anc58_002_01_3176.dat, anc58_002_01_3177.dat" ;
+        		:Type = " GLA05,  GLA05,  GLA09,  GLA11,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC01,  ANC04,  ANC04,  anc07,  anc07,  anc07,  anc07,  anc07,  anc07,  anc07,  ANC08,  ANC08,  ANC09,  ANC09,  anc12,  anc12,  anc13,  anc16,  anc17,  anc25,  anc27,  anc27,  ANC33,  anc41,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc45,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc51,  anc52,  anc52,  anc54,  anc54,  anc54,  anc54,  anc54,  anc54,  anc55,  ANC56,  ANC57,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58,  anc58" ;
+        		:Version = " 634, 634, 633, 633, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 006, 007, 007, 034, 034, 034, 034, 034, 034, 034, 015, 015, 076, 076, 004, 004, 006, 004, 004, 005, 001, 001, 001, 009, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 034, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 007, 002, 002, 002, 002, 002, 002, 001, 001, 001, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002, 002" ;
+        } // group ProcessInput
+
+      group: ProcessAgent {
+
+        // group attributes:
+        		:Name = "glas_alt" ;
+        		:Type = "1B" ;
+        		:Version = "6.1" ;
+        		:Description = "This process is an instantiation of the GLAS Science Algorithm Software (GSAS) 1B ATBDs." ;
+        } // group ProcessAgent
+
+      group: ProcessOutput {
+
+        // group attributes:
+        		:Name = "GLA06_634_2113_002_0152_2_01_0001.DAT" ;
+        		:Type = "GLA06" ;
+        		:Version = "634" ;
+        } // group ProcessOutput
+      } // group STEP_1
+
+    group: STEP_2 {
+
+      // group attributes:
+      		:ProcessDateTime = "removed date-time" ;
+
+      group: ProcessInput {
+
+        // group attributes:
+        		:Name = "./CTL00_000_20140927_2876202_01_gla06_h5_convert.ctl, ./tai-utc.dat, ./GLA06_634_2113_002_0152_2_01_0001.DAT, ./DsESDTGlGLAH06.034.desc" ;
+        		:Type = "IN_CNTL, IN_ANC_TAIUTC, IN_GLA06, IN_ESDT" ;
+        		:Version = "0, 0, 1, 1" ;
+        } // group ProcessInput
+
+      group: ProcessOutput {
+
+        // group attributes:
+        		:Name = "./GLAH06_634_2113_002_0152_2_01_0001.H5" ;
+        		:Type = "OUT_GLAH06" ;
+        		:Version = "1" ;
+        		:UUID = "1a178d80-fe8f-4000-99c5-2602b0fdba85" ;
+        		:DOI = "10.5067/ICESAT/GLAS/DATA109" ;
+        } // group ProcessOutput
+
+      group: ProcessAgent {
+
+        // group attributes:
+        		:Name = "GLA06_h5_convert" ;
+        		:Type = "Data_Reformat" ;
+        		:Version = "Version 1.4.1 (September 2014)" ;
+        		:Description = "GLA06 Conversion PGE" ;
+        } // group ProcessAgent
+      } // group STEP_2
+    } // group PROVENANCE
+  } // group METADATA
+
+group: ANCILLARY_DATA {
+
+  // group attributes:
+  		:Campaign = "3D" ;
+  		:glas_osc_rate = "1.000000026" ;
+  		:glas_osc_rate_date = "2005-10-21" ;
+  		:glas_osc_rate_time = "00:00:00" ;
+  		:sc_osc_rate = "0.99999998854809" ;
+  		:sc_osc_rate_date = "2005-10-21" ;
+  		:sc_osc_rate_time = "00:00:00" ;
+  		:internal_time_delay = "0.0000151100" ;
+  		:internal_time_delay_date = "2005-10-21" ;
+  		:internal_time_delay_time = "00:00:00" ;
+  		:internal_range_delay = "9.5560" ;
+  		:internal_range_delay_date = "2005-10-21" ;
+  		:internal_range_delay_time = "00:00:00" ;
+  		:Additional_Attribute = "SP_ICE_PATH_NO, SP_ICE_GLAS_StartBlock, SP_ICE_GLAS_EndBlock, ReferenceOrbit, Track, Track_Segment, Cycle, Instance, Range_Bias, Range_Bias_Date, Range_Bias_Time, Timing_Bias, Timing_Bias_Date, Timing_Bias_Time, PercentGroundHit, OrbitQuality" ;
+  		:globAvSrfPres1 = "100827.5764967" ;
+  		:gASP_t1 = "184507200.0000000" ;
+  		:globAvSrfPres2 = "97733.9881434" ;
+  		:gASP_t2 = "184528800.0000000" ;
+  		:internal_range_delay_desc = "Internal range calibration bias determined during GLAS instrument integration testing and validated in-flight, meters." ;
+  		:internal_time_delay_desc = "Internal time calibration bias determined during GLAS instrument integration testing and validated in-flight, seconds." ;
+  } // group ANCILLARY_DATA
+
+group: Data_1HZ {
+  dimensions:
+  	DS_UTCTime_1 = 1098 ;
+  variables:
+  	double DS_UTCTime_1(DS_UTCTime_1) ;
+  		DS_UTCTime_1:units = "seconds since removed date-time" ;
+  		DS_UTCTime_1:hertz = "1" ;
+  		DS_UTCTime_1:long_name = "Transmit Time of First Shot in frame in J2000" ;
+  		DS_UTCTime_1:standard_name = "time" ;
+  		DS_UTCTime_1:description = "The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds." ;
+  		DS_UTCTime_1:source = "Rel 34 GLAS Binary Data" ;
+
+  // group attributes:
+  		:Description = "This group contains data with a rate of 1HZ. 1Hz data may be indexed to the 40HZ data using the i_rec_ndx parameter in each respective time group." ;
+
+  group: Reflectivity {
+    variables:
+    	double d_localSolarTime(DS_UTCTime_1) ;
+    		d_localSolarTime:units = "seconds" ;
+    		d_localSolarTime:hertz = "1" ;
+    		d_localSolarTime:long_name = "Local apparent solar time" ;
+    		d_localSolarTime:description = "Local apparent solar time." ;
+    		d_localSolarTime:source = "Rel 34 GLAS Binary Data" ;
+    		d_localSolarTime:coordinates = "DS_UTCTime_1" ;
+    		d_localSolarTime:valid_min = 0. ;
+    		d_localSolarTime:valid_max = 86400. ;
+    		d_localSolarTime:_FillValue = 1.79769313486232e+308 ;
+    	double d_Azimuth(DS_UTCTime_1) ;
+    		d_Azimuth:units = "degrees" ;
+    		d_Azimuth:hertz = "1" ;
+    		d_Azimuth:long_name = "Local Azimuth" ;
+    		d_Azimuth:standard_name = "solar_azimuth_angle" ;
+    		d_Azimuth:description = "Mean azimuth measured clockwise from north based on latitude, longitude, and elevation of a 1 second interval of the trace of the ground footprint-center." ;
+    		d_Azimuth:source = "Rel 34 GLAS Binary Data" ;
+    		d_Azimuth:coordinates = "DS_UTCTime_1" ;
+    		d_Azimuth:valid_min = 0. ;
+    		d_Azimuth:valid_max = 360. ;
+    		d_Azimuth:_FillValue = 1.79769313486232e+308 ;
+    	double d_SolAng(DS_UTCTime_1) ;
+    		d_SolAng:units = "degrees" ;
+    		d_SolAng:hertz = "1" ;
+    		d_SolAng:long_name = "Solar Angle" ;
+    		d_SolAng:description = "Solar Angle above or below the plane tangent to the ellipsoid surface at the laser spot. Positive values mean the sun is above the horizon, while negative values mean it is below the horizon. The effect of atmospheric refraction is not included. This is a low-precision value, with approximately one degree accuracy." ;
+    		d_SolAng:source = "Rel 34 GLAS Binary Data" ;
+    		d_SolAng:coordinates = "DS_UTCTime_1" ;
+    		d_SolAng:valid_min = -90. ;
+    		d_SolAng:valid_max = 90. ;
+    		d_SolAng:_FillValue = 1.79769313486232e+308 ;
+    	double d_reflCor_atm(DS_UTCTime_1) ;
+    		d_reflCor_atm:hertz = "1" ;
+    		d_reflCor_atm:long_name = "Reflectivity Correction Factor For Atmospheric Effects" ;
+    		d_reflCor_atm:description = "This reflectance correction factor is calculated as 1 / e^(-2(tc+ta+tp+tm)), where tc is the cloud (column) integrated optical depth, ta is the aerosol (column) integrated optical depth, tp is the planetary boundary layer optical depth, and tm is the molecular optical depth. tm is a constant equal to -log(gd_T_RTatm)/2, where gd_T_RTatm = 0.98 is defined in const_elev_mod.f90 or read from ANC07-03. The attenuation correction factor has been corrected for multiple scattering. The reflectance has been corrected for waveform saturation." ;
+    		d_reflCor_atm:source = "Rel 34 GLAS Binary Data" ;
+    		d_reflCor_atm:coordinates = "DS_UTCTime_1" ;
+    		d_reflCor_atm:valid_min = 1.e-06 ;
+    		d_reflCor_atm:valid_max = 0.00025 ;
+    		d_reflCor_atm:_FillValue = 1.79769313486232e+308 ;
+
+    // group attributes:
+    		:Description = "This group contains reflectivity information." ;
+    } // group Reflectivity
+
+  group: Time {
+    dimensions:
+    	d_UTCTime_1 = 1098 ;
+    variables:
+    	double d_UTCTime_1(d_UTCTime_1) ;
+    		d_UTCTime_1:units = "seconds since removed date-time" ;
+    		d_UTCTime_1:hertz = "1" ;
+    		d_UTCTime_1:long_name = "Transmit Time of First Shot in frame in J2000" ;
+    		d_UTCTime_1:standard_name = "time" ;
+    		d_UTCTime_1:description = "The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds." ;
+    		d_UTCTime_1:source = "Rel 34 GLAS Binary Data" ;
+    		d_UTCTime_1:HDF5_HARDLINK = "/Data_1HZ/DS_UTCTime_1" ;
+    	double d_deltagpstmcor(DS_UTCTime_1) ;
+    		d_deltagpstmcor:units = "seconds" ;
+    		d_deltagpstmcor:long_name = "Delta GPS time correction" ;
+    		d_deltagpstmcor:description = "The high frequency delta GPS time correction calculated during the precision orbit processing step." ;
+    		d_deltagpstmcor:source = "Rel 34 GLAS Binary Data" ;
+    		d_deltagpstmcor:coordinates = "DS_UTCTime_1" ;
+    		d_deltagpstmcor:valid_min = -0.001 ;
+    		d_deltagpstmcor:valid_max = 0.001 ;
+    		d_deltagpstmcor:_FillValue = 1.79769313486232e+308 ;
+    		d_deltagpstmcor:hertz = "1" ;
+    	byte shot_time_flg(DS_UTCTime_1) ;
+    		shot_time_flg:hertz = "1" ;
+    		shot_time_flg:description = "Shot time flag; Indicates what shot time is used." ;
+    		shot_time_flg:source = "Rel 34 GLAS Binary Data" ;
+    		shot_time_flg:coordinates = "DS_UTCTime_1" ;
+    		shot_time_flg:flag_values = 0, 1 ;
+    		shot_time_flg:flag_meanings = "transmit_time ground_bounce_time" ;
+    		shot_time_flg:valid_min = 0 ;
+    		shot_time_flg:valid_max = 1 ;
+    		shot_time_flg:long_name = "time correction flag" ;
+    	byte ddelay_flg(DS_UTCTime_1) ;
+    		ddelay_flg:hertz = "1" ;
+    		ddelay_flg:long_name = "time correction flag" ;
+    		ddelay_flg:description = "Digitizer turn-on delay flag; Indicates if digitizer turn-on delay is  accounted for in shot time. Data value is stored in the Metadata group." ;
+    		ddelay_flg:source = "Rel 34 GLAS Binary Data" ;
+    		ddelay_flg:coordinates = "DS_UTCTime_1" ;
+    		ddelay_flg:flag_values = 0, 1 ;
+    		ddelay_flg:flag_meanings = "applied not_applied" ;
+    		ddelay_flg:valid_min = 0 ;
+    		ddelay_flg:valid_max = 1 ;
+    	int i_shot_count(DS_UTCTime_1) ;
+    		i_shot_count:hertz = "1" ;
+    		i_shot_count:description = "Identifies each laser shot within a record index.  A combination of i_rec_ndx and i_shot_count can be used to uniquely identify each GLAS laser shot." ;
+    		i_shot_count:source = "Rel 34 GLAS Binary Data" ;
+    		i_shot_count:coordinates = "DS_UTCTime_1" ;
+    		i_shot_count:valid_min = 1 ;
+    		i_shot_count:valid_max = 40 ;
+    		i_shot_count:long_name = "GLAS Pulse Index" ;
+    	double d_transtime(DS_UTCTime_1) ;
+    		d_transtime:units = "seconds" ;
+    		d_transtime:long_name = "One way transit time" ;
+    		d_transtime:description = "One way transit time calculated using the preliminary range offset. This is added to the UTC time tag to get the ground bounce times at which to calculate the orbit" ;
+    		d_transtime:source = "Rel 34 GLAS Binary Data" ;
+    		d_transtime:coordinates = "DS_UTCTime_1" ;
+    		d_transtime:valid_min = 0. ;
+    		d_transtime:valid_max = 0.004 ;
+    		d_transtime:_FillValue = 1.79769313486232e+308 ;
+    		d_transtime:hertz = "1" ;
+    	byte peaktp_flg(DS_UTCTime_1) ;
+    		peaktp_flg:hertz = "1" ;
+    		peaktp_flg:description = "Peak of transmit pulse flag; Indicates if time to peak of transmit pulse is accounted for in shot time." ;
+    		peaktp_flg:source = "Rel 34 GLAS Binary Data" ;
+    		peaktp_flg:coordinates = "DS_UTCTime_1" ;
+    		peaktp_flg:flag_values = 0, 1 ;
+    		peaktp_flg:flag_meanings = "applied not_applied" ;
+    		peaktp_flg:valid_min = 0 ;
+    		peaktp_flg:valid_max = 1 ;
+    		peaktp_flg:long_name = "time correction flag" ;
+    	byte gps_time_flg(DS_UTCTime_1) ;
+    		gps_time_flg:hertz = "1" ;
+    		gps_time_flg:description = "GPS time flag; Indicates if delta gps time correction is applied to shot time" ;
+    		gps_time_flg:source = "Rel 34 GLAS Binary Data" ;
+    		gps_time_flg:coordinates = "DS_UTCTime_1" ;
+    		gps_time_flg:flag_values = 0, 1 ;
+    		gps_time_flg:flag_meanings = "not_applied applied" ;
+    		gps_time_flg:valid_min = 0 ;
+    		gps_time_flg:valid_max = 1 ;
+    		gps_time_flg:long_name = "time correction flag" ;
+    	byte pl_timing_flg(DS_UTCTime_1) ;
+    		pl_timing_flg:hertz = "1" ;
+    		pl_timing_flg:description = "Post-launch timing; indicates if post-launch timing bias is applied. Data value is stored in the Metadata group." ;
+    		pl_timing_flg:source = "Rel 34 GLAS Binary Data" ;
+    		pl_timing_flg:coordinates = "DS_UTCTime_1" ;
+    		pl_timing_flg:flag_values = 0, 1 ;
+    		pl_timing_flg:flag_meanings = "not_applied applied" ;
+    		pl_timing_flg:valid_min = 0 ;
+    		pl_timing_flg:valid_max = 1 ;
+    		pl_timing_flg:long_name = "time correction flag" ;
+    	int i_rec_ndx(DS_UTCTime_1) ;
+    		i_rec_ndx:hertz = "1" ;
+    		i_rec_ndx:long_name = "GLAS Record Index" ;
+    		i_rec_ndx:description = "Unique index that relates this record to the corresponding record(s) in each GLAS data product." ;
+    		i_rec_ndx:source = "Rel 34 GLAS Binary Data" ;
+    		i_rec_ndx:coordinates = "DS_UTCTime_1" ;
+    		i_rec_ndx:valid_min = 0 ;
+    		i_rec_ndx:valid_max = 2147483647 ;
+
+    // group attributes:
+    		:Description = "This group contains the 1HZ index and time-related parameters" ;
+    } // group Time
+
+  group: Atmosphere {
+    variables:
+    	byte cld1_mswf_flg(DS_UTCTime_1) ;
+    		cld1_mswf_flg:hertz = "1" ;
+    		cld1_mswf_flg:long_name = "Cloud Multiple Scattering Warning Flag" ;
+    		cld1_mswf_flg:description = "The multiple scattering warning flag (MSWF) is based on the total column optical depth (aerosol plus cloud) calculated in GLA11 using 532nm. It is intended as a way to quickly obtain information about the potential severity of multiple scattering with regards to the range-to-surface calculated by the altimetry processing software.  The multiple scattering warning flag will have values ranging from 0-14, based on the total column optical depth. A warning flag value of 15 will signify invalid. An invalid will be encoded if an optical depth in any of the layers in the 1-second column could not be calculated. This usually occurs in a very optically thick cloud which extinguishes the signal. It could also occur if the extinction-to-backscatter ratio assignment is set too high, causing the transmission calculations in the lidar inversion to go out-of-range." ;
+    		cld1_mswf_flg:source = "Rel 34 GLAS Binary Data" ;
+    		cld1_mswf_flg:coordinates = "DS_UTCTime_1" ;
+    		cld1_mswf_flg:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ;
+    		cld1_mswf_flg:flag_meanings = "under_0.010 0.010_0.030 0.030_0.060 0.060_0.100 0.100_0.150 0.150_0.225 0.225_0.300 0.300_0.400 0.400_0.500 0.500_0.670 0.670_0.900 0.900_1.200 1.200_1.600 1.600_2.000 over_2.000 invalid" ;
+    		cld1_mswf_flg:valid_min = 0 ;
+    		cld1_mswf_flg:valid_max = 15 ;
+    	double d_Surface_pres(DS_UTCTime_1) ;
+    		d_Surface_pres:units = "hPa" ;
+    		d_Surface_pres:long_name = "Surface Pressure" ;
+    		d_Surface_pres:standard_name = "surface_air_pressure" ;
+    		d_Surface_pres:description = "Atmospheric pressure at Earth\'s surface level measured in hPa and derived from the meteorological data files. This surface pressure is computed in the atmospheric processing and is not the pressure used for the troposphere delay correction." ;
+    		d_Surface_pres:source = "Rel 34 GLAS Binary Data" ;
+    		d_Surface_pres:coordinates = "DS_UTCTime_1" ;
+    		d_Surface_pres:valid_min = 0. ;
+    		d_Surface_pres:valid_max = 2000. ;
+    		d_Surface_pres:_FillValue = 1.79769313486232e+308 ;
+    		d_Surface_pres:hertz = "1" ;
+    	byte atm_char_conf(DS_UTCTime_1) ;
+    		atm_char_conf:hertz = "1" ;
+    		atm_char_conf:long_name = "Atmosphere Characterization Flag Confidence" ;
+    		atm_char_conf:description = "Confidence level ascribed to the atmosphere characterization flag. 0=not applicable (for contamination flag values of 9 or 10). 1: low confidence. 2: reasonable confidence. 3: high confidence. 10: data quality insufficient to assign flag." ;
+    		atm_char_conf:source = "Rel 34 GLAS Binary Data" ;
+    		atm_char_conf:coordinates = "DS_UTCTime_1" ;
+    		atm_char_conf:flag_values = 0, 1, 2, 3, 10 ;
+    		atm_char_conf:flag_meanings = "not_applicable low_confidence reasonable_confidence high_confidence quality_insufficient" ;
+    		atm_char_conf:valid_min = 0 ;
+    		atm_char_conf:valid_max = 3 ;
+    	byte atm_gla09_flg(DS_UTCTime_1) ;
+    		atm_gla09_flg:hertz = "1" ;
+    		atm_gla09_flg:long_name = "Atmosphere Availability Flag - GLA09" ;
+    		atm_gla09_flg:description = "GLA09 data availability flag; 0 =  available." ;
+    		atm_gla09_flg:source = "Rel 34 GLAS Binary Data" ;
+    		atm_gla09_flg:coordinates = "DS_UTCTime_1" ;
+    		atm_gla09_flg:flag_values = 0, 1 ;
+    		atm_gla09_flg:flag_meanings = "available not_available" ;
+    		atm_gla09_flg:valid_min = 0 ;
+    		atm_gla09_flg:valid_max = 1 ;
+    	byte atm_char_flag(DS_UTCTime_1) ;
+    		atm_char_flag:hertz = "1" ;
+    		atm_char_flag:long_name = "Atmosphere Characterization Flag" ;
+    		atm_char_flag:description = "Flag to characterize cloud and blowing snow state of the atmosphere based on combinations of hi_cloud (> 5 km), mid_cloud (>2, <=5 km), low cloud (> 500 m, <=2 km), blowing snow or fog and hi/lo optical depth.  Additional values indicate if the characterization was  not tested or if the data quality was insufficient to assign a flag." ;
+    		atm_char_flag:source = "Rel 34 GLAS Binary Data" ;
+    		atm_char_flag:coordinates = "DS_UTCTime_1" ;
+    		atm_char_flag:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8 ;
+    		atm_char_flag:flag_meanings = "clear hi_cloud_low_od hi_cloud_high_od mid_cloud_low_od mid_cloud_hi_od low_cloud_low_od low_cloud_hi_od blowing_snow_low_od blowing_snow_hi_od" ;
+    		atm_char_flag:valid_min = 0 ;
+    		atm_char_flag:valid_max = 10 ;
+    	byte atm_gla11_flg(DS_UTCTime_1) ;
+    		atm_gla11_flg:hertz = "1" ;
+    		atm_gla11_flg:long_name = "Atmosphere Availability Flag - GLA11" ;
+    		atm_gla11_flg:description = "GLA11 data availability flag; 0 = available." ;
+    		atm_gla11_flg:source = "Rel 34 GLAS Binary Data" ;
+    		atm_gla11_flg:coordinates = "DS_UTCTime_1" ;
+    		atm_gla11_flg:flag_values = 0, 1 ;
+    		atm_gla11_flg:flag_meanings = "available not_available" ;
+    		atm_gla11_flg:valid_min = 0 ;
+    		atm_gla11_flg:valid_max = 1 ;
+    	byte MRC_af_flg(DS_UTCTime_1) ;
+    		MRC_af_flg:hertz = "1" ;
+    		MRC_af_flg:long_name = "Medium Resolution Cloud Availability Flag" ;
+    		MRC_af_flg:description = "Indicates number of cloud layers at medium resolution from the 532 nm channel; not_searched = cloud layers were not searched for;  not_detected = cloud layers were searched for, but not detected." ;
+    		MRC_af_flg:source = "Rel 34 GLAS Binary Data" ;
+    		MRC_af_flg:coordinates = "DS_UTCTime_1" ;
+    		MRC_af_flg:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ;
+    		MRC_af_flg:flag_meanings = "not_searched 1 2 3 4 5 6 7 8 9 10 11 12 13 14 not_detected" ;
+    		MRC_af_flg:valid_min = 0 ;
+    		MRC_af_flg:valid_max = 15 ;
+    	double d_Surface_temp(DS_UTCTime_1) ;
+    		d_Surface_temp:units = "degree Celsius" ;
+    		d_Surface_temp:long_name = "Surface Temperature" ;
+    		d_Surface_temp:standard_name = "surface_temperature" ;
+    		d_Surface_temp:description = "Atmospheric temperature at Earth\'s surface level measured in degrees celcius and derived from the meteorological data files." ;
+    		d_Surface_temp:source = "Rel 34 GLAS Binary Data" ;
+    		d_Surface_temp:coordinates = "DS_UTCTime_1" ;
+    		d_Surface_temp:valid_min = -100. ;
+    		d_Surface_temp:valid_max = 100. ;
+    		d_Surface_temp:_FillValue = 1.79769313486232e+308 ;
+    		d_Surface_temp:hertz = "1" ;
+    	double d_Surface_relh(DS_UTCTime_1) ;
+    		d_Surface_relh:units = "percent" ;
+    		d_Surface_relh:long_name = "Relative Humidity" ;
+    		d_Surface_relh:standard_name = "relative_humidity" ;
+    		d_Surface_relh:description = "Atmospheric relative humidity at Earth\'s surface level measured as a percentage and derived from the meteorological data files." ;
+    		d_Surface_relh:source = "Rel 34 GLAS Binary Data" ;
+    		d_Surface_relh:coordinates = "DS_UTCTime_1" ;
+    		d_Surface_relh:valid_min = 0. ;
+    		d_Surface_relh:valid_max = 100. ;
+    		d_Surface_relh:_FillValue = 1.79769313486232e+308 ;
+    		d_Surface_relh:hertz = "1" ;
+
+    // group attributes:
+    		:Description = "This group contains atmosphere information and flags." ;
+    } // group Atmosphere
+
+  group: Transmit_Energy {
+    variables:
+    	double d_tpazimuth_avg(DS_UTCTime_1) ;
+    		d_tpazimuth_avg:units = "degrees" ;
+    		d_tpazimuth_avg:hertz = "1" ;
+    		d_tpazimuth_avg:long_name = "Transmit Pulse azimuth - frame avg" ;
+    		d_tpazimuth_avg:description = "Transmit pulse azimuth. Averaged over the 1-second frame. Angle eastwards from north of the major axis of the transmit pulse, as seen by the LPA. From ANC09." ;
+    		d_tpazimuth_avg:source = "Rel 34 GLAS Binary Data" ;
+    		d_tpazimuth_avg:coordinates = "DS_UTCTime_1" ;
+    		d_tpazimuth_avg:valid_min = 0. ;
+    		d_tpazimuth_avg:valid_max = 360. ;
+    		d_tpazimuth_avg:_FillValue = 1.79769313486232e+308 ;
+    	double d_tpintensity_avg(DS_UTCTime_1) ;
+    		d_tpintensity_avg:hertz = "1" ;
+    		d_tpintensity_avg:long_name = "Transmit Pulse intensity - frame avg" ;
+    		d_tpintensity_avg:description = "Transmit pulse intensity as measured by the LPA. Averaged over the 1-second frame. From ANC09." ;
+    		d_tpintensity_avg:source = "Rel 34 GLAS Binary Data" ;
+    		d_tpintensity_avg:coordinates = "DS_UTCTime_1" ;
+    		d_tpintensity_avg:valid_min = 0. ;
+    		d_tpintensity_avg:valid_max = 25500. ;
+    		d_tpintensity_avg:_FillValue = 1.79769313486232e+308 ;
+    	double d_tpeccentricity_avg(DS_UTCTime_1) ;
+    		d_tpeccentricity_avg:hertz = "1" ;
+    		d_tpeccentricity_avg:long_name = "Transmit Pulse eccentricity - frame avg" ;
+    		d_tpeccentricity_avg:description = "Transmit pulse eccentricity as measured by the LPA. Averaged over the 1-second frame. From ANC09." ;
+    		d_tpeccentricity_avg:source = "Rel 34 GLAS Binary Data" ;
+    		d_tpeccentricity_avg:coordinates = "DS_UTCTime_1" ;
+    		d_tpeccentricity_avg:valid_min = 0. ;
+    		d_tpeccentricity_avg:valid_max = 1. ;
+    		d_tpeccentricity_avg:_FillValue = 1.79769313486232e+308 ;
+    	double d_tpmajoraxis_avg(DS_UTCTime_1) ;
+    		d_tpmajoraxis_avg:units = "meters" ;
+    		d_tpmajoraxis_avg:long_name = "Transmit Pulse major axis - frame avg" ;
+    		d_tpmajoraxis_avg:description = "Trasmit pulse major axis as measured by the LPA. Averaged over the 1-second time frame. From ANC09." ;
+    		d_tpmajoraxis_avg:source = "Rel 34 GLAS Binary Data" ;
+    		d_tpmajoraxis_avg:coordinates = "DS_UTCTime_1" ;
+    		d_tpmajoraxis_avg:valid_min = 0. ;
+    		d_tpmajoraxis_avg:valid_max = 100. ;
+    		d_tpmajoraxis_avg:_FillValue = 1.79769313486232e+308 ;
+    		d_tpmajoraxis_avg:hertz = "1" ;
+
+    // group attributes:
+    		:Description = "This group contains information relating to transmit energy." ;
+    } // group Transmit_Energy
+
+  group: Packet_data {
+    variables:
+    	byte apid_CT22_flg(DS_UTCTime_1) ;
+    		apid_CT22_flg:hertz = "1" ;
+    		apid_CT22_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CT22_flg:description = "CT HW telemetry packet #3 (APID 22) APID availability flag." ;
+    		apid_CT22_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CT22_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CT22_flg:flag_values = 0, 1, 2 ;
+    		apid_CT22_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CT22_flg:valid_min = 0 ;
+    		apid_CT22_flg:valid_max = 2 ;
+    	byte apid_ADLg_4_flg(DS_UTCTime_1) ;
+    		apid_ADLg_4_flg:hertz = "1" ;
+    		apid_ADLg_4_flg:description = "Altimeter Digitizer large wf packet APID availability flag for 4th 10 shots." ;
+    		apid_ADLg_4_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADLg_4_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADLg_4_flg:flag_values = 0, 1, 2 ;
+    		apid_ADLg_4_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADLg_4_flg:valid_min = 0 ;
+    		apid_ADLg_4_flg:valid_max = 2 ;
+    		apid_ADLg_4_flg:long_name = "APID Data Availability Flag" ;
+    	byte apid_ADSm_3_flg(DS_UTCTime_1) ;
+    		apid_ADSm_3_flg:hertz = "1" ;
+    		apid_ADSm_3_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADSm_3_flg:description = "Altimeter Digitizer small wf packet APID availability flag for 3rd 10 shots." ;
+    		apid_ADSm_3_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADSm_3_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADSm_3_flg:flag_values = 0, 1, 2 ;
+    		apid_ADSm_3_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADSm_3_flg:valid_min = 0 ;
+    		apid_ADSm_3_flg:valid_max = 2 ;
+    	byte apid_CT20_flg(DS_UTCTime_1) ;
+    		apid_CT20_flg:hertz = "1" ;
+    		apid_CT20_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CT20_flg:description = "CT HW telemetry packet #1 (APID 20) APID availability flag." ;
+    		apid_CT20_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CT20_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CT20_flg:flag_values = 0, 1, 2 ;
+    		apid_CT20_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CT20_flg:valid_min = 0 ;
+    		apid_CT20_flg:valid_max = 2 ;
+    	byte apid_LS25_flg(DS_UTCTime_1) ;
+    		apid_LS25_flg:hertz = "1" ;
+    		apid_LS25_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LS25_flg:description = "Large software telemetry packet #1 (APID 25) APID availability flag." ;
+    		apid_LS25_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LS25_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LS25_flg:flag_values = 0, 1, 2 ;
+    		apid_LS25_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LS25_flg:valid_min = 0 ;
+    		apid_LS25_flg:valid_max = 2 ;
+    	byte apid_LPA_2_flg(DS_UTCTime_1) ;
+    		apid_LPA_2_flg:hertz = "1" ;
+    		apid_LPA_2_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LPA_2_flg:description = "LPA packet #2 APID availability flag." ;
+    		apid_LPA_2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LPA_2_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LPA_2_flg:flag_values = 0, 1, 2 ;
+    		apid_LPA_2_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LPA_2_flg:valid_min = 0 ;
+    		apid_LPA_2_flg:valid_max = 2 ;
+    	byte apid_ADLg_2_flg(DS_UTCTime_1) ;
+    		apid_ADLg_2_flg:hertz = "1" ;
+    		apid_ADLg_2_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADLg_2_flg:description = "Altimeter Digitizer large wf packet APID availability flag for 2nd 10 shots." ;
+    		apid_ADLg_2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADLg_2_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADLg_2_flg:flag_values = 0, 1, 2 ;
+    		apid_ADLg_2_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADLg_2_flg:valid_min = 0 ;
+    		apid_ADLg_2_flg:valid_max = 2 ;
+    	byte apid_PRAP_flg(DS_UTCTime_1) ;
+    		apid_PRAP_flg:hertz = "1" ;
+    		apid_PRAP_flg:long_name = "APID Data Availability Flag" ;
+    		apid_PRAP_flg:description = "S/C position, rate, and attitude telemetry packet (PRAP) APID availability flag." ;
+    		apid_PRAP_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_PRAP_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_PRAP_flg:flag_values = 0, 1, 2 ;
+    		apid_PRAP_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_PRAP_flg:valid_min = 0 ;
+    		apid_PRAP_flg:valid_max = 2 ;
+    	byte apid_LS55_flg(DS_UTCTime_1) ;
+    		apid_LS55_flg:hertz = "1" ;
+    		apid_LS55_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LS55_flg:description = "Large software telemetry packet #2 (APID 55) APID availability flag." ;
+    		apid_LS55_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LS55_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LS55_flg:flag_values = 0, 1, 2 ;
+    		apid_LS55_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LS55_flg:valid_min = 0 ;
+    		apid_LS55_flg:valid_max = 2 ;
+    	byte apid_ADLg_3_flg(DS_UTCTime_1) ;
+    		apid_ADLg_3_flg:hertz = "1" ;
+    		apid_ADLg_3_flg:description = "Altimeter Digitizer large wf packet APID availability flag for 3rd 10 shots." ;
+    		apid_ADLg_3_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADLg_3_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADLg_3_flg:flag_values = 0, 1, 2 ;
+    		apid_ADLg_3_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADLg_3_flg:valid_min = 0 ;
+    		apid_ADLg_3_flg:valid_max = 2 ;
+    		apid_ADLg_3_flg:long_name = "APID Data Availability Flag" ;
+    	byte apid_ASCT_flg(DS_UTCTime_1) ;
+    		apid_ASCT_flg:hertz = "1" ;
+    		apid_ASCT_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ASCT_flg:description = "C&T board telem. data in Ancillary science packet APID availability flag." ;
+    		apid_ASCT_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ASCT_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ASCT_flg:flag_values = 0, 1, 2 ;
+    		apid_ASCT_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ASCT_flg:valid_min = 0 ;
+    		apid_ASCT_flg:valid_max = 2 ;
+    	byte apid_CT21_flg(DS_UTCTime_1) ;
+    		apid_CT21_flg:hertz = "1" ;
+    		apid_CT21_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CT21_flg:description = "CT HW telemetry packet #2 (APID 21) APID availability flag." ;
+    		apid_CT21_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CT21_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CT21_flg:flag_values = 0, 1, 2 ;
+    		apid_CT21_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CT21_flg:valid_min = 0 ;
+    		apid_CT21_flg:valid_max = 2 ;
+    	byte apid_ADSm_4_flg(DS_UTCTime_1) ;
+    		apid_ADSm_4_flg:hertz = "1" ;
+    		apid_ADSm_4_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADSm_4_flg:description = "Altimeter Digitizer small wf packet APID availability flag for 4th 10 shots." ;
+    		apid_ADSm_4_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADSm_4_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADSm_4_flg:flag_values = 0, 1, 2 ;
+    		apid_ADSm_4_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADSm_4_flg:valid_min = 0 ;
+    		apid_ADSm_4_flg:valid_max = 2 ;
+    	byte apid_ADSm_1_flg(DS_UTCTime_1) ;
+    		apid_ADSm_1_flg:hertz = "1" ;
+    		apid_ADSm_1_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADSm_1_flg:description = "Altimeter Digitizer small wf packet APID availability flag for 1st 10 shots." ;
+    		apid_ADSm_1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADSm_1_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADSm_1_flg:flag_values = 0, 1, 2 ;
+    		apid_ADSm_1_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADSm_1_flg:valid_min = 0 ;
+    		apid_ADSm_1_flg:valid_max = 2 ;
+    	byte apid_ADSm_2_flg(DS_UTCTime_1) ;
+    		apid_ADSm_2_flg:hertz = "1" ;
+    		apid_ADSm_2_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADSm_2_flg:description = "Altimeter Digitizer small wf packet APID availability flag for 2nd 10 shots." ;
+    		apid_ADSm_2_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADSm_2_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADSm_2_flg:flag_values = 0, 1, 2 ;
+    		apid_ADSm_2_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADSm_2_flg:valid_min = 0 ;
+    		apid_ADSm_2_flg:valid_max = 2 ;
+    	byte apid_ASPC_flg(DS_UTCTime_1) ;
+    		apid_ASPC_flg:hertz = "1" ;
+    		apid_ASPC_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ASPC_flg:description = "Photon counter telemetry data in Ancillary science packet  APID availability flag." ;
+    		apid_ASPC_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ASPC_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ASPC_flg:flag_values = 0, 1, 2 ;
+    		apid_ASPC_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ASPC_flg:valid_min = 0 ;
+    		apid_ASPC_flg:valid_max = 2 ;
+    	byte apid_CD1064_flg(DS_UTCTime_1) ;
+    		apid_CD1064_flg:hertz = "1" ;
+    		apid_CD1064_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CD1064_flg:description = "1064 Cloud Digitizer packet APID availability flag." ;
+    		apid_CD1064_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CD1064_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CD1064_flg:flag_values = 0, 1, 2 ;
+    		apid_CD1064_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CD1064_flg:valid_min = 0 ;
+    		apid_CD1064_flg:valid_max = 2 ;
+    	byte apid_LPA_3_flg(DS_UTCTime_1) ;
+    		apid_LPA_3_flg:hertz = "1" ;
+    		apid_LPA_3_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LPA_3_flg:description = "LPA packet #3 APID availability flag." ;
+    		apid_LPA_3_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LPA_3_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LPA_3_flg:flag_values = 0, 1, 2 ;
+    		apid_LPA_3_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LPA_3_flg:valid_min = 0 ;
+    		apid_LPA_3_flg:valid_max = 2 ;
+    	byte apid_ASAD_flg(DS_UTCTime_1) ;
+    		apid_ASAD_flg:hertz = "1" ;
+    		apid_ASAD_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ASAD_flg:description = "Altimeter Digitizer telemetry data in Ancillary science packet APID availability flag." ;
+    		apid_ASAD_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ASAD_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ASAD_flg:flag_values = 0, 1, 2 ;
+    		apid_ASAD_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ASAD_flg:valid_min = 0 ;
+    		apid_ASAD_flg:valid_max = 2 ;
+    	byte apid_SS24_flg(DS_UTCTime_1) ;
+    		apid_SS24_flg:hertz = "1" ;
+    		apid_SS24_flg:long_name = "APID Data Availability Flag" ;
+    		apid_SS24_flg:description = "Small software telemetry packet #1 (APID 24) APID availability flag." ;
+    		apid_SS24_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_SS24_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_SS24_flg:flag_values = 0, 1, 2 ;
+    		apid_SS24_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_SS24_flg:valid_min = 0 ;
+    		apid_SS24_flg:valid_max = 2 ;
+    	byte apid_ADLg_1_flg(DS_UTCTime_1) ;
+    		apid_ADLg_1_flg:hertz = "1" ;
+    		apid_ADLg_1_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADLg_1_flg:description = "Altimeter Digitizer large wf packet APID availability flag  for 1st 10 shots." ;
+    		apid_ADLg_1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADLg_1_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADLg_1_flg:flag_values = 0, 1, 2 ;
+    		apid_ADLg_1_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADLg_1_flg:valid_min = 0 ;
+    		apid_ADLg_1_flg:valid_max = 2 ;
+    	byte apid_LPA_1_flg(DS_UTCTime_1) ;
+    		apid_LPA_1_flg:hertz = "1" ;
+    		apid_LPA_1_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LPA_1_flg:description = "LPA packet #1 APID availability flag." ;
+    		apid_LPA_1_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LPA_1_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LPA_1_flg:flag_values = 0, 1, 2 ;
+    		apid_LPA_1_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LPA_1_flg:valid_min = 0 ;
+    		apid_LPA_1_flg:valid_max = 2 ;
+    	byte apid_ASCF_flg(DS_UTCTime_1) ;
+    		apid_ASCF_flg:hertz = "1" ;
+    		apid_ASCF_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ASCF_flg:description = "Cloud Digitizer telemetry data in Ancillary science packet APID availability flag." ;
+    		apid_ASCF_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ASCF_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ASCF_flg:flag_values = 0, 1, 2 ;
+    		apid_ASCF_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ASCF_flg:valid_min = 0 ;
+    		apid_ASCF_flg:valid_max = 2 ;
+    	byte apid_ADSci_flg(DS_UTCTime_1) ;
+    		apid_ADSci_flg:hertz = "1" ;
+    		apid_ADSci_flg:long_name = "APID Data Availability Flag" ;
+    		apid_ADSci_flg:description = "Ancillary science packet  APID availability flag." ;
+    		apid_ADSci_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_ADSci_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_ADSci_flg:flag_values = 0, 1, 2 ;
+    		apid_ADSci_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_ADSci_flg:valid_min = 0 ;
+    		apid_ADSci_flg:valid_max = 2 ;
+    	byte apid_CT23_flg(DS_UTCTime_1) ;
+    		apid_CT23_flg:hertz = "1" ;
+    		apid_CT23_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CT23_flg:description = "CT HW telemetry packet #4 (APID 23) APID availability flag." ;
+    		apid_CT23_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CT23_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CT23_flg:flag_values = 0, 1, 2 ;
+    		apid_CT23_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CT23_flg:valid_min = 0 ;
+    		apid_CT23_flg:valid_max = 2 ;
+    	byte apid_CT50_flg(DS_UTCTime_1) ;
+    		apid_CT50_flg:hertz = "1" ;
+    		apid_CT50_flg:long_name = "APID Data Availability Flag" ;
+    		apid_CT50_flg:description = "CT HW telemetry packet #5 (APID 50) APID availability flag." ;
+    		apid_CT50_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_CT50_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_CT50_flg:flag_values = 0, 1, 2 ;
+    		apid_CT50_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_CT50_flg:valid_min = 0 ;
+    		apid_CT50_flg:valid_max = 2 ;
+    	byte apid_PC532_flg(DS_UTCTime_1) ;
+    		apid_PC532_flg:hertz = "1" ;
+    		apid_PC532_flg:description = "532 Photon counter packet APID availability flag." ;
+    		apid_PC532_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_PC532_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_PC532_flg:flag_values = 0, 1, 2 ;
+    		apid_PC532_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_PC532_flg:valid_min = 0 ;
+    		apid_PC532_flg:valid_max = 2 ;
+    		apid_PC532_flg:long_name = "APID Data Availability Flag" ;
+    	byte apid_GPS_flg(DS_UTCTime_1) ;
+    		apid_GPS_flg:hertz = "1" ;
+    		apid_GPS_flg:long_name = "APID Data Availability Flag" ;
+    		apid_GPS_flg:description = "GPS telemetry packet APID availability flag." ;
+    		apid_GPS_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_GPS_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_GPS_flg:flag_values = 0, 1, 2 ;
+    		apid_GPS_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_GPS_flg:valid_min = 0 ;
+    		apid_GPS_flg:valid_max = 2 ;
+    	byte apid_LPA_4_flg(DS_UTCTime_1) ;
+    		apid_LPA_4_flg:hertz = "1" ;
+    		apid_LPA_4_flg:long_name = "APID Data Availability Flag" ;
+    		apid_LPA_4_flg:description = "LPA packet #4 APID availability flag." ;
+    		apid_LPA_4_flg:source = "Rel 34 GLAS Binary Data" ;
+    		apid_LPA_4_flg:coordinates = "DS_UTCTime_1" ;
+    		apid_LPA_4_flg:flag_values = 0, 1, 2 ;
+    		apid_LPA_4_flg:flag_meanings = "present filled_at_EDOS never_received_ISIPS_filled" ;
+    		apid_LPA_4_flg:valid_min = 0 ;
+    		apid_LPA_4_flg:valid_max = 2 ;
+
+    // group attributes:
+    		:Description = "This group contains flags indicating packet availability." ;
+    } // group Packet_data
+
+  group: Elevation_Flags {
+    variables:
+    	byte rng_model_flg(DS_UTCTime_1) ;
+    		rng_model_flg:hertz = "1" ;
+    		rng_model_flg:long_name = "Correction Status Flag - Range Model" ;
+    		rng_model_flg:description = "Geophysical corrections flag; Indicates if the load and ocean tides are from 0=global model, 1=regional model no. 1, 2=regional model no. 2, or 3=regional model no. 3" ;
+    		rng_model_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_model_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_model_flg:flag_values = 0, 1, 2, 3 ;
+    		rng_model_flg:flag_meanings = "global model_1 model_2 model_3" ;
+    		rng_model_flg:valid_min = 0 ;
+    		rng_model_flg:valid_max = 3 ;
+    	byte rng_ldtide_flg(DS_UTCTime_1) ;
+    		rng_ldtide_flg:hertz = "1" ;
+    		rng_ldtide_flg:long_name = "Range Correction Flag - Load Tides" ;
+    		rng_ldtide_flg:description = "Load tides flag; 0 = a correction for the dynamic effect of load tides has been applied to the range before the elevation was calculated." ;
+    		rng_ldtide_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_ldtide_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_ldtide_flg:flag_values = 0, 1 ;
+    		rng_ldtide_flg:flag_meanings = "applied not_applied" ;
+    		rng_ldtide_flg:valid_min = 0 ;
+    		rng_ldtide_flg:valid_max = 1 ;
+    	byte rng_wettrop_flg(DS_UTCTime_1) ;
+    		rng_wettrop_flg:hertz = "1" ;
+    		rng_wettrop_flg:long_name = "Range Correction Flag - Wet Troposphere" ;
+    		rng_wettrop_flg:description = "Wet troposphere flag; 0 = a correction for propagation errors due to the wet troposphere was applied to the range before the elevation was calculated." ;
+    		rng_wettrop_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_wettrop_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_wettrop_flg:flag_values = 0, 1 ;
+    		rng_wettrop_flg:flag_meanings = "applied not_applied" ;
+    		rng_wettrop_flg:valid_min = 0 ;
+    		rng_wettrop_flg:valid_max = 1 ;
+    	byte rng_atmcorr_flg(DS_UTCTime_1) ;
+    		rng_atmcorr_flg:hertz = "1" ;
+    		rng_atmcorr_flg:long_name = "Correction Status Flag - Reflectivity" ;
+    		rng_atmcorr_flg:description = "Geophysical corrections flag; Indicates values used to calculate corrected reflectivity - 0=computed aerosol and cloud optical depths used, 1=default-null aerosol and computed cloud optical depths, 2=computed aerosol and default-null cloud optical depths, 3=default-null values for aerosol and cloud optical depths, or 4=maximum bound set." ;
+    		rng_atmcorr_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_atmcorr_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_atmcorr_flg:flag_values = 0, 1, 2, 3, 4 ;
+    		rng_atmcorr_flg:flag_meanings = "computed only_od only_aerosol defaults max_bound_set" ;
+    		rng_atmcorr_flg:valid_min = 0 ;
+    		rng_atmcorr_flg:valid_max = 4 ;
+    	byte surf_is_flg(DS_UTCTime_1) ;
+    		surf_is_flg:hertz = "1" ;
+    		surf_is_flg:long_name = "Region Type - Ice Sheet" ;
+    		surf_is_flg:description = "Ice Sheet flag, 1 = presence of ice sheet in the region." ;
+    		surf_is_flg:source = "Rel 34 GLAS Binary Data" ;
+    		surf_is_flg:coordinates = "DS_UTCTime_1" ;
+    		surf_is_flg:flag_values = 0, 1 ;
+    		surf_is_flg:flag_meanings = "no_ice_sheet ice_sheet" ;
+    		surf_is_flg:valid_min = 0 ;
+    		surf_is_flg:valid_max = 1 ;
+    	byte rng_intbias_flg(DS_UTCTime_1) ;
+    		rng_intbias_flg:hertz = "1" ;
+    		rng_intbias_flg:long_name = "Range Correction Flag - Internal Range Bias" ;
+    		rng_intbias_flg:description = "Internal range bias flag; 0 = the internal range bias was applied to the range before the elevation was calculated and if the value of d_refRng on the record has this correction applied." ;
+    		rng_intbias_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_intbias_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_intbias_flg:flag_values = 0, 1 ;
+    		rng_intbias_flg:flag_meanings = "applied not_applied" ;
+    		rng_intbias_flg:valid_min = 0 ;
+    		rng_intbias_flg:valid_max = 1 ;
+    	byte surf_oc_flg(DS_UTCTime_1) ;
+    		surf_oc_flg:hertz = "1" ;
+    		surf_oc_flg:long_name = "Region Type - Ocean" ;
+    		surf_oc_flg:description = "Ocean flag, 1 = presence of ocean in the region." ;
+    		surf_oc_flg:source = "Rel 34 GLAS Binary Data" ;
+    		surf_oc_flg:coordinates = "DS_UTCTime_1" ;
+    		surf_oc_flg:flag_values = 0, 1 ;
+    		surf_oc_flg:flag_meanings = "no_ocean ocean" ;
+    		surf_oc_flg:valid_min = 0 ;
+    		surf_oc_flg:valid_max = 1 ;
+    	byte rng_setide_flag(DS_UTCTime_1) ;
+    		rng_setide_flag:hertz = "1" ;
+    		rng_setide_flag:long_name = "Range Correction Flag - Solid Earth Tides" ;
+    		rng_setide_flag:description = "Solid earth tides flag; 0 = a correction for the dynamic effect of solid earth tides has been applied to the range before the elevation was calculated." ;
+    		rng_setide_flag:source = "Rel 34 GLAS Binary Data" ;
+    		rng_setide_flag:coordinates = "DS_UTCTime_1" ;
+    		rng_setide_flag:flag_values = 0, 1 ;
+    		rng_setide_flag:flag_meanings = "applied not_applied" ;
+    		rng_setide_flag:valid_min = 0 ;
+    		rng_setide_flag:valid_max = 1 ;
+    	byte surf_si_flg(DS_UTCTime_1) ;
+    		surf_si_flg:hertz = "1" ;
+    		surf_si_flg:long_name = "Region Type - Sea Ice" ;
+    		surf_si_flg:description = "Sea Ice flag, 1 = presence of sea ice in the region." ;
+    		surf_si_flg:source = "Rel 34 GLAS Binary Data" ;
+    		surf_si_flg:coordinates = "DS_UTCTime_1" ;
+    		surf_si_flg:flag_values = 0, 1 ;
+    		surf_si_flg:flag_meanings = "no_sea_ice sea_ice" ;
+    		surf_si_flg:valid_min = 0 ;
+    		surf_si_flg:valid_max = 1 ;
+    	byte rng_octide_flg(DS_UTCTime_1) ;
+    		rng_octide_flg:hertz = "1" ;
+    		rng_octide_flg:long_name = "Range Correction Flag - Ocean Tides" ;
+    		rng_octide_flg:description = "Ocean tides flag; 0 = a correction for the dynamic effect of ocean tides has been applied to the range before the elevation was calculated." ;
+    		rng_octide_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_octide_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_octide_flg:flag_values = 0, 1 ;
+    		rng_octide_flg:flag_meanings = "applied not_applied" ;
+    		rng_octide_flg:valid_min = 0 ;
+    		rng_octide_flg:valid_max = 1 ;
+    	byte rng_plbias_flg(DS_UTCTime_1) ;
+    		rng_plbias_flg:hertz = "1" ;
+    		rng_plbias_flg:long_name = "Range Correction Flag - Post-launch Range Bias" ;
+    		rng_plbias_flg:description = "Post-launch range bias flag; 0 = the post-launch range bias was applied to the range before the elevation was calculated and if the value of d_refRng on the record has this correction applied." ;
+    		rng_plbias_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_plbias_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_plbias_flg:flag_values = 0, 1 ;
+    		rng_plbias_flg:flag_meanings = "applied not_applied" ;
+    		rng_plbias_flg:valid_min = 0 ;
+    		rng_plbias_flg:valid_max = 1 ;
+    	byte rng_drytrop_flg(DS_UTCTime_1) ;
+    		rng_drytrop_flg:hertz = "1" ;
+    		rng_drytrop_flg:long_name = "Range Correction Flag - Dry Troposphere" ;
+    		rng_drytrop_flg:description = "Dry troposphere flag; 0 = a correction for propagation errors due to the dry troposphere was applied to the range before the elevation was calculated." ;
+    		rng_drytrop_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_drytrop_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_drytrop_flg:flag_values = 0, 1 ;
+    		rng_drytrop_flg:flag_meanings = "applied not_applied" ;
+    		rng_drytrop_flg:valid_min = 0 ;
+    		rng_drytrop_flg:valid_max = 1 ;
+    	byte surf_ld_flg(DS_UTCTime_1) ;
+    		surf_ld_flg:hertz = "1" ;
+    		surf_ld_flg:long_name = "Region Type - Land" ;
+    		surf_ld_flg:description = "Land flag - 1 = presence of land in the region." ;
+    		surf_ld_flg:source = "Rel 34 GLAS Binary Data" ;
+    		surf_ld_flg:coordinates = "DS_UTCTime_1" ;
+    		surf_ld_flg:flag_values = 0, 1 ;
+    		surf_ld_flg:flag_meanings = "no_land land" ;
+    		surf_ld_flg:valid_min = 0 ;
+    		surf_ld_flg:valid_max = 1 ;
+    	byte rng_oldmet_flg(DS_UTCTime_1) ;
+    		rng_oldmet_flg:hertz = "1" ;
+    		rng_oldmet_flg:long_name = "Correction Status Flag - Old MET" ;
+    		rng_oldmet_flg:description = "Geophysical corrections flag; Indicates if 0=troposphere corrections are based on 6hr NCEP grids surrounding data, 1=6hr NCEP grids but at least one was >6 but <24 hrs away from data, 2=standard atm, or 3=reanalyzed met data." ;
+    		rng_oldmet_flg:source = "Rel 34 GLAS Binary Data" ;
+    		rng_oldmet_flg:coordinates = "DS_UTCTime_1" ;
+    		rng_oldmet_flg:flag_values = 0, 1, 2, 3 ;
+    		rng_oldmet_flg:flag_meanings = "6_hour over_6_hour standard_atm reanalyzed" ;
+    		rng_oldmet_flg:valid_min = 0 ;
+    		rng_oldmet_flg:valid_max = 3 ;
+
+    // group attributes:
+    		:Description = "This group contains flags indicating the quality or suitability of elevation data." ;
+    } // group Elevation_Flags
+
+  group: Quality {
+    variables:
+    	byte orbit_gps_flg(DS_UTCTime_1) ;
+    		orbit_gps_flg:hertz = "1" ;
+    		orbit_gps_flg:long_name = "GPS Flag" ;
+    		orbit_gps_flg:description = "GPS_data_missing indicates GPS data missing from portion of this record and possible degradation." ;
+    		orbit_gps_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_gps_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_gps_flg:flag_values = 0, 1 ;
+    		orbit_gps_flg:flag_meanings = "no_GPS_data_outage GPS_data_missing" ;
+    		orbit_gps_flg:valid_min = 0 ;
+    		orbit_gps_flg:valid_max = 1 ;
+    	byte altfrm_meas_flg(DS_UTCTime_1) ;
+    		altfrm_meas_flg:hertz = "1" ;
+    		altfrm_meas_flg:long_name = "Altimeter Frame Quality Flag" ;
+    		altfrm_meas_flg:description = "Measurements flag; Indicates if all GLAS measurements are good or if there is at least one unusable measurement in the frame." ;
+    		altfrm_meas_flg:source = "Rel 34 GLAS Binary Data" ;
+    		altfrm_meas_flg:coordinates = "DS_UTCTime_1" ;
+    		altfrm_meas_flg:flag_values = 0, 1 ;
+    		altfrm_meas_flg:flag_meanings = "good not_good" ;
+    		altfrm_meas_flg:valid_min = 0 ;
+    		altfrm_meas_flg:valid_max = 1 ;
+    	byte att_gyro_flg(DS_UTCTime_1) ;
+    		att_gyro_flg:hertz = "1" ;
+    		att_gyro_flg:long_name = "Attitude Flag 1" ;
+    		att_gyro_flg:description = "GYRO data flag; Indicates if GYRO data are good, missing for at least a portion of the time of this frame, noisy for at least a portion of the time of this frame or noisy and missing for at least a portion of the time of this frame." ;
+    		att_gyro_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_gyro_flg:coordinates = "DS_UTCTime_1" ;
+    		att_gyro_flg:flag_values = 0, 1, 2, 3 ;
+    		att_gyro_flg:flag_meanings = "good missing noisy missing_noisy" ;
+    		att_gyro_flg:valid_min = 0 ;
+    		att_gyro_flg:valid_max = 1 ;
+    	byte altfrm_corr_flg(DS_UTCTime_1) ;
+    		altfrm_corr_flg:hertz = "1" ;
+    		altfrm_corr_flg:long_name = "Altimeter Frame Quality Flag" ;
+    		altfrm_corr_flg:description = "Corrections flag; Indicates if all data in frame are good with appropriate corrections applied; or if some of data are not corrected or have measurement problems." ;
+    		altfrm_corr_flg:source = "Rel 34 GLAS Binary Data" ;
+    		altfrm_corr_flg:coordinates = "DS_UTCTime_1" ;
+    		altfrm_corr_flg:flag_values = 0, 1 ;
+    		altfrm_corr_flg:flag_meanings = "good uncorrected" ;
+    		altfrm_corr_flg:valid_min = 0 ;
+    		altfrm_corr_flg:valid_max = 1 ;
+    	byte att_oceansw_flg(DS_UTCTime_1) ;
+    		att_oceansw_flg:hertz = "1" ;
+    		att_oceansw_flg:long_name = "Attitude Flag 1" ;
+    		att_oceansw_flg:description = "Ocean sweep flag; Indicates if an ocean sweep is within the time frame of this record." ;
+    		att_oceansw_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_oceansw_flg:coordinates = "DS_UTCTime_1" ;
+    		att_oceansw_flg:flag_values = 0, 1 ;
+    		att_oceansw_flg:flag_meanings = "not_ocean_sweep ocean_sweep" ;
+    		att_oceansw_flg:valid_min = 0 ;
+    		att_oceansw_flg:valid_max = 1 ;
+    	byte orbit_model_flg(DS_UTCTime_1) ;
+    		orbit_model_flg:hertz = "1" ;
+    		orbit_model_flg:long_name = "Model problems flag." ;
+    		orbit_model_flg:description = "model_problems indicated when orbit RMS > 5 cm; indicates required accuracy not met." ;
+    		orbit_model_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_model_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_model_flg:flag_values = 0, 1 ;
+    		orbit_model_flg:flag_meanings = "no_model_problems model_problems" ;
+    		orbit_model_flg:valid_min = 0 ;
+    		orbit_model_flg:valid_max = 1 ;
+    	byte orbit_array_flg(DS_UTCTime_1) ;
+    		orbit_array_flg:hertz = "1" ;
+    		orbit_array_flg:long_name = "Solar Array Orientation flag" ;
+    		orbit_array_flg:description = "modeled_solar_ray_orientation indicates possible orbit degradation" ;
+    		orbit_array_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_array_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_array_flg:flag_values = 0, 1 ;
+    		orbit_array_flg:flag_meanings = "solar_ray_orientation_used_from measurement modeled_solar_ray_orientation" ;
+    		orbit_array_flg:valid_min = 0 ;
+    		orbit_array_flg:valid_max = 1 ;
+    	byte orbit_pred_flg(DS_UTCTime_1) ;
+    		orbit_pred_flg:hertz = "1" ;
+    		orbit_pred_flg:long_name = "POD flag (Orbit Flag)" ;
+    		orbit_pred_flg:description = "Predicted or precision orbit flag." ;
+    		orbit_pred_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_pred_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_pred_flg:flag_values = 0, 1, 2 ;
+    		orbit_pred_flg:flag_meanings = "precision_orbit_used predicted_orbit_used onboard_orbit_used" ;
+    		orbit_pred_flg:valid_min = 0 ;
+    		orbit_pred_flg:valid_max = 2 ;
+    	byte att_pointing_flg(DS_UTCTime_1) ;
+    		att_pointing_flg:hertz = "1" ;
+    		att_pointing_flg:description = "Target of opportunity off-pointing flag; Indicates if this record is within time of target of opportunity off-pointing." ;
+    		att_pointing_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_pointing_flg:coordinates = "DS_UTCTime_1" ;
+    		att_pointing_flg:flag_values = 0, 1 ;
+    		att_pointing_flg:flag_meanings = "not_pointing pointing" ;
+    		att_pointing_flg:valid_min = 0 ;
+    		att_pointing_flg:valid_max = 1 ;
+    		att_pointing_flg:long_name = "Attitude Flag 1" ;
+    	byte att_steering_flg(DS_UTCTime_1) ;
+    		att_steering_flg:hertz = "1" ;
+    		att_steering_flg:long_name = "Attitude Flag 1" ;
+    		att_steering_flg:description = " Steering to reference track flag; Indicates if this record is within target of opportunity off-pointing." ;
+    		att_steering_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_steering_flg:coordinates = "DS_UTCTime_1" ;
+    		att_steering_flg:flag_values = 0, 1 ;
+    		att_steering_flg:flag_meanings = "not_pointing pointing" ;
+    		att_steering_flg:valid_min = 0 ;
+    		att_steering_flg:valid_max = 1 ;
+    	byte orbit_man_flg(DS_UTCTime_1) ;
+    		orbit_man_flg:hertz = "1" ;
+    		orbit_man_flg:long_name = "Maneuver flag" ;
+    		orbit_man_flg:description = "If maneuvers occurred, orbit is considered degraded." ;
+    		orbit_man_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_man_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_man_flg:flag_values = 0, 1 ;
+    		orbit_man_flg:flag_meanings = "no_maneuvers maneuvers_occurred_during_this_record" ;
+    		orbit_man_flg:valid_min = 0 ;
+    		orbit_man_flg:valid_max = 1 ;
+    	byte altfrm_use_flg(DS_UTCTime_1) ;
+    		altfrm_use_flg:hertz = "1" ;
+    		altfrm_use_flg:long_name = "Altimeter Frame Quality Flag" ;
+    		altfrm_use_flg:description = "Usable Measurements flag; Indicates if there is at least one usable measurement in the frame; or if all GLAS measurements are bad." ;
+    		altfrm_use_flg:source = "Rel 34 GLAS Binary Data" ;
+    		altfrm_use_flg:coordinates = "DS_UTCTime_1" ;
+    		altfrm_use_flg:flag_values = 0, 1 ;
+    		altfrm_use_flg:flag_meanings = "usable not_usable" ;
+    		altfrm_use_flg:valid_min = 0 ;
+    		altfrm_use_flg:valid_max = 1 ;
+    	byte orbit_att_flg(DS_UTCTime_1) ;
+    		orbit_att_flg:hertz = "1" ;
+    		orbit_att_flg:long_name = "Attitude flag" ;
+    		orbit_att_flg:description = "modeled_attitude_used indicates possible orbit degradation." ;
+    		orbit_att_flg:source = "Rel 34 GLAS Binary Data" ;
+    		orbit_att_flg:coordinates = "DS_UTCTime_1" ;
+    		orbit_att_flg:flag_values = 0, 1 ;
+    		orbit_att_flg:flag_meanings = "instrument_attitude_used_for_orbit modeled_attitude_used" ;
+    		orbit_att_flg:valid_min = 0 ;
+    		orbit_att_flg:valid_max = 1 ;
+    	byte att_ist_flg(DS_UTCTime_1) ;
+    		att_ist_flg:hertz = "1" ;
+    		att_ist_flg:long_name = "Attitude Flag 1" ;
+    		att_ist_flg:description = "IST data flag; Indicates if IST data are good, missing for at least a portion of the time of this frame, noisy for at least a portion of the time of this frame or noisy and missing for at least a portion of the time of this frame." ;
+    		att_ist_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_ist_flg:coordinates = "DS_UTCTime_1" ;
+    		att_ist_flg:flag_values = 0, 1, 2, 3 ;
+    		att_ist_flg:flag_meanings = "good missing noisy missing_noisy" ;
+    		att_ist_flg:valid_min = 0 ;
+    		att_ist_flg:valid_max = 1 ;
+    	byte att_lrs_flg(DS_UTCTime_1) ;
+    		att_lrs_flg:hertz = "1" ;
+    		att_lrs_flg:long_name = "Attitude Flag 1" ;
+    		att_lrs_flg:description = "LRS Data flag; Indicates the following conditions: LRS data good, consists of star, laser and CRS; LRS data good, but no star data for at least a portion of this frame; LRS data good, but no laser data for at least a portion of this frame; LRS data good, but no CRS data for at least a portion of this frame; LRS data good, but only CRS data for at least a portion of this frame; LRS data good, but only laser data for at least a portion of this frame; LRS data good, but only star data for at least a portion of this frame; Missing LRS for at least a portion of the time of this frame." ;
+    		att_lrs_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_lrs_flg:coordinates = "DS_UTCTime_1" ;
+    		att_lrs_flg:flag_values = 0, 1, 2, 3, 4, 5, 6, 7 ;
+    		att_lrs_flg:flag_meanings = "good no_star no_laser no_crs only_crs only_laser only_star missing_lrs" ;
+    		att_lrs_flg:valid_min = 0 ;
+    		att_lrs_flg:valid_max = 1 ;
+    	byte att_offnadir_flg(DS_UTCTime_1) ;
+    		att_offnadir_flg:hertz = "1" ;
+    		att_offnadir_flg:long_name = "Attitude Flag 1" ;
+    		att_offnadir_flg:description = "Off-nadir angle flag; Indicates if off-nadir angle is within limits." ;
+    		att_offnadir_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_offnadir_flg:coordinates = "DS_UTCTime_1" ;
+    		att_offnadir_flg:flag_values = 0, 1 ;
+    		att_offnadir_flg:flag_meanings = "within_limit outside_limits" ;
+    		att_offnadir_flg:valid_min = 0 ;
+    		att_offnadir_flg:valid_max = 1 ;
+    	byte att_actual_flg(DS_UTCTime_1) ;
+    		att_actual_flg:hertz = "1" ;
+    		att_actual_flg:long_name = "Attitude Flag 1" ;
+    		att_actual_flg:description = "Actual data bits flag; Indicates if the first 3 Attitide Flags have been set based on actual data, if ignore, then IGNORE those bits." ;
+    		att_actual_flg:source = "Rel 34 GLAS Binary Data" ;
+    		att_actual_flg:coordinates = "DS_UTCTime_1" ;
+    		att_actual_flg:flag_values = 0, 1 ;
+    		att_actual_flg:flag_meanings = "actual ignore" ;
+    		att_actual_flg:valid_min = 0 ;
+    		att_actual_flg:valid_max = 1 ;
+    	byte altfrm_data_flg(DS_UTCTime_1) ;
+    		altfrm_data_flg:hertz = "1" ;
+    		altfrm_data_flg:long_name = "Altimeter Frame Quality Flag" ;
+    		altfrm_data_flg:description = "Frame data flag; Indicates if there are at least some usable data in the frame; or if all elevations in the frame are bad due to problems with corrections." ;
+    		altfrm_data_flg:source = "Rel 34 GLAS Binary Data" ;
+    		altfrm_data_flg:coordinates = "DS_UTCTime_1" ;
+    		altfrm_data_flg:flag_values = 0, 1 ;
+    		altfrm_data_flg:flag_meanings = "good not_good" ;
+    		altfrm_data_flg:valid_min = 0 ;
+    		altfrm_data_flg:valid_max = 1 ;
+
+    // group attributes:
+    		:Description = "This group contains data quality flags and related parameters." ;
+    } // group Quality
+
+  group: Geolocation {
+    variables:
+    	double d_lat(DS_UTCTime_1) ;
+    		d_lat:units = "degrees_north" ;
+    		d_lat:hertz = "1" ;
+    		d_lat:long_name = "Spot 1 Coordinate Data, Latitude Corrected" ;
+    		d_lat:standard_name = "latitude" ;
+    		d_lat:description = "The geodetic latitude of the laser spot computed from the precision orbit, precision attitude, and ice-sheet specific range after instrument corrections, atmospheric delays and tides have been applied. The values are in degrees north." ;
+    		d_lat:source = "Rel 34 GLAS Binary Data" ;
+    		d_lat:coordinates = "DS_UTCTime_1" ;
+    		d_lat:valid_min = -90. ;
+    		d_lat:valid_max = 90. ;
+    	double d_lon(DS_UTCTime_1) ;
+    		d_lon:units = "degrees_east" ;
+    		d_lon:hertz = "1" ;
+    		d_lon:long_name = "Spot 1 Coordinate Data, Longitude Corrected" ;
+    		d_lon:standard_name = "longitude" ;
+    		d_lon:description = "The longitude of the laser spot computed from the Precision orbit, precision attitude, and ice-sheet specific range after instrument corrections, atmospheric delays and tides have been applied. The values are in degrees east." ;
+    		d_lon:source = "Rel 34 GLAS Binary Data" ;
+    		d_lon:coordinates = "DS_UTCTime_1" ;
+    		d_lon:valid_min = 0. ;
+    		d_lon:valid_max = 360. ;
+    	int i_track(DS_UTCTime_1) ;
+    		i_track:hertz = "1" ;
+    		i_track:long_name = "Track" ;
+    		i_track:description = "The track number." ;
+    		i_track:source = "Rel 34 GLAS Binary Data" ;
+    		i_track:coordinates = "DS_UTCTime_1" ;
+
+    // group attributes:
+    		:Description = "This group contains geolocation-related parameters." ;
+    } // group Geolocation
+  } // group Data_1HZ
+
+group: BROWSE {
+  dimensions:
+  	dim1 = 700 ;
+  	dim2 = 1000 ;
+  	dim3 = 3 ;
+  	dim4 = 700 ;
+  	dim5 = 1000 ;
+  	dim6 = 3 ;
+  	dim7 = 700 ;
+  	dim8 = 1000 ;
+  	dim9 = 3 ;
+  	dim10 = 700 ;
+  	dim11 = 1000 ;
+  	dim12 = 3 ;
+  variables:
+  	ubyte Image_00(dim1, dim2, dim3) ;
+  		Image_00:IMAGE_SUBCLASS = "IMAGE_TRUECOLOR" ;
+  		Image_00:IMAGE_VERSION = "1.2" ;
+  		Image_00:INTERLACE_MODE = "INTERLACE_PIXEL" ;
+  	ubyte Image_01(dim4, dim5, dim6) ;
+  		Image_01:IMAGE_SUBCLASS = "IMAGE_TRUECOLOR" ;
+  		Image_01:IMAGE_VERSION = "1.2" ;
+  		Image_01:INTERLACE_MODE = "INTERLACE_PIXEL" ;
+  	ubyte Image_02(dim7, dim8, dim9) ;
+  		Image_02:IMAGE_SUBCLASS = "IMAGE_TRUECOLOR" ;
+  		Image_02:IMAGE_VERSION = "1.2" ;
+  		Image_02:INTERLACE_MODE = "INTERLACE_PIXEL" ;
+  	ubyte Image_03(dim10, dim11, dim12) ;
+  		Image_03:IMAGE_SUBCLASS = "IMAGE_TRUECOLOR" ;
+  		Image_03:IMAGE_VERSION = "1.2" ;
+  		Image_03:INTERLACE_MODE = "INTERLACE_PIXEL" ;
+  } // group BROWSE
+}

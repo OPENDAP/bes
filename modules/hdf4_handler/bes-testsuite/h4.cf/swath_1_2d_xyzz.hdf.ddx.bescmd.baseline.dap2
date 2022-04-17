@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="swath_1_2d_xyzz.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>ZDim:Swath</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>NDim:Swath</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Geolocation_Fields_pressure" type="Container">
+        <Attribute name="Vdata_field_pressure" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Geolocation_Fields_level" type="Container">
+        <Attribute name="Vdata_field_level" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Geolocation_Fields_Latitude" type="Container">
+        <Attribute name="Vdata_field_Latitude" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Swath_Geolocation_Fields_Longitude" type="Container">
+        <Attribute name="Vdata_field_Longitude" type="Float32">
+            <value>0.000000000</value>
+            <value>1.000000000</value>
+            <value>2.000000000</value>
+            <value>3.000000000</value>
+            <value>4.000000000</value>
+            <value>5.000000000</value>
+            <value>6.000000000</value>
+            <value>7.000000000</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Swath_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim_Swath" size="4"/>
+        <dimension name="NDim_Swath" size="8"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

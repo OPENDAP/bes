@@ -26,7 +26,7 @@
 
 #include "config.h"
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 #include <BESObj.h>
 #include <BESDebug.h>

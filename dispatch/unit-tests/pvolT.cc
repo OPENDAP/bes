@@ -46,8 +46,8 @@
 #include "BESError.h"
 #include "BESTextInfo.h"
 
-#include <GetOpt.h>
-#include <debug.h>
+#include <unistd.h>
+#include <libdap/debug.h>
 
 #include "test_config.h"
 
@@ -117,6 +117,15 @@ public:
     void tearDown()
     {
     }
+
+    CPPUNIT_TEST_SUITE(pvolT);
+
+    CPPUNIT_TEST(add_container_test);
+    CPPUNIT_TEST(add_overlapping_container);
+    CPPUNIT_TEST(test_look_for_containers);
+    CPPUNIT_TEST(test_del_container);
+
+    CPPUNIT_TEST_SUITE_END();
 
     // The rest of the tests depend on these settings; call this 'test' from
     // them to set up the those tests.
@@ -229,25 +238,14 @@ public:
             }
         }
     }
-
-CPPUNIT_TEST_SUITE( pvolT );
-
-    CPPUNIT_TEST(add_container_test);
-    CPPUNIT_TEST(add_overlapping_container);
-    CPPUNIT_TEST(test_look_for_containers);
-    CPPUNIT_TEST(test_del_container);
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(pvolT);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dDh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -268,20 +266,23 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = pvolT::suite()->getName().append("::").append(argv[i]);
+            test = pvolT::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

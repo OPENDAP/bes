@@ -1,0 +1,3 @@
+Dataset {
+    Int32 sds[fakeDim0 = 2][fakeDim1 = 2];
+} special_char_var_attr_sds.hdf;

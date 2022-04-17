@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <string>
+#include <memory>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -35,29 +36,6 @@ using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
-void
-DmrppByte::_duplicate(const DmrppByte &)
-{
-}
-
-DmrppByte::DmrppByte(const string &n) : Byte(n), DmrppCommon()
-{
-}
-
-DmrppByte::DmrppByte(const string &n, const string &d) : Byte(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppByte::ptr_duplicate()
-{
-    return new DmrppByte(*this);
-}
-
-DmrppByte::DmrppByte(const DmrppByte &rhs) : Byte(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
 
 DmrppByte &
 DmrppByte::operator=(const DmrppByte &rhs)
@@ -67,8 +45,8 @@ DmrppByte::operator=(const DmrppByte &rhs)
 
     dynamic_cast<Byte &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    // DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -77,14 +55,26 @@ bool DmrppByte::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
+     set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
 
     set_read_p(true);
 
     return true;
+}
+
+void
+DmrppByte::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Byte::set_send_p(state);
 }
 
 void DmrppByte::dump(ostream & strm) const

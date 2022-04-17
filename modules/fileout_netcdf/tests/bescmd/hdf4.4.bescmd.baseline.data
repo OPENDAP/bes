@@ -250,7 +250,8 @@ variables:
 		:HDF_Conversion_Organization = "JPL PO.DAAC\\000" ;
 		:HDF_Conversion_Time = "1996-320T17:32:34       " ;
 		:Data_Format_Type = "HDF\\000" ;
-		:history = "removed date-timex S2000415.HDF?" ;
+		:history = "removed date-timex S2000415.HDF\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S2000415.HDF\"}]}]" ;
 data:
 
  NSCAT_Rev_20.WVC_Lat =

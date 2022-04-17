@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,23 +37,21 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppStructure: public libdap::Structure, public DmrppCommon {
-    void _duplicate(const DmrppStructure &ts);
 
 public:
-    DmrppStructure(const std::string &n);
-    DmrppStructure(const std::string &n, const std::string &d);
-    DmrppStructure(const DmrppStructure &rhs);
+    DmrppStructure(const std::string &n) : libdap::Structure(n), DmrppCommon() { }
+    DmrppStructure(const std::string &n, const std::string &d) : libdap::Structure(n, d), DmrppCommon() { }
+    DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Structure(n), DmrppCommon(dmz) { }
+    DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Structure(n, d), DmrppCommon(dmz) { }
+    DmrppStructure(const DmrppStructure &) = default;
 
-    virtual ~DmrppStructure() {}
+    virtual ~DmrppStructure() = default;
 
     DmrppStructure &operator=(const DmrppStructure &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
-
-#if 0
-    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained);
-#endif
-
+    virtual libdap::BaseType *ptr_duplicate()  {
+        return new DmrppStructure(*this);
+    }
 
     virtual void dump(ostream & strm) const;
 };

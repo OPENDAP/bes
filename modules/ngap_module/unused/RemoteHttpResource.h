@@ -34,9 +34,9 @@
 #include <string>
 #include <vector>
 
-//#include "util.h"
-#include "InternalErr.h"
-#include "RCReader.h"
+//#include <libdap/util.h>
+#include <libdap/InternalErr.h>
+#include <libdap/RCReader.h>
 
 namespace ngap {
 

@@ -57,7 +57,7 @@ public:
      * The caller will likely prepend it themselves as needed.
      * @return the new object wrapped as a source return.
      */
-    auto_ptr<ArrayJoinExistingAggregation> makeAggregatedOuterMapVector() const;
+    unique_ptr<ArrayJoinExistingAggregation> makeAggregatedOuterMapVector() const;
 
 protected:
     // subclass interface
@@ -74,7 +74,7 @@ private:
     void duplicate(const GridJoinExistingAggregation& rhs);
 
     /** Delete any heap memory */
-    void cleanup() throw ();
+    void cleanup() const noexcept;
 
     /** Create the representation.
      * Replaces our data Array with an aggregating one.
@@ -88,7 +88,6 @@ private:
     void transferConstraintsToSubGridMaps(Grid* pSubGrid);
     void transferConstraintsToSubGridArray(Grid* pSubGrid);
 
-private:
     // Data Rep
 
     Dimension _joinDim;

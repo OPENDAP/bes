@@ -96,7 +96,7 @@ public:
     {
         _info->add_data_from_file(key, name);
     }
-    virtual void add_exception(BESError &e, const std::string &admin)
+    virtual void add_exception(const BESError &e, const std::string &admin)
     {
         _info->add_exception(e, admin);
     }

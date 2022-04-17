@@ -6,7 +6,7 @@
         <String name="time"/>
         <String name="DODS_URL"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>000007c1</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -740,5 +740,6 @@ Sequence {
 714: { 1985, 363, "d", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1985/1985363h09dd-gdm.hdf.Z" }, 
 715: { 1985, 364, "a", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1985/1985364h09da-gdm.hdf.Z" }, 
 716: { 1985, 364, "d", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1985/1985364h09dd-gdm.hdf.Z" }, 
-717: { 1985, 365, "a", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1985/1985365h09da-gdm.hdf.Z" } };
+717: { 1985, 365, "a", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1985/1985365h09da-gdm.hdf.Z" }, 
+718: { 1985, 365, "d", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1985/1985365h09dd-gdm.hdf.Z" } };
 

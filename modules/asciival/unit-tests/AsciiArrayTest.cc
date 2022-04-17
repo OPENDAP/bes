@@ -33,22 +33,13 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "DDS.h"
+#include <libdap/DDS.h>
 
 #include "AsciiArray.h"
 #include "AsciiOutputFactory.h"
 #include "test_config.h"
 
 #include "modules/run_tests_cppunit.h"
-
-#if 0
-#include <GetOpt.h>
-
-static bool debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
-#endif
 
 bool translate = false;
 using namespace CppUnit;

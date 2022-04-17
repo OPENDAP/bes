@@ -39,25 +39,19 @@
  */
 class BESForbiddenError : public BESError
 {
-protected:
-      			BESForbiddenError() {}
 public:
-      			BESForbiddenError( const std::string &s,
-					  const std::string &file,
-					  unsigned int line )
-			    : BESError( s, BES_FORBIDDEN_ERROR,
-			                file, line ) {}
-    virtual		~BESForbiddenError() {}
+    BESForbiddenError( std::string s, std::string file, unsigned int line )
+        : BESError( std::move(s), BES_FORBIDDEN_ERROR, std::move(file), line ) {}
 
-    virtual void	dump( std::ostream &strm ) const
-			{
-			    strm << "BESForbiddenError::dump - ("
-			         << (void *)this << ")" << std::endl ;
-			    BESIndent::Indent() ;
-			    BESError::dump( strm ) ;
-			    BESIndent::UnIndent() ;
-			}
+    ~BESForbiddenError() override = default;
 
+    void dump( std::ostream &strm ) const override
+    {
+        strm << "BESForbiddenError::dump - (" << (void *)this << ")" << std::endl ;
+        BESIndent::Indent() ;
+        BESError::dump( strm ) ;
+        BESIndent::UnIndent() ;
+    }
 };
 
 #endif // BESForbiddenError_h_

@@ -29,7 +29,13 @@ FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcd
 # The default values for these keys
 FONc.UseCompression = true
 FONc.ChunkSize = 4096
-FONc.ClassicModel = true
+FONc.ClassicModel = false
+
+FONc.RequestMaxSizeKB = 0
+# If you need to limit the max size of a response to something that will take
+# about 3 min, uncomment the following line and comment the line above.
+# FONc.RequestMaxSizeKB = 2500000
+# You may have to experiment with values a bit to accommodate different hardware.
 
 # The old default value was: FONc.ClassicModel = true. This breaks Int64 support.
 # jhrg 6/15/20

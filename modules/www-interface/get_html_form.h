@@ -26,8 +26,8 @@
 // the same basic processing software can be used both by Hyrax and tie older
 // Server3.
 
-#include <BaseType.h>
-#include <DDS.h>
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
 #include "WWWOutput.h"
 
 namespace dap_html_form {

@@ -27,9 +27,9 @@
 
 #include <stdlib.h>     
 
-#include <BaseType.h>
-#include <DDS.h>
-#include <ServerFunction.h>
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 #include "BESAbstractModule.h"
 
 namespace debug_function {

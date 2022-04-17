@@ -4,9 +4,11 @@
 
 README for the OPeNDAP BES 
 ==========================
-# Version 3.20.8 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4399984.svg)](https://doi.org/10.5281/zenodo.4399984)
+# Version 3.20.10 
+_DOI available at https://zenodo.org/ search for OPENDAP/bes version 3.20.10_
+
                                   
-This version of the BES is part of Hyrax 1.16.3, a data server that supports the
+This version of the BES is part of Hyrax 1.16.4, a data server that supports the
 OPeNDAP data access protocols. See 
 [opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
 for information about Hyrax.
@@ -15,7 +17,9 @@ For specific information about the BES, see the file _NEWS_ for a summary of new
 features and important updates. See _ChangeLog_ for a complete listing of changes/fixes 
 since the previous release. 
 
-This version of the BES requires *libdap-3.20.7* [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3759849.svg)](https://doi.org/10.5281/zenodo.3759849)
+This version of the BES requires *libdap-3.20.9*
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5807905.svg)](https://doi.org/10.5281/zenodo.5807905)
+
 
 # Introduction
 The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
@@ -454,6 +458,8 @@ CF option:
     copyrighted by the University Corporation for Atmospheric Research;
     see the file COPYRIGHT_UCAR.
     
+## PicoSHA2 license
+
     The BES uses PicoSHA2 - a library that provides an implementation of the 
     SHA256 hashing algorithm; its copyright follows
     
@@ -469,3 +475,48 @@ CF option:
     The above copyright notice and this permission notice shall be included in
     all copies or substantial portions of the Software.
 
+    The BES uses pugixml - a source code header library that provides xml parsing.
+    Its license explicitly includes such use:
+
+## pugixml license
+
+    MIT License
+
+    Copyright (c) 2006-2020 Arseny Kapoulkine
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the "Software"), to deal in the Software without
+    restriction, including without limitation the rights to use,
+    copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.
+
+## rapidjson license
+
+// Tencent is pleased to support the open source community by making RapidJSON available.
+// 
+// Copyright (C) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
+//
+// Licensed under the MIT License (the "License"); you may not use this file except
+// in compliance with the License. You may obtain a copy of the License at
+//
+// http://opensource.org/licenses/MIT
+//
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.

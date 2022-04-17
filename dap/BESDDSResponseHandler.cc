@@ -34,7 +34,7 @@
 
 #include <memory>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include "BESDDSResponseHandler.h"
 #include "BESDDSResponse.h"
@@ -141,7 +141,7 @@ void BESDDSResponseHandler::execute(BESDataHandlerInterface &dhi)
                 if (dods_extra)
                     dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
                 else {
-                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
+                    unique_ptr<AttrTable> new_dods_extra(new AttrTable);
                     new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
                     resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
                 }

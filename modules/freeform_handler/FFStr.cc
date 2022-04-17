@@ -45,7 +45,7 @@
 #include <cstring>
 
 #include "FFStr.h"
-#include "util.h"
+#include <libdap/util.h>
 
 extern long BufPtr;   // set by read functions
 extern char * BufVal; // set by first call to sequence
@@ -68,11 +68,6 @@ FFStr::read()
 
 	if (BufVal) { // Data in cache
         char *ptr = BufVal + BufPtr;
-
-#if 0
-        // TODO Use vector? jhrg 8/19/14
-        char *TmpBuf = new char[length() + 1];
-#endif
         vector<char> TmpBuf(length() + 1);
 
         // This code prunes both trailing and leading spaces from strings.
@@ -92,18 +87,11 @@ FFStr::read()
             if (!isspace(*(ptr + j))) break;
 
         sLength = i - j + 1;
-		strncpy(&TmpBuf[0], ptr + j, i - j + 1);
-		TmpBuf[i - j + 1] = '\0';
+		strncpy(&TmpBuf[0], ptr + j, sLength /*i - j + 1 jhrg 4/7/22*/);
+		TmpBuf[sLength /*i - j + 1 jhrg 4/7/22*/] = '\0';
 
 		// Use set_value() jhrg 8/19/14
 		set_value(&TmpBuf[0]);
-#if 0
-		string *Nstr = new string((const char *) TmpBuf);
-		delete[] TmpBuf;
-
-		val2buf(Nstr);
-		delete Nstr;
-#endif
 		set_read_p(true);
 
 		BufPtr += length();

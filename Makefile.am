@@ -29,13 +29,14 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = http dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
+SUBDIRS = dispatch xmlcommand ppt server http cmdln standalone docs bin templates hello_world
 
 if LIBDAP
 SUBDIRS += dap dapreader
 
 if DAP_BUILTIN_MODULES
-SUBDIRS += functions modules
+SUBDIRS += modules
+# moved functions to the modules directory. jhrg 12.22.21
 endif
 
 endif
@@ -59,10 +60,21 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = doxy.conf.in bes-config-pkgconfig \
-bes-tmpfiles-conf besd.logrotate README.md rapidjson
+bes-tmpfiles-conf besd.logrotate README.md rapidjson pugixml
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
+
+framework = dispatch xmlcommand ppt server http dap dapreader
+.PHONY: framework-only
+framework-only:
+	for d in $(framework); do $(MAKE) -C $$d $(MFLAGS); done
+
+# Added this as a simple way to test the framework without the modules.
+# jhrg 3.18.22
+.PHONY: framework-check
+framework-check:
+	for d in $(framework); do $(MAKE) check -C $$d $(MFLAGS); done
 
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.

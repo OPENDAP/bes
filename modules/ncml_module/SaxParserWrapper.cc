@@ -129,12 +129,13 @@ static int toXMLAttributeMapNoNamespaces(XMLAttributeMap& attrMap, const xmlChar
       catch (BESError& theErr) \
       { \
         BESDEBUG("ncml", "Caught BESError&, deferring..." << endl); \
-        _spw_->deferException(theErr); \
+        BESInternalError _badness_("ParseError: " + theErr.get_message() , theErr.get_file(), theErr.get_line());\
+        _spw_->deferException(_badness_); \
       } \
       catch (std::exception& ex) \
       { \
         BESDEBUG("ncml", "Caught std::exception&, wrapping and deferring..." << endl); \
-        BESInternalError _badness_("Wrapped std::exception.what()=" + string(ex.what()), __FILE__, __LINE__);\
+        BESInternalError _badness_("ParseError: " + string(ex.what()), __FILE__, __LINE__);\
         _spw_->deferException(_badness_); \
       } \
       catch (...)  \
@@ -462,6 +463,6 @@ void SaxParserWrapper::setupParser()
 }
 
 // Leak fix. jhrg 6/21/19
-void SaxParserWrapper::cleanupParser() throw ()
+void SaxParserWrapper::cleanupParser() noexcept
 {
 }

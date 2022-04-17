@@ -1,0 +1,3 @@
+Dataset {
+    Float32 Swath_Data_Fields_temperature[ZDim_Swath = 4][ZDim_Swath = 4][NDim_Swath = 8];
+} swath_1_3d_xyz_2dim.hdf;

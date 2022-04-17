@@ -32,20 +32,20 @@
 
 #include <memory>
 
-#include <BaseType.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
-#include <D4Group.h>
-#include <DMR.h>
+#include <libdap/BaseType.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/D4Group.h>
+#include <libdap/DMR.h>
 #include <D4ConstraintEvaluator.h>
-#include <D4BaseTypeFactory.h>
-#include <ServerFunctionsList.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/ServerFunctionsList.h>
 #include <D4FunctionEvaluator.h>
-#include <crc.h>
-#include <InternalErr.h>
-#include <util.h>
-#include <escaping.h>
-#include <mime_util.h>
+#include <libdap/crc.h>
+#include <libdap/InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/escaping.h>
+#include <libdap/mime_util.h>
 
 #include <BESUtil.h>
 #include <BESDapNames.h>
@@ -96,7 +96,7 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
 
         // Send data values as CSV/ASCII
-        auto_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
+        unique_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
 
         get_data_values_as_ascii(ascii_dds.get(), dhi.get_output_stream());
         dhi.get_output_stream() << flush;

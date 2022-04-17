@@ -27,10 +27,10 @@
 #include <sstream>
 #include <memory>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include "BESDMRResponseHandler.h"
 #include "BESDMRResponse.h"

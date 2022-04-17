@@ -42,10 +42,10 @@
 #include <iostream>
 #include <iomanip>
 
-#include <BaseType.h>
-#include <DDS.h>
-#include <Constructor.h>
-#include <Array.h>
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
+#include <libdap/Constructor.h>
+#include <libdap/Array.h>
 
 using std::istringstream;
 using std::cout;
@@ -113,17 +113,14 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
     remainder = rem;
 
     // Remove leading slash
-    if (rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
+    if (!rem.empty() && rem[0] == '/') rem.erase(0, 1);
 
-    // Remove trailing slash
-    if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
+    BESUtil::trim_if_trailing_slash(rem);
 
     // full path of the thing to check
     string fullpath = catalogRoot;
-    // Remove leading slash
-    if (fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
-    }
+
+    BESUtil::trim_if_trailing_slash(fullpath);
 
     // path checked so far
     string checking;

@@ -1,0 +1,39 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    Swath1_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    Swath1_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath1";
+    }
+    Swath1_Data_Fields_temperature_dim_1 {
+        String name "NDim:Swath1";
+    }
+    Swath2_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    Swath2_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath2";
+    }
+    Swath2_Data_Fields_temperature_dim_1 {
+        String name "NDim:Swath2";
+    }
+    Swath1_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000;
+    }
+    Swath1_Geolocation_Fields_Latitude {
+        Float32 Vdata_field_Latitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+    Swath1_Geolocation_Fields_Longitude {
+        Float32 Vdata_field_Longitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+    Swath2_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+    Swath2_Geolocation_Fields_Latitude {
+    }
+    Swath2_Geolocation_Fields_Longitude {
+    }
+}

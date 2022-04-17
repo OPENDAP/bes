@@ -34,9 +34,9 @@
 #include <map>
 
 
-#include <BaseType.h>
-#include <DDS.h>
-#include <Array.h>
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
+#include <libdap/Array.h>
 
 
 #include <BESObj.h>

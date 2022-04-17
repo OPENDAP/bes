@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/MOD16A2.A2017145.h10v04.006.2017160232658.hdf</setContainer>
+    <define name="d">
+	<container name="grid_1_2d" >
+    <constraint> 
+      ET_500m[0:400:2399][0:400:2399],LE_500m[0:400:2399][0:400:2399]
+    </constraint>
+    </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

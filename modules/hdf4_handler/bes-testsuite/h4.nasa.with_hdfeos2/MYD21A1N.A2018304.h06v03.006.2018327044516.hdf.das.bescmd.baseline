@@ -1,0 +1,428 @@
+Attributes {
+    LST_1KM {
+        String coordinates "Latitude Longitude";
+        String long_name "Daily 1km Land-surface Temperature";
+        String units "K";
+        Float64 scale_factor 0.020000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        UInt16 valid_range 7500, 65535;
+        UInt16 _FillValue 0;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    QC {
+        String coordinates "Latitude Longitude";
+        String long_name "Daily QC for LST and emissivity";
+        String units "n/a";
+        String scale_factor "n/a";
+        String add_offset "n/a";
+        UInt16 valid_range 0, 65535;
+        String QA_Legend "Bit Fields Description (Right to Left):
+                [0-1]: MODLAND_QA 
+                 00: Pixel produced, good quality, no further QA info necessary
+                  01: Pixel produced but unreliable quality. Either one or more of the following conditions are met: emissivity in both bands 31 and 32 < 0.95, retrieval affected by nearby cloud, low transmissivity due to high water vapor loading (<0.4), Recommend more detailed analysis of other QC information
+                  10: Pixel not produced due to cloud
+                  11: Pixel not produced due to other reasons than clouds
+                  
+                [2-3]: Data Quality Flag
+                  00: Good data quality of L1B bands 29,31,32
+                 01: Missing Pixel
+                  10: Fairly calibrated
+                  11: Poorly calibrated, TES processing skipped
+                  
+                [4-5]: Cloud Flag
+                  00: Cloud free
+                  01: Thin Cirrus
+                  10: Pixel within 2 pixels of nearest cloud (~2km)
+                  11: Cloudy pixel
+                  
+                [6-7]: Iterations
+                  00: >=7 (Slow convergence)
+                  01: = 6 (Nominal)
+                  10: = 5 (Nominal)
+                  11: = <5 (Fast)
+                  
+                [8-9]: Atmospheric Opacity
+                  00: >=3 (Warm, humid air; or cold land)
+                  01: 0.2 - 0.3 (Nominal value)
+                  10: 0.1 - 0.2 (Nominal value)
+                  11: <0.1 (Dry, or high altitude pixel)
+                  
+                [10 - 11]: MMD
+                  00: > 0.15 (Most silicate rocks)
+                  01: 0.1 - 0.15 (Rocks, sand, some soils)
+                  10: 0.03 - 0.1 (Mostly soils, mixed pixel)
+                  11: <0.03 (Vegetation, snow, water, ice)
+                 
+                [12 - 13]: Emissivity accuracy
+                  00: >0.02 (Poor performance)
+                  01: 0.015 - 0.02 (Marginal performance)
+                  10: 0.01 - 0.015 (Good performance)
+                 11: <0.01 (Excellent performance)
+                 
+                [14 - 15]: LST accuracy
+                  00: >2K (Poor performance)
+                  01: 1.5 - 2K (Marginal performance)
+                  10: 1 - 1.5K (Good performance)
+                 11: < 1K (Excellent performance)
+";
+        UInt16 _FillValue 0;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    View_Angle {
+        String coordinates "Latitude Longitude";
+        String long_name "View zenith angle of LST";
+        String units "deg";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset -65.000000000000000;
+        Byte valid_range 0, 130;
+        Byte _FillValue 255;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    View_Time {
+        String coordinates "Latitude Longitude";
+        String long_name "Time of LST observation";
+        String units "hrs";
+        Float64 scale_factor 0.10000000000000001;
+        Float64 add_offset 0.0000000000000000;
+        Byte valid_range 0, 240;
+        Byte _FillValue 255;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    Emis_29 {
+        String coordinates "Latitude Longitude";
+        String long_name "Daily Band 29 emissivity";
+        String units "n/a";
+        Float64 scale_factor 0.0020000000000000000;
+        Float64 add_offset 0.48999999999999999;
+        Byte valid_range 1, 255;
+        Byte _FillValue 0;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    Emis_31 {
+        String coordinates "Latitude Longitude";
+        String long_name "Daily Band 31 emissivity";
+        String units "n/a";
+        Float64 scale_factor 0.0020000000000000000;
+        Float64 add_offset 0.48999999999999999;
+        Byte valid_range 1, 255;
+        Byte _FillValue 0;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    Emis_32 {
+        String coordinates "Latitude Longitude";
+        String long_name "Daily Band 32 emissivity";
+        String units "n/a";
+        Float64 scale_factor 0.0020000000000000000;
+        Float64 add_offset 0.48999999999999999;
+        Byte valid_range 1, 255;
+        Byte _FillValue 0;
+        String grid_mapping "MODIS_Grid_Daily_1km_LST21_eos_cf_projection";
+    }
+    Xdim {
+        String long_name "Xdim(fake)";
+        String units "level";
+    }
+    Ydim {
+        String long_name "Ydim(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection for grid MODIS_Grid_Daily_1km_LST21";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection for grid MODIS_Grid_Daily_1km_LST21";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    MODIS_Grid_Daily_1km_LST21_eos_cf_projection {
+        String grid_mapping_name "sinusoidal";
+        Float64 longitude_of_central_meridian 0.0;
+        Float64 earth_radius 6371007.181;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD21A1N.A2018304.h06v03.006.2018327044516.hdf";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Night";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2018-11-23T04:45:16.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "6.0.3";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        Int32 NUM_VAL 1;
+                        String CLASS "1";
+                        String VALUE "MOD21A1";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "No automatic quality assessment is performed in the PGE";
+                        }
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "See http://landweb.nascom/nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua&ver=C6 the product Science Quality status.";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTINTERPOLATEDDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 100;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTCLOUDCOVER {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD21A1N";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 6;
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 2000;
+                    String VALUE "MYDPT1KN.A2018304.h06v03.006.2018305160121.hdf", "MYDMGGAN.A2018304.h06v03.006.2018305160122.hdf", "MYD21GN.A2018304.h06v03.006.2018327044512.hdf", "MYD03.A2018304.1250.006.2018305151511.hdf", "MYD03.A2018304.1425.006.2018305151823.hdf", "
+          MYD03.A2018304.1430.006.2018305151758.hdf", "MYD03.A2018304.1605.006.2018305151744.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -179.992134861363, 179.772448416142, -170.902271640411, -171.137429906162;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 49.9153635833568, 52.3246240712095, 52.3226593249021, 49.9159685774189;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2018-10-31";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2018-10-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "23:59:59";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "6.0.16";
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "HORIZONTALTILENUMBER", "VERTICALTILENUMBER", "TileID", "PROCESSVERSION", "identifier_product_doi", "identifier_product_doi_authority";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                            String VALUE "0", "100", "0", "0", "6", "3", "51006003", "6.0.3", "10.5067/MODIS/MYD21A1N.006", "http://dx.doi.org";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ALGORITHMPACKAGE {
+                ALGORITHMPACKAGEACCEPTANCEDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "102014";
+                }
+                ALGORITHMPACKAGEMATURITYCODE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Normal";
+                }
+                ALGORITHMPACKAGENAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD_PR21A1";
+                }
+                ALGORITHMPACKAGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "6";
+                }
+            }
+            PROJECT {
+                LONGNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MODIS/Aqua Land Surface Temperature/3-Band Emissivity Daily L3 Global 1km SIN Grid Night";
+                }
+                INSTRUMENTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Moderate-Resolution Imaging SpectroRadiometer";
+                }
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            BOUNDINGRECTANGLE {
+                NORTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 52.3333333286336;
+                }
+                SOUTHBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE 49.9999999955098;
+                }
+                EASTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -171.116656558073;
+                }
+                WESTBOUNDINGCOORDINATE {
+                    Int32 NUM_VAL 1;
+                    Float64 VALUE -179.999999967023;
+                }
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "none";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion7038 3.10.0-862.11.6.el7.x86_64 #1 SMP Tue Aug 14 21:49:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "6.2";
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.19";
+        String identifier_product_doi "10.5067/MODIS/MYD21A1N.006";
+        String identifier_product_doi_authority "http://dx.doi.org";
+    }
+}

@@ -36,7 +36,7 @@
 #ifndef _asciiarray_h
 #define _asciiarray_h 1
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include "AsciiOutput.h"
 
 using namespace libdap ;

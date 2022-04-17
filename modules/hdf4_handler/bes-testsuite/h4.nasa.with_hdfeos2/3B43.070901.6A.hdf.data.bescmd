@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="3B43.070901.6A" space="catalog">/data/3B43.070901.6A.hdf</setContainer>
+    <define name="d">
+	<container name="3B43.070901.6A">
+           <constraint>
+        DATA_GRANULE_PlanetaryGrid_precipitation[0:1:0][0:1439:1439][0:399:399],latitude[0:399:399],longitude[0:1439:1439],scan[0:1:0]
+           </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

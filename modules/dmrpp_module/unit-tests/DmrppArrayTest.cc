@@ -30,9 +30,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-#include <util.h>
-#include <debug.h>
+#include <unistd.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "BESContextManager.h"
 #include "BESError.h"
@@ -101,13 +101,12 @@ public:
     void read_contiguous_sc_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
+        shared_ptr<http::url> data_url(new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
         unsigned long long target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
         tiat.append_dim(target_file_size,"test_dim");
-        tiat.set_shuffle(false);
-        tiat.set_deflate(false);
+        tiat.set_filter("");
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
@@ -149,13 +148,12 @@ public:
     void read_contiguous_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
+        shared_ptr<http::url> data_url( new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
         unsigned long long target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
         tiat.append_dim(target_file_size,"test_dim");
-        tiat.set_shuffle(false);
-        tiat.set_deflate(false);
+        tiat.set_filter("");
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
@@ -211,9 +209,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dD");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dD")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -226,14 +223,17 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = dmrpp::DmrppArrayTest::suite()->getName().append("::").append(argv[i]);

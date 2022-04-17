@@ -34,6 +34,7 @@
 #define BESError_h_ 1
 
 #include <string>
+#include <stdexcept>
 
 #include "BESObj.h"
 
@@ -52,23 +53,23 @@
 // I added this for the timeout feature. jhrg 12/28/15
 #define BES_TIMEOUT_ERROR 6
 
-/** @brief Abstract exception class for the BES with basic string message
- *
+/**
+ * @brief Base exception class for the BES with basic string message
  */
-class BESError: public BESObj {
-protected:
-    std::string _msg;
-    unsigned int _type;
+class BESError: public std::exception,  public BESObj {
+private:
+    std::string _msg {"UNDEFINED"};
+    unsigned int _type {0};
     std::string _file;
-    unsigned int _line;
+    unsigned int _line {0};
 
-    BESError(): _msg("UNDEFINED"), _type(0), _file(""), _line(0) { }
+    BESError() = default;
 
 public:
     /** @brief constructor that takes message, type of error, source file
      * the error originated and the line number in the source file
      *
-     * @param msg error message
+     * @param msg error message. This is the information returned by what().
      * @param type type of error generated. Default list of error types are
      * defined above as internal error, internal fatal error, syntax/user
      * error, resource forbidden error, resource not found error.
@@ -76,49 +77,62 @@ public:
      * @param line the line number within the file in which this error
      * object was created
      */
-    BESError(const std::string &msg, unsigned int type, const std::string &file, unsigned int line) :
-            _msg(msg), _type(type), _file(file), _line(line)
-    {
-    }
-    virtual ~BESError()
-    {
-    }
+    BESError(std::string msg, unsigned int type, std::string file, unsigned int line) :
+            _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
+    { }
+    
+    /**
+     * @note Define this copy constructor as noexcept. See the web for why (e.g.,
+     * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
+     */
+    BESError(const BESError &src) noexcept
+        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
+
+    ~BESError() override = default;
+
+    /**
+     * @note Follow the rule of three - see https://en.cppreference.com/w/cpp/language/rule_of_three
+     */
+    BESError &operator=(const BESError &rhs) = delete;
 
     /** @brief set the error message for this exception
      *
      * @param msg message string
      */
-    virtual void set_message(const std::string &msg)
+    void set_message(const std::string &msg)
     {
         _msg = msg;
     }
+
     /** @brief get the error message for this exception
      *
      * @return error message
      */
-    virtual std::string get_message()
+    std::string get_message() const
     {
         return _msg;
     }
+
     /** @brief get the file name where the exception was thrown
      *
      * @return file name
      */
-    virtual std::string get_file()
+    std::string get_file() const
     {
         return _file;
     }
+
     /** @brief get the line number where the exception was thrown
      *
      * @return line number
      */
-    virtual int get_line()
+    unsigned int get_line() const
     {
         return _line;
     }
 
-    // Return the message, file and line
-    virtual std::string get_verbose_message();
+    // Return the message, file and line. Over load this for special messages, etc.
+    virtual std::string get_verbose_message() const;
 
     /** @brief Set the return code for this particular error class
      *
@@ -129,7 +143,7 @@ public:
      * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
      * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
-    virtual void set_bes_error_type(int type)
+    void set_bes_error_type(unsigned int type)
     {
         _type = type;
     }
@@ -140,16 +154,26 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    virtual int get_bes_error_type()
+    unsigned int get_bes_error_type() const
     {
         return _type;
+    }
+
+    // The pointer is valid only for the lifetime of the BESError instance. jhrg 3/29/22
+
+    /**
+     * @brief Return a brief message about the exception
+     * @return A char* that points to the message and is valid for the lifetime of this instance.
+     */
+    const char* what() const noexcept override {
+        return _msg.c_str();
     }
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESError_h_ 

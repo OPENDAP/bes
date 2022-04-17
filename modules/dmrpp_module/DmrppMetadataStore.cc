@@ -30,8 +30,8 @@
 #include <memory>
 #include <typeinfo>
 
-#include <DMR.h>
-#include <XMLWriter.h>
+#include <libdap/DMR.h>
+#include <libdap/XMLWriter.h>
 
 #include "BESDebug.h"
 
@@ -103,6 +103,7 @@ bool DmrppMetadataStore::d_enabled = true;
  * the pointer returned will be null and the cache will be marked as not enabled.
  * Subsequent calls will return immediately.
  */
+ // FIXME This code will not work correctly in a multi-thread situation. See http::EffectiveUrlCache();
 DmrppMetadataStore *
 DmrppMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {

@@ -32,7 +32,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 
 #include <BESConstraintFuncs.h>
 #include <BESContainerStorage.h>
@@ -135,11 +135,11 @@ DDSLoader::~DDSLoader()
 
 #if 0
 // Never used. 10/16/15 jhrg
-auto_ptr<BESDapResponse> DDSLoader::load(const string& location, ResponseType type)
+unique_ptr<BESDapResponse> DDSLoader::load(const string& location, ResponseType type)
 {
     // We need to make the proper response object as well, since in this call the dhi is coming in with the
     // response object for the original ncml request.
-    std::auto_ptr<BESDapResponse> response = makeResponseForType(type);
+    std::unique_ptr<BESDapResponse> response = makeResponseForType(type);
     loadInto(location, type, response.get());
     return response; // relinquish
 }
@@ -258,20 +258,20 @@ void DDSLoader::cleanup()
     ensureClean();
 }
 
-bool is_url(std::string location){
+bool is_url(const std::string &location) {
     std::string http("http://");
     std::string https("https://");
 
     // case insensitive check
     std::string tip = location.substr(0,http.size());
     std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
-    bool result = http.compare(tip)==0;
+    bool result = http == tip; // http.compare(tip)==0;
 
     // case insensitive check
     tip = location.substr(0,https.size());
     std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
 
-    result = result || http.compare(tip)==0;
+    result = result || http == tip; //http.compare(tip)==0;
 
     return result;
 }
@@ -297,8 +297,6 @@ DDSLoader::addNewContainerToStorage()
     }
 
     // Make a new symbol from the ncml filename
-    // NCML_ASSERT_MSG(_dhi.container, "DDSLoader::addNewContainerToStorage(): null container!");
-    // string newSymbol = _dhi.container->get_symbolic_name() + "_location_" + _filename;
     string newSymbol = getNextContainerName() + "__" + _filename;
 
     // this will throw an exception if the location isn't found in the
@@ -430,15 +428,15 @@ std::string DDSLoader::getNextContainerName()
     return oss.str();
 }
 
-std::auto_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
+unique_ptr<BESDapResponse> DDSLoader::makeResponseForType(ResponseType type)
 {
     if (type == eRT_RequestDDX) {
         // The BaseTypeFactory is leaked. jhrg 6/19/19
-        return auto_ptr<BESDapResponse>(new BESDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
+        return unique_ptr<BESDapResponse>(new BESDDSResponse(new DDS(nullptr /*new BaseTypeFactory()*/, "virtual")));
     }
     else if (type == eRT_RequestDataDDS) {
         // Leak fix jhrg 6/19/19
-        return auto_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(0 /*new BaseTypeFactory()*/, "virtual")));
+        return unique_ptr<BESDapResponse>(new BESDataDDSResponse(new DDS(nullptr /*new BaseTypeFactory()*/, "virtual")));
     }
     else {
         THROW_NCML_INTERNAL_ERROR("DDSLoader::makeResponseForType() got unknown type!");

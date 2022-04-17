@@ -23,10 +23,11 @@
 
 #include "config.h"
 
-#include <XMLWriter.h>
-#include <D4Group.h>
-#include <D4BaseTypeFactory.h>
-#include <InternalErr.h>
+#include <libdap/DDS.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/InternalErr.h>
 
 #include "DMRpp.h"
 #include "DmrppCommon.h"
@@ -84,7 +85,7 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
         if (DmrppCommon::d_print_chunks)
             if (xmlTextWriterWriteAttribute(xml.get_writer(),
                 (const xmlChar*)string("xmlns:").append(DmrppCommon::d_ns_prefix).c_str(),
-                (const xmlChar*)DmrppCommon::d_dmrpp_ns.c_str()) < 0)
+                    (const xmlChar*)DmrppCommon::d_dmrpp_ns.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns:dmrpp");
 
         if (!request_xml_base().empty()) {
@@ -110,6 +111,11 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
                 (const xmlChar*) href.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for href");
 
+        if (!get_version().empty())
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*)string(DmrppCommon::d_ns_prefix).append(":version").c_str(),
+                                            (const xmlChar*) get_version().c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for version");
+
 
         root()->print_dap4(xml, constrained);
 
@@ -134,6 +140,21 @@ void
 DMRpp::print_dap4(XMLWriter &xml, bool constrained /* false */)
 {
     print_dmrpp(xml, get_href(), constrained, get_print_chunks());
+}
+
+libdap::DDS *DMRpp::getDDS() {
+    DmrppTypeFactory factory;
+    unique_ptr<DDS> dds(new DDS(&factory, name()));
+    dds->filename(filename());
+
+    // Now copy the global attributes
+    unique_ptr<vector<BaseType *>> top_vars(root()->transform_to_dap2(&(dds->get_attr_table())/*, true*/));
+    for (vector<BaseType *>::iterator i = top_vars->begin(), e = top_vars->end(); i != e; i++) {
+        dds->add_var_nocopy(*i);
+    }
+
+    dds->set_factory(0);
+    return dds.release();
 }
 
 } /* namespace dmrpp */

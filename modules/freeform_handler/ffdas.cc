@@ -42,10 +42,10 @@
 #include <iostream>
 #include <string>
 
-#include <util.h>
-#include <DAS.h>
-#include <Error.h>
-#include <InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/DAS.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
 
 #include "FreeFormCPP.h"
 #include "FFRequestHandler.h"

@@ -30,14 +30,16 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #if 0
-#include "InternalErr.h"
-#include "RCReader.h"
+#include <libdap/InternalErr.h>
+#include <libdap/RCReader.h>
 #endif
 
+#include "url_impl.h"
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
 #include "HttpCache.h"
@@ -54,7 +56,8 @@ namespace http {
     private:
         friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
-        std::string d_remoteResourceUrl;
+        // std::string d_remoteResourceUrl;
+        std::shared_ptr<http::url> d_remoteResourceUrl;
 
         /// Open file descriptor for the resource content (Returned from the cache).
         int d_fd;
@@ -114,16 +117,12 @@ namespace http {
         * @return
         */
         void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
-        unsigned int replace_all(std::string &src_str, const std::string &template_str, const std::string &replace_str);
 
         /**
          * Checks if a cache resource is older than an hour
          *
-         * @param filename - name of the resource to be checked
-         * @param uid
-         * @return true if the resource is over an hour old
          */
-        bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
+        bool cached_resource_is_expired();
 
         /**
          * method for calling update_file_and_header(map<string,string>) with a black map
@@ -144,13 +143,15 @@ namespace http {
 
     protected:
         RemoteResource() :
-                d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
+                d_remoteResourceUrl(), d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
                 d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
+        //RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
+
+        RemoteResource(std::shared_ptr<http::url> target_url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
 
         virtual ~RemoteResource();
 

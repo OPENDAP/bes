@@ -42,8 +42,8 @@ noinst_HEADERS = test_config.h
 # are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
@@ -53,7 +53,7 @@ BES_CONF_IN = bes.conf.in
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
@@ -93,3 +93,4 @@ clean-local:
 
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+

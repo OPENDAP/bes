@@ -3,12 +3,12 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-#noinst_DATA = bes.conf bes_mds_tests.conf mds_for_tests
+CLEANFILES =
 
-CLEANFILES = $(TESTSUITE_DMRPP)
+# Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE_DMRPP)
 
-EXTRA_DIST = $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
-atlocal.in 
+EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
+atlocal.in build_dmrpp_macros.m4
 
 DISTCLEANFILES = atconfig
 
@@ -17,12 +17,10 @@ DISTCLEANFILES = atconfig
 AUTOM4TE = autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-TESTSUITE_DMRPP = $(srcdir)/testsuite_dmrpp_tests
+TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(TESTSUITE_DMRPP)
-	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS)
-	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
 
 clean-local:
 	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean
@@ -30,7 +28,9 @@ clean-local:
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 $(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+
+#$(top_srcdir)/modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

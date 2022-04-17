@@ -1,0 +1,300 @@
+Hyrax 1.13.2 to 1.16.5
+
+Since the hyrax 1.13.2, HDF5 handler is just treated as a BES module. A standalone
+RPM and library is not necessary. Please check the INSTALL under the BES on how
+to install the BES including the HDF4 and HDF5 handlers.
+
+
+Updated for version 2.2.3
+
+-------------------------------------------------------------------------------
+REQUIREMENTS
+INSTALLING RPM
+BUILDING RPM FROM THE SOURCE CODES
+BUILDING THE SOFTWARE FROM THE SOURCE CODES
+BUILDING FROM OUR SVN REPOSITORY
+OPTIONAL TESTING WITH NASA DATA
+NOTES
+-------------------------------------------------------------------------------
+
+  This file is provided to give detailed instructions on how to build the
+HDF5 handler module. One of main goals of this BES module is to make OPeNDAP 
+visualization clients (e.g., GrADS and IDV) access the NASA HDF5/HDF-EOS5 data.
+To achieve this goal, the module is implemented by making the NASA 
+HDF5/HDF-EOS5 data follow CF conventions.
+
+REQUIREMENTS
+
+  o You need the libdap-3.11.x and bes-3.10.x to build and install this
+    software. If you're using Linux, this means you can either build from 
+    source or use the libdap, libdap-devel, bes, and bes-devel RPM packages.
+
+  o We recommend that a recent (version 1.8.8 or above) copy of HDF5 is used.
+    Use --with-hdf5 to specify where your hdf5 distribution is located 
+    if configure cannot find it on its own.
+    See './configure --help' for more info.
+
+    The latest release of HDF5 library is available from The HDF Group website:
+    http://www.hdfgroup.org/ftp/HDF5/current/
+
+  o If the build fails because of problems linking with the hdf5
+    library, you may need to build the library from source and force the 
+    compiler/linker to use the option '-fPIC' (Position Independent Code).
+
+
+INSTALLING RPM
+
+   If you use Linux system that supports RPM package manager and have a super
+ user privilege, the easiest way to install the HDF5 handler is using RPMs 
+ provided by OPeNDAP, Inc. and The HDF Group. 
+
+   Here are two basic commands for deleting and adding RPMs:
+
+  o Remove any existing RPM package using 'rpm -e <package_name>'. 
+  o Install a new RPM package using 'rpm -i <package_name.rpm>'. 
+
+1) Download and install the latest "libdap", "BES", and "General purpose 
+ handlers (aka dap-server)" RPMs first from
+
+   http://opendap.org/download/hyrax
+
+2) Download and install the latest "hdf5" RPMs from 
+
+    http://www.hdfgroup.org/ftp/HDF5//current/bin/RPMS/       
+
+3) Download and install the latest "hdf5_handler" RPM from
+
+   http://opendap.org/download/hyrax
+
+4) (Optional) Configure the handler after reading the NOTES section below.
+
+5) (Re)start the BES server.
+ 
+   %/usr/bin/besctl (re)start
+
+BUILDING RPM FROM THE SOURCE CODES
+
+1) Download and install the latest "libdap", "libdap-devel", "bes", and 
+ "bes-devel" RPMs first from
+
+   http://opendap.org/download/hyrax
+
+2) Download and install the latest "hdf5" RPMs from 
+
+   http://www.hdfgroup.org/ftp/HDF5//current/bin/RPMS/       
+
+   Please note that CentOS 5 distributes hdf5-1.6.x RPM via yum. Therefore, 
+you need an hdf5-1.8.x RPM from The HDF group. The hdf5-1.6.x doesn't work 
+with the current version of hdf5_handler any more.
+
+   CentOS 6 distributes hdf5-1.8.5.patch1-7, which works fine. The HDF Group 
+doesn't  provide CentOS 6 hdf5 RPMs yet. If you want to build hdf5_handler RPM 
+with the latest version of HDF5 library in CentOS 6, you need to build and 
+install the HDF5 library from the source package.
+
+3) Download and install the latest "hdf5_handler" source code from
+
+   http://opendap.org/download/hyrax
+
+4) Configure and build RPM.
+
+   ./configure && make rpm
+
+
+BUILDING THE SOFTWARE FROM THE SOURCE CODES
+
+1) Type `./configure' at the system prompt. On some systems you may have 
+   to type `sh configure.' If you want this part of the
+   server to install someplace other than /usr/local/bin, use --prefix
+   to change the prefix from the default "/use/local/."
+
+   If the configure script can't find the HDF5 library in your system, type 
+   `./configure --with-hdf5=</path/to/hdf5_libraryinstall_prefix/>' 
+
+2) Type `make' to build the handler.
+
+3) Install the server components in $prefix by running `make install.'
+   This will add the new h5.conf file to the $prefix/etc/bes/modules
+   directory. The BES configuration file bes.conf will automatically
+   load any module configuration files in that directory. The h5.conf
+   file contains fileout_netcdf specific configurations for use with the
+   BES Framework. This includes some parameters that used to be in the
+   bes.conf file, such as the TypeMatch parameter for finding your
+   files.
+
+   The h5.conf file has 4 parameters that can change the behavior of 
+   the hdf5_handler module. By default, all parameters except for 
+   the H5.EnableCheckNameClashing option are enabled to serve 
+   NASA HDF5/HDF-EOS5 products in a manner that follows CF conventions. 
+   We strongly recommend you leave the H5.EnableCF be true. 
+   See NOTES below for details.
+  
+For very detailed instructions on building the software, please see
+
+   http://hdfeos.org/software/hdf5_handler/doc/install.php
+
+BUILDING FROM OUR SVN REPOSITORY
+
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, etc., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --install --force --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
+
+OPTIONAL TESTING WITH NASA DATA
+  
+ If you want to test real NASA sample files with the HDF5 handler, please 
+follow the steps below.
+
+1) Make sure that you have 1.2G of disk space and download files using
+
+   %cd data.nasa && ./download.sh
+
+   It will download all test data from The HDF Group FTP site and put it
+   under data.nasa/ directory.
+
+2) Edit the sample test.nasa.sh script under the top level 
+   source directory. You may need to adjust the following paths in the shell 
+   script.
+    
+  set path=(/hdfdap/hyrax-1.8.0/bin $path)
+  setenv LD_LIBRARY_PATH /hdfdap/hyrax-1.8.0/lib
+  setenv PKG_CONFIG_PATH /hdfdap/hyrax-1.8.0/lib/pkgconfig:/usr/lib/pkgconfig/
+  ./configure  --with-hdf5=/hdfdap/hyrax-1.8.0
+
+  The path should point to the Hyrax and HDF5 installation directory so that 
+  besstandalone program, OPeNDAP libraries, and HDF5 library can be found. 
+
+3) Run the (t)csh script.
+
+   %./test.nasa.sh
+
+   It configures, builds, tests and cleans up the source directory 
+   and will take up to 5 minutes.
+
+   It will create two log files at the end:
+
+   a) test.nasa.txt
+   b) test.nasa.log.txt   
+
+   If there is no test failure, you'll see a message
+
+   "All {number of tests} tests were successful."
+
+   at the end of log file a).
+
+   The a) will tell you which NASA product failed the test.
+   The b) will tell you the difference that caused the test failure.
+ 
+   Grep 'diff' line from b) and you can see the expected output.
+
+NOTES
+
+  o Options in /etc/bes/modules/h5.conf 
+
+    1) H5.EnableCF option 
+
+    - This is an option to support NASA HDF5/HDF-EOS5 data products.
+      The HDF5/HDF-EOS5 data products do not follow CF conventions. 
+      However, hdf5_handler can make them follow the conventions if you turn
+      on this option. The key benefit of this option is to allow OPeNDAP
+      visualization clients to display remote data seamlessly.
+
+      http://hdfeos.org/software/hdf5_handler/doc/cf.php
+
+    2) H5.EnableCheckNameClashing option 
+
+    - This option checks if there are duplicate variable names when group
+      information is removed and some characters are replaced with underscore 
+      character. Although this option is required to ensure that no two 
+      variable names are same, the operation is quite costly and thus can 
+      degrade the performance significantly. If you are certain that your HDF5
+      data won't have any duplicate name, you can turn this off to gain the 
+      performance of the server. 
+
+      For the NASA HDF5/HDF-EOS5 products we tested (AURA OMI/HIRDLS/MLS/TES,
+      MEaSUREs SeaWiFS/Ozone, Aquarius, GOSAT/acos, SMAP), we did not find any
+      name clashing for those objects. So the name clashing check seems 
+      unnecessary and this option is turned off by default. The handler will
+      check the name clashing for any products not tested regardless of turning
+      this option on or off. 
+
+    3) H5.EnableAddPathAttrs option 
+
+    - When this option is turned off, the hdf5_handler will not insert the
+      "fullnamepath" and "origname" attribute in DAS output. For example, 
+      the DAS output like below:
+ 
+      temperature {
+         String units "K";
+         String origname "temperature";
+         String fullnamepath "/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature";
+         String orig_dimname_list "XDim ";
+       }
+
+      will change to:
+
+      temperature {
+         String units "K";
+         String orig_dimname_list "XDim ";
+      }
+     
+      
+    4) H5.EnableDropLongString=true option 
+
+    - NetCDF Java client cannot handle string size bigger than 32767
+      and will throw an error if such variable is seen. Thus, the hdf5_handler
+      need to hide such long string variables from DAS and DDS output.
+      This will ensure that NetCDF Java OPeNDAP visualization clients
+      such as IDV and Panoply can visualize other important variables.
+
+    5) H5.DisableStructMetaAttr=true
+
+    - When this option is true, StructMetadata attribute will not be generated
+      in DAS output. 
+ 
+  o Testing with Hyrax-1.7.x
+
+    - The hdf5_handler will work fine with Hyrax-1.7.x but 'make check' will 
+      fail in all DDX output tests due to the difference in the XML header:
+  
+        <?xml version="1.0" encoding="UTF-8"?>
+
+     The testsuite is created under Hyrax-1.8.x with the following header:
+
+        <?xml version="1.0" encoding="ISO-8859-1"?>
+
+  o Debugging Aids
+
+    - The handler uses BESDEBUG() to print informative error messages in the
+      bes.log file. To enable error logging in BES, start the server with -d 
+      option as follows:
+
+                %besctl start -d "cerr,all" 
+
+    - The OPeNDAP libdap library includes the following debugging aids that
+      may help you in debugging HDF5 handler. 
+
+    - DBG: simple program instrumentation -- see the file debug.h distributed
+      with libdap (which is installed in the libdap header directory; use
+      'dap-config --cflags' and look at the value of -I to locate the
+      header directory).
+
+    - DBG2: more elaborate program instrumentation -- by convention this is
+      used for output that is half a page or more, while DEBUG is used for
+      single line output.
+
+    - To build with program instrumentation, use `--enable-debug=<level>'
+      where <level> is 1 or 2. By default, debug is *not* enabled.
+
+    - The handler doesn't have many debugging messages in the current version. 
+      More messages will be added in the future release.
+
+    - The handler codes are documented in Doxygen style and it comes with a 
+      sample Doxygen configuration file under doc/ directory. Please run 
+      
+               %cd doc; doxygen
+
+      to generate reference manuals of the HDF5 handler.
+

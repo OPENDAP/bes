@@ -27,9 +27,11 @@
 #include <ostream>
 
 #include "BESRequestHandler.h"
+#include "DMZ.h"
 
 class ObjMemCache;  // in bes/dap
 class BESContainer;
+class BESDataDDSResponse;
 
 namespace libdap {
 	class DMR;
@@ -45,16 +47,29 @@ class DmrppRequestHandler: public BESRequestHandler {
 private:
     // These are not used. See the netcdf handler for an example of their use.
     // jhrg 4/24/18
+    // These are now used - not sure when we started using them. We might also
+    // look into whether these and the MDS are really appropriate for the DMR++
+    // code since it is, effectively, using cached metadata. The MDS caches info
+    // as XML, and the DMR++ is XML, so the difference is negligible. In the case
+    // of the memory cache, the size of the DMZ in memory may be an issue.
+    // jhrg 11/12/21
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
     static ObjMemCache *dmr_cache;
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
+    template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
+
+    // Allocate a new DMZ for each request? This should work, but may result in more
+    // cycling of data in and out of memory. The shared_ptr<> will be passed into
+    // instances of BaseType and used from withing the specialized read methods.
+    // jhrg 11/3/21
+    static std::shared_ptr<DMZ> dmz;
 
 public:
-	DmrppRequestHandler(const std::string &name);
-	virtual ~DmrppRequestHandler();
+	explicit DmrppRequestHandler(const std::string &name);
+	~DmrppRequestHandler() override;
 
     static CurlHandlePool *curl_handle_pool;
 
@@ -66,6 +81,21 @@ public:
 
     static unsigned long long d_contiguous_concurrent_threshold;
 
+    static bool d_require_chunks;
+
+    // In the original DMR++ documents, the order of the filters used by the HDF5
+    // library when writing chunks was ignored. This lead to an unfortunate situation
+    // where the nominal order of 'deflate' and 'shuffle' were reversed for most
+    // (all?). But the older dmrpp handler code didn't care since it 'knew' how the
+    // filters should be applied. When we fixed the code to treat the order of the
+    // filters correctly, the old files failed with the new handler code. This flag
+    // is used to tell the DmrppCommon code that the filter information is being
+    // read from an old DMR++ document and the filter order needs to be corrected.
+    // This is a kludge, but it seems to work for the data in NGAP PROD as of 11/9/21.
+    // Newer additions will have newer DMR++ docs and those have a new xml attribute
+    // that makes it easy to identify them and not apply this hack. jhrg 11/9/21
+    static bool d_emulate_original_filter_order_behavior;
+
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);
     static bool dap_build_das(BESDataHandlerInterface &dhi);
@@ -75,7 +105,7 @@ public:
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 } // namespace dmrpp

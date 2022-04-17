@@ -127,7 +127,7 @@ private:
     void *get_lib() throw (NoSuchLibrary)
     {
         if (!d_lib) {
-            d_lib = dlopen(d_filename.c_str(), RTLD_NOW | RTLD_GLOBAL);
+            d_lib = dlopen(d_filename.c_str(), RTLD_LAZY /*RTLD_NOW*/ | RTLD_GLOBAL);
             BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << std::endl);
             if (d_lib == NULL) {
                 throw NoSuchLibrary(std::string(dlerror()), __FILE__, __LINE__);

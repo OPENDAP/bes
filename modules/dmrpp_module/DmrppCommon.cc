@@ -20,31 +20,41 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 #include "config.h"
 
 #include <string>
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
 #include <curl/curl.h>
 
-#include <BaseType.h>
-#include <D4Attributes.h>
-#include <XMLWriter.h>
+#include <libdap/BaseType.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/util.h>
 
-#include <BESIndent.h>
-#include <BESDebug.h>
-#include <BESLog.h>
-#include <BESInternalError.h>
+#if 1
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+#endif
+
+#include "url_impl.h"
+#include "BESIndent.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESInternalError.h"
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
-#include "DmrppArray.h"
 #include "Chunk.h"
-#include "util.h"
+#include "byteswap_compat.h"
+
 
 using namespace std;
 using namespace libdap;
@@ -63,9 +73,10 @@ string DmrppCommon::d_ns_prefix = "dmrpp";
 
 /**
  * @brief Join with all the 'outstanding' threads
+ *
  * Use this to clean up resources if an exception is thrown in one thread. In that case
  * this code sweeps through all of the outstanding threads and makes sure they are joined.
- * It's tempting to detach and let the existing threads call exit, but might lead to a
+ * It's tempting to detach and let the existing threads call exit, but that might lead to a
  * double use error, since two threads might be working with the same libcurl handle.
  *
  * @param threads Array of pthread_t structures; null values indicate an unused item
@@ -93,6 +104,24 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
     }
 }
 
+/// @brief Set the value of the filters property
+void DmrppCommon::set_filter(const string &value) {
+    if (DmrppRequestHandler::d_emulate_original_filter_order_behavior) {
+        d_filters = "";
+        if (value.find("shuffle") != string::npos)
+            d_filters.append(" shuffle");
+        if (value.find("deflate") != string::npos)
+            d_filters.append(" deflate");
+        if (value.find("fletcher32") != string::npos)
+            d_filters.append(" fletcher32");
+
+        BESUtil::removeLeadingAndTrailingBlanks(d_filters);
+    }
+    else {
+        d_filters = value;
+    }
+}
+
 /**
  * @brief Set the dimension sizes for a chunk
  *
@@ -113,8 +142,6 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
     if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
         throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
 
-    // istringstream can parse this kind of input more easily. jhrg 4/10/18
-
     string space(" ");
     size_t strPos = 0;
     string strVal;
@@ -125,41 +152,26 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         while ((strPos = chunk_dims.find(space)) != string::npos) {
             strVal = chunk_dims.substr(0, strPos);
 
-            d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), NULL, 10));
+            d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
             chunk_dims.erase(0, strPos + space.length());
         }
     }
 
-    // If it's multi valued there's still one more value left to process
+    // If it's multivalued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
-    d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), NULL, 10));
+    d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), nullptr, 10));
 }
 
 /**
  * @brief Parses the text content of the XML element h4:chunkDimensionSizes
  * into the internal vector<unsigned int> representation.
  *
- * @param compression_type_string One of "deflate" or "shuffle."
+ * @param compression_type_string
  */
 void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
-
-    // Clear previous state
-    d_deflate = false;
-    d_shuffle = false;
-
-    string deflate("deflate");
-    string shuffle("shuffle");
-
-    // Process content
-    if (compression_type_string.find(deflate) != string::npos) {
-        d_deflate = true;
-    }
-
-    if (compression_type_string.find(shuffle) != string::npos) {
-        d_shuffle = true;
-    }
+    set_filter(compression_type_string);
 }
 
 /**
@@ -167,56 +179,48 @@ void DmrppCommon::ingest_compression_type(const string &compression_type_string)
  *
  * @param byte_order_string One of "LE", "BE"
  */
-    void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
+void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
 
-        if (byte_order_string.empty()) return;
+    if (byte_order_string.empty()) return;
 
-        // Process content
-        if (byte_order_string.compare("LE") == 0) {
-            d_byte_order = "LE";
-            d_twiddle_bytes = is_host_big_endian();
+    // Process content
+    if (byte_order_string.compare("LE") == 0) {
+        d_byte_order = "LE";
+        d_twiddle_bytes = is_host_big_endian();
+    } else {
+        if (byte_order_string.compare("BE") == 0) {
+            d_byte_order = "BE";
+            d_twiddle_bytes = !(is_host_big_endian());
         } else {
-            if (byte_order_string.compare("BE") == 0) {
-                d_byte_order = "BE";
-                d_twiddle_bytes = !(is_host_big_endian());
-            } else {
-                throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
-            }
+            throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
         }
     }
-
-#if 0
-std::string DmrppCommon::get_byte_order()
-    {
-        return d_byte_order;
-    }
-#endif
+}
 
 /**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
 unsigned long DmrppCommon::add_chunk(
-        const string &data_url,
+        std::shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
         const string &position_in_array)
-
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(data_url, byte_order, size, offset, cpia_vector);
+    return add_chunk(move(data_url), byte_order, size, offset, cpia_vector);
 }
 
 unsigned long DmrppCommon::add_chunk(
-        const string &data_url,
+        std::shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+    std::shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, size, offset, position_in_array));
 #if 0
     auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
     if(!array){
@@ -263,6 +267,29 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const string &position_in_array)
+{
+    vector<unsigned long long> cpia_vector;
+    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
+    return add_chunk(byte_order, size, offset, cpia_vector);
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const vector<unsigned long long> &position_in_array)
+{
+    std::shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
 /**
  * @brief read method for the atomic types
  *
@@ -283,12 +310,10 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    auto chunk_refs = get_chunks();
-
-    if (chunk_refs.size() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
-    auto chunk = chunk_refs[0];
+    auto chunk = get_immutable_chunks()[0];
 
     chunk->read_chunk();
 
@@ -297,6 +322,9 @@ DmrppCommon::read_atomic(const string &name)
 
 /**
  * @brief Print the Chunk information.
+ * @note Should not be called when the d_chunks vector has no elements because it
+ * will write out a <chunks> element that is going to be empty when it might just
+ * be the case that the chunks have not been read.
  */
 void
 DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
@@ -305,21 +333,13 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
-    string compression = "";
-    if (is_shuffle_compression() && is_deflate_compression())
-        compression = "deflate shuffle";
-    else if (is_shuffle_compression())
-        compression.append("shuffle");
-    else if (is_deflate_compression())
-        compression.append("deflate");
-
-    if (!compression.empty())
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
+    if (!d_filters.empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
-    if(!get_chunks().empty()){
-        auto first_chunk = get_chunks().front();
+    if(get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+        auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
                                         (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)
@@ -341,7 +361,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     // Start elements "chunk" with dmrpp namespace and attributes:
     // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
 
-    for(auto chunk: get_chunks()){
+    for(auto chunk: get_immutable_chunks()){
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
@@ -424,7 +444,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
         bt.get_attr_table().print_xml_writer(xml);
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
@@ -433,8 +453,8 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 
 void DmrppCommon::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
-    strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "is_filters_empty:             " << (is_filters_empty() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "filters: " << (d_filters.c_str()) << endl;
 
     const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
 
@@ -454,5 +474,24 @@ void DmrppCommon::dump(ostream & strm) const
     }
 }
 
-} // namepsace dmrpp
+/**
+ * @brief Load chunk information for this variable.
+ * @param btp Load the chunk information for/into this variable
+ */
+void
+DmrppCommon::load_chunks(BaseType *btp) {
+    d_dmz->load_chunks(btp);
+}
+
+/**
+ * @brief Load the attribute information for this variable
+ * @param btp
+ */
+void
+DmrppCommon::load_attributes(libdap::BaseType *btp)
+{
+    d_dmz->load_attributes(btp);
+}
+
+} // namespace dmrpp
 

@@ -30,15 +30,15 @@
 
 #include <BESDebug.h>
 
-#include "util.h"
-#include "debug.h"
-#include "Array.h"
-#include "Int32.h"
-#include "Float64.h"
+#include <libdap/util.h>
+#include <libdap/debug.h>
+#include <libdap/Array.h>
+#include <libdap/Int32.h>
+#include <libdap/Float64.h>
 #include "DebugFunctions.h"
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 
-#include "GetOpt.h"
+#include <unistd.h>
 
 static bool debug = false;
 
@@ -123,9 +123,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SleepFunctionTest);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dh")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -144,17 +143,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = libdap::SleepFunctionTest::suite()->getName().append("::").append(argv[i]);

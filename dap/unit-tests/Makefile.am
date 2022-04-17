@@ -8,8 +8,13 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 -I$(top_srcdir)/modules/dmrpp_module
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
-$(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
+# Removed linking with shared objects. jhrg 1/21/11
+# LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/libdap_module.la \
+# $(top_builddir)/modules/dmrpp_module/libdmrpp_module.la -ltest-types $(DAP_LIBS) $(LIBS)
+
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/dap/.libs/libdap_module.a \
+$(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a -ltest-types $(DAP_LIBS) $(LIBS)
+
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -63,8 +68,8 @@ DISTCLEANFILES = *.strm *.file *.Po tmp.txt  tmp_* bes.log mds_ledger.txt
 BES_CONF_IN = bes.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@mod_abs_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_builddir=`python -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
+	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
@@ -72,7 +77,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
 bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 

@@ -1,0 +1,15 @@
+Dataset {
+    Float32 CMG_0_05_Deg_NDVI[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_EVI2[Latitude = 3600][Longitude = 7200];
+    UInt16 CMG_0_05_Deg_VI_Quality[Latitude = 3600][Longitude = 7200];
+    Int32 CMG_0_05_Deg_Pixel_Reliability[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_RED[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_NIR[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_BLUE[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_MIR[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_SZA[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_VZA[Latitude = 3600][Longitude = 7200];
+    Float32 CMG_0_05_Deg_RAA[Latitude = 3600][Longitude = 7200];
+    Float64 Latitude[Latitude = 3600];
+    Float64 Longitude[Longitude = 7200];
+} VIP01P4.A2010001.002.hdf;

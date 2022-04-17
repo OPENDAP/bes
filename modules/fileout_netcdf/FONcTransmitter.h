@@ -32,8 +32,8 @@
 #ifndef A_FONcTransmitter_h
 #define A_FONcTransmitter_h 1
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include <BESTransmitter.h>
 
@@ -54,13 +54,13 @@ class FONcTransmitter: public BESTransmitter {
 private:
 	static string temp_dir;
 
-	static void write_temp_file_to_stream(int fd, ostream &strm); //, const string &filename, const string &ncVersion);
+	// static void write_temp_file_to_stream(int fd, ostream &strm); //, const string &filename, const string &ncVersion);
 
 public:
 	FONcTransmitter();
 	virtual ~FONcTransmitter() {}
 
-	static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 

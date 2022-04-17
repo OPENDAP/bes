@@ -1,0 +1,2 @@
+
+make  -k -j20 GZIP_ENV=--fast distcheck 2>&1 | tee mk.log | grep FAIL

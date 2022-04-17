@@ -31,9 +31,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-#include <util.h>
-#include <debug.h>
+#include <unistd.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "BESContextManager.h"
 #include "BESError.h"
@@ -142,9 +142,9 @@ public:
                 " AccessCredentials. Expected: "<< expected << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-            string cloudydap_dataset_url = "https://s3.amazonaws.com/cloudydap/samples/d_int.h5";
-            string cloudyopendap_dataset_url = "https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5";
-            string someother_dataset_url = "https://ssotherone.org/opendap/data/fnoc1.nc";
+            shared_ptr<http::url> cloudydap_dataset_url(new http::url("https://s3.amazonaws.com/cloudydap/samples/d_int.h5"));
+            shared_ptr<http::url> cloudyopendap_dataset_url(new http::url("https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5"));
+            shared_ptr<http::url> someother_dataset_url(new http::url("https://ssotherone.org/opendap/data/fnoc1.nc"));
             AccessCredentials *ac;
             string url, id, key, region, bucket;
 
@@ -263,14 +263,14 @@ public:
         string key("Ihadasecretthingforthewickedwitchofthewest");
         string region("oz-east-1");
         string bucket("emerald_city");
-        string url("https://s3.amazonaws.com/emerald_city/");
-        string some_dataset_url(url+"data/fnoc1.nc");
+        string base_url("https://s3.amazonaws.com/emerald_city/");
+        shared_ptr<http::url> some_dataset_url(new http::url(base_url+"data/fnoc1.nc"));
 
         setenv(CredentialsManager::ENV_ID_KEY,     id.c_str(), true);
         setenv(CredentialsManager::ENV_ACCESS_KEY, key.c_str(), true);
         setenv(CredentialsManager::ENV_REGION_KEY, region.c_str(), true);
         //setenv(CMAC_ENV_BUCKET_KEY, bucket.c_str(),true);
-        setenv(CredentialsManager::ENV_URL_KEY,    url.c_str(), true);
+        setenv(CredentialsManager::ENV_URL_KEY,    base_url.c_str(), true);
         if(debug) cout << "check_env_credentials() - Environment conditioned, calling CredentialsManager::load_credentials()" << endl;
         CredentialsManager::theCM()->load_credentials();
 
@@ -284,7 +284,7 @@ public:
         AccessCredentials *ac = CredentialsManager::theCM()->get(some_dataset_url);
         CPPUNIT_ASSERT( ac );
 
-        CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == url);
+        CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == base_url);
         CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == id);
         CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == key);
         CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == region);
@@ -311,8 +311,8 @@ public:
                      << CredentialsManager::theCM()->size() << " AccessCredentials. Expected:" << expected << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-
-            AccessCredentials *ac = CredentialsManager::theCM()->get("https://s3.us-west-2.amazonaws.com");
+            shared_ptr<http::url> target_url(new http::url("https://s3.us-west-2.amazonaws.com"));
+            AccessCredentials *ac = CredentialsManager::theCM()->get(target_url);
             CPPUNIT_ASSERT( ac );
 
             if(debug){
@@ -361,9 +361,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbc:");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbc:")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -373,22 +372,22 @@ int main(int argc, char*argv[])
             bes_debug = true;  // bes_debug is a static global
             break;
         case 'c':
-        {
-            bes_conf_file = getopt.optarg;  // bes_conf_file is a static global
+            bes_conf_file = optarg;  // bes_conf_file is a static global
+            break;
+        default:
             break;
         }
 
-            default:
-            break;
-        }
+    argc -= optind;
+    argv += optind;
 
     bool wasSuccessful = true;
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             string test = CredentialsManagerTest::suite()->getName().append("::").append(argv[i]);

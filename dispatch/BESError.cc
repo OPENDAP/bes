@@ -40,7 +40,7 @@
 using namespace std;
 
 string
-BESError::get_verbose_message()
+BESError::get_verbose_message() const
 {
     ostringstream oss;
     oss << _msg << " (" << _file << ":" << _line << ")";

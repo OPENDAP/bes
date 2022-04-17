@@ -37,30 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppUInt16::_duplicate(const DmrppUInt16 &)
-{
-}
-
-DmrppUInt16::DmrppUInt16(const string &n) : UInt16(n), DmrppCommon()
-{
-}
-
-DmrppUInt16::DmrppUInt16(const string &n, const string &d) : UInt16(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppUInt16::ptr_duplicate()
-{
-    return new DmrppUInt16(*this);
-}
-
-DmrppUInt16::DmrppUInt16(const DmrppUInt16 &rhs) : UInt16(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppUInt16 &
 DmrppUInt16::operator=(const DmrppUInt16 &rhs)
 {
@@ -69,8 +45,8 @@ DmrppUInt16::operator=(const DmrppUInt16 &rhs)
 
     dynamic_cast<UInt16 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -79,6 +55,9 @@ bool
 DmrppUInt16::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
+
+    if (!get_chunks_loaded())
+        load_chunks(this);
 
     if (read_p())
         return true;
@@ -94,6 +73,14 @@ DmrppUInt16::read()
 
 }
 
+void
+DmrppUInt16::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    UInt16::set_send_p(state);
+}
 
 void DmrppUInt16::dump(ostream & strm) const
 {

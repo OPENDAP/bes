@@ -24,13 +24,14 @@ BES.Data.RootDirectory=/dev/null
 BES.Catalog.catalog.TypeMatch=dr:.*\.dods$;
 BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
-BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+#BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=No
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.ServerPort=10002
 
@@ -69,6 +70,7 @@ FONc.ClassicModel=false
 # Uncomment the following line to suppress the output of global attributes.
 #FONc.NoGlobalAttrs=true
 
+
 # For HDF5
 # Note enabling the CF option changes the behavior of testFillValue test.
 # One can make H5.EnableCF=false to emulate the testFillValue test in bes.conf.
@@ -82,8 +84,11 @@ H5.DisableStructMetaAttr=true
 H5.EnableFillValueCheck=true
 H5.CheckIgnoreObj=false
 H5.ForceFlattenNDCoorAttr=true
+H5.EnableCoorattrAddPath=true
 H5.RmConventionAttrPath=true
 H5.EnableDMR64bitInt=true
+H5.NoZeroSizeFullnameAttr=true
+H5.EnableCFDMR=false
 
 H5.MetaDataMemCacheEntries=300
 H5.LargeDataMemCacheEntries=0
@@ -108,7 +113,7 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 
-
+NC.PromoteByteToShort=true
 # For HDF4
 
 # Note that changing H4.EnableCF will change the output of the HDF4 tests.

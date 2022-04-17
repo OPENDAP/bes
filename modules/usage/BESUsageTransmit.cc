@@ -39,8 +39,8 @@
 #include "BESDapTransmit.h"
 #include "BESContainer.h"
 #include "BESDataNames.h"
-#include "mime_util.h"
-#include "InternalErr.h"
+#include <libdap/mime_util.h>
+#include <libdap/InternalErr.h>
 #include "BESDapError.h"
 #include "BESInternalFatalError.h"
 

@@ -34,9 +34,9 @@
 #include <vector>
 
 #include "ServerHandler.h"
-#include "BESXMLWriter.h"
 
-class Connection ;
+class Connection;
+class BESXMLWriter;
 
 class DaemonCommandHandler: public ServerHandler {
 private:
@@ -52,34 +52,36 @@ private:
         HAI_SET_LOG_CONTEXT
     } hai_command;
 
-    string d_bes_conf;
-    string d_config_dir;
-    string d_include_dir;
+    std::string d_bes_conf;
+#if 0
+    std::string d_config_dir;
+    std::string d_include_dir;
+#endif
 
     // Build a map of all the various config files. This map relates the name
     // of the config file (eg 'bes.conf') to the full pathname for that file.
     // Only the name of config file is shown in responses; we use the map to
     // actually find/read/write the file.
-    std::map<string,string> d_pathnames;
+    std::map<std::string,std::string> d_pathnames;
 
-    string d_log_file_name;
+    std::string d_log_file_name;
 
-    void load_include_files(std::vector<string> &files, const string &keys_file_name);
-    void load_include_file(const string &files, const string &keys_file_name);
+    void load_include_files(std::vector<std::string> &files, const std::string &keys_file_name);
+    void load_include_file(const std::string &files, const std::string &keys_file_name);
 
-    hai_command lookup_command(const string &command);
-    void execute_command(const string &command, BESXMLWriter &writer);
+    hai_command lookup_command(const std::string &command);
+    void execute_command(const std::string &command, BESXMLWriter &writer);
 
 public:
-    DaemonCommandHandler(const string &config);
-    virtual ~DaemonCommandHandler() { }
+    explicit DaemonCommandHandler(const std::string &config);
+    ~DaemonCommandHandler() override = default;
 
-    string get_config_file() { return d_bes_conf; }
-    void set_config_file(const string &config) { d_bes_conf = config; }
+    std::string get_config_file() const { return d_bes_conf; }
+    void set_config_file(const std::string &config) { d_bes_conf = config; }
 
-    virtual void handle(Connection *c);
+    void handle(Connection *c) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // DaemonCommandHandler_h

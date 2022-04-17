@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 
 class WWWByte;
 class WWWInt16;

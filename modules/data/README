@@ -1,0 +1,13 @@
+###############################################################################
+
+Greetings,
+
+This directory and its children contain the test data for the Hyrax Data
+Server. These data can be used to run Hyrax's regression tests which verify
+its correct functionality in a full deployment.
+
+Sincerely,
+
+The Hyrax Development Team at OPeNDAP Inc.
+
+###############################################################################

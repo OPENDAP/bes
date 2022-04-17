@@ -32,7 +32,7 @@
 #ifndef FONcShort_h_
 #define FONcShort_h_ 1
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 using namespace libdap ;
 
@@ -48,8 +48,10 @@ class FONcShort : public FONcBaseType
 {
 private:
     BaseType *			_bt ;
+    bool                        _unsigned_int8;
 public:
     				FONcShort( BaseType *b ) ;
+    				FONcShort( BaseType *b ,bool unsigned_int8) ;
     virtual			~FONcShort() ;
 
     virtual void		define( int ncid ) ;

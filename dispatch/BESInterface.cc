@@ -32,38 +32,35 @@
 
 #include "config.h"
 
-#include <cstdlib>
+#include <sys/resource.h>
 
-#include <signal.h>
+#include <cstdlib>
+#include <csignal>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include <setjmp.h> // Used for the timeout processing
+#include <csetjmp> // Used for the timeout processing
 
 #include <string>
 #include <sstream>
-#include <iostream>
-
-// #include <Error.h>
+#include <algorithm>
 
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
-#include "BESResponseHandler.h"
+// jhrg 4/6/22 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
-
-#include "BESDapError.h"
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
-#include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
-#include "BESSyntaxUserError.h"
 
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
 
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESTimeoutError.h"
@@ -77,7 +74,6 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
-using std::endl;
 
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
@@ -85,20 +81,20 @@ static bool timeout_jump_valid = false;
 // Define this to use sigwait() in a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
 // does not currently work, but could be a way to get information about
-// a timeout back to the BES's client if the BES itslef were structured
+// a timeout back to the BES's client if the BES itself were structured
 // differently. See my comment further down. jhrg 12/28/15
-#undef USE_SIGWAIT
+#define USE_SIGWAIT 0
 
-// timeout period in seconds; 0 --> no timeout. This is a static value so
+// timeout period in seconds; 0 --> no timeout. This is a global value so
 // that it can be accessed by the signal handler. jhrg 1/4/16
 // I've made this globally visible so that other code that might want to
-// alter the time out value can do so and this variable can be kept consistent.
+// alter the timeout value can do so and this variable can be kept consistent.
 // See BESStreamResponseHandler::execute() for an example. jhrg 1/24/17
 volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
-// This function uses the static variables timeout_jump_valid and timeout_jump
+// This function uses the global variables timeout_jump_valid and timeout_jump
 // The code looks at the value of BES.TimeOutInSeconds and/or the timeout
 // context sent in the current request and, if that is greater than zero,
 // uses that as the maximum amount of time for the request. The system alarm
@@ -112,7 +108,7 @@ static void catch_sig_alarm(int sig)
     if (sig == SIGALRM) {
         ERROR_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
 
-        // Causes setjmp() below to return 1; see the call to
+        // Causes setjump() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
         // jhrg 12/29/15
         if (timeout_jump_valid)
@@ -127,6 +123,14 @@ static void catch_sig_alarm(int sig)
     }
 }
 
+/**
+ * @brief register catch_sig_alarm() as the handler for SIGALRM
+ *
+ * We use SIGALRM as a scheme to timeout requests that seem 'stuck' based on
+ * some notion of how long it should take. This is configurable in the bes.conf
+ * file and also in the OLFS, which can override the bes.conf value on a per-
+ * request basis.
+ */
 static void register_signal_handler()
 {
     struct sigaction act;
@@ -138,26 +142,40 @@ static void register_signal_handler()
     // will return with an error and errno set to EINTR.
 
     act.sa_handler = catch_sig_alarm;
-    if (sigaction(SIGALRM, &act, 0))
+    if (sigaction(SIGALRM, &act, nullptr))
         throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
 }
 
 static inline void downcase(string &s)
 {
+#if 0
     for (unsigned int i = 0; i < s.length(); i++)
         s[i] = tolower(s[i]);
+#endif
+    transform(s.begin(), s.end(), s.begin(), [](int c) { return std::toupper(c); });
 }
 
-static void log_error(BESError &e)
+/**
+ * @brief Write a phrase that describes the current RSS for this process
+ * @param out Write to this stream
+ */
+ostream &add_memory_info(ostream &out)
 {
-    string error_name = "";
-#if 0
-    // TODO This should be configurable; I'm changing the values below to always log all errors.
-    // I'm also confused about the actual intention. jhrg 11/14/17
-    //
-    // Simplified. jhrg 10/03/18
-    bool only_log_to_verbose = false;
-#endif
+    long mem_size = BESUtil::get_current_memory_usage();
+    if (mem_size) {
+        out << ", current memory usage is " << mem_size << " KB.";
+    }
+    else {
+        out << ", current memory usage is unknown.";
+    }
+
+    return out;
+}
+
+static void log_error(const BESError &e)
+{
+    string error_name;
+
     switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -169,7 +187,6 @@ static void log_error(BESError &e)
 
     case BES_SYNTAX_USER_ERROR:
         error_name = "BES User Syntax Error";
-        // only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -178,7 +195,6 @@ static void log_error(BESError &e)
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        // only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
@@ -187,28 +203,16 @@ static void log_error(BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+            << " (" << e.get_file() << ":" << e.get_line() << ")"
+            << add_memory_info << endl);
     }
-
-#if 0
-    if (only_log_to_verbose) {
-        VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
-                    << e.get_line()  << ", message: " << e.get_message() << endl);
-
-    }
-    else {
-      LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
-      VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
-    }
-#endif
-
 }
 
 #if USE_SIGWAIT
-
 // If the BES is changed so that the plan built here is run in a child thread,
 // then we can have a much more flexible signal catching scheme, including catching
 // the alarm signal used for the timeout. It's not possible to throw from a child
@@ -323,10 +327,10 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
  * to the OLFS. The response is an XML document.
  *
  * @param e The BESError object
- * @param dhi The BESDataHandlerIterface object
+ * @param dhi The BESDataHandlerInterface object
  * @return
  */
-int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
+int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dhi)
 {
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("errors", found);
@@ -335,12 +339,6 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
         dhi.error_info = new BESXMLInfo();
     else
         dhi.error_info = BESInfoList::TheList()->build_info();
-
-#if 0
-    dhi.error_info = new BESXMLInfo();
-// #else
-    dhi.error_info = BESInfoList::TheList()->build_info();
-#endif
 
     log_error(e);
 
@@ -364,47 +362,6 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 
     return e.get_bes_error_type();
 }
-
-
-#if 0
-int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
-{
-    // If we are handling errors in a dap2 context, then create a
-    // DapErrorInfo object to transmit/print the error as a dap2
-    // response.
-    bool found = false;
-    // I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
-    string context = BESContextManager::TheManager()->get_context("errors", found);
-    if (context == "dap2" || context == "dap") {
-        libdap::ErrorCode ec = unknown_error;
-        BESDapError *de = dynamic_cast<BESDapError*>(&e);
-        if (de) {
-            ec = de->get_error_code();
-        }
-        e.set_bes_error_type(BESDapError::convert_error_code(ec, e.get_bes_error_type()));
-        dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
-
-        return e.get_bes_error_type();
-    }
-    else {
-        // If we are not in a dap2 context and the exception is a dap
-        // handler exception, then convert the error message to include the
-        // error code. If it is or is not a dap exception, we simply return
-        // that the exception was not handled.
-        BESError *e_p = &e;
-        BESDapError *de = dynamic_cast<BESDapError*>(e_p);
-        if (de) {
-            ostringstream s;
-            s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
-            << de->get_message();
-            e.set_message(s.str());
-            e.set_bes_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_bes_error_type()));
-        }
-    }
-    return 0;
-}
-#endif
-
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
 
@@ -468,12 +425,12 @@ int BESInterface::execute_request(const string &from)
     }
 
     // TODO These never change for the life of a BES, so maybe they can move out of
-    // code that runs for every request? jhrg 11/8/17
+    //  code that runs for every request? jhrg 11/8/17
     d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
-    // of the BES PID. jhrg 11/13/17
+    //  of the BES PID. jhrg 11/13/17
     ostringstream ss;
     ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
@@ -544,27 +501,29 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
-    catch (libdap::Error &e) {
+#if 0
+    catch (const libdap::Error &e) {
         timeout_jump_valid = false;
         string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
         BESDEBUG("bes", msg << endl );
         BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
-    catch (BESError &e) {
+#endif
+    catch (const BESError &e) {
         timeout_jump_valid = false;
-        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
+        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
-    catch (bad_alloc &e) {
+    catch (const bad_alloc &e) {
         timeout_jump_valid = false;
         stringstream msg;
-        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
+        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what()  << endl;
         BESDEBUG("bes", msg.str() << endl );
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
-    catch (exception &e) {
+    catch (const exception &e) {
         timeout_jump_valid = false;
         stringstream msg;
         msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;

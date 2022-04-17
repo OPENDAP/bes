@@ -1,0 +1,4 @@
+Dataset {
+    Float32 GeoGrid1_Data_Fields_temperature[YDim_GeoGrid1 = 8][XDim_GeoGrid1 = 16];
+    Float32 GeoGrid2_Data_Fields_temperature[YDim_GeoGrid2 = 4][XDim_GeoGrid2 = 8];
+} grid_2_2d_size.hdf;

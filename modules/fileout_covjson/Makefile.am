@@ -10,12 +10,13 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_covjson
-M_VER=1.0.5
+M_VER=1.0.6
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -Wno-vla-extension
 
 AM_CXXFLAGS=
 AM_LDFLAGS =

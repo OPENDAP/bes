@@ -30,22 +30,20 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+
+#include <unistd.h>
+#include <iostream>
+#include <chrono>
+
+#include "BESRegex.h"
+#include "BESError.h"
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace CppUnit;
-
-#include <iostream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::string;
-
-#include "BESRegex.h"
-#include "BESError.h"
-#include <GetOpt.h>
+using namespace std;
 
 static bool debug = false;
 
@@ -71,112 +69,193 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( regexT );
+    CPPUNIT_TEST_SUITE( regexT );
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST( digit_test );
+    CPPUNIT_TEST( begin_end_test_1 );
+    CPPUNIT_TEST( begin_end_test_2 );
+    CPPUNIT_TEST( char_class_test_1 );
+    CPPUNIT_TEST( char_class_test_2 );
+    CPPUNIT_TEST( alternatives_test_1 );
+    CPPUNIT_TEST( alternatives_test_2 );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+#if INCLUDE_REGEX_TIMING
+    // By default, don't run this wiht every build. THe short answer is that
+    // 'const' alone is not a big win with regexes. For the best performance,
+    // the BESRegex objects need to be factored out of code they are built as
+    // infrequently as possible. jhrg 12/8/21
+    CPPUNIT_TEST( const_test );
+#endif
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
-        cout << "*****************************************" << endl;
-        cout << "Entered regexT::run" << endl;
-
-        try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex 123456 against string 01234567" << endl;
+    void digit_test() {
+         try {
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
             BESRegex reg_expr("123456");
             string inQuestion = "01234567";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == 6 );
+            CPPUNIT_ASSERT(result == 6);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void begin_end_test_1() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex ^123456$ against string 01234567" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex ^123456$ against string 01234567" << endl);
             BESRegex reg_expr("^123456$");
             string inQuestion = "01234567";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == -1 );
+            CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void begin_end_test_2() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex ^123456$ against string 123456" << endl;
-            cout << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex ^123456$ against string 123456" << endl);
+            DBG(cerr << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl);
             BESRegex reg_expr("^123456$");
             string inQuestion = "123456";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == 6 );
+            CPPUNIT_ASSERT(result == 6);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void char_class_test_1() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.nc" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << R"(Match reg ex ".*\.nc$;" against string fnoc1.nc)" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.nc";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == 8 );
+            CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void char_class_test_2() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.ncd";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == -1 );
+            CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void alternatives_test_1() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == 8 );
+            CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
+    void alternatives_test_2() {
         try {
-            cout << "*****************************************" << endl;
-            cout << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl;
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc.gz";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
-            CPPUNIT_ASSERT( result == 11 );
+            CPPUNIT_ASSERT(result == 11);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT( !"Failed to match" );
+            CPPUNIT_ASSERT(!"Failed to match");
         }
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "Returning from regexT::run" << endl;
+    // We want to know if it's necessary to factor a regex out of a loop or if
+    // adding 'const' alone will speed up runtimes.
+    // Answer: Adding const alone does speed up runtimes, but for a complex regex,
+    // not nearly as much as factoring the regex out of a loop. Thus, if we have
+    // regexes that are called repeatedly without changing, those should be stored
+    // in objects as regexes (compiled) and not strings. jhrg 12/8/21
+    //
+    // This code should not be running by default.
+    void const_test() {
+        using namespace std::chrono;
+
+        // A simple regex
+        string simple_regex = R"(T|t.*)";
+
+        DBG(cerr << "Using a simple regex:" << endl);
+        test_regex_times(simple_regex, "The answer.", "the answer");
+
+        // This is a complex regex.
+        string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+        string test1 = "https://s3-us-east-1.amazonaws.com/aa.a/etc";
+        string test2 = "https://s3-us-west-1.amazonaws.com/aa.a/etc";
+
+        DBG(cerr << "Using a complex regex:" << endl);
+        test_regex_times(s3_path_regex_str, test1, test2);
+    }
+
+    void test_regex_times(const string &s3_path_regex_str, const string &test1, const string &test2) const {
+        chrono::steady_clock::time_point t1 = chrono::steady_clock::now();
+        DBG(cerr << "Running 10 000 regex compiles..." << endl);
+        for (int i=0; i<10000; ++i) {
+            BESRegex r(s3_path_regex_str);
+            int m1 = r.match(test1);
+            int m2 = r.match(test2);
+            CPPUNIT_ASSERT(m1 != -1 && m2 != -1);
+        }
+        chrono::steady_clock::time_point t2 = chrono::steady_clock::now();
+        chrono::duration<double> time_span = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+        DBG(cerr << "It took me " << time_span.count() << " seconds." << endl);
+
+        t1 = chrono::steady_clock::now();
+        DBG(cerr << "Running 10 000 regex compares with const Regexes..." << endl);
+        for (int i=0; i<10000; ++i) {
+            const BESRegex r2(s3_path_regex_str);
+            int m1 = r2.match(test1);
+            int m2 = r2.match(test2);
+            CPPUNIT_ASSERT(m1 != -1 && m2 != -1);
+        }
+        t2 = chrono::steady_clock::now();
+        time_span = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+        DBG(cerr << "It took me " << time_span.count() << " seconds." << endl);
+
+        t1 = chrono::steady_clock::now();
+        DBG(cerr << "Running 10 000 regex compares with const Regexes moved out of the loop..." << endl);
+        const BESRegex r3(s3_path_regex_str);
+        for (int i=0; i<10000; ++i) {
+            int m1 = r3.match(test1);
+            int m2 = r3.match(test2);
+            CPPUNIT_ASSERT(m1 != -1 && m2 != -1);
+        }
+        t2 = chrono::steady_clock::now();
+        time_span = chrono::duration_cast<chrono::duration<double>>(t2 - t1);
+        DBG(cerr << "It took me " << time_span.count() << " seconds." << endl);
     }
 };
 
@@ -184,10 +263,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( regexT );
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != EOF)
+    while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -205,20 +282,23 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = regexT::suite()->getName().append("::").append(argv[i]);
+            test = regexT::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

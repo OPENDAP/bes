@@ -51,6 +51,22 @@ using std::ostream;
 #include "BESLog.h"
 #include "TheBESKeys.h"
 
+// TODO Add documentation for this class here and in the header. It seems that
+//  this is what the class does: allocates a buffer of 'emergency' MB. If
+//  ControlHeap is 'yes', the it will set the max data size of this process to
+//  the value of MaximumHeapSize MB (using setrlimit()) and then _test_ that
+//  out by malloc()'ing and then free()'ing a buffer of that size. If Verbose
+//  is 'no' log out put is suspended.
+//
+// I think this should not use the simple counter logic but use share_ptr.
+// The strings passed to ERROR_LOG(), etc should be cleaned up - use \n or endl
+// or not, but not a mixture.
+//
+// But wait... is this ever used? I think it was used by the BESApacheInterface.cc
+// file but that's all.
+//
+// Write unit tests for this if we're going to keep it.
+
 #define prolog std::string("BESMemoryGlobalArea::").append(__func__).append("() - ")
 
 int BESMemoryGlobalArea::_counter = 0;

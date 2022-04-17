@@ -53,18 +53,22 @@ static char rcsid[] not_used =
 #include <BESRegex.h>
 #include <BESDebug.h>
 
-#include <BaseType.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <UInt16.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <InternalErr.h>
-#include <dods-limits.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/InternalErr.h>
+#include <libdap/dods-limits.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
+
+#include "BESRegex.h"
+#include "BESUtil.h"
+#include "BESDebug.h"
 
 #include "FFRequestHandler.h"
 #include "util_ff.h"
@@ -582,8 +586,7 @@ find_ancillary_rss_formats(const string & dataset, const string & /* delimiter *
     // Now determine if this is files holds averaged or daily data.
     string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
 
-    if (FormatPath[FormatPath.length()-1] != '/')
-        FormatPath.append("/");
+    BESUtil::trim_if_trailing_slash(FormatPath);
 
     if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.fmt";
@@ -636,9 +639,7 @@ find_ancillary_rss_das(const string & dataset, const string & /* delimiter */,
     }
 
     string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
-
-    if (FormatPath[FormatPath.length()-1] != '/')
-        FormatPath.append("/");
+    BESUtil::trim_if_trailing_slash(FormatPath);
 
     if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.das";

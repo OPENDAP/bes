@@ -1,0 +1,178 @@
+Attributes {
+    Extent {
+        String coordinates "Latitude Longitude";
+        String long_name "Northern Hemisphere:Extent";
+    }
+    Age {
+        String coordinates "Latitude Longitude";
+        String long_name "Northern Hemisphere:Age";
+    }
+    Latitude {
+        String long_name "Northern Hemisphere:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Northern Hemisphere:Longitude";
+        String units "degrees_east";
+    }
+    Extent_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "Southern Hemisphere:Extent";
+    }
+    Age_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "Southern Hemisphere:Age";
+    }
+    Latitude_1 {
+        String long_name "Southern Hemisphere:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "Southern Hemisphere:Longitude";
+        String units "degrees_east";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "no further update anticipated";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NISE_SSMISF17_20110424.HDFEOS";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-04-24T13:57:59.00Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NISE-109";
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NISE";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 4;
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.000000;
+                        }
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.000000;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.000000;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.000000;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.00Z";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00:00:00.00Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-04-24";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2011-04-25";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NISE-109";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Extent";
+                    }
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "currently not used";
+                        }
+                        OPERATIONALQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        OPERATIONALQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "currently not used";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.14";
+        String data_grid_key "Data Value     Parameter
+0              snow-free land
+1-100          sea ice concentration percentage
+101            permanent ice (Greenland, Antarctica)
+102            not used
+103            dry snow
+104            wet snow
+105-251        not used
+252            mixed pixels at coastlines (unable to reliably apply microwave algorithm)
+253            suspect ice value
+254            corners(undefined)
+255            ocean
+";
+        String age_grid_key "Age Value      Parameter
+0-254          age in days since date of file
+255            filler value for corners and undetermined data pixels
+";
+    }
+}

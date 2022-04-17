@@ -28,10 +28,10 @@
 #include <gdal_priv.h>
 #include <ogr_spatialref.h>
 
-#include <DDS.h>
-#include <Grid.h>
+#include <libdap/DDS.h>
+#include <libdap/Grid.h>
 // #include <ce_functions.h>
-#include <util.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>

@@ -1,3 +1,114 @@
+## News for 3.20.10
+
+#### DMR++ Improvements
+
+* Added support for the HDF5 filter Fletcher32 to the dmr++ creation and
+  processing code.
+
+* Implemented lazy evaluation of dmr++ files. This change greatly 
+  improves efficiency/speed for requests that subset a dataset that
+  contains a large number of variables as only the variables requested
+  will have their Chunk information read and parsed.
+
+* Added version and configuration information to dmr++ files built using
+  the build_dmrpp and get_dmrpp applications. This will enable people to 
+  recreate and understand the conditions which resulted in a particular
+  dmr++ instance. This also includes a -z switch for get_dmrpp which 
+  will return its version.
+
+* Performance improvement: By patching Chunk::add_tracking_query_param() so
+  that it doesn't do anything if no parameter is submitted we eliminated a
+  very time costly regular expression evaluation that was being performed
+  during the read operation for every Chunk. This improved read performance
+  by a factor of 2-3 orders of magnitude!
+
+#### Handler Updates
+
+* Added new netcdf_handler configuration parameter:
+  NC.PromoteByteToShort 
+  Which, when set to true will cause signed 8-bit
+  integer values to be promoted to Int16 (Because the DAP2 data 
+  model does not support signed 8-bit integers)
+
+* By default the NetCDF Fileout feature will ship with 
+  FONc.ClassicModel=false 
+
+* Added new configuration option to the HDF5 handler:
+  EnableCFDMR=true which will allow the generation of CF compliant DMR output.
+  
+#### General Houskeeping
+
+* Code organization changes to facilitate development
+  and compilation on different platforms.
+  - Moved functions into modules directory
+  - Improved Test scripts to handle version string updates.
+  - Changed libdap includ paths to "libdap/*.h" to prevent 
+    include file collisions.
+  - Started migrating to C++11 regex implementation (away from
+    older less efficient GNU implementation) This is controlled
+    by a compile time switch for now.
+
+
+## News for 3.20.9
+
+#### NGAP & DMR++ Improvements
+
+* Trusted cmr (#485)
+  - Modifying things into shape to use http::url anstead of std::string
+  - Replaced strings with http::url objects
+  - Moved AllowedHosts to http
+  - Fixed implmentations of http::url::is_expired()
+  - Switch RemoteSource constructor to shared_ptr
+  - Changed the way that http::url interprets no protocol urls/
+  - Fixed concurrency issues in EffectiveUrlCache
+
+* Corrected usage statement for get_dmrpp
+* Handle the "missing data" files in the NGAP system
+* Update NgapApiTest to reflect changes in CMR holdings.
+
+* Dropped useless call to Chunk.inflate() and added a state check to protect us
+  from a CONTIGUOUS variable that is marked as compressed.
+* Rewrote read_contiguous() with std::async() and std::future dropping the SuperChunk idea.
+
+* First implementation of the new restified path with two mandatory and one optional path components.
+
+#### DAP4
+* DAP4 doesn't support DAP2 Grid. The code that handles the DAP2 Grid coordinates
+  will cause some DAP4 coordinate variables under different groups to be ignored.
+  So this fix ensure the code NOT to call the code that handles the DAP2 Grid coordiantes
+  for the DAP4 case. (HYRAX-477)  
+  
+#### General
+* Added GitHub Actions to bes.
+* Stop parser EffectiveUrl resolution activity (#532)
+
+* Fonc refactor
+  - Added support for streaming netCDF3 files that do not contain Structures.
+  - Fix a small memory leak in the history attribute code at the transmitter.
+  - Add history attribute is added to dap4.
+  - Add NC.PromoteByteToShort=true in the configuration file. This makes it consistent with nc.conf.in.
+    Also it make sures the value of signed 8-bit integer to be correctly represented in DAP2.
+  - Remove unused getAttrType function from FONcArray.cc.
+  - Dropping throttle from Fonc_transmiter
+
+* Added throttle to BESUtil::file_to_stream()
+
+* Ensure the data value correctness for the classic model.
+  - When encountering a mismatch for the data type mapping mismatches,an error will be generated. (HYRAX-467)
+  - For the classic model, ensure the _fillvalue datatype to be the same as the variable datatype.
+
+* Server handler refactor (#513)
+* Fixing duplicate CF history entries (#504)
+
+* Perform comprehensive check of datatype match and implementation of ensuring _FillValue attribute
+  type the same as the variable type. (HYRAX-449)
+
+* Added new implementation of temp file transfer code for fileout_netcdf (#498)
+* Added config param Http.UserAgent (#493)
+
+* Fixed netCDF-4 and compression information is missing when A DAP2 grid maps to three netCDF variables. (#490) (HYRAX-388) 
+* Adds call to the ftruncate() function in the update cache files activity, unit tests for string replace_all()
+
 ### News for 3.20.8
 
 #### NGAP & DMR++ Improvements

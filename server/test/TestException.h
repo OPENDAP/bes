@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,26 +33,26 @@
 #ifndef TestException_h_
 #define TestException_h_ 1
 
+#include <string>
 #include "BESError.h"
-#include "BESDataHandlerInterface.h"
+
+class BESDataHandlerInterface;
 
 #define CEDAR_AUTHENTICATE_EXCEPTION 13
 
 /** @brief exception thrown if authentication fails
  */
-class TestException: public BESError
-{
+class TestException : public BESError {
 private:
-      			TestException() ;
-public:
-      			TestException( const string &s,
-			               const string &file,
-				       unsigned int line ) :
-			    BESError( s, 12, file, line ) { }
-      virtual		~TestException() {}
+    TestException() =default;
 
-      static int	handleException( BESError &e,
-					 BESDataHandlerInterface &dhi ) ;
+public:
+    TestException(std::string s, std::string file, unsigned int line)
+        : BESError(std::move(s), 12, std::move(file), line) {}
+
+    ~TestException() override = default;
+
+    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 };
 
 #endif // TestException_h_ 

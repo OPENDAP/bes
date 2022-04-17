@@ -42,7 +42,7 @@
 
 #include <sstream>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include <NCStructure.h>
 

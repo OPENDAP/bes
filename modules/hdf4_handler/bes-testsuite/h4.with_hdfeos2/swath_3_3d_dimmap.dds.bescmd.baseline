@@ -1,0 +1,25 @@
+Dataset {
+    Float32 temperature_l_Swath1[ZDim = 4][xtrack_l_Swath1 = 4][ytrack_l_Swath1 = 8];
+    Float32 temperature_m_Swath1[ZDim = 4][xtrack_m_Swath1 = 8][ytrack_m_Swath1 = 16];
+    Float32 temperature_h_Swath1[ZDim = 4][xtrack_h_Swath1 = 16][ytrack_h_Swath1 = 32];
+    Float32 pressure[ZDim = 4];
+    Float32 Latitude_Swath1[xtrack_l_Swath1 = 4][ytrack_l_Swath1 = 8];
+    Float32 Longitude_Swath1[xtrack_l_Swath1 = 4][ytrack_l_Swath1 = 8];
+    Float32 Latitude_Swath1_1[xtrack_m_Swath1 = 8][ytrack_m_Swath1 = 16];
+    Float32 Longitude_Swath1_1[xtrack_m_Swath1 = 8][ytrack_m_Swath1 = 16];
+    Float32 Latitude_Swath1_2[xtrack_h_Swath1 = 16][ytrack_h_Swath1 = 32];
+    Float32 Longitude_Swath1_2[xtrack_h_Swath1 = 16][ytrack_h_Swath1 = 32];
+    Float32 temperature_l_Swath2[ZDim_1 = 4][xtrack_l_Swath2 = 4][ytrack_l_Swath2 = 8];
+    Float32 temperature_m_Swath2[ZDim_1 = 4][xtrack_m_Swath2 = 8][ytrack_m_Swath2 = 16];
+    Float32 pressure_1[ZDim_1 = 4];
+    Float32 Latitude_Swath2[xtrack_l_Swath2 = 4][ytrack_l_Swath2 = 8];
+    Float32 Longitude_Swath2[xtrack_l_Swath2 = 4][ytrack_l_Swath2 = 8];
+    Float32 Latitude_Swath2_1[xtrack_m_Swath2 = 8][ytrack_m_Swath2 = 16];
+    Float32 Longitude_Swath2_1[xtrack_m_Swath2 = 8][ytrack_m_Swath2 = 16];
+    Float32 temperature_m_Swath3[ZDim_2 = 4][xtrack_m_Swath3 = 8][ytrack_m_Swath3 = 16];
+    Float32 pressure_2[ZDim_2 = 4];
+    Float32 Latitude_Swath3[xtrack_m_Swath3 = 8][ytrack_m_Swath3 = 16];
+    Float32 Longitude_Swath3[xtrack_m_Swath3 = 8][ytrack_m_Swath3 = 16];
+    Int32 xtrack_l_Swath3[xtrack_l_Swath3 = 4];
+    Int32 ytrack_l_Swath3[ytrack_l_Swath3 = 8];
+} swath_3_3d_dimmap.hdf;

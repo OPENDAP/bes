@@ -37,36 +37,21 @@
 
 #include "CSVDAS.h"
 
-#include "DAS.h"
-#include "Error.h"
+#include <libdap/DAS.h>
+#include <libdap/Error.h>
 
 #include "CSV_Obj.h"
 
 #include <BESNotFoundError.h>
 #include <BESDebug.h>
 
-using std::auto_ptr;
-using std::endl;
+using namespace std;
 
 void csv_read_attributes(DAS &das, const string &filename)
 {
-#if 0
-    AttrTable *attr_table_ptr = NULL;
-    string type;
-#endif
-
-#if 0
-    CSV_Obj* csvObj = new CSV_Obj();
-#endif
-
-    auto_ptr<CSV_Obj> csvObj(new CSV_Obj);
+    unique_ptr<CSV_Obj> csvObj(new CSV_Obj);
 
     if (!csvObj->open(filename)) {
-#if 0
-        string err = (string) "Unable to open file " + filename;
-        delete csvObj;
-#endif
-
         throw BESNotFoundError(string("Unable to open file ").append(filename), __FILE__, __LINE__);
     }
 
@@ -77,22 +62,14 @@ void csv_read_attributes(DAS &das, const string &filename)
     vector<string> fieldList;
     csvObj->getFieldList(fieldList);
 
-    //loop through all the fields
-    vector<string>::iterator it = fieldList.begin();
-    vector<string>::iterator et = fieldList.end();
-    for (; it != et; it++) {
-        AttrTable *attr_table_ptr = das.get_table((string(*it)).c_str());
+    for (const auto &field: fieldList) {
+        AttrTable *attr_table_ptr = das.get_table(field.c_str());
 
-        if (!attr_table_ptr) attr_table_ptr = das.add_table(string(*it), new AttrTable);
+        if (!attr_table_ptr) attr_table_ptr = das.add_table(field, new AttrTable);
 
         //only one attribute, field type, called "type"
-        string type = csvObj->getFieldType(*it);
+        string type = csvObj->getFieldType(field);
         attr_table_ptr->append_attr("type", "String", type);
     }
-
-#if 0
-    delete csvObj;
-#endif
-
 }
 

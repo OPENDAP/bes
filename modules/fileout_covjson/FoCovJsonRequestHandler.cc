@@ -40,7 +40,27 @@ using std::ostream;
 using std::string;
 using std::map;
 
-/** @brief Constructor for FileOut NetCDF module
+bool FoCovJsonRequestHandler::_may_ignore_z_axis   = false;
+bool FoCovJsonRequestHandler::_simple_geo   = false;
+
+bool FoCovJsonRequestHandler::check_beskeys(const string & key) {
+
+    bool found = false;
+    string doset ="";
+    const string dosettrue ="true";
+    const string dosetyes = "yes";
+
+    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
+    if( true == found ) {
+        doset = BESUtil::lowercase( doset ) ;
+        if( dosettrue == doset  || dosetyes == doset )
+            return true;
+    }
+    return false;
+
+}
+
+/** @brief Constructor for FileOut Coverage JSON module
  *
  * This constructor adds functions to add to the build of a help request
  * and a version request to the BES.
@@ -53,6 +73,15 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
 {
     add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
+    _may_ignore_z_axis = check_beskeys("FoCovJson.MAY_IGNORE_Z_AXIS");   
+    _simple_geo = check_beskeys("FoCovJson.SIMPLE_GEO");   
+
+#if 0
+if(_may_ignore_z_axis == true) 
+std::cerr<<"IGNORE mode "<<endl;
+else
+std::cerr<<"Strict mode "<<endl;
+#endif
 }
 
 /** @brief Any cleanup that needs to take place
@@ -61,7 +90,7 @@ FoCovJsonRequestHandler::~FoCovJsonRequestHandler()
 {
 }
 
-/** @brief adds help information for FileOut NetCDF to a help request
+/** @brief adds help information for FileOut Coverage JSON to a help request
  *
  * Adds information to a help request to the BES regarding a file out
  * netcdf response. Included in this information is a link to a

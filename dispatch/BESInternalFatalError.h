@@ -41,27 +41,19 @@
  * the BES
  */
 class BESInternalFatalError: public BESError {
-protected:
-    BESInternalFatalError()
-    {
-    }
 public:
-    BESInternalFatalError(const std::string &s, const std::string &file, unsigned int line) :
-        BESError(s, BES_INTERNAL_FATAL_ERROR, file, line)
-    {
-    }
-    virtual ~BESInternalFatalError()
-    {
-    }
+    BESInternalFatalError(std::string s, std::string file, unsigned int line) :
+        BESError(std::move(s), BES_INTERNAL_FATAL_ERROR, std::move(file), line) { }
 
-    virtual void dump(std::ostream &strm) const
+    ~BESInternalFatalError() override = default;
+
+    void dump(std::ostream &strm) const override
     {
         strm << "BESInternalFatalError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
         BESError::dump(strm);
         BESIndent::UnIndent();
     }
-
 };
 
 #endif // BESInternalFatalError_h_

@@ -24,38 +24,40 @@
 
 #include "config.h"
 
-#include <cstdio>
-#include <cstring>
+//#include <cstdio>
+//#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <memory>
 #include <time.h>
 #include <curl/curl.h>
 
-#include <util.h>
-#include <debug.h>
+//#include <libdap/util.h>
+//#include <libdap/debug.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
+//#include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
-#include "BESError.h"
+//#include "BESError.h"
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "TheBESKeys.h"
-#include "CurlUtils.h"
+//#include "CurlUtils.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-#include "NgapError.h"
+// #include "NgapError.h"
 
 using namespace std;
 
@@ -126,7 +128,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
             msg << prolog << "The specified path '" << r_path << "'";
             msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
             msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
-            msg << " one must be provided.";
+            msg << " key, one must be provided.";
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
         collection_index = concepts_index;
@@ -377,7 +379,13 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                                     " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
 
             if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-                data_access_url = r_url.GetString();
+                
+                // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
+                // as well as a Type GET DATA URL which uses https:// or http://
+                string candidate_url = r_url.GetString();
+                if(candidate_url.substr(0,8) == "https://" || candidate_url.substr(0,7) == "http://"){
+                    data_access_url = candidate_url;
+                }
             }
         }
     }
@@ -426,7 +434,8 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        http::RemoteResource cmr_query(cmr_query_url, uid);
+        std::shared_ptr<http::url> cmr_query_url_ptr(new http::url(cmr_query_url));
+        http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
         {
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){

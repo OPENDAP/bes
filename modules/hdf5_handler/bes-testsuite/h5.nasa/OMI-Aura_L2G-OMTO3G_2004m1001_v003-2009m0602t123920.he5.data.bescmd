@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920" space="catalog">/data/OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5</setContainer>
+    <define name="d">
+	<container name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920">
+	     <constraint>Latitude[0:1:14][0:360:719][0:720:1439],Longitude[0:1:14][0:360:719][0:720:1439],AlgorithmFlags[0][0][0],GroundPixelQualityFlags[14][719][1439],LayerEfficiency[7][6:6:6][0:360:719][0:1:1439],LineNumber[14:14:14][0:360:719][0:1:1439],ArchivedMetadata</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
