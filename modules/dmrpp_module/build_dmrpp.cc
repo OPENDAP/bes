@@ -37,7 +37,8 @@
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
-#include "h5common.h"
+
+#include "h5common.h"   // This is in the hdf5 handler
 
 #include <libdap/Array.h>
 #include <libdap/util.h>
