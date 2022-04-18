@@ -17,6 +17,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

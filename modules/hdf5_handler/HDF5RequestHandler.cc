@@ -169,7 +169,7 @@ bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
 bool HDF5RequestHandler::_enable_coord_attr_add_path  = true;
 
 bool HDF5RequestHandler::_usecfdmr                    = true;
-bool HDF5RequestHandler::_add_dap4_coverage           = false;
+bool HDF5RequestHandler::_add_dap4_coverage           = true;
 
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 

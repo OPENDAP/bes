@@ -93,7 +93,7 @@ void add_var_dap4_attr(libdap::BaseType *d4_var,const std::string& attr_name, D4
 
 void add_grp_dap4_attr(libdap::D4Group *d4_grp,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
 
-
+void add_dap4_coverage(libdap::D4Group* d4_grp, const std::vector<std::string>& map_array, bool is_coard);
 
 
 #endif

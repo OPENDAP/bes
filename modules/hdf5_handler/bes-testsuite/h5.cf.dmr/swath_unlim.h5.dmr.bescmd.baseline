@@ -18,6 +18,9 @@
         <Attribute name="coordinates" type="String">
             <Value>Bands Res2tr Res2xtr</Value>
         </Attribute>
+        <Map name="/Bands"/>
+        <Map name="/Res2tr"/>
+        <Map name="/Res2xtr"/>
     </Float64>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -80,9 +83,9 @@
             <Value>/HDFEOS INFORMATION</Value>
         </Attribute>
     </Attribute>
-    <Attribute name="DODS_EXTRA" type="Container">                                                          
-        <Attribute name="Unlimited_Dimension" type="String">                                                
-            <Value>Bands Res2tr Res2xtr</Value>                                                             
-        </Attribute>                                                                                        
-    </Attribute> 
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Bands Res2tr Res2xtr</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

@@ -20,6 +20,8 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>5bdeef6d</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
