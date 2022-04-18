@@ -82,7 +82,7 @@ public:
     }
     void test_dump() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        RequestServiceTimer::TheTimer()->start(1);
+        RequestServiceTimer::TheTimer()->start(seconds{1});
         DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
         sleep(1);
         DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);

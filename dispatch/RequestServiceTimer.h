@@ -60,14 +60,11 @@ private:
 public:
     static RequestServiceTimer *TheTimer();
 
-    std::chrono::steady_clock::time_point start(unsigned int timeout_seconds);
     std::chrono::steady_clock::time_point start(std::chrono::milliseconds timeout_ms);
 
-    std::chrono::seconds elapsed() const;
-    std::chrono::milliseconds elapsed_ms() const;
+    std::chrono::milliseconds elapsed() const;
 
-    std::chrono::seconds remaining() const;
-    std::chrono::milliseconds remaining_ms() const;
+    std::chrono::milliseconds remaining() const;
 
     bool is_expired() const;
 

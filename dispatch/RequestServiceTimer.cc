@@ -74,10 +74,6 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
-steady_clock::time_point RequestServiceTimer::start(unsigned int timeout_seconds){
-    return start(seconds{timeout_seconds});
-}
-
 steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_ms){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
@@ -93,22 +89,14 @@ steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_ms){
     return start_time;
 }
 
-seconds RequestServiceTimer::elapsed() const {
-    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return duration_cast<seconds>(elapsed_ms());
-}
 
-milliseconds RequestServiceTimer::elapsed_ms() const {
+milliseconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return duration_cast<milliseconds>(steady_clock::now() - start_time);
 }
 
-seconds RequestServiceTimer::remaining() const {
-    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return duration_cast<seconds>(remaining_ms());
-}
 
-milliseconds RequestServiceTimer::remaining_ms() const {
+milliseconds RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     milliseconds remaining{DEFAULT_BES_TIMEOUT_MILLISECONDS};
     BESDEBUG(MODULE, prolog << "init remaining: " << remaining.count() <<  endl);
@@ -129,7 +117,7 @@ milliseconds RequestServiceTimer::remaining_ms() const {
 
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return timeout_enabled && (remaining_ms() <= milliseconds {0});
+    return timeout_enabled && (remaining() <= milliseconds {0});
 }
 
 void RequestServiceTimer::disable_timeout(){
@@ -150,11 +138,7 @@ string RequestServiceTimer::dump(bool pretty) const {
     if(pretty){ ss << endl << "  "; }
     ss << "elapsed(): " << elapsed().count() << "s ";
     if(pretty){ ss << endl << "  "; }
-    ss << "elapsed_ms(): " << elapsed_ms().count() << "ms ";
-    if(pretty){ ss << endl << "  "; }
     ss << "remaining(): " << remaining().count() << "s ";
-    if(pretty){ ss << endl << "  "; }
-    ss << "remaining_ms(): " << remaining_ms().count() << "ms ";
     if(pretty){ ss << endl << "  "; }
     ss << "is_expired(): " <<  (is_expired()?"true":"false");
     if(pretty){ ss << endl; }else{ ss << "]"; }
