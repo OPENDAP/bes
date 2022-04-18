@@ -95,7 +95,7 @@ milliseconds RequestServiceTimer::elapsed() const {
 /**
  * @brief If the time_out is enabled returns the time remaining. If the time_out is disabled returns 0.
  *
- * The return value is only of interest if the timeout is enabled so checking timeout_is_enable()
+ * The return value is only of interest if the timeout is enabled so checking is_timeout_enabled()
  * is an important precondition before assessing the value of remaining().
  * @return
  */
