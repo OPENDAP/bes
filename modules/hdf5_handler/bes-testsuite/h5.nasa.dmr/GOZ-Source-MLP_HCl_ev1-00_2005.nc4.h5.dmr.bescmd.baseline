@@ -34,6 +34,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lat_max</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_std_error">
         <Dim name="/HALOE_time"/>
@@ -57,6 +60,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/std_error</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_lat_min">
         <Dim name="/HALOE_time"/>
@@ -80,6 +86,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lat_min</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_lst_min">
         <Dim name="/HALOE_time"/>
@@ -102,6 +111,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lst_min</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_std_dev">
         <Dim name="/HALOE_time"/>
@@ -125,6 +136,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/std_dev</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_lat_avg">
         <Dim name="/HALOE_time"/>
@@ -148,6 +162,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lat_avg</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_average">
         <Dim name="/HALOE_time"/>
@@ -171,6 +188,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/average</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_sza_avg">
         <Dim name="/HALOE_time"/>
@@ -193,6 +213,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/sza_avg</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_sza_max">
         <Dim name="/HALOE_time"/>
@@ -215,6 +237,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/sza_max</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_rms_uncertainty">
         <Dim name="/HALOE_time"/>
@@ -238,6 +262,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/rms_uncertainty</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_minimum">
         <Dim name="/HALOE_time"/>
@@ -261,6 +288,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/minimum</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_maximum">
         <Dim name="/HALOE_time"/>
@@ -284,6 +314,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/maximum</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_sza_min">
         <Dim name="/HALOE_time"/>
@@ -306,6 +339,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/sza_min</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Int8 name="HALOE_days_used">
         <Dim name="/HALOE_time"/>
@@ -330,6 +365,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/days_used</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
+        <Map name="/HALOE_dayInBin"/>
     </Int8>
     <Float32 name="HALOE_lst_max">
         <Dim name="/HALOE_time"/>
@@ -352,6 +391,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lst_max</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Float32 name="HALOE_lst_avg">
         <Dim name="/HALOE_time"/>
@@ -374,6 +415,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/lst_avg</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lat"/>
     </Float32>
     <Int32 name="HALOE_nvalues">
         <Dim name="/HALOE_time"/>
@@ -397,6 +440,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HALOE/nvalues</Value>
         </Attribute>
+        <Map name="/HALOE_time"/>
+        <Map name="/HALOE_lev"/>
+        <Map name="/HALOE_lat"/>
     </Int32>
     <Float32 name="ACE_FTS_lat_max">
         <Dim name="/ACE_FTS_time"/>
@@ -420,6 +466,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lat_max</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_std_error">
         <Dim name="/ACE_FTS_time"/>
@@ -443,6 +492,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/std_error</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_lat_min">
         <Dim name="/ACE_FTS_time"/>
@@ -466,6 +518,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lat_min</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_lst_min">
         <Dim name="/ACE_FTS_time"/>
@@ -488,6 +543,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lst_min</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_std_dev">
         <Dim name="/ACE_FTS_time"/>
@@ -511,6 +568,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/std_dev</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_lat_avg">
         <Dim name="/ACE_FTS_time"/>
@@ -534,6 +594,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lat_avg</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_average">
         <Dim name="/ACE_FTS_time"/>
@@ -557,6 +620,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/average</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_sza_avg">
         <Dim name="/ACE_FTS_time"/>
@@ -579,6 +645,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/sza_avg</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_sza_max">
         <Dim name="/ACE_FTS_time"/>
@@ -601,6 +669,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/sza_max</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_rms_uncertainty">
         <Dim name="/ACE_FTS_time"/>
@@ -624,6 +694,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/rms_uncertainty</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_minimum">
         <Dim name="/ACE_FTS_time"/>
@@ -647,6 +720,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/minimum</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_maximum">
         <Dim name="/ACE_FTS_time"/>
@@ -670,6 +746,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/maximum</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_sza_min">
         <Dim name="/ACE_FTS_time"/>
@@ -692,6 +771,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/sza_min</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Int8 name="ACE_FTS_days_used">
         <Dim name="/ACE_FTS_time"/>
@@ -716,6 +797,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/days_used</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
+        <Map name="/ACE_FTS_dayInBin"/>
     </Int8>
     <Float32 name="ACE_FTS_lst_max">
         <Dim name="/ACE_FTS_time"/>
@@ -738,6 +823,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lst_max</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Float32 name="ACE_FTS_lst_avg">
         <Dim name="/ACE_FTS_time"/>
@@ -760,6 +847,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/lst_avg</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lat"/>
     </Float32>
     <Int32 name="ACE_FTS_nvalues">
         <Dim name="/ACE_FTS_time"/>
@@ -783,6 +872,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ACE-FTS/nvalues</Value>
         </Attribute>
+        <Map name="/ACE_FTS_time"/>
+        <Map name="/ACE_FTS_lev"/>
+        <Map name="/ACE_FTS_lat"/>
     </Int32>
     <Float32 name="Aura_MLS_lat_max">
         <Dim name="/Aura_MLS_time"/>
@@ -806,6 +898,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lat_max</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_std_error">
         <Dim name="/Aura_MLS_time"/>
@@ -829,6 +924,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/std_error</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_lat_min">
         <Dim name="/Aura_MLS_time"/>
@@ -852,6 +950,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lat_min</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_lst_min">
         <Dim name="/Aura_MLS_time"/>
@@ -874,6 +975,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lst_min</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_std_dev">
         <Dim name="/Aura_MLS_time"/>
@@ -897,6 +1000,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/std_dev</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_lat_avg">
         <Dim name="/Aura_MLS_time"/>
@@ -920,6 +1026,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lat_avg</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_average">
         <Dim name="/Aura_MLS_time"/>
@@ -943,6 +1052,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/average</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_sza_avg">
         <Dim name="/Aura_MLS_time"/>
@@ -965,6 +1077,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/sza_avg</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_sza_max">
         <Dim name="/Aura_MLS_time"/>
@@ -987,6 +1101,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/sza_max</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_rms_uncertainty">
         <Dim name="/Aura_MLS_time"/>
@@ -1010,6 +1126,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/rms_uncertainty</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_minimum">
         <Dim name="/Aura_MLS_time"/>
@@ -1033,6 +1152,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/minimum</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_maximum">
         <Dim name="/Aura_MLS_time"/>
@@ -1056,6 +1178,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/maximum</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_sza_min">
         <Dim name="/Aura_MLS_time"/>
@@ -1078,6 +1203,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/sza_min</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Int8 name="Aura_MLS_days_used">
         <Dim name="/Aura_MLS_time"/>
@@ -1102,6 +1229,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/days_used</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
+        <Map name="/Aura_MLS_dayInBin"/>
     </Int8>
     <Float32 name="Aura_MLS_lst_max">
         <Dim name="/Aura_MLS_time"/>
@@ -1124,6 +1255,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lst_max</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Float32 name="Aura_MLS_lst_avg">
         <Dim name="/Aura_MLS_time"/>
@@ -1146,6 +1279,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/lst_avg</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lat"/>
     </Float32>
     <Int32 name="Aura_MLS_nvalues">
         <Dim name="/Aura_MLS_time"/>
@@ -1169,6 +1304,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Aura MLS/nvalues</Value>
         </Attribute>
+        <Map name="/Aura_MLS_time"/>
+        <Map name="/Aura_MLS_lev"/>
+        <Map name="/Aura_MLS_lat"/>
     </Int32>
     <Float32 name="ACE_FTS_dayInBin">
         <Dim name="/ACE_FTS_dayInBin"/>

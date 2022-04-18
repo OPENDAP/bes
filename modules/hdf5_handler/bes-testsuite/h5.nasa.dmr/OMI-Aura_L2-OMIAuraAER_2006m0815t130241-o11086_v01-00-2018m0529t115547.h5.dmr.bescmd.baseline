@@ -36,6 +36,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Float32 name="ANCILLARY_DATA_AIRS_CO_Value">
         <Dim name="/nTimes"/>
@@ -67,6 +69,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="ANCILLARY_DATA_SurfaceAlbedoOceanCorrected">
         <Dim name="/nTimes"/>
@@ -99,6 +103,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="ANCILLARY_DATA_TerrainPressure">
         <Dim name="/nTimes"/>
@@ -130,6 +136,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_FoV75Area">
         <Dim name="/nTimes"/>
@@ -161,6 +169,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_FoV75CornerLatitude">
         <Dim name="/nTimes"/>
@@ -250,6 +260,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Float32 name="GEOLOCATION_DATA_Level">
         <Dim name="/nLevels"/>
@@ -308,6 +320,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_SecondsInDay">
         <Dim name="/nTimes"/>
@@ -366,6 +380,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float64 name="GEOLOCATION_DATA_TimeTAI93">
         <Dim name="/nTimes"/>
@@ -448,6 +464,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight354">
         <Dim name="/nTimes"/>
@@ -480,6 +498,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight388">
         <Dim name="/nTimes"/>
@@ -512,6 +532,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500">
         <Dim name="/nTimes"/>
@@ -544,6 +566,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight354">
         <Dim name="/nTimes"/>
@@ -576,6 +600,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight388">
         <Dim name="/nTimes"/>
@@ -608,6 +634,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500">
         <Dim name="/nTimes"/>
@@ -640,6 +668,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight354">
         <Dim name="/nTimes"/>
@@ -672,6 +702,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight388">
         <Dim name="/nTimes"/>
@@ -704,6 +736,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500">
         <Dim name="/nTimes"/>
@@ -736,6 +770,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Int32 name="SCIENCE_DATA_AerosolType354and388">
         <Dim name="/nTimes"/>
@@ -767,6 +803,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Int32 name="SCIENCE_DATA_AlgorithmFlagsVsHeight354and388">
         <Dim name="/nTimes"/>
@@ -799,6 +837,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Float32 name="SCIENCE_DATA_CloudFraction388">
         <Dim name="/nTimes"/>
@@ -830,6 +870,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_CloudOpticalDepth388">
         <Dim name="/nTimes"/>
@@ -861,6 +903,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth354">
         <Dim name="/nTimes"/>
@@ -892,6 +936,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth388">
         <Dim name="/nTimes"/>
@@ -923,6 +969,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth500">
         <Dim name="/nTimes"/>
@@ -954,6 +1002,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolLayerHeight354and388">
         <Dim name="/nTimes"/>
@@ -985,6 +1035,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth354">
         <Dim name="/nTimes"/>
@@ -1016,6 +1068,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth388">
         <Dim name="/nTimes"/>
@@ -1047,6 +1101,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth500">
         <Dim name="/nTimes"/>
@@ -1078,6 +1134,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo354">
         <Dim name="/nTimes"/>
@@ -1109,6 +1167,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo388">
         <Dim name="/nTimes"/>
@@ -1140,6 +1200,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo500">
         <Dim name="/nTimes"/>
@@ -1171,6 +1233,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Int32 name="SCIENCE_DATA_FinalAlgorithmFlags354and388">
         <Dim name="/nTimes"/>
@@ -1202,6 +1266,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex354">
         <Dim name="/nTimes"/>
@@ -1233,6 +1299,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex388">
         <Dim name="/nTimes"/>
@@ -1264,6 +1332,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Int32 name="SCIENCE_DATA_HeightFlags354and388">
         <Dim name="/nTimes"/>
@@ -1295,6 +1365,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Int32>
     <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex354">
         <Dim name="/nTimes"/>
@@ -1327,6 +1399,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex388">
         <Dim name="/nTimes"/>
@@ -1359,6 +1433,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex500">
         <Dim name="/nTimes"/>
@@ -1391,6 +1467,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_NormalizedRadiance">
         <Dim name="/nTimes"/>
@@ -1423,6 +1501,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_Reflectivity">
         <Dim name="/nTimes"/>
@@ -1455,6 +1535,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_Residue354and388">
         <Dim name="/nTimes"/>
@@ -1486,6 +1568,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_UVAerosolIndex354and388">
         <Dim name="/nTimes"/>
@@ -1517,6 +1601,8 @@
         <Attribute name="coordinates" type="String">
             <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
         </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
     </Float32>
     <Float32 name="SENSOR_DATA_Wavelength">
         <Dim name="/nWavel3"/>

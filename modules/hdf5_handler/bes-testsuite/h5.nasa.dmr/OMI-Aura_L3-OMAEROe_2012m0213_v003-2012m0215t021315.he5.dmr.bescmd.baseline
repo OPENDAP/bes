@@ -37,6 +37,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <UInt16 name="AerosolModelMW">
         <Dim name="/lat"/>
@@ -71,6 +74,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt16>
     <Int16 name="AerosolOpticalThicknessMW">
         <Dim name="/nWavelDiagnostic"/>
@@ -106,6 +111,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="AerosolOpticalThicknessPassedThresholdMean">
         <Dim name="/lat"/>
@@ -140,6 +148,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="AerosolOpticalThicknessPassedThresholdStd">
         <Dim name="/lat"/>
@@ -174,6 +184,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoMW">
         <Dim name="/nWavelDiagnostic"/>
@@ -209,6 +221,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoPassedThresholdMean">
         <Dim name="/lat"/>
@@ -243,6 +258,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoPassedThresholdStd">
         <Dim name="/lat"/>
@@ -277,6 +294,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Float32 name="SolarZenithAngle">
         <Dim name="/lat"/>
@@ -311,6 +330,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Int16 name="TerrainReflectivity">
         <Dim name="/lat"/>
@@ -345,6 +366,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Float32 name="UVAerosolIndex">
         <Dim name="/lat"/>
@@ -379,6 +402,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="VISAerosolIndex">
         <Dim name="/lat"/>
@@ -413,6 +438,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="ViewingZenithAngle">
         <Dim name="/lat"/>
@@ -447,6 +474,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

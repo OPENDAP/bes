@@ -23,6 +23,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_E">
         <Dim name="/lat"/>
@@ -45,6 +47,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_H">
         <Dim name="/lat"/>
@@ -67,6 +71,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_Qair">
         <Dim name="/lat"/>
@@ -89,6 +95,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_STu">
         <Dim name="/lat"/>
@@ -111,6 +119,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_STv">
         <Dim name="/lat"/>
@@ -133,6 +143,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_Tot_Precip_Water">
         <Dim name="/lat"/>
@@ -155,6 +167,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_U">
         <Dim name="/lat"/>
@@ -177,6 +191,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET1_WB">
         <Dim name="/lat"/>
@@ -199,6 +215,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_DQ">
         <Dim name="/lat"/>
@@ -221,6 +239,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_E">
         <Dim name="/lat"/>
@@ -243,6 +263,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_H">
         <Dim name="/lat"/>
@@ -265,6 +287,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_Qair">
         <Dim name="/lat"/>
@@ -287,6 +311,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_STu">
         <Dim name="/lat"/>
@@ -309,6 +335,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_STv">
         <Dim name="/lat"/>
@@ -331,6 +359,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_Tot_Precip_Water">
         <Dim name="/lat"/>
@@ -353,6 +383,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_U">
         <Dim name="/lat"/>
@@ -375,6 +407,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SET2_WB">
         <Dim name="/lat"/>
@@ -397,6 +431,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

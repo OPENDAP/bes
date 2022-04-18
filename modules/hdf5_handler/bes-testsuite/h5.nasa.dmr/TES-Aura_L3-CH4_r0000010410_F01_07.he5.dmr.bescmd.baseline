@@ -31,6 +31,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim nLevels</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="CH4AtSurface">
         <Dim name="/Longitude"/>
@@ -59,6 +62,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfacePressure">
         <Dim name="/Longitude"/>
@@ -87,6 +92,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnDensity">
         <Dim name="/Longitude"/>
@@ -115,6 +122,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

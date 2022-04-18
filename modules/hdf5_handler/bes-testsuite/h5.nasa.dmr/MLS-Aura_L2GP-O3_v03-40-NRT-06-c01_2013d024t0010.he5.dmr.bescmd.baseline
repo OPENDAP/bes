@@ -28,6 +28,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="L2gpPrecision">
         <Dim name="/Latitude"/>
@@ -56,6 +57,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="L2gpValue">
         <Dim name="/Latitude"/>
@@ -84,6 +87,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="Quality">
         <Dim name="/Latitude"/>
@@ -111,6 +116,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Int32 name="Status">
         <Dim name="/Latitude"/>
@@ -138,6 +144,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int32>
     <Int32 name="ChunkNumber">
         <Dim name="/Latitude"/>
@@ -165,6 +172,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int32>
     <Float32 name="LineOfSightAngle">
         <Dim name="/Latitude"/>
@@ -192,6 +200,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="LocalSolarTime">
         <Dim name="/Latitude"/>
@@ -219,6 +228,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="Longitude">
         <Dim name="/Latitude"/>
@@ -246,6 +256,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="OrbitGeodeticAngle">
         <Dim name="/Latitude"/>
@@ -273,6 +284,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/Latitude"/>
@@ -300,6 +312,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float64 name="Time">
         <Dim name="/Latitude"/>
@@ -327,6 +340,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

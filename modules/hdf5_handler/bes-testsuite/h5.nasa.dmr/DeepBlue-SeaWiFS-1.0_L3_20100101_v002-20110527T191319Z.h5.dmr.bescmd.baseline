@@ -19,6 +19,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/aerosol_optical_thickness_550_count_land</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Int32 name="aerosol_optical_thickness_550_count_land_ocean">
         <Dim name="/latitude"/>
@@ -35,6 +37,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/aerosol_optical_thickness_550_count_land_ocean</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Int32 name="aerosol_optical_thickness_550_count_ocean">
         <Dim name="/latitude"/>
@@ -51,6 +55,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/aerosol_optical_thickness_550_count_ocean</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Float32 name="aerosol_optical_thickness_550_land">
         <Dim name="/latitude"/>
@@ -73,6 +79,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_550_land_ocean">
         <Dim name="/latitude"/>
@@ -95,6 +103,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_550_ocean">
         <Dim name="/latitude"/>
@@ -117,6 +127,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_550_stddev_land">
         <Dim name="/latitude"/>
@@ -136,6 +148,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_550_stddev_land_ocean">
         <Dim name="/latitude"/>
@@ -158,6 +172,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_550_stddev_ocean">
         <Dim name="/latitude"/>
@@ -177,6 +193,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Int32 name="aerosol_optical_thickness_count_land">
         <Dim name="/land_bands"/>
@@ -194,6 +212,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/aerosol_optical_thickness_count_land</Value>
         </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Int32 name="aerosol_optical_thickness_count_ocean">
         <Dim name="/ocean_bands"/>
@@ -211,6 +232,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/aerosol_optical_thickness_count_ocean</Value>
         </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Float32 name="aerosol_optical_thickness_land">
         <Dim name="/land_bands"/>
@@ -234,6 +258,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_ocean">
         <Dim name="/ocean_bands"/>
@@ -257,6 +284,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_stddev_land">
         <Dim name="/land_bands"/>
@@ -277,6 +307,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="aerosol_optical_thickness_stddev_ocean">
         <Dim name="/ocean_bands"/>
@@ -297,6 +330,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Int32 name="angstrom_exponent_count_land">
         <Dim name="/latitude"/>
@@ -313,6 +349,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/angstrom_exponent_count_land</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Int32 name="angstrom_exponent_count_land_ocean">
         <Dim name="/latitude"/>
@@ -329,6 +367,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/angstrom_exponent_count_land_ocean</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Int32 name="angstrom_exponent_count_ocean">
         <Dim name="/latitude"/>
@@ -345,6 +385,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/angstrom_exponent_count_ocean</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Float32 name="angstrom_exponent_land">
         <Dim name="/latitude"/>
@@ -367,6 +409,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="angstrom_exponent_land_ocean">
         <Dim name="/latitude"/>
@@ -389,6 +433,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="angstrom_exponent_ocean">
         <Dim name="/latitude"/>
@@ -411,6 +457,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="angstrom_exponent_stddev_land">
         <Dim name="/latitude"/>
@@ -430,6 +478,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="angstrom_exponent_stddev_land_ocean">
         <Dim name="/latitude"/>
@@ -449,6 +499,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="angstrom_exponent_stddev_ocean">
         <Dim name="/latitude"/>
@@ -468,6 +520,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_maximum_land">
         <Dim name="/latitude"/>
@@ -490,6 +544,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_maximum_land_ocean">
         <Dim name="/latitude"/>
@@ -512,6 +568,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_maximum_ocean">
         <Dim name="/latitude"/>
@@ -534,6 +592,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_minimum_land">
         <Dim name="/latitude"/>
@@ -556,6 +616,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_minimum_land_ocean">
         <Dim name="/latitude"/>
@@ -578,6 +640,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_550_minimum_ocean">
         <Dim name="/latitude"/>
@@ -600,6 +664,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_maximum_land">
         <Dim name="/land_bands"/>
@@ -623,6 +689,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_maximum_ocean">
         <Dim name="/ocean_bands"/>
@@ -646,6 +715,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_minimum_land">
         <Dim name="/land_bands"/>
@@ -669,6 +741,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/land_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_aerosol_optical_thickness_minimum_ocean">
         <Dim name="/ocean_bands"/>
@@ -692,6 +767,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/ocean_bands"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_maximum_land">
         <Dim name="/latitude"/>
@@ -714,6 +792,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_maximum_land_ocean">
         <Dim name="/latitude"/>
@@ -736,6 +816,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_maximum_ocean">
         <Dim name="/latitude"/>
@@ -758,6 +840,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_minimum_land">
         <Dim name="/latitude"/>
@@ -780,6 +864,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_minimum_land_ocean">
         <Dim name="/latitude"/>
@@ -802,6 +888,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_angstrom_exponent_minimum_ocean">
         <Dim name="/latitude"/>
@@ -824,6 +912,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_fine_mode_volume_fraction_ocean">
         <Dim name="/latitude"/>
@@ -840,6 +930,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_fine_mode_volume_fraction_stddev_ocean">
         <Dim name="/latitude"/>
@@ -856,6 +948,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="diagnostics_wind_speed">
         <Dim name="/latitude"/>
@@ -878,6 +972,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-999.0000000</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="relative_azimuth_angle">
         <Dim name="/latitude"/>
@@ -901,6 +997,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/relative_azimuth_angle</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="scattering_angle">
         <Dim name="/latitude"/>
@@ -924,6 +1022,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/scattering_angle</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="solar_zenith_angle">
         <Dim name="/latitude"/>
@@ -947,6 +1047,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/solar_zenith_angle</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Int32 name="time_of_measurement">
         <Dim name="/latitude"/>
@@ -966,6 +1068,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/time_of_measurement</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int32>
     <Float32 name="viewing_zenith_angle">
         <Dim name="/latitude"/>
@@ -986,6 +1090,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/viewing_zenith_angle</Value>
         </Attribute>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Float32>
     <Float32 name="land_bands">
         <Dim name="/land_bands"/>

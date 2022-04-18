@@ -38,6 +38,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Data_quality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Longitude">
         <Dim name="/amsu_idx"/>
@@ -64,6 +66,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Longitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_Data_status">
         <Dim name="/amsu_idx"/>
@@ -90,6 +94,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Data_status</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_Clutter_reduction_flag">
         <Dim name="/amsu_idx"/>
@@ -109,6 +115,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Clutter_reduction_flag</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_MODIS_scene_char">
         <Dim name="/amsu_idx"/>
@@ -138,6 +146,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_scene_char</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Latitude">
         <Dim name="/amsu_idx"/>
@@ -164,6 +174,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Latitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Float64 name="CloudSat_GEOPROF_Pitch_offset">
         <Dim name="/amsu_idx"/>
@@ -189,6 +201,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Pitch_offset</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_Navigation_land_sea_flag">
         <Dim name="/amsu_idx"/>
@@ -215,6 +228,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Navigation_land_sea_flag</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Profile_time">
         <Dim name="/amsu_idx"/>
@@ -241,6 +256,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Profile_time</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_nbin_2B_GEOPROF">
         <Dim name="/amsu_idx"/>
@@ -250,6 +267,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/nbin:2B-GEOPROF</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_Sigma_Zero">
         <Dim name="/amsu_idx"/>
@@ -282,6 +300,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Sigma-Zero</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_GEOPROF_Height">
         <Dim name="/amsu_idx"/>
@@ -318,6 +338,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Height</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_GEOPROF_MODIS_Cloud_Fraction">
         <Dim name="/amsu_idx"/>
@@ -347,6 +370,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_Cloud_Fraction</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_GEOPROF_Radar_Reflectivity">
         <Dim name="/amsu_idx"/>
@@ -383,6 +408,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Radar_Reflectivity</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_GEOPROF_UTC_start">
         <Dim name="/amsu_idx"/>
@@ -408,6 +436,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/UTC_start</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_MODIS_cloud_flag">
         <Dim name="/amsu_idx"/>
@@ -440,6 +469,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_cloud_flag</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_SurfaceHeightBin">
         <Dim name="/amsu_idx"/>
@@ -469,6 +500,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/SurfaceHeightBin</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_SurfaceHeightBin_fraction">
         <Dim name="/amsu_idx"/>
@@ -494,6 +527,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/SurfaceHeightBin_fraction</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int8 name="CloudSat_GEOPROF_CPR_Cloud_mask">
         <Dim name="/amsu_idx"/>
@@ -527,6 +562,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/CPR_Cloud_mask</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int8>
     <Int32 name="CloudSat_GEOPROF_MODIS_scene_var">
         <Dim name="/amsu_idx"/>
@@ -556,6 +594,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_scene_var</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_nray_2B_GEOPROF">
         <Dim name="/amsu_idx"/>
@@ -565,6 +605,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/nray:2B-GEOPROF</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_Data_quality">
         <Dim name="/amsu_idx"/>
@@ -591,6 +632,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_quality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_CLDCLASS_Longitude">
         <Dim name="/amsu_idx"/>
@@ -617,6 +660,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Longitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Float64 name="CloudSat_CLDCLASS_Vertical_binsize">
         <Dim name="/amsu_idx"/>
@@ -641,6 +686,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Vertical_binsize</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_Data_status">
         <Dim name="/amsu_idx"/>
@@ -667,6 +713,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_status</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_DEM_elevation">
         <Dim name="/amsu_idx"/>
@@ -699,6 +747,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/DEM_elevation</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_Data_targetID">
         <Dim name="/amsu_idx"/>
@@ -725,6 +775,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_targetID</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CLDCLASS_cloud_scenario">
         <Dim name="/amsu_idx"/>
@@ -752,6 +804,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/cloud_scenario</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CLDCLASS_Latitude">
         <Dim name="/amsu_idx"/>
@@ -778,6 +833,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Latitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_nray_2B_CLDCLASS">
         <Dim name="/amsu_idx"/>
@@ -787,6 +844,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/nray:2B-CLDCLASS</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Int16 name="CloudSat_CLDCLASS_Height">
         <Dim name="/amsu_idx"/>
@@ -823,6 +881,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Height</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CLDCLASS_UTC_start">
         <Dim name="/amsu_idx"/>
@@ -848,6 +909,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/UTC_start</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_nbin_2B_CLDCLASS">
         <Dim name="/amsu_idx"/>
@@ -857,6 +919,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/nbin:2B-CLDCLASS</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Float32 name="AIRS_RetStd_GP_Tropopause">
         <Dim name="/amsu_idx"/>
@@ -869,6 +932,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/GP_Tropopause</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_Press_mid_top_bndry">
         <Dim name="/amsu_idx"/>
@@ -881,6 +945,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Press_mid_top_bndry</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_totH2OStd">
         <Dim name="/amsu_idx"/>
@@ -893,6 +958,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totH2OStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_olr">
         <Dim name="/amsu_idx"/>
@@ -905,6 +971,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/olr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TotCld_4_CCfinal">
         <Dim name="/amsu_idx"/>
@@ -917,6 +984,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TotCld_4_CCfinal</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float64 name="AIRS_RetStd_Time">
         <Dim name="/amsu_idx"/>
@@ -929,6 +997,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Time</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Float32 name="AIRS_RetStd_TSurfStd">
         <Dim name="/amsu_idx"/>
@@ -941,6 +1010,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TSurfStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_totCldH2OStdErr">
         <Dim name="/amsu_idx"/>
@@ -953,6 +1023,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totCldH2OStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TAirStd">
         <Dim name="/amsu_idx"/>
@@ -966,6 +1037,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TAirStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <Float32 name="AIRS_RetStd_totH2OMWOnlyStd">
         <Dim name="/amsu_idx"/>
@@ -978,6 +1051,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totH2OMWOnlyStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TSurfStdErr">
         <Dim name="/amsu_idx"/>
@@ -990,6 +1064,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TSurfStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_landFrac">
         <Dim name="/amsu_idx"/>
@@ -1002,6 +1077,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/landFrac</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float64 name="AIRS_RetStd_Longitude">
         <Dim name="/amsu_idx"/>
@@ -1014,6 +1090,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Longitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <UInt16 name="AIRS_RetStd_Qual_Surf">
         <Dim name="/amsu_idx"/>
@@ -1026,6 +1103,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_Surf</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <UInt16 name="AIRS_RetStd_Qual_Temp_Profile_Mid">
         <Dim name="/amsu_idx"/>
@@ -1038,6 +1116,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_Temp_Profile_Mid</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_CH4_verticality">
         <Dim name="/amsu_idx"/>
@@ -1051,6 +1130,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CH4_verticality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_CH4Func"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_Cloud_OLR">
         <Dim name="/amsu_idx"/>
@@ -1063,6 +1144,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_Cloud_OLR</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float64 name="AIRS_RetStd_glintlon">
         <Dim name="/amsu_track_idx"/>
@@ -1072,6 +1154,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/glintlon</Value>
         </Attribute>
+        <Map name="/amsu_track_idx"/>
     </Float64>
     <Int16 name="AIRS_RetStd_nGoodStd">
         <Dim name="/amsu_idx"/>
@@ -1084,6 +1167,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/nGoodStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_olr_err">
         <Dim name="/amsu_idx"/>
@@ -1096,6 +1180,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/olr_err</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_T_Tropopause">
         <Dim name="/amsu_idx"/>
@@ -1108,6 +1193,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/T_Tropopause</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Int32 name="AIRS_RetStd_nSurfStd">
         <Dim name="/amsu_idx"/>
@@ -1120,6 +1206,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/nSurfStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Int16 name="AIRS_RetStd_nStd_bot_mid_bndry">
         <Dim name="/amsu_idx"/>
@@ -1132,6 +1219,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/nStd_bot_mid_bndry</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_PCldTopStdErr">
         <Dim name="/amsu_idx"/>
@@ -1145,6 +1233,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PCldTopStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Float32 name="AIRS_RetStd_emisIRStdErr">
         <Dim name="/amsu_idx"/>
@@ -1158,6 +1248,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/emisIRStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetStd_H2O_verticality">
         <Dim name="/amsu_idx"/>
@@ -1171,6 +1263,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/H2O_verticality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_H2OFunc"/>
     </Float32>
     <Int16 name="AIRS_RetStd_nBestStd">
         <Dim name="/amsu_idx"/>
@@ -1183,6 +1277,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/nBestStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_solazi">
         <Dim name="/amsu_idx"/>
@@ -1195,6 +1290,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/solazi</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TAirStdErr">
         <Dim name="/amsu_idx"/>
@@ -1208,6 +1304,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TAirStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <Float32 name="AIRS_RetStd_O3VMRStdErr">
         <Dim name="/amsu_idx"/>
@@ -1221,6 +1319,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/O3VMRStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <Float32 name="AIRS_RetStd_O3VMRStd">
         <Dim name="/amsu_idx"/>
@@ -1234,6 +1334,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/O3VMRStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_CO">
         <Dim name="/amsu_idx"/>
@@ -1246,6 +1348,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_CO</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_totCldH2OStd">
         <Dim name="/amsu_idx"/>
@@ -1258,6 +1361,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totCldH2OStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float64 name="AIRS_RetStd_glintlat">
         <Dim name="/amsu_track_idx"/>
@@ -1267,6 +1371,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/glintlat</Value>
         </Attribute>
+        <Map name="/amsu_track_idx"/>
     </Float64>
     <Float32 name="AIRS_RetStd_TAirMWOnlyStd">
         <Dim name="/amsu_idx"/>
@@ -1280,6 +1385,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TAirMWOnlyStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_H2O">
         <Dim name="/amsu_idx"/>
@@ -1292,6 +1399,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_H2O</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_CO_VMR_eff">
         <Dim name="/amsu_idx"/>
@@ -1305,6 +1413,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_VMR_eff</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_COFunc"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CO_dof">
         <Dim name="/amsu_idx"/>
@@ -1317,6 +1427,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_dof</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_Temp_Profile_Top">
         <Dim name="/amsu_idx"/>
@@ -1329,6 +1440,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_Temp_Profile_Top</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_clrolr">
         <Dim name="/amsu_idx"/>
@@ -1341,6 +1453,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/clrolr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_clrolr_err">
         <Dim name="/amsu_idx"/>
@@ -1353,6 +1466,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/clrolr_err</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_RetQAFlag">
         <Dim name="/amsu_idx"/>
@@ -1365,6 +1479,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/RetQAFlag</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float64 name="AIRS_RetStd_Latitude">
         <Dim name="/amsu_idx"/>
@@ -1377,6 +1492,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Latitude</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float64>
     <Float32 name="AIRS_RetStd_TCldTopStdErr">
         <Dim name="/amsu_idx"/>
@@ -1390,6 +1506,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TCldTopStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Float32 name="AIRS_RetStd_totO3StdErr">
         <Dim name="/amsu_idx"/>
@@ -1402,6 +1520,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totO3StdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Int8 name="AIRS_RetStd_retrieval_type">
         <Dim name="/amsu_idx"/>
@@ -1411,6 +1530,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/retrieval_type</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int8>
     <Float32 name="AIRS_RetStd_CO_eff_press">
         <Dim name="/amsu_idx"/>
@@ -1424,6 +1544,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_eff_press</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_COFunc"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TSurfAirErr">
         <Dim name="/amsu_idx"/>
@@ -1436,6 +1558,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TSurfAirErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_H2OMMRStd">
         <Dim name="/amsu_idx"/>
@@ -1449,6 +1572,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/H2OMMRStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_H2OPressureLay"/>
     </Float32>
     <Float32 name="AIRS_RetStd_PTropopause">
         <Dim name="/amsu_idx"/>
@@ -1461,6 +1586,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PTropopause</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_totH2OStdErr">
         <Dim name="/amsu_idx"/>
@@ -1473,6 +1599,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totH2OStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Int32 name="AIRS_RetStd_numCloud">
         <Dim name="/amsu_idx"/>
@@ -1485,6 +1612,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/numCloud</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int32>
     <Float32 name="AIRS_RetStd_Press_bot_mid_bndry">
         <Dim name="/amsu_idx"/>
@@ -1497,6 +1625,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Press_bot_mid_bndry</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_H2OMMRSat_liquid">
         <Dim name="/amsu_idx"/>
@@ -1510,6 +1639,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/H2OMMRSat_liquid</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_H2OPressureLay"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_Temp_Profile_Bot">
         <Dim name="/amsu_idx"/>
@@ -1522,6 +1653,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_Temp_Profile_Bot</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_PGood">
         <Dim name="/amsu_idx"/>
@@ -1534,6 +1666,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PGood</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Int16 name="AIRS_RetStd_nStd_mid_top_bndry">
         <Dim name="/amsu_idx"/>
@@ -1546,6 +1679,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/nStd_mid_top_bndry</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_totO3Std">
         <Dim name="/amsu_idx"/>
@@ -1558,6 +1692,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/totO3Std</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_satzen">
         <Dim name="/amsu_idx"/>
@@ -1570,6 +1705,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/satzen</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <UInt16 name="AIRS_RetStd_Qual_clrolr">
         <Dim name="/amsu_idx"/>
@@ -1582,6 +1718,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Qual_clrolr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </UInt16>
     <Float32 name="AIRS_RetStd_PBest">
         <Dim name="/amsu_idx"/>
@@ -1594,6 +1731,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PBest</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_GP_Height">
         <Dim name="/amsu_idx"/>
@@ -1607,6 +1745,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/GP_Height</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_StdPressureLev"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CH4_total_column">
         <Dim name="/amsu_idx"/>
@@ -1619,6 +1759,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CH4_total_column</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Int16 name="AIRS_RetStd_num_clear_spectral_indicator">
         <Dim name="/amsu_idx"/>
@@ -1631,6 +1772,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/num_clear_spectral_indicator</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_solzen">
         <Dim name="/amsu_idx"/>
@@ -1643,6 +1785,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/solzen</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_PSurfStd">
         <Dim name="/amsu_idx"/>
@@ -1655,6 +1798,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PSurfStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_satazi">
         <Dim name="/amsu_idx"/>
@@ -1667,6 +1811,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/satazi</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CO_verticality">
         <Dim name="/amsu_idx"/>
@@ -1680,6 +1825,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_verticality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_COFunc"/>
     </Float32>
     <Int16 name="AIRS_RetStd_numHingeSurf">
         <Dim name="/amsu_idx"/>
@@ -1692,6 +1839,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/numHingeSurf</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_H2OMMRStdErr">
         <Dim name="/amsu_idx"/>
@@ -1705,6 +1853,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/H2OMMRStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_H2OPressureLay"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CO_total_column">
         <Dim name="/amsu_idx"/>
@@ -1717,6 +1867,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_total_column</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_emisIRStd">
         <Dim name="/amsu_idx"/>
@@ -1730,6 +1881,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/emisIRStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetStd_Cloud_Resid_Ratio">
         <Dim name="/amsu_idx"/>
@@ -1742,6 +1895,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/Cloud_Resid_Ratio</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_O3_verticality">
         <Dim name="/amsu_idx"/>
@@ -1755,6 +1909,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/O3_verticality</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_O3Func"/>
     </Float32>
     <Float32 name="AIRS_RetStd_freqEmis">
         <Dim name="/amsu_idx"/>
@@ -1768,6 +1924,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/freqEmis</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TSurfAir">
         <Dim name="/amsu_idx"/>
@@ -1780,6 +1938,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TSurfAir</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_TCldTopStd">
         <Dim name="/amsu_idx"/>
@@ -1793,6 +1952,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/TCldTopStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Float32 name="AIRS_RetStd_PCldTopStd">
         <Dim name="/amsu_idx"/>
@@ -1806,6 +1967,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/PCldTopStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Float32 name="AIRS_RetStd_landFrac_err">
         <Dim name="/amsu_idx"/>
@@ -1818,6 +1981,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/landFrac_err</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_H2OMMRSat">
         <Dim name="/amsu_idx"/>
@@ -1831,6 +1995,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/H2OMMRSat</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_H2OPressureLay"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CO_VMR_eff_err">
         <Dim name="/amsu_idx"/>
@@ -1844,6 +2010,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CO_VMR_eff_err</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_RetStd_COFunc"/>
     </Float32>
     <Float32 name="AIRS_RetSup_TAirMWOnly">
         <Dim name="/amsu_idx"/>
@@ -1857,6 +2025,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/TAirMWOnly</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_tsurf_forecast">
         <Dim name="/amsu_idx"/>
@@ -1869,6 +2039,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/tsurf_forecast</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
     </Float32>
     <Float32 name="AIRS_RetSup_O3CDSup">
         <Dim name="/amsu_idx"/>
@@ -1882,6 +2053,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/O3CDSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_TAirSup">
         <Dim name="/amsu_idx"/>
@@ -1895,6 +2068,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/TAirSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_COCDSup">
         <Dim name="/amsu_idx"/>
@@ -1908,6 +2083,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/COCDSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_lwCDSupErr">
         <Dim name="/amsu_idx"/>
@@ -1921,6 +2098,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/lwCDSupErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_lwCDSup">
         <Dim name="/amsu_idx"/>
@@ -1934,6 +2113,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/lwCDSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_emisIRStdErr">
         <Dim name="/amsu_idx"/>
@@ -1947,6 +2128,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/emisIRStdErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_H2OCDMWOnly">
         <Dim name="/amsu_idx"/>
@@ -1960,6 +2143,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/H2OCDMWOnly</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_Effective_Solar_Reflectance">
         <Dim name="/amsu_idx"/>
@@ -1973,6 +2158,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/Effective_Solar_Reflectance</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_H2OCDSup">
         <Dim name="/amsu_idx"/>
@@ -1986,6 +2173,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/H2OCDSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_CH4CDSupErr">
         <Dim name="/amsu_idx"/>
@@ -1999,6 +2188,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/CH4CDSupErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_COCDSupErr">
         <Dim name="/amsu_idx"/>
@@ -2012,6 +2203,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/COCDSupErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_TAirSupErr">
         <Dim name="/amsu_idx"/>
@@ -2025,6 +2218,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/TAirSupErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float64 name="AIRS_RetSup_pressSupp">
         <Dim name="/AIRS_HingeSurf"/>
@@ -2034,6 +2229,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/pressSupp</Value>
         </Attribute>
+        <Map name="/AIRS_HingeSurf"/>
     </Float64>
     <Float32 name="AIRS_RetSup_emisIRStd">
         <Dim name="/amsu_idx"/>
@@ -2047,6 +2243,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/emisIRStd</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_freqEmis">
         <Dim name="/amsu_idx"/>
@@ -2060,6 +2258,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/freqEmis</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_H2OCDSupErr">
         <Dim name="/amsu_idx"/>
@@ -2073,6 +2273,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/H2OCDSupErr</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_RetSup_CH4CDSup">
         <Dim name="/amsu_idx"/>
@@ -2086,6 +2288,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetSup/CH4CDSup</Value>
         </Attribute>
+        <Map name="/amsu_idx"/>
+        <Map name="/AIRS_HingeSurf"/>
     </Float32>
     <Float32 name="AIRS_HingeSurf">
         <Dim name="/AIRS_HingeSurf"/>

@@ -40,6 +40,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Reflectivity_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Reflectivity_d_sDevNsOb1">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -76,6 +77,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Reflectivity_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Reflectivity_d_satNrgCorr">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -112,6 +114,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Reflectivity_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Reflectivity_d_RecNrgAll">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -148,6 +151,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Reflectivity_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_cntRngOff">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -184,6 +188,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_SiRngFst">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -220,6 +225,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_siRngOff">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -256,6 +262,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_SigBegOff">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -292,6 +299,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_SigEndOff">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -328,6 +336,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Offsets_d_TrshRngOff">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -364,6 +373,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Offsets_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int32 name="Data_40HZ_Time_i_shot_count">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -394,6 +404,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Time_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int32>
     <Int32 name="Data_40HZ_Time_i_rec_ndx">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -424,6 +435,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Time_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int32>
     <Float64 name="Data_40HZ_Atmosphere_d_FRir_cldtop">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -460,6 +472,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Atmosphere_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Atmosphere_d_FRir_intsig">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -496,6 +509,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Atmosphere_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int8 name="Data_40HZ_Atmosphere_FRir_qa_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -547,6 +561,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Atmosphere_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Float64 name="Data_40HZ_Geophysical_d_ldElv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -583,6 +598,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_ocElv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -622,6 +638,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_d2refTrk">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -658,6 +675,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_poTide">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -697,6 +715,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_gdHt">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -736,6 +755,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_eqElv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -775,6 +795,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_deltaEllip">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -811,6 +832,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_erElv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -847,6 +869,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geophysical_d_DEMhiresArElv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -884,6 +907,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
+        <Map name="/Data_40HZ_DS_DEMhiresArElv"/>
     </Float64>
     <Int8 name="Data_40HZ_Geophysical_i_DEM_hires_src_1">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -926,6 +951,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Float64 name="Data_40HZ_Geophysical_d_DEM_elv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -962,6 +988,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geophysical_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Angles_d_beamAzimuth">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -998,6 +1025,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Angles_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Angles_d_beamCoelv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1034,6 +1062,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Angles_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Corrections_d_dTrop">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1073,6 +1102,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Corrections_d_satElevCorr">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1109,6 +1139,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Corrections_d_wTrop">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1148,6 +1179,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Corrections_d_ElevBiasCorr">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1184,6 +1216,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Corrections_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Waveform_d_skew2">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1217,6 +1250,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Waveform_d_maxRecAmp">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1253,6 +1287,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Waveform_d_maxSmAmp">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1289,6 +1324,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int32 name="Data_40HZ_Waveform_i_numPk">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1322,6 +1358,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int32>
     <Float64 name="Data_40HZ_Waveform_d_kurt2">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1355,6 +1392,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int32 name="Data_40HZ_Waveform_i_gval_rcv">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1391,6 +1429,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Waveform_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int32>
     <Float64 name="Data_40HZ_Transmit_Energy_d_TxNrg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1427,6 +1466,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Transmit_Energy_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Surfaces_d_elev">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1466,6 +1506,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Surfaces_d_BergElev">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1502,6 +1543,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Surfaces_d_SeaIceVar">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1538,6 +1580,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Elevation_Surfaces_d_refRng">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1577,6 +1620,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Surfaces_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_cnt_1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1614,6 +1658,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_cnt_2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1651,6 +1696,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_peak_1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1688,6 +1734,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_peak_2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1725,6 +1772,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_thres_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1762,6 +1810,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_gauss_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1799,6 +1848,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_other_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1836,6 +1886,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Elevation_Flags_elv_cloud_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1873,6 +1924,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Elevation_Flags_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_sigbeg1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1910,6 +1962,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_sigend2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1947,6 +2000,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_elev_use_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -1984,6 +2038,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_thres2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2021,6 +2076,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_att_calc_pad_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2058,6 +2114,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_sigbeg2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2095,6 +2152,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_si_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2132,6 +2190,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_is_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2169,6 +2228,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_sat_corr_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2210,6 +2270,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_att_pad_use_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2247,6 +2308,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_thres1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2284,6 +2346,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_sigend1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2321,6 +2384,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_ld_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2358,6 +2422,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_oc_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2395,6 +2460,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Float64 name="Data_40HZ_Quality_d_pctSAT">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2431,6 +2497,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Int8 name="Data_40HZ_Quality_att_lpa_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2469,6 +2536,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int32 name="Data_40HZ_Quality_i_satNdx">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2502,6 +2570,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int32>
     <Int8 name="Data_40HZ_Quality_sigma_att_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2544,6 +2613,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_cent2_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2581,6 +2651,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Int8 name="Data_40HZ_Quality_rng_uqf_cent1_flg">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2618,6 +2689,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Quality_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Int8>
     <Float64 name="Data_40HZ_Geolocation_d_lat">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2651,6 +2723,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geolocation_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_40HZ_Geolocation_d_lon">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
@@ -2684,6 +2757,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_40HZ_Geolocation_DS_UTCTime_40</Value>
         </Attribute>
+        <Map name="/Data_40HZ_Time_d_UTCTime_40"/>
     </Float64>
     <Float64 name="Data_1HZ_Reflectivity_d_localSolarTime">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2720,6 +2794,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Reflectivity_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Reflectivity_d_Azimuth">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2759,6 +2834,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Reflectivity_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Reflectivity_d_SolAng">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2795,6 +2871,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Reflectivity_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Reflectivity_d_reflCor_atm">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2828,6 +2905,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Reflectivity_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Time_d_deltagpstmcor">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2864,6 +2942,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Int8 name="Data_1HZ_Time_shot_time_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2901,6 +2980,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Time_ddelay_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2938,6 +3018,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int32 name="Data_1HZ_Time_i_shot_count">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -2968,6 +3049,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int32>
     <Float64 name="Data_1HZ_Time_d_transtime">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3004,6 +3086,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Int8 name="Data_1HZ_Time_peaktp_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3041,6 +3124,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Time_gps_time_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3078,6 +3162,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Time_pl_timing_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3115,6 +3200,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int32 name="Data_1HZ_Time_i_rec_ndx">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3145,6 +3231,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Time_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int32>
     <Int8 name="Data_1HZ_Atmosphere_cld1_mswf_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3196,6 +3283,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Atmosphere_atm_char_conf_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3235,6 +3323,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Float64 name="Data_1HZ_Atmosphere_d_Surface_pres">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3274,6 +3363,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Int8 name="Data_1HZ_Atmosphere_atm_gla09_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3311,6 +3401,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Atmosphere_atm_char_flag">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3357,6 +3448,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Atmosphere_atm_gla11_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3394,6 +3486,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Atmosphere_MRC_af_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3445,6 +3538,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Float64 name="Data_1HZ_Atmosphere_d_Surface_temp">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3484,6 +3578,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Atmosphere_d_Surface_relh">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3523,6 +3618,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Atmosphere_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Transmit_Energy_d_tpeccentricity_avg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3556,6 +3652,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Transmit_Energy_d_tpazimuth_avg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3592,6 +3689,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Transmit_Energy_d_tpmajoraxis_avg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3628,6 +3726,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Transmit_Energy_d_tpintensity_avg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3664,6 +3763,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Transmit_Energy_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Int8 name="Data_1HZ_Packet_data_apid_CT22_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3702,6 +3802,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADLg_4_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3740,6 +3841,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADSm_3_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3778,6 +3880,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_CT20_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3816,6 +3919,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LS25_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3854,6 +3958,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LPA_2_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3892,6 +3997,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADLg_2_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3930,6 +4036,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_PRAP_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -3968,6 +4075,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LS55_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4006,6 +4114,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADLg_3_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4044,6 +4153,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ASCT_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4082,6 +4192,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_CT21_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4120,6 +4231,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADSm_4_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4158,6 +4270,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADSm_1_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4196,6 +4309,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADSm_2_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4234,6 +4348,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ASPC_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4272,6 +4387,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_CD1064_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4310,6 +4426,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LPA_3_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4348,6 +4465,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ASAD_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4386,6 +4504,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_SS24_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4424,6 +4543,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADLg_1_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4462,6 +4582,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LPA_1_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4500,6 +4621,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ASCF_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4538,6 +4660,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_ADSci_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4576,6 +4699,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_CT23_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4614,6 +4738,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_CT50_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4652,6 +4777,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_PC532_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4690,6 +4816,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_GPS_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4728,6 +4855,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Packet_data_apid_LPA_4_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4766,6 +4894,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Packet_data_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_model_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4805,6 +4934,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_ldtide_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4842,6 +4972,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_wettrop_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4879,6 +5010,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_atmcorr_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4919,6 +5051,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_surf_is_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4956,6 +5089,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_intbias_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -4993,6 +5127,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_surf_oc_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5030,6 +5165,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_setide_flag">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5067,6 +5203,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_surf_si_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5104,6 +5241,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_octide_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5141,6 +5279,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_plbias_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5178,6 +5317,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_drytrop_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5215,6 +5355,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_surf_ld_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5252,6 +5393,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Elevation_Flags_rng_oldmet_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5291,6 +5433,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Elevation_Flags_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_gps_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5328,6 +5471,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_altfrm_meas_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5365,6 +5509,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_gyro_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5404,6 +5549,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_altfrm_corr_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5441,6 +5587,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_oceansw_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5478,6 +5625,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_model_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5515,6 +5663,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_array_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5552,6 +5701,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_pred_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5590,6 +5740,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_pointing_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5627,6 +5778,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_steering_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5664,6 +5816,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_man_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5701,6 +5854,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_altfrm_use_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5738,6 +5892,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_orbit_att_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5775,6 +5930,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_ist_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5814,6 +5970,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_lrs_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5857,6 +6014,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_offnadir_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5894,6 +6052,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_att_actual_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5931,6 +6090,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Int8 name="Data_1HZ_Quality_altfrm_data_flg">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -5968,6 +6128,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Quality_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int8>
     <Float64 name="Data_1HZ_Geolocation_d_lat">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -6004,6 +6165,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Geolocation_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Float64 name="Data_1HZ_Geolocation_d_lon">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -6040,6 +6202,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Geolocation_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Float64>
     <Int32 name="Data_1HZ_Geolocation_i_track">
         <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
@@ -6064,6 +6227,7 @@
         <Attribute name="coordinates" type="String">
             <Value>Data_1HZ_Geolocation_DS_UTCTime_1</Value>
         </Attribute>
+        <Map name="/Data_1HZ_Time_d_UTCTime_1"/>
     </Int32>
     <Byte name="BROWSE_Image_00">
         <Dim name="/FakeDim0"/>
@@ -6087,6 +6251,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/BROWSE/Image_00</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim1"/>
+        <Map name="/FakeDim2"/>
     </Byte>
     <Byte name="BROWSE_Image_01">
         <Dim name="/FakeDim0"/>
@@ -6110,6 +6277,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/BROWSE/Image_01</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim1"/>
+        <Map name="/FakeDim2"/>
     </Byte>
     <Byte name="BROWSE_Image_02">
         <Dim name="/FakeDim0"/>
@@ -6133,6 +6303,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/BROWSE/Image_02</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim1"/>
+        <Map name="/FakeDim2"/>
     </Byte>
     <Byte name="BROWSE_Image_03">
         <Dim name="/FakeDim0"/>
@@ -6156,6 +6329,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/BROWSE/Image_03</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim1"/>
+        <Map name="/FakeDim2"/>
     </Byte>
     <Float64 name="Data_1HZ_DS_UTCTime_1">
         <Dim name="/Data_1HZ_DS_UTCTime_1"/>

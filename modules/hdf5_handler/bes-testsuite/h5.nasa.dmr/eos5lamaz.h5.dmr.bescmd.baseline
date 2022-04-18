@@ -22,6 +22,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/Northern_Hemisphere_lat"/>
+        <Map name="/Northern_Hemisphere_lon"/>
     </Byte>
     <Byte name="Northern_Hemisphere_SWE_NorthernDaily">
         <Dim name="/Northern_Hemisphere_YDim"/>
@@ -53,6 +55,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/Northern_Hemisphere_lat"/>
+        <Map name="/Northern_Hemisphere_lon"/>
     </Byte>
     <Byte name="Southern_Hemisphere_Flags_SouthernDaily">
         <Dim name="/Southern_Hemisphere_YDim"/>
@@ -72,6 +76,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/Southern_Hemisphere_lat"/>
+        <Map name="/Southern_Hemisphere_lon"/>
     </Byte>
     <Byte name="Southern_Hemisphere_SWE_SouthernDaily">
         <Dim name="/Southern_Hemisphere_YDim"/>
@@ -103,6 +109,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/Southern_Hemisphere_lat"/>
+        <Map name="/Southern_Hemisphere_lon"/>
     </Byte>
     <String name="CoreMetadata_0">
         <Attribute name="origname" type="String">

@@ -26,6 +26,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <Float32 name="Latitude">
         <Dim name="/YDim"/>
@@ -50,6 +51,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>YDim</Value>
         </Attribute>
+        <Map name="/YDim"/>
     </Float32>
     <Float32 name="Longitude">
         <Dim name="/XDim"/>
@@ -74,6 +76,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>XDim</Value>
         </Attribute>
+        <Map name="/XDim"/>
     </Float32>
     <Int32 name="Month">
         <Dim name="/nTimes"/>
@@ -98,6 +101,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <Float32 name="NO2DayColumn">
         <Dim name="/nTimes"/>
@@ -124,6 +128,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes YDim XDim</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/YDim"/>
+        <Map name="/XDim"/>
     </Float32>
     <Float32 name="NO2DayColumnPrecision">
         <Dim name="/nTimes"/>
@@ -150,6 +157,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes YDim XDim</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/YDim"/>
+        <Map name="/XDim"/>
     </Float32>
     <Float32 name="NO2DayDataCount">
         <Dim name="/nTimes"/>
@@ -176,6 +186,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes YDim XDim</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/YDim"/>
+        <Map name="/XDim"/>
     </Float32>
     <Float64 name="Time">
         <Dim name="/nTimes"/>
@@ -200,6 +213,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Float64>
     <Int32 name="Year">
         <Dim name="/nTimes"/>
@@ -224,6 +238,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

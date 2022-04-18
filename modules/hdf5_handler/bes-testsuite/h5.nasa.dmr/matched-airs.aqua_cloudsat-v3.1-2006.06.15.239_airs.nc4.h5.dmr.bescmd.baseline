@@ -27,6 +27,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CldFrcStdErr</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Int16 name="AIRS_RetStd_dust_flag">
         <Dim name="/airs_idx"/>
@@ -39,6 +41,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/dust_flag</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int16>
     <Float32 name="AIRS_RetStd_latAIRS">
         <Dim name="/airs_idx"/>
@@ -51,6 +54,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/latAIRS</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_lonAIRS">
         <Dim name="/airs_idx"/>
@@ -63,6 +67,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/lonAIRS</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float32 name="AIRS_RetStd_CldFrcStd">
         <Dim name="/airs_idx"/>
@@ -76,6 +81,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/CldFrcStd</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/AIRS_RetStd_Cloud"/>
     </Float32>
     <Int16 name="AIRS_RetStd_spectral_clear_indicator">
         <Dim name="/airs_idx"/>
@@ -88,6 +95,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/RetStd/spectral_clear_indicator</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int16>
     <Float32 name="AIRS_Radiances_scanang">
         <Dim name="/airs_idx"/>
@@ -100,6 +108,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/scanang</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float64 name="AIRS_Radiances_Time">
         <Dim name="/airs_idx"/>
@@ -112,6 +121,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/Time</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Float32 name="AIRS_Radiances_landFrac">
         <Dim name="/airs_idx"/>
@@ -124,6 +134,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/landFrac</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float64 name="AIRS_Radiances_Longitude">
         <Dim name="/airs_idx"/>
@@ -136,6 +147,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/Longitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int16 name="AIRS_Radiances_dust_flag">
         <Dim name="/airs_idx"/>
@@ -148,6 +160,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/dust_flag</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int16>
     <Float32 name="AIRS_Radiances_solazi">
         <Dim name="/airs_idx"/>
@@ -160,6 +173,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/solazi</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float64 name="AIRS_Radiances_Latitude">
         <Dim name="/airs_idx"/>
@@ -172,6 +186,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/Latitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int16 name="AIRS_Radiances_dust_score">
         <Dim name="/airs_idx"/>
@@ -184,6 +199,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/dust_score</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int16>
     <Float32 name="AIRS_Radiances_radiances">
         <Dim name="/airs_idx"/>
@@ -197,6 +213,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/radiances</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>
     </Float32>
     <Float32 name="AIRS_Radiances_satzen">
         <Dim name="/airs_idx"/>
@@ -209,6 +227,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/satzen</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float64 name="AIRS_Radiances_spectral_freq">
         <Dim name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>
@@ -218,6 +237,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/spectral_freq</Value>
         </Attribute>
+        <Map name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>
     </Float64>
     <Float32 name="AIRS_Radiances_solzen">
         <Dim name="/airs_idx"/>
@@ -230,6 +250,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/solzen</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float32 name="AIRS_Radiances_satazi">
         <Dim name="/airs_idx"/>
@@ -242,6 +263,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/satazi</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Float32 name="AIRS_Radiances_landFrac_err">
         <Dim name="/airs_idx"/>
@@ -254,6 +276,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/landFrac_err</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float32>
     <Int16 name="AIRS_Radiances_spectral_clear_indicator">
         <Dim name="/airs_idx"/>
@@ -266,6 +289,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/Radiances/spectral_clear_indicator</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int16>
     <Float32 name="AIRS_VIS_Radiances_radiances">
         <Dim name="/airs_idx"/>
@@ -281,6 +305,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AIRS/VIS.Radiances/radiances</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/AIRS_VIS_Radiances_Channel_L1B_VIS_Science"/>
+        <Map name="/AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science"/>
+        <Map name="/AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science"/>
     </Float32>
     <Int32 name="CloudSat_GEOPROF_Data_quality">
         <Dim name="/airs_idx"/>
@@ -307,6 +335,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Data_quality</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Longitude">
         <Dim name="/airs_idx"/>
@@ -333,6 +363,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Longitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_Data_status">
         <Dim name="/airs_idx"/>
@@ -359,6 +391,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Data_status</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_Clutter_reduction_flag">
         <Dim name="/airs_idx"/>
@@ -378,6 +412,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Clutter_reduction_flag</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_MODIS_scene_char">
         <Dim name="/airs_idx"/>
@@ -407,6 +443,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_scene_char</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Latitude">
         <Dim name="/airs_idx"/>
@@ -433,6 +471,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Latitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Float64 name="CloudSat_GEOPROF_Pitch_offset">
         <Dim name="/airs_idx"/>
@@ -458,6 +498,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Pitch_offset</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_Navigation_land_sea_flag">
         <Dim name="/airs_idx"/>
@@ -484,6 +525,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Navigation_land_sea_flag</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_Profile_time">
         <Dim name="/airs_idx"/>
@@ -510,6 +553,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Profile_time</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_nbin_2B_GEOPROF">
         <Dim name="/airs_idx"/>
@@ -519,6 +564,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/nbin:2B-GEOPROF</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_Sigma_Zero">
         <Dim name="/airs_idx"/>
@@ -551,6 +597,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Sigma-Zero</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_GEOPROF_Height">
         <Dim name="/airs_idx"/>
@@ -587,6 +635,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Height</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_GEOPROF_MODIS_Cloud_Fraction">
         <Dim name="/airs_idx"/>
@@ -616,6 +667,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_Cloud_Fraction</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_GEOPROF_Radar_Reflectivity">
         <Dim name="/airs_idx"/>
@@ -652,6 +705,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/Radar_Reflectivity</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_GEOPROF_UTC_start">
         <Dim name="/airs_idx"/>
@@ -677,6 +733,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/UTC_start</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int32 name="CloudSat_GEOPROF_MODIS_cloud_flag">
         <Dim name="/airs_idx"/>
@@ -709,6 +766,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_cloud_flag</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_SurfaceHeightBin">
         <Dim name="/airs_idx"/>
@@ -738,6 +797,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/SurfaceHeightBin</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_GEOPROF_SurfaceHeightBin_fraction">
         <Dim name="/airs_idx"/>
@@ -763,6 +824,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/SurfaceHeightBin_fraction</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int8 name="CloudSat_GEOPROF_CPR_Cloud_mask">
         <Dim name="/airs_idx"/>
@@ -796,6 +859,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/CPR_Cloud_mask</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int8>
     <Int32 name="CloudSat_GEOPROF_MODIS_scene_var">
         <Dim name="/airs_idx"/>
@@ -825,6 +891,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/MODIS_scene_var</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_GEOPROF_nray_2B_GEOPROF">
         <Dim name="/airs_idx"/>
@@ -834,6 +902,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/GEOPROF/nray:2B-GEOPROF</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_Data_quality">
         <Dim name="/airs_idx"/>
@@ -860,6 +929,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_quality</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Float64 name="CloudSat_CLDCLASS_Longitude">
         <Dim name="/airs_idx"/>
@@ -886,6 +957,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Longitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Float64 name="CloudSat_CLDCLASS_Vertical_binsize">
         <Dim name="/airs_idx"/>
@@ -910,6 +983,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Vertical_binsize</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_Data_status">
         <Dim name="/airs_idx"/>
@@ -936,6 +1010,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_status</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_DEM_elevation">
         <Dim name="/airs_idx"/>
@@ -968,6 +1044,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/DEM_elevation</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CLDCLASS_Data_targetID">
         <Dim name="/airs_idx"/>
@@ -994,6 +1072,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Data_targetID</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CLDCLASS_cloud_scenario">
         <Dim name="/airs_idx"/>
@@ -1021,6 +1101,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/cloud_scenario</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CLDCLASS_Latitude">
         <Dim name="/airs_idx"/>
@@ -1047,6 +1130,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Latitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_nray_2B_CLDCLASS">
         <Dim name="/airs_idx"/>
@@ -1056,6 +1141,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/nray:2B-CLDCLASS</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CLDCLASS_Height">
         <Dim name="/airs_idx"/>
@@ -1092,6 +1178,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/Height</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CLDCLASS_UTC_start">
         <Dim name="/airs_idx"/>
@@ -1117,6 +1206,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/UTC_start</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CLDCLASS_nbin_2B_CLDCLASS">
         <Dim name="/airs_idx"/>
@@ -1126,6 +1216,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CLDCLASS/nbin:2B-CLDCLASS</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_N_cloudy_bins">
         <Dim name="/airs_idx"/>
@@ -1158,6 +1249,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_cloudy_bins</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_RO_ice_water_content_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1194,6 +1287,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_water_content_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_Data_quality">
         <Dim name="/airs_idx"/>
@@ -1220,6 +1316,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Data_quality</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_RO_ice_effective_radius_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1256,6 +1354,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_effective_radius_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_IO_RO_N_not_converged">
         <Dim name="/airs_idx"/>
@@ -1274,6 +1375,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_N_not_converged</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_IO_RO_log_num_conc_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1310,6 +1412,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_log_num_conc_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Byte name="CloudSat_CWC_RO_IO_RO_effective_radius_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1346,6 +1451,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_effective_radius_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_N_single_cloud_type">
         <Dim name="/airs_idx"/>
@@ -1364,6 +1472,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_single_cloud_type</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_LO_RO_liquid_water_path">
         <Dim name="/airs_idx"/>
@@ -1396,6 +1505,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_liquid_water_path</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_LO_RO_N_not_converged">
         <Dim name="/airs_idx"/>
@@ -1414,6 +1525,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_N_not_converged</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_RO_ice_num_conc_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1450,6 +1562,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_num_conc_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Float64 name="CloudSat_CWC_RO_Longitude">
         <Dim name="/airs_idx"/>
@@ -1476,6 +1591,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Longitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int16 name="CloudSat_CWC_RO_IO_RO_log_number_conc">
         <Dim name="/airs_idx"/>
@@ -1512,6 +1629,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_log_number_conc</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CWC_RO_Vertical_binsize">
         <Dim name="/airs_idx"/>
@@ -1536,6 +1656,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Vertical_binsize</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CWC_RO_Data_status">
         <Dim name="/airs_idx"/>
@@ -1562,6 +1683,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Data_status</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_RO_ice_water_path_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1594,6 +1717,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_water_path_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_RO_CWC_status">
         <Dim name="/airs_idx"/>
@@ -1620,6 +1745,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_CWC_status</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_Data_targetID">
         <Dim name="/airs_idx"/>
@@ -1646,6 +1773,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Data_targetID</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_IO_RO_ice_water_content">
         <Dim name="/airs_idx"/>
@@ -1682,6 +1811,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_ice_water_content</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_PCT_two_cloud_types">
         <Dim name="/airs_idx"/>
@@ -1700,6 +1832,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/PCT_two_cloud_types</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_LO_RO_number_conc">
         <Dim name="/airs_idx"/>
@@ -1736,6 +1869,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_number_conc</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Byte name="CloudSat_CWC_RO_RO_ice_distrib_width_param_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1772,6 +1908,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_distrib_width_param_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int16 name="CloudSat_CWC_RO_LO_RO_distrib_width_param">
         <Dim name="/airs_idx"/>
@@ -1808,6 +1947,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_distrib_width_param</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int16 name="CloudSat_CWC_RO_RO_liq_distrib_width_param">
         <Dim name="/airs_idx"/>
@@ -1844,6 +1986,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_distrib_width_param</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_N_low_confidence_CLDCLASS">
         <Dim name="/airs_idx"/>
@@ -1862,6 +2007,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_low_confidence_CLDCLASS</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_LO_RO_effective_radius">
         <Dim name="/airs_idx"/>
@@ -1898,6 +2044,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_effective_radius</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Byte name="CloudSat_CWC_RO_IO_RO_distrib_width_param_uncertainty">
         <Dim name="/airs_idx"/>
@@ -1934,6 +2083,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_distrib_width_param_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_PCT_clear_CPR">
         <Dim name="/airs_idx"/>
@@ -1952,6 +2104,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/PCT_clear_CPR</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_LO_RO_PCT_not_converged">
         <Dim name="/airs_idx"/>
@@ -1970,6 +2123,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_PCT_not_converged</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_RO_liq_water_content_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2006,6 +2160,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_water_content_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_RO_ice_water_path">
         <Dim name="/airs_idx"/>
@@ -2038,6 +2195,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_water_path</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_IO_RO_effective_radius">
         <Dim name="/airs_idx"/>
@@ -2074,6 +2233,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_effective_radius</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int16 name="CloudSat_CWC_RO_RO_liq_effective_radius">
         <Dim name="/airs_idx"/>
@@ -2110,6 +2272,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_effective_radius</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int16 name="CloudSat_CWC_RO_RO_ice_distrib_width_param">
         <Dim name="/airs_idx"/>
@@ -2146,6 +2311,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_distrib_width_param</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Float64 name="CloudSat_CWC_RO_Latitude">
         <Dim name="/airs_idx"/>
@@ -2172,6 +2340,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Latitude</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CWC_RO_PCT_three_cloud_types">
         <Dim name="/airs_idx"/>
@@ -2190,6 +2360,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/PCT_three_cloud_types</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Byte name="CloudSat_CWC_RO_LO_RO_distrib_width_param_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2226,6 +2397,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_distrib_width_param_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Byte name="CloudSat_CWC_RO_LO_RO_num_conc_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2262,6 +2436,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_num_conc_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Byte name="CloudSat_CWC_RO_RO_liq_effective_radius_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2298,6 +2475,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_effective_radius_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int16 name="CloudSat_CWC_RO_RO_ice_water_content">
         <Dim name="/airs_idx"/>
@@ -2334,6 +2514,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_water_content</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Byte name="CloudSat_CWC_RO_RO_liq_num_conc_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2370,6 +2553,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_num_conc_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Float64 name="CloudSat_CWC_RO_Profile_time">
         <Dim name="/airs_idx"/>
@@ -2396,6 +2582,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Profile_time</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Float64>
     <Int32 name="CloudSat_CWC_RO_IO_RO_PCT_large_norm_chisq">
         <Dim name="/airs_idx"/>
@@ -2414,6 +2602,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_PCT_large_norm_chisq</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_LO_RO_liquid_water_content">
         <Dim name="/airs_idx"/>
@@ -2450,6 +2639,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_liquid_water_content</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_N_three_cloud_types">
         <Dim name="/airs_idx"/>
@@ -2468,6 +2660,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_three_cloud_types</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_RO_ice_phase_fraction">
         <Dim name="/airs_idx"/>
@@ -2504,6 +2697,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_phase_fraction</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_PCT_drizzle_or_precipitation">
         <Dim name="/airs_idx"/>
@@ -2522,6 +2718,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/PCT_drizzle_or_precipitation</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_RO_liq_number_conc">
         <Dim name="/airs_idx"/>
@@ -2558,6 +2755,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_number_conc</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Byte name="CloudSat_CWC_RO_RO_liq_distrib_width_param_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2594,6 +2794,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_distrib_width_param_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int16 name="CloudSat_CWC_RO_RO_ice_effective_radius">
         <Dim name="/airs_idx"/>
@@ -2630,6 +2833,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_effective_radius</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int16 name="CloudSat_CWC_RO_Height">
         <Dim name="/airs_idx"/>
@@ -2666,6 +2872,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Height</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Byte name="CloudSat_CWC_RO_LO_RO_effective_radius_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2702,6 +2911,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_effective_radius_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Byte name="CloudSat_CWC_RO_LO_RO_liquid_water_content_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2738,6 +2950,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_liquid_water_content_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Byte name="CloudSat_CWC_RO_IO_RO_ice_water_content_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2774,6 +2989,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_ice_water_content_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Byte>
     <Int32 name="CloudSat_CWC_RO_IO_RO_ice_water_path_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2806,6 +3024,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_ice_water_path_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_LO_RO_liquid_water_path_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2838,6 +3058,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_liquid_water_path_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_Cloud_mask_threshold">
         <Dim name="/airs_idx"/>
@@ -2869,6 +3091,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/Cloud_mask_threshold</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_nbin_2B_CWC_RO">
         <Dim name="/airs_idx"/>
@@ -2878,6 +3101,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/nbin:2B-CWC-RO</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_IO_RO_ice_water_path">
         <Dim name="/airs_idx"/>
@@ -2910,6 +3134,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_ice_water_path</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_RO_liq_water_path_uncertainty">
         <Dim name="/airs_idx"/>
@@ -2942,6 +3168,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_water_path_uncertainty</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_N_two_cloud_types">
         <Dim name="/airs_idx"/>
@@ -2960,6 +3188,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_two_cloud_types</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_IO_RO_PCT_not_converged">
         <Dim name="/airs_idx"/>
@@ -2978,6 +3207,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_PCT_not_converged</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_RO_liq_water_content">
         <Dim name="/airs_idx"/>
@@ -3014,6 +3244,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_water_content</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int16 name="CloudSat_CWC_RO_RO_ice_number_conc">
         <Dim name="/airs_idx"/>
@@ -3050,6 +3283,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_ice_number_conc</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_N_drizzle_or_precipitation">
         <Dim name="/airs_idx"/>
@@ -3068,6 +3304,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/N_drizzle_or_precipitation</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int16 name="CloudSat_CWC_RO_IO_RO_distrib_width_param">
         <Dim name="/airs_idx"/>
@@ -3104,6 +3341,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/IO_RO_distrib_width_param</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
+        <Map name="/CloudSat_cs_nbin"/>
     </Int16>
     <Int32 name="CloudSat_CWC_RO_RO_liq_water_path">
         <Dim name="/airs_idx"/>
@@ -3136,6 +3376,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/RO_liq_water_path</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
+        <Map name="/CloudSat_cs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_LO_RO_PCT_large_norm_chisq">
         <Dim name="/airs_idx"/>
@@ -3154,6 +3396,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/LO_RO_PCT_large_norm_chisq</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Int32 name="CloudSat_CWC_RO_PCT_single_cloud_type">
         <Dim name="/airs_idx"/>
@@ -3172,6 +3415,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CloudSat/CWC-RO/PCT_single_cloud_type</Value>
         </Attribute>
+        <Map name="/airs_idx"/>
     </Int32>
     <Float32 name="AIRS_Radiances_Channel_L1B_AIRS_Science">
         <Dim name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>

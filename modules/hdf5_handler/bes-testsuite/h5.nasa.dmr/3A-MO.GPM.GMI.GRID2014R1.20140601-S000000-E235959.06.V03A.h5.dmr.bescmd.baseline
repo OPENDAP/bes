@@ -21,6 +21,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="fractionQuality1">
         <Dim name="/nlon"/>
@@ -40,6 +42,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="mixedWater">
         <Dim name="/nlayer"/>
@@ -60,6 +64,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlayer"/>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="iceWaterPath">
         <Dim name="/nlon"/>
@@ -79,6 +86,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="surfacePrecipitation">
         <Dim name="/nlon"/>
@@ -98,6 +107,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="fractionQuality0">
         <Dim name="/nlon"/>
@@ -117,6 +128,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Int32 name="npixTotal">
         <Dim name="/nlon"/>
@@ -133,6 +146,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/npixTotal</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Int32>
     <Float32 name="cloudWaterPath">
         <Dim name="/nlon"/>
@@ -152,6 +167,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Int32 name="npixPrecipitation">
         <Dim name="/nlon"/>
@@ -168,6 +185,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/npixPrecipitation</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Int32>
     <Float32 name="mixedWaterPath">
         <Dim name="/nlon"/>
@@ -187,6 +206,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="rainWater">
         <Dim name="/nlayer"/>
@@ -207,6 +228,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlayer"/>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="cloudWater">
         <Dim name="/nlayer"/>
@@ -227,6 +251,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlayer"/>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="iceWater">
         <Dim name="/nlayer"/>
@@ -247,6 +274,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlayer"/>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Int32 name="surfaceTypeIndex">
         <Dim name="/nlon"/>
@@ -263,6 +293,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/surfaceTypeIndex</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Int32>
     <Float32 name="liquidPrecipFraction">
         <Dim name="/nlon"/>
@@ -279,6 +311,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="rainWaterPath">
         <Dim name="/nlon"/>
@@ -298,6 +332,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="convectPrecipFraction">
         <Dim name="/nlon"/>
@@ -314,6 +350,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="latentHeat">
         <Dim name="/nlayer"/>
@@ -334,6 +372,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlayer"/>
+        <Map name="/nlon"/>
+        <Map name="/nlat"/>
     </Float32>
     <Float32 name="nlat">
         <Dim name="/nlat"/>

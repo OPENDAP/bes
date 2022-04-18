@@ -35,6 +35,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CSErythemalDoseRate">
         <Dim name="/nTimes"/>
@@ -69,6 +71,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CSIrradiance305">
         <Dim name="/nTimes"/>
@@ -103,6 +107,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CSIrradiance310">
         <Dim name="/nTimes"/>
@@ -137,6 +143,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CSIrradiance324">
         <Dim name="/nTimes"/>
@@ -171,6 +179,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CSIrradiance380">
         <Dim name="/nTimes"/>
@@ -205,6 +215,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="CloudOpticalThickness">
         <Dim name="/nTimes"/>
@@ -239,6 +251,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="ErythemalDailyDose">
         <Dim name="/nTimes"/>
@@ -273,6 +287,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="ErythemalDoseRate">
         <Dim name="/nTimes"/>
@@ -307,6 +323,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="Irradiance305">
         <Dim name="/nTimes"/>
@@ -341,6 +359,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="Irradiance310">
         <Dim name="/nTimes"/>
@@ -375,6 +395,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="Irradiance324">
         <Dim name="/nTimes"/>
@@ -409,6 +431,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="Irradiance380">
         <Dim name="/nTimes"/>
@@ -443,6 +467,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="LambertianEquivalentReflectivity">
         <Dim name="/nTimes"/>
@@ -477,6 +503,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int32 name="OMTO3AlgorithmFlags">
         <Dim name="/nTimes"/>
@@ -511,6 +539,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int32>
     <Float32 name="OMTO3ColumnAmountO3">
         <Dim name="/nTimes"/>
@@ -545,6 +575,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int32 name="OMTO3QualityFlags">
         <Dim name="/nTimes"/>
@@ -579,6 +611,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int32>
     <Int32 name="OMUVBQuality">
         <Dim name="/nTimes"/>
@@ -613,6 +647,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int32>
     <Float32 name="OPErythemalDoseRate">
         <Dim name="/nTimes"/>
@@ -647,6 +683,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="OPIrradiance305">
         <Dim name="/nTimes"/>
@@ -681,6 +719,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="OPIrradiance310">
         <Dim name="/nTimes"/>
@@ -715,6 +755,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="OPIrradiance324">
         <Dim name="/nTimes"/>
@@ -749,6 +791,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="OPIrradiance380">
         <Dim name="/nTimes"/>
@@ -783,6 +827,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="SurfaceAlbedo">
         <Dim name="/nTimes"/>
@@ -817,6 +863,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int32 name="GroundPixelQualityFlags">
         <Dim name="/nTimes"/>
@@ -851,6 +899,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/nTimes"/>
@@ -885,6 +935,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int32 name="TerrainHeight">
         <Dim name="/nTimes"/>
@@ -919,6 +971,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int32>
     <Float64 name="Time">
         <Dim name="/nTimes"/>

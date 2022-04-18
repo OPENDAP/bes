@@ -19,6 +19,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -35,6 +37,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -51,6 +55,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -67,6 +73,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -83,6 +91,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -99,6 +109,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -115,6 +127,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -131,6 +145,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -147,6 +163,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -163,6 +181,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -179,6 +199,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -195,6 +217,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -211,6 +235,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -227,6 +253,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -243,6 +271,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -259,6 +289,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -275,6 +307,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -291,6 +325,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -307,6 +343,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -323,6 +361,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -339,6 +379,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -355,6 +397,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -371,6 +415,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -387,6 +433,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -403,6 +451,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -419,6 +469,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -435,6 +487,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -451,6 +505,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_DAY">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -467,6 +523,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_DSC">
         <Dim name="/NpPolarGrid12km_YDim"/>
@@ -483,6 +541,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_1</Value>
         </Attribute>
+        <Map name="/NpPolarGrid12km_lat"/>
+        <Map name="/NpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -499,6 +559,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -515,6 +577,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -531,6 +595,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -547,6 +613,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -563,6 +631,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -579,6 +649,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -595,6 +667,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -611,6 +685,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -627,6 +703,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -643,6 +721,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -659,6 +739,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -675,6 +757,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -691,6 +775,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -707,6 +793,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -723,6 +811,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -739,6 +829,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -755,6 +847,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -771,6 +865,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -787,6 +883,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -803,6 +901,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -819,6 +919,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -835,6 +937,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -851,6 +955,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -867,6 +973,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -883,6 +991,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -899,6 +1009,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -915,6 +1027,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_ASC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -931,6 +1045,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_DAY">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -947,6 +1063,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_DSC">
         <Dim name="/SpPolarGrid12km_YDim"/>
@@ -963,6 +1081,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection_2</Value>
         </Attribute>
+        <Map name="/SpPolarGrid12km_lat"/>
+        <Map name="/SpPolarGrid12km_lon"/>
     </Int32>
     <String name="CoreMetadata_0">
         <Attribute name="origname" type="String">

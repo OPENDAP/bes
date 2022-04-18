@@ -28,6 +28,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="APrioriCOMixingRatioProfileNight">
         <Dim name="/Longitude"/>
@@ -51,6 +54,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="APrioriCOSurfaceMixingRatioDay">
         <Dim name="/Longitude"/>
@@ -73,6 +79,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriCOSurfaceMixingRatioNight">
         <Dim name="/Longitude"/>
@@ -95,6 +103,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriCOTotalColumnDay">
         <Dim name="/Longitude"/>
@@ -117,6 +127,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriCOTotalColumnNight">
         <Dim name="/Longitude"/>
@@ -139,6 +151,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriSurfaceEmissivityDay">
         <Dim name="/Longitude"/>
@@ -161,6 +175,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriSurfaceEmissivityNight">
         <Dim name="/Longitude"/>
@@ -183,6 +199,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriSurfaceTemperatureDay">
         <Dim name="/Longitude"/>
@@ -205,6 +223,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="APrioriSurfaceTemperatureNight">
         <Dim name="/Longitude"/>
@@ -227,6 +247,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DEMAltitudeDay">
         <Dim name="/Longitude"/>
@@ -249,6 +271,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DEMAltitudeNight">
         <Dim name="/Longitude"/>
@@ -271,6 +295,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DEMAltitudeVariabilityDay">
         <Dim name="/Longitude"/>
@@ -293,6 +319,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DEMAltitudeVariabilityNight">
         <Dim name="/Longitude"/>
@@ -315,6 +343,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DegreesofFreedomforSignalDay">
         <Dim name="/Longitude"/>
@@ -337,6 +367,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DegreesofFreedomforSignalNight">
         <Dim name="/Longitude"/>
@@ -359,6 +391,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Int32 name="NumberofPixelsDay">
         <Dim name="/Longitude"/>
@@ -381,6 +415,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int32>
     <Int32 name="NumberofPixelsNight">
         <Dim name="/Longitude"/>
@@ -403,6 +439,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int32>
     <Float32 name="RetrievalAveragingKernelMatrixDay">
         <Dim name="/Longitude"/>
@@ -427,6 +465,10 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs2 Prs2_1</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure2"/>
+        <Map name="/Prs2_1"/>
     </Float32>
     <Float32 name="RetrievalAveragingKernelMatrixNight">
         <Dim name="/Longitude"/>
@@ -451,6 +493,10 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs2 Prs2_1</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure2"/>
+        <Map name="/Prs2_1"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileDay">
         <Dim name="/Longitude"/>
@@ -474,6 +520,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyDay">
         <Dim name="/Longitude"/>
@@ -497,6 +546,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyNight">
         <Dim name="/Longitude"/>
@@ -520,6 +572,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileNight">
         <Dim name="/Longitude"/>
@@ -543,6 +598,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileVariabilityDay">
         <Dim name="/Longitude"/>
@@ -566,6 +624,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOMixingRatioProfileVariabilityNight">
         <Dim name="/Longitude"/>
@@ -589,6 +650,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim Prs</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioDay">
         <Dim name="/Longitude"/>
@@ -611,6 +675,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyDay">
         <Dim name="/Longitude"/>
@@ -633,6 +699,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyNight">
         <Dim name="/Longitude"/>
@@ -655,6 +723,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioNight">
         <Dim name="/Longitude"/>
@@ -677,6 +747,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityDay">
         <Dim name="/Longitude"/>
@@ -699,6 +771,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityNight">
         <Dim name="/Longitude"/>
@@ -721,6 +795,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnDay">
         <Dim name="/Longitude"/>
@@ -743,6 +819,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnDiagnosticsDay">
         <Dim name="/Longitude"/>
@@ -766,6 +844,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim NTWO</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/NTWO"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnDiagnosticsNight">
         <Dim name="/Longitude"/>
@@ -789,6 +870,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim NTWO</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/NTWO"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnMeanUncertaintyDay">
         <Dim name="/Longitude"/>
@@ -811,6 +895,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnMeanUncertaintyNight">
         <Dim name="/Longitude"/>
@@ -833,6 +919,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnNight">
         <Dim name="/Longitude"/>
@@ -855,6 +943,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnVariabilityDay">
         <Dim name="/Longitude"/>
@@ -877,6 +967,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedCOTotalColumnVariabilityNight">
         <Dim name="/Longitude"/>
@@ -899,6 +991,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityDay">
         <Dim name="/Longitude"/>
@@ -921,6 +1015,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyDay">
         <Dim name="/Longitude"/>
@@ -943,6 +1039,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyNight">
         <Dim name="/Longitude"/>
@@ -965,6 +1063,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityNight">
         <Dim name="/Longitude"/>
@@ -987,6 +1087,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityVariabilityDay">
         <Dim name="/Longitude"/>
@@ -1009,6 +1111,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceEmissivityVariabilityNight">
         <Dim name="/Longitude"/>
@@ -1031,6 +1135,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureDay">
         <Dim name="/Longitude"/>
@@ -1053,6 +1159,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyDay">
         <Dim name="/Longitude"/>
@@ -1075,6 +1183,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyNight">
         <Dim name="/Longitude"/>
@@ -1097,6 +1207,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureNight">
         <Dim name="/Longitude"/>
@@ -1119,6 +1231,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureVariabilityDay">
         <Dim name="/Longitude"/>
@@ -1141,6 +1255,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RetrievedSurfaceTemperatureVariabilityNight">
         <Dim name="/Longitude"/>
@@ -1163,6 +1279,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SatelliteZenithAngleDay">
         <Dim name="/Longitude"/>
@@ -1185,6 +1303,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SatelliteZenithAngleNight">
         <Dim name="/Longitude"/>
@@ -1207,6 +1327,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SignalChi2Day">
         <Dim name="/Longitude"/>
@@ -1229,6 +1351,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SignalChi2Night">
         <Dim name="/Longitude"/>
@@ -1251,6 +1375,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SignalChi2VariabilityDay">
         <Dim name="/Longitude"/>
@@ -1273,6 +1399,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SignalChi2VariabilityNight">
         <Dim name="/Longitude"/>
@@ -1295,6 +1423,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SolarZenithAngleDay">
         <Dim name="/Longitude"/>
@@ -1317,6 +1447,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SolarZenithAngleNight">
         <Dim name="/Longitude"/>
@@ -1339,6 +1471,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Int32 name="SurfaceIndexDay">
         <Dim name="/Longitude"/>
@@ -1361,6 +1495,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int32>
     <Int32 name="SurfaceIndexNight">
         <Dim name="/Longitude"/>
@@ -1383,6 +1519,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int32>
     <Float32 name="SurfacePressureDay">
         <Dim name="/Longitude"/>
@@ -1405,6 +1543,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfacePressureNight">
         <Dim name="/Longitude"/>
@@ -1427,6 +1567,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>XDim YDim</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

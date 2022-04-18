@@ -46,6 +46,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/analysed_sst</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="analysis_error">
         <Dim name="/time"/>
@@ -84,6 +87,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/analysis_error</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int8 name="mask">
         <Dim name="/time"/>
@@ -133,6 +139,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/mask</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int8>
     <Int8 name="sea_ice_fraction">
         <Dim name="/time"/>
@@ -177,6 +186,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/sea_ice_fraction</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int8>
     <Float32 name="lat">
         <Dim name="/lat"/>

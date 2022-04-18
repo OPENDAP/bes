@@ -45,6 +45,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Int8>
     <UInt16 name="orbit_info_orbit_number">
         <Dim name="/orbit_info_crossing_time"/>
@@ -78,6 +79,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </UInt16>
     <Float64 name="orbit_info_lan">
         <Dim name="/orbit_info_crossing_time"/>
@@ -111,6 +113,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Float64>
     <Int8 name="orbit_info_sc_orient">
         <Dim name="/orbit_info_sc_orient_time"/>
@@ -152,6 +155,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_sc_orient_time</Value>
         </Attribute>
+        <Map name="/orbit_info_sc_orient_time"/>
     </Int8>
     <Int16 name="orbit_info_rgt">
         <Dim name="/orbit_info_crossing_time"/>
@@ -185,6 +189,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Int16>
     <Int16 name="gt1r_rgt">
         <Dim name="/gt1r_delta_time"/>
@@ -218,6 +223,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int16>
     <Int32 name="gt1r_qf_bias_fit">
         <Dim name="/gt1r_delta_time"/>
@@ -267,6 +273,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float64 name="gt1r_sseg_mean_lon">
         <Dim name="/gt1r_delta_time"/>
@@ -300,6 +307,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float64>
     <Int32 name="gt1r_qf_ice">
         <Dim name="/gt1r_delta_time"/>
@@ -345,6 +353,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int8 name="gt1r_inland_water_body_type">
         <Dim name="/gt1r_delta_time"/>
@@ -395,6 +404,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int8>
     <Int32 name="gt1r_inland_water_body_id">
         <Dim name="/gt1r_delta_time"/>
@@ -425,6 +435,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float32 name="gt1r_segment_geoid">
         <Dim name="/gt1r_delta_time"/>
@@ -455,6 +466,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int32 name="gt1r_qf_sseg_length">
         <Dim name="/gt1r_delta_time"/>
@@ -500,6 +512,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float32 name="gt1r_segment_tide_equilibrium">
         <Dim name="/gt1r_delta_time"/>
@@ -530,6 +543,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int32 name="gt1r_qf_lseg_length">
         <Dim name="/gt1r_delta_time"/>
@@ -575,6 +589,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float32 name="gt1r_significant_wave_ht">
         <Dim name="/gt1r_delta_time"/>
@@ -605,6 +620,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float32 name="gt1r_water_depth">
         <Dim name="/gt1r_delta_time"/>
@@ -635,6 +651,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int32 name="gt1r_qf_bias_em">
         <Dim name="/gt1r_delta_time"/>
@@ -684,6 +701,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int32 name="gt1r_segment_id_end">
         <Dim name="/gt1r_delta_time"/>
@@ -711,6 +729,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float32 name="gt1r_stdev_water_surf">
         <Dim name="/gt1r_delta_time"/>
@@ -741,6 +760,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int32 name="gt1r_qf_iwp">
         <Dim name="/gt1r_delta_time"/>
@@ -786,6 +806,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int32 name="gt1r_segment_id_beg">
         <Dim name="/gt1r_delta_time"/>
@@ -813,6 +834,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int8 name="gt1r_cycle">
         <Dim name="/gt1r_delta_time"/>
@@ -846,6 +868,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int8>
     <Int32 name="gt1r_qf_subsurf_anomaly">
         <Dim name="/gt1r_delta_time"/>
@@ -890,6 +913,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float32 name="gt1r_subsurface_attenuation">
         <Dim name="/gt1r_delta_time"/>
@@ -920,6 +944,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int32 name="gt1r_inland_water_body_region">
         <Dim name="/gt1r_delta_time"/>
@@ -950,6 +975,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int8 name="gt1r_ice_flag">
         <Dim name="/gt1r_delta_time"/>
@@ -990,6 +1016,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int8>
     <Float64 name="gt1r_segment_lon">
         <Dim name="/gt1r_delta_time"/>
@@ -1026,6 +1053,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float64>
     <Float32 name="gt1r_ht_ortho">
         <Dim name="/gt1r_delta_time"/>
@@ -1056,6 +1084,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float64 name="gt1r_segment_lat">
         <Dim name="/gt1r_delta_time"/>
@@ -1092,6 +1121,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float64>
     <Float32 name="gt1r_ht_water_surf">
         <Dim name="/gt1r_delta_time"/>
@@ -1122,6 +1152,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float32 name="gt1r_err_ht_water_surf">
         <Dim name="/gt1r_delta_time"/>
@@ -1152,6 +1183,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int64 name="gt1r_atl13refid">
         <Dim name="/gt1r_delta_time"/>
@@ -1182,6 +1214,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int64>
     <Int32 name="gt1r_qf_cloud">
         <Dim name="/gt1r_delta_time"/>
@@ -1225,6 +1258,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int8 name="gt1r_inland_water_body_source">
         <Dim name="/gt1r_delta_time"/>
@@ -1275,6 +1309,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int8>
     <Int8 name="gt1r_inland_water_body_size">
         <Dim name="/gt1r_delta_time"/>
@@ -1326,6 +1361,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int8>
     <Float32 name="gt1r_segment_tide_ocean">
         <Dim name="/gt1r_delta_time"/>
@@ -1356,6 +1392,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float32 name="gt1r_err_slope_trk">
         <Dim name="/gt1r_delta_time"/>
@@ -1386,6 +1423,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float32 name="gt1r_segment_slope_trk_bdy">
         <Dim name="/gt1r_delta_time"/>
@@ -1416,6 +1454,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Float64 name="gt1r_sseg_mean_lat">
         <Dim name="/gt1r_delta_time"/>
@@ -1452,6 +1491,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float64>
     <Int32 name="gt1r_qf_spec_width">
         <Dim name="/gt1r_delta_time"/>
@@ -1495,6 +1535,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Int32 name="gt1r_qf_bckgrd">
         <Dim name="/gt1r_delta_time"/>
@@ -1543,6 +1584,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Int32>
     <Float64 name="gt1r_sseg_mean_time">
         <Dim name="/gt1r_delta_time"/>
@@ -1573,6 +1615,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float64>
     <Float32 name="gt1r_segment_dac">
         <Dim name="/gt1r_delta_time"/>
@@ -1603,6 +1646,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_delta_time gt1r_segment_lat gt1r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1r_delta_time"/>
     </Float32>
     <Int16 name="gt2r_rgt">
         <Dim name="/gt2r_delta_time"/>
@@ -1636,6 +1680,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int16>
     <Int32 name="gt2r_qf_bias_fit">
         <Dim name="/gt2r_delta_time"/>
@@ -1685,6 +1730,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float64 name="gt2r_sseg_mean_lon">
         <Dim name="/gt2r_delta_time"/>
@@ -1718,6 +1764,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float64>
     <Int32 name="gt2r_qf_ice">
         <Dim name="/gt2r_delta_time"/>
@@ -1763,6 +1810,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int8 name="gt2r_inland_water_body_type">
         <Dim name="/gt2r_delta_time"/>
@@ -1813,6 +1861,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int8>
     <Int32 name="gt2r_inland_water_body_id">
         <Dim name="/gt2r_delta_time"/>
@@ -1843,6 +1892,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float32 name="gt2r_segment_geoid">
         <Dim name="/gt2r_delta_time"/>
@@ -1873,6 +1923,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int32 name="gt2r_qf_sseg_length">
         <Dim name="/gt2r_delta_time"/>
@@ -1918,6 +1969,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float32 name="gt2r_segment_tide_equilibrium">
         <Dim name="/gt2r_delta_time"/>
@@ -1948,6 +2000,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int32 name="gt2r_qf_lseg_length">
         <Dim name="/gt2r_delta_time"/>
@@ -1993,6 +2046,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float32 name="gt2r_significant_wave_ht">
         <Dim name="/gt2r_delta_time"/>
@@ -2023,6 +2077,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float32 name="gt2r_water_depth">
         <Dim name="/gt2r_delta_time"/>
@@ -2053,6 +2108,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int32 name="gt2r_qf_bias_em">
         <Dim name="/gt2r_delta_time"/>
@@ -2102,6 +2158,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int32 name="gt2r_segment_id_end">
         <Dim name="/gt2r_delta_time"/>
@@ -2129,6 +2186,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float32 name="gt2r_stdev_water_surf">
         <Dim name="/gt2r_delta_time"/>
@@ -2159,6 +2217,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int32 name="gt2r_qf_iwp">
         <Dim name="/gt2r_delta_time"/>
@@ -2204,6 +2263,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int32 name="gt2r_segment_id_beg">
         <Dim name="/gt2r_delta_time"/>
@@ -2231,6 +2291,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int8 name="gt2r_cycle">
         <Dim name="/gt2r_delta_time"/>
@@ -2264,6 +2325,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int8>
     <Int32 name="gt2r_qf_subsurf_anomaly">
         <Dim name="/gt2r_delta_time"/>
@@ -2308,6 +2370,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float32 name="gt2r_subsurface_attenuation">
         <Dim name="/gt2r_delta_time"/>
@@ -2338,6 +2401,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int32 name="gt2r_inland_water_body_region">
         <Dim name="/gt2r_delta_time"/>
@@ -2368,6 +2432,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int8 name="gt2r_ice_flag">
         <Dim name="/gt2r_delta_time"/>
@@ -2408,6 +2473,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int8>
     <Float64 name="gt2r_segment_lon">
         <Dim name="/gt2r_delta_time"/>
@@ -2444,6 +2510,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float64>
     <Float32 name="gt2r_ht_ortho">
         <Dim name="/gt2r_delta_time"/>
@@ -2474,6 +2541,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float64 name="gt2r_segment_lat">
         <Dim name="/gt2r_delta_time"/>
@@ -2510,6 +2578,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float64>
     <Float32 name="gt2r_ht_water_surf">
         <Dim name="/gt2r_delta_time"/>
@@ -2540,6 +2609,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float32 name="gt2r_err_ht_water_surf">
         <Dim name="/gt2r_delta_time"/>
@@ -2570,6 +2640,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int64 name="gt2r_atl13refid">
         <Dim name="/gt2r_delta_time"/>
@@ -2600,6 +2671,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int64>
     <Int32 name="gt2r_qf_cloud">
         <Dim name="/gt2r_delta_time"/>
@@ -2643,6 +2715,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int8 name="gt2r_inland_water_body_source">
         <Dim name="/gt2r_delta_time"/>
@@ -2693,6 +2766,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int8>
     <Int8 name="gt2r_inland_water_body_size">
         <Dim name="/gt2r_delta_time"/>
@@ -2744,6 +2818,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int8>
     <Float32 name="gt2r_segment_tide_ocean">
         <Dim name="/gt2r_delta_time"/>
@@ -2774,6 +2849,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float32 name="gt2r_err_slope_trk">
         <Dim name="/gt2r_delta_time"/>
@@ -2804,6 +2880,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float32 name="gt2r_segment_slope_trk_bdy">
         <Dim name="/gt2r_delta_time"/>
@@ -2834,6 +2911,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Float64 name="gt2r_sseg_mean_lat">
         <Dim name="/gt2r_delta_time"/>
@@ -2870,6 +2948,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float64>
     <Int32 name="gt2r_qf_spec_width">
         <Dim name="/gt2r_delta_time"/>
@@ -2913,6 +2992,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Int32 name="gt2r_qf_bckgrd">
         <Dim name="/gt2r_delta_time"/>
@@ -2961,6 +3041,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Int32>
     <Float64 name="gt2r_sseg_mean_time">
         <Dim name="/gt2r_delta_time"/>
@@ -2991,6 +3072,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float64>
     <Float32 name="gt2r_segment_dac">
         <Dim name="/gt2r_delta_time"/>
@@ -3021,6 +3103,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2r_delta_time gt2r_segment_lat gt2r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2r_delta_time"/>
     </Float32>
     <Int16 name="gt1l_rgt">
         <Dim name="/gt1l_delta_time"/>
@@ -3054,6 +3137,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int16>
     <Int32 name="gt1l_qf_bias_fit">
         <Dim name="/gt1l_delta_time"/>
@@ -3103,6 +3187,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float64 name="gt1l_sseg_mean_lon">
         <Dim name="/gt1l_delta_time"/>
@@ -3136,6 +3221,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float64>
     <Int32 name="gt1l_qf_ice">
         <Dim name="/gt1l_delta_time"/>
@@ -3181,6 +3267,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int8 name="gt1l_inland_water_body_type">
         <Dim name="/gt1l_delta_time"/>
@@ -3231,6 +3318,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int8>
     <Int32 name="gt1l_inland_water_body_id">
         <Dim name="/gt1l_delta_time"/>
@@ -3261,6 +3349,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float32 name="gt1l_segment_geoid">
         <Dim name="/gt1l_delta_time"/>
@@ -3291,6 +3380,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="gt1l_qf_sseg_length">
         <Dim name="/gt1l_delta_time"/>
@@ -3336,6 +3426,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float32 name="gt1l_segment_tide_equilibrium">
         <Dim name="/gt1l_delta_time"/>
@@ -3366,6 +3457,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="gt1l_qf_lseg_length">
         <Dim name="/gt1l_delta_time"/>
@@ -3411,6 +3503,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float32 name="gt1l_significant_wave_ht">
         <Dim name="/gt1l_delta_time"/>
@@ -3441,6 +3534,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float32 name="gt1l_water_depth">
         <Dim name="/gt1l_delta_time"/>
@@ -3471,6 +3565,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="gt1l_qf_bias_em">
         <Dim name="/gt1l_delta_time"/>
@@ -3520,6 +3615,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int32 name="gt1l_segment_id_end">
         <Dim name="/gt1l_delta_time"/>
@@ -3547,6 +3643,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float32 name="gt1l_stdev_water_surf">
         <Dim name="/gt1l_delta_time"/>
@@ -3577,6 +3674,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="gt1l_qf_iwp">
         <Dim name="/gt1l_delta_time"/>
@@ -3622,6 +3720,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int32 name="gt1l_segment_id_beg">
         <Dim name="/gt1l_delta_time"/>
@@ -3649,6 +3748,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int8 name="gt1l_cycle">
         <Dim name="/gt1l_delta_time"/>
@@ -3682,6 +3782,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int8>
     <Int32 name="gt1l_qf_subsurf_anomaly">
         <Dim name="/gt1l_delta_time"/>
@@ -3726,6 +3827,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float32 name="gt1l_subsurface_attenuation">
         <Dim name="/gt1l_delta_time"/>
@@ -3756,6 +3858,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="gt1l_inland_water_body_region">
         <Dim name="/gt1l_delta_time"/>
@@ -3786,6 +3889,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int8 name="gt1l_ice_flag">
         <Dim name="/gt1l_delta_time"/>
@@ -3826,6 +3930,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int8>
     <Float64 name="gt1l_segment_lon">
         <Dim name="/gt1l_delta_time"/>
@@ -3862,6 +3967,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float64>
     <Float32 name="gt1l_ht_ortho">
         <Dim name="/gt1l_delta_time"/>
@@ -3892,6 +3998,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float64 name="gt1l_segment_lat">
         <Dim name="/gt1l_delta_time"/>
@@ -3928,6 +4035,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float64>
     <Float32 name="gt1l_ht_water_surf">
         <Dim name="/gt1l_delta_time"/>
@@ -3958,6 +4066,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float32 name="gt1l_err_ht_water_surf">
         <Dim name="/gt1l_delta_time"/>
@@ -3988,6 +4097,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int64 name="gt1l_atl13refid">
         <Dim name="/gt1l_delta_time"/>
@@ -4018,6 +4128,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int64>
     <Int32 name="gt1l_qf_cloud">
         <Dim name="/gt1l_delta_time"/>
@@ -4061,6 +4172,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int8 name="gt1l_inland_water_body_source">
         <Dim name="/gt1l_delta_time"/>
@@ -4111,6 +4223,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int8>
     <Int8 name="gt1l_inland_water_body_size">
         <Dim name="/gt1l_delta_time"/>
@@ -4162,6 +4275,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int8>
     <Float32 name="gt1l_segment_tide_ocean">
         <Dim name="/gt1l_delta_time"/>
@@ -4192,6 +4306,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float32 name="gt1l_err_slope_trk">
         <Dim name="/gt1l_delta_time"/>
@@ -4222,6 +4337,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float32 name="gt1l_segment_slope_trk_bdy">
         <Dim name="/gt1l_delta_time"/>
@@ -4252,6 +4368,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Float64 name="gt1l_sseg_mean_lat">
         <Dim name="/gt1l_delta_time"/>
@@ -4288,6 +4405,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float64>
     <Int32 name="gt1l_qf_spec_width">
         <Dim name="/gt1l_delta_time"/>
@@ -4331,6 +4449,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Int32 name="gt1l_qf_bckgrd">
         <Dim name="/gt1l_delta_time"/>
@@ -4379,6 +4498,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Int32>
     <Float64 name="gt1l_sseg_mean_time">
         <Dim name="/gt1l_delta_time"/>
@@ -4409,6 +4529,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float64>
     <Float32 name="gt1l_segment_dac">
         <Dim name="/gt1l_delta_time"/>
@@ -4439,6 +4560,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1l_delta_time gt1l_segment_lat gt1l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt1l_delta_time"/>
     </Float32>
     <Int32 name="quality_assessment_qa_granule_fail_reason">
         <Dim name="/FakeDim0"/>
@@ -4480,6 +4602,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/quality_assessment/qa_granule_fail_reason</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="quality_assessment_qa_granule_pass_fail">
         <Dim name="/FakeDim0"/>
@@ -4517,6 +4640,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/quality_assessment/qa_granule_pass_fail</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int16 name="gt3l_rgt">
         <Dim name="/gt3l_delta_time"/>
@@ -4550,6 +4674,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int16>
     <Int32 name="gt3l_qf_bias_fit">
         <Dim name="/gt3l_delta_time"/>
@@ -4599,6 +4724,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float64 name="gt3l_sseg_mean_lon">
         <Dim name="/gt3l_delta_time"/>
@@ -4632,6 +4758,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float64>
     <Int32 name="gt3l_qf_ice">
         <Dim name="/gt3l_delta_time"/>
@@ -4677,6 +4804,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int8 name="gt3l_inland_water_body_type">
         <Dim name="/gt3l_delta_time"/>
@@ -4727,6 +4855,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int8>
     <Int32 name="gt3l_inland_water_body_id">
         <Dim name="/gt3l_delta_time"/>
@@ -4757,6 +4886,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float32 name="gt3l_segment_geoid">
         <Dim name="/gt3l_delta_time"/>
@@ -4787,6 +4917,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int32 name="gt3l_qf_sseg_length">
         <Dim name="/gt3l_delta_time"/>
@@ -4832,6 +4963,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float32 name="gt3l_segment_tide_equilibrium">
         <Dim name="/gt3l_delta_time"/>
@@ -4862,6 +4994,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int32 name="gt3l_qf_lseg_length">
         <Dim name="/gt3l_delta_time"/>
@@ -4907,6 +5040,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float32 name="gt3l_significant_wave_ht">
         <Dim name="/gt3l_delta_time"/>
@@ -4937,6 +5071,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float32 name="gt3l_water_depth">
         <Dim name="/gt3l_delta_time"/>
@@ -4967,6 +5102,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int32 name="gt3l_qf_bias_em">
         <Dim name="/gt3l_delta_time"/>
@@ -5016,6 +5152,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int32 name="gt3l_segment_id_end">
         <Dim name="/gt3l_delta_time"/>
@@ -5043,6 +5180,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float32 name="gt3l_stdev_water_surf">
         <Dim name="/gt3l_delta_time"/>
@@ -5073,6 +5211,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int32 name="gt3l_qf_iwp">
         <Dim name="/gt3l_delta_time"/>
@@ -5118,6 +5257,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int32 name="gt3l_segment_id_beg">
         <Dim name="/gt3l_delta_time"/>
@@ -5145,6 +5285,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int8 name="gt3l_cycle">
         <Dim name="/gt3l_delta_time"/>
@@ -5178,6 +5319,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int8>
     <Int32 name="gt3l_qf_subsurf_anomaly">
         <Dim name="/gt3l_delta_time"/>
@@ -5222,6 +5364,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float32 name="gt3l_subsurface_attenuation">
         <Dim name="/gt3l_delta_time"/>
@@ -5252,6 +5395,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int32 name="gt3l_inland_water_body_region">
         <Dim name="/gt3l_delta_time"/>
@@ -5282,6 +5426,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int8 name="gt3l_ice_flag">
         <Dim name="/gt3l_delta_time"/>
@@ -5322,6 +5467,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int8>
     <Float64 name="gt3l_segment_lon">
         <Dim name="/gt3l_delta_time"/>
@@ -5358,6 +5504,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float64>
     <Float32 name="gt3l_ht_ortho">
         <Dim name="/gt3l_delta_time"/>
@@ -5388,6 +5535,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float64 name="gt3l_segment_lat">
         <Dim name="/gt3l_delta_time"/>
@@ -5424,6 +5572,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float64>
     <Float32 name="gt3l_ht_water_surf">
         <Dim name="/gt3l_delta_time"/>
@@ -5454,6 +5603,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float32 name="gt3l_err_ht_water_surf">
         <Dim name="/gt3l_delta_time"/>
@@ -5484,6 +5634,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int64 name="gt3l_atl13refid">
         <Dim name="/gt3l_delta_time"/>
@@ -5514,6 +5665,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int64>
     <Int32 name="gt3l_qf_cloud">
         <Dim name="/gt3l_delta_time"/>
@@ -5557,6 +5709,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int8 name="gt3l_inland_water_body_source">
         <Dim name="/gt3l_delta_time"/>
@@ -5607,6 +5760,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int8>
     <Int8 name="gt3l_inland_water_body_size">
         <Dim name="/gt3l_delta_time"/>
@@ -5658,6 +5812,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int8>
     <Float32 name="gt3l_segment_tide_ocean">
         <Dim name="/gt3l_delta_time"/>
@@ -5688,6 +5843,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float32 name="gt3l_err_slope_trk">
         <Dim name="/gt3l_delta_time"/>
@@ -5718,6 +5874,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float32 name="gt3l_segment_slope_trk_bdy">
         <Dim name="/gt3l_delta_time"/>
@@ -5748,6 +5905,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Float64 name="gt3l_sseg_mean_lat">
         <Dim name="/gt3l_delta_time"/>
@@ -5784,6 +5942,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float64>
     <Int32 name="gt3l_qf_spec_width">
         <Dim name="/gt3l_delta_time"/>
@@ -5827,6 +5986,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Int32 name="gt3l_qf_bckgrd">
         <Dim name="/gt3l_delta_time"/>
@@ -5875,6 +6035,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Int32>
     <Float64 name="gt3l_sseg_mean_time">
         <Dim name="/gt3l_delta_time"/>
@@ -5905,6 +6066,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float64>
     <Float32 name="gt3l_segment_dac">
         <Dim name="/gt3l_delta_time"/>
@@ -5935,6 +6097,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3l_delta_time gt3l_segment_lat gt3l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3l_delta_time"/>
     </Float32>
     <Int16 name="gt2l_rgt">
         <Dim name="/gt2l_delta_time"/>
@@ -5968,6 +6131,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int16>
     <Int32 name="gt2l_qf_bias_fit">
         <Dim name="/gt2l_delta_time"/>
@@ -6017,6 +6181,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float64 name="gt2l_sseg_mean_lon">
         <Dim name="/gt2l_delta_time"/>
@@ -6050,6 +6215,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float64>
     <Int32 name="gt2l_qf_ice">
         <Dim name="/gt2l_delta_time"/>
@@ -6095,6 +6261,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int8 name="gt2l_inland_water_body_type">
         <Dim name="/gt2l_delta_time"/>
@@ -6145,6 +6312,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int8>
     <Int32 name="gt2l_inland_water_body_id">
         <Dim name="/gt2l_delta_time"/>
@@ -6175,6 +6343,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float32 name="gt2l_segment_geoid">
         <Dim name="/gt2l_delta_time"/>
@@ -6205,6 +6374,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int32 name="gt2l_qf_sseg_length">
         <Dim name="/gt2l_delta_time"/>
@@ -6250,6 +6420,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float32 name="gt2l_segment_tide_equilibrium">
         <Dim name="/gt2l_delta_time"/>
@@ -6280,6 +6451,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int32 name="gt2l_qf_lseg_length">
         <Dim name="/gt2l_delta_time"/>
@@ -6325,6 +6497,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float32 name="gt2l_significant_wave_ht">
         <Dim name="/gt2l_delta_time"/>
@@ -6355,6 +6528,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float32 name="gt2l_water_depth">
         <Dim name="/gt2l_delta_time"/>
@@ -6385,6 +6559,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int32 name="gt2l_qf_bias_em">
         <Dim name="/gt2l_delta_time"/>
@@ -6434,6 +6609,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int32 name="gt2l_segment_id_end">
         <Dim name="/gt2l_delta_time"/>
@@ -6461,6 +6637,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float32 name="gt2l_stdev_water_surf">
         <Dim name="/gt2l_delta_time"/>
@@ -6491,6 +6668,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int32 name="gt2l_qf_iwp">
         <Dim name="/gt2l_delta_time"/>
@@ -6536,6 +6714,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int32 name="gt2l_segment_id_beg">
         <Dim name="/gt2l_delta_time"/>
@@ -6563,6 +6742,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int8 name="gt2l_cycle">
         <Dim name="/gt2l_delta_time"/>
@@ -6596,6 +6776,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int8>
     <Int32 name="gt2l_qf_subsurf_anomaly">
         <Dim name="/gt2l_delta_time"/>
@@ -6640,6 +6821,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float32 name="gt2l_subsurface_attenuation">
         <Dim name="/gt2l_delta_time"/>
@@ -6670,6 +6852,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int32 name="gt2l_inland_water_body_region">
         <Dim name="/gt2l_delta_time"/>
@@ -6700,6 +6883,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int8 name="gt2l_ice_flag">
         <Dim name="/gt2l_delta_time"/>
@@ -6740,6 +6924,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int8>
     <Float64 name="gt2l_segment_lon">
         <Dim name="/gt2l_delta_time"/>
@@ -6776,6 +6961,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float64>
     <Float32 name="gt2l_ht_ortho">
         <Dim name="/gt2l_delta_time"/>
@@ -6806,6 +6992,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float64 name="gt2l_segment_lat">
         <Dim name="/gt2l_delta_time"/>
@@ -6842,6 +7029,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float64>
     <Float32 name="gt2l_ht_water_surf">
         <Dim name="/gt2l_delta_time"/>
@@ -6872,6 +7060,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float32 name="gt2l_err_ht_water_surf">
         <Dim name="/gt2l_delta_time"/>
@@ -6902,6 +7091,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Int64 name="gt2l_atl13refid">
         <Dim name="/gt2l_delta_time"/>
@@ -6932,6 +7122,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int64>
     <Int32 name="gt2l_qf_cloud">
         <Dim name="/gt2l_delta_time"/>
@@ -6975,6 +7166,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int8 name="gt2l_inland_water_body_source">
         <Dim name="/gt2l_delta_time"/>
@@ -7025,6 +7217,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int8>
     <Int8 name="gt2l_inland_water_body_size">
         <Dim name="/gt2l_delta_time"/>
@@ -7076,6 +7269,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int8>
     <Float32 name="gt2l_segment_tide_ocean">
         <Dim name="/gt2l_delta_time"/>
@@ -7106,6 +7300,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float32 name="gt2l_err_slope_trk">
         <Dim name="/gt2l_delta_time"/>
@@ -7136,6 +7331,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float32 name="gt2l_segment_slope_trk_bdy">
         <Dim name="/gt2l_delta_time"/>
@@ -7166,6 +7362,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <Float64 name="gt2l_sseg_mean_lat">
         <Dim name="/gt2l_delta_time"/>
@@ -7202,6 +7399,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float64>
     <Int32 name="gt2l_qf_spec_width">
         <Dim name="/gt2l_delta_time"/>
@@ -7245,6 +7443,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Int32 name="gt2l_qf_bckgrd">
         <Dim name="/gt2l_delta_time"/>
@@ -7293,6 +7492,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Int32>
     <Float64 name="gt2l_sseg_mean_time">
         <Dim name="/gt2l_delta_time"/>
@@ -7323,6 +7523,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float64>
     <Float32 name="gt2l_segment_dac">
         <Dim name="/gt2l_delta_time"/>
@@ -7353,6 +7554,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt2l_delta_time gt2l_segment_lat gt2l_segment_lon</Value>
         </Attribute>
+        <Map name="/gt2l_delta_time"/>
     </Float32>
     <String name="ancillary_data_release">
         <Dim name="/FakeDim0"/>
@@ -7377,6 +7579,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/release</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_geoseg">
         <Dim name="/FakeDim0"/>
@@ -7401,6 +7604,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_geoseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_version">
         <Dim name="/FakeDim0"/>
@@ -7425,6 +7629,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/version</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_region">
         <Dim name="/FakeDim0"/>
@@ -7449,6 +7654,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_region</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_atlas_sdp_gps_epoch">
         <Dim name="/FakeDim0"/>
@@ -7473,6 +7679,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/atlas_sdp_gps_epoch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_end_rgt">
         <Dim name="/FakeDim0"/>
@@ -7503,6 +7710,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_rgt</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_end_delta_time">
         <Dim name="/FakeDim0"/>
@@ -7530,6 +7738,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_delta_time</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_end_orbit">
         <Dim name="/FakeDim0"/>
@@ -7554,6 +7763,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_orbit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_cycle">
         <Dim name="/FakeDim0"/>
@@ -7584,6 +7794,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_cycle</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_data_end_utc">
         <Dim name="/FakeDim0"/>
@@ -7608,6 +7819,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/data_end_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <String name="ancillary_data_control">
         <Dim name="/FakeDim0"/>
@@ -7632,6 +7844,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/control</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Float64 name="ancillary_data_start_gpssow">
         <Dim name="/FakeDim0"/>
@@ -7656,6 +7869,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_gpssow</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <String name="ancillary_data_granule_end_utc">
         <Dim name="/FakeDim0"/>
@@ -7680,6 +7894,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/granule_end_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_cycle">
         <Dim name="/FakeDim0"/>
@@ -7710,6 +7925,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_cycle</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_granule_start_utc">
         <Dim name="/FakeDim0"/>
@@ -7734,6 +7950,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/granule_start_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Float64 name="ancillary_data_start_delta_time">
         <Dim name="/FakeDim0"/>
@@ -7761,6 +7978,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_delta_time</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_start_geoseg">
         <Dim name="/FakeDim0"/>
@@ -7785,6 +8003,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_geoseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_atm_window2">
         <Dim name="/FakeDim0"/>
@@ -7809,6 +8028,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/atm_window2</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_b1_sseg1">
         <Dim name="/FakeDim0"/>
@@ -7833,6 +8053,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/b1_sseg1</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_s_seg1">
         <Dim name="/FakeDim0"/>
@@ -7857,6 +8078,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/s_seg1</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_detrend_width">
         <Dim name="/FakeDim0"/>
@@ -7881,6 +8103,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/detrend_width</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_sub_max">
         <Dim name="/FakeDim0"/>
@@ -7905,6 +8128,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sub_max</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_ref_dist_iw_bdy">
         <Dim name="/FakeDim0"/>
@@ -7929,6 +8153,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/ref_dist_iw_bdy</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_sseg_mode_freq_test">
         <Dim name="/FakeDim0"/>
@@ -7953,6 +8178,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sseg_mode_freq_test</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int8 name="ancillary_data_inland_water_type_to_process">
         <Dim name="/FakeDim1"/>
@@ -7993,6 +8219,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/type_to_process</Value>
         </Attribute>
+        <Map name="/FakeDim1"/>
     </Int8>
     <Int32 name="ancillary_data_inland_water_sig_threshold">
         <Dim name="/FakeDim0"/>
@@ -8017,6 +8244,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sig_threshold</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int8 name="ancillary_data_inland_water_size_to_process">
         <Dim name="/FakeDim1"/>
@@ -8058,6 +8286,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/size_to_process</Value>
         </Attribute>
+        <Map name="/FakeDim1"/>
+        <Map name="/FakeDim3"/>
     </Int8>
     <Float32 name="ancillary_data_inland_water_gauss_pk_thres">
         <Dim name="/FakeDim0"/>
@@ -8082,6 +8312,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/gauss_pk_thres</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_sseg_mode_cnt_test">
         <Dim name="/FakeDim0"/>
@@ -8106,6 +8337,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sseg_mode_cnt_test</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_inland_water_shore_buffer">
         <Dim name="/FakeDim0"/>
@@ -8130,6 +8362,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/shore_buffer</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_inland_water_h_mavg_c">
         <Dim name="/FakeDim0"/>
@@ -8154,6 +8387,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/h_mavg_c</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_bckgrd_threshold">
         <Dim name="/FakeDim4"/>
@@ -8178,6 +8412,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/bckgrd_threshold</Value>
         </Attribute>
+        <Map name="/FakeDim4"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_f2_d_min">
         <Dim name="/FakeDim0"/>
@@ -8202,6 +8437,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/f2_d_min</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_max_gseg_search">
         <Dim name="/FakeDim0"/>
@@ -8226,6 +8462,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/max_gseg_search</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_sseg_length_test">
         <Dim name="/FakeDim0"/>
@@ -8250,6 +8487,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sseg_length_test</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_h_mavg_a">
         <Dim name="/FakeDim0"/>
@@ -8274,6 +8512,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/h_mavg_a</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_signal_window_bottom">
         <Dim name="/FakeDim0"/>
@@ -8298,6 +8537,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/signal_window_bottom</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_c_fresnel">
         <Dim name="/FakeDim0"/>
@@ -8322,6 +8562,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/c_fresnel</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_sseg_mode_spread_test">
         <Dim name="/FakeDim0"/>
@@ -8346,6 +8587,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/sseg_mode_spread_test</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_anmly_test">
         <Dim name="/FakeDim5"/>
@@ -8370,6 +8612,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/anmly_test</Value>
         </Attribute>
+        <Map name="/FakeDim5"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_c_adj">
         <Dim name="/FakeDim0"/>
@@ -8394,6 +8637,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/c_adj</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_h_mavg_b">
         <Dim name="/FakeDim0"/>
@@ -8418,6 +8662,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/h_mavg_b</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_b_long">
         <Dim name="/FakeDim0"/>
@@ -8442,6 +8687,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/b_long</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_bin_detrend">
         <Dim name="/FakeDim0"/>
@@ -8466,6 +8712,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/bin_detrend</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_atm_window1">
         <Dim name="/FakeDim0"/>
@@ -8490,6 +8737,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/atm_window1</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_m_avg_d">
         <Dim name="/FakeDim0"/>
@@ -8514,6 +8762,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/m_avg_d</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_inland_water_l_surf">
         <Dim name="/FakeDim0"/>
@@ -8538,6 +8787,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/l_surf</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_signal_window_top">
         <Dim name="/FakeDim0"/>
@@ -8562,6 +8812,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/signal_window_top</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_inland_water_lsbr_threshold">
         <Dim name="/FakeDim0"/>
@@ -8586,6 +8837,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/lsbr_threshold</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_inland_water_l_sub">
         <Dim name="/FakeDim0"/>
@@ -8610,6 +8862,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/l_sub</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_inland_water_b2_sseg1">
         <Dim name="/FakeDim0"/>
@@ -8634,6 +8887,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/inland_water/b2_sseg1</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_start_orbit">
         <Dim name="/FakeDim0"/>
@@ -8658,6 +8912,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_orbit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_data_start_utc">
         <Dim name="/FakeDim0"/>
@@ -8682,6 +8937,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/data_start_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_gpsweek">
         <Dim name="/FakeDim0"/>
@@ -8706,6 +8962,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_gpsweek</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_rgt">
         <Dim name="/FakeDim0"/>
@@ -8736,6 +8993,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_rgt</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_end_gpssow">
         <Dim name="/FakeDim0"/>
@@ -8760,6 +9018,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_gpssow</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_start_region">
         <Dim name="/FakeDim0"/>
@@ -8784,6 +9043,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_region</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_gpsweek">
         <Dim name="/FakeDim0"/>
@@ -8808,6 +9068,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_gpsweek</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int16 name="gt3r_rgt">
         <Dim name="/gt3r_delta_time"/>
@@ -8841,6 +9102,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int16>
     <Int32 name="gt3r_qf_bias_fit">
         <Dim name="/gt3r_delta_time"/>
@@ -8890,6 +9152,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float64 name="gt3r_sseg_mean_lon">
         <Dim name="/gt3r_delta_time"/>
@@ -8923,6 +9186,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float64>
     <Int32 name="gt3r_qf_ice">
         <Dim name="/gt3r_delta_time"/>
@@ -8968,6 +9232,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int8 name="gt3r_inland_water_body_type">
         <Dim name="/gt3r_delta_time"/>
@@ -9018,6 +9283,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int8>
     <Int32 name="gt3r_inland_water_body_id">
         <Dim name="/gt3r_delta_time"/>
@@ -9048,6 +9314,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float32 name="gt3r_segment_geoid">
         <Dim name="/gt3r_delta_time"/>
@@ -9078,6 +9345,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int32 name="gt3r_qf_sseg_length">
         <Dim name="/gt3r_delta_time"/>
@@ -9123,6 +9391,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float32 name="gt3r_segment_tide_equilibrium">
         <Dim name="/gt3r_delta_time"/>
@@ -9153,6 +9422,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int32 name="gt3r_qf_lseg_length">
         <Dim name="/gt3r_delta_time"/>
@@ -9198,6 +9468,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float32 name="gt3r_significant_wave_ht">
         <Dim name="/gt3r_delta_time"/>
@@ -9228,6 +9499,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float32 name="gt3r_water_depth">
         <Dim name="/gt3r_delta_time"/>
@@ -9258,6 +9530,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int32 name="gt3r_qf_bias_em">
         <Dim name="/gt3r_delta_time"/>
@@ -9307,6 +9580,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int32 name="gt3r_segment_id_end">
         <Dim name="/gt3r_delta_time"/>
@@ -9334,6 +9608,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float32 name="gt3r_stdev_water_surf">
         <Dim name="/gt3r_delta_time"/>
@@ -9364,6 +9639,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int32 name="gt3r_qf_iwp">
         <Dim name="/gt3r_delta_time"/>
@@ -9409,6 +9685,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int32 name="gt3r_segment_id_beg">
         <Dim name="/gt3r_delta_time"/>
@@ -9436,6 +9713,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int8 name="gt3r_cycle">
         <Dim name="/gt3r_delta_time"/>
@@ -9469,6 +9747,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int8>
     <Int32 name="gt3r_qf_subsurf_anomaly">
         <Dim name="/gt3r_delta_time"/>
@@ -9513,6 +9792,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float32 name="gt3r_subsurface_attenuation">
         <Dim name="/gt3r_delta_time"/>
@@ -9543,6 +9823,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int32 name="gt3r_inland_water_body_region">
         <Dim name="/gt3r_delta_time"/>
@@ -9573,6 +9854,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int8 name="gt3r_ice_flag">
         <Dim name="/gt3r_delta_time"/>
@@ -9613,6 +9895,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int8>
     <Float64 name="gt3r_segment_lon">
         <Dim name="/gt3r_delta_time"/>
@@ -9649,6 +9932,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float64>
     <Float32 name="gt3r_ht_ortho">
         <Dim name="/gt3r_delta_time"/>
@@ -9679,6 +9963,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float64 name="gt3r_segment_lat">
         <Dim name="/gt3r_delta_time"/>
@@ -9715,6 +10000,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float64>
     <Float32 name="gt3r_ht_water_surf">
         <Dim name="/gt3r_delta_time"/>
@@ -9745,6 +10031,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float32 name="gt3r_err_ht_water_surf">
         <Dim name="/gt3r_delta_time"/>
@@ -9775,6 +10062,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Int64 name="gt3r_atl13refid">
         <Dim name="/gt3r_delta_time"/>
@@ -9805,6 +10093,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int64>
     <Int32 name="gt3r_qf_cloud">
         <Dim name="/gt3r_delta_time"/>
@@ -9848,6 +10137,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int8 name="gt3r_inland_water_body_source">
         <Dim name="/gt3r_delta_time"/>
@@ -9898,6 +10188,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int8>
     <Int8 name="gt3r_inland_water_body_size">
         <Dim name="/gt3r_delta_time"/>
@@ -9949,6 +10240,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int8>
     <Float32 name="gt3r_segment_tide_ocean">
         <Dim name="/gt3r_delta_time"/>
@@ -9979,6 +10271,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float32 name="gt3r_err_slope_trk">
         <Dim name="/gt3r_delta_time"/>
@@ -10009,6 +10302,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float32 name="gt3r_segment_slope_trk_bdy">
         <Dim name="/gt3r_delta_time"/>
@@ -10039,6 +10333,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float64 name="gt3r_sseg_mean_lat">
         <Dim name="/gt3r_delta_time"/>
@@ -10075,6 +10370,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float64>
     <Int32 name="gt3r_qf_spec_width">
         <Dim name="/gt3r_delta_time"/>
@@ -10118,6 +10414,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Int32 name="gt3r_qf_bckgrd">
         <Dim name="/gt3r_delta_time"/>
@@ -10166,6 +10463,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Int32>
     <Float64 name="gt3r_sseg_mean_time">
         <Dim name="/gt3r_delta_time"/>
@@ -10196,6 +10494,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float64>
     <Float32 name="gt3r_segment_dac">
         <Dim name="/gt3r_delta_time"/>
@@ -10226,6 +10525,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt3r_delta_time gt3r_segment_lat gt3r_segment_lon</Value>
         </Attribute>
+        <Map name="/gt3r_delta_time"/>
     </Float32>
     <Float64 name="gt1l_delta_time">
         <Dim name="/gt1l_delta_time"/>

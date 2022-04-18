@@ -14,6 +14,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HQprecipSource2</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int16>
     <Int16 name="IRkalmanFilterWeight">
         <Dim name="/lon"/>
@@ -30,6 +32,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/IRkalmanFilterWeight</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int16>
     <Int8 name="HQobservationTime2">
         <Dim name="/lon"/>
@@ -49,6 +53,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HQobservationTime2</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="precipitationCal">
         <Dim name="/lon"/>
@@ -68,6 +74,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/precipitationCal</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int8 name="HQobservationTime1">
         <Dim name="/lon"/>
@@ -87,6 +95,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HQobservationTime1</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="precipitationUncal">
         <Dim name="/lon"/>
@@ -106,6 +116,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/precipitationUncal</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Float32 name="HQprecipitation">
         <Dim name="/lon"/>
@@ -125,6 +137,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HQprecipitation</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int8 name="probabilityLiquidPrecipitation">
         <Dim name="/lon"/>
@@ -141,6 +155,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/probabilityLiquidPrecipitation</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int8>
     <Float32 name="randomError">
         <Dim name="/lon"/>
@@ -160,6 +176,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/randomError</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Float32 name="IRprecipitation">
         <Dim name="/lon"/>
@@ -179,6 +197,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/IRprecipitation</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Float32>
     <Int16 name="HQprecipSource1">
         <Dim name="/lon"/>
@@ -192,6 +212,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HQprecipSource1</Value>
         </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
     </Int16>
     <Float32 name="lat">
         <Dim name="/lat"/>

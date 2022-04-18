@@ -38,6 +38,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1222nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1222nm"/>
     </Float32>
     <Float64 name="Time">
         <Dim name="/Scans"/>
@@ -53,6 +54,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Time</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float64>
     <Float32 name="SRF_2095nm">
         <Dim name="/SpectralRange_2095nm"/>
@@ -75,6 +77,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_2095nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_2095nm"/>
     </Float32>
     <String name="Date">
         <Dim name="/Scans"/>
@@ -87,6 +90,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Date</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </String>
     <Float32 name="SRF_1731nm">
         <Dim name="/SpectralRange_1731nm"/>
@@ -109,6 +113,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1731nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1731nm"/>
     </Float32>
     <Float32 name="SolarAzimuthAngle">
         <Dim name="/Scans"/>
@@ -124,6 +129,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SolarAzimuthAngle</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="radiance_2095nm">
         <Dim name="/Scans"/>
@@ -143,6 +149,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_2095nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="Scan_Start_Angle">
         <Dim name="/Scans"/>
@@ -170,6 +178,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Scan_Start_Angle</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="SRF_1275nm">
         <Dim name="/SpectralRange_1275nm"/>
@@ -192,6 +201,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1275nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1275nm"/>
     </Float32>
     <Float32 name="radiance_873nm">
         <Dim name="/Scans"/>
@@ -211,6 +221,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_873nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_2196nm">
         <Dim name="/Scans"/>
@@ -230,6 +242,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_2196nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_1032nm">
         <Dim name="/Scans"/>
@@ -249,6 +263,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1032nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="ViewingZenithAngle">
         <Dim name="/Scans"/>
@@ -272,6 +288,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ViewingZenithAngle</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_1649nm">
         <Dim name="/Scans"/>
@@ -291,6 +309,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1649nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_382nm">
         <Dim name="/Scans"/>
@@ -310,6 +330,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_382nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SRF_382nm">
         <Dim name="/SpectralRange_382nm"/>
@@ -332,6 +354,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_382nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_382nm"/>
     </Float32>
     <Float32 name="radiance_2291nm">
         <Dim name="/Scans"/>
@@ -351,6 +374,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_2291nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SolarIrradiance">
         <Dim name="/CentralWavelength"/>
@@ -366,6 +391,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SolarIrradiance</Value>
         </Attribute>
+        <Map name="/CentralWavelength"/>
     </Float32>
     <Float32 name="SRF_677nm">
         <Dim name="/SpectralRange_677nm"/>
@@ -388,6 +414,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_677nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_677nm"/>
     </Float32>
     <Float32 name="AircraftHeading">
         <Dim name="/Scans"/>
@@ -410,6 +437,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AircraftHeading</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="SRF_339nm">
         <Dim name="/SpectralRange_339nm"/>
@@ -432,6 +460,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_339nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_339nm"/>
     </Float32>
     <Float32 name="AircraftAltitude">
         <Dim name="/Scans"/>
@@ -447,6 +476,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AircraftAltitude</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="radiance_339nm">
         <Dim name="/Scans"/>
@@ -466,6 +496,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_339nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SRF_1559nm">
         <Dim name="/SpectralRange_1559nm"/>
@@ -488,6 +520,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1559nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1559nm"/>
     </Float32>
     <Float32 name="ViewingAzimuthAngle">
         <Dim name="/Scans"/>
@@ -511,6 +544,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ViewingAzimuthAngle</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/Scans"/>
@@ -526,6 +561,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SolarZenithAngle</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="AircraftLongitude">
         <Dim name="/Scans"/>
@@ -548,6 +584,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AircraftLongitude</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="AircraftPitch">
         <Dim name="/Scans"/>
@@ -576,6 +613,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AircraftPitch</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="CoordinatedUniversalTime">
         <Dim name="/Scans"/>
@@ -594,6 +632,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CoordinatedUniversalTime</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="radiance_677nm">
         <Dim name="/Scans"/>
@@ -613,6 +652,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_677nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SRF_2196nm">
         <Dim name="/SpectralRange_2196nm"/>
@@ -635,6 +676,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_2196nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_2196nm"/>
     </Float32>
     <Float32 name="SRF_1032nm">
         <Dim name="/SpectralRange_1032nm"/>
@@ -657,6 +699,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1032nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1032nm"/>
     </Float32>
     <Float32 name="SRF_480nm">
         <Dim name="/SpectralRange_480nm"/>
@@ -679,6 +722,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_480nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_480nm"/>
     </Float32>
     <Float32 name="radiance_1222nm">
         <Dim name="/Scans"/>
@@ -698,6 +742,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1222nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_1275nm">
         <Dim name="/Scans"/>
@@ -717,6 +763,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1275nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_1731nm">
         <Dim name="/Scans"/>
@@ -736,6 +784,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1731nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="radiance_1559nm">
         <Dim name="/Scans"/>
@@ -755,6 +805,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_1559nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SRF_2291nm">
         <Dim name="/SpectralRange_2291nm"/>
@@ -777,6 +829,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_2291nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_2291nm"/>
     </Float32>
     <Float32 name="AircraftLatitude">
         <Dim name="/Scans"/>
@@ -799,6 +852,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/AircraftLatitude</Value>
         </Attribute>
+        <Map name="/Scans"/>
     </Float32>
     <Float32 name="SRF_1649nm">
         <Dim name="/SpectralRange_1649nm"/>
@@ -821,6 +875,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_1649nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_1649nm"/>
     </Float32>
     <Float32 name="radiance_480nm">
         <Dim name="/Scans"/>
@@ -840,6 +895,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/radiance_480nm</Value>
         </Attribute>
+        <Map name="/Scans"/>
+        <Map name="/CAR_Viewing_Angles"/>
     </Float32>
     <Float32 name="SRF_873nm">
         <Dim name="/SpectralRange_873nm"/>
@@ -862,6 +919,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/_nc4_non_coord_SRF_873nm</Value>
         </Attribute>
+        <Map name="/SpectralRange_873nm"/>
     </Float32>
     <Float32 name="CAR_Viewing_Angles">
         <Dim name="/CAR_Viewing_Angles"/>

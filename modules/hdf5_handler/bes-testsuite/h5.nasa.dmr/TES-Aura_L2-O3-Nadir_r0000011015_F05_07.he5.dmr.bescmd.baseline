@@ -31,6 +31,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="Altitude">
         <Dim name="/Latitude"/>
@@ -59,6 +61,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="AverageCloudEffOpticalDepth">
         <Dim name="/Latitude"/>
@@ -86,6 +90,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="AverageCloudEffOpticalDepthError">
         <Dim name="/Latitude"/>
@@ -113,6 +118,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="AveragingKernel">
         <Dim name="/Latitude"/>
@@ -142,6 +148,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLevels_1</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
+        <Map name="/Pressure_CV_1"/>
     </Float32>
     <Float32 name="AveragingKernelDiagonal">
         <Dim name="/Latitude"/>
@@ -170,6 +179,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="Calibration_QA">
         <Dim name="/Latitude"/>
@@ -197,6 +208,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="CloudEffectiveOpticalDepth">
         <Dim name="/Latitude"/>
@@ -225,6 +237,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nFreq</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/nFreq"/>
     </Float32>
     <Float32 name="CloudEffectiveOpticalDepthError">
         <Dim name="/Latitude"/>
@@ -253,6 +267,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nFreq</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/nFreq"/>
     </Float32>
     <Float32 name="CloudTopPressure">
         <Dim name="/Latitude"/>
@@ -280,6 +296,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="CloudTopPressureError">
         <Dim name="/Latitude"/>
@@ -307,6 +324,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="CloudVariability_QA">
         <Dim name="/Latitude"/>
@@ -334,6 +352,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="ConstraintVector">
         <Dim name="/Latitude"/>
@@ -362,6 +381,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="DegreesOfFreedomForSignal">
         <Dim name="/Latitude"/>
@@ -389,6 +410,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="DeviationVsRetrievalCovariance">
         <Dim name="/Latitude"/>
@@ -416,6 +438,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="H2O_HDO_Corr_QA">
         <Dim name="/Latitude"/>
@@ -443,6 +466,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="InformationContent">
         <Dim name="/Latitude"/>
@@ -470,6 +494,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="Initial">
         <Dim name="/Latitude"/>
@@ -498,6 +523,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="KDotDL_QA">
         <Dim name="/Latitude"/>
@@ -525,6 +552,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="LDotDL_QA">
         <Dim name="/Latitude"/>
@@ -552,6 +580,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Int8 name="MaxNumIterations">
         <Dim name="/Latitude"/>
@@ -579,6 +608,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float32 name="MeasurementErrorCovariance">
         <Dim name="/Latitude"/>
@@ -608,6 +638,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLevels_1</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
+        <Map name="/Pressure_CV_1"/>
     </Float32>
     <Int8 name="NumberIterPerformed">
         <Dim name="/Latitude"/>
@@ -635,6 +668,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float32 name="O3">
         <Dim name="/Latitude"/>
@@ -663,6 +697,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="O3Precision">
         <Dim name="/Latitude"/>
@@ -691,6 +727,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Int8 name="O3_Ccurve_QA">
         <Dim name="/Latitude"/>
@@ -718,6 +756,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float32 name="ObservationErrorCovariance">
         <Dim name="/Latitude"/>
@@ -747,6 +786,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLevels_1</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
+        <Map name="/Pressure_CV_1"/>
     </Float32>
     <Float32 name="Pressure">
         <Dim name="/Latitude"/>
@@ -775,6 +817,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="RadianceResidualMax">
         <Dim name="/Latitude"/>
@@ -802,6 +846,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RadianceResidualMean">
         <Dim name="/Latitude"/>
@@ -829,6 +874,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="RadianceResidualRMS">
         <Dim name="/Latitude"/>
@@ -856,6 +902,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Int8 name="Scan_Averaged_Count">
         <Dim name="/Latitude"/>
@@ -883,6 +930,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Int8 name="SpeciesRetrievalConverged">
         <Dim name="/Latitude"/>
@@ -910,6 +958,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Int8 name="SpeciesRetrievalQuality">
         <Dim name="/Latitude"/>
@@ -937,6 +986,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float32 name="SurfaceEmissMean_QA">
         <Dim name="/Latitude"/>
@@ -964,6 +1014,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceEmissionLayer_QA">
         <Dim name="/Latitude"/>
@@ -991,6 +1042,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempConstraint">
         <Dim name="/Latitude"/>
@@ -1018,6 +1070,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempDegreesOfFreedom">
         <Dim name="/Latitude"/>
@@ -1045,6 +1098,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempError">
         <Dim name="/Latitude"/>
@@ -1072,6 +1126,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempInitial">
         <Dim name="/Latitude"/>
@@ -1099,6 +1154,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempObservationError">
         <Dim name="/Latitude"/>
@@ -1126,6 +1182,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempPrecision">
         <Dim name="/Latitude"/>
@@ -1153,6 +1210,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempVsApriori_QA">
         <Dim name="/Latitude"/>
@@ -1180,6 +1238,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTempVsAtmTemp_QA">
         <Dim name="/Latitude"/>
@@ -1207,6 +1266,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceTemperature">
         <Dim name="/Latitude"/>
@@ -1234,6 +1294,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnDensity">
         <Dim name="/Latitude"/>
@@ -1261,6 +1322,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnDensityError">
         <Dim name="/Latitude"/>
@@ -1288,6 +1350,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnDensityInitial">
         <Dim name="/Latitude"/>
@@ -1315,6 +1378,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalError">
         <Dim name="/Latitude"/>
@@ -1343,6 +1407,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float32 name="TotalErrorCovariance">
         <Dim name="/Latitude"/>
@@ -1372,6 +1438,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLevels_1</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
+        <Map name="/Pressure_CV_1"/>
     </Float32>
     <String name="UTCTime">
         <Dim name="/Latitude"/>
@@ -1402,6 +1471,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </String>
     <Float32 name="VerticalResolution">
         <Dim name="/Latitude"/>
@@ -1430,6 +1500,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure_CV"/>
     </Float32>
     <Float64 name="BoresightAzimuth">
         <Dim name="/Latitude"/>
@@ -1457,6 +1529,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="BoresightNadirAngle">
         <Dim name="/Latitude"/>
@@ -1484,6 +1557,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="BoresightNadirAngleUnc">
         <Dim name="/Latitude"/>
@@ -1511,6 +1585,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Int8 name="DayNightFlag">
         <Dim name="/Latitude"/>
@@ -1538,6 +1613,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Int8 name="DominantSurfaceType">
         <Dim name="/Latitude"/>
@@ -1565,6 +1641,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float64 name="Latitude_Footprint_1">
         <Dim name="/Latitude"/>
@@ -1592,6 +1669,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Latitude_Footprint_2">
         <Dim name="/Latitude"/>
@@ -1619,6 +1697,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Latitude_Footprint_3">
         <Dim name="/Latitude"/>
@@ -1646,6 +1725,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Latitude_Footprint_4">
         <Dim name="/Latitude"/>
@@ -1673,6 +1753,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float32 name="LocalSolarTime">
         <Dim name="/Latitude"/>
@@ -1700,6 +1781,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="Longitude">
         <Dim name="/Latitude"/>
@@ -1727,6 +1809,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float64 name="Longitude_Footprint_1">
         <Dim name="/Latitude"/>
@@ -1754,6 +1837,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Longitude_Footprint_2">
         <Dim name="/Latitude"/>
@@ -1781,6 +1865,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Longitude_Footprint_3">
         <Dim name="/Latitude"/>
@@ -1808,6 +1893,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Float64 name="Longitude_Footprint_4">
         <Dim name="/Latitude"/>
@@ -1835,6 +1921,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <Int16 name="Scan">
         <Dim name="/Latitude"/>
@@ -1862,6 +1949,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="Sequence">
         <Dim name="/Latitude"/>
@@ -1889,6 +1977,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int16>
     <Float32 name="SolarZenithAngle">
         <Dim name="/Latitude"/>
@@ -1916,6 +2005,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SurfaceElevStandardDeviation">
         <Dim name="/Latitude"/>
@@ -1943,6 +2033,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Int8 name="SurfaceTypeFootprint">
         <Dim name="/Latitude"/>
@@ -1970,6 +2061,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Int8>
     <Float32 name="Tgt_SpacecraftAzimuth">
         <Dim name="/Latitude"/>
@@ -1997,6 +2089,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="Tgt_SpacecraftZenith">
         <Dim name="/Latitude"/>
@@ -2024,6 +2117,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float32>
     <Float64 name="Time">
         <Dim name="/Latitude"/>
@@ -2051,6 +2145,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Latitude"/>
     </Float64>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

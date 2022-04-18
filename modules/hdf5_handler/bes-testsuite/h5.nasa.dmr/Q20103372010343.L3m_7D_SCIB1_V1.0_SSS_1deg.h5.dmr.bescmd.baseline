@@ -38,6 +38,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-32767.00000</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Byte name="palette">
         <Dim size="3"/>

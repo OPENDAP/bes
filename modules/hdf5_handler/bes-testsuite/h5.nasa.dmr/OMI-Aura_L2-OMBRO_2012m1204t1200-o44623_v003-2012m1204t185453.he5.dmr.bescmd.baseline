@@ -44,6 +44,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="AMFCloudPressure">
         <Dim name="/nTimes"/>
@@ -82,6 +84,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="AdjustedSceneAlbedo">
         <Dim name="/nTimes"/>
@@ -120,6 +124,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="AirMassFactor">
         <Dim name="/nTimes"/>
@@ -158,6 +164,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int16 name="AirMassFactorDiagnosticFlag">
         <Dim name="/nTimes"/>
@@ -196,6 +204,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <Float32 name="AirMassFactorGeometric">
         <Dim name="/nTimes"/>
@@ -234,6 +244,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float64 name="AverageColumnAmount">
         <Dim name="/_1"/>
@@ -271,6 +283,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_1</Value>
         </Attribute>
+        <Map name="/_1"/>
     </Float64>
     <Float64 name="AverageColumnUncertainty">
         <Dim name="/_1"/>
@@ -308,6 +321,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_1</Value>
         </Attribute>
+        <Map name="/_1"/>
     </Float64>
     <Float64 name="AverageFittingRMS">
         <Dim name="/_1"/>
@@ -345,6 +359,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_1</Value>
         </Attribute>
+        <Map name="/_1"/>
     </Float64>
     <Float64 name="ColumnAmount">
         <Dim name="/nTimes"/>
@@ -383,6 +398,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Float64 name="ColumnAmountDestriped">
         <Dim name="/nTimes"/>
@@ -421,6 +438,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Float64 name="ColumnUncertainty">
         <Dim name="/nTimes"/>
@@ -459,6 +478,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Int16 name="FitConvergenceFlag">
         <Dim name="/nTimes"/>
@@ -497,6 +518,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <Float64 name="FittingRMS">
         <Dim name="/nTimes"/>
@@ -535,6 +558,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Int16 name="MainDataQualityFlag">
         <Dim name="/nTimes"/>
@@ -573,6 +598,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <Float64 name="MaximumColumnAmount">
         <Dim name="/_1"/>
@@ -610,6 +637,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_1</Value>
         </Attribute>
+        <Map name="/_1"/>
     </Float64>
     <Float32 name="PixelArea">
         <Dim name="/nXtrack"/>
@@ -682,6 +710,8 @@
         <Attribute name="coordinates" type="String">
             <Value>nTimes_1 nXtrack_1</Value>
         </Attribute>
+        <Map name="/nTimes_1"/>
+        <Map name="/nXtrack_1"/>
     </Float32>
     <Float32 name="PixelCornerLongitudes">
         <Dim name="/nTimes_1"/>
@@ -720,6 +750,8 @@
         <Attribute name="coordinates" type="String">
             <Value>nTimes_1 nXtrack_1</Value>
         </Attribute>
+        <Map name="/nTimes_1"/>
+        <Map name="/nXtrack_1"/>
     </Float32>
     <Float64 name="RadianceReferenceColumnAmount">
         <Dim name="/nXtrack"/>
@@ -927,6 +959,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_4</Value>
         </Attribute>
+        <Map name="/_4"/>
     </Float32>
     <Int16 name="RadianceWavCalConvergenceFlag">
         <Dim name="/nXtrack"/>
@@ -998,6 +1031,7 @@
         <Attribute name="coordinates" type="String">
             <Value>_4</Value>
         </Attribute>
+        <Map name="/_4"/>
     </Float32>
     <Float64 name="SlantColumnAmount">
         <Dim name="/nTimes"/>
@@ -1036,6 +1070,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Float64 name="SlantColumnAmountDestriped">
         <Dim name="/nTimes"/>
@@ -1074,6 +1110,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Float64 name="SlantColumnUncertainty">
         <Dim name="/nTimes"/>
@@ -1112,6 +1150,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Int16 name="SlantFitConvergenceFlag">
         <Dim name="/nTimes"/>
@@ -1150,6 +1190,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <Float64 name="SlantFittingRMS">
         <Dim name="/nTimes"/>
@@ -1188,6 +1230,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float64>
     <Int16 name="SolarWavCalConvergenceFlag">
         <Dim name="/nXtrack"/>
@@ -1260,6 +1304,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/nTimes"/>
@@ -1298,6 +1344,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="SpacecraftAltitude">
         <Dim name="/nTimes"/>
@@ -1370,6 +1418,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <Float64 name="Time">
         <Dim name="/nTimes"/>
@@ -1477,6 +1527,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Float32 name="ViewingZenithAngle">
         <Dim name="/nTimes"/>
@@ -1515,6 +1567,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Int8 name="XtrackQualityFlags">
         <Dim name="/nTimes"/>
@@ -1553,6 +1607,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int8>
     <Int16 name="XtrackQualityFlagsExpanded">
         <Dim name="/nTimes"/>
@@ -1591,6 +1647,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Latitude Longitude</Value>
         </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Int16>
     <String name="ArchiveMetadata">
         <Attribute name="origname" type="String">

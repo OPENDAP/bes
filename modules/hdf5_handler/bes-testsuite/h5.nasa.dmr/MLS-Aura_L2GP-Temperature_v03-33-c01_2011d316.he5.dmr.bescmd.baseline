@@ -30,6 +30,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float32 name="Temperature_L2gpPrecision">
         <Dim name="/Temperature_Latitude"/>
@@ -58,6 +59,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
+        <Map name="/Temperature_Pressure"/>
     </Float32>
     <Float32 name="Temperature_L2gpValue">
         <Dim name="/Temperature_Latitude"/>
@@ -86,6 +89,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
+        <Map name="/Temperature_Pressure"/>
     </Float32>
     <Float32 name="Temperature_Quality">
         <Dim name="/Temperature_Latitude"/>
@@ -113,6 +118,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Int32 name="Temperature_Status">
         <Dim name="/Temperature_Latitude"/>
@@ -140,6 +146,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Int32>
     <Int32 name="Temperature_ChunkNumber">
         <Dim name="/Temperature_Latitude"/>
@@ -167,6 +174,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Int32>
     <Float32 name="Temperature_LineOfSightAngle">
         <Dim name="/Temperature_Latitude"/>
@@ -194,6 +202,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float32 name="Temperature_LocalSolarTime">
         <Dim name="/Temperature_Latitude"/>
@@ -221,6 +230,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float32 name="Temperature_Longitude">
         <Dim name="/Temperature_Latitude"/>
@@ -248,6 +258,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float32 name="Temperature_OrbitGeodeticAngle">
         <Dim name="/Temperature_Latitude"/>
@@ -275,6 +286,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float32 name="Temperature_SolarZenithAngle">
         <Dim name="/Temperature_Latitude"/>
@@ -302,6 +314,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float32>
     <Float64 name="Temperature_Time">
         <Dim name="/Temperature_Latitude"/>
@@ -329,6 +342,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/Temperature_Latitude"/>
     </Float64>
     <Float32 name="WMOTPPressure_GEOS5_Convergence">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -356,6 +370,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_L2gpPrecision">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -383,6 +398,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_L2gpValue">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -410,6 +426,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_Quality">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -437,6 +454,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Int32 name="WMOTPPressure_GEOS5_Status">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -464,6 +482,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Int32>
     <Int32 name="WMOTPPressure_GEOS5_ChunkNumber">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -491,6 +510,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Int32>
     <Float32 name="WMOTPPressure_GEOS5_LineOfSightAngle">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -518,6 +538,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_LocalSolarTime">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -545,6 +566,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_Longitude">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -572,6 +594,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_OrbitGeodeticAngle">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -599,6 +622,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_GEOS5_SolarZenithAngle">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -626,6 +650,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float32>
     <Float64 name="WMOTPPressure_GEOS5_Time">
         <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
@@ -653,6 +678,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_GEOS5_Latitude"/>
     </Float64>
     <Float32 name="WMOTPPressure_MLS_Convergence">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -680,6 +706,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_L2gpPrecision">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -707,6 +734,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_L2gpValue">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -734,6 +762,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_Quality">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -761,6 +790,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Int32 name="WMOTPPressure_MLS_Status">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -788,6 +818,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Int32>
     <Int32 name="WMOTPPressure_MLS_ChunkNumber">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -815,6 +846,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Int32>
     <Float32 name="WMOTPPressure_MLS_LineOfSightAngle">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -842,6 +874,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_LocalSolarTime">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -869,6 +902,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_Longitude">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -896,6 +930,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_OrbitGeodeticAngle">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -923,6 +958,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float32 name="WMOTPPressure_MLS_SolarZenithAngle">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -950,6 +986,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float32>
     <Float64 name="WMOTPPressure_MLS_Time">
         <Dim name="/WMOTPPressure_MLS_Latitude"/>
@@ -977,6 +1014,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/WMOTPPressure_MLS_Latitude"/>
     </Float64>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

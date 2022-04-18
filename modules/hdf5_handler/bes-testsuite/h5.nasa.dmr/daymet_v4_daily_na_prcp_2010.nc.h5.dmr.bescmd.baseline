@@ -80,6 +80,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/prcp</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="time_bnds">
         <Dim name="/time"/>

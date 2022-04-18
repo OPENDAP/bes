@@ -32,6 +32,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/sst_dtime</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int16>
     <Int16 name="wind_speed">
         <Dim name="/time"/>
@@ -72,6 +75,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/wind_speed</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int16>
     <Int16 name="atmosphere_water_vapor_content">
         <Dim name="/time"/>
@@ -112,6 +118,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/atmosphere_water_vapor_content</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int16>
     <Int16 name="atmosphere_cloud_liquid_water_content">
         <Dim name="/time"/>
@@ -152,6 +161,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/atmosphere_cloud_liquid_water_content</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int16>
     <Int16 name="rainfall_rate">
         <Dim name="/time"/>
@@ -192,6 +204,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/rainfall_rate</Value>
         </Attribute>
+        <Map name="/time"/>
+        <Map name="/latitude"/>
+        <Map name="/longitude"/>
     </Int16>
     <Float32 name="latitude">
         <Dim name="/latitude"/>

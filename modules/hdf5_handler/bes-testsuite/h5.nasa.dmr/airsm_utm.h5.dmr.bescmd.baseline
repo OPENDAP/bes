@@ -85,6 +85,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_355nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -104,6 +106,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_355nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -123,6 +127,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_355nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -142,6 +148,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_355nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -161,6 +169,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_355nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -180,6 +190,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_355nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -199,6 +211,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_355nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -218,6 +232,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int8 name="_355nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -258,6 +274,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_355nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -277,6 +295,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_355nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -296,6 +316,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -315,6 +337,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_380nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -334,6 +358,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_380nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -353,6 +379,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -372,6 +400,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -391,6 +421,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -410,6 +442,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_380nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -429,6 +463,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int8 name="_380nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -469,6 +505,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_380nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -488,6 +526,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_380nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -507,6 +547,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -526,6 +568,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_445nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -545,6 +589,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_445nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -564,6 +610,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -583,6 +631,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -602,6 +652,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -621,6 +673,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_445nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -640,6 +694,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int8 name="_445nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -680,6 +736,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_445nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -699,6 +757,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_445nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_AOLP_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -718,6 +778,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_AOLP_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -737,6 +799,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_DOLP">
         <Dim name="/_355nm_band_YDim"/>
@@ -756,6 +820,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -775,6 +841,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -794,6 +862,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_470nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -813,6 +883,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_470nm_band_IPOL">
         <Dim name="/_355nm_band_YDim"/>
@@ -832,6 +904,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_470nm_band_Q_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -851,6 +925,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_470nm_band_Q_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -870,6 +946,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_Q_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -889,6 +967,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -908,6 +988,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -927,6 +1009,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -946,6 +1030,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -965,6 +1051,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_470nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -984,6 +1072,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int32 name="_470nm_band_U_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1003,6 +1093,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Int8 name="_470nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -1043,6 +1135,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_U_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1062,6 +1156,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1081,6 +1177,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_470nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1100,6 +1198,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_470nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1119,6 +1219,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -1138,6 +1240,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_555nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1157,6 +1261,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_555nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -1176,6 +1282,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1195,6 +1303,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1214,6 +1324,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1233,6 +1345,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_555nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -1252,6 +1366,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int8 name="_555nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -1292,6 +1408,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_555nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1311,6 +1429,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_555nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_AOLP_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -1330,6 +1450,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_AOLP_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1349,6 +1471,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_DOLP">
         <Dim name="/_355nm_band_YDim"/>
@@ -1368,6 +1492,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1387,6 +1513,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -1406,6 +1534,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_660nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1425,6 +1555,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_660nm_band_IPOL">
         <Dim name="/_355nm_band_YDim"/>
@@ -1444,6 +1576,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_660nm_band_Q_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1463,6 +1597,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_660nm_band_Q_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -1482,6 +1618,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_Q_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1501,6 +1639,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -1520,6 +1660,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1539,6 +1681,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1558,6 +1702,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1577,6 +1723,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_660nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -1596,6 +1744,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int32 name="_660nm_band_U_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1615,6 +1765,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Int8 name="_660nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -1655,6 +1807,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_U_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1674,6 +1828,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1693,6 +1849,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_660nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1712,6 +1870,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_660nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_AOLP_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -1731,6 +1891,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_AOLP_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1750,6 +1912,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_DOLP">
         <Dim name="/_355nm_band_YDim"/>
@@ -1769,6 +1933,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1788,6 +1954,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -1807,6 +1975,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_865nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1826,6 +1996,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_865nm_band_IPOL">
         <Dim name="/_355nm_band_YDim"/>
@@ -1845,6 +2017,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_865nm_band_Q_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -1864,6 +2038,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_865nm_band_Q_meridian">
         <Dim name="/_355nm_band_YDim"/>
@@ -1883,6 +2059,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_Q_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -1902,6 +2080,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -1921,6 +2101,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -1940,6 +2122,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -1959,6 +2143,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -1978,6 +2164,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_865nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -1997,6 +2185,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int32 name="_865nm_band_U_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -2016,6 +2206,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Int8 name="_865nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -2056,6 +2248,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_U_scatter">
         <Dim name="/_355nm_band_YDim"/>
@@ -2075,6 +2269,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_View_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -2094,6 +2290,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_865nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -2113,6 +2311,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_865nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_Glint_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -2132,6 +2332,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_I">
         <Dim name="/_355nm_band_YDim"/>
@@ -2151,6 +2353,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Int32 name="_935nm_band_I_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -2170,6 +2374,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Float32 name="_935nm_band_RDQI">
         <Dim name="/_355nm_band_YDim"/>
@@ -2189,6 +2395,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_Scattering_angle">
         <Dim name="/_355nm_band_YDim"/>
@@ -2208,6 +2416,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_Sun_azimuth">
         <Dim name="/_355nm_band_YDim"/>
@@ -2227,6 +2437,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_Sun_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -2246,6 +2458,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="_935nm_band_Time_in_seconds_from_epoch">
         <Dim name="/_355nm_band_YDim"/>
@@ -2265,6 +2479,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int8 name="_935nm_band_UTM_projection">
         <Dim name="/FakeDim2"/>
@@ -2305,6 +2521,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float32 name="_935nm_band_View_zenith">
         <Dim name="/_355nm_band_YDim"/>
@@ -2324,6 +2542,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>_935nm_band_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float32>
     <Float64 name="Ancillary_Elevation">
         <Dim name="/_355nm_band_YDim"/>
@@ -2343,6 +2563,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>Ancillary_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Float64>
     <Int32 name="Ancillary_Land_water_mask">
         <Dim name="/_355nm_band_YDim"/>
@@ -2362,6 +2584,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>Ancillary_UTM_projection</Value>
         </Attribute>
+        <Map name="/Ancillary_Latitude"/>
+        <Map name="/Ancillary_Longitude"/>
     </Int32>
     <Int8 name="Ancillary_UTM_projection">
         <Dim name="/FakeDim2"/>

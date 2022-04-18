@@ -29,6 +29,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <Float32 name="Latitude">
         <Dim name="/nLats"/>
@@ -56,6 +57,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nLats</Value>
         </Attribute>
+        <Map name="/nLats"/>
     </Float32>
     <Int32 name="Month">
         <Dim name="/nTimes"/>
@@ -83,6 +85,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <Float32 name="NO2Day">
         <Dim name="/nTimes"/>
@@ -112,6 +115,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLats</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
     </Float32>
     <Float32 name="NO2DayCovariance">
         <Dim name="/nTimes"/>
@@ -141,6 +147,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLats</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
     </Float32>
     <Float32 name="NO2DayDataCount">
         <Dim name="/nTimes"/>
@@ -170,6 +179,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLats</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
     </Float32>
     <Float32 name="NO2DayPrecision">
         <Dim name="/nTimes"/>
@@ -199,6 +211,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nTimes nLevels nLats</Value>
         </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
     </Float32>
     <Float32 name="Pressure">
         <Dim name="/nLevels"/>
@@ -226,6 +241,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nLevels</Value>
         </Attribute>
+        <Map name="/nLevels"/>
     </Float32>
     <Float64 name="Time">
         <Dim name="/nTimes"/>
@@ -253,6 +269,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Float64>
     <Int32 name="Year">
         <Dim name="/nTimes"/>
@@ -280,6 +297,7 @@
         <Attribute name="orig_dimname" type="String">
             <Value>nTimes</Value>
         </Attribute>
+        <Map name="/nTimes"/>
     </Int32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

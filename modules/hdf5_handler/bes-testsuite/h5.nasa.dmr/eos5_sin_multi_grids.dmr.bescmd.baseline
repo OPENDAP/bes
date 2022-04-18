@@ -34,6 +34,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SensorZenith_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -65,6 +67,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SolarAzimuth_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -96,6 +100,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SolarZenith_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -127,6 +133,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M10_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -164,6 +172,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M11_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -201,6 +211,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M1_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -238,6 +250,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M2_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -275,6 +289,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M3_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -312,6 +328,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M4_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -349,6 +367,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M5_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -386,6 +406,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M7_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -423,6 +445,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_1km_2D_SurfReflect_M8_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -460,6 +484,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int16>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF1_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -518,6 +544,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF2_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -576,6 +604,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF3_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -637,6 +667,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF4_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -698,6 +730,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF5_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -759,6 +793,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF6_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -816,6 +852,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Byte name="VNP_Grid_1km_2D_SurfReflect_QF7_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -868,6 +906,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Byte>
     <Int8 name="VNP_Grid_1km_2D_num_observations_1km">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -896,6 +936,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int8>
     <Int8 name="VNP_Grid_1km_2D_obscov_1km_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -924,6 +966,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int8>
     <Int8 name="VNP_Grid_1km_2D_orbit_pnt_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
@@ -952,6 +996,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_1km_2D_lat"/>
+        <Map name="/VNP_Grid_1km_2D_lon"/>
     </Int8>
     <Int16 name="VNP_Grid_500m_2D_SurfReflect_I1_1">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -989,6 +1035,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_500m_2D_SurfReflect_I2_1">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -1026,6 +1074,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Int16>
     <Int16 name="VNP_Grid_500m_2D_SurfReflect_I3_1">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -1063,6 +1113,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Int16>
     <Byte name="VNP_Grid_500m_2D_iobs_res_1">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -1091,6 +1143,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Byte>
     <Int8 name="VNP_Grid_500m_2D_num_observations_500m">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -1119,6 +1173,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Int8>
     <Int8 name="VNP_Grid_500m_2D_obscov_500m_1">
         <Dim name="/VNP_Grid_500m_2D_YDim"/>
@@ -1147,6 +1203,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/VNP_Grid_500m_2D_lat"/>
+        <Map name="/VNP_Grid_500m_2D_lon"/>
     </Int8>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

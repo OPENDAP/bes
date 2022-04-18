@@ -17,6 +17,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/mask</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="opt_depth_c2">
         <Dim name="/Longitude"/>
@@ -42,6 +44,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/opt_depth_c2</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="frequency_map">
         <Dim name="/Longitude"/>
@@ -70,6 +74,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/frequency_map</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c2">
         <Dim name="/Longitude"/>
@@ -98,6 +104,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_c2</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c1">
         <Dim name="/Longitude"/>
@@ -126,6 +134,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_c1</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c2_error">
         <Dim name="/Longitude"/>
@@ -154,6 +164,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_c2_error</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="opt_depth_c1">
         <Dim name="/Longitude"/>
@@ -179,6 +191,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/opt_depth_c1</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float64 name="scantime">
         <Dim name="/Longitude"/>
@@ -201,6 +215,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/scantime</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float64>
     <Int16 name="opt_depth_x">
         <Dim name="/Longitude"/>
@@ -226,6 +242,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/opt_depth_x</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c1_error">
         <Dim name="/Longitude"/>
@@ -254,6 +272,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_c1_error</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="ts">
         <Dim name="/Longitude"/>
@@ -282,6 +302,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ts</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_x">
         <Dim name="/Longitude"/>
@@ -310,6 +332,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_x</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_x_error">
         <Dim name="/Longitude"/>
@@ -338,6 +362,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/soil_moisture_x_error</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>

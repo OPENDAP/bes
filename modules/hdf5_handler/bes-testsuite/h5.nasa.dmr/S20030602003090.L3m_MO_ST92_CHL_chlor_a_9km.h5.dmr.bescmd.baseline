@@ -50,6 +50,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/geophysical_data/chlor_a</Value>
         </Attribute>
+        <Map name="/rows"/>
+        <Map name="/columns"/>
     </Float32>
     <String name="palette">
         <Dim name="/rgb"/>
@@ -60,6 +62,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/palette</Value>
         </Attribute>
+        <Map name="/rgb"/>
+        <Map name="/eightbitcolor"/>
     </String>
     <Float32 name="columns">
         <Dim name="/columns"/>

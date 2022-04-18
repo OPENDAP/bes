@@ -45,6 +45,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SensorZenith">
         <Dim name="/YDim"/>
@@ -89,6 +91,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SolarZenith">
         <Dim name="/YDim"/>
@@ -133,6 +137,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <UInt16 name="SurfReflect_Day_Of_Year">
         <Dim name="/YDim"/>
@@ -162,6 +168,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt16>
     <Int16 name="SurfReflect_M1">
         <Dim name="/YDim"/>
@@ -206,6 +214,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M10">
         <Dim name="/YDim"/>
@@ -250,6 +260,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M11">
         <Dim name="/YDim"/>
@@ -294,6 +306,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M2">
         <Dim name="/YDim"/>
@@ -338,6 +352,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M3">
         <Dim name="/YDim"/>
@@ -382,6 +398,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M4">
         <Dim name="/YDim"/>
@@ -426,6 +444,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M5">
         <Dim name="/YDim"/>
@@ -470,6 +490,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M7">
         <Dim name="/YDim"/>
@@ -514,6 +536,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SurfReflect_M8">
         <Dim name="/YDim"/>
@@ -558,6 +582,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <UInt32 name="SurfReflect_QC">
         <Dim name="/YDim"/>
@@ -632,6 +658,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt32>
     <UInt16 name="SurfReflect_State">
         <Dim name="/YDim"/>
@@ -712,6 +740,8 @@
         <Attribute name="grid_mapping" type="String">
             <Value>eos_cf_projection</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt16>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">

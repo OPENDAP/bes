@@ -40,6 +40,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Int8>
     <UInt16 name="orbit_info_orbit_number">
         <Dim name="/orbit_info_crossing_time"/>
@@ -73,6 +74,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </UInt16>
     <Int16 name="orbit_info_rgt">
         <Dim name="/orbit_info_crossing_time"/>
@@ -106,6 +108,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Int16>
     <Int8 name="orbit_info_sc_orient">
         <Dim name="/orbit_info_sc_orient_time"/>
@@ -147,6 +150,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_sc_orient_time</Value>
         </Attribute>
+        <Map name="/orbit_info_sc_orient_time"/>
     </Int8>
     <Float64 name="orbit_info_lan">
         <Dim name="/orbit_info_crossing_time"/>
@@ -180,6 +184,7 @@
         <Attribute name="coordinates" type="String">
             <Value>orbit_info_crossing_time</Value>
         </Attribute>
+        <Map name="/orbit_info_crossing_time"/>
     </Float64>
     <Int8 name="gt1r_signal_photons_classed_pc_flag">
         <Dim name="/gt1r_signal_photons_delta_time"/>
@@ -213,6 +218,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_signal_photons_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_signal_photons_delta_time"/>
     </Int8>
     <Int32 name="gt1r_signal_photons_classed_pc_indx">
         <Dim name="/gt1r_signal_photons_delta_time"/>
@@ -240,6 +246,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_signal_photons_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_signal_photons_delta_time"/>
     </Int32>
     <Int8 name="gt1r_signal_photons_d_flag">
         <Dim name="/gt1r_signal_photons_delta_time"/>
@@ -271,6 +278,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_signal_photons_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_signal_photons_delta_time"/>
     </Int8>
     <Int32 name="gt1r_signal_photons_ph_segment_id">
         <Dim name="/gt1r_signal_photons_delta_time"/>
@@ -298,6 +306,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_signal_photons_delta_time</Value>
         </Attribute>
+        <Map name="/gt1r_signal_photons_delta_time"/>
     </Int32>
     <Int32 name="gt1r_land_segments_segment_watermask">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -338,6 +347,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float64 name="gt1r_land_segments_delta_time_end">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -365,6 +375,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float64>
     <Int16 name="gt1r_land_segments_rgt">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -398,6 +409,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int16>
     <Int8 name="gt1r_land_segments_dem_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -444,6 +456,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Int8 name="gt1r_land_segments_msw_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -483,6 +496,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Int8 name="gt1r_land_segments_cloud_flag_atm">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -516,6 +530,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_snr">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -543,6 +558,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -570,6 +586,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_canopy_canopy_rh_conf">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -611,6 +628,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_canopy_h_median_canopy_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -638,6 +656,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_min_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -665,6 +684,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_mean_canopy_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -692,6 +712,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_median_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -719,6 +740,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_canopy_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -746,6 +768,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_toc_roughness">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -773,6 +796,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_min_canopy_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -800,6 +824,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_dif_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -827,6 +852,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_canopy_quad">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -854,6 +880,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int32 name="gt1r_land_segments_canopy_n_ca_photons">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -878,6 +905,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float32 name="gt1r_land_segments_canopy_centroid_height">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -905,6 +933,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_canopy_h_metrics_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -933,6 +962,8 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
+        <Map name="/ds_metrics"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_landsat_perc">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -960,6 +991,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_mean_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -987,6 +1019,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_canopy_subset_can_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1032,6 +1065,8 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
+        <Map name="/ds_geosegments"/>
     </Int8>
     <Float32 name="gt1r_land_segments_canopy_canopy_h_metrics">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1060,6 +1095,8 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
+        <Map name="/ds_metrics"/>
     </Float32>
     <Int32 name="gt1r_land_segments_canopy_n_toc_photons">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1084,6 +1121,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int32 name="gt1r_land_segments_canopy_canopy_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1118,6 +1156,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int32 name="gt1r_land_segments_canopy_landsat_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1152,6 +1191,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float32 name="gt1r_land_segments_canopy_h_max_canopy_abs">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1179,6 +1219,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_canopy_uncertainty">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1206,6 +1247,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_canopy_openness">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1233,6 +1275,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_canopy_h_max_canopy">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1260,6 +1303,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_sigma_across">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1290,6 +1334,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_uncertainty">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1317,6 +1362,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_mean">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1344,6 +1390,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_min">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1371,6 +1418,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_interp">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1398,6 +1446,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_max">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1425,6 +1474,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_skew">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1452,6 +1502,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_median">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1479,6 +1530,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_best_fit">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1506,6 +1558,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_h_te_std">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1533,6 +1586,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_terrain_terrain_slope">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1560,6 +1614,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_terrain_subset_te_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1605,6 +1660,8 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
+        <Map name="/ds_geosegments"/>
     </Int8>
     <Int32 name="gt1r_land_segments_terrain_n_te_photons">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1629,6 +1686,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float32 name="gt1r_land_segments_terrain_h_te_mode">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1656,6 +1714,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_layer_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1687,6 +1746,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Int8 name="gt1r_land_segments_segment_snowcover">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1729,6 +1789,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_beam_azimuth">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1759,6 +1820,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_solar_azimuth">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1786,6 +1848,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_psf_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1826,6 +1889,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_longitude">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1859,6 +1923,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_latitude">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1892,6 +1957,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int32 name="gt1r_land_segments_segment_id_end">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1919,6 +1985,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int8 name="gt1r_land_segments_surf_type">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1960,6 +2027,8 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
+        <Map name="/ds_surf_type"/>
     </Int8>
     <Int8 name="gt1r_land_segments_brightness_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -1994,6 +2063,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Int32 name="gt1r_land_segments_segment_landcover">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2049,6 +2119,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int8 name="gt1r_land_segments_ph_removal_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2080,6 +2151,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_asr">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2107,6 +2179,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_sigma_atlas_land">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2137,6 +2210,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int32 name="gt1r_land_segments_segment_id_beg">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2164,6 +2238,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float32 name="gt1r_land_segments_sigma_along">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2194,6 +2269,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_dem_h">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2224,6 +2300,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_beam_coelev">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2254,6 +2331,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_sigma_topo">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2284,6 +2362,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int32 name="gt1r_land_segments_night_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2318,6 +2397,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Float64 name="gt1r_land_segments_delta_time_beg">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2345,6 +2425,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float64>
     <Float32 name="gt1r_land_segments_sigma_h">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2375,6 +2456,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_last_seg_extend">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2402,6 +2484,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Float32 name="gt1r_land_segments_atlas_pa">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2432,6 +2515,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int64 name="gt1r_land_segments_ph_ndx_beg">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2456,6 +2540,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int64>
     <Float32 name="gt1r_land_segments_solar_elevation">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2483,6 +2568,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int8 name="gt1r_land_segments_cloud_fold_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2525,6 +2611,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Int32 name="gt1r_land_segments_n_seg_ph">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2549,6 +2636,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int32 name="gt1r_land_segments_terrain_flg">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2583,6 +2671,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int32 name="gt1r_land_segments_urban_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2617,6 +2706,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int32>
     <Int8 name="gt1r_land_segments_dem_removal_flag">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2648,6 +2738,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Int8>
     <Float32 name="gt1r_land_segments_h_dif_ref">
         <Dim name="/gt1r_land_segments_delta_time"/>
@@ -2675,6 +2766,7 @@
         <Attribute name="coordinates" type="String">
             <Value>gt1r_land_segments_delta_time gt1r_land_segments_latitude gt1r_land_segments_longitude</Value>
         </Attribute>
+        <Map name="/gt1r_land_segments_delta_time"/>
     </Float32>
     <Int32 name="quality_assessment_qa_granule_fail_reason">
         <Dim name="/FakeDim0"/>
@@ -2716,6 +2808,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/quality_assessment/qa_granule_fail_reason</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="quality_assessment_qa_granule_pass_fail">
         <Dim name="/FakeDim0"/>
@@ -2753,6 +2846,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/quality_assessment/qa_granule_pass_fail</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_release">
         <Dim name="/FakeDim0"/>
@@ -2777,6 +2871,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/release</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_geoseg">
         <Dim name="/FakeDim0"/>
@@ -2801,6 +2896,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_geoseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_version">
         <Dim name="/FakeDim0"/>
@@ -2825,6 +2921,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/version</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_region">
         <Dim name="/FakeDim0"/>
@@ -2849,6 +2946,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_region</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_atlas_sdp_gps_epoch">
         <Dim name="/FakeDim0"/>
@@ -2873,6 +2971,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/atlas_sdp_gps_epoch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_end_rgt">
         <Dim name="/FakeDim0"/>
@@ -2903,6 +3002,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_rgt</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_end_delta_time">
         <Dim name="/FakeDim0"/>
@@ -2930,6 +3030,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_delta_time</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_end_orbit">
         <Dim name="/FakeDim0"/>
@@ -2954,6 +3055,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_orbit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_cycle">
         <Dim name="/FakeDim0"/>
@@ -2984,6 +3086,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_cycle</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_data_end_utc">
         <Dim name="/FakeDim0"/>
@@ -3008,6 +3111,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/data_end_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <String name="ancillary_data_control">
         <Dim name="/FakeDim0"/>
@@ -3032,6 +3136,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/control</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Float64 name="ancillary_data_start_gpssow">
         <Dim name="/FakeDim0"/>
@@ -3056,6 +3161,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_gpssow</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <String name="ancillary_data_granule_end_utc">
         <Dim name="/FakeDim0"/>
@@ -3080,6 +3186,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/granule_end_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_cycle">
         <Dim name="/FakeDim0"/>
@@ -3110,6 +3217,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_cycle</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_granule_start_utc">
         <Dim name="/FakeDim0"/>
@@ -3134,6 +3242,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/granule_start_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_land_ca_class">
         <Dim name="/FakeDim0"/>
@@ -3158,6 +3267,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/ca_class</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_canopy_flag_switch">
         <Dim name="/FakeDim0"/>
@@ -3182,6 +3292,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/canopy_flag_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_up_toc_bnd">
         <Dim name="/FakeDim0"/>
@@ -3206,6 +3317,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/up_toc_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_fnlgnd_filter_switch">
         <Dim name="/FakeDim0"/>
@@ -3230,6 +3342,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/fnlgnd_filter_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_psf">
         <Dim name="/FakeDim0"/>
@@ -3254,6 +3367,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/psf</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_dem_removal_percent_limit">
         <Dim name="/FakeDim0"/>
@@ -3278,6 +3392,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/dem_removal_percent_limit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_atl08_region">
         <Dim name="/FakeDim0"/>
@@ -3305,6 +3420,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/atl08_region</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_can_noise_thresh">
         <Dim name="/FakeDim0"/>
@@ -3329,6 +3445,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/can_noise_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_relief_hbot">
         <Dim name="/FakeDim0"/>
@@ -3353,6 +3470,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/relief_hbot</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_dem_filter_switch">
         <Dim name="/FakeDim0"/>
@@ -3377,6 +3495,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/dem_filter_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_relief_htop">
         <Dim name="/FakeDim0"/>
@@ -3401,6 +3520,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/relief_htop</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_dseg_buf">
         <Dim name="/FakeDim0"/>
@@ -3425,6 +3545,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/dseg_buf</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_night_thresh">
         <Dim name="/FakeDim0"/>
@@ -3449,6 +3570,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/night_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_h_canopy_perc">
         <Dim name="/FakeDim0"/>
@@ -3473,6 +3595,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/h_canopy_perc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_up_filt_bnd">
         <Dim name="/FakeDim0"/>
@@ -3497,6 +3620,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/up_filt_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_lw_filt_bnd">
         <Dim name="/FakeDim0"/>
@@ -3521,6 +3645,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lw_filt_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_ph_removal_percent_limit">
         <Dim name="/FakeDim0"/>
@@ -3545,6 +3670,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/ph_removal_percent_limit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_canopy_seg">
         <Dim name="/FakeDim0"/>
@@ -3569,6 +3695,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/canopy_seg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_max_try">
         <Dim name="/FakeDim0"/>
@@ -3593,6 +3720,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/max_try</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_bin_size_n">
         <Dim name="/FakeDim0"/>
@@ -3617,6 +3745,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/bin_size_n</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_lw_gnd_bnd">
         <Dim name="/FakeDim0"/>
@@ -3641,6 +3770,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lw_gnd_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_del_mu">
         <Dim name="/FakeDim0"/>
@@ -3665,6 +3795,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/del_mu</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_lw_toc_cut">
         <Dim name="/FakeDim0"/>
@@ -3689,6 +3820,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lw_toc_cut</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_class_thresh">
         <Dim name="/FakeDim0"/>
@@ -3713,6 +3845,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/class_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_lseg_buf">
         <Dim name="/FakeDim0"/>
@@ -3737,6 +3870,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lseg_buf</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_lw_toc_bnd">
         <Dim name="/FakeDim0"/>
@@ -3761,6 +3895,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lw_toc_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_up_toc_cut">
         <Dim name="/FakeDim0"/>
@@ -3785,6 +3920,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/up_toc_cut</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_gnd_stat_thresh">
         <Dim name="/FakeDim0"/>
@@ -3809,6 +3945,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/gnd_stat_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_iter_max">
         <Dim name="/FakeDim0"/>
@@ -3833,6 +3970,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/iter_max</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_gthresh_factor">
         <Dim name="/FakeDim0"/>
@@ -3857,6 +3995,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/gthresh_factor</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_bright_thresh">
         <Dim name="/FakeDim0"/>
@@ -3881,6 +4020,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/bright_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_dseg">
         <Dim name="/FakeDim0"/>
@@ -3905,6 +4045,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/dseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_bin_size_h">
         <Dim name="/FakeDim0"/>
@@ -3929,6 +4070,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/bin_size_h</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_up_gnd_bnd">
         <Dim name="/FakeDim0"/>
@@ -3953,6 +4095,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/up_gnd_bnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_min_nphs">
         <Dim name="/FakeDim0"/>
@@ -3977,6 +4120,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/min_nphs</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_tc_thresh">
         <Dim name="/FakeDim0"/>
@@ -4001,6 +4145,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/tc_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_te_class">
         <Dim name="/FakeDim0"/>
@@ -4025,6 +4170,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/te_class</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_toc_class">
         <Dim name="/FakeDim0"/>
@@ -4049,6 +4195,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/toc_class</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_iter_gnd">
         <Dim name="/FakeDim0"/>
@@ -4073,6 +4220,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/iter_gnd</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_max_atl03files">
         <Dim name="/FakeDim0"/>
@@ -4097,6 +4245,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/max_atl03files</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_noise_class">
         <Dim name="/FakeDim0"/>
@@ -4121,6 +4270,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/noise_class</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_outlier_filter_switch">
         <Dim name="/FakeDim0"/>
@@ -4145,6 +4295,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/outlier_filter_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_dragann_switch">
         <Dim name="/FakeDim0"/>
@@ -4169,6 +4320,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/dragann_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_proc_geoseg">
         <Dim name="/FakeDim0"/>
@@ -4193,6 +4345,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/proc_geoseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_can_stat_thresh">
         <Dim name="/FakeDim0"/>
@@ -4217,6 +4370,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/can_stat_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_lseg">
         <Dim name="/FakeDim0"/>
@@ -4241,6 +4395,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/lseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_max_atl09files">
         <Dim name="/FakeDim0"/>
@@ -4265,6 +4420,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/max_atl09files</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_ref_dem_limit">
         <Dim name="/FakeDim0"/>
@@ -4289,6 +4445,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/ref_dem_limit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_max_peaks">
         <Dim name="/FakeDim0"/>
@@ -4313,6 +4470,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/max_peaks</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_stat_thresh">
         <Dim name="/FakeDim0"/>
@@ -4337,6 +4495,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/stat_thresh</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_sig_rsq_search">
         <Dim name="/FakeDim0"/>
@@ -4361,6 +4520,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/sig_rsq_search</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_del_amp">
         <Dim name="/FakeDim0"/>
@@ -4385,6 +4545,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/del_amp</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_sseg">
         <Dim name="/FakeDim0"/>
@@ -4409,6 +4570,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/sseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_shp_param">
         <Dim name="/FakeDim0"/>
@@ -4433,6 +4595,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/shp_param</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_del_sigma">
         <Dim name="/FakeDim0"/>
@@ -4457,6 +4620,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/del_sigma</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Int32 name="ancillary_data_land_cloud_filter_switch">
         <Dim name="/FakeDim0"/>
@@ -4481,6 +4645,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/cloud_filter_switch</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_land_n_dec_mode">
         <Dim name="/FakeDim0"/>
@@ -4505,6 +4670,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/n_dec_mode</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float32 name="ancillary_data_land_ref_finalground_limit">
         <Dim name="/FakeDim0"/>
@@ -4529,6 +4695,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/ref_finalground_limit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="ancillary_data_land_p_static">
         <Dim name="/FakeDim0"/>
@@ -4553,6 +4720,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/land/p_static</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float64 name="ancillary_data_start_delta_time">
         <Dim name="/FakeDim0"/>
@@ -4580,6 +4748,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_delta_time</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_start_geoseg">
         <Dim name="/FakeDim0"/>
@@ -4604,6 +4773,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_geoseg</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_orbit">
         <Dim name="/FakeDim0"/>
@@ -4628,6 +4798,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_orbit</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <String name="ancillary_data_data_start_utc">
         <Dim name="/FakeDim0"/>
@@ -4652,6 +4823,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/data_start_utc</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </String>
     <Int32 name="ancillary_data_end_gpsweek">
         <Dim name="/FakeDim0"/>
@@ -4676,6 +4848,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_gpsweek</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_rgt">
         <Dim name="/FakeDim0"/>
@@ -4706,6 +4879,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_rgt</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Float64 name="ancillary_data_end_gpssow">
         <Dim name="/FakeDim0"/>
@@ -4730,6 +4904,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/end_gpssow</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Float64 name="ancillary_data_qa_at_interval">
         <Dim name="/FakeDim0"/>
@@ -4754,6 +4929,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/qa_at_interval</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float64>
     <Int32 name="ancillary_data_start_region">
         <Dim name="/FakeDim0"/>
@@ -4778,6 +4954,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_region</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int32 name="ancillary_data_start_gpsweek">
         <Dim name="/FakeDim0"/>
@@ -4802,6 +4979,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ancillary_data/start_gpsweek</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Int32>
     <Int8 name="ds_geosegments">
         <Dim name="/ds_geosegments"/>

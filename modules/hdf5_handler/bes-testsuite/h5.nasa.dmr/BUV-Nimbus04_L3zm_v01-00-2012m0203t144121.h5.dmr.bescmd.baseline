@@ -27,6 +27,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/AprioriProfileOzone</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
     </Float32>
     <Float32 name="AprioriTotalColumnOzone">
         <Dim name="/Time"/>
@@ -46,6 +49,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/AprioriTotalColumnOzone</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Int32 name="Date">
         <Dim name="/Time"/>
@@ -64,6 +69,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/Date</Value>
         </Attribute>
+        <Map name="/Time"/>
     </Int32>
     <Float32 name="IntegratingKernelProfile">
         <Dim name="/Time"/>
@@ -85,6 +91,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/IntegratingKernelProfile</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim2"/>
     </Float32>
     <Float32 name="IntegratingKernelTotalColumn">
         <Dim name="/Time"/>
@@ -105,6 +115,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/IntegratingKernelTotalColumn</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="JacobianDNDX">
         <Dim name="/Time"/>
@@ -126,6 +139,10 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/JacobianDNDX</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+        <Map name="/Wavelength"/>
     </Float32>
     <Float32 name="LocalStandardTime">
         <Dim name="/Time"/>
@@ -151,6 +168,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/LocalStandardTime</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Int16 name="OrbitMode">
         <Dim name="/Time"/>
@@ -169,6 +188,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/OrbitMode</Value>
         </Attribute>
+        <Map name="/Time"/>
     </Int16>
     <Float32 name="ProfileOzone">
         <Dim name="/Time"/>
@@ -189,6 +209,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/ProfileOzone</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
     </Float32>
     <Float32 name="ProfileOzoneStdev">
         <Dim name="/Time"/>
@@ -209,6 +232,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/ProfileOzoneStdev</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
     </Float32>
     <Float32 name="SmoothingErrorProfile">
         <Dim name="/Time"/>
@@ -229,6 +255,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/SmoothingErrorProfile</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="SmoothingErrorTotalColumn">
         <Dim name="/Time"/>
@@ -248,6 +277,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/SmoothingErrorTotalColumn</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/Time"/>
@@ -273,6 +304,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/SolarZenithAngle</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnOzone">
         <Dim name="/Time"/>
@@ -292,6 +325,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/TotalColumnOzone</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalColumnOzoneStdev">
         <Dim name="/Time"/>
@@ -311,6 +346,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/TotalColumnOzoneStdev</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Float32 name="TotalCovarianceMatrix">
         <Dim name="/FakeDim0"/>
@@ -331,6 +368,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/TotalCovarianceMatrix</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim4"/>
+        <Map name="/Latitude"/>
     </Float32>
     <Int16 name="VCI">
         <Dim name="/Time"/>
@@ -350,6 +390,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/VCI</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float32 name="VolumeMixingRatio">
         <Dim name="/Time"/>
@@ -370,6 +412,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/VolumeMixingRatio</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/MixingRatioPressureLevels"/>
     </Float32>
     <Float32 name="VolumeMixingRatioStdev">
         <Dim name="/Time"/>
@@ -390,6 +435,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/VolumeMixingRatioStdev</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/MixingRatioPressureLevels"/>
     </Float32>
     <Int16 name="nSamples">
         <Dim name="/Time"/>
@@ -409,6 +457,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Data_Fields/nSamples</Value>
         </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
