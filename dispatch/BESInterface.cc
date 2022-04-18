@@ -486,7 +486,7 @@ int BESInterface::execute_request(const string &from)
             // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
             // below. jhrg 11/12//19
 
-            std::chrono::steady_clock::time_point start_time = RequestServiceTimer::TheTimer()->start(std::chrono::seconds{bes_timeout});
+            RequestServiceTimer::TheTimer()->start(std::chrono::seconds{bes_timeout});
             BESDEBUG("request_timer",prolog << RequestServiceTimer::TheTimer()->dump() << endl);
             execute_data_request_plan();
 

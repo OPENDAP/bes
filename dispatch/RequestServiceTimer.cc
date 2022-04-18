@@ -42,15 +42,12 @@ using namespace std::chrono;
 #define MODULE "bes"
 #define prolog string("RequestServiceTimer::").append(__func__).append("() - ")
 
-// 100 seconds of milliseconds
-#define DEFAULT_BES_TIMEOUT_MILLISECONDS 100000
-
 RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
 static std::once_flag d_rst_init_once;
 
 
 RequestServiceTimer::RequestServiceTimer():
-        bes_timeout(milliseconds (DEFAULT_BES_TIMEOUT_MILLISECONDS)),
+        bes_timeout(milliseconds{0}),
         start_time(steady_clock::now()),
         timeout_enabled(false) {
 }
@@ -74,7 +71,7 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
-steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_ms){
+void RequestServiceTimer::start(milliseconds timeout_ms){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
     if(timeout_ms > milliseconds{0}){
@@ -86,7 +83,6 @@ steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_ms){
         bes_timeout = milliseconds{0};
     }
     start_time = steady_clock::now();
-    return start_time;
 }
 
 
@@ -96,9 +92,16 @@ milliseconds RequestServiceTimer::elapsed() const {
 }
 
 
+/**
+ * @brief If the time_out is enabled returns the time remaining. If the time_out is disabled returns 0.
+ *
+ * The return value is only of interest if the timeout is enabled so checking timeout_is_enable()
+ * is an important precondition before assessing the value of remaining().
+ * @return
+ */
 milliseconds RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    milliseconds remaining{DEFAULT_BES_TIMEOUT_MILLISECONDS};
+    milliseconds remaining{0};
     BESDEBUG(MODULE, prolog << "init remaining: " << remaining.count() <<  endl);
     if (timeout_enabled) {
         BESDEBUG(MODULE, prolog << "timeout enabled" << endl);
@@ -106,13 +109,10 @@ milliseconds RequestServiceTimer::remaining() const {
     }
     else {
         BESDEBUG(MODULE, prolog << "timeout disabled" << endl);
-        if (bes_timeout > milliseconds{0}) {
-            BESDEBUG(MODULE, prolog << "bes_timeout is set" << endl);
-            remaining = bes_timeout;
-        }
     }
     return remaining;
 }
+
 
 
 bool RequestServiceTimer::is_expired() const {
@@ -127,18 +127,18 @@ void RequestServiceTimer::disable_timeout(){
 
 string RequestServiceTimer::dump(bool pretty) const {
     std::stringstream ss;
-    if(!pretty){ ss<<"[ "; }
+    if(!pretty){ ss<<"["; }
     ss << "RequestServiceTimer(" << (void *)this << ") - ";
     if(pretty){ ss << endl << "  "; }
     ss << "bes_timeout: " << bes_timeout.count() << "ms ";
     if(pretty){ ss << endl << "  "; }
     ss << "start_time: " << duration_cast<seconds>(start_time.time_since_epoch()).count() << "s ";
     if(pretty){ ss << endl << "  "; }
-    ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
+    ss << "is_timeout_enabled(): " << (is_timeout_enabled() ?"true ":"false ");
     if(pretty){ ss << endl << "  "; }
-    ss << "elapsed(): " << elapsed().count() << "s ";
+    ss << "elapsed(): " << elapsed().count() << "ms ";
     if(pretty){ ss << endl << "  "; }
-    ss << "remaining(): " << remaining().count() << "s ";
+    ss << "remaining(): " << remaining().count() << "ms ";
     if(pretty){ ss << endl << "  "; }
     ss << "is_expired(): " <<  (is_expired()?"true":"false");
     if(pretty){ ss << endl; }else{ ss << "]"; }
