@@ -197,8 +197,8 @@ add_executable(bes
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
     dap/BESDapError.h
-    dap/BESDapErrorInfo.cc
-    dap/BESDapErrorInfo.h
+    # dap/BESDapErrorInfo.cc
+    # dap/BESDapErrorInfo.h
     dap/BESDapFunctionResponseCache.cc
     dap/BESDapFunctionResponseCache.h
     dap/BESDapModule.cc
@@ -495,6 +495,7 @@ add_executable(bes
     dispatch/TheBESKeys.h
 	dispatch/RequestServiceTimer.cc
 	dispatch/RequestServiceTimer.h
+	dispatch/unit-tests/RequestTimerTest.cc
 
     http/AllowedHosts.cc
     http/AllowedHosts.h
