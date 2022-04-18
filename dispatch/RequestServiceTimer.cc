@@ -78,16 +78,16 @@ steady_clock::time_point RequestServiceTimer::start(unsigned int timeout_seconds
     return start(seconds{timeout_seconds});
 }
 
-steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_seconds){
+steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_ms){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
-    if(timeout_seconds > seconds{0}){
+    if(timeout_ms > milliseconds{0}){
         timeout_enabled = true;
-        bes_timeout = timeout_seconds;
+        bes_timeout = timeout_ms;
     }
     else {
         timeout_enabled = false;
-        bes_timeout = seconds{0};
+        bes_timeout = milliseconds{0};
     }
     start_time = steady_clock::now();
     return start_time;
