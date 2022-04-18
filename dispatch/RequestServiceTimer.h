@@ -46,11 +46,11 @@ private:
     static RequestServiceTimer *d_instance;
     mutable std::recursive_mutex d_rst_lock_mutex;
 
-    std::chrono::milliseconds bes_timeout;
-    std::chrono::steady_clock::time_point start_time;
-    bool timeout_enabled;
+    std::chrono::milliseconds bes_timeout{0};
+    std::chrono::steady_clock::time_point start_time{std::chrono::steady_clock::now()};
+    bool timeout_enabled{false};
 
-    RequestServiceTimer();
+    RequestServiceTimer()=default;
 
     static void delete_instance();
     static void initialize_instance();
@@ -60,7 +60,7 @@ public:
 
     void start(std::chrono::milliseconds timeout_ms);
 
-    std::chrono::steady_clock::time_point get_start_time(){ return start_time; }
+    std::chrono::steady_clock::time_point get_start_time() const { return start_time; }
 
     std::chrono::milliseconds elapsed() const;
 
@@ -74,7 +74,7 @@ public:
 
     std::string dump(bool pretty=false) const ;
 
-    void dump( std::ostream &strm ) const ;
+    void dump( std::ostream &strm ) const override;
 
 };
 

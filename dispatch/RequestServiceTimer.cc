@@ -46,12 +46,6 @@ RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
 static std::once_flag d_rst_init_once;
 
 
-RequestServiceTimer::RequestServiceTimer():
-        bes_timeout(milliseconds{0}),
-        start_time(steady_clock::now()),
-        timeout_enabled(false) {
-}
-
 RequestServiceTimer *
 RequestServiceTimer::TheTimer()
 {
