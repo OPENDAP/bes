@@ -8,7 +8,7 @@ CLEANFILES =
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE_DMRPP)
 
 EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
-atlocal.in build_dmrpp_macros.m4
+atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
 DISTCLEANFILES = atconfig
 
@@ -19,7 +19,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE_DMRPP)
+check-local: atconfig atlocal  $(TESTSUITE_DMRPP)
 	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
 
 clean-local:
@@ -28,7 +28,8 @@ clean-local:
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 $(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 \
+$(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4 test_bes.conf
 
 #$(top_srcdir)/modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
 
@@ -43,3 +44,8 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
 	} >'$(srcdir)/package.m4'
 
+%.conf : %.conf.in
+	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
