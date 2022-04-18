@@ -37,9 +37,9 @@
 
 #include "AsciiArray.h"
 #include "AsciiOutputFactory.h"
-#include "test_config.h"
 
-#include "modules/run_tests_cppunit.h"
+#include "run_tests_cppunit.h"
+#include "test_config.h"
 
 bool translate = false;
 using namespace CppUnit;
