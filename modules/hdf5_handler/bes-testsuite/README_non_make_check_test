@@ -68,7 +68,7 @@ pushd
 
 Before running the test script, make sure all the NASA data
 are either linked or copied to the data directory.
-./test.valgrind.sh >&tt.out&
+./test.valgrind.sh >&valgrind.out&
 If everything is right, you should see "OK" in the output.
 This test includes the valgrind memory check for all the
 fake and NASA tests.

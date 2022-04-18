@@ -52,7 +52,7 @@ hid_t get_fileid(const char *filename);
 
 std::string print_attr(hid_t type, int loc, void *sm_buf);
 
-D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s);
+D4AttributeType daptype_strrep_to_dap4_attrtype(const std::string & s);
 
 //static BaseType *Get_bt(const string &vname,
 libdap::BaseType *Get_bt(const std::string &vname,const std::string &var_path,
@@ -68,7 +68,7 @@ bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(const hid_t file_id, hid_t dset,int, DS_t*dt_inst_ptr, std::vector<link_info_t>&);
 
-void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t *, libdap::D4Attribute *d4_attr, libdap::AttrTable* d2_attr,bool is_dap4);
+void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr, libdap::AttrTable* d2_attr,bool is_dap4);
 
 bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_compare,bool is_substr);
 

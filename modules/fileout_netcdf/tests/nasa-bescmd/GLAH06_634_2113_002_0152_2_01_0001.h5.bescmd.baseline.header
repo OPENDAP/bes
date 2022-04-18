@@ -21,7 +21,7 @@ netcdf test {
 		:processing_level = "1B" ;
 		:date_created = "removed date-time" ;
 		:spatial_coverage_type = "Horizontal" ;
-		:history = "removed date-time_alt 6.1 GLA06_634_2113_002_0152_2_01_0001.DAT, removed date-time06_h5_convert Version 1.4.1 (September 2014) ./GLAH06_634_2113_002_0152_2_01_0001.H5\000\000\000\000\nremoved date-timex GLAH06_634_2113_002_0152_2_01_0001.h5\n" ;
+		:history = "removed date-time_alt 6.1 GLA06_634_2113_002_0152_2_01_0001.DAT, removed date-time06_h5_convert Version 1.4.1 (September 2014) ./GLAH06_634_2113_002_0152_2_01_0001.H5\000\nremoved date-timex GLAH06_634_2113_002_0152_2_01_0001.h5\n" ;
 		:geospatial_lat_min = "-90.0" ;
 		:geospatial_lat_max = "90.0" ;
 		:geospatial_lon_min = "-180.0" ;

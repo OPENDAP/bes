@@ -43,7 +43,7 @@ variables:
 		:title = "SET_BY_META" ;
 		:date_created = "removed date-time" ;
 		:hdfversion = "HDF5 1.10.3" ;
-		:history = "removed date-time;498a71af-4c55-3685-bbe3-a704a1876765;Created by PGE atlas_l2a_alt Version 3.3\000\000\000\000\nremoved date-timex ATL03_20181014084920_02400109_003_01.h5\n" ;
+		:history = "removed date-time;498a71af-4c55-3685-bbe3-a704a1876765;Created by PGE atlas_l2a_alt Version 3.3\000\nremoved date-timex ATL03_20181014084920_02400109_003_01.h5\n" ;
 		:identifier_file_uuid = "498a71af-4c55-3685-bbe3-a704a1876765" ;
 		:identifier_product_format_version = "3.3" ;
 		:time_coverage_duration = 362. ;
@@ -430,10 +430,10 @@ group: METADATA {
 
       // group attributes:
       		:description = "GEOS5-FPIT meteorological data files (retrieved from the GSFC DAAC)" ;
-      		:fileName = "GEOS.fpit.asm.inst3_3d_asm_Nv.GEOS5124.20181014_0600.V01.nc4\000\000\000\000\nGEOS.fpit.asm.inst3_3d_asm_Nv.GEOS5124.20181014_0900.V01.nc4" ;
-      		:shortName = "ANC01\000\000\000\000\nANC01" ;
-      		:uuid = "727960fc-4594-3874-821f-5427552b1f36\000\000\000\000\n69097ef0-4a6a-3ea3-b958-bb931ef12cb4" ;
-      		:version = "001\000\000\000\000\n001" ;
+      		:fileName = "GEOS.fpit.asm.inst3_3d_asm_Nv.GEOS5124.20181014_0600.V01.nc4\000\nGEOS.fpit.asm.inst3_3d_asm_Nv.GEOS5124.20181014_0900.V01.nc4" ;
+      		:shortName = "ANC01\000\nANC01" ;
+      		:uuid = "727960fc-4594-3874-821f-5427552b1f36\000\n69097ef0-4a6a-3ea3-b958-bb931ef12cb4" ;
+      		:version = "001\000\n001" ;
       } // group ANC01
 
     group: ANC29 {
@@ -512,10 +512,10 @@ group: METADATA {
       		:description = "ATLAS/ICESat-2 L1B Converted Telemetry Data" ;
       		:end_geoseg = "SET_BY_PGE" ;
       		:start_geoseg = "SET_BY_PGE" ;
-      		:fileName = "ATL02_20181014084218_02400108_003_01.h5\000\000\000\000\nATL02_20181014084920_02400109_003_01.h5\000\000\000\000\nATL02_20181014085522_02400110_003_01.h5" ;
-      		:shortName = "ATL02\000\000\000\000\nATL02\000\000\000\000\nATL02" ;
-      		:uuid = "35eb8ef8-2520-3337-a688-6e1f63a632d5\000\000\000\000\n0db7131d-d1c5-3cae-8f21-41f719e9c38a\000\000\000\000\n4f7f3606-3964-3528-9976-b4652c40b67f" ;
-      		:version = "003\000\000\000\000\n003\000\000\000\000\n003" ;
+      		:fileName = "ATL02_20181014084218_02400108_003_01.h5\000\nATL02_20181014084920_02400109_003_01.h5\000\nATL02_20181014085522_02400110_003_01.h5" ;
+      		:shortName = "ATL02\000\nATL02\000\nATL02" ;
+      		:uuid = "35eb8ef8-2520-3337-a688-6e1f63a632d5\000\n0db7131d-d1c5-3cae-8f21-41f719e9c38a\000\n4f7f3606-3964-3528-9976-b4652c40b67f" ;
+      		:version = "003\000\n003\000\n003" ;
       		:start_cycle = 1, 1, 1 ;
       		:end_cycle = 1, 1, 1 ;
       		:start_orbit = 441, 441, 441 ;
@@ -540,10 +540,10 @@ group: METADATA {
 
       // group attributes:
       		:description = "Dynamic Atmosphere Correction File retrieved from CNES." ;
-      		:fileName = "dac_dif_25123_00.nc\000\000\000\000\ndac_dif_25123_06.nc\000\000\000\000\ndac_dif_25123_12.nc" ;
-      		:shortName = "ANC23\000\000\000\000\nANC23\000\000\000\000\nANC23" ;
-      		:uuid = "cab434e1-45cf-367d-83d4-91ddde658547\000\000\000\000\nc0f28a6b-4a45-34af-8c29-cfc45fe2986c\000\000\000\000\n10256184-292d-3405-8fe5-e91181105bf2" ;
-      		:version = "nc\000\000\000\000\nnc\000\000\000\000\nnc" ;
+      		:fileName = "dac_dif_25123_00.nc\000\ndac_dif_25123_06.nc\000\ndac_dif_25123_12.nc" ;
+      		:shortName = "ANC23\000\nANC23\000\nANC23" ;
+      		:uuid = "cab434e1-45cf-367d-83d4-91ddde658547\000\nc0f28a6b-4a45-34af-8c29-cfc45fe2986c\000\n10256184-292d-3405-8fe5-e91181105bf2" ;
+      		:version = "nc\000\nnc\000\nnc" ;
       } // group ANC23
     } // group Lineage
 

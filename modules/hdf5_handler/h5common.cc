@@ -141,7 +141,7 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
 /// \param[out] buf pointer to a buffer
 ///////////////////////////////////////////////////////////////////////////////
 int
-get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
+get_slabdata(hid_t dset, const int *offset, const int *step, const int *count, const int num_dim,
              void *buf)
 {
     BESDEBUG("h5", ">get_slabdata() " << endl);
@@ -236,7 +236,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
     return 0;
 }
 
-bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep, hsize_t *hcount,vector<string> &finstrval)
+bool read_vlen_string(hid_t dsetid, const int nelms, const hsize_t *hoffset, const hsize_t *hstep, const hsize_t *hcount,vector<string> &finstrval)
 {
 
     hid_t dspace = -1;
@@ -323,10 +323,9 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
     }
 
     // For scalar, nelms is 1.
-    char*temp_bp = &strval[0];
-    char*onestring = nullptr;
+    char *temp_bp = &strval[0];
     for (int i =0;i<nelms;i++) {
-        onestring = *(char**)temp_bp;
+        char *onestring = *(char**)temp_bp;
         if(onestring!=nullptr ) 
             finstrval[i] =string(onestring);
         else // We will add a nullptr if onestring is nullptr.
@@ -375,10 +374,9 @@ bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id) {
 
 }
 
-void get_vlen_str_data(char*temp_bp,string &finalstr_val) {
+void get_vlen_str_data(const char*temp_bp,string &finalstr_val) {
 
-    char*onestring = nullptr;
-    onestring = *(char**)temp_bp;
+    char *onestring = *(char**)temp_bp;
     if(onestring!=nullptr )
         finalstr_val =string(onestring);
     else // We will add a nullptr is onestring is nullptr.
