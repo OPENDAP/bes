@@ -1,3 +1,3 @@
 
 DMR files for these hdf5 data files were built using:
-    ./get_dmrpp -D -b /Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/data/fill_value FValue.h5 > fill_value/FValue.dmr
+    ./get_dmrpp -D -o fill_value/FValue.dmr -b /Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/data/fill_value FValue.h5

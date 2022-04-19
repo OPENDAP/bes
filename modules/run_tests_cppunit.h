@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
 
 #include "BESDebug.h"
 
