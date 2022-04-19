@@ -1,17 +1,32 @@
-//
-// Created by James Gallagher on 4/19/22.
-//
+// -*- mode: c++; c-basic-offset:4 -*-
 
-#include "config.h"
+// This file is part of the Hyrax data server.
+
+// Copyright (c) 2022 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <iostream>
 #include <sstream>
 #include <memory>
 #include <iterator>
 
-#include <unistd.h>
 #include <cstdlib>
-#include <libgen.h>
 
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
@@ -24,19 +39,14 @@
 #include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
-#include <libdap/D4ParserSax2.h>
 
-#include <TheBESKeys.h>
-#include <BESUtil.h>
 #include <BESDebug.h>
-#include <BESError.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
-#include "DmrppMetadataStore.h"
 
 #if 0
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -71,7 +81,7 @@ namespace build_dmrpp_util {
 
 bool verbose = false;   // Optionally set by build_dmrpp's main().
 
-#define VERBOSE(x) do { if (verbose) x; } while(false)
+#define VERBOSE(x) do { if (verbose) (x); } while(false)
 
 #if 0
 ///////////////////////////////////////////////////////////////////////////////
@@ -558,7 +568,7 @@ herr_t get_fill_value(hid_t dataset_id, hid_t type_id,  H5D_fill_value_t *status
  */
 static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
     std::string byteOrder;
-    H5T_order_t byte_order = H5T_ORDER_ERROR;
+    H5T_order_t byte_order;
 
     try {
         hid_t dcpl = H5Dget_create_plist(dataset);
@@ -584,7 +594,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
 
-        unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
+        int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
         size_t dsize = H5Tget_size(dtypeid);
 
@@ -703,7 +713,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                             if (H5Tis_variable_str(dtypeid) > 0) {
                                 vector<string> finstrval = {""};   // passed by reference to read_vlen_string
                                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                                btp->set_value(finstrval, finstrval.size());
+                                btp->set_value(finstrval, (int)finstrval.size());
                                 btp->set_read_p(true);
                             }
                             else {
@@ -720,7 +730,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 get_data(dataset, reinterpret_cast<void *>(&values[0]));
                                 string str(values.begin(), values.end());
                                 vector<string> strings = {str};
-                                btp->set_value(strings, strings.size());
+                                btp->set_value(strings, (int)strings.size());
                                 btp->set_read_p(true);
                             }
                             break;
@@ -759,7 +769,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     // variables in the group
     for (auto v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
         // if this variable has a 'fullnamepath' attribute, use that and not the
@@ -781,7 +791,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         // It's not an error if a DAP variable in a DMR from the hdf5 handler
         // doesn't exist in the file _if_ there's no 'fullnamepath' because
         // that variable was synthesized (likely for CF compliance)
-        hid_t dataset = -1;
+        hid_t dataset;
         if (attr) {
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
