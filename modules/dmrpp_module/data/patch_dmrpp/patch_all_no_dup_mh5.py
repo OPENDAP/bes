@@ -1,10 +1,10 @@
+import argparse as ap
 import os
+import platform
 import shutil
-import string
 import subprocess
 import sys
-import argparse as ap
-import platform 
+
 
 def is_program_present(p_name):
     #Check whether `p_name` is on PATH and marked as executable.

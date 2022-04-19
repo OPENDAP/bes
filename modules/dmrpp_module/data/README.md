@@ -10,7 +10,7 @@ portable _dmr++_ files whose binary data objects are held in a web object store
 ## Overview
 We have developed an initial set of tools that enable a data provider to 
 easily serve data stored in Amazon's S3 Web Object Store. In the current
-implementaiton, the data must be stored in HDF5 or NetCDF4 files. The data
+implementation, the data must be stored in HDF5 or NetCDF4 files. The data
 do not, however, have to be reformatted to be used with the Hyrax server.
 Furthermore, the data objects are subset 'in-place' from S3 instead of first
 transferring the object and then serving it, resulting in lower response 
@@ -40,15 +40,15 @@ There are three programs for building _dmr++_ files:
 - The program `get_dmrpp` builds a single _dmr++_ file from a single 
 `netcdf-4`/`hdf5` file. 
 - The program `ingest_filesystem` builds a collection of _dmr++_ files
-from from data held in the locally mounted filesystem. 
+from data held in the locally mounted filesystem. 
 - The program `ingest3bucket` builds a collection of _dmr++_ files
-from from data held in Amazon's S3 storage.
+from data held in Amazon's S3 storage.
 
 NOTE: Organizationally, this directory (_data_) and it's child directory 
 _dmrpp_ are arranged in this hierarchy in order to mimic the deployment 
 structure resulting from running "make install". Most modules do not 
 need to do this but since _dmr++_ files reference other files, and they 
-do so using paths relative the BES Catalog Root the mimicry is required.
+do so using relative paths, the BES Catalog Root the mimicry is required.
 
 NOTE: Examples can be run as shown from the _bes/modules/dmrpp___module/data_ 
 directory.

@@ -1,9 +1,9 @@
+import argparse as ap
 import os
 import shutil
-import string
 import subprocess
 import sys
-import argparse as ap
+
 
 def clean_im_files(choice):
     if(choice!=1 and choice!=2):

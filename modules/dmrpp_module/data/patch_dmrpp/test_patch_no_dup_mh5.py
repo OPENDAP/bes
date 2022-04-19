@@ -1,10 +1,10 @@
-import os
+import argparse as ap
 import glob
+import os
 import shutil
-import string
 import subprocess
 import sys
-import argparse as ap
+
 
 def cp_testing_files():
     dest_dir =os.getcwd()

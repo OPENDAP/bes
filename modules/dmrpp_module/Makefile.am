@@ -55,8 +55,6 @@ SuperChunk.h Base64.h DMZ.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
-BUILD_DMRPP = DmrppRequestHandler.cc DmrppRequestHandler.h
-
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
@@ -69,7 +67,8 @@ STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
-build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc $(srcdir)/../hdf5_handler/h5common.cc
+build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
+build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h $(srcdir)/../hdf5_handler/h5common.cc
 build_dmrpp_LDFLAGS = $(STATIC_DAP_MODULE)
 # Was using $(BES_DAP_LIB_LDFLAGS) which caused linking to the .so library. On linux
 # this is flagged as not portable. jhrg 1/21/2

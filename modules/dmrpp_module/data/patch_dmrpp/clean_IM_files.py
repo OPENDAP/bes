@@ -1,6 +1,6 @@
+import argparse as ap
 import os
 import subprocess
-import argparse as ap
 
 parser = ap.ArgumentParser(description='Patch dmrpp files to ensure the values of all variables can be located.')
 parser.add_argument("-v","--verbosity",type=int, choices=[1,2],
