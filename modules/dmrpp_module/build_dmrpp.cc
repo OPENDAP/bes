@@ -33,14 +33,6 @@
 #include <cstdlib>
 #include <libgen.h>
 
-#include <H5Ppublic.h>
-#include <H5Dpublic.h>
-#include <H5Epublic.h>
-#include <H5Zpublic.h>  // Constants for compression filters
-#include <H5Spublic.h>
-
-#include "h5common.h"   // This is in the hdf5 handler
-
 #include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
@@ -50,8 +42,6 @@
 #include <BESUtil.h>
 #include <BESDebug.h>
 #include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESInternalError.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"

@@ -587,7 +587,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
         unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
         size_t dsize = H5Tget_size(dtypeid);
-        
+
         /* layout_type:  1 contiguous 2 chunk 3 compact */
         switch (layout_type) {
 
