@@ -61,6 +61,7 @@
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
 #include "BESSyntaxUserError.h"
+#include "RequestServiceTimer.h"
 
 #include "DapFunctionUtils.h"
 
@@ -234,6 +235,17 @@ throw_if_dap2_response_too_big(DDS *dds)
     }
 }
 
+/**
+ * @brief convenience function for the response time limit test.
+ */
+static void
+throw_if_request_timeout_exceeded() {
+
+    stringstream msg;
+    msg << "The submitted request took too long to service.";
+    throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
+}
+
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
  * file
  *
@@ -245,7 +257,7 @@ throw_if_dap2_response_too_big(DDS *dds)
 void FONcTransform::transform_dap2(ostream &strm) {
     // Now that we are ready to start reading the response data we
     // cancel any pending timeout alarm according to the configuration.
-    BESUtil::conditional_timeout_cancel();
+    //BESUtil::conditional_timeout_cancel();
 
     BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
 
@@ -420,6 +432,9 @@ void FONcTransform::transform_dap2(ostream &strm) {
         uint64_t byteCount = 0;
 
         if (is_streamable()) {
+            BESUtil::exit_on_request_timeout();
+            BESUtil::conditional_timeout_cancel();
+
             byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
             BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
         }
@@ -434,6 +449,11 @@ void FONcTransform::transform_dap2(ostream &strm) {
             nc_sync(_ncid);
 
             if (is_streamable()) {
+                //BESUtil::exit_on_request_timeout();
+                if (RequestServiceTimer::TheTimer()->is_expired()) {
+                    throw_if_request_timeout_exceeded();
+                }
+
                 // write the what's been written
                 byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
                 BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
@@ -443,6 +463,8 @@ void FONcTransform::transform_dap2(ostream &strm) {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+
+        BESUtil::exit_on_request_timeout();
 
         byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
         BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);

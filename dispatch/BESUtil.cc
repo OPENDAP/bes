@@ -66,6 +66,9 @@
 #include "BESLog.h"
 #include "BESCatalogList.h"
 
+#include "BESInternalFatalError.h"
+#include "RequestServiceTimer.h"
+
 using namespace std;
 
 #define CRLF "\r\n"
@@ -859,6 +862,36 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
  * @see See the send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
  * methods of the children of BESTransmitter
  */
+void BESUtil::exit_on_request_timeout()
+{
+    if (RequestServiceTimer::TheTimer()->is_expired()) {
+        stringstream msg;
+        msg << "The submitted request took too long to service.";
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @brief Checks if the timeout alarm should be canceled based on the value of the BES key BES.CancelTimeoutOnSend
+ *
+ * If the value of the BES Key BES.CancelTimeoutOnSend is false || no, then
+ * do not cancel the timeout alarm.
+ * The intent of this is to stop the timeout counter once the
+ * BES starts sending data back since, the network link used by a remote
+ * client may be low-bandwidth and data providers might want to ensure those
+ * users get their data (and don't submit second, third, ..., requests when/if
+ * the first one fails). The timeout is initiated in the BES framework when it
+ * first processes the request.
+ *
+ * Default: If the BES key BES.CancelTimeoutOnSend is not set, or if it is set
+ * to true || yes then the timeout alarm will be canceled.
+ *
+ * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
+ * in the 'int BESInterface::execute_request(const string &from)' method.
+ *
+ * @see See the send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+ * methods of the children of BESTransmitter
+ */
 void BESUtil::conditional_timeout_cancel()
 {
     const string false_str = "false";
@@ -874,7 +907,10 @@ void BESUtil::conditional_timeout_cancel()
         if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
     BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
-    if (cancel_timeout_on_send) alarm(0);
+    if (cancel_timeout_on_send) {
+        RequestServiceTimer::TheTimer()->disable_timeout();
+        alarm(0);
+    }
 }
 
 /**
