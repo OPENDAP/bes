@@ -549,6 +549,33 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
     H5Pclose(plist_id);
 }
 
+herr_t get_fill_value(hid_t dataset_id, hid_t type_id,  H5D_fill_value_t *status, void *value)
+{
+    hid_t plist_id;
+
+    /* Get creation properties list */
+    if ( (plist_id = H5Dget_create_plist(dataset_id)) < 0 )
+        goto out;
+
+    /* How the fill value is defined? */
+    if ( (H5Pfill_value_defined(plist_id, status)) < 0 )
+        goto out;
+
+    if ( *status == H5D_FILL_VALUE_USER_DEFINED ) {
+        if ( H5Pget_fill_value(plist_id, type_id, value) < 0 )
+            goto out;
+    }
+
+    /* Terminate access to the datatype */
+    if ( H5Pclose( plist_id ) < 0 )
+        goto out;
+
+    return 0;
+
+    out:
+        return -1;
+}
+
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
  *
@@ -589,9 +616,11 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
         unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
-        hid_t dtypeid = H5Dget_type(dataset);
+        hid_t dtypeid = H5Dget_type(dataset); // TODO This duplicates 'ftype_id' above. jhrg 4/18/22
 
         size_t dsize = H5Tget_size(dtypeid);
+
+        // H5Pfill_value_defined()
 
         /* layout_type:  1 contiguous 2 chunk 3 compact */
         switch (layout_type) {
