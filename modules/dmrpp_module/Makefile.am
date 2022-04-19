@@ -91,7 +91,7 @@ reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 
 # retriever config
 retriever_CPPFLAGS = $(AM_CPPFLAGS)
-retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
+retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h retriever.cc
 retriever_LDFLAGS = $(STATIC_DAP_MODULE)
 retriever_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
@@ -99,7 +99,7 @@ $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # superchunky config
 superchunky_CPPFLAGS = $(AM_CPPFLAGS)
-superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) SuperChunky.cc
+superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h SuperChunky.cc
 superchunky_LDFLAGS = $(STATIC_DAP_MODULE)
 superchunky_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
