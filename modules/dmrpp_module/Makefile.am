@@ -71,7 +71,7 @@ build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppReques
 build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h $(srcdir)/../hdf5_handler/h5common.cc
 build_dmrpp_LDFLAGS = $(STATIC_DAP_MODULE)
 # Was using $(BES_DAP_LIB_LDFLAGS) which caused linking to the .so library. On linux
-# this is flagged as not portable. jhrg 1/21/2
+# this is flagged as not portable. jhrg 1/21/22
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz

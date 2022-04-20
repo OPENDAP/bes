@@ -64,7 +64,7 @@ BUILT_SOURCES = test_config.h
 BES_CONF_IN = bes.conf.in
 BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
-test_config.h: $(srcdir)/test_config.h.in Makefile
+test_config.h: $(srcdir)/test_config.h.in Makefile.am
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
@@ -145,5 +145,6 @@ DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 DMZTest_SOURCES = DMZTest.cc
 DMZTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc
-build_dmrpp_util_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+build_dmrpp_util_test_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
+build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc $(top_srcdir)/modules/hdf5_handler/h5common.cc
+build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)

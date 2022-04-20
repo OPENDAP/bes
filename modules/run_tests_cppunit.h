@@ -46,6 +46,11 @@ bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
+bool debug2 = false;
+
+#undef DBG2
+#define DBG2(x) do { if (debug) (x); } while(false);
+
 /**
  * @brief Run the test(s)
  *
@@ -61,13 +66,13 @@ bool bes_run_tests(int argc, char *argv[], const std::string &besdebug_contexts)
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "dDh")) != -1) {
+    while ((option_char = getopt(argc, argv, "dDbh")) != -1) {
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a global
                 break;
             case 'D':
-                debug = true;  // debug is a global
+                debug2 = true;  // debug2 is a global
                 break;
             case 'b':
                 BESDebug::SetUp(besdebug_contexts);

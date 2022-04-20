@@ -24,6 +24,8 @@
 
 #include "config.h"
 
+#include <string>
+
 #include <unistd.h>
 
 #include <H5Ppublic.h>
@@ -57,55 +59,126 @@ bool is_hdf5_fill_value_defined(hid_t dataset_id);
 
 class build_dmrpp_util_test : public CppUnit::TestFixture {
 private:
-    hid_t fill_value_file; // An HDF5 file for testing
+    DmrppTypeFactory dtf;
+
+    hid_t fill_value_file = -1; // An HDF5 file for testing
     const string fill_value_file_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue.h5"};
     const string fill_value_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue.dmr"};
+    unique_ptr<dmrpp::DMRpp> fv_dmrpp;
 
-    unique_ptr<dmrpp::DMRpp> dmrpp;
-    DmrppTypeFactory dtf;
+    hid_t fill_value_chunks_file = -1; // An HDF5 file for testing
+    const string fill_value_chunks_file_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue_chunk.h5"};
+    const string fill_value_chunks_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue_chunk.dmr"};
+    unique_ptr<dmrpp::DMRpp> fv_chunks_dmrpp;
+
 public:
     // Called once before everything gets tested
     build_dmrpp_util_test() = default;
 
     // Called at the end of the test
-    ~build_dmrpp_util_test() = default;
+    ~build_dmrpp_util_test() override = default;
 
-    // Called before each test
-    void setUp() {
-        fill_value_file = H5Fopen(fill_value_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-        if (fill_value_file < 0) {
-            throw BESNotFoundError(string("Error: HDF5 file '").append(fill_value_file_name).append("' cannot be opened."), __FILE__, __LINE__);
+    void setup_data(const string &file_name, const string &dmr_name, hid_t &file, DMRpp *dmrpp) {
+        file = H5Fopen(file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+        if (file < 0) {
+            throw BESNotFoundError(string("Error: HDF5 file '").append(file_name).append("' cannot be opened."), __FILE__, __LINE__);
         }
 
-        dmrpp.reset(new dmrpp::DMRpp);
-        dmrpp->set_factory(&dtf);
-
-        ifstream in(fill_value_dmr_name);
+        ifstream in(dmr_name);
         D4ParserSax2 parser;
-        parser.intern(in, dmrpp.get(), false);
+        parser.intern(in, dmrpp, false);
+
+    }
+    // Called before each test
+    void setUp() override {
+        fv_dmrpp.reset(new dmrpp::DMRpp);
+        fv_dmrpp->set_factory(&dtf);
+        setup_data(fill_value_file_name, fill_value_dmr_name, fill_value_file, fv_dmrpp.get());
+
+        fv_chunks_dmrpp.reset(new dmrpp::DMRpp);
+        fv_chunks_dmrpp->set_factory(&dtf);
+        setup_data(fill_value_chunks_file_name, fill_value_chunks_dmr_name, fill_value_chunks_file, fv_chunks_dmrpp.get());
     }
 
     // Called after each test
-    void tearDown() {
+    void tearDown() override {
         H5Fclose(fill_value_file);
     }
 
+#if 0
+    // Files made by Kent and the variables they hold.
+
+    FValue.h5: /chunks_all_fill
+    FValue.h5: /chunks_fill_not_write
+    FValue.h5: /chunks_fill_notdefined
+    FValue.h5: /chunks_some_fill
+    FValue.h5: /compact_all_fill
+    FValue.h5: /cont_all_fill
+    FValue.h5: /cont_some_fill
+    
+    FValue_chunk.h5: /chunks_all_fill
+#endif
+
+    // Test that we can open the files and find all the vars in the DMR files.
     void is_hdf5_fill_value_defined_test_1() {
-        for (auto v = dmrpp->root()->var_begin(), ve = dmrpp->root()->var_end(); v != ve; ++v) {
-            string fqn = (*v)->FQN();
+        for (auto v: fv_dmrpp->root()->variables()) {
+            string fqn = v->FQN();
             BESDEBUG("dmrpp", "Working on: " << fqn << endl);
             hid_t dataset = H5Dopen2(fill_value_file, fqn.c_str(), H5P_DEFAULT);
 
             CPPUNIT_ASSERT_MESSAGE("Could not open hdf5 dataset", dataset != -1);
         }
+
+        for (auto v: fv_chunks_dmrpp->root()->variables()) {
+            string fqn = v->FQN();
+            BESDEBUG("dmrpp", "Working on: " << fqn << endl);
+            hid_t dataset = H5Dopen2(fill_value_chunks_file, fqn.c_str(), H5P_DEFAULT);
+
+            CPPUNIT_ASSERT_MESSAGE("Could not open hdf5 dataset", dataset != -1);
+        }
+    }
+
+    void is_hdf5_fill_value_defined_test_2() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/chunks_all_fill", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("All chunks have fill value defined", is_hdf5_fill_value_defined(dataset));
+    }
+
+    void is_hdf5_fill_value_defined_test_3() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/chunks_fill_not_write", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("All chunks have fill value defined", is_hdf5_fill_value_defined(dataset));
+    }
+
+    void is_hdf5_fill_value_defined_test_4() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/chunks_fill_notdefined", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("No fill value defined", !is_hdf5_fill_value_defined(dataset));
+    }
+
+    void is_hdf5_fill_value_defined_test_5() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/chunks_some_fill", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("Chunks, some fill values defined", is_hdf5_fill_value_defined(dataset));
+    }
+
+    void is_hdf5_fill_value_defined_test_6() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/cont_some_fill", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("Contiguous, some fill values defined", is_hdf5_fill_value_defined(dataset));
+    }
+
+    void is_hdf5_fill_value_defined_test_7() {
+        hid_t dataset = H5Dopen2(fill_value_file, "/compact_all_fill", H5P_DEFAULT);
+        CPPUNIT_ASSERT_MESSAGE("Compact, all fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
-    CPPUNIT_TEST(is_hdf5_fill_value_defined_test_1);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_1);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_2);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_3);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_4);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_5);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_6);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_7);
 
     CPPUNIT_TEST_SUITE_END();
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(build_dmrpp_util_test);
