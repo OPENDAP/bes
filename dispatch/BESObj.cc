@@ -27,6 +27,8 @@
 /** @brief top level BES object to house generic methods
  */
 
+#include <utility>
+
 #include "BESDebug.h"
 #include "BESInternalFatalError.h"
 #include "RequestServiceTimer.h"
@@ -39,11 +41,13 @@ using std::string;
  * expired throw BESInternalFatalError.
  *
  * @param message to be delivered in error response.
+ * @param file The file (__FILE__) that called this method
+ * @param line The line (__LINE__) in the file that made the call to this method.
 */
 void BESObj::throw_if_timeout_expired(string message, string file, int line)
 {
     if (RequestServiceTimer::TheTimer()->is_expired()) {
-        throw BESInternalFatalError(message, file, line);
+        throw BESInternalFatalError(std::move(message), std::move(file), line);
     }
 }
 
