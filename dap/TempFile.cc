@@ -99,7 +99,7 @@ TempFile::TempFile(const std::string &path_template, bool keep_temps)
     d_fname.assign(tmp_name);
 
     // only register the SIGPIPE handler once. First time, size() is zero.
-    if (open_files->size() == 0) {
+    if (open_files->empty()) {
         struct sigaction act;
         sigemptyset(&act.sa_mask);
         sigaddset(&act.sa_mask, SIGPIPE);
