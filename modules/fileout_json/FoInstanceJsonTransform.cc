@@ -47,12 +47,16 @@
 #include <libdap/Url.h>
 
 #include <BESDebug.h>
+#include "BESUtil.h"
 #include <BESInternalError.h>
 
 #include "FoInstanceJsonTransform.h"
 #include "fojson_utils.h"
 
 using namespace std;
+
+#define MODULE "foJson"
+#define prolog string("FoJsonTransform::").append(__func__).append("() - ")
 
 #define ATTRIBUTE_SEPARATOR "."
 #define JSON_ORIGINAL_NAME "json_original_name"
@@ -273,6 +277,9 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
 {
     bool sentSomething = false;
 
+    throw_if_timeout_expired(prolog + " Ready to start streaming", __FILE__, __LINE__);
+    BESUtil::conditional_timeout_cancel();
+
     // Open returned JSON object
     *strm << "{" << endl;
 
@@ -299,6 +306,8 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
 
                 libdap::BaseType *v = *vi;
                 BESDEBUG(FoInstanceJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
+
+                throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
 
                 if (sentSomething) {
                     *strm << ",";
