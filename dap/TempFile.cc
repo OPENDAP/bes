@@ -143,9 +143,9 @@ TempFile::~TempFile()
 
     open_files->erase(d_fname);
 
-    if (open_files->size() == 0) {
-        if (sigaction(SIGPIPE, &cached_sigpipe_handler, 0)) {
-            ERROR_LOG(string("Could not register a handler to catch SIGPIPE. ").append("(").append(strerror(errno)).append(")"));
+    if (open_files->empty()) {
+        if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
+            ERROR_LOG(string("Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ").append("(").append(strerror(errno)).append(")"));
         }
     }
 }
