@@ -97,7 +97,7 @@ SRCS = BESInterface.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
-	RequestServiceTimer.cc \
+	RequestServiceTimer.cc BESObj.cc \
 	ServerAdministrator.cc
 
 #	BESAggFactory.cc BESAggregationServer.cc BESContainerStorageCatalog.cc

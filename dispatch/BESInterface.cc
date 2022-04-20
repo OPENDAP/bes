@@ -474,12 +474,14 @@ int BESInterface::execute_request(const string &from)
             if (found) {
                 bes_timeout = strtol(context.c_str(), NULL, 10);
                 VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
-                alarm(bes_timeout);
+                //alarm(bes_timeout);
+                alarm(0);
             }
             else if (d_timeout_from_keys != 0) {
                 bes_timeout = d_timeout_from_keys;
                 VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
-                alarm(bes_timeout);
+                //alarm(bes_timeout);
+                alarm(0);
             }
 
             // HK-474. The exception caused by the errant config file in the ticket is

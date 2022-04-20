@@ -31,6 +31,7 @@
 #include <sstream>
 
 #include "BESDebug.h"
+#include "BESInternalFatalError.h"
 #include "RequestServiceTimer.h"
 
 using std::string;
@@ -149,4 +150,3 @@ void RequestServiceTimer::dump( ostream &strm ) const
 {
     strm << dump() << endl;
 }
-

@@ -35,13 +35,13 @@
 #include <unistd.h>
 #endif
 
-#include "BESObj.h"
+//#include "BESObj.h"
 
 /** @brief The master request service timer for this server; a singleton
  *
  */
 
-class RequestServiceTimer : public BESObj{
+class RequestServiceTimer {
 private:
     static RequestServiceTimer *d_instance;
     mutable std::recursive_mutex d_rst_lock_mutex;
@@ -74,7 +74,7 @@ public:
 
     std::string dump(bool pretty=false) const ;
 
-    void dump( std::ostream &strm ) const override;
+    void dump( std::ostream &strm ) const ;
 
 };
 

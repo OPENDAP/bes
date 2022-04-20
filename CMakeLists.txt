@@ -496,7 +496,8 @@ add_executable(bes
 	dispatch/RequestServiceTimer.cc
 	dispatch/RequestServiceTimer.h
 	dispatch/unit-tests/RequestTimerTest.cc
-
+	dispatch/BESObj.cc
+	
     http/AllowedHosts.cc
     http/AllowedHosts.h
     http/url_impl.cc
