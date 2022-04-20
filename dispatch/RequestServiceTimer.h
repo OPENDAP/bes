@@ -47,14 +47,14 @@ private:
     std::chrono::steady_clock::time_point start_time{std::chrono::steady_clock::now()};
     bool timeout_enabled{false};
 
+    RequestServiceTimer()=default;
+    ~RequestServiceTimer()=default;
 
 
     static void delete_instance();
     static void initialize_instance();
 
 public:
-    RequestServiceTimer()=delete;
-    ~RequestServiceTimer()=delete;
 
     static RequestServiceTimer *TheTimer();
 
