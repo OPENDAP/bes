@@ -167,7 +167,7 @@ void RequestServiceTimer::dump( ostream &strm ) const
 */
 void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
 {
-    if (RequestServiceTimer::TheTimer()->is_expired()) {
+    if (is_expired()) {
         throw BESInternalFatalError(std::move(message), std::move(file), line);
     }
 }
