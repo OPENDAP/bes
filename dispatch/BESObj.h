@@ -37,7 +37,6 @@
 #define A_BESObj_h 1
 
 #include <iostream>
-#include <string>
 
 #if 1
 // This ripples through the code because it is included here. Some day this should be
@@ -53,9 +52,6 @@
 
 class BESObj
 {
-protected:
-    void throw_if_timeout_expired(std::string message, std::string file, int line);
-
 public:
     /** @brief Default constructor
      *
