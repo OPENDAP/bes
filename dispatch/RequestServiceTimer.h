@@ -50,7 +50,6 @@ private:
     RequestServiceTimer()=default;
     ~RequestServiceTimer()=default;
 
-
     static void delete_instance();
     static void initialize_instance();
 
