@@ -404,7 +404,8 @@ add_executable(bes
     dispatch/BESModuleApp.h
     dispatch/BESNames.h
     dispatch/BESNotFoundError.h
-    dispatch/BESObj.h
+		dispatch/BESObj.h
+		dispatch/BESObj.cc
     dispatch/BESPlugin.h
     dispatch/BESPluginFactory.h
     dispatch/BESProcIdResponseHandler.cc
@@ -496,8 +497,7 @@ add_executable(bes
 	dispatch/RequestServiceTimer.cc
 	dispatch/RequestServiceTimer.h
 	dispatch/unit-tests/RequestTimerTest.cc
-	dispatch/BESObj.cc
-	
+
     http/AllowedHosts.cc
     http/AllowedHosts.h
     http/url_impl.cc
