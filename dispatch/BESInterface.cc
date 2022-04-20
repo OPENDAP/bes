@@ -33,13 +33,10 @@
 #include "config.h"
 
 #include <cstdlib>
-#include <csignal>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include <csetjmp> // Used for the timeout processing
 
 #include <string>
 #include <sstream>
@@ -70,9 +67,6 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
-
-static jmp_buf timeout_jump;
-static bool timeout_jump_valid = false;
 
 // Define this to use sigwait() in a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
@@ -293,7 +287,7 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
 
     dhi.error_info->end_response();
 
-    return e.get_bes_error_type();
+    return (int)e.get_bes_error_type();
 }
 
 /**
@@ -330,6 +324,14 @@ void BESInterface::set_bes_timeout()
 
     return found;
 #endif
+}
+
+/**
+ * @brief Clear the bes timeout
+ */
+void BESInterface::clear_bes_timeout()
+{
+    bes_timeout = 0;
 }
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
@@ -414,22 +416,20 @@ int BESInterface::execute_request(const string &from)
 
         build_data_request_plan();
 
-        // This method does two key things: Calls the request handler to make a
-        // 'response object' (the C++ object that will hold the response) and
-        // then calls the transmitter to actually send it or build and send it.
-
-        // The timeout is also set in execute_data_request_plan().
         set_bes_timeout();
 
+        // This method (execute_data_request_plan()) does two key things:
+        // Calls the request handler to make a response object' (the C++
+        // object that will hold the response) and then calls the transmitter
+        // to actually send it or build and send it.
+        //
         // HK-474. The exception caused by the errant config file in the ticket is
         // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
         // below. jhrg 11/12//19
         execute_data_request_plan();
 
-        // Only clear the timeout if it has been set.
-        if (bes_timeout != 0) {
-            bes_timeout = 0;
-        }
+        // clear the timeout
+        clear_bes_timeout();
 
         d_dhi_ptr->executed = true;
     }

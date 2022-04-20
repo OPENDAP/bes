@@ -143,6 +143,7 @@ protected:
     static int handleException(const BESError &e, BESDataHandlerInterface &dhi);
 
     void set_bes_timeout();
+    void clear_bes_timeout();
 
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control

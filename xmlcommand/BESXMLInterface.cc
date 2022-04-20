@@ -85,9 +85,9 @@ void BESXMLInterface::build_data_request_plan()
     //
     // LIBXML_TEST_VERSION
 
-    xmlDoc *doc = NULL;
-    xmlNode *root_element = NULL;
-    xmlNode *current_node = NULL;
+    xmlDoc *doc = nullptr;
+    xmlNode *root_element = nullptr;
+    xmlNode *current_node = nullptr;
 
     try {
         // set the default error function to my own
@@ -95,10 +95,10 @@ void BESXMLInterface::build_data_request_plan()
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
-                            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+        doc = xmlReadMemory(d_xml_document.c_str(), (int)d_xml_document.size(), "" /* base URL */,
+                            nullptr /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
-        if (doc == NULL) {
+        if (doc == nullptr) {
             string err = "Problem parsing the request xml document:\n";
             bool isfirst = true;
             vector<string>::const_iterator i = parseerrors.begin();
