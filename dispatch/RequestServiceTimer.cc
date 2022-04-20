@@ -150,3 +150,20 @@ void RequestServiceTimer::dump( ostream &strm ) const
 {
     strm << dump() << endl;
 }
+
+
+/** @brief Checks the RequestServiceTimer to determine if the
+ * time spent servicing the request at this point has exceeded the
+ * bes_timeout configuration element.   If the request timeout has
+ * expired throw BESInternalFatalError.
+ *
+ * @param message to be delivered in error response.
+ * @param file The file (__FILE__) that called this method
+ * @param line The line (__LINE__) in the file that made the call to this method.
+*/
+void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
+{
+    if (RequestServiceTimer::TheTimer()->is_expired()) {
+        throw BESInternalFatalError(std::move(message), std::move(file), line);
+    }
+}
