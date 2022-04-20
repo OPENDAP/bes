@@ -31,9 +31,6 @@
 #include <mutex>
 #include <chrono>
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 //#include "BESObj.h"
 
@@ -75,7 +72,7 @@ public:
     std::string dump(bool pretty=false) const ;
 
     void dump( std::ostream &strm ) const ;
-    
+
     void throw_if_timeout_expired(string message, string file, int line)
 
 };

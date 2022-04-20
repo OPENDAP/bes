@@ -34,6 +34,10 @@
 #include "BESInternalFatalError.h"
 #include "RequestServiceTimer.h"
 
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 using std::string;
 using std::endl;
 using std::ostream;

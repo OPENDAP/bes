@@ -61,6 +61,7 @@
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
 #include "BESSyntaxUserError.h"
+#include "RequestServiceTimer.h"
 
 #include "DapFunctionUtils.h"
 
@@ -423,7 +424,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
         uint64_t byteCount = 0;
 
         if (is_streamable()) {
-            throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
             BESUtil::conditional_timeout_cancel();
 
             byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
