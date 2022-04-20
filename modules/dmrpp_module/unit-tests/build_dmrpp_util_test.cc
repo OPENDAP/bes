@@ -34,6 +34,7 @@
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
 
+#include "BESInternalError.h"
 #include "BESNotFoundError.h"
 
 #include "DMRpp.h"
@@ -120,7 +121,7 @@ public:
 #endif
 
     // Test that we can open the files and find all the vars in the DMR files.
-    void is_hdf5_fill_value_defined_test_1() {
+    void file_and_dmr_test() {
         for (auto v: fv_dmrpp->root()->variables()) {
             string fqn = v->FQN();
             BESDEBUG("dmrpp", "Working on: " << fqn << endl);
@@ -138,45 +139,52 @@ public:
         }
     }
 
-    void is_hdf5_fill_value_defined_test_2() {
+    void is_hdf5_fill_value_defined_test_bad_dataset_id() {
+        CPPUNIT_ASSERT_THROW_MESSAGE("This should throw BESInternalError", is_hdf5_fill_value_defined(-1), BESInternalError);
+    }
+
+    void is_hdf5_fill_value_defined_test_chunks_all_fill() {
         hid_t dataset = H5Dopen2(fill_value_file, "/chunks_all_fill", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("All chunks have fill value defined", is_hdf5_fill_value_defined(dataset));
     }
 
-    void is_hdf5_fill_value_defined_test_3() {
+    void is_hdf5_fill_value_defined_test_chunks_fill_not_write() {
         hid_t dataset = H5Dopen2(fill_value_file, "/chunks_fill_not_write", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("All chunks have fill value defined", is_hdf5_fill_value_defined(dataset));
     }
 
-    void is_hdf5_fill_value_defined_test_4() {
+    void is_hdf5_fill_value_defined_test_chunks_fill_notdefined() {
         hid_t dataset = H5Dopen2(fill_value_file, "/chunks_fill_notdefined", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("No fill value defined", !is_hdf5_fill_value_defined(dataset));
     }
 
-    void is_hdf5_fill_value_defined_test_5() {
+    void is_hdf5_fill_value_defined_test_chunks_some_fill() {
         hid_t dataset = H5Dopen2(fill_value_file, "/chunks_some_fill", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("Chunks, some fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
-    void is_hdf5_fill_value_defined_test_6() {
+    void is_hdf5_fill_value_defined_test_cont_some_fill() {
         hid_t dataset = H5Dopen2(fill_value_file, "/cont_some_fill", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("Contiguous, some fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
-    void is_hdf5_fill_value_defined_test_7() {
+    void is_hdf5_fill_value_defined_test_compact_all_fill() {
         hid_t dataset = H5Dopen2(fill_value_file, "/compact_all_fill", H5P_DEFAULT);
         CPPUNIT_ASSERT_MESSAGE("Compact, all fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_1);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_2);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_3);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_4);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_5);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_6);
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_7);
+        CPPUNIT_TEST(file_and_dmr_test);
+
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_bad_dataset_id);
+
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_all_fill);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_fill_not_write);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_fill_notdefined);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_some_fill);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_cont_some_fill);
+        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
 
     CPPUNIT_TEST_SUITE_END();
 };

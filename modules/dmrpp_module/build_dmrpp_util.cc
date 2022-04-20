@@ -509,11 +509,14 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
 {
     hid_t plist_id;
 
-    /* Get creation properties list */
+    // Suppress errors to stderr.
+    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
+
+    // Get creation properties list
     if ( (plist_id = H5Dget_create_plist(dataset_id)) < 0 )
         throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
 
-    /* How the fill value is defined? */
+    // How the fill value is defined?
     H5D_fill_value_t status;
     if ( (H5Pfill_value_defined(plist_id, &status)) < 0 ) {
         H5Pclose(plist_id);
