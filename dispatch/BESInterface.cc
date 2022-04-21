@@ -32,16 +32,11 @@
 
 #include "config.h"
 
-#include <sys/resource.h>
-
 #include <cstdlib>
-#include <csignal>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include <csetjmp> // Used for the timeout processing
 
 #include <string>
 #include <sstream>
@@ -50,7 +45,6 @@
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
-// jhrg 4/6/22 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
 #include "BESTransmitterNames.h"
@@ -63,7 +57,6 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
-#include "BESTimeoutError.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 #include "ServerAdministrator.h"
@@ -74,9 +67,6 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
-
-static jmp_buf timeout_jump;
-static bool timeout_jump_valid = false;
 
 // Define this to use sigwait() in a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
@@ -94,64 +84,8 @@ volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
-// This function uses the global variables timeout_jump_valid and timeout_jump
-// The code looks at the value of BES.TimeOutInSeconds and/or the timeout
-// context sent in the current request and, if that is greater than zero,
-// uses that as the maximum amount of time for the request. The system alarm
-// is set and this function is registered as the handler. If timeout_jump_valid
-// is true, then it will use longjmp() (yes, really...) to end the request. Look
-// below in execute_request() for the call to setjump() to see how this works.
-// See the SIGWAIT code that's commented out below for an alternative impl.
-// jhrg 5/31/16
-static void catch_sig_alarm(int sig)
-{
-    if (sig == SIGALRM) {
-        ERROR_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
-
-        // Causes setjump() below to return 1; see the call to
-        // execute_data_request_plan() in execute_request() below.
-        // jhrg 12/29/15
-        if (timeout_jump_valid)
-            longjmp(timeout_jump, 1);
-        else {
-            // This is the old version of this code; it forces the BES child
-            // listener to exit without returning an error message to the
-            // OLFS/client. jhrg 12/29/15
-            signal(SIGTERM, SIG_DFL);
-            raise(SIGTERM);
-        }
-    }
-}
-
-/**
- * @brief register catch_sig_alarm() as the handler for SIGALRM
- *
- * We use SIGALRM as a scheme to timeout requests that seem 'stuck' based on
- * some notion of how long it should take. This is configurable in the bes.conf
- * file and also in the OLFS, which can override the bes.conf value on a per-
- * request basis.
- */
-static void register_signal_handler()
-{
-    struct sigaction act;
-    sigemptyset(&act.sa_mask);
-    sigaddset(&act.sa_mask, SIGALRM);
-    act.sa_flags = 0;
-
-    // Note that we do not set SA_RESTART so an interrupted system call
-    // will return with an error and errno set to EINTR.
-
-    act.sa_handler = catch_sig_alarm;
-    if (sigaction(SIGALRM, &act, nullptr))
-        throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
-}
-
 static inline void downcase(string &s)
 {
-#if 0
-    for (unsigned int i = 0; i < s.length(); i++)
-        s[i] = tolower(s[i]);
-#endif
     transform(s.begin(), s.end(), s.begin(), [](int c) { return std::toupper(c); });
 }
 
@@ -289,16 +223,20 @@ static void wait_for_timeout()
 #endif
 
 BESInterface::BESInterface(ostream *output_stream) :
-    d_strm(output_stream), d_timeout_from_keys(0), d_dhi_ptr(0), d_transmitter(0)
+    d_strm(output_stream)
 {
     if (!d_strm) {
         throw BESInternalError("Output stream must be set in order to output responses", __FILE__, __LINE__);
     }
 
+#if 0
     // Grab the BES Key for the timeout. Note that the Hyrax server generally
     // overrides this value using a 'context' that is set/sent by the OLFS.
     // Also note that a value of zero means no timeout, but that the context
     // can override that too. jhrg 1/4/16
+    d_timeout_from_keys = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
+#endif
+#if 0
     bool found;
     string timeout_key_value;
     TheBESKeys::TheKeys()->get_value(BES_TIMEOUT_KEY, timeout_key_value, found);
@@ -306,19 +244,8 @@ BESInterface::BESInterface(ostream *output_stream) :
         istringstream iss(timeout_key_value);
         iss >> d_timeout_from_keys;
     }
-
-    // Install signal handler for alarm() here
-    register_signal_handler();
-
-#if USE_SIGWAIT
-    wait_for_timeout();
 #endif
 }
-
-#if 0
-extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
-extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
-#endif
 
 /**
  * @brief Make a BESXMLInfo object to hold the error information
@@ -342,7 +269,7 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
 
     log_error(e);
 
-    string admin_email = "";
+    string admin_email;
     try {
         bes::ServerAdministrator sd;
         admin_email = sd.get_email();
@@ -360,7 +287,51 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
 
     dhi.error_info->end_response();
 
-    return e.get_bes_error_type();
+    return (int)e.get_bes_error_type();
+}
+
+/**
+ * @brief Set the global volatile int 'bes_timeout'
+ * Use either the value of a 'bes_timeout' context or the value set in the BES keys
+ * to set the global volatile int 'bes_timeout'
+ * @return True if 'bes_timeout' was set, false otherwise.
+ */
+void BESInterface::set_bes_timeout()
+{
+    // Set timeout? Use either the value from the keys or a context
+    bool found = false;
+    string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
+    if (found) {
+        bes_timeout = strtol(context.c_str(), NULL, 10);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+    }
+    else {
+        // Grab the BES Key for the timeout. Note that the Hyrax server generally
+        // overrides this value using a 'context' that is set/sent by the OLFS.
+        // Also note that a value of zero means no timeout, but that the context
+        // can override that too. jhrg 1/4/16
+        //
+        // If the value is not set in teh BES keys, d_timeout_from_keys will get the
+        // default value of 0. jhrg 4/20/22
+        d_timeout_from_keys = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
+    }
+#if 0
+    else if (d_timeout_from_keys != 0) {
+        found = true;
+        bes_timeout = d_timeout_from_keys;
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+    }
+
+    return found;
+#endif
+}
+
+/**
+ * @brief Clear the bes timeout
+ */
+void BESInterface::clear_bes_timeout()
+{
+    bes_timeout = 0;
 }
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
@@ -415,13 +386,6 @@ int BESInterface::execute_request(const string &from)
         // BESXMLInterface::build_data_request_plan() where the XML document is
         // parsed. jhrg 11/9/17
         sw.start("BESInterface::execute_request", d_dhi_ptr->data[REQUEST_ID]);
-#if 0
-        bes_timing::elapsedTimeToReadStart = new BESStopWatch();
-        bes_timing::elapsedTimeToReadStart->start("TIME_TO_READ_START", d_dhi_ptr->data[REQUEST_ID]);
-
-        bes_timing::elapsedTimeToTransmitStart = new BESStopWatch();
-        bes_timing::elapsedTimeToTransmitStart->start("TIME_TO_TRANSMIT_START", d_dhi_ptr->data[REQUEST_ID]);
-#endif
     }
 
     // TODO These never change for the life of a BES, so maybe they can move out of
@@ -439,8 +403,6 @@ int BESInterface::execute_request(const string &from)
     // exception during the initialization, building, execution, or response
     // transmit of the request then we can transmit the exception/error
     // information.
-    //
-    // TODO status is not used. jhrg 11/9/17
     int status = 0; // save the return status from exception_manager() and return that.
     try {
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " request received" << endl);
@@ -454,69 +416,28 @@ int BESInterface::execute_request(const string &from)
 
         build_data_request_plan();
 
-        // This method does two key things: Calls the request handler to make a
-        // 'response object' (the C++ object that will hold the response) and
-        // then calls the transmitter to actually send it or build and send it.
+        set_bes_timeout();
+
+        // This method (execute_data_request_plan()) does two key things:
+        // Calls the request handler to make a response object' (the C++
+        // object that will hold the response) and then calls the transmitter
+        // to actually send it or build and send it.
         //
-        // The timeout is also set in execute_data_request_plan(). The alarm signal
-        // handler (above), run when the timeout expires, will call longjmp with a
-        // return value of 1.
-        if (setjmp(timeout_jump) == 0) {
-            timeout_jump_valid = true;
+        // HK-474. The exception caused by the errant config file in the ticket is
+        // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
+        // below. jhrg 11/12//19
+        execute_data_request_plan();
 
-            // Set timeout? Use either the value from the keys or a context
-            bool found = false;
-            string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
-            if (found) {
-                bes_timeout = strtol(context.c_str(), NULL, 10);
-                VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
-                alarm(bes_timeout);
-            }
-            else if (d_timeout_from_keys != 0) {
-                bes_timeout = d_timeout_from_keys;
-                VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
-                alarm(bes_timeout);
-            }
-
-            // HK-474. The exception caused by the errant config file in the ticket is
-            // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
-            // below. jhrg 11/12//19
-            execute_data_request_plan();
-
-            // Only clear the timeout if it has been set.
-            if (bes_timeout != 0) {
-                bes_timeout = 0;
-                alarm(0);
-            }
-
-            // Once we exit the block where setjmp() was called, the jump_buf is not valid
-            timeout_jump_valid = false;
-        }
-        else {
-            ostringstream oss;
-            oss << "BES listener timeout after " << bes_timeout << " seconds." << ends;
-            BESDEBUG("bes", oss.str() << endl );
-            throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
-        }
+        // clear the timeout
+        clear_bes_timeout();
 
         d_dhi_ptr->executed = true;
     }
-#if 0
-    catch (const libdap::Error &e) {
-        timeout_jump_valid = false;
-        string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
-        BESDEBUG("bes", msg << endl );
-        BESInternalFatalError ex(msg, __FILE__, __LINE__);
-        status = handleException(ex, *d_dhi_ptr);
-    }
-#endif
     catch (const BESError &e) {
-        timeout_jump_valid = false;
         BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
     catch (const bad_alloc &e) {
-        timeout_jump_valid = false;
         stringstream msg;
         msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what()  << endl;
         BESDEBUG("bes", msg.str() << endl );
@@ -524,7 +445,6 @@ int BESInterface::execute_request(const string &from)
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (const exception &e) {
-        timeout_jump_valid = false;
         stringstream msg;
         msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;
         BESDEBUG("bes", msg.str() << endl );
@@ -532,7 +452,6 @@ int BESInterface::execute_request(const string &from)
         status = handleException(ex, *d_dhi_ptr);
     }
     catch (...) {
-        timeout_jump_valid = false;
         string msg =  string(__PRETTY_FUNCTION__) +  " - An unidentified exception has been thrown.";
         BESDEBUG("bes", msg << endl );
         BESInternalError ex(msg, __FILE__, __LINE__);

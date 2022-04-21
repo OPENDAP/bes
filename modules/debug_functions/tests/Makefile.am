@@ -5,26 +5,15 @@ if USE_VALGRIND
 TESTS_ENVIRONMENT=valgrind --trace-children=yes --error-exitcode=1 --dsymutil=yes --leak-check=yes --max-stackframe=3000000 --quiet
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir)
-AM_CXXFLAGS =
-
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
-
 noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) atlocal.in	\
-package.m4 $(BES_CONF_IN) handler_tests_macros.m4
+EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) atlocal.in	package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,13 +27,15 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE = $(srcdir)/debug_functionsTest
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' # $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
-installcheck-local: $(TESTSUITE) atconfig atlocal 
-	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' # $(TESTSUITEFLAGS)
+# I don't think this is needed. jhrg 4/20/22
+# See https://www.gnu.org/software/automake/manual/html_node/Basic-Installation.html
+# installcheck-local: $(TESTSUITE) atconfig atlocal
+# 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
@@ -52,7 +43,7 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
