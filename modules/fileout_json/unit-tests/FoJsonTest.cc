@@ -55,6 +55,7 @@
 
 #include "FoInstanceJsonTransform.h"
 #include "FoDapJsonTransform.h"
+#include "RequestServiceTimer.h"
 
 static bool debug = false;
 
@@ -275,6 +276,8 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
             //############################# METADATA TEST ####################################
             string tmpFile(d_tmpDir + "/test_instance_object_representation_METADATA.json");
             DBG(cerr << "FoJsonTest::test_instance_object_metadata_representation() - tmpFile: " << tmpFile << endl);
+
+            RequestServiceTimer::TheTimer()->start(std::chrono::seconds{600});
 
             FoInstanceJsonTransform ft(test_DDS);
 

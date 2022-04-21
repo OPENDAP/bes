@@ -124,10 +124,6 @@ void FoDapCovJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerIn
 
         BESDEBUG("focovjson", "FoCovJsonTransmitter::send_data - Reading data into DataDDS" << endl);
 
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
         // The response object will manage loaded_dds
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.

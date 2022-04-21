@@ -49,13 +49,14 @@
 #include <BESDebug.h>
 #include "BESUtil.h"
 #include <BESInternalError.h>
+#include "RequestServiceTimer.h"
 
 #include "FoInstanceJsonTransform.h"
 #include "fojson_utils.h"
 
 using namespace std;
 
-#define MODULE "foJson"
+#define MODULE "bes"
 #define prolog string("FoJsonTransform::").append(__func__).append("() - ")
 
 #define ATTRIBUTE_SEPARATOR "."
@@ -277,8 +278,12 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
 {
     bool sentSomething = false;
 
-    throw_if_timeout_expired(prolog + " Ready to start streaming", __FILE__, __LINE__);
-    BESUtil::conditional_timeout_cancel();
+    // Verify the request hasn't exceeded bes_timeout.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + " Ready to start streaming", __FILE__, __LINE__);
+
+    // Now that we are ready to start streaming the response data we
+    // cancel any pending timeout alarm according to the configuration.
+    //BESUtil::conditional_timeout_cancel();
 
     // Open returned JSON object
     *strm << "{" << endl;
@@ -307,7 +312,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
                 libdap::BaseType *v = *vi;
                 BESDEBUG(FoInstanceJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
 
-                throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
 
                 if (sentSomething) {
                     *strm << ",";
