@@ -555,6 +555,15 @@ enum H5DataType
 };
 #endif
 
+/**
+ * @brief Get the HDF5 Fill Value as a string
+ *
+ * The idea here is that we need it as a string for the DMR++ XML.
+ *
+ * @param h5_type_id
+ * @param value
+ * @return The string representation of the value.
+ */
 string
 get_value_as_string(hid_t h5_type_id, const vector<char> &value)
 {
@@ -573,30 +582,12 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
                     else
                         oss << *(unsigned int*)(value.data());
                     break;
-#if 0
-                case 2:
-                    if (sign == H5T_SGN_2)
-                        return H5INT16;
-                    else
-                        return H5UINT16;
-                case 4:
-                    if (sign == H5T_SGN_2)
-                        return H5INT32;
-                    else
-                        return H5UINT32;
-#endif
                 case 8:
                     if (sign == H5T_SGN_2)
                         oss << *(int64_t *)(value.data());
                     else
                         oss << *(uint64_t *)(value.data());
                     break;
-#if 0
-                    if (sign == H5T_SGN_2)
-                        return H5INT64;
-                    else
-                        return H5UINT64;
-#endif
                 default:
                     throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
             };
@@ -616,12 +607,6 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
             break;
 
         case H5T_STRING:
-#if 0
-            if (H5Tis_variable_str(h5_type_id))
-                return H5VSTRING;
-            else
-                return H5FSTRING;
-#endif
         case H5T_REFERENCE:
         case H5T_COMPOUND:
         case H5T_ARRAY:

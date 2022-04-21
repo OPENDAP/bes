@@ -184,24 +184,24 @@ public:
         vector<char> value(sizeof(short));
         short v{1024};
         memcpy(value.data(), &v, sizeof(short));
-        DBG(cerr << "get_value_as_string(H5T_NATIVE_INT16_g, value): " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "1024");
+        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 16-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "1024");
     }
 
     void get_value_as_string_test_short_2() {
         vector<char> value(sizeof(short));
         short v{-1024};
         memcpy(value.data(), &v, sizeof(short));
-        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_SHORT_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_SHORT_g, value) == "-1024");
+        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 16-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "-1024");
     }
 
     void get_value_as_string_test_int() {
         vector<char> value(sizeof(int32_t));
         int32_t v{70000};
         memcpy(value.data(), &v, sizeof(int32_t));
-        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_SHORT_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_SHORT_g, value) == "70000");
+        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT32_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 32-bit integer value", get_value_as_string(H5T_NATIVE_INT32_g, value) == "70000");
     }
 
 
