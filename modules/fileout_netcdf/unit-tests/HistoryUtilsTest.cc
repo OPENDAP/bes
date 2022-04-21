@@ -39,7 +39,7 @@
 
 #include "history_utils.h"
 
-#include "bes_run_tests_cppunit.h"
+#include "run_tests_cppunit.h"
 #include "test_config.h"
 
 using namespace std;

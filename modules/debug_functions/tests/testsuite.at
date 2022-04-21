@@ -1,0 +1,59 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/debug_functions/tests testsuite])
+
+m4_include([../../handler_tests_macros.m4])
+
+dnl I moved this here as part of an attempt to migrate from the local 
+dnl handler_tests_macros.m4 to the shared copy on bes/modules. However,
+dnl I could not get most of the tests to work with that, so I'll leave
+dnl that project for another day... jhrg 12/23/15
+
+m4_define([AT_BESCMD_ABORT_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+    baseline=$input.baseline
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input || true], [0], [ignore], [stderr])
+        AT_CHECK([mv stderr $baseline.tmp])
+        ],
+        [
+	    dnl Use '|| true' and '0' for the return because abort returns
+	    dnl odd values on different machines (3.g., 134 on CentOS 6)
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input || true], [0], [ignore], [stderr])
+        AT_CHECK([grep -f $baseline stderr], [0], [ignore], [ignore])
+        AT_XFAIL_IF([test "$3" = "xfail"])
+        ])
+
+    AT_CLEANUP
+])
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/sleep.bescmd])
+
+AT_BESCMD_ABORT_TEST([bescmd/abort.bescmd], [xfail])
+
+dnl These all return errors, so even though the bescmd asks for a .dods
+dnl response, the tests can use diff on the return (an xml error doc).
+
+AT_BESCMD_RESPONSE_TEST([bescmd/internal_error.bescmd])
+
+dnl AT_BESCMD_ERROR_RESPONSE_TEST expects besstandalone to return 1 and not 0.
+
+AT_BESCMD_ERROR_RESPONSE_TEST([bescmd/internal_fatal_error.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([bescmd/syntax_user_error.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/forbidden_error.bescmd])
+AT_BESCMD_RESPONSE_TEST([bescmd/not_found_error.bescmd])
+
+dnl These tests are for the timeout feature. The first call should return
+dnl a valid response but the second should timeout, which currently means
+dnl the BES just exits
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/sum_until.bescmd])
+AT_BESCMD_RESPONSE_PATTERN_TEST([bescmd/sum_until2.bescmd], xfail)
+AT_BESCMD_RESPONSE_PATTERN_TEST([bescmd/sum_until3.bescmd], xfail)

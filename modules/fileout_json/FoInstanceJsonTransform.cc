@@ -283,7 +283,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
 
     // Now that we are ready to start streaming the response data we
     // cancel any pending timeout alarm according to the configuration.
-    //BESUtil::conditional_timeout_cancel();
+    BESUtil::conditional_timeout_cancel();
 
     // Open returned JSON object
     *strm << "{" << endl;
