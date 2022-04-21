@@ -151,10 +151,6 @@ void BESAsciiTransmit::send_dap4_csv_helper(ostream &out, DMR *dmr, const string
     // Verify the request hasn't exceeded bes_timeout.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Ready to start streaming", __FILE__, __LINE__);
 
-    // Now that we are ready to start building the response data we
-    // cancel any pending timeout alarm according to the configuration.
-    BESUtil::conditional_timeout_cancel();
-
     print_values_as_ascii(dmr, out);
     out << flush;
 }

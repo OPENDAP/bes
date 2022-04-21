@@ -442,7 +442,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Here" , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "preparing to stream " + fbt->name() , __FILE__, __LINE__);
 
             if (is_streamable()) {
                 // write the what's been written
@@ -556,7 +556,6 @@ throw_if_dap4_response_too_big(DMR *dmr)
  * top level of the DMR.
  */
 void FONcTransform::transform_dap4() {
-    BESUtil::conditional_timeout_cancel();
     BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
 
     FONcUtils::reset();
@@ -851,6 +850,9 @@ void FONcTransform::transform_dap4_no_group() {
         e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
+
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_no_group() - Writing data for variable:  " << fbt->name() << endl);
             fbt->write(_ncid);
@@ -1027,6 +1029,9 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
+
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_group() - Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);

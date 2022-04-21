@@ -41,6 +41,9 @@
 
 using namespace libdap;
 
+#define MODULE "fong"
+#define prolog string("FONgTransmitter::").append(__func__).append("() - ")
+
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
 
@@ -56,6 +59,8 @@ using namespace libdap;
 #include <DapFunctionUtils.h>
 
 #include <TheBESKeys.h>
+
+#include "RequestServiceTimer.h"
 
 #define FONG_TEMP_DIR "/tmp"
 #define FONG_GCS "WGS84"
@@ -155,6 +160,9 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     // now we need to read the data
     BESDEBUG("fong2", "GeoTiffTransmitter::send_data - reading data into DataDDS" << endl);
 
+    // Verify the request hasn't exceeded bes_timeout.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+
     try {
         // Handle *functional* constraint expressions specially
         if (bdds->get_ce().function_clauses()) {
@@ -181,6 +189,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
             // in the data if the variable has the send flag set.
             for (DDS::Vars_iter i = dds->var_begin(); i != dds->var_end(); i++) {
                 if ((*i)->send_p()) {
+                    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
                     (*i)->intern_data(bdds->get_ce(), *dds);
                 }
             }

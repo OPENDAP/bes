@@ -57,7 +57,7 @@
 using namespace std;
 
 #define MODULE "bes"
-#define prolog string("FoJsonTransform::").append(__func__).append("() - ")
+#define prolog string("FoInstanceJsonTransform::").append(__func__).append("() - ")
 
 #define ATTRIBUTE_SEPARATOR "."
 #define JSON_ORIGINAL_NAME "json_original_name"

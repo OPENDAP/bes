@@ -40,6 +40,9 @@
 using std::ostringstream;
 using std::istringstream;
 
+#define MODULE "bes"
+#define prolog string("FoDapJsonTransform::").append(__func__).append("() - ")
+
 #include <libdap/DDS.h>
 #include <libdap/Structure.h>
 #include <libdap/Constructor.h>
@@ -52,6 +55,9 @@ using std::istringstream;
 
 #include <BESDebug.h>
 #include <BESInternalError.h>
+
+#include "BESUtil.h"
+#include "RequestServiceTimer.h"
 
 #include <DapFunctionUtils.h>
 
@@ -350,6 +356,13 @@ void FoDapJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr,
         }
     }
 
+    // Verify the request hasn't exceeded bes_timeout.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + " Ready to start streaming", __FILE__, __LINE__);
+
+    // Now that we are ready to start streaming the response data we
+    // cancel any pending timeout alarm according to the configuration.
+    BESUtil::conditional_timeout_cancel();
+
     // Declare this node
     *strm << indent << "{" << endl;
     string child_indent = indent + _indent_increment;
@@ -376,6 +389,9 @@ void FoDapJsonTransform::transform_node_worker(ostream *strm, vector<libdap::Bas
     for (std::vector<libdap::BaseType *>::size_type l = 0; l < leaves.size(); l++) {
         libdap::BaseType *v = leaves[l];
         BESDEBUG(FoDapJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
+
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+
         if (l > 0) {
             *strm << ",";
             *strm << endl;
@@ -390,6 +406,9 @@ void FoDapJsonTransform::transform_node_worker(ostream *strm, vector<libdap::Bas
     if (nodes.size() > 0) *strm << endl;
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
+
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+
         transform(strm, v, indent + _indent_increment, sendData);
     }
     if (nodes.size() > 0) *strm << endl << indent;
