@@ -529,32 +529,34 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
 }
 
 
-#if 0
+#if 1
 
-herr_t get_fill_value(hid_t dataset_id, hid_t type_id,  H5D_fill_value_t *status, void *value)
+string get_hdf5_fill_value(hid_t dataset_id)
 {
-    hid_t plist_id;
 
-    /* Get creation properties list */
-    if ( (plist_id = H5Dget_create_plist(dataset_id)) < 0 )
-        goto out;
 
-    /* How the fill value is defined? */
-    if ( (H5Pfill_value_defined(plist_id, status)) < 0 )
-        goto out;
+    // Suppress errors to stderr.
+    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
 
-    if ( *status == H5D_FILL_VALUE_USER_DEFINED ) {
-        if ( H5Pget_fill_value(plist_id, type_id, value) < 0 )
-            goto out;
+    // Get creation properties list
+    hid_t plist_id = H5Dget_create_plist(dataset_id);
+    if (plist_id  < 0 )
+        throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
+
+    try {
+        hid_t dtypeid = H5Dget_type(dataset_id);
+        if (dtypeid < 0)
+            throw BESInternalError("Unable to get HDF5 dataset type id.", __FILE__, __LINE__);
+
+        void *value;
+        if (H5Pget_fill_value(plist_id, dtypeid, value) < 0)
+            throw BESInternalError("Unable to access HDF5 Fillvalue.", __FILE__, __LINE__);
+
+        H5Pclose(plist_id);
     }
-
-    if ( H5Pclose( plist_id ) < 0 )
-        goto out;
-
-    return 0;
-
-    out:
-    return -1;
+    catch (...) {
+        H5Pclose(plist_id);
+    }
 }
 
 #endif
