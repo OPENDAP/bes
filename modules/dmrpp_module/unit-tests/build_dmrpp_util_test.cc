@@ -180,6 +180,31 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_INT8_g, value) == "1");
     }
 
+    void get_value_as_string_test_short() {
+        vector<char> value(sizeof(short));
+        short v{1024};
+        memcpy(value.data(), &v, sizeof(short));
+        DBG(cerr << "get_value_as_string(H5T_NATIVE_INT16_g, value): " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "1024");
+    }
+
+    void get_value_as_string_test_short_2() {
+        vector<char> value(sizeof(short));
+        short v{-1024};
+        memcpy(value.data(), &v, sizeof(short));
+        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_SHORT_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_SHORT_g, value) == "-1024");
+    }
+
+    void get_value_as_string_test_int() {
+        vector<char> value(sizeof(int32_t));
+        int32_t v{70000};
+        memcpy(value.data(), &v, sizeof(int32_t));
+        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_SHORT_g, value) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_SHORT_g, value) == "70000");
+    }
+
+
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
         CPPUNIT_TEST(file_and_dmr_test);
@@ -194,6 +219,9 @@ public:
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
 
         CPPUNIT_TEST(get_value_as_string_test_char);
+        CPPUNIT_TEST(get_value_as_string_test_short);
+        CPPUNIT_TEST_FAIL(get_value_as_string_test_short_2);
+        CPPUNIT_TEST(get_value_as_string_test_int);
 
     CPPUNIT_TEST_SUITE_END();
 };
