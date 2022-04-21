@@ -56,22 +56,24 @@ private:
     BESDataHandlerInterface d_xml_interface_dhi;
 
 protected:
-    virtual void build_data_request_plan();
+    void build_data_request_plan() override;
 
-    virtual void execute_data_request_plan();
+    void execute_data_request_plan() override;
 
-    virtual void transmit_data();
+    void transmit_data() override;
 
-    virtual void log_status();
+    void log_status() override;
 
-    virtual void clean();
+    void clean() override;
+
+    void log_the_command(); // added for just this code. jhrg 4/20/22
 
 public:
     BESXMLInterface(const std::string &cmd, std::ostream *strm);
 
-    virtual ~BESXMLInterface();
+    ~BESXMLInterface() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESXMLInterface_h_

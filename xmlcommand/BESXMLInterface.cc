@@ -85,9 +85,9 @@ void BESXMLInterface::build_data_request_plan()
     //
     // LIBXML_TEST_VERSION
 
-    xmlDoc *doc = NULL;
-    xmlNode *root_element = NULL;
-    xmlNode *current_node = NULL;
+    xmlDoc *doc = nullptr;
+    xmlNode *root_element = nullptr;
+    xmlNode *current_node = nullptr;
 
     try {
         // set the default error function to my own
@@ -95,10 +95,10 @@ void BESXMLInterface::build_data_request_plan()
         xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(d_xml_document.c_str(), d_xml_document.size(), "" /* base URL */,
-                            NULL /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+        doc = xmlReadMemory(d_xml_document.c_str(), (int)d_xml_document.size(), "" /* base URL */,
+                            nullptr /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
 
-        if (doc == NULL) {
+        if (doc == nullptr) {
             string err = "Problem parsing the request xml document:\n";
             bool isfirst = true;
             vector<string>::const_iterator i = parseerrors.begin();
@@ -225,6 +225,70 @@ void BESXMLInterface::build_data_request_plan()
     BESDEBUG("bes", "Done building request plan" << endl);
 }
 
+/**
+ * @brief Log information about the command
+ */
+void BESXMLInterface::log_the_command()
+{
+    // In 'verbose' logging mode, log all the commands.
+    VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
+
+    // This is the main log entry when the server is not in 'verbose' mode.
+    // There are two ways we can do this, one writes a log line for only the
+    // get commands, the other write the set container, define and get commands.
+    // TODO Make this configurable? jhrg 11/14/17
+#ifdef LOG_ONLY_GET_COMMANDS
+    // Special logging action for the 'get' command. In non-verbose logging mode,
+    // only log the get command.
+    if (d_dhi_ptr->action.find("get.") != string::npos) {
+
+        string log_delim="|&|"; //",";
+
+        string new_log_info;
+
+        // If the OLFS sent its log info, integrate that into the log output
+        bool found = false;
+        string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
+        if(found){
+            new_log_info.append("OLFS").append(log_delim).append(olfs_log_line).append(log_delim);
+            new_log_info.append("BES").append(log_delim);
+        }
+
+        new_log_info.append(d_dhi_ptr->action);
+
+        if (!d_dhi_ptr->data[RETURN_CMD].empty())
+            new_log_info.append(log_delim).append(d_dhi_ptr->data[RETURN_CMD]);
+
+        // Assume this is DAP and thus there is at most one container. Log a warning if that's
+        // not true. jhrg 11/14/17
+        BESContainer *c = *(d_dhi_ptr->containers.begin());
+        if (c) {
+            if (!c->get_real_name().empty()) new_log_info.append(log_delim).append(c->get_real_name());
+
+            if (!c->get_constraint().empty()) {
+                new_log_info.append(log_delim).append(c->get_constraint());
+            }
+            else {
+                if (!c->get_dap4_constraint().empty()) new_log_info.append(log_delim).append(c->get_dap4_constraint());
+                if (!c->get_dap4_function().empty()) new_log_info.append(log_delim).append(c->get_dap4_function());
+            }
+        }
+
+        REQUEST_LOG(new_log_info << endl);
+
+        if (d_dhi_ptr->containers.size() > 1)
+            ERROR_LOG("The previous command had multiple containers defined, but only the first was logged.");
+    }
+#else
+    if (!BESLog::TheLog()->is_verbose()) {
+            if (d_dhi_ptr->action.find("set.context") == string::npos
+                && d_dhi_ptr->action.find("show.catalog") == string::npos) {
+                LOG(d_dhi_ptr->data[LOG_INFO] << endl);
+            }
+        }
+#endif
+}
+
 /** @brief Execute the data request plan
  */
 void BESXMLInterface::execute_data_request_plan()
@@ -232,70 +296,11 @@ void BESXMLInterface::execute_data_request_plan()
     vector<BESXMLCommand *>::iterator i = d_xml_cmd_list.begin();
     vector<BESXMLCommand *>::iterator e = d_xml_cmd_list.end();
     for (; i != e; i++) {
-        (*i)->prep_request();   // TODO remove this if possible jhrg 1/7/19
+        (*i)->prep_request();
 
         d_dhi_ptr = &(*i)->get_xmlcmd_dhi();
 
-        // In 'verbose' logging mode, log all the commands.
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] executing" << endl);
-
-        // This is the main log entry when the server is not in 'verbose' mode.
-        // There are two ways we can do this, one writes a log line for only the
-        // get commands, the other write the set container, define and get commands.
-        // TODO Make this configurable? jhrg 11/14/17
-#ifdef LOG_ONLY_GET_COMMANDS
-        // Special logging action for the 'get' command. In non-verbose logging mode,
-        // only log the get command.
-        if (d_dhi_ptr->action.find("get.") != string::npos) {
-
-            string log_delim="|&|"; //",";
-
-            string new_log_info = "";
-
-            // If the OLFS sent its log info, integrate that into the log output
-            bool found = false;
-            string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
-            if(found){
-                new_log_info.append("OLFS").append(log_delim).append(olfs_log_line).append(log_delim);
-                new_log_info.append("BES").append(log_delim);
-            }
-
-            new_log_info.append(d_dhi_ptr->action);
-
-
-            if (!d_dhi_ptr->data[RETURN_CMD].empty())
-                new_log_info.append(log_delim).append(d_dhi_ptr->data[RETURN_CMD]);
-
-            // Assume this is DAP and thus there is at most one container. Log a warning if that's
-            // not true. jhrg 11/14/17
-            BESContainer *c = *(d_dhi_ptr->containers.begin());
-            if (c) {
-                if (!c->get_real_name().empty()) new_log_info.append(log_delim).append(c->get_real_name());
-
-                if (!c->get_constraint().empty()) {
-                    new_log_info.append(log_delim).append(c->get_constraint());
-                }
-                else {
-                    if (!c->get_dap4_constraint().empty()) new_log_info.append(log_delim).append(c->get_dap4_constraint());
-                    if (!c->get_dap4_function().empty()) new_log_info.append(log_delim).append(c->get_dap4_function());
-                }
-            }
-
-            REQUEST_LOG(new_log_info << endl);
-
-            if (d_dhi_ptr->containers.size() > 1)
-                ERROR_LOG("The previous command had multiple containers defined, but only the was logged.");
-        }
-#else
-        if (!BESLog::TheLog()->is_verbose()) {
-            if (d_dhi_ptr->action.find("set.context") == string::npos
-                && d_dhi_ptr->action.find("show.catalog") == string::npos) {
-                LOG(d_dhi_ptr->data[LOG_INFO] << endl);
-            }
-        }
-#endif
-
-        ///////////
+        log_the_command();
 
         // Here's where we could look at the dynamic type to do something different
         // for a new kind of XMLCommand (e.g., SimpleXMLCommand). for that new command,
@@ -303,8 +308,6 @@ void BESXMLInterface::execute_data_request_plan()
         // it. This would eliminate the ResponseHandlers. However, that might not be the
         // best way to handle the 'get' command, which uses a different ResponseHandler
         // for each different 'type' of thing it will 'get'. jhrg 3/14/18
-
-        //////////
 
         if (!d_dhi_ptr->response_handler)
             throw BESInternalError(string("The response handler '") + d_dhi_ptr->action + "' does not exist", __FILE__,

@@ -117,12 +117,12 @@ class BESDataHandlerInterface;
  */
 class BESInterface: public BESObj {
 private:
-    std::ostream *d_strm;
-    int d_timeout_from_keys; ///< Command timeout; can be overridden using setContext
+    std::ostream *d_strm {nullptr};
+    int d_timeout_from_keys {0}; ///< Command timeout; can be overridden using setContext
 
 protected:
-    BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
-    BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
+    BESDataHandlerInterface *d_dhi_ptr {nullptr}; ///< Allocated by the child class
+    BESTransmitter *d_transmitter {nullptr};  ///< The Transmitter to use for the result
 
     virtual void end_request();
 
@@ -141,6 +141,9 @@ protected:
     ~BESInterface() override = default;
 
     static int handleException(const BESError &e, BESDataHandlerInterface &dhi);
+
+    void set_bes_timeout();
+    void clear_bes_timeout();
 
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control
