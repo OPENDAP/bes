@@ -33,6 +33,7 @@
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
+#include <H5Tpublic.h>
 
 #include "h5common.h"   // This is in the hdf5 handler
 
@@ -528,13 +529,116 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
     return status != H5D_FILL_VALUE_UNDEFINED;
 }
 
+#if 0
+enum H5DataType
+{
+    H5CHAR,
+    H5UCHAR,
 
-#if 1
+    H5INT16,
+    H5UINT16,
+    H5INT32,
+    H5UINT32,
+    H5INT64,
+    H5UINT64,
 
+    H5FLOAT32,
+    H5FLOAT64,
+
+    H5FSTRING,
+    H5VSTRING,
+
+    H5REFERENCE,
+    H5COMPOUND,
+    H5ARRAY,
+    H5UNSUPTYPE
+};
+#endif
+
+string
+get_value_as_string(hid_t h5_type_id, const vector<char> &value)
+{
+    ostringstream oss;
+    H5T_class_t class_type = H5Tget_class(h5_type_id);
+    int sign;
+    switch (class_type) {
+        case H5T_INTEGER:
+            sign = H5Tget_sign(h5_type_id);
+            switch (H5Tget_size(h5_type_id)) {
+                case 1:
+                case 2:
+                case 4:
+                    if (sign == H5T_SGN_2)
+                        oss << *(int*)(value.data());
+                    else
+                        oss << *(unsigned int*)(value.data());
+                    break;
+#if 0
+                case 2:
+                    if (sign == H5T_SGN_2)
+                        return H5INT16;
+                    else
+                        return H5UINT16;
+                case 4:
+                    if (sign == H5T_SGN_2)
+                        return H5INT32;
+                    else
+                        return H5UINT32;
+#endif
+                case 8:
+                    if (sign == H5T_SGN_2)
+                        oss << *(int64_t *)(value.data());
+                    else
+                        oss << *(uint64_t *)(value.data());
+                    break;
+#if 0
+                    if (sign == H5T_SGN_2)
+                        return H5INT64;
+                    else
+                        return H5UINT64;
+#endif
+                default:
+                    throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
+            };
+            break;
+
+        case H5T_FLOAT:
+            switch (H5Tget_size(h5_type_id)) {
+                case 4:
+                    oss << *(float*)(value.data());
+                    break;
+                case 8:
+                    oss << *(double*)(value.data());
+                    break;
+                default:
+                    throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
+            };
+            break;
+
+        case H5T_STRING:
+#if 0
+            if (H5Tis_variable_str(h5_type_id))
+                return H5VSTRING;
+            else
+                return H5FSTRING;
+#endif
+        case H5T_REFERENCE:
+        case H5T_COMPOUND:
+        case H5T_ARRAY:
+        default:
+            throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
+    }
+
+    return oss.str();
+}
+
+/**
+ * @brief Get the value of the File Value as a string
+ * @param dataset_id
+ * @return The string representation of the HDF5 Fill Value
+ */
 string get_hdf5_fill_value(hid_t dataset_id)
 {
-
-
     // Suppress errors to stderr.
     H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
 
@@ -544,22 +648,23 @@ string get_hdf5_fill_value(hid_t dataset_id)
         throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
 
     try {
-        hid_t dtypeid = H5Dget_type(dataset_id);
-        if (dtypeid < 0)
+        hid_t dtype_id = H5Dget_type(dataset_id);
+        if (dtype_id < 0)
             throw BESInternalError("Unable to get HDF5 dataset type id.", __FILE__, __LINE__);
 
-        void *value;
-        if (H5Pget_fill_value(plist_id, dtypeid, value) < 0)
+        vector<char> value(H5Tget_size(dtype_id));
+        if (H5Pget_fill_value(plist_id, dtype_id, &value[0]) < 0)
             throw BESInternalError("Unable to access HDF5 Fillvalue.", __FILE__, __LINE__);
 
         H5Pclose(plist_id);
+
+        return get_value_as_string(dtype_id, value);
     }
     catch (...) {
         H5Pclose(plist_id);
+        throw;
     }
 }
-
-#endif
 
 /**
  * @brief Get chunk information for a HDF5 dataset in a file

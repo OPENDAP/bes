@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <string>
+#include <vector>
 
 #include <unistd.h>
 
@@ -57,6 +58,7 @@ namespace build_dmrpp_util {
 // Functions not listed in the build_dmrpp_util header
 
 bool is_hdf5_fill_value_defined(hid_t dataset_id);
+string get_value_as_string(hid_t h5_type_id, const vector<char> &value);
 
 class build_dmrpp_util_test : public CppUnit::TestFixture {
 private:
@@ -173,6 +175,11 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Compact, all fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
+    void get_value_as_string_test_char() {
+        vector<char> value { 1 };
+        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_INT8_g, value) == "1");
+    }
+
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
         CPPUNIT_TEST(file_and_dmr_test);
@@ -185,6 +192,8 @@ public:
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_some_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_cont_some_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
+
+        CPPUNIT_TEST(get_value_as_string_test_char);
 
     CPPUNIT_TEST_SUITE_END();
 };
