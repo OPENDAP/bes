@@ -2095,6 +2095,7 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     }
 
     // Read Variable info.
+    // TODO: We may need to make the cvar first for coverage support.
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
