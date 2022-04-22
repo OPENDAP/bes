@@ -4,6 +4,58 @@
     <Dimension name="Northern_Hemisphere_XDim" size="721"/>
     <Dimension name="Southern_Hemisphere_YDim" size="721"/>
     <Dimension name="Southern_Hemisphere_XDim" size="721"/>
+    <Float64 name="Northern_Hemisphere_lon">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Northern_Hemisphere_lat">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_lon">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_lat">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.0</Value>
+        </Attribute>
+    </Float64>
     <Byte name="Northern_Hemisphere_Flags_NorthernDaily">
         <Dim name="/Northern_Hemisphere_YDim"/>
         <Dim name="/Northern_Hemisphere_XDim"/>
@@ -226,58 +278,6 @@
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <Value>GeoX</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Northern_Hemisphere_lon">
-        <Dim name="/Northern_Hemisphere_YDim"/>
-        <Dim name="/Northern_Hemisphere_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-180.0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>180.0</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Northern_Hemisphere_lat">
-        <Dim name="/Northern_Hemisphere_YDim"/>
-        <Dim name="/Northern_Hemisphere_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-90.0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>90.0</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Southern_Hemisphere_lon">
-        <Dim name="/Southern_Hemisphere_YDim"/>
-        <Dim name="/Southern_Hemisphere_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-180.0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>180.0</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Southern_Hemisphere_lat">
-        <Dim name="/Southern_Hemisphere_YDim"/>
-        <Dim name="/Southern_Hemisphere_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-90.0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>90.0</Value>
         </Attribute>
     </Float64>
     <Attribute name="CoreMetadata" type="String">

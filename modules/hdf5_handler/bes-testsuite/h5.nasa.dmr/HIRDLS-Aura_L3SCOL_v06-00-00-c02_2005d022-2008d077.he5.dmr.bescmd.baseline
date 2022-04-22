@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5">
-    <Dimension name="nTimes" size="1151"/>
-    <Dimension name="YDim" size="73"/>
     <Dimension name="XDim" size="180"/>
+    <Dimension name="YDim" size="73"/>
+    <Dimension name="nTimes" size="1151"/>
+    <Float32 name="XDim">
+        <Dim name="/XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/HIRDLS/XDim</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="YDim">
+        <Dim name="/YDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/HIRDLS/YDim</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nTimes">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/HIRDLS/nTimes</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
     <Int32 name="Day">
         <Dim name="/nTimes"/>
         <Attribute name="_FillValue" type="Int32">
@@ -256,63 +313,6 @@
             <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="XDim">
-        <Dim name="/XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/HIRDLS/XDim</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="YDim">
-        <Dim name="/YDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/HIRDLS/YDim</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nTimes">
-        <Dim name="/nTimes"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 1993-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/HIRDLS/nTimes</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

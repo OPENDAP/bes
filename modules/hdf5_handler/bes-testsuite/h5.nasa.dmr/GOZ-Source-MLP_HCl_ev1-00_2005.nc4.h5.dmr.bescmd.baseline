@@ -1,17 +1,188 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5">
-    <Dimension name="HALOE_time" size="12"/>
-    <Dimension name="HALOE_lev" size="25"/>
-    <Dimension name="HALOE_lat" size="18"/>
-    <Dimension name="HALOE_dayInBin" size="31"/>
-    <Dimension name="ACE_FTS_time" size="12"/>
-    <Dimension name="ACE_FTS_lev" size="25"/>
-    <Dimension name="ACE_FTS_lat" size="18"/>
     <Dimension name="ACE_FTS_dayInBin" size="31"/>
-    <Dimension name="Aura_MLS_time" size="12"/>
-    <Dimension name="Aura_MLS_lev" size="25"/>
-    <Dimension name="Aura_MLS_lat" size="18"/>
+    <Dimension name="ACE_FTS_lat" size="18"/>
+    <Dimension name="ACE_FTS_lev" size="25"/>
+    <Dimension name="ACE_FTS_time" size="12"/>
     <Dimension name="Aura_MLS_dayInBin" size="31"/>
+    <Dimension name="Aura_MLS_lat" size="18"/>
+    <Dimension name="Aura_MLS_lev" size="25"/>
+    <Dimension name="Aura_MLS_time" size="12"/>
+    <Dimension name="HALOE_dayInBin" size="31"/>
+    <Dimension name="HALOE_lat" size="18"/>
+    <Dimension name="HALOE_lev" size="25"/>
+    <Dimension name="HALOE_time" size="12"/>
+    <Float32 name="ACE_FTS_dayInBin">
+        <Dim name="/ACE_FTS_dayInBin"/>
+    </Float32>
+    <Float32 name="ACE_FTS_lat">
+        <Dim name="/ACE_FTS_lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Center latitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ACE-FTS/lat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ACE_FTS_lev">
+        <Dim name="/ACE_FTS_lev"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Value of vertical coordinate (Pressure)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ACE-FTS/lev</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="ACE_FTS_time">
+        <Dim name="/ACE_FTS_time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>days since 1950-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Day number referenced to 15th day of the month</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ACE-FTS/time</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="Aura_MLS_dayInBin">
+        <Dim name="/Aura_MLS_dayInBin"/>
+    </Float32>
+    <Float32 name="Aura_MLS_lat">
+        <Dim name="/Aura_MLS_lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Center latitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aura MLS/lat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Aura_MLS_lev">
+        <Dim name="/Aura_MLS_lev"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Value of vertical coordinate (Pressure)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aura MLS/lev</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="Aura_MLS_time">
+        <Dim name="/Aura_MLS_time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>days since 1950-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Day number referenced to 15th day of the month</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Aura MLS/time</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="HALOE_dayInBin">
+        <Dim name="/HALOE_dayInBin"/>
+    </Float32>
+    <Float32 name="HALOE_lat">
+        <Dim name="/HALOE_lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Center latitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HALOE/lat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="HALOE_lev">
+        <Dim name="/HALOE_lev"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Value of vertical coordinate (Pressure)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HALOE/lev</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="HALOE_time">
+        <Dim name="/HALOE_time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>days since 1950-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Day number referenced to 15th day of the month</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HALOE/time</Value>
+        </Attribute>
+    </Int32>
     <Float32 name="HALOE_lat_max">
         <Dim name="/HALOE_time"/>
         <Dim name="/HALOE_lev"/>
@@ -1307,177 +1478,6 @@
         <Map name="/Aura_MLS_time"/>
         <Map name="/Aura_MLS_lev"/>
         <Map name="/Aura_MLS_lat"/>
-    </Int32>
-    <Float32 name="ACE_FTS_dayInBin">
-        <Dim name="/ACE_FTS_dayInBin"/>
-    </Float32>
-    <Float32 name="ACE_FTS_lat">
-        <Dim name="/ACE_FTS_lat"/>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Center latitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ACE-FTS/lat</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ACE_FTS_lev">
-        <Dim name="/ACE_FTS_lev"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Value of vertical coordinate (Pressure)</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ACE-FTS/lev</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="ACE_FTS_time">
-        <Dim name="/ACE_FTS_time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>days since 1950-01-01</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Day number referenced to 15th day of the month</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ACE-FTS/time</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="Aura_MLS_dayInBin">
-        <Dim name="/Aura_MLS_dayInBin"/>
-    </Float32>
-    <Float32 name="Aura_MLS_lat">
-        <Dim name="/Aura_MLS_lat"/>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Center latitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Aura MLS/lat</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Aura_MLS_lev">
-        <Dim name="/Aura_MLS_lev"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Value of vertical coordinate (Pressure)</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Aura MLS/lev</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="Aura_MLS_time">
-        <Dim name="/Aura_MLS_time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>days since 1950-01-01</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Day number referenced to 15th day of the month</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Aura MLS/time</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="HALOE_dayInBin">
-        <Dim name="/HALOE_dayInBin"/>
-    </Float32>
-    <Float32 name="HALOE_lat">
-        <Dim name="/HALOE_lat"/>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Center latitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HALOE/lat</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="HALOE_lev">
-        <Dim name="/HALOE_lev"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Value of vertical coordinate (Pressure)</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HALOE/lev</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="HALOE_time">
-        <Dim name="/HALOE_time"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>days since 1950-01-01</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Day number referenced to 15th day of the month</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HALOE/time</Value>
-        </Attribute>
     </Int32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.5</Value>

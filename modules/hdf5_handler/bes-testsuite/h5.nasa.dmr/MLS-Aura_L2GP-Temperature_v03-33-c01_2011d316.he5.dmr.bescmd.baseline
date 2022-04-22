@@ -2,8 +2,116 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5">
     <Dimension name="Temperature_Latitude" size="3495"/>
     <Dimension name="Temperature_Pressure" size="55"/>
-    <Dimension name="WMOTPPressure_GEOS5_Latitude" size="3495"/>
     <Dimension name="WMOTPPressure_MLS_Latitude" size="3495"/>
+    <Dimension name="WMOTPPressure_GEOS5_Latitude" size="3495"/>
+    <Float32 name="Temperature_Latitude">
+        <Dim name="/Temperature_Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Temperature_Pressure">
+        <Dim name="/Temperature_Pressure"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Pressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="WMOTPPressure_MLS_Latitude">
+        <Dim name="/WMOTPPressure_MLS_Latitude"/>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="WMOTPPressure_GEOS5_Latitude">
+        <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="Temperature_Convergence">
         <Dim name="/Temperature_Latitude"/>
         <Attribute name="units" type="String">
@@ -1040,114 +1148,6 @@
             <Value>/HDFEOS INFORMATION/xmlmetadata</Value>
         </Attribute>
     </String>
-    <Float32 name="Temperature_Latitude">
-        <Dim name="/Temperature_Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Temperature_Pressure">
-        <Dim name="/Temperature_Pressure"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Pressure</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="WMOTPPressure_MLS_Latitude">
-        <Dim name="/WMOTPPressure_MLS_Latitude"/>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="WMOTPPressure_GEOS5_Latitude">
-        <Dim name="/WMOTPPressure_GEOS5_Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

@@ -1,22 +1,280 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5">
-    <Dimension name="SpectralRange_1222nm" size="75"/>
-    <Dimension name="Scans" size="46546"/>
-    <Dimension name="SpectralRange_2095nm" size="121"/>
-    <Dimension name="SpectralRange_1731nm" size="131"/>
     <Dimension name="CAR_Viewing_Angles" size="361"/>
-    <Dimension name="SpectralRange_1275nm" size="84"/>
-    <Dimension name="SpectralRange_382nm" size="21"/>
     <Dimension name="CentralWavelength" size="14"/>
-    <Dimension name="SpectralRange_677nm" size="71"/>
-    <Dimension name="SpectralRange_339nm" size="21"/>
-    <Dimension name="SpectralRange_1559nm" size="95"/>
-    <Dimension name="SpectralRange_2196nm" size="121"/>
+    <Dimension name="Scans" size="46546"/>
     <Dimension name="SpectralRange_1032nm" size="86"/>
-    <Dimension name="SpectralRange_480nm" size="46"/>
-    <Dimension name="SpectralRange_2291nm" size="121"/>
+    <Dimension name="SpectralRange_1222nm" size="75"/>
+    <Dimension name="SpectralRange_1275nm" size="84"/>
+    <Dimension name="SpectralRange_1559nm" size="95"/>
     <Dimension name="SpectralRange_1649nm" size="110"/>
+    <Dimension name="SpectralRange_1731nm" size="131"/>
+    <Dimension name="SpectralRange_2095nm" size="121"/>
+    <Dimension name="SpectralRange_2196nm" size="121"/>
+    <Dimension name="SpectralRange_2291nm" size="121"/>
+    <Dimension name="SpectralRange_339nm" size="21"/>
+    <Dimension name="SpectralRange_382nm" size="21"/>
+    <Dimension name="SpectralRange_480nm" size="46"/>
+    <Dimension name="SpectralRange_677nm" size="71"/>
     <Dimension name="SpectralRange_873nm" size="76"/>
+    <Float32 name="CAR_Viewing_Angles">
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR viewing angles</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CAR_Viewing_Angles</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CAR_Viewing_Angles</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CentralWavelength">
+        <Dim name="/CentralWavelength"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR Central Wavelength</Value>
+        </Attribute>
+        <Attribute name="unit" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CentralWavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CentralWavelength</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Scans">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scan line count from data start</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scans</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Scans</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1032nm">
+        <Dim name="/SpectralRange_1032nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch6 1032nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1032nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1032nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1222nm">
+        <Dim name="/SpectralRange_1222nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch7 1222nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1222nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1222nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1275nm">
+        <Dim name="/SpectralRange_1275nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch8 1275nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1275nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1275nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1559nm">
+        <Dim name="/SpectralRange_1559nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch9 1559nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1559nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1559nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1649nm">
+        <Dim name="/SpectralRange_1649nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch10 1649nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1649nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1649nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1731nm">
+        <Dim name="/SpectralRange_1731nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch11 1731nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1731nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1731nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2095nm">
+        <Dim name="/SpectralRange_2095nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch12 2095nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2095nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2095nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2196nm">
+        <Dim name="/SpectralRange_2196nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch13 2196nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2196nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2196nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2291nm">
+        <Dim name="/SpectralRange_2291nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch14 2291nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2291nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2291nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_339nm">
+        <Dim name="/SpectralRange_339nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch1 339nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_339nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_339nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_382nm">
+        <Dim name="/SpectralRange_382nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch2 382nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_382nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_382nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_480nm">
+        <Dim name="/SpectralRange_480nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch3 480nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_480nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_480nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_677nm">
+        <Dim name="/SpectralRange_677nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch4 677nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_677nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_677nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_873nm">
+        <Dim name="/SpectralRange_873nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch5 873nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_873nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_873nm</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="SRF_1222nm">
         <Dim name="/SpectralRange_1222nm"/>
         <Attribute name="long_name" type="String">
@@ -920,264 +1178,6 @@
             <Value>/_nc4_non_coord_SRF_873nm</Value>
         </Attribute>
         <Map name="/SpectralRange_873nm"/>
-    </Float32>
-    <Float32 name="CAR_Viewing_Angles">
-        <Dim name="/CAR_Viewing_Angles"/>
-        <Attribute name="long_name" type="String">
-            <Value>CAR viewing angles</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CAR_Viewing_Angles</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/CAR_Viewing_Angles</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="CentralWavelength">
-        <Dim name="/CentralWavelength"/>
-        <Attribute name="long_name" type="String">
-            <Value>CAR Central Wavelength</Value>
-        </Attribute>
-        <Attribute name="unit" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CentralWavelength</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/CentralWavelength</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Scans">
-        <Dim name="/Scans"/>
-        <Attribute name="long_name" type="String">
-            <Value>Scan line count from data start</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Scans</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Scans</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1032nm">
-        <Dim name="/SpectralRange_1032nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch6 1032nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1032nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1032nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1222nm">
-        <Dim name="/SpectralRange_1222nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch7 1222nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1222nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1222nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1275nm">
-        <Dim name="/SpectralRange_1275nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch8 1275nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1275nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1275nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1559nm">
-        <Dim name="/SpectralRange_1559nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch9 1559nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1559nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1559nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1649nm">
-        <Dim name="/SpectralRange_1649nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch10 1649nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1649nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1649nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_1731nm">
-        <Dim name="/SpectralRange_1731nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch11 1731nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_1731nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_1731nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_2095nm">
-        <Dim name="/SpectralRange_2095nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch12 2095nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_2095nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_2095nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_2196nm">
-        <Dim name="/SpectralRange_2196nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch13 2196nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_2196nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_2196nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_2291nm">
-        <Dim name="/SpectralRange_2291nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch14 2291nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_2291nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_2291nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_339nm">
-        <Dim name="/SpectralRange_339nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch1 339nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_339nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_339nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_382nm">
-        <Dim name="/SpectralRange_382nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch2 382nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_382nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_382nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_480nm">
-        <Dim name="/SpectralRange_480nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch3 480nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_480nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_480nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_677nm">
-        <Dim name="/SpectralRange_677nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch4 677nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_677nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_677nm</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SpectralRange_873nm">
-        <Dim name="/SpectralRange_873nm"/>
-        <Attribute name="long_name" type="String">
-            <Value>SpectralRange for CAR ch5 873nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SpectralRange_873nm</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SpectralRange_873nm</Value>
-        </Attribute>
     </Float32>
     <Attribute name="title" type="String">
         <Value>Cloud Absorption Radiometer (CAR) Level-1C NetCDF data</Value>

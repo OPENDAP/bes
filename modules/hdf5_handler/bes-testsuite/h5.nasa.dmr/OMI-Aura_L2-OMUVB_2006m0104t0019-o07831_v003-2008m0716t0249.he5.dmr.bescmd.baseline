@@ -2,6 +2,68 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMUVB_2006m0104t0019-o07831_v003-2008m0716t0249.he5">
     <Dimension name="nTimes" size="1643"/>
     <Dimension name="nXtrack" size="60"/>
+    <Float32 name="Latitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="CSErythemalDailyDose">
         <Dim name="/nTimes"/>
         <Dim name="/nXtrack"/>
@@ -1012,68 +1074,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5">
-    <Dimension name="nlon" size="1440"/>
     <Dimension name="nlat" size="720"/>
     <Dimension name="nlayer" size="28"/>
+    <Dimension name="nlon" size="1440"/>
+    <Float32 name="nlat">
+        <Dim name="/nlat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlayer">
+        <Dim name="/nlayer"/>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>up</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlon">
+        <Dim name="/nlon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="fractionQuality2">
         <Dim name="/nlon"/>
         <Dim name="/nlat"/>
@@ -375,30 +399,6 @@
         <Map name="/nlayer"/>
         <Map name="/nlon"/>
         <Map name="/nlat"/>
-    </Float32>
-    <Float32 name="nlat">
-        <Dim name="/nlat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nlayer">
-        <Dim name="/nlayer"/>
-        <Attribute name="units" type="String">
-            <Value>km</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>Z</Value>
-        </Attribute>
-        <Attribute name="positive" type="String">
-            <Value>up</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nlon">
-        <Dim name="/nlon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
     </Float32>
     <Attribute name="FileHeader" type="String">
         <Value>DOI=10.5067/GPM/GMI/MONTH/3A;

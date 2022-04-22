@@ -2,6 +2,60 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MLS-Aura_L2GP-BrO_v02-23-c01_2010d255.he5">
     <Dimension name="Latitude" size="3495"/>
     <Dimension name="Pressure" size="37"/>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure">
+        <Dim name="/Pressure"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Pressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nLevels</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="Convergence">
         <Dim name="/Latitude"/>
         <Attribute name="units" type="String">
@@ -358,60 +412,6 @@
             <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure">
-        <Dim name="/Pressure"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Pressure</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nLevels</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

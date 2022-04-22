@@ -2,6 +2,44 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5">
     <Dimension name="nscan" size="2015"/>
     <Dimension name="npix" size="243"/>
+    <Float32 name="Latitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lat</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npix"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lon</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Longitude</Value>
+        </Attribute>
+    </Float32>
     <Int16 name="res_c2">
         <Dim name="/nscan"/>
         <Dim name="/npix"/>
@@ -461,44 +499,6 @@
         <Map name="/Longitude"/>
         <Map name="/Latitude"/>
     </Int16>
-    <Float32 name="Latitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npix"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>Lat</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npix"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>Lon</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Longitude</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.0</Value>
     </Attribute>

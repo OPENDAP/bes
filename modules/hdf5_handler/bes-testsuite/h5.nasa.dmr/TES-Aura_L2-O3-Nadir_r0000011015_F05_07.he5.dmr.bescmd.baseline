@@ -4,6 +4,51 @@
     <Dimension name="Pressure_CV" size="67"/>
     <Dimension name="Pressure_CV_1" size="67"/>
     <Dimension name="nFreq" size="25"/>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure_CV">
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure_CV_1">
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nFreq">
+        <Dim name="/nFreq"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Float32 name="AirDensity">
         <Dim name="/Latitude"/>
         <Dim name="/Pressure_CV"/>
@@ -2163,51 +2208,6 @@
             <Value>/HDFEOS INFORMATION/coremetadata</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-SHARED</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure_CV">
-        <Dim name="/Pressure_CV"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure_CV_1">
-        <Dim name="/Pressure_CV_1"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nFreq">
-        <Dim name="/nFreq"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

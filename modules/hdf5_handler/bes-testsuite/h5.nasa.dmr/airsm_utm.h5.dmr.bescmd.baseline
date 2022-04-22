@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5">
     <Dimension name="Channel_Information_Channel_number" size="14"/>
-    <Dimension name="_355nm_band_YDim" size="1536"/>
-    <Dimension name="_355nm_band_XDim" size="4608"/>
-    <Dimension name="FakeDim2" size="1"/>
     <Dimension name="_380nm_band_XDim" size="4608"/>
     <Dimension name="_380nm_band_YDim" size="1536"/>
     <Dimension name="_445nm_band_XDim" size="4608"/>
@@ -22,6 +19,440 @@
     <Dimension name="Ancillary_YDim" size="1536"/>
     <Dimension name="XDim" size="4608"/>
     <Dimension name="YDim" size="1536"/>
+    <Dimension name="_355nm_band_YDim" size="1536"/>
+    <Dimension name="_355nm_band_XDim" size="4608"/>
+    <Dimension name="FakeDim2" size="1"/>
+    <Int32 name="Channel_Information_Channel_number">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Channel_number</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Channel_number</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="_380nm_band_XDim">
+        <Dim name="/_380nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_380nm_band_YDim">
+        <Dim name="/_380nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_445nm_band_XDim">
+        <Dim name="/_445nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_445nm_band_YDim">
+        <Dim name="/_445nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_470nm_band_XDim">
+        <Dim name="/_470nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_470nm_band_YDim">
+        <Dim name="/_470nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_555nm_band_XDim">
+        <Dim name="/_555nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_555nm_band_YDim">
+        <Dim name="/_555nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_660nm_band_XDim">
+        <Dim name="/_660nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_660nm_band_YDim">
+        <Dim name="/_660nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_865nm_band_XDim">
+        <Dim name="/_865nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_865nm_band_YDim">
+        <Dim name="/_865nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_935nm_band_XDim">
+        <Dim name="/_935nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_935nm_band_YDim">
+        <Dim name="/_935nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_XDim">
+        <Dim name="/Ancillary_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_YDim">
+        <Dim name="/Ancillary_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="XDim">
+        <Dim name="/XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="YDim">
+        <Dim name="/YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_Latitude">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Latitude</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_Longitude">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Longitude</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Float64 name="Channel_Information_Center_wavelength">
         <Dim name="/Channel_Information_Channel_number"/>
         <Attribute name="origname" type="String">
@@ -2666,437 +3097,6 @@
             <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/YDim</Value>
         </Attribute>
     </Float64>
-    <Int32 name="Channel_Information_Channel_number">
-        <Dim name="/Channel_Information_Channel_number"/>
-        <Attribute name="origname" type="String">
-            <Value>Channel_number</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Channel_Information/Channel_number</Value>
-        </Attribute>
-    </Int32>
-    <Float64 name="_380nm_band_XDim">
-        <Dim name="/_380nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_380nm_band_YDim">
-        <Dim name="/_380nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_445nm_band_XDim">
-        <Dim name="/_445nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_445nm_band_YDim">
-        <Dim name="/_445nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_470nm_band_XDim">
-        <Dim name="/_470nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_470nm_band_YDim">
-        <Dim name="/_470nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_555nm_band_XDim">
-        <Dim name="/_555nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_555nm_band_YDim">
-        <Dim name="/_555nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_660nm_band_XDim">
-        <Dim name="/_660nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_660nm_band_YDim">
-        <Dim name="/_660nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_865nm_band_XDim">
-        <Dim name="/_865nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_865nm_band_YDim">
-        <Dim name="/_865nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_935nm_band_XDim">
-        <Dim name="/_935nm_band_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="_935nm_band_YDim">
-        <Dim name="/_935nm_band_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Ancillary_XDim">
-        <Dim name="/Ancillary_XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Ancillary_YDim">
-        <Dim name="/Ancillary_YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="XDim">
-        <Dim name="/XDim"/>
-        <Attribute name="long_name" type="String">
-            <Value>UTM X</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_x_coordinate</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoX</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/XDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="YDim">
-        <Dim name="/YDim"/>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>GeoY</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UTM Y</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>meters</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>projection_y_coordinate</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/YDim</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Ancillary_Latitude">
-        <Dim name="/_355nm_band_YDim"/>
-        <Dim name="/_355nm_band_XDim"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="grid_mapping" type="String">
-            <Value>UTM_projection</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Latitude</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Ancillary_Longitude">
-        <Dim name="/_355nm_band_YDim"/>
-        <Dim name="/_355nm_band_XDim"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="grid_mapping" type="String">
-            <Value>UTM_projection</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Longitude</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="FakeDim2">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="Channel_Information" type="Container"/>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>

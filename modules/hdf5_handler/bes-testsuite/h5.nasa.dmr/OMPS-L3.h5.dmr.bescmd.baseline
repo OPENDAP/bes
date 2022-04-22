@@ -2,6 +2,50 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5">
     <Dimension name="Latitude" size="180"/>
     <Dimension name="Longitude" size="360"/>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Geodetic Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Geodetic Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Longitude</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="ColumnAmountO3">
         <Dim name="/Latitude"/>
         <Dim name="/Longitude"/>
@@ -243,50 +287,6 @@
         </Attribute>
         <Map name="/Latitude"/>
         <Map name="/Longitude"/>
-    </Float32>
-    <Float32 name="Latitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-90.00000000</Value>
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Geodetic Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-180.0000000</Value>
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Geodetic Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Longitude</Value>
-        </Attribute>
     </Float32>
     <Attribute name="DATA_QUALITY" type="Int16">
         <Value>0</Value>

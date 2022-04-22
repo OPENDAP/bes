@@ -1,20 +1,65 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5">
-    <Dimension name="airs_idx" size="141"/>
-    <Dimension name="AIRS_RetStd_Cloud" size="2"/>
     <Dimension name="AIRS_Radiances_Channel_L1B_AIRS_Science" size="2378"/>
-    <Dimension name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science" size="4"/>
-    <Dimension name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science" size="9"/>
-    <Dimension name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science" size="8"/>
-    <Dimension name="CloudSat_cs_idx" size="17"/>
-    <Dimension name="CloudSat_cs_nbin" size="125"/>
     <Dimension name="AIRS_RetStd_CH4Func" size="7"/>
     <Dimension name="AIRS_RetStd_COFunc" size="9"/>
+    <Dimension name="AIRS_RetStd_Cloud" size="2"/>
     <Dimension name="AIRS_RetStd_H2OFunc" size="11"/>
     <Dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
     <Dimension name="AIRS_RetStd_O3Func" size="9"/>
     <Dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
     <Dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    <Dimension name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science" size="4"/>
+    <Dimension name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science" size="9"/>
+    <Dimension name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science" size="8"/>
+    <Dimension name="CloudSat_cs_idx" size="17"/>
+    <Dimension name="CloudSat_cs_nbin" size="125"/>
+    <Dimension name="airs_idx" size="141"/>
+    <Float32 name="AIRS_Radiances_Channel_L1B_AIRS_Science">
+        <Dim name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_CH4Func">
+        <Dim name="/AIRS_RetStd_CH4Func"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_COFunc">
+        <Dim name="/AIRS_RetStd_COFunc"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_Cloud">
+        <Dim name="/AIRS_RetStd_Cloud"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_H2OFunc">
+        <Dim name="/AIRS_RetStd_H2OFunc"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_H2OPressureLay">
+        <Dim name="/AIRS_RetStd_H2OPressureLay"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_O3Func">
+        <Dim name="/AIRS_RetStd_O3Func"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_StdPressureLay">
+        <Dim name="/AIRS_RetStd_StdPressureLay"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_StdPressureLev">
+        <Dim name="/AIRS_RetStd_StdPressureLev"/>
+    </Float32>
+    <Float32 name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science">
+        <Dim name="/AIRS_VIS_Radiances_Channel_L1B_VIS_Science"/>
+    </Float32>
+    <Float32 name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science">
+        <Dim name="/AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science"/>
+    </Float32>
+    <Float32 name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science">
+        <Dim name="/AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science"/>
+    </Float32>
+    <Float32 name="CloudSat_cs_idx">
+        <Dim name="/CloudSat_cs_idx"/>
+    </Float32>
+    <Float32 name="CloudSat_cs_nbin">
+        <Dim name="/CloudSat_cs_nbin"/>
+    </Float32>
+    <Float32 name="airs_idx">
+        <Dim name="/airs_idx"/>
+    </Float32>
     <Float32 name="AIRS_RetStd_CldFrcStdErr">
         <Dim name="/airs_idx"/>
         <Dim name="/AIRS_RetStd_Cloud"/>
@@ -3417,51 +3462,6 @@
         </Attribute>
         <Map name="/airs_idx"/>
     </Int32>
-    <Float32 name="AIRS_Radiances_Channel_L1B_AIRS_Science">
-        <Dim name="/AIRS_Radiances_Channel_L1B_AIRS_Science"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_CH4Func">
-        <Dim name="/AIRS_RetStd_CH4Func"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_COFunc">
-        <Dim name="/AIRS_RetStd_COFunc"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_Cloud">
-        <Dim name="/AIRS_RetStd_Cloud"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_H2OFunc">
-        <Dim name="/AIRS_RetStd_H2OFunc"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_H2OPressureLay">
-        <Dim name="/AIRS_RetStd_H2OPressureLay"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_O3Func">
-        <Dim name="/AIRS_RetStd_O3Func"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_StdPressureLay">
-        <Dim name="/AIRS_RetStd_StdPressureLay"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_StdPressureLev">
-        <Dim name="/AIRS_RetStd_StdPressureLev"/>
-    </Float32>
-    <Float32 name="AIRS_VIS_Radiances_Channel_L1B_VIS_Science">
-        <Dim name="/AIRS_VIS_Radiances_Channel_L1B_VIS_Science"/>
-    </Float32>
-    <Float32 name="AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science">
-        <Dim name="/AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science"/>
-    </Float32>
-    <Float32 name="AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science">
-        <Dim name="/AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science"/>
-    </Float32>
-    <Float32 name="CloudSat_cs_idx">
-        <Dim name="/CloudSat_cs_idx"/>
-    </Float32>
-    <Float32 name="CloudSat_cs_nbin">
-        <Dim name="/CloudSat_cs_nbin"/>
-    </Float32>
-    <Float32 name="airs_idx">
-        <Dim name="/airs_idx"/>
-    </Float32>
     <Attribute name="title" type="String">
         <Value>AIRS-CloudSat matchups for AIRS granule AIRS.2006.06.15.239.L2.RetStd.v5.0.14.0.G07346074153.hdf (AIRS vars)</Value>
     </Attribute>

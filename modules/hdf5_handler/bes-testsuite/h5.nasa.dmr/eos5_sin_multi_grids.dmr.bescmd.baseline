@@ -4,6 +4,34 @@
     <Dimension name="VNP_Grid_1km_2D_XDim" size="1200"/>
     <Dimension name="VNP_Grid_500m_2D_YDim" size="2400"/>
     <Dimension name="VNP_Grid_500m_2D_XDim" size="2400"/>
+    <Float64 name="VNP_Grid_1km_2D_lon">
+        <Dim name="/VNP_Grid_1km_2D_YDim"/>
+        <Dim name="/VNP_Grid_1km_2D_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="VNP_Grid_1km_2D_lat">
+        <Dim name="/VNP_Grid_1km_2D_YDim"/>
+        <Dim name="/VNP_Grid_1km_2D_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="VNP_Grid_500m_2D_lon">
+        <Dim name="/VNP_Grid_500m_2D_YDim"/>
+        <Dim name="/VNP_Grid_500m_2D_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="VNP_Grid_500m_2D_lat">
+        <Dim name="/VNP_Grid_500m_2D_YDim"/>
+        <Dim name="/VNP_Grid_500m_2D_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
     <Int16 name="VNP_Grid_1km_2D_SensorAzimuth_1">
         <Dim name="/VNP_Grid_1km_2D_YDim"/>
         <Dim name="/VNP_Grid_1km_2D_XDim"/>
@@ -2314,34 +2342,6 @@
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <Value>GeoX</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="VNP_Grid_1km_2D_lon">
-        <Dim name="/VNP_Grid_1km_2D_YDim"/>
-        <Dim name="/VNP_Grid_1km_2D_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="VNP_Grid_1km_2D_lat">
-        <Dim name="/VNP_Grid_1km_2D_YDim"/>
-        <Dim name="/VNP_Grid_1km_2D_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="VNP_Grid_500m_2D_lon">
-        <Dim name="/VNP_Grid_500m_2D_YDim"/>
-        <Dim name="/VNP_Grid_500m_2D_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="VNP_Grid_500m_2D_lat">
-        <Dim name="/VNP_Grid_500m_2D_YDim"/>
-        <Dim name="/VNP_Grid_500m_2D_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
         </Attribute>
     </Float64>
     <Attribute name="maximum_observations_1km" type="Int8">

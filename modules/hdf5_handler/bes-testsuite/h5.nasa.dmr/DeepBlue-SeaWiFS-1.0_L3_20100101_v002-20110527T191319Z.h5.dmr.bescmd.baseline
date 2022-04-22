@@ -1,9 +1,83 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="DeepBlue-SeaWiFS-1.0_L3_20100101_v002-20110527T191319Z.h5">
+    <Dimension name="land_bands" size="3"/>
     <Dimension name="latitude" size="180"/>
     <Dimension name="longitude" size="360"/>
-    <Dimension name="land_bands" size="3"/>
     <Dimension name="ocean_bands" size="3"/>
+    <Float32 name="land_bands">
+        <Dim name="/land_bands"/>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>wavelength bands over land</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>land_bands</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/land_bands</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="latitude">
+        <Dim name="/latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latitude of center of grid element</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="longitude">
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>longitude of center of grid element</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ocean_bands">
+        <Dim name="/ocean_bands"/>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>wavelength bands over ocean</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ocean_bands</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ocean_bands</Value>
+        </Attribute>
+    </Float32>
     <Int32 name="aerosol_optical_thickness_550_count_land">
         <Dim name="/latitude"/>
         <Dim name="/longitude"/>
@@ -1092,80 +1166,6 @@
         </Attribute>
         <Map name="/latitude"/>
         <Map name="/longitude"/>
-    </Float32>
-    <Float32 name="land_bands">
-        <Dim name="/land_bands"/>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>wavelength bands over land</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>land_bands</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/land_bands</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="latitude">
-        <Dim name="/latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>latitude of center of grid element</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-90.00000000</Value>
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="longitude">
-        <Dim name="/longitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>longitude of center of grid element</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-180.0000000</Value>
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ocean_bands">
-        <Dim name="/ocean_bands"/>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>wavelength bands over ocean</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ocean_bands</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ocean_bands</Value>
-        </Attribute>
     </Float32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.4</Value>

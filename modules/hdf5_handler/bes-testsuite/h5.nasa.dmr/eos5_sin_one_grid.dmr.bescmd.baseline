@@ -2,6 +2,20 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="VNP09A1.A2015257.h29v11.001.2016221164845.h5">
     <Dimension name="YDim" size="1200"/>
     <Dimension name="XDim" size="1200"/>
+    <Float64 name="lon">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="lat">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
     <Int16 name="RelativeAzimuth">
         <Dim name="/YDim"/>
         <Dim name="/XDim"/>
@@ -793,20 +807,6 @@
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <Value>GeoX</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="lon">
-        <Dim name="/YDim"/>
-        <Dim name="/XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="lat">
-        <Dim name="/YDim"/>
-        <Dim name="/XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
         </Attribute>
     </Float64>
     <Attribute name="GRingLatitude" type="Float64">

@@ -1,12 +1,80 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5">
-    <Dimension name="nspecies" size="5"/>
-    <Dimension name="sddim" size="12"/>
-    <Dimension name="nlyrs" size="28"/>
-    <Dimension name="ntemps" size="21"/>
-    <Dimension name="nprf" size="100"/>
     <Dimension name="nscan" size="2962"/>
     <Dimension name="npixel" size="221"/>
+    <Dimension name="nlyrs" size="28"/>
+    <Dimension name="nprf" size="100"/>
+    <Dimension name="nspecies" size="5"/>
+    <Dimension name="ntemps" size="21"/>
+    <Dimension name="sddim" size="12"/>
+    <Float32 name="S1_Longitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_Latitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nlyrs">
+        <Dim name="/nlyrs"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nprf">
+        <Dim name="/nprf"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nspecies">
+        <Dim name="/nspecies"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="ntemps">
+        <Dim name="/ntemps"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="sddim">
+        <Dim name="/sddim"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Byte name="GprofDHeadr_speciesDescription">
         <Dim name="/nspecies"/>
         <Dim name="/sddim"/>
@@ -954,74 +1022,6 @@
         <Map name="/S1_Latitude"/>
         <Map name="/nspecies"/>
     </Int16>
-    <Float32 name="S1_Longitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npixel"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan,npixel</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S1_Latitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npixel"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan,npixel</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nlyrs">
-        <Dim name="/nlyrs"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nprf">
-        <Dim name="/nprf"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nspecies">
-        <Dim name="/nspecies"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="ntemps">
-        <Dim name="/ntemps"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="sddim">
-        <Dim name="/sddim"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="FileHeader" type="String">
         <Value>DOI=10.5067/GPM/GMI/GPM/GPROF2A;
 AlgorithmID=2AGPROFGMI;

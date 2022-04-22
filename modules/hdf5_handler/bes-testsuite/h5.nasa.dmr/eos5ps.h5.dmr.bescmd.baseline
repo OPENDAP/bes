@@ -4,6 +4,34 @@
     <Dimension name="NpPolarGrid12km_XDim" size="608"/>
     <Dimension name="SpPolarGrid12km_YDim" size="664"/>
     <Dimension name="SpPolarGrid12km_XDim" size="632"/>
+    <Float64 name="NpPolarGrid12km_lon">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="NpPolarGrid12km_lat">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_lon">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_lat">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
     <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_ASC">
         <Dim name="/NpPolarGrid12km_YDim"/>
         <Dim name="/NpPolarGrid12km_XDim"/>
@@ -1204,34 +1232,6 @@
         </Attribute>
         <Attribute name="_CoordinateAxisType" type="String">
             <Value>GeoX</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="NpPolarGrid12km_lon">
-        <Dim name="/NpPolarGrid12km_YDim"/>
-        <Dim name="/NpPolarGrid12km_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="NpPolarGrid12km_lat">
-        <Dim name="/NpPolarGrid12km_YDim"/>
-        <Dim name="/NpPolarGrid12km_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="SpPolarGrid12km_lon">
-        <Dim name="/SpPolarGrid12km_YDim"/>
-        <Dim name="/SpPolarGrid12km_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="SpPolarGrid12km_lat">
-        <Dim name="/SpPolarGrid12km_YDim"/>
-        <Dim name="/SpPolarGrid12km_XDim"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
         </Attribute>
     </Float64>
     <Attribute name="CoreMetadata" type="String">

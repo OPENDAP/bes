@@ -3,10 +3,110 @@
     <Dimension name="nTimes" size="1643"/>
     <Dimension name="nXtrack" size="60"/>
     <Dimension name="_1" size="1"/>
-    <Dimension name="nTimes_1" size="1644"/>
-    <Dimension name="nXtrack_1" size="61"/>
     <Dimension name="_4" size="4"/>
+    <Dimension name="nTimes_1" size="1644"/>
     <Dimension name="nUTCdim" size="6"/>
+    <Dimension name="nXtrack_1" size="61"/>
+    <Float32 name="Latitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.000000015e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.000000015e+30</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.000000015e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.000000015e+30</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_1">
+        <Dim name="/_1"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="_4">
+        <Dim name="/_4"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nTimes_1">
+        <Dim name="/nTimes_1"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nUTCdim">
+        <Dim name="/nUTCdim"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nXtrack_1">
+        <Dim name="/nXtrack_1"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Float32 name="AMFCloudFraction">
         <Dim name="/nTimes"/>
         <Dim name="/nXtrack"/>
@@ -1674,106 +1774,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.000000015e+30</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Geodetic Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.000000015e+30</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-90.00000000</Value>
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.000000015e+30</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Geodetic Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.000000015e+30</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-180.0000000</Value>
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="_1">
-        <Dim name="/_1"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="_4">
-        <Dim name="/_4"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nTimes_1">
-        <Dim name="/nTimes_1"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nUTCdim">
-        <Dim name="/nUTCdim"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nXtrack_1">
-        <Dim name="/nXtrack_1"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

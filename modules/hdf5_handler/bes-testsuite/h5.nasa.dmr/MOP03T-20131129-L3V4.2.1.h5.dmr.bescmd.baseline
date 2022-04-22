@@ -1,11 +1,92 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOP03T-20131129-L3V4.2.1.h5">
-    <Dimension name="Longitude" size="360"/>
     <Dimension name="Latitude" size="180"/>
+    <Dimension name="Longitude" size="360"/>
     <Dimension name="Pressure" size="9"/>
     <Dimension name="Pressure2" size="10"/>
-    <Dimension name="Prs2_1" size="10"/>
     <Dimension name="NTWO" size="2"/>
+    <Dimension name="Prs2_1" size="10"/>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/Longitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Longitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure">
+        <Dim name="/Pressure"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>Prs</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure2">
+        <Dim name="/Pressure2"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>Prs2</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="NTWO">
+        <Dim name="/NTWO"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="Prs2_1">
+        <Dim name="/Prs2_1"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>Prs2</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="APrioriCOMixingRatioProfileDay">
         <Dim name="/Longitude"/>
         <Dim name="/Latitude"/>
@@ -1586,87 +1667,6 @@
             <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>YDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/Longitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Longitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>XDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure">
-        <Dim name="/Pressure"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>Prs</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure2">
-        <Dim name="/Pressure2"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure2</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>Prs2</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="NTWO">
-        <Dim name="/NTWO"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="Prs2_1">
-        <Dim name="/Prs2_1"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure2</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>Prs2</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

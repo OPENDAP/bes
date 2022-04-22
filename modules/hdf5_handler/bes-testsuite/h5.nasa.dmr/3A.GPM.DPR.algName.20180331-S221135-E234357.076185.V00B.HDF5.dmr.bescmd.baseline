@@ -1,18 +1,93 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5">
-    <Dimension name="st" size="3"/>
-    <Dimension name="rt" size="3"/>
+    <Dimension name="ang4" size="4"/>
     <Dimension name="ang7" size="7"/>
-    <Dimension name="chn4" size="4"/>
-    <Dimension name="lnL" size="72"/>
-    <Dimension name="ltL" size="28"/>
     <Dimension name="bin" size="30"/>
     <Dimension name="chn3" size="3"/>
+    <Dimension name="chn4" size="4"/>
     <Dimension name="hgt" size="5"/>
-    <Dimension name="tim" size="24"/>
     <Dimension name="lnH" size="1440"/>
+    <Dimension name="lnL" size="72"/>
     <Dimension name="ltH" size="536"/>
-    <Dimension name="ang4" size="4"/>
+    <Dimension name="ltL" size="28"/>
+    <Dimension name="rt" size="3"/>
+    <Dimension name="st" size="3"/>
+    <Dimension name="tim" size="24"/>
+    <Int32 name="ang4">
+        <Dim name="/ang4"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="ang7">
+        <Dim name="/ang7"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="bin">
+        <Dim name="/bin"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="chn3">
+        <Dim name="/chn3"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="chn4">
+        <Dim name="/chn4"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="hgt">
+        <Dim name="/hgt"/>
+    </Float32>
+    <Float32 name="lnH">
+        <Dim name="/lnH"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lnL">
+        <Dim name="/lnL"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ltH">
+        <Dim name="/ltH"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ltL">
+        <Dim name="/ltL"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="rt">
+        <Dim name="/rt"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="st">
+        <Dim name="/st"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="tim">
+        <Dim name="/tim"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Int32 name="FS_FS_G1_zeta_count">
         <Dim name="/st"/>
         <Dim name="/rt"/>
@@ -20454,81 +20529,6 @@
         <Map name="/lnH"/>
         <Map name="/ltH"/>
     </Float32>
-    <Int32 name="ang4">
-        <Dim name="/ang4"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="ang7">
-        <Dim name="/ang7"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="bin">
-        <Dim name="/bin"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="chn3">
-        <Dim name="/chn3"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="chn4">
-        <Dim name="/chn4"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="hgt">
-        <Dim name="/hgt"/>
-    </Float32>
-    <Float32 name="lnH">
-        <Dim name="/lnH"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lnL">
-        <Dim name="/lnL"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ltH">
-        <Dim name="/ltH"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ltL">
-        <Dim name="/ltL"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="rt">
-        <Dim name="/rt"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="st">
-        <Dim name="/st"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="tim">
-        <Dim name="/tim"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="FileHeader" type="String">
         <Value>DOI=;
 DOIauthority=http://dx.doi.org/;

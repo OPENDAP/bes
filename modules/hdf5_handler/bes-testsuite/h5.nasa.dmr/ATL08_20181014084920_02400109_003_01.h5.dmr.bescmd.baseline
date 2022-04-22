@@ -1,13 +1,236 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ATL08_20181014084920_02400109_003_01.h5">
+    <Dimension name="ds_geosegments" size="5"/>
+    <Dimension name="ds_metrics" size="9"/>
+    <Dimension name="ds_surf_type" size="5"/>
+    <Dimension name="gt1r_land_segments_delta_time" size="5"/>
+    <Dimension name="gt1r_signal_photons_delta_time" size="1185"/>
     <Dimension name="orbit_info_crossing_time" size="1"/>
     <Dimension name="orbit_info_sc_orient_time" size="1"/>
-    <Dimension name="gt1r_signal_photons_delta_time" size="1185"/>
-    <Dimension name="gt1r_land_segments_delta_time" size="5"/>
-    <Dimension name="ds_metrics" size="9"/>
-    <Dimension name="ds_geosegments" size="5"/>
-    <Dimension name="ds_surf_type" size="5"/>
     <Dimension name="FakeDim0" size="1"/>
+    <Int8 name="ds_geosegments">
+        <Dim name="/ds_geosegments"/>
+        <Attribute name="long_name" type="String">
+            <Value>Geosegments</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>geosegments1 geosegments2 geosegments3 geosegments4 geosegments5</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for geosegments within land segments.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_geosegments</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ds_geosegments</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="ds_metrics">
+        <Dim name="/ds_metrics"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for metrics.</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>metrics1 metrics2 metrics3 metrics4 metrics5 metrics6 metrics7 metrics8 metrics9</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+            <Value>7</Value>
+            <Value>8</Value>
+            <Value>9</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Metrics</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_metrics</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ds_metrics</Value>
+        </Attribute>
+    </Int8>
+    <Int32 name="ds_surf_type">
+        <Dim name="/ds_surf_type"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale indexing the surface type array. Index=1 corresponds to Land; index = 2 corresponds to Ocean; Index = 3 corresponds to SeaIce; Index=4 corresponds to LandIce; Index=5 corresponds to InlandWater</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>land ocean seaice landice inland_water</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int32">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface Type Dimension Scale</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_surf_type</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ds_surf_type</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="gt1r_land_segments_delta_time">
+        <Dim name="/gt1r_land_segments_delta_time"/>
+        <Attribute name="coordinates" type="String">
+            <Value>latitude longitude</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Mean time for the segment in number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>mean_pass_time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Land ATBD section 2.4</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/land_segments/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_signal_photons_delta_time">
+        <Dim name="/gt1r_signal_photons_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>delta time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/signal_photons/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="orbit_info_crossing_time">
+        <Dim name="/orbit_info_crossing_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The time, in seconds since the ATLAS SDP GPS Epoch, at which the ascending node crosses the equator. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Ascending Node Crossing Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>POD/PPD</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>crossing_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/orbit_info/crossing_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="orbit_info_sc_orient_time">
+        <Dim name="/orbit_info_sc_orient_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The time of the last spacecraft orientation change between forward, backward and transitional flight modes, expressed in seconds since the ATLAS SDP GPS Epoch. ICESat-2 is considered to be flying forward when the weak beams are leading the strong beams; and backward when the strong beams are leading the weak beams. ICESat-2 is considered to be in transition while it is maneuvering between the two orientations. Science quality is potentially degraded while in transition mode. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time of Last Spacecraft Orientation Change</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>POD/PPD</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sc_orient_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/orbit_info/sc_orient_time</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="FakeDim0">
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Int8 name="orbit_info_cycle_number">
         <Dim name="/orbit_info_crossing_time"/>
         <Attribute name="contentType" type="String">
@@ -4980,229 +5203,6 @@
             <Value>/ancillary_data/start_gpsweek</Value>
         </Attribute>
         <Map name="/FakeDim0"/>
-    </Int32>
-    <Int8 name="ds_geosegments">
-        <Dim name="/ds_geosegments"/>
-        <Attribute name="long_name" type="String">
-            <Value>Geosegments</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int8">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>geosegments1 geosegments2 geosegments3 geosegments4 geosegments5</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for geosegments within land segments.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_geosegments</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ds_geosegments</Value>
-        </Attribute>
-    </Int8>
-    <Int8 name="ds_metrics">
-        <Dim name="/ds_metrics"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for metrics.</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>metrics1 metrics2 metrics3 metrics4 metrics5 metrics6 metrics7 metrics8 metrics9</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int8">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-            <Value>6</Value>
-            <Value>7</Value>
-            <Value>8</Value>
-            <Value>9</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Metrics</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>4</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_metrics</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ds_metrics</Value>
-        </Attribute>
-    </Int8>
-    <Int32 name="ds_surf_type">
-        <Dim name="/ds_surf_type"/>
-        <Attribute name="contentType" type="String">
-            <Value>auxiliaryInformation</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale indexing the surface type array. Index=1 corresponds to Land; index = 2 corresponds to Ocean; Index = 3 corresponds to SeaIce; Index=4 corresponds to LandIce; Index=5 corresponds to InlandWater</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>land ocean seaice landice inland_water</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int32">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Surface Type Dimension Scale</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_surf_type</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ds_surf_type</Value>
-        </Attribute>
-    </Int32>
-    <Float64 name="gt1r_land_segments_delta_time">
-        <Dim name="/gt1r_land_segments_delta_time"/>
-        <Attribute name="coordinates" type="String">
-            <Value>latitude longitude</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Mean time for the segment in number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>mean_pass_time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Land ATBD section 2.4</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/land_segments/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_signal_photons_delta_time">
-        <Dim name="/gt1r_signal_photons_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>delta time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL03</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/signal_photons/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="orbit_info_crossing_time">
-        <Dim name="/orbit_info_crossing_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The time, in seconds since the ATLAS SDP GPS Epoch, at which the ascending node crosses the equator. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Ascending Node Crossing Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>POD/PPD</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>crossing_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/orbit_info/crossing_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="orbit_info_sc_orient_time">
-        <Dim name="/orbit_info_sc_orient_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The time of the last spacecraft orientation change between forward, backward and transitional flight modes, expressed in seconds since the ATLAS SDP GPS Epoch. ICESat-2 is considered to be flying forward when the weak beams are leading the strong beams; and backward when the strong beams are leading the weak beams. ICESat-2 is considered to be in transition while it is maneuvering between the two orientations. Science quality is potentially degraded while in transition mode. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time of Last Spacecraft Orientation Change</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>POD/PPD</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sc_orient_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/orbit_info/sc_orient_time</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="FakeDim0">
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
     </Int32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.6</Value>

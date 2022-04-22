@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="good_imerge.h5">
-    <Dimension name="lon" size="3600"/>
     <Dimension name="lat" size="1800"/>
+    <Dimension name="lon" size="3600"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/lon</Value>
+        </Attribute>
+    </Float32>
     <Int16 name="HQprecipSource2">
         <Dim name="/lon"/>
         <Dim name="/lat"/>
@@ -215,30 +239,6 @@
         <Map name="/lon"/>
         <Map name="/lat"/>
     </Int16>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/lat</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lon</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/lon</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3IMERGHH;
 AlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;

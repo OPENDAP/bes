@@ -1,8 +1,77 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="f16_ssmis_20031026v7.nc.h5">
-    <Dimension name="time" size="2"/>
     <Dimension name="latitude" size="720"/>
     <Dimension name="longitude" size="1440"/>
+    <Dimension name="time" size="2"/>
+    <Float32 name="latitude">
+        <Dim name="/latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-89.87500000</Value>
+            <Value>89.87500000</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="longitude">
+        <Dim name="/longitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.1250000000</Value>
+            <Value>359.8750000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/longitude</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>hours since 2003-10-26T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>1.000000000</Value>
+            <Value>2.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/time</Value>
+        </Attribute>
+    </Int16>
     <Int16 name="sst_dtime">
         <Dim name="/time"/>
         <Dim name="/latitude"/>
@@ -207,75 +276,6 @@
         <Map name="/time"/>
         <Map name="/latitude"/>
         <Map name="/longitude"/>
-    </Int16>
-    <Float32 name="latitude">
-        <Dim name="/latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>Y</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-89.87500000</Value>
-            <Value>89.87500000</Value>
-        </Attribute>
-        <Attribute name="_CoordinateAxisType" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="longitude">
-        <Dim name="/longitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>X</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>0.1250000000</Value>
-            <Value>359.8750000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/longitude</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="time">
-        <Dim name="/time"/>
-        <Attribute name="units" type="String">
-            <Value>hours since 2003-10-26T00:00:00Z</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>T</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>1.000000000</Value>
-            <Value>2.000000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/time</Value>
-        </Attribute>
     </Int16>
     <Attribute name="chunksize" type="String">
         <Value>90</Value>

@@ -2,11 +2,103 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMNO2_2016m0215t0210-o61626_v003-2016m0215t200753.he5">
     <Dimension name="nTimes" size="1644"/>
     <Dimension name="nXtrack" size="60"/>
+    <Dimension name="nCorners" size="4"/>
     <Dimension name="nPolynomial" size="6"/>
     <Dimension name="nSWLevels" size="35"/>
-    <Dimension name="nTimesSmallPixel" size="10"/>
     <Dimension name="nSmallPixelPointer" size="2"/>
-    <Dimension name="nCorners" size="4"/>
+    <Dimension name="nTimesSmallPixel" size="10"/>
+    <Float32 name="Latitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude of the center of the groundpixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude of the center of the groundpixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nCorners">
+        <Dim name="/nCorners"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nPolynomial">
+        <Dim name="/nPolynomial"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nSWLevels">
+        <Dim name="/nSWLevels"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nSmallPixelPointer">
+        <Dim name="/nSmallPixelPointer"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nTimesSmallPixel">
+        <Dim name="/nTimesSmallPixel"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <UInt16 name="AlgorithmFlags">
         <Dim name="/nTimes"/>
         <Dim name="/nXtrack"/>
@@ -2255,98 +2347,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="Latitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude of the center of the groundpixel</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0.0000000000000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Longitude of the center of the groundpixel</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nCorners">
-        <Dim name="/nCorners"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nPolynomial">
-        <Dim name="/nPolynomial"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nSWLevels">
-        <Dim name="/nSWLevels"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nSmallPixelPointer">
-        <Dim name="/nSmallPixelPointer"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nTimesSmallPixel">
-        <Dim name="/nTimesSmallPixel"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

@@ -1,17 +1,233 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SBUV2-NOAA17_L2-SBUV2N17L2_2011m1231_v01-01-2012m0905t152911.h5">
-    <Dimension name="nTimes" size="1051"/>
-    <Dimension name="nLevels21" size="21"/>
-    <Dimension name="nLevels15" size="15"/>
-    <Dimension name="nLayers13" size="13"/>
-    <Dimension name="nLevels20" size="20"/>
-    <Dimension name="nLevels20b" size="20"/>
-    <Dimension name="nChannels10" size="10"/>
     <Dimension name="nChannels03" size="3"/>
-    <Dimension name="nLayers11" size="11"/>
+    <Dimension name="nChannels08" size="8"/>
+    <Dimension name="nChannels10" size="10"/>
     <Dimension name="nChannels12" size="12"/>
     <Dimension name="nChannels13" size="13"/>
-    <Dimension name="nChannels08" size="8"/>
+    <Dimension name="nLayers11" size="11"/>
+    <Dimension name="nLayers13" size="13"/>
+    <Dimension name="nLevels15" size="15"/>
+    <Dimension name="nLevels20" size="20"/>
+    <Dimension name="nLevels20b" size="20"/>
+    <Dimension name="nLevels21" size="21"/>
+    <Dimension name="nTimes" size="1051"/>
+    <Float32 name="nChannels03">
+        <Dim name="/nChannels03"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength (Channels 10-12)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the SBUV channels for the Lambertian Equivalent Reflectivity (three channels:  channels 10 to 12).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nChannels03</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nChannels03</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nChannels08">
+        <Dim name="/nChannels08"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength (Channels 5-12)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the SBUV channels that correspond to multiple scattering (eight channels:  channels 5 to 12).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nChannels08</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nChannels08</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nChannels10">
+        <Dim name="/nChannels10"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength (Channels 1-10)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the SBUV channels for the profile computation (ten channels:  channels 1 to 10).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nChannels10</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nChannels10</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nChannels12">
+        <Dim name="/nChannels12"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength (Channels 1-12)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the SBUV channels that correspond to single and multiple scattering (twelve channels:  channels 1 to 12).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nChannels12</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nChannels12</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nChannels13">
+        <Dim name="/nChannels13"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength (All Channels)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing all of the SBUV channels (thirteen channels).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nChannels13</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nChannels13</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLayers11">
+        <Dim name="/nLayers11"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure (Umkehr Layers 0 to 9 and Layers 10 Plus)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing Umkehr layers 0 to 9 and layers 10 plus.  The pressure corresponds to the bottom of the layer.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLayers11</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLayers11</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLayers13">
+        <Dim name="/nLayers13"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure (Umkehr Layer 12 Plus to Layer 0)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing Umkehr layer 12 plus to layer 0.  The pressure corresponds to the bottom of the layer.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLayers13</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLayers13</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLevels15">
+        <Dim name="/nLevels15"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure (for Mixing Ratio)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the pressure levels for the ozone volume mixing ratio.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLevels15</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLevels15</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLevels20">
+        <Dim name="/nLevels20"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure (Levels 1-20)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLevels20</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLevels20</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLevels20b">
+        <Dim name="/nLevels20b"/>
+        <Attribute name="long_name" type="String">
+            <Value>Copy of Pressure (Levels 1-20)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>An additional dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLevels20b</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLevels20b</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nLevels21">
+        <Dim name="/nLevels21"/>
+        <Attribute name="long_name" type="String">
+            <Value>Pressure (All Levels)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the total number of pressure levels.  There are five levels of pressure per decade spanning four decades.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLevels21</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLevels21</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="nTimes">
+        <Dim name="/nTimes"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nTimes</Value>
+        </Attribute>
+    </Float64>
     <Float32 name="CloudPressure">
         <Dim name="/nTimes"/>
         <Attribute name="long_name" type="String">
@@ -1684,222 +1900,6 @@
         <Map name="/nTimes"/>
         <Map name="/nChannels12"/>
     </Float32>
-    <Float32 name="nChannels03">
-        <Dim name="/nChannels03"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength (Channels 10-12)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the SBUV channels for the Lambertian Equivalent Reflectivity (three channels:  channels 10 to 12).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nChannels03</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nChannels03</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nChannels08">
-        <Dim name="/nChannels08"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength (Channels 5-12)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the SBUV channels that correspond to multiple scattering (eight channels:  channels 5 to 12).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nChannels08</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nChannels08</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nChannels10">
-        <Dim name="/nChannels10"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength (Channels 1-10)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the SBUV channels for the profile computation (ten channels:  channels 1 to 10).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nChannels10</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nChannels10</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nChannels12">
-        <Dim name="/nChannels12"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength (Channels 1-12)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the SBUV channels that correspond to single and multiple scattering (twelve channels:  channels 1 to 12).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nChannels12</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nChannels12</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nChannels13">
-        <Dim name="/nChannels13"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength (All Channels)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing all of the SBUV channels (thirteen channels).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nChannels13</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nChannels13</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLayers11">
-        <Dim name="/nLayers11"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure (Umkehr Layers 0 to 9 and Layers 10 Plus)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing Umkehr layers 0 to 9 and layers 10 plus.  The pressure corresponds to the bottom of the layer.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLayers11</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLayers11</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLayers13">
-        <Dim name="/nLayers13"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure (Umkehr Layer 12 Plus to Layer 0)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing Umkehr layer 12 plus to layer 0.  The pressure corresponds to the bottom of the layer.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLayers13</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLayers13</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLevels15">
-        <Dim name="/nLevels15"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure (for Mixing Ratio)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the pressure levels for the ozone volume mixing ratio.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLevels15</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLevels15</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLevels20">
-        <Dim name="/nLevels20"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure (Levels 1-20)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLevels20</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLevels20</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLevels20b">
-        <Dim name="/nLevels20b"/>
-        <Attribute name="long_name" type="String">
-            <Value>Copy of Pressure (Levels 1-20)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>An additional dimension representing the pressure levels for the ozone retrievals (total number of levels minus one).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLevels20b</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLevels20b</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nLevels21">
-        <Dim name="/nLevels21"/>
-        <Attribute name="long_name" type="String">
-            <Value>Pressure (All Levels)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the total number of pressure levels.  There are five levels of pressure per decade spanning four decades.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLevels21</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLevels21</Value>
-        </Attribute>
-    </Float32>
-    <Float64 name="nTimes">
-        <Dim name="/nTimes"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 1993-01-01</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nTimes</Value>
-        </Attribute>
-    </Float64>
     <Attribute name="AlgorithmVersion" type="String">
         <Value>8.6 </Value>
     </Attribute>

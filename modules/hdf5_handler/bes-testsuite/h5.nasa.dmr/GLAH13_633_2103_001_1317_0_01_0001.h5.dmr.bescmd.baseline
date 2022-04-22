@@ -1,13 +1,174 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GLAH13_633_2103_001_1317_0_01_0001.h5">
-    <Dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
-    <Dimension name="Data_40HZ_DS_DEMhiresArElv" size="9"/>
+    <Dimension name="Data_1HZ_DS_UTCTime_1" size="11242"/>
     <Dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
+    <Dimension name="Data_40HZ_DS_DEMhiresArElv" size="9"/>
+    <Dimension name="Data_40HZ_DS_UTCTime_40" size="449680"/>
+    <Dimension name="Data_40HZ_Time_d_UTCTime_40" size="449680"/>
     <Dimension name="FakeDim0" size="700"/>
     <Dimension name="FakeDim1" size="1000"/>
     <Dimension name="FakeDim2" size="3"/>
-    <Dimension name="Data_1HZ_DS_UTCTime_1" size="11242"/>
-    <Dimension name="Data_40HZ_DS_UTCTime_40" size="449680"/>
+    <Float64 name="Data_1HZ_DS_UTCTime_1">
+        <Dim name="/Data_1HZ_DS_UTCTime_1"/>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="hertz" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Transmit Time of First Shot in frame in J2000</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Rel 33 GLAS Binary Data</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DS_UTCTime_1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_1HZ/DS_UTCTime_1</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Data_1HZ_Time_d_UTCTime_1">
+        <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="hertz" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Transmit Time of First Shot in frame in J2000</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Rel 33 GLAS Binary Data</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d_UTCTime_1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_1HZ/Time/d_UTCTime_1</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="Data_40HZ_DS_DEMhiresArElv">
+        <Dim name="/Data_40HZ_DS_DEMhiresArElv"/>
+        <Attribute name="hertz" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Location index for D_DEMhiresArElv</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>This array indicates the relative position of each d_DEMhiresArElv measurement.  Direction is relative to the spot and indicated in cardinal points. The position of the spot is indicated as ORIGIN.</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Constants</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int32">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+            <Value>7</Value>
+            <Value>8</Value>
+            <Value>9</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>NW N NE W ORIGIN E SW S SE</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DS_DEMhiresArElv</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_40HZ/DS_DEMhiresArElv</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="Data_40HZ_DS_UTCTime_40">
+        <Dim name="/Data_40HZ_DS_UTCTime_40"/>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="hertz" type="String">
+            <Value>40</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Transmit time of each shot in J2000 seconds</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Rel 33 GLAS Binary Data</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DS_UTCTime_40</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_40HZ/DS_UTCTime_40</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Data_40HZ_Time_d_UTCTime_40">
+        <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="hertz" type="String">
+            <Value>40</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Transmit time of each shot in J2000 seconds</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Rel 33 GLAS Binary Data</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>d_UTCTime_40</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_40HZ/Time/d_UTCTime_40</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="FakeDim0">
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim1">
+        <Dim name="/FakeDim1"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Float64 name="Data_40HZ_Reflectivity_d_reflctUC">
         <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
         <Attribute name="hertz" type="String">
@@ -6333,167 +6494,6 @@
         <Map name="/FakeDim1"/>
         <Map name="/FakeDim2"/>
     </Byte>
-    <Float64 name="Data_1HZ_DS_UTCTime_1">
-        <Dim name="/Data_1HZ_DS_UTCTime_1"/>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
-        </Attribute>
-        <Attribute name="hertz" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Transmit Time of First Shot in frame in J2000</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Rel 33 GLAS Binary Data</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>DS_UTCTime_1</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_1HZ/DS_UTCTime_1</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Data_1HZ_Time_d_UTCTime_1">
-        <Dim name="/Data_1HZ_Time_d_UTCTime_1"/>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
-        </Attribute>
-        <Attribute name="hertz" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Transmit Time of First Shot in frame in J2000</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of the first shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Rel 33 GLAS Binary Data</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>d_UTCTime_1</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_1HZ/Time/d_UTCTime_1</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="Data_40HZ_DS_DEMhiresArElv">
-        <Dim name="/Data_40HZ_DS_DEMhiresArElv"/>
-        <Attribute name="hertz" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Location index for D_DEMhiresArElv</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>This array indicates the relative position of each d_DEMhiresArElv measurement.  Direction is relative to the spot and indicated in cardinal points. The position of the spot is indicated as ORIGIN.</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Constants</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int32">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-            <Value>6</Value>
-            <Value>7</Value>
-            <Value>8</Value>
-            <Value>9</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>NW N NE W ORIGIN E SW S SE</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>DS_DEMhiresArElv</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_40HZ/DS_DEMhiresArElv</Value>
-        </Attribute>
-    </Int32>
-    <Float64 name="Data_40HZ_DS_UTCTime_40">
-        <Dim name="/Data_40HZ_DS_UTCTime_40"/>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
-        </Attribute>
-        <Attribute name="hertz" type="String">
-            <Value>40</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Transmit time of each shot in J2000 seconds</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Rel 33 GLAS Binary Data</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>DS_UTCTime_40</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_40HZ/DS_UTCTime_40</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="Data_40HZ_Time_d_UTCTime_40">
-        <Dim name="/Data_40HZ_Time_d_UTCTime_40"/>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2000-01-01 12:00:00 UTC</Value>
-        </Attribute>
-        <Attribute name="hertz" type="String">
-            <Value>40</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Transmit time of each shot in J2000 seconds</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of each shot in the 1 second frame measured as UTC seconds elapsed since Jan 1 2000 12:00:00 UTC. This time has been derived from the GPS time accounting for leap seconds.</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Rel 33 GLAS Binary Data</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>d_UTCTime_40</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_40HZ/Time/d_UTCTime_40</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="FakeDim0">
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim1">
-        <Dim name="/FakeDim1"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim2">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="featureType" type="String">
         <Value>timeSeries</Value>
     </Attribute>

@@ -1,62 +1,1521 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ATL03_20181014084920_02400109_003_01.h5">
-    <Dimension name="orbit_info_crossing_time" size="1"/>
-    <Dimension name="orbit_info_sc_orient_time" size="1"/>
-    <Dimension name="gt1r_bckgrd_atlas_delta_time" size="71814"/>
-    <Dimension name="gt1r_geolocation_delta_time" size="128400"/>
+    <Dimension name="ancillary_data_atlas_engineering_ds_gt" size="6"/>
+    <Dimension name="ancillary_data_atlas_engineering_ds_stat" size="4"/>
+    <Dimension name="ancillary_data_calibrations_ds_channel" size="20"/>
+    <Dimension name="ancillary_data_calibrations_low_link_impulse_response_hist_x" size="2000"/>
+    <Dimension name="ancillary_data_start_delta_time" size="1"/>
+    <Dimension name="ancillary_data_tep_ds_gt" size="6"/>
+    <Dimension name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time" size="2000"/>
+    <Dimension name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod" size="1"/>
+    <Dimension name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time" size="2000"/>
+    <Dimension name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod" size="1"/>
     <Dimension name="ds_surf_type" size="5"/>
     <Dimension name="ds_xyz" size="3"/>
-    <Dimension name="gt1r_geophys_corr_delta_time" size="128400"/>
-    <Dimension name="gt1r_signal_find_output_land_delta_time" size="12281"/>
-    <Dimension name="gt1r_signal_find_output_ocean_delta_time" size="39472"/>
-    <Dimension name="gt1r_heights_delta_time" size="357823"/>
-    <Dimension name="gt2r_bckgrd_atlas_delta_time" size="72243"/>
-    <Dimension name="gt2r_geolocation_delta_time" size="128400"/>
-    <Dimension name="gt2r_geophys_corr_delta_time" size="128400"/>
-    <Dimension name="gt2r_signal_find_output_land_delta_time" size="12302"/>
-    <Dimension name="gt2r_signal_find_output_ocean_delta_time" size="41711"/>
-    <Dimension name="gt2r_heights_delta_time" size="307488"/>
     <Dimension name="gt1l_bckgrd_atlas_delta_time" size="2355"/>
     <Dimension name="gt1l_geolocation_delta_time" size="128400"/>
     <Dimension name="gt1l_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt1l_heights_delta_time" size="62258"/>
     <Dimension name="gt1l_signal_find_output_land_delta_time" size="179"/>
     <Dimension name="gt1l_signal_find_output_ocean_delta_time" size="18879"/>
-    <Dimension name="gt1l_heights_delta_time" size="62258"/>
-    <Dimension name="FakeDim0" size="1"/>
-    <Dimension name="quality_assessment_delta_time" size="1"/>
-    <Dimension name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod" size="1"/>
-    <Dimension name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time" size="2000"/>
-    <Dimension name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod" size="1"/>
-    <Dimension name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time" size="2000"/>
-    <Dimension name="gt3l_bckgrd_atlas_delta_time" size="2359"/>
-    <Dimension name="gt3l_geolocation_delta_time" size="128400"/>
-    <Dimension name="gt3l_geophys_corr_delta_time" size="128400"/>
-    <Dimension name="gt3l_signal_find_output_land_delta_time" size="9784"/>
-    <Dimension name="gt3l_signal_find_output_ocean_delta_time" size="19218"/>
-    <Dimension name="gt3l_heights_delta_time" size="70351"/>
+    <Dimension name="gt1r_bckgrd_atlas_delta_time" size="71814"/>
+    <Dimension name="gt1r_geolocation_delta_time" size="128400"/>
+    <Dimension name="gt1r_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt1r_heights_delta_time" size="357823"/>
+    <Dimension name="gt1r_signal_find_output_land_delta_time" size="12281"/>
+    <Dimension name="gt1r_signal_find_output_ocean_delta_time" size="39472"/>
     <Dimension name="gt2l_bckgrd_atlas_delta_time" size="2355"/>
     <Dimension name="gt2l_geolocation_delta_time" size="128400"/>
     <Dimension name="gt2l_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt2l_heights_delta_time" size="60110"/>
     <Dimension name="gt2l_signal_find_output_land_delta_time" size="9634"/>
     <Dimension name="gt2l_signal_find_output_ocean_delta_time" size="18350"/>
-    <Dimension name="gt2l_heights_delta_time" size="60110"/>
-    <Dimension name="FakeDim1" size="6"/>
-    <Dimension name="FakeDim2" size="160"/>
-    <Dimension name="FakeDim3" size="498"/>
-    <Dimension name="ancillary_data_calibrations_ds_channel" size="20"/>
-    <Dimension name="ancillary_data_calibrations_low_link_impulse_response_hist_x" size="2000"/>
-    <Dimension name="ancillary_data_atlas_engineering_ds_gt" size="6"/>
-    <Dimension name="ancillary_data_start_delta_time" size="1"/>
-    <Dimension name="ancillary_data_atlas_engineering_ds_stat" size="4"/>
-    <Dimension name="FakeDim4" size="5"/>
-    <Dimension name="FakeDim5" size="2"/>
+    <Dimension name="gt2r_bckgrd_atlas_delta_time" size="72243"/>
+    <Dimension name="gt2r_geolocation_delta_time" size="128400"/>
+    <Dimension name="gt2r_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt2r_heights_delta_time" size="307488"/>
+    <Dimension name="gt2r_signal_find_output_land_delta_time" size="12302"/>
+    <Dimension name="gt2r_signal_find_output_ocean_delta_time" size="41711"/>
+    <Dimension name="gt3l_bckgrd_atlas_delta_time" size="2359"/>
+    <Dimension name="gt3l_geolocation_delta_time" size="128400"/>
+    <Dimension name="gt3l_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt3l_heights_delta_time" size="70351"/>
+    <Dimension name="gt3l_signal_find_output_land_delta_time" size="9784"/>
+    <Dimension name="gt3l_signal_find_output_ocean_delta_time" size="19218"/>
     <Dimension name="gt3r_bckgrd_atlas_delta_time" size="72094"/>
     <Dimension name="gt3r_geolocation_delta_time" size="128400"/>
     <Dimension name="gt3r_geophys_corr_delta_time" size="128400"/>
+    <Dimension name="gt3r_heights_delta_time" size="501627"/>
     <Dimension name="gt3r_signal_find_output_land_delta_time" size="12386"/>
     <Dimension name="gt3r_signal_find_output_ocean_delta_time" size="31142"/>
-    <Dimension name="gt3r_heights_delta_time" size="501627"/>
-    <Dimension name="ancillary_data_tep_ds_gt" size="6"/>
+    <Dimension name="orbit_info_crossing_time" size="1"/>
+    <Dimension name="orbit_info_sc_orient_time" size="1"/>
+    <Dimension name="quality_assessment_delta_time" size="1"/>
+    <Dimension name="FakeDim0" size="1"/>
+    <Dimension name="FakeDim1" size="6"/>
+    <Dimension name="FakeDim2" size="160"/>
+    <Dimension name="FakeDim3" size="498"/>
+    <Dimension name="FakeDim4" size="5"/>
+    <Dimension name="FakeDim5" size="2"/>
+    <Int8 name="ancillary_data_atlas_engineering_ds_gt">
+        <Dim name="/ancillary_data_atlas_engineering_ds_gt"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for ATLAS Groundtracks (gt1l, gt1r, gt2l, gt2r, gt3l, gt3r)</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>gt1l gt1r gt2l gt2r gt3l gt3r</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>GT Index</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_gt</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/atlas_engineering/ds_gt</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="ancillary_data_atlas_engineering_ds_stat">
+        <Dim name="/ancillary_data_atlas_engineering_ds_stat"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for statistics in the order mean, sdev, min, max</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>mean sdev min max</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Stat Index</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_stat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/atlas_engineering/ds_stat</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="ancillary_data_calibrations_ds_channel">
+        <Dim name="/ancillary_data_calibrations_ds_channel"/>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for ATLAS PCE channels (1-16=strong, 17-20=weak)</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Channel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_channel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/calibrations/ds_channel</Value>
+        </Attribute>
+    </Int8>
+    <Float64 name="ancillary_data_calibrations_low_link_impulse_response_hist_x">
+        <Dim name="/ancillary_data_calibrations_low_link_impulse_response_hist_x"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Histogram bin x-values</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Histogram Bin X Values</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CAL20</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>hist_x</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/calibrations/low_link_impulse_response/hist_x</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="ancillary_data_start_delta_time">
+        <Dim name="/ancillary_data_start_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch at the first data point in the file. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>ATLAS Start Time (Actual)</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>start_delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/start_delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="ancillary_data_tep_ds_gt">
+        <Dim name="/ancillary_data_tep_ds_gt"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale for ATLAS Groundtracks (gt1l, gt1r, gt2l, gt2r, gt3l, gt3r)</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>gt1l gt1r gt2l gt2r gt3l gt3r</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>GT Index</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>6</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_gt</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/tep/ds_gt</Value>
+        </Attribute>
+    </Int8>
+    <Float64 name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time">
+        <Dim name="/atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time"/>
+        <Attribute name="description" type="String">
+            <Value>The times associated with the TEP histogram bin centers, measured from the laser transmit time.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Histogram Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02 ATBD, Section 7.2</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>tep_hist_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atlas_impulse_response/pce1_spot1/tep_histogram/tep_hist_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod">
+        <Dim name="/atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod"/>
+        <Attribute name="description" type="String">
+            <Value>The time of day at of the start of the data within the TEP histogram, in seconds since the ATLAS SDP GPS Epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Time Of Day</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02 ATBD, Section 7.2</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>tep_tod</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atlas_impulse_response/pce1_spot1/tep_histogram/tep_tod</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time">
+        <Dim name="/atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time"/>
+        <Attribute name="description" type="String">
+            <Value>The times associated with the TEP histogram bin centers, measured from the laser transmit time.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Histogram Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02 ATBD, Section 7.2</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>tep_hist_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atlas_impulse_response/pce2_spot3/tep_histogram/tep_hist_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod">
+        <Dim name="/atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod"/>
+        <Attribute name="description" type="String">
+            <Value>The time of day at of the start of the data within the TEP histogram, in seconds since the ATLAS SDP GPS Epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Time Of Day</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02 ATBD, Section 7.2</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>tep_tod</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/atlas_impulse_response/pce2_spot3/tep_histogram/tep_tod</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="ds_surf_type">
+        <Dim name="/ds_surf_type"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale indexing the surface type array. Index=1 corresponds to Land; index = 2 corresponds to Ocean; Index = 3 corresponds to SeaIce; Index=4 corresponds to LandIce; Index=5 corresponds to InlandWater</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>land ocean seaice landice inland_water</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int32">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+            <Value>4</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface Type Dimension Scale</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_surf_type</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ds_surf_type</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="ds_xyz">
+        <Dim name="/ds_xyz"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>x y z</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Dimension scale indexing the XYZ components of velocity_sc. Index=1 corresponds to X; index = 2 corresponds to Y; Index = 3 corresponds to Z;</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int32">
+            <Value>1</Value>
+            <Value>2</Value>
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>XYZ Dimension Scale</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ds_xyz</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ds_xyz</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="gt1l_bckgrd_atlas_delta_time">
+        <Dim name="/gt1l_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1l_geolocation_delta_time">
+        <Dim name="/gt1l_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1l_geophys_corr_delta_time">
+        <Dim name="/gt1l_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1l_heights_delta_time">
+        <Dim name="/gt1l_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1l_signal_find_output_land_delta_time">
+        <Dim name="/gt1l_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1l_signal_find_output_ocean_delta_time">
+        <Dim name="/gt1l_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1l/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_bckgrd_atlas_delta_time">
+        <Dim name="/gt1r_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_geolocation_delta_time">
+        <Dim name="/gt1r_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_geophys_corr_delta_time">
+        <Dim name="/gt1r_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_heights_delta_time">
+        <Dim name="/gt1r_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_signal_find_output_land_delta_time">
+        <Dim name="/gt1r_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt1r_signal_find_output_ocean_delta_time">
+        <Dim name="/gt1r_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt1r/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_bckgrd_atlas_delta_time">
+        <Dim name="/gt2l_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_geolocation_delta_time">
+        <Dim name="/gt2l_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_geophys_corr_delta_time">
+        <Dim name="/gt2l_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_heights_delta_time">
+        <Dim name="/gt2l_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_signal_find_output_land_delta_time">
+        <Dim name="/gt2l_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2l_signal_find_output_ocean_delta_time">
+        <Dim name="/gt2l_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2l/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_bckgrd_atlas_delta_time">
+        <Dim name="/gt2r_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_geolocation_delta_time">
+        <Dim name="/gt2r_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_geophys_corr_delta_time">
+        <Dim name="/gt2r_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_heights_delta_time">
+        <Dim name="/gt2r_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_signal_find_output_land_delta_time">
+        <Dim name="/gt2r_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt2r_signal_find_output_ocean_delta_time">
+        <Dim name="/gt2r_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt2r/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_bckgrd_atlas_delta_time">
+        <Dim name="/gt3l_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_geolocation_delta_time">
+        <Dim name="/gt3l_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_geophys_corr_delta_time">
+        <Dim name="/gt3l_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_heights_delta_time">
+        <Dim name="/gt3l_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_signal_find_output_land_delta_time">
+        <Dim name="/gt3l_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3l_signal_find_output_ocean_delta_time">
+        <Dim name="/gt3l_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3l/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_bckgrd_atlas_delta_time">
+        <Dim name="/gt3r_bckgrd_atlas_delta_time"/>
+        <Attribute name="description" type="String">
+            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time at the start of ATLAS 50-shot sum</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL02</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/bckgrd_atlas/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_geolocation_delta_time">
+        <Dim name="/gt3r_geolocation_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>reference_photon_lat, reference_photon_lon</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Delta Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/geolocation/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_geophys_corr_delta_time">
+        <Dim name="/gt3r_geophys_corr_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/geophys_corr/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_heights_delta_time">
+        <Dim name="/gt3r_heights_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat_ph lon_ph</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/heights/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_signal_find_output_land_delta_time">
+        <Dim name="/gt3r_signal_find_output_land_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/signal_find_output/land/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="gt3r_signal_find_output_ocean_delta_time">
+        <Dim name="/gt3r_signal_find_output_ocean_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived via Time Tagging</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/gt3r/signal_find_output/ocean/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="orbit_info_crossing_time">
+        <Dim name="/orbit_info_crossing_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The time, in seconds since the ATLAS SDP GPS Epoch, at which the ascending node crosses the equator. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Ascending Node Crossing Time</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>POD/PPD</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>crossing_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/orbit_info/crossing_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="orbit_info_sc_orient_time">
+        <Dim name="/orbit_info_sc_orient_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The time of the last spacecraft orientation change between forward, backward and transitional flight modes, expressed in seconds since the ATLAS SDP GPS Epoch. ICESat-2 is considered to be flying forward when the weak beams are leading the strong beams; and backward when the strong beams are leading the weak beams. ICESat-2 is considered to be in transition while it is maneuvering between the two orientations. Science quality is potentially degraded while in transition mode. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time of Last Spacecraft Orientation Change</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>POD/PPD</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sc_orient_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/orbit_info/sc_orient_time</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="quality_assessment_delta_time">
+        <Dim name="/quality_assessment_delta_time"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Elapsed GPS seconds</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2018-01-01</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>delta_time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/quality_assessment/delta_time</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="FakeDim0">
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim1">
+        <Dim name="/FakeDim1"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim3">
+        <Dim name="/FakeDim3"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim4">
+        <Dim name="/FakeDim4"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim5">
+        <Dim name="/FakeDim5"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Int8 name="orbit_info_cycle_number">
         <Dim name="/orbit_info_crossing_time"/>
         <Attribute name="contentType" type="String">
@@ -23417,1465 +24876,6 @@
         </Attribute>
         <Map name="/gt3r_heights_delta_time"/>
     </Float32>
-    <Int8 name="ancillary_data_atlas_engineering_ds_gt">
-        <Dim name="/ancillary_data_atlas_engineering_ds_gt"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for ATLAS Groundtracks (gt1l, gt1r, gt2l, gt2r, gt3l, gt3r)</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>gt1l gt1r gt2l gt2r gt3l gt3r</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int8">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-            <Value>6</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>GT Index</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>6</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_gt</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/atlas_engineering/ds_gt</Value>
-        </Attribute>
-    </Int8>
-    <Int8 name="ancillary_data_atlas_engineering_ds_stat">
-        <Dim name="/ancillary_data_atlas_engineering_ds_stat"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for statistics in the order mean, sdev, min, max</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>mean sdev min max</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int8">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Stat Index</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_stat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/atlas_engineering/ds_stat</Value>
-        </Attribute>
-    </Int8>
-    <Int8 name="ancillary_data_calibrations_ds_channel">
-        <Dim name="/ancillary_data_calibrations_ds_channel"/>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for ATLAS PCE channels (1-16=strong, 17-20=weak)</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Channel</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>20</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_channel</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/calibrations/ds_channel</Value>
-        </Attribute>
-    </Int8>
-    <Float64 name="ancillary_data_calibrations_low_link_impulse_response_hist_x">
-        <Dim name="/ancillary_data_calibrations_low_link_impulse_response_hist_x"/>
-        <Attribute name="contentType" type="String">
-            <Value>auxiliaryInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Histogram bin x-values</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Histogram Bin X Values</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>CAL20</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>hist_x</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/calibrations/low_link_impulse_response/hist_x</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="ancillary_data_start_delta_time">
-        <Dim name="/ancillary_data_start_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>auxiliaryInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch at the first data point in the file. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>ATLAS Start Time (Actual)</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>start_delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/start_delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Int8 name="ancillary_data_tep_ds_gt">
-        <Dim name="/ancillary_data_tep_ds_gt"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale for ATLAS Groundtracks (gt1l, gt1r, gt2l, gt2r, gt3l, gt3r)</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>gt1l gt1r gt2l gt2r gt3l gt3r</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int8">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-            <Value>6</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>GT Index</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int8">
-            <Value>6</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int8">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_gt</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ancillary_data/tep/ds_gt</Value>
-        </Attribute>
-    </Int8>
-    <Float64 name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time">
-        <Dim name="/atlas_impulse_response_pce1_spot1_tep_histogram_tep_hist_time"/>
-        <Attribute name="description" type="String">
-            <Value>The times associated with the TEP histogram bin centers, measured from the laser transmit time.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TEP Histogram Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02 ATBD, Section 7.2</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>tep_hist_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/atlas_impulse_response/pce1_spot1/tep_histogram/tep_hist_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod">
-        <Dim name="/atlas_impulse_response_pce1_spot1_tep_histogram_tep_tod"/>
-        <Attribute name="description" type="String">
-            <Value>The time of day at of the start of the data within the TEP histogram, in seconds since the ATLAS SDP GPS Epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TEP Time Of Day</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02 ATBD, Section 7.2</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>tep_tod</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/atlas_impulse_response/pce1_spot1/tep_histogram/tep_tod</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time">
-        <Dim name="/atlas_impulse_response_pce2_spot3_tep_histogram_tep_hist_time"/>
-        <Attribute name="description" type="String">
-            <Value>The times associated with the TEP histogram bin centers, measured from the laser transmit time.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TEP Histogram Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02 ATBD, Section 7.2</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>tep_hist_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/atlas_impulse_response/pce2_spot3/tep_histogram/tep_hist_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod">
-        <Dim name="/atlas_impulse_response_pce2_spot3_tep_histogram_tep_tod"/>
-        <Attribute name="description" type="String">
-            <Value>The time of day at of the start of the data within the TEP histogram, in seconds since the ATLAS SDP GPS Epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TEP Time Of Day</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02 ATBD, Section 7.2</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>tep_tod</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/atlas_impulse_response/pce2_spot3/tep_histogram/tep_tod</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="ds_surf_type">
-        <Dim name="/ds_surf_type"/>
-        <Attribute name="contentType" type="String">
-            <Value>auxiliaryInformation</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale indexing the surface type array. Index=1 corresponds to Land; index = 2 corresponds to Ocean; Index = 3 corresponds to SeaIce; Index=4 corresponds to LandIce; Index=5 corresponds to InlandWater</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>land ocean seaice landice inland_water</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int32">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-            <Value>4</Value>
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Surface Type Dimension Scale</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>5</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_surf_type</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ds_surf_type</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="ds_xyz">
-        <Dim name="/ds_xyz"/>
-        <Attribute name="contentType" type="String">
-            <Value>auxiliaryInformation</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>x y z</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Dimension scale indexing the XYZ components of velocity_sc. Index=1 corresponds to X; index = 2 corresponds to Y; Index = 3 corresponds to Z;</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Int32">
-            <Value>1</Value>
-            <Value>2</Value>
-            <Value>3</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>XYZ Dimension Scale</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>3</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ds_xyz</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ds_xyz</Value>
-        </Attribute>
-    </Int32>
-    <Float64 name="gt1l_bckgrd_atlas_delta_time">
-        <Dim name="/gt1l_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1l_geolocation_delta_time">
-        <Dim name="/gt1l_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1l_geophys_corr_delta_time">
-        <Dim name="/gt1l_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1l_heights_delta_time">
-        <Dim name="/gt1l_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1l_signal_find_output_land_delta_time">
-        <Dim name="/gt1l_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1l_signal_find_output_ocean_delta_time">
-        <Dim name="/gt1l_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1l/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_bckgrd_atlas_delta_time">
-        <Dim name="/gt1r_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_geolocation_delta_time">
-        <Dim name="/gt1r_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_geophys_corr_delta_time">
-        <Dim name="/gt1r_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_heights_delta_time">
-        <Dim name="/gt1r_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_signal_find_output_land_delta_time">
-        <Dim name="/gt1r_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt1r_signal_find_output_ocean_delta_time">
-        <Dim name="/gt1r_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt1r/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_bckgrd_atlas_delta_time">
-        <Dim name="/gt2l_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_geolocation_delta_time">
-        <Dim name="/gt2l_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_geophys_corr_delta_time">
-        <Dim name="/gt2l_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_heights_delta_time">
-        <Dim name="/gt2l_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_signal_find_output_land_delta_time">
-        <Dim name="/gt2l_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2l_signal_find_output_ocean_delta_time">
-        <Dim name="/gt2l_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2l/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_bckgrd_atlas_delta_time">
-        <Dim name="/gt2r_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_geolocation_delta_time">
-        <Dim name="/gt2r_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_geophys_corr_delta_time">
-        <Dim name="/gt2r_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_heights_delta_time">
-        <Dim name="/gt2r_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_signal_find_output_land_delta_time">
-        <Dim name="/gt2r_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt2r_signal_find_output_ocean_delta_time">
-        <Dim name="/gt2r_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt2r/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_bckgrd_atlas_delta_time">
-        <Dim name="/gt3l_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_geolocation_delta_time">
-        <Dim name="/gt3l_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_geophys_corr_delta_time">
-        <Dim name="/gt3l_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_heights_delta_time">
-        <Dim name="/gt3l_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_signal_find_output_land_delta_time">
-        <Dim name="/gt3l_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3l_signal_find_output_ocean_delta_time">
-        <Dim name="/gt3l_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3l/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_bckgrd_atlas_delta_time">
-        <Dim name="/gt3r_bckgrd_atlas_delta_time"/>
-        <Attribute name="description" type="String">
-            <Value>Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time at the start of ATLAS 50-shot sum</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>ATL02</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/bckgrd_atlas/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_geolocation_delta_time">
-        <Dim name="/gt3r_geolocation_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>reference_photon_lat, reference_photon_lon</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch. If there is no reference photon, this time corresponds to the approximate mid-point time associated with the along-track geolocation segment edge. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Delta Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/geolocation/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_geophys_corr_delta_time">
-        <Dim name="/gt3r_geophys_corr_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Elapsed seconds from the ATLAS SDP GPS Epoch, corresponding to the transmit time of the reference photon. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/geophys_corr/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_heights_delta_time">
-        <Dim name="/gt3r_heights_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>lat_ph lon_ph</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/heights/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_signal_find_output_land_delta_time">
-        <Dim name="/gt3r_signal_find_output_land_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/signal_find_output/land/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="gt3r_signal_find_output_ocean_delta_time">
-        <Dim name="/gt3r_signal_find_output_ocean_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>physicalMeasurement</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Derived via Time Tagging</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/gt3r/signal_find_output/ocean/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="orbit_info_crossing_time">
-        <Dim name="/orbit_info_crossing_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The time, in seconds since the ATLAS SDP GPS Epoch, at which the ascending node crosses the equator. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Ascending Node Crossing Time</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>POD/PPD</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>crossing_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/orbit_info/crossing_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="orbit_info_sc_orient_time">
-        <Dim name="/orbit_info_sc_orient_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The time of the last spacecraft orientation change between forward, backward and transitional flight modes, expressed in seconds since the ATLAS SDP GPS Epoch. ICESat-2 is considered to be flying forward when the weak beams are leading the strong beams; and backward when the strong beams are leading the weak beams. ICESat-2 is considered to be in transition while it is maneuvering between the two orientations. Science quality is potentially degraded while in transition mode. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time of Last Spacecraft Orientation Change</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>POD/PPD</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sc_orient_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/orbit_info/sc_orient_time</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="quality_assessment_delta_time">
-        <Dim name="/quality_assessment_delta_time"/>
-        <Attribute name="contentType" type="String">
-            <Value>referenceInformation</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (1980-01-06T00:00:00.000000Z UTC) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Elapsed GPS seconds</Value>
-        </Attribute>
-        <Attribute name="source" type="String">
-            <Value>Operations</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 2018-01-01</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>delta_time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/quality_assessment/delta_time</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="FakeDim0">
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim1">
-        <Dim name="/FakeDim1"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim2">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim3">
-        <Dim name="/FakeDim3"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim4">
-        <Dim name="/FakeDim4"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim5">
-        <Dim name="/FakeDim5"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.6</Value>
     </Attribute>

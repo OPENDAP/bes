@@ -1,13 +1,145 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5">
-    <Dimension name="Time" size="72"/>
     <Dimension name="Latitude" size="36"/>
+    <Dimension name="MixingRatioPressureLevels" size="15"/>
     <Dimension name="ProfilePressureLevels" size="21"/>
+    <Dimension name="Time" size="72"/>
+    <Dimension name="Wavelength" size="10"/>
     <Dimension name="FakeDim0" size="20"/>
     <Dimension name="FakeDim2" size="20"/>
-    <Dimension name="Wavelength" size="10"/>
     <Dimension name="FakeDim4" size="20"/>
-    <Dimension name="MixingRatioPressureLevels" size="15"/>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Center Latitude for Zonal Mean</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="MixingRatioPressureLevels">
+        <Dim name="/MixingRatioPressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>down</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mid-Level Pressure for Mixing Ratio 15-Layer Vertical Pressure Scale</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.5000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MixingRatioPressureLevels</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/MixingRatioPressureLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ProfilePressureLevels">
+        <Dim name="/ProfilePressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Bottom Level Pressures for 21-Layer Vertical Pressure Scale</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.1013249978</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1013.250000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>down</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ProfilePressureLevels</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/ProfilePressureLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Time">
+        <Dim name="/Time"/>
+        <Attribute name="units" type="String">
+            <Value>year</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/Time</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="Wavelength">
+        <Dim name="/Wavelength"/>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Nominal SBUV Wavelengths used in retrieval (actual number of channels used can vary from 7 to 10 depending on latitude and TO3)</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Wavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/Wavelength</Value>
+        </Attribute>
+    </Int16>
+    <Int32 name="FakeDim0">
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="FakeDim4">
+        <Dim name="/FakeDim4"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Float32 name="AprioriProfileOzone">
         <Dim name="/Time"/>
         <Dim name="/Latitude"/>
@@ -460,138 +592,6 @@
         <Map name="/Time"/>
         <Map name="/Latitude"/>
     </Int16>
-    <Float32 name="Latitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Center Latitude for Zonal Mean</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-90.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="MixingRatioPressureLevels">
-        <Dim name="/MixingRatioPressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="positive" type="String">
-            <Value>down</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mid-Level Pressure for Mixing Ratio 15-Layer Vertical Pressure Scale</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.5000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>50.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>MixingRatioPressureLevels</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/MixingRatioPressureLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ProfilePressureLevels">
-        <Dim name="/ProfilePressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Bottom Level Pressures for 21-Layer Vertical Pressure Scale</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.1013249978</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1013.250000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="positive" type="String">
-            <Value>down</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ProfilePressureLevels</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/ProfilePressureLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Time">
-        <Dim name="/Time"/>
-        <Attribute name="units" type="String">
-            <Value>year</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/Time</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="Wavelength">
-        <Dim name="/Wavelength"/>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Nominal SBUV Wavelengths used in retrieval (actual number of channels used can vary from 7 to 10 depending on latitude and TO3)</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-9999</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Wavelength</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/Wavelength</Value>
-        </Attribute>
-    </Int16>
-    <Int32 name="FakeDim0">
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim2">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="FakeDim4">
-        <Dim name="/FakeDim4"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="Satellite" type="String">
         <Value>Nimbus-04</Value>
     </Attribute>

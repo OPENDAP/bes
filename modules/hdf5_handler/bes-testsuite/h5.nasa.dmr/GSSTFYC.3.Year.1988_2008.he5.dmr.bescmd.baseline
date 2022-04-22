@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GSSTFYC.3.Year.1988_2008.he5">
-    <Dimension name="lat" size="720"/>
     <Dimension name="lon" size="1440"/>
+    <Dimension name="lat" size="720"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="NCEP_Psea_level">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
@@ -298,18 +310,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

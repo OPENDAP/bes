@@ -1,18 +1,57 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5">
-    <Dimension name="amsu_idx" size="46"/>
-    <Dimension name="CloudSat_cs_idx" size="51"/>
-    <Dimension name="CloudSat_cs_nbin" size="125"/>
-    <Dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
-    <Dimension name="AIRS_RetStd_CH4Func" size="7"/>
-    <Dimension name="amsu_track_idx" size="45"/>
-    <Dimension name="AIRS_RetStd_Cloud" size="2"/>
     <Dimension name="AIRS_HingeSurf" size="100"/>
-    <Dimension name="AIRS_RetStd_H2OFunc" size="11"/>
+    <Dimension name="AIRS_RetStd_CH4Func" size="7"/>
     <Dimension name="AIRS_RetStd_COFunc" size="9"/>
+    <Dimension name="AIRS_RetStd_Cloud" size="2"/>
+    <Dimension name="AIRS_RetStd_H2OFunc" size="11"/>
     <Dimension name="AIRS_RetStd_H2OPressureLay" size="14"/>
     <Dimension name="AIRS_RetStd_O3Func" size="9"/>
     <Dimension name="AIRS_RetStd_StdPressureLay" size="28"/>
+    <Dimension name="AIRS_RetStd_StdPressureLev" size="28"/>
+    <Dimension name="CloudSat_cs_idx" size="51"/>
+    <Dimension name="CloudSat_cs_nbin" size="125"/>
+    <Dimension name="amsu_idx" size="46"/>
+    <Dimension name="amsu_track_idx" size="45"/>
+    <Float32 name="AIRS_HingeSurf">
+        <Dim name="/AIRS_HingeSurf"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_CH4Func">
+        <Dim name="/AIRS_RetStd_CH4Func"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_COFunc">
+        <Dim name="/AIRS_RetStd_COFunc"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_Cloud">
+        <Dim name="/AIRS_RetStd_Cloud"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_H2OFunc">
+        <Dim name="/AIRS_RetStd_H2OFunc"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_H2OPressureLay">
+        <Dim name="/AIRS_RetStd_H2OPressureLay"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_O3Func">
+        <Dim name="/AIRS_RetStd_O3Func"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_StdPressureLay">
+        <Dim name="/AIRS_RetStd_StdPressureLay"/>
+    </Float32>
+    <Float32 name="AIRS_RetStd_StdPressureLev">
+        <Dim name="/AIRS_RetStd_StdPressureLev"/>
+    </Float32>
+    <Float32 name="CloudSat_cs_idx">
+        <Dim name="/CloudSat_cs_idx"/>
+    </Float32>
+    <Float32 name="CloudSat_cs_nbin">
+        <Dim name="/CloudSat_cs_nbin"/>
+    </Float32>
+    <Float32 name="amsu_idx">
+        <Dim name="/amsu_idx"/>
+    </Float32>
+    <Float32 name="amsu_track_idx">
+        <Dim name="/amsu_track_idx"/>
+    </Float32>
     <Int32 name="CloudSat_GEOPROF_Data_quality">
         <Dim name="/amsu_idx"/>
         <Dim name="/CloudSat_cs_idx"/>
@@ -2290,45 +2329,6 @@
         </Attribute>
         <Map name="/amsu_idx"/>
         <Map name="/AIRS_HingeSurf"/>
-    </Float32>
-    <Float32 name="AIRS_HingeSurf">
-        <Dim name="/AIRS_HingeSurf"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_CH4Func">
-        <Dim name="/AIRS_RetStd_CH4Func"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_COFunc">
-        <Dim name="/AIRS_RetStd_COFunc"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_Cloud">
-        <Dim name="/AIRS_RetStd_Cloud"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_H2OFunc">
-        <Dim name="/AIRS_RetStd_H2OFunc"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_H2OPressureLay">
-        <Dim name="/AIRS_RetStd_H2OPressureLay"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_O3Func">
-        <Dim name="/AIRS_RetStd_O3Func"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_StdPressureLay">
-        <Dim name="/AIRS_RetStd_StdPressureLay"/>
-    </Float32>
-    <Float32 name="AIRS_RetStd_StdPressureLev">
-        <Dim name="/AIRS_RetStd_StdPressureLev"/>
-    </Float32>
-    <Float32 name="CloudSat_cs_idx">
-        <Dim name="/CloudSat_cs_idx"/>
-    </Float32>
-    <Float32 name="CloudSat_cs_nbin">
-        <Dim name="/CloudSat_cs_nbin"/>
-    </Float32>
-    <Float32 name="amsu_idx">
-        <Dim name="/amsu_idx"/>
-    </Float32>
-    <Float32 name="amsu_track_idx">
-        <Dim name="/amsu_track_idx"/>
     </Float32>
     <Attribute name="title" type="String">
         <Value>AIRS-CloudSat matchups for AIRS granule AIRS.2011.03.11.001.L2.RetStd.v5.2.2.0.G11070231943.hdf (AMSU vars)</Value>

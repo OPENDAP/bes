@@ -1,10 +1,120 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5">
-    <Dimension name="nTimes" size="392"/>
-    <Dimension name="nXtrack" size="35"/>
     <Dimension name="nCorners" size="4"/>
     <Dimension name="nLevels" size="5"/>
     <Dimension name="nWavel" size="4"/>
+    <Dimension name="nTimes" size="392"/>
+    <Dimension name="nXtrack" size="35"/>
+    <Int32 name="nCorners">
+        <Dim name="/nCorners"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ground Pixel Corner</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the ground pixel corners.  There are four corners per ground pixel.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nCorners</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nCorners</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="nLevels">
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Atmospheric Levels</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the atmospheric levels.  The values range from 0.0 to 10.0 km.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nLevels</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nWavel">
+        <Dim name="/nWavel"/>
+        <Attribute name="long_name" type="String">
+            <Value>TOMS Wavelength</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the TOMS wavelengths.  The values range from 331 to 380 nm.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nWavel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nWavel</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_Latitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The terrestrial latitude (in degrees) at the center of the ground pixel.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_Longitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The terrestrial longitude (in degrees) at the center of the ground pixel.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/Longitude</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="ANCILLARY_DATA_SurfaceAlbedo331">
         <Dim name="/nTimes"/>
         <Dim name="/nXtrack"/>
@@ -2880,116 +2990,6 @@
             <Value>/nXtrack</Value>
         </Attribute>
     </Int32>
-    <Int32 name="nCorners">
-        <Dim name="/nCorners"/>
-        <Attribute name="long_name" type="String">
-            <Value>Ground Pixel Corner</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the ground pixel corners.  There are four corners per ground pixel.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nCorners</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nCorners</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="nLevels">
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Atmospheric Levels</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>km</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the atmospheric levels.  The values range from 0.0 to 10.0 km.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nLevels</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="nWavel">
-        <Dim name="/nWavel"/>
-        <Attribute name="long_name" type="String">
-            <Value>TOMS Wavelength</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the TOMS wavelengths.  The values range from 331 to 380 nm.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nWavel</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nWavel</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_Latitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The terrestrial latitude (in degrees) at the center of the ground pixel.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-90.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/Latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_Longitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The terrestrial longitude (in degrees) at the center of the ground pixel.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-180.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/Longitude</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="AuthorAffiliation" type="String">
         <Value>NASA/GSFC </Value>
     </Attribute>
