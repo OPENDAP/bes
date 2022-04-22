@@ -460,7 +460,15 @@ void FONcArray::define(int ncid) {
             // TODO Make this more adaptable to the Array's data type. Find out when it's
             //  best to use shuffle, et c. jhrg 7/22/18
             if (FONcRequestHandler::use_compression) {
+
                 int shuffle = 0;
+                // For integer, if the type size is >= 2, turn on the shuffle key always.
+                // For other types, turn on shuffle the key by default.
+                if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                    NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                    FONcRequestHandler::use_shuffle)                
+                    shuffle = 1;
+                
                 int deflate = 1;
                 int deflate_level = 4;
                 stax = nc_def_var_deflate(ncid, _varid, shuffle, deflate, deflate_level);

@@ -58,6 +58,9 @@
 #define FONC_USE_COMP true
 #define FONC_USE_COMP_KEY "FONc.UseCompression"
 
+#define FONC_USE_SHUFFLE false
+#define FONC_USE_SHUFFLE_KEY "FONc.UseShuffle"
+
 #define FONC_CHUNK_SIZE 4096
 #define FONC_CHUNK_SIZE_KEY "FONc.ChunkSize"
 
@@ -73,6 +76,7 @@
 std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
+bool FONcRequestHandler::use_shuffle;
 size_t FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::no_global_attrs;
@@ -158,6 +162,8 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
 
     read_key_value(FONC_USE_COMP_KEY, FONcRequestHandler::use_compression, FONC_USE_COMP);
 
+    read_key_value(FONC_USE_SHUFFLE_KEY, FONcRequestHandler::use_shuffle, FONC_USE_SHUFFLE);
+
     read_key_value(FONC_CHUNK_SIZE_KEY, FONcRequestHandler::chunk_size, FONC_CHUNK_SIZE);
 
     read_key_value(FONC_CLASSIC_MODEL_KEY, FONcRequestHandler::classic_model, FONC_CLASSIC_MODEL);
@@ -169,6 +175,7 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_compression: " << FONcRequestHandler::use_compression << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::use_shuffle: " << FONcRequestHandler::use_shuffle << endl);
     BESDEBUG("fonc", "FONcRequestHandler::chunk_size: " << FONcRequestHandler::chunk_size << endl);
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
     BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);
