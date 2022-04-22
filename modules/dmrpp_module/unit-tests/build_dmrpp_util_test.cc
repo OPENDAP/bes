@@ -176,6 +176,18 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Compact, all fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
+    template <typename T> void set_value(T val, hid_t type_id) {
+        vector<T> value(sizeof(T));
+        memcpy(value.data(), &val, sizeof(T));
+
+        string str_value = get_value_as_string(type_id, value);
+        ostringstream oss;
+        oss << "Expected " << val << ", but got " << str_value;
+        DBG(cerr << oss.str() << endl);
+
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1");
+    }
+
     void get_value_as_string_test_char() {
         vector<char> value(sizeof(char));
         char v{1};
