@@ -67,12 +67,9 @@
 #endif
 
 #include "DmrppNames.h"
-//#include "DMRpp.h"
 #include "DmrppTypeFactory.h"
-//#include "DmrppParserSax2.h"
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
-//#include "DmrppMetadataStore.h"
 #include "CredentialsManager.h"
 
 using namespace bes;
