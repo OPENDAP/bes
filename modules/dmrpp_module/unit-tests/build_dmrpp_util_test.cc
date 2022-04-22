@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include <unistd.h>
 
@@ -176,32 +177,49 @@ public:
     }
 
     void get_value_as_string_test_char() {
-        vector<char> value { 1 };
-        CPPUNIT_ASSERT_MESSAGE("Expected an 8-bit integer value", get_value_as_string(H5T_NATIVE_INT8_g, value) == "1");
+        vector<char> value(sizeof(char));
+        char v{1};
+        memcpy(value.data(), &v, sizeof(char));
+
+        string str_value = get_value_as_string(H5T_NATIVE_INT8_g, value);
+        ostringstream oss;
+        oss << "Expected " << v << ", but got " << str_value;
+        DBG(cerr << oss.str() << endl);
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1");
     }
 
     void get_value_as_string_test_short() {
         vector<char> value(sizeof(short));
         short v{1024};
         memcpy(value.data(), &v, sizeof(short));
-        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 16-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "1024");
+
+        string str_value = get_value_as_string(H5T_NATIVE_INT16_g, value);
+        ostringstream oss;
+        oss << "Expected " << v << ", but got " << str_value;
+        DBG(cerr << oss.str() << endl);
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1024");
     }
 
     void get_value_as_string_test_short_2() {
         vector<char> value(sizeof(short));
         short v{-1024};
         memcpy(value.data(), &v, sizeof(short));
-        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT16_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 16-bit integer value", get_value_as_string(H5T_NATIVE_INT16_g, value) == "-1024");
+        string str_value = get_value_as_string(H5T_NATIVE_INT16_g, value);
+        ostringstream oss;
+        oss << "Expected " << v << ", but got " << str_value;
+        DBG(cerr << oss.str() << endl);
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "-1024");
     }
 
     void get_value_as_string_test_int() {
         vector<char> value(sizeof(int32_t));
         int32_t v{70000};
         memcpy(value.data(), &v, sizeof(int32_t));
-        DBG(cerr << "v: " << v << ", " << get_value_as_string(H5T_NATIVE_INT32_g, value) << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected an 32-bit integer value", get_value_as_string(H5T_NATIVE_INT32_g, value) == "70000");
+        string str_value = get_value_as_string(H5T_NATIVE_INT32_g, value);
+        ostringstream oss;
+        oss << "Expected " << v << ", but got " << str_value;
+        DBG(cerr << oss.str() << endl);
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "70000");
     }
 
 
@@ -220,7 +238,7 @@ public:
 
         CPPUNIT_TEST(get_value_as_string_test_char);
         CPPUNIT_TEST(get_value_as_string_test_short);
-        CPPUNIT_TEST_FAIL(get_value_as_string_test_short_2);
+        CPPUNIT_TEST(get_value_as_string_test_short_2);
         CPPUNIT_TEST(get_value_as_string_test_int);
 
     CPPUNIT_TEST_SUITE_END();
