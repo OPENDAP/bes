@@ -39,6 +39,9 @@
 // This is used to track access to 'cloudydap' accesses in the S3 logs
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
+//
+// We disabled this (via ENABLE_TRACKING_QUERY_PARAMETER) because it
+// used regexes and was a performance killer. jhrg 4/22/22
 #define S3_TRACKING_CONTEXT "cloudydap"
 #define ENABLE_TRACKING_QUERY_PARAMETER 0
 
@@ -61,10 +64,14 @@ private:
     std::shared_ptr<http::url> d_data_url;
     std::string d_query_marker;
     std::string d_byte_order;
-    unsigned long long d_size;
-    unsigned long long d_offset;
+    unsigned long long d_size {0};
+    unsigned long long d_offset {0};
 
     std::vector<unsigned long long> d_chunk_position_in_array;
+
+    bool d_uses_fill_value {false};
+    // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/22/22
+    std::string d_fill_value;
 
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
@@ -86,16 +93,15 @@ private:
      *  dropping the old pointer (no delete[]) and taking possession of
      *  the new memory so it is correctly released as described here.
      */
-    bool d_read_buffer_is_mine;
-    unsigned long long d_bytes_read;
-    char *d_read_buffer;
-    unsigned long long d_read_buffer_size;
-    bool d_is_read;
-    bool d_is_inflated;
+    bool d_read_buffer_is_mine {true};
+    unsigned long long d_bytes_read {0};
+    char *d_read_buffer {nullptr};
+    unsigned long long d_read_buffer_size {0};
+    bool d_is_read {false};
+    bool d_is_inflated {false};
     std::string d_response_content_type;
 
     // static const std::string tracking_context;
-
 
     friend class ChunkTest;
     friend class DmrppCommonTest;
@@ -300,41 +306,37 @@ public:
     /// @brief Set the response type of the last response
     void  set_response_content_type(const std::string &ct) { d_response_content_type = ct; }
 
-    /// @brief Get the chunk byte order
+    /// @return Get the chunk byte order
     virtual std::string get_byte_order() { return d_byte_order; }
 
-    /**
-     * @brief Get the size of this Chunk's data block on disk
-     */
+    /// @return Get the size of this Chunk's data block on disk
     virtual unsigned long long get_size() const
     {
         return d_size;
     }
 
-    /**
-     * @brief Get the offset to this Chunk's data block
-     */
+    /// @return  Get the offset to this Chunk's data block
     virtual unsigned long long get_offset() const
     {
         return d_offset;
     }
 
-    /**
-     * @brief Get the data url for this Chunk's data block
-     */
+    /// @return Return true if the the chunk uses 'fill value.'
+    virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
+
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual std::string get_fill_value() const { return d_fill_value; }
+
+    /// @return Get the data url for this Chunk's data block
     virtual std::shared_ptr<http::url>  get_data_url() const;
 
-    /**
-     * @brief Set the data url for this Chunk's data block
-     */
+    /// @brief Set the data url for this Chunk's data block
     virtual void set_data_url(std::shared_ptr<http::url> data_url)
     {
         d_data_url = std::move(data_url);
     }
 
-    /**
-     * @brief Get the number of bytes read so far for this Chunk.
-     */
+    /// @return Get the number of bytes read so far for this Chunk.
     virtual unsigned long long get_bytes_read() const
     {
         return d_bytes_read;
@@ -374,10 +376,8 @@ public:
         set_bytes_read(0);
     }
 
-    /**
-     * Returns a pointer to the memory buffer for this Chunk. The
-     * return value is NULL if no memory has been allocated.
-     */
+    /// @return A pointer to the memory buffer for this Chunk.
+    /// The return value is NULL if no memory has been allocated.
     virtual char *get_rbuf()
     {
         return d_read_buffer;
@@ -436,17 +436,13 @@ public:
         set_bytes_read(bytes_read);
     }
 
-    /**
-     * Returns the size, in bytes, of the current read buffer for this Chunk.
-     */
+    /// @return The size, in bytes, of the current read buffer for this Chunk.
     virtual unsigned long long get_rbuf_size() const
     {
         return d_read_buffer_size;
     }
 
-    /**
-     * @return The chunk's position in the array, as a vector of ints.
-     */
+    /// @return The chunk's position in the array, as a vector of ints.
     virtual const std::vector<unsigned long long> &get_position_in_array() const
     {
         return d_chunk_position_in_array;

@@ -60,6 +60,7 @@ namespace build_dmrpp_util {
 
 bool is_hdf5_fill_value_defined(hid_t dataset_id);
 string get_value_as_string(hid_t h5_type_id, const vector<char> &value);
+string get_hdf5_fill_value(hid_t dataset_id);
 
 class build_dmrpp_util_test : public CppUnit::TestFixture {
 private:
@@ -82,7 +83,7 @@ public:
     // Called at the end of the test
     ~build_dmrpp_util_test() override = default;
 
-    void setup_data(const string &file_name, const string &dmr_name, hid_t &file, DMRpp *dmrpp) {
+    static void setup_data(hid_t &file, DMRpp *dmrpp, const string &file_name, const string &dmr_name) {
         file = H5Fopen(file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (file < 0) {
             throw BESNotFoundError(string("Error: HDF5 file '").append(file_name).append("' cannot be opened."), __FILE__, __LINE__);
@@ -97,16 +98,17 @@ public:
     void setUp() override {
         fv_dmrpp.reset(new dmrpp::DMRpp);
         fv_dmrpp->set_factory(&dtf);
-        setup_data(fill_value_file_name, fill_value_dmr_name, fill_value_file, fv_dmrpp.get());
+        setup_data(fill_value_file, fv_dmrpp.get(), fill_value_file_name, fill_value_dmr_name);
 
         fv_chunks_dmrpp.reset(new dmrpp::DMRpp);
         fv_chunks_dmrpp->set_factory(&dtf);
-        setup_data(fill_value_chunks_file_name, fill_value_chunks_dmr_name, fill_value_chunks_file, fv_chunks_dmrpp.get());
+        setup_data(fill_value_chunks_file, fv_chunks_dmrpp.get(), fill_value_chunks_file_name, fill_value_chunks_dmr_name);
     }
 
     // Called after each test
     void tearDown() override {
         H5Fclose(fill_value_file);
+        H5Fclose(fill_value_chunks_file);
     }
 
 #if 0
@@ -119,7 +121,7 @@ public:
     FValue.h5: /compact_all_fill
     FValue.h5: /cont_all_fill
     FValue.h5: /cont_some_fill
-    
+
     FValue_chunk.h5: /chunks_all_fill
 #endif
 
@@ -143,7 +145,7 @@ public:
     }
 
     void is_hdf5_fill_value_defined_test_bad_dataset_id() {
-        CPPUNIT_ASSERT_THROW_MESSAGE("This should throw BESInternalError", is_hdf5_fill_value_defined(-1), BESInternalError);
+        CPPUNIT_ASSERT_MESSAGE("This should throw BESInternalError", is_hdf5_fill_value_defined(-1));
     }
 
     void is_hdf5_fill_value_defined_test_chunks_all_fill() {
@@ -190,39 +192,93 @@ public:
 
     void get_value_as_string_test_char() {
         int8_t v = 1;
-        get_value_test_helper<int8_t>(v, "1", H5T_NATIVE_INT8_g, "get_value_as_string_test_char");
+        get_value_test_helper<int8_t>(v, "1", H5T_NATIVE_INT8_g, __func__);
     }
 
     void get_value_as_string_test_short() {
-        get_value_test_helper<int16_t>(1024, "1024", H5T_NATIVE_INT16_g, "get_value_as_string_test_short");
+        get_value_test_helper<int16_t>(1024, "1024", H5T_NATIVE_INT16_g, __func__);
     }
 
     void get_value_as_string_test_short_2() {
-        get_value_test_helper<int16_t>(-1024, "-1024", H5T_NATIVE_INT16_g, "get_value_as_string_test_short_2");
+        get_value_test_helper<int16_t>(-1024, "-1024", H5T_NATIVE_INT16_g, __func__);
     }
 
     void get_value_as_string_test_ushort() {
-        get_value_test_helper<uint16_t>(65000, "65000", H5T_NATIVE_UINT16_g, "get_value_as_string_test_ushort");
+        get_value_test_helper<uint16_t>(65000, "65000", H5T_NATIVE_UINT16_g, __func__);
     }
 
     void get_value_as_string_test_int() {
-        get_value_test_helper<int32_t>(70000, "70000", H5T_NATIVE_INT32_g, "get_value_as_string_test_int");
+        get_value_test_helper<int32_t>(70000, "70000", H5T_NATIVE_INT32_g, __func__);
     }
 
     void get_value_as_string_test_int_2() {
-        get_value_test_helper<int32_t>(-70000, "-70000", H5T_NATIVE_INT32_g, "get_value_as_string_test_int_2");
+        get_value_test_helper<int32_t>(-70000, "-70000", H5T_NATIVE_INT32_g, __func__);
     }
 
     void get_value_as_string_test_uint() {
-        get_value_test_helper<uint32_t>(70001, "70001", H5T_NATIVE_UINT32_g, "get_value_as_string_test_uint");
+        get_value_test_helper<uint32_t>(70001, "70001", H5T_NATIVE_UINT32_g, __func__);
     }
 
+    void get_value_as_string_test_float() {
+        get_value_test_helper<float>(70001.2, "70001.2", H5T_NATIVE_FLOAT_g, __func__);
+    }
+
+    void get_value_as_string_test_double() {
+        get_value_test_helper<double>(70.002, "70.002", H5T_NATIVE_DOUBLE_g, __func__);
+    }
+
+    static string get_fill_value_test_helper(hid_t h5_file, const string &dataset_name, const string &function_name) {
+        hid_t dataset = H5Dopen2(h5_file, dataset_name.c_str(), H5P_DEFAULT);
+        string str_value = get_hdf5_fill_value(dataset);
+        DBG(cerr << function_name << " fill value: " << str_value << endl);
+        return str_value;
+    }
+
+    void get_hdf5_fill_value_test_chunks_all_fill() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/chunks_all_fill", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_chunks_fill_not_write() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_not_write", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_chunks_fill_notdefined() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_chunks_some_fill() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/chunks_some_fill", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_compact_all_fill() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/compact_all_fill", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_cont_all_fill() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/cont_all_fill", __func__) == "-99");
+    }
+    
+    void get_hdf5_fill_value_test_cont_some_fill() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_file, "/cont_some_fill", __func__) == "-99");
+    }
+
+    void get_hdf5_fill_value_test_chunks_all_fill_2() {
+        CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
+                               get_fill_value_test_helper(fill_value_chunks_file, "/chunks_all_fill", __func__) == "-99");
+    }
 
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
         CPPUNIT_TEST(file_and_dmr_test);
 
-        CPPUNIT_TEST(is_hdf5_fill_value_defined_test_bad_dataset_id);
+        CPPUNIT_TEST_EXCEPTION(is_hdf5_fill_value_defined_test_bad_dataset_id, BESInternalError);
 
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_all_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_chunks_fill_not_write);
@@ -231,13 +287,25 @@ public:
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_cont_some_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
 
-        CPPUNIT_TEST_FAIL(get_value_as_string_test_char);
+        CPPUNIT_TEST_FAIL(get_value_as_string_test_char);   // FIXME jhrg 4/22/22
+
         CPPUNIT_TEST(get_value_as_string_test_short);
         CPPUNIT_TEST(get_value_as_string_test_short_2);
         CPPUNIT_TEST(get_value_as_string_test_ushort);
         CPPUNIT_TEST(get_value_as_string_test_int);
         CPPUNIT_TEST(get_value_as_string_test_int_2);
         CPPUNIT_TEST(get_value_as_string_test_uint);
+        CPPUNIT_TEST(get_value_as_string_test_float);
+        CPPUNIT_TEST(get_value_as_string_test_double);
+
+        CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_all_fill);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_fill_not_write);
+        CPPUNIT_TEST_EXCEPTION(get_hdf5_fill_value_test_chunks_fill_notdefined, BESInternalError);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_some_fill);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_compact_all_fill);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_cont_all_fill);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_cont_some_fill);
+        CPPUNIT_TEST(get_hdf5_fill_value_test_chunks_all_fill_2);
 
     CPPUNIT_TEST_SUITE_END();
 };

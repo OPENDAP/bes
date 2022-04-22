@@ -322,9 +322,16 @@ DmrppCommon::read_atomic(const string &name)
 
 /**
  * @brief Print the Chunk information.
+ *
  * @note Should not be called when the d_chunks vector has no elements because it
  * will write out a <chunks> element that is going to be empty when it might just
  * be the case that the chunks have not been read.
+ *
+ * @note Added support for chunks that use the HDF5 Fill Value system - Those chunks
+ * have _no data_ to read and thus no offset or length. They do have a Chunk Position
+ * in Array and Fill Value, however. Here's an example:
+ *
+ *       <dmrpp:chunk  fillValue="-32678" chunkPositionInArray="[...]"/>
  */
 void
 DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
@@ -338,7 +345,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
-    if(get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+    if(!d_chunks.empty()) { // get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
         auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
@@ -347,7 +354,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
-    if (d_chunk_dimension_sizes.size() > 0) {
+    if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
         copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
@@ -361,22 +368,29 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     // Start elements "chunk" with dmrpp namespace and attributes:
     // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
 
-    for(auto chunk: get_immutable_chunks()){
+    for(auto chunk: get_immutable_chunks()) {
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
-        // Get offset string:
-        ostringstream offset;
-        offset << chunk->get_offset();
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.str().c_str()) < 0)
-            throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
+        if (chunk->get_uses_fill_value()) {
 
-        // Get nBytes string:
-        ostringstream nBytes;
-        nBytes << chunk->get_size();
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.str().c_str()) < 0)
-            throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
+        }
+        else {
+            // Get offset string:
+            ostringstream offset;
+            offset << chunk->get_offset();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "offset",
+                                            (const xmlChar *) offset.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
+
+            // Get nBytes string:
+            ostringstream nBytes;
+            nBytes << chunk->get_size();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "nBytes",
+                                            (const xmlChar *) nBytes.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
+        }
 
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:

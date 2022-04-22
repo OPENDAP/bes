@@ -121,7 +121,7 @@ public:
 
     DmrppCommon() = default;
 
-    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(dmz) { }
+    explicit DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(std::move(dmz)) { }
 
     DmrppCommon(const DmrppCommon &) = default;
 
