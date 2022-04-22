@@ -575,12 +575,22 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
             sign = H5Tget_sign(h5_type_id);
             switch (H5Tget_size(h5_type_id)) {
                 case 1:
+                    if (sign == H5T_SGN_2)
+                        oss << *(int8_t *)(value.data());
+                    else
+                        oss << *(uint8_t *)(value.data());
+                    break;
                 case 2:
+                    if (sign == H5T_SGN_2)
+                        oss << *(int16_t *)(value.data());
+                    else
+                        oss << *(uint16_t *)(value.data());
+                    break;
                 case 4:
                     if (sign == H5T_SGN_2)
-                        oss << *(int*)(value.data());
+                        oss << *(int32_t *)(value.data());
                     else
-                        oss << *(unsigned int*)(value.data());
+                        oss << *(uint32_t *)(value.data());
                     break;
                 case 8:
                     if (sign == H5T_SGN_2)

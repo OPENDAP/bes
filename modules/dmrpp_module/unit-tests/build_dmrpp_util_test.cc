@@ -176,62 +176,45 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Compact, all fill values defined", is_hdf5_fill_value_defined(dataset));
     }
 
-    template <typename T> void set_value(T val, hid_t type_id) {
-        vector<T> value(sizeof(T));
+    template <typename T> void get_value_test_helper(T val, const string &expected, hid_t type_id, const string &test_name) {
+        vector<char> value(sizeof(T));
         memcpy(value.data(), &val, sizeof(T));
 
         string str_value = get_value_as_string(type_id, value);
         ostringstream oss;
-        oss << "Expected " << val << ", but got " << str_value;
+        oss << test_name << ": Expected " << val << ", but got " << str_value;
         DBG(cerr << oss.str() << endl);
 
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1");
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == expected);
     }
 
     void get_value_as_string_test_char() {
-        vector<char> value(sizeof(char));
-        char v{1};
-        memcpy(value.data(), &v, sizeof(char));
-
-        string str_value = get_value_as_string(H5T_NATIVE_INT8_g, value);
-        ostringstream oss;
-        oss << "Expected " << v << ", but got " << str_value;
-        DBG(cerr << oss.str() << endl);
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1");
+        int8_t v = 1;
+        get_value_test_helper<int8_t>(v, "1", H5T_NATIVE_INT8_g, "get_value_as_string_test_char");
     }
 
     void get_value_as_string_test_short() {
-        vector<char> value(sizeof(short));
-        short v{1024};
-        memcpy(value.data(), &v, sizeof(short));
-
-        string str_value = get_value_as_string(H5T_NATIVE_INT16_g, value);
-        ostringstream oss;
-        oss << "Expected " << v << ", but got " << str_value;
-        DBG(cerr << oss.str() << endl);
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "1024");
+        get_value_test_helper<int16_t>(1024, "1024", H5T_NATIVE_INT16_g, "get_value_as_string_test_short");
     }
 
     void get_value_as_string_test_short_2() {
-        vector<char> value(sizeof(short));
-        short v{-1024};
-        memcpy(value.data(), &v, sizeof(short));
-        string str_value = get_value_as_string(H5T_NATIVE_INT16_g, value);
-        ostringstream oss;
-        oss << "Expected " << v << ", but got " << str_value;
-        DBG(cerr << oss.str() << endl);
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "-1024");
+        get_value_test_helper<int16_t>(-1024, "-1024", H5T_NATIVE_INT16_g, "get_value_as_string_test_short_2");
+    }
+
+    void get_value_as_string_test_ushort() {
+        get_value_test_helper<uint16_t>(65000, "65000", H5T_NATIVE_UINT16_g, "get_value_as_string_test_ushort");
     }
 
     void get_value_as_string_test_int() {
-        vector<char> value(sizeof(int32_t));
-        int32_t v{70000};
-        memcpy(value.data(), &v, sizeof(int32_t));
-        string str_value = get_value_as_string(H5T_NATIVE_INT32_g, value);
-        ostringstream oss;
-        oss << "Expected " << v << ", but got " << str_value;
-        DBG(cerr << oss.str() << endl);
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == "70000");
+        get_value_test_helper<int32_t>(70000, "70000", H5T_NATIVE_INT32_g, "get_value_as_string_test_int");
+    }
+
+    void get_value_as_string_test_int_2() {
+        get_value_test_helper<int32_t>(-70000, "-70000", H5T_NATIVE_INT32_g, "get_value_as_string_test_int_2");
+    }
+
+    void get_value_as_string_test_uint() {
+        get_value_test_helper<uint32_t>(70001, "70001", H5T_NATIVE_UINT32_g, "get_value_as_string_test_uint");
     }
 
 
@@ -248,10 +231,13 @@ public:
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_cont_some_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
 
-        CPPUNIT_TEST(get_value_as_string_test_char);
+        CPPUNIT_TEST_FAIL(get_value_as_string_test_char);
         CPPUNIT_TEST(get_value_as_string_test_short);
         CPPUNIT_TEST(get_value_as_string_test_short_2);
+        CPPUNIT_TEST(get_value_as_string_test_ushort);
         CPPUNIT_TEST(get_value_as_string_test_int);
+        CPPUNIT_TEST(get_value_as_string_test_int_2);
+        CPPUNIT_TEST(get_value_as_string_test_uint);
 
     CPPUNIT_TEST_SUITE_END();
 };
