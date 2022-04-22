@@ -111,6 +111,7 @@ protected:
 
     void _duplicate(const Chunk &bs)
     {
+#if 0
         // See above
         d_read_buffer_is_mine = true;
         d_bytes_read = 0;
@@ -118,6 +119,7 @@ protected:
         d_read_buffer_size = 0;
         d_is_read = false;
         d_is_inflated = false;
+#endif
 
         d_size = bs.d_size;
         d_offset = bs.d_offset;
@@ -138,12 +140,7 @@ public:
      *
      * @see Chunk::add_tracking_query_param()
      */
-    Chunk() :
-        d_data_url(nullptr), d_size(0), d_offset(0),
-        d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
-        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
-    {
-    }
+    Chunk() = default;
 
     /**
      * @brief Get a chunk initialized with values
@@ -155,22 +152,15 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(
-            std::shared_ptr<http::url> data_url,
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::string &pia_str = "") :
+    Chunk(std::shared_ptr<http::url> data_url,
+          std::string order,
+          unsigned long long size,
+          unsigned long long offset,
+          const std::string &pia_str = "") :
             d_data_url(std::move(data_url)),
             d_byte_order(std::move(order)),
             d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
+            d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -188,20 +178,13 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::string &pia_str = "") :
+    Chunk(std::string order,
+          unsigned long long size,
+          unsigned long long offset,
+          const std::string &pia_str = "") :
             d_byte_order(std::move(order)),
             d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
+            d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -219,22 +202,15 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(
-            std::shared_ptr<http::url> data_url,
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::vector<unsigned long long> &pia_vec) :
+    Chunk(std::shared_ptr<http::url> data_url,
+          std::string order,
+          unsigned long long size,
+          unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec) :
             d_data_url(std::move(data_url)),
             d_byte_order(std::move(order)),
             d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
+            d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -253,20 +229,12 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::vector<unsigned long long> &pia_vec) :
-            d_query_marker(""),
+    Chunk(std::string order,
+          unsigned long long size,
+          unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec) :
             d_byte_order(std::move(order)),
-            d_size(size), d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
+            d_size(size), d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -274,6 +242,25 @@ public:
         set_position_in_array(pia_vec);
     }
 
+    Chunk(std::shared_ptr<http::url> data_url,
+          std::string order,
+          std::string fill_value,
+          const std::vector<unsigned long long> &pia_vec) :
+            d_data_url(std::move(data_url)),
+            d_byte_order(std::move(order)),
+            d_uses_fill_value(true),
+            d_fill_value(std::move(fill_value))
+    {
+        set_position_in_array(pia_vec);
+    }
+
+    Chunk(std::string order, std::string fill_value, const std::vector<unsigned long long> &pia_vec) :
+            d_byte_order(std::move(order)),
+            d_uses_fill_value(true),
+            d_fill_value(std::move(fill_value))
+    {
+        set_position_in_array(pia_vec);
+    }
 
     Chunk(const Chunk &h4bs)
     {

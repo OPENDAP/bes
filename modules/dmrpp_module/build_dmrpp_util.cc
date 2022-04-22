@@ -556,9 +556,10 @@ enum H5DataType
 #endif
 
 /**
- * @brief Get the HDF5 Fill Value as a string
+ * @brief Get the HDF5 value as a string
  *
- * The idea here is that we need it as a string for the DMR++ XML.
+ * We need it as a string for the DMR++ XML. Used to add Fill Value
+ * HDF5 attribute information to the chunk elements of the DMR++
  *
  * @param h5_type_id
  * @param value
@@ -728,6 +729,9 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 if (cont_size > 0 && dc) {
                     dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
+                else if (cont_size == 0 && !fill_value.empty() && dc) {
+                    dc->add_chunk(byteOrder, fill_value, "");
+                }
                 break;
             }
             case H5D_CHUNKED: { /*chunking storage */
@@ -744,8 +748,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                     set_filter_information(dataset, dc);
 
                 // Get chunking information: rank and dimensions
-                vector<size_t> chunk_dims(dataset_rank);
-                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t *) &chunk_dims[0]);
+                vector<hsize_t> chunk_dims(dataset_rank);
+                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, &chunk_dims[0]);
                 if (chunk_rank != dataset_rank)
                     throw BESNotFoundError(
                             "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
@@ -754,27 +758,27 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
                 for (unsigned int i = 0; i < num_chunks; ++i) {
-
-                    vector<hsize_t> temp_coords(dataset_rank);
+                    vector<hsize_t> chunk_coords(dataset_rank);
+#if 0
                     vector<unsigned long long> chunk_coords(dataset_rank);
-
+#endif
                     haddr_t addr = 0;
                     hsize_t size = 0;
 
-                    status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], nullptr, &addr, &size);
+                    status = H5Dget_chunk_info(dataset, fspace_id, i, &chunk_coords[0], nullptr, &addr, &size);
                     if (status < 0) {
                         VERBOSE(cerr << "ERROR" << endl);
                         throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
                     }
 
                     VERBOSE(cerr << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-
+#if 0
                     //The coords need to be of type 'unsigned int' when passed into add_chunk()
                     // This loop simply copies the values from the temp_coords to chunk_coords - kln 5/1/19
                     for (unsigned int j = 0; j < chunk_coords.size(); ++j) {
                         chunk_coords[j] = temp_coords[j];
                     }
-
+#endif
                     if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
                 }
 

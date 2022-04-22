@@ -111,6 +111,8 @@ string pthread_error(unsigned int err){
     return error_msg;
 }
 
+#if 0
+
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0)
@@ -122,6 +124,8 @@ Lock::~Lock() {
     if (status != 0)
         ERROR_LOG(prolog + "Failed to release mutex lock. msg: " + pthread_error(status));
 }
+
+#endif
 
 /**
  * @brief Build a string with hex info about stuff libcurl gets
@@ -347,9 +351,11 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
         d_easy_handles.push_back(new dmrpp_easy_handle());
     }
 
+#if 0
     unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
     if (status != 0)
         throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
+#endif
 }
 
 /**
@@ -399,7 +405,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
+#if 0
     Lock lock(d_get_easy_handle_mutex); // RAII
+#endif
+    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
     dmrpp_easy_handle *handle = 0;
     for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
@@ -549,7 +558,10 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // free to reorder statements so long as they don't alter the function's behavior).
     // Timing tests indicate this lock does not cost anything that can be measured.
     // jhrg 8/21/18
+    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
+#if 0
     Lock lock(d_get_easy_handle_mutex);
+#endif
 
     // TODO Add a call to curl reset() here. jhrg 9/23/20
 

@@ -68,12 +68,12 @@ private:
 
     hid_t fill_value_file = -1; // An HDF5 file for testing
     const string fill_value_file_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue.h5"};
-    const string fill_value_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue.dmr"};
+    const string fill_value_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue.h5.dmr"};
     unique_ptr<dmrpp::DMRpp> fv_dmrpp;
 
     hid_t fill_value_chunks_file = -1; // An HDF5 file for testing
     const string fill_value_chunks_file_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue_chunk.h5"};
-    const string fill_value_chunks_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue_chunk.dmr"};
+    const string fill_value_chunks_dmr_name {string(TEST_DATA_ROOT_DIR) + "/fill_value/FValue_chunk.h5.dmr"};
     unique_ptr<dmrpp::DMRpp> fv_chunks_dmrpp;
 
 public:

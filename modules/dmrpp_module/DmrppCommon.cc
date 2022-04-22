@@ -202,7 +202,7 @@ void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
  * @return The number of chunk refs (byteStreams) held.
  */
 unsigned long DmrppCommon::add_chunk(
-        std::shared_ptr<http::url> data_url,
+        shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
@@ -214,54 +214,13 @@ unsigned long DmrppCommon::add_chunk(
 }
 
 unsigned long DmrppCommon::add_chunk(
-        std::shared_ptr<http::url> data_url,
+        shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
     std::shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, size, offset, position_in_array));
-#if 0
-    auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
-    if(!array){
-        stringstream msg;
-        msg << prolog << "ERROR  DmrrpCommon::add_chunk() may only be called on an instance of DmrppArray. ";
-        msg << "The variable";
-        auto bt = dynamic_cast<libdap::BaseType *>(this);
-        if(bt){
-            msg  << " " << bt->type_name() << " " << bt->name();
-        }
-        msg << " is not an instance of DmrppArray.";
-        msg << "this: " << (void **) this << " ";
-        msg << "byte_order: " << byte_order << " ";
-        msg << "size: " << size << " ";
-        msg << "offset: " << offset << " ";
-        throw BESInternalError(msg.str(),__FILE__, __LINE__);
-    }
-
-    if(d_super_chunks.empty())
-        d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk()));
-
-    auto currentSuperChunk = d_super_chunks.back();
-
-    bool chunk_was_added = currentSuperChunk->add_chunk(chunk);
-    if(!chunk_was_added){
-        if(currentSuperChunk->empty()){
-            stringstream msg;
-            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
-        }
-        // This means that the chunk was not contiguous with the currentSuperChunk
-        currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk());
-        chunk_was_added = currentSuperChunk->add_chunk(chunk);
-        if(!chunk_was_added) {
-            stringstream msg;
-            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
-        }
-        d_super_chunks.push_back(currentSuperChunk);
-    }
-#endif
 
     d_chunks.push_back(chunk);
     return d_chunks.size();
@@ -284,7 +243,51 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    std::shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+    shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+unsigned long DmrppCommon::add_chunk(
+        shared_ptr<http::url> data_url,
+        const string &byte_order,
+        const string &fill_value,
+        const string &position_in_array)
+{
+    vector<unsigned long long> cpia_vector;
+    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
+    return add_chunk(move(data_url), byte_order, fill_value, cpia_vector);
+}
+
+unsigned long DmrppCommon::add_chunk(
+        shared_ptr<http::url> data_url,
+        const string &byte_order,
+        const string &fill_value,
+        const vector<unsigned long long> &position_in_array)
+{
+    shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, fill_value, position_in_array));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        const string &fill_value,
+        const string &position_in_array)
+{
+    vector<unsigned long long> cpia_vector;
+    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
+    return add_chunk(byte_order, fill_value, cpia_vector);
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        const string &fill_value,
+        const vector<unsigned long long> &position_in_array)
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, position_in_array));
 
     d_chunks.push_back(chunk);
     return d_chunks.size();
@@ -374,7 +377,12 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
         if (chunk->get_uses_fill_value()) {
-
+            // Get fill value string:
+            ostringstream fill_value;
+            fill_value << chunk->get_fill_value();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "fillValue",
+                                            (const xmlChar *) fill_value.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute fillValue", __FILE__, __LINE__);
         }
         else {
             // Get offset string:

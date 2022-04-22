@@ -48,6 +48,10 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_float.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_int_scalar.h5])
 
+# Test data files with various fill value schemes
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_chunk.h5])
+
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
 AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_enum.h5])

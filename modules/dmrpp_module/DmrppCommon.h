@@ -199,7 +199,7 @@ public:
 
     // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
-    void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims) {
+    void set_chunk_dimension_sizes(const std::vector<unsigned long long> &chunk_dims) {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
         for (auto chunk_dim : chunk_dims) {
@@ -219,6 +219,11 @@ public:
     virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
+    // There are two main versions of add_chunk: One that takes a size and offset
+    // and one that takes a fill value. However, for each of those, there are versions
+    // that take a data URL (or not) and versions that take the 'chunk position in
+    // array' information as a string or as a vector< uint64_t >. Thus, there are
+    // a total of eight of these 'add_chunk()' functions. jhrg 4/22/22
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
@@ -243,6 +248,28 @@ public:
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            const std::string &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> data_url,
+            const std::string &byte_order,
+            const std::string &fill_value,
+            const std::string &position_in_array);
+
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> data_url,
+            const std::string &byte_order,
+            const std::string &fill_value,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;

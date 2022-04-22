@@ -27,6 +27,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include <pthread.h>
 
@@ -37,6 +38,8 @@
 namespace dmrpp {
 
 class Chunk;
+
+#if 0
 
 /**
  * RAII. Lock access to the get_easy_handle() and release_handle() methods.
@@ -54,6 +57,8 @@ public:
 
     virtual ~Lock();
 };
+
+#endif
 
 /**
  * @brief Bundle a libcurl easy handle with other information.
@@ -96,13 +101,15 @@ class CurlHandlePool {
 private:
     unsigned int d_max_easy_handles;
     std::vector<dmrpp_easy_handle *> d_easy_handles;
+#if 0
     pthread_mutex_t d_get_easy_handle_mutex;
+#endif
+    std::recursive_mutex d_get_easy_handle_mutex;
 
     friend class Lock;
-    CurlHandlePool();
 
 public:
-
+    CurlHandlePool() = delete;
     explicit CurlHandlePool(unsigned int max_handles);
 
     ~CurlHandlePool()
