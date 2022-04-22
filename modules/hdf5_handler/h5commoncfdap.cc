@@ -1494,7 +1494,7 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
 
 // Direct CF to DAP4, add the CF "grid_mapping_name" attribute to every variable that uses the grid.
 void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,      
-                               const vector<HDF5CF::Dimension*>& dims)                    
+                               const vector<HDF5CF::Dimension*>& dims, const vector<string> & cvar_name)                    
 {
     // dims are dimensions for a grid. It is always 2-D for the projections we support.t
     string dim0name = (dims[0])->getNewName();
@@ -1506,7 +1506,8 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
     Constructor::Vars_iter vi = d4_root->var_begin();
     Constructor::Vars_iter ve = d4_root->var_end();
     for (; vi != ve; vi++) {
-        if((*vi)->is_vector_type()) {
+        // Should not add grid_mapping info for the coordinate variables. 
+        if((*vi)->is_vector_type() && (cvar_name.end() == find(cvar_name.begin(), cvar_name.end(),(*vi)->name()))) {
             Array *t_a = dynamic_cast<Array*>(*vi);
             if(t_a->dimensions() >1) {
                 Array::Dim_iter dim_i = t_a->dim_begin();

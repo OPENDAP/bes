@@ -85,7 +85,7 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
     float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims);
 void add_gm_spcvs_attrs(libdap::BaseType *d4_var,const bool is_dim0);
 
-void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection, const std::vector<HDF5CF::Dimension*>&dims); 
+void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection, const std::vector<HDF5CF::Dimension*>&dims, const std::vector<std::string> &); 
 
 void add_gm_oneproj_var_dap4_attrs(libdap::BaseType *d4_var,EOS5GridPCType cv_proj_code,const std::vector<double> &eos5_proj_params); 
 
