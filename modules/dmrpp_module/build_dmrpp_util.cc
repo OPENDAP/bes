@@ -621,7 +621,10 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
         case H5T_COMPOUND:
         case H5T_ARRAY:
         default:
+            return ""; // FIXME Add support for String fill values. jhrg 4/22/22
+#if 0
             throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
+#endif
     }
 
     return oss.str();
@@ -676,10 +679,10 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
     H5T_order_t byte_order;
 
     // Added support for HDF5 Fill Value. jhrg 4/22/22
-#if 0
     bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
-    string fill_value = get_hdf5_fill_value(dataset);
-#endif
+    string fill_value;
+    if (fill_value_defined)
+        fill_value = get_hdf5_fill_value(dataset);
 
     try {
         hid_t dcpl = H5Dget_create_plist(dataset);
