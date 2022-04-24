@@ -1731,7 +1731,9 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
+    // Update: print the <chunks> element even if the chinks_size value is zero since this
+    // might be a variable with all fill values. jhrg 4/24/22
+    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for

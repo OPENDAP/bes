@@ -69,13 +69,14 @@ private:
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
+#if 0
     bool d_uses_fill_value {false};
     // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/22/22
     std::string d_fill_value;
+#endif
 
-    // These are used only during the libcurl callback;
-    // they are not duplicated by the copy ctor or assignment
-    // operator.
+    // These are used only during the libcurl callback; they are not duplicated by the
+    // copy ctor or assignment operator.
 
     /**
      *  d_read_buffer_is_mine
@@ -101,8 +102,6 @@ private:
     bool d_is_inflated {false};
     std::string d_response_content_type;
 
-    // static const std::string tracking_context;
-
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
@@ -120,7 +119,6 @@ protected:
         d_is_read = false;
         d_is_inflated = false;
 #endif
-
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
@@ -242,6 +240,7 @@ public:
         set_position_in_array(pia_vec);
     }
 
+#if 0
     Chunk(std::shared_ptr<http::url> data_url,
           std::string order,
           std::string fill_value,
@@ -261,6 +260,7 @@ public:
     {
         set_position_in_array(pia_vec);
     }
+#endif
 
     Chunk(const Chunk &h4bs)
     {
@@ -308,11 +308,13 @@ public:
         return d_offset;
     }
 
+#if 0
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
 
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual std::string get_fill_value() const { return d_fill_value; }
+#endif
 
     /// @return Get the data url for this Chunk's data block
     virtual std::shared_ptr<http::url>  get_data_url() const;

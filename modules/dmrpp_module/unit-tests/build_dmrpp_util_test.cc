@@ -59,7 +59,7 @@ namespace build_dmrpp_util {
 // Functions not listed in the build_dmrpp_util header
 
 bool is_hdf5_fill_value_defined(hid_t dataset_id);
-string get_value_as_string(hid_t h5_type_id, const vector<char> &value);
+string get_value_as_string(hid_t h5_type_id, vector<char> &value);
 string get_hdf5_fill_value(hid_t dataset_id);
 
 class build_dmrpp_util_test : public CppUnit::TestFixture {

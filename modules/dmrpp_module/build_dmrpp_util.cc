@@ -50,8 +50,6 @@
 #include "DmrppD4Group.h"
 
 #if 0
-//#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
-//#include <H5Dpkg.h>
 #define H5S_MAX_RANK    32
 #define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
 
@@ -566,7 +564,7 @@ enum H5DataType
  * @return The string representation of the value.
  */
 string
-get_value_as_string(hid_t h5_type_id, const vector<char> &value)
+get_value_as_string(hid_t h5_type_id, vector<char> &value)
 {
     ostringstream oss;
     H5T_class_t class_type = H5Tget_class(h5_type_id);
@@ -601,7 +599,7 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
                     break;
                 default:
                     throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
-            };
+            }
             break;
 
         case H5T_FLOAT:
@@ -614,15 +612,19 @@ get_value_as_string(hid_t h5_type_id, const vector<char> &value)
                     break;
                 default:
                     throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
-            };
+            }
             break;
 
         case H5T_STRING:
+            return "unknown"; // FIXME Add support for String fill values. jhrg 4/22/22
+
+        case H5T_ARRAY:
+            return "unknown"; // FIXME What to do for Array? jhrg 4/22/22
+
         case H5T_REFERENCE:
         case H5T_COMPOUND:
-        case H5T_ARRAY:
         default:
-            return ""; // FIXME Add support for String fill values. jhrg 4/22/22
+            return "unknown"; // FIXME What to do for these? jhrg 4/22/22
 #if 0
             throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
 #endif
@@ -681,9 +683,11 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
-    string fill_value;
-    if (fill_value_defined)
-        fill_value = get_hdf5_fill_value(dataset);
+    if (fill_value_defined) {
+        string fill_value = get_hdf5_fill_value(dataset);
+        dc->set_uses_fill_value(fill_value_defined);
+        dc->set_fill_value(fill_value);
+    }
 
     try {
         hid_t dcpl = H5Dget_create_plist(dataset);
@@ -729,9 +733,13 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 if (cont_size > 0 && dc) {
                     dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
+                // TODO Decide if this needs to be fixed given the new scheme where the chunks element
+                //  holds the fill value info. jhrg 4/24/22
+#if 0
                 else if (cont_size == 0 && !fill_value.empty() && dc) {
                     dc->add_chunk(byteOrder, fill_value, "");
                 }
+#endif
                 break;
             }
             case H5D_CHUNKED: { /*chunking storage */

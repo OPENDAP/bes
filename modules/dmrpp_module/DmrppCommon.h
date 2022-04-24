@@ -91,6 +91,10 @@ private:
     bool d_chunks_loaded = false;
     bool d_attributes_loaded = false;
 
+    bool d_uses_fill_value {false};
+    // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/24/22
+    std::string d_fill_value;
+
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
     // feature is implemented. The xml_node object is used to simplify finding where
@@ -191,6 +195,19 @@ public:
         return elements;
     }
 
+    /// @brief Return true if the the chunk uses 'fill value.'
+    virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
+
+    /// @brief Return the fill value as a string or "" if get_fill_value() is false
+    virtual void set_fill_value(std::string fv) { d_fill_value = fv; }
+
+    /// @return Return true if the the chunk uses 'fill value.'
+    virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
+
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual std::string get_fill_value() const { return d_fill_value; }
+
+
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
@@ -250,6 +267,8 @@ public:
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
 
+#if 0
+
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
@@ -271,6 +290,8 @@ public:
             const std::string &byte_order,
             const std::string &fill_value,
             const std::vector<unsigned long long> &position_in_array);
+
+#endif
 
     virtual void dump(std::ostream & strm) const;
 };

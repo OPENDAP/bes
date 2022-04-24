@@ -91,11 +91,9 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
             string *error = NULL;
             if ((status = pthread_join(threads[i], (void **) &error)) < 0) {
                 BESDEBUG(dmrpp_3, "Could not join thread " << i << ", " << strerror(status)<< endl);
-                // ERROR_LOG("Failed to join thread " << i << " during clean up from an exception: " << strerror(status) << endl);
             }
             else if (error != NULL) {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", error exit: " << *error << endl);
-                // ERROR_LOG("Joined thread " << i << ", error exit" << *error << endl);
             }
             else {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", successful exit." << endl);
@@ -249,6 +247,7 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+#if 0
 unsigned long DmrppCommon::add_chunk(
         shared_ptr<http::url> data_url,
         const string &byte_order,
@@ -292,6 +291,8 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
+
+#endif
 
 /**
  * @brief read method for the atomic types
@@ -347,6 +348,10 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
+    if (d_uses_fill_value && !d_fill_value.empty()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fillValue", (const xmlChar*) d_fill_value.c_str()) < 0)
+            throw BESInternalError("Could not write fillValue attribute.", __FILE__, __LINE__);
+    }
 
     if(!d_chunks.empty()) { // get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
         auto first_chunk = get_immutable_chunks().front();
@@ -369,13 +374,16 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-    // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
+#if 0
+    for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
+#endif
 
     for(auto chunk: get_immutable_chunks()) {
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
+#if 0
         if (chunk->get_uses_fill_value()) {
             // Get fill value string:
             ostringstream fill_value;
@@ -385,6 +393,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
                 throw BESInternalError("Could not write attribute fillValue", __FILE__, __LINE__);
         }
         else {
+#endif
             // Get offset string:
             ostringstream offset;
             offset << chunk->get_offset();
@@ -398,7 +407,9 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "nBytes",
                                             (const xmlChar *) nBytes.str().c_str()) < 0)
                 throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
-        }
+#if 0
+    }
+#endif
 
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:
