@@ -120,9 +120,12 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
         << " strindex=" << strindex << " allbuf=" << allbuf << endl);
 
     // Tokenize the convbuf. 
+#if 0
     for (int i = 0; i < strindex; i++) {
         tempvalue = tempvalue + elesize;
     }
+#endif
+    tempvalue = tempvalue +strindex *elesize;
 
     strncpy(buf, tempvalue, elesize);
     buf[elesize] = '\0';        
