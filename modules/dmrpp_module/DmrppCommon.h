@@ -199,7 +199,7 @@ public:
     virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
 
     /// @brief Return the fill value as a string or "" if get_fill_value() is false
-    virtual void set_fill_value(std::string fv) { d_fill_value = fv; }
+    virtual void set_fill_value(const std::string &fv) { d_fill_value = fv; }
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }

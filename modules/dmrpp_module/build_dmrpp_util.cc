@@ -733,13 +733,6 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 if (cont_size > 0 && dc) {
                     dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
-                // TODO Decide if this needs to be fixed given the new scheme where the chunks element
-                //  holds the fill value info. jhrg 4/24/22
-#if 0
-                else if (cont_size == 0 && !fill_value.empty() && dc) {
-                    dc->add_chunk(byteOrder, fill_value, "");
-                }
-#endif
                 break;
             }
             case H5D_CHUNKED: { /*chunking storage */
@@ -765,13 +758,6 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                 if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
 
-                // TODO: chunk_dims can be used to build a map<string,bool> of the chunks.
-                //  Use that to record the chunks that are written below. Then scan that and
-                //  write out any missing chunks as using the fill value.
-                //  NB: only do this for hdf5 datasets that have the fill value attribute
-                //  defined. Otherwise, missing chunks are an error.
-                //  NB: Kent said I'd need to use the get_chunk_storage_size() function, but
-                //  when???
                 for (unsigned int i = 0; i < num_chunks; ++i) {
                     vector<hsize_t> chunk_coords(dataset_rank);
                     haddr_t addr = 0;
@@ -970,6 +956,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
     }
     catch (...) {
         H5Fclose(file);
+        throw;
     }
 }
 
