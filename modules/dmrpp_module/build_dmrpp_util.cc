@@ -82,323 +82,6 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
 
-#if 0
-///////////////////////////////////////////////////////////////////////////////
-/// \fn get_data(hid_t dset, void *buf)
-/// will get all data of a \a dset dataset and put it into \a buf.
-/// Note: this routine is only used to access HDF5 integer,float and fixed-size string.
-///  variable length string is handled by function read_vlen_string.
-///
-/// \param[in] dset dataset id(dset)
-/// \param[out] buf pointer to a buffer
-///////////////////////////////////////////////////////////////////////////////
-
-void get_data(hid_t dset, void *buf)
-{
-    BESDEBUG("h5", ">get_data()" << endl);
-
-    hid_t dtype = -1;
-    if ((dtype = H5Dget_type(dset)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Failed to get the datatype of the dataset");
-    }
-    hid_t dspace = -1;
-    if ((dspace = H5Dget_space(dset)) < 0) {
-        H5Tclose(dtype);
-        throw InternalErr(__FILE__, __LINE__, "Failed to get the data space of the dataset");
-    }
-    //  Use HDF5 H5Tget_native_type API
-    hid_t memtype = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
-    if (memtype < 0) {
-        H5Tclose(dtype);
-        H5Sclose(dspace);
-        throw InternalErr(__FILE__, __LINE__, "failed to get memory type");
-    }
-
-    if (H5Dread(dset, memtype, dspace, dspace, H5P_DEFAULT, buf)
-        < 0) {
-        H5Tclose(dtype);
-        H5Tclose(memtype);
-        H5Sclose(dspace);
-        throw InternalErr(__FILE__, __LINE__, "failed to read data");
-    }
-
-    if (H5Tclose(dtype) < 0){
-        H5Tclose(memtype);
-        H5Sclose(dspace);
-        throw InternalErr(__FILE__, __LINE__, "Unable to release the dtype.");
-    }
-
-    if (H5Tclose(memtype) < 0){
-        H5Sclose(dspace);
-        throw InternalErr(__FILE__, __LINE__, "Unable to release the memtype.");
-    }
-
-    if(H5Sclose(dspace)<0) {
-        throw InternalErr(__FILE__, __LINE__, "Unable to release the data space.");
-    }
-#if 0
-    // Supposed to release the resource at the release at the HDF5Array destructor.
-        //if (H5Dclose(dset) < 0){
-	 //  throw InternalErr(__FILE__, __LINE__, "Unable to close the dataset.");
-	//}
-    }
-#endif
-
-    BESDEBUG("h5", "<get_data()" << endl);
-}
-
-bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep, hsize_t *hcount,vector<string> &finstrval)
-{
-
-    hid_t dspace = -1;
-    hid_t mspace = -1;
-    hid_t dtypeid = -1;
-    hid_t memtype = -1;
-    bool is_scalar = false;
-
-
-    if ((dspace = H5Dget_space(dsetid))<0) {
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain data space.");
-    }
-
-    if(H5S_SCALAR == H5Sget_simple_extent_type(dspace))
-        is_scalar = true;
-
-
-    if (false == is_scalar) {
-        if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
-                                hoffset, hstep,
-                                hcount, NULL) < 0) {
-            H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
-        }
-
-        int d_num_dim = H5Sget_simple_extent_ndims(dspace);
-        if(d_num_dim < 0) {
-            H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of dimensions of the data space.");
-        }
-
-        mspace = H5Screate_simple(d_num_dim, hcount,NULL);
-        if (mspace < 0) {
-            H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot create the memory space.");
-        }
-    }
-
-
-    if ((dtypeid = H5Dget_type(dsetid)) < 0) {
-
-        if (false == is_scalar)
-            H5Sclose(mspace);
-        H5Sclose(dspace);
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the datatype.");
-
-    }
-
-    if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
-
-        if (false == is_scalar)
-            H5Sclose(mspace);
-        H5Tclose(dtypeid);
-        H5Sclose(dspace);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
-
-    }
-
-    size_t ty_size = H5Tget_size(memtype);
-    if (ty_size == 0) {
-        if (false == is_scalar)
-            H5Sclose(mspace);
-        H5Tclose(memtype);
-        H5Tclose(dtypeid);
-        H5Sclose(dspace);
-        throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 string.");
-    }
-
-    vector <char> strval;
-    strval.resize(nelms*ty_size);
-    hid_t read_ret = -1;
-    if (true == is_scalar)
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
-    else
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
-
-    if (read_ret < 0) {
-        if (false == is_scalar)
-            H5Sclose(mspace);
-        H5Tclose(memtype);
-        H5Tclose(dtypeid);
-        H5Sclose(dspace);
-        throw InternalErr (__FILE__, __LINE__, "Fail to read the HDF5 variable length string dataset.");
-    }
-
-    // For scalar, nelms is 1.
-    char*temp_bp = &strval[0];
-    char*onestring = NULL;
-    for (int i =0;i<nelms;i++) {
-        onestring = *(char**)temp_bp;
-        if(onestring!=NULL )
-            finstrval[i] =string(onestring);
-        else // We will add a NULL if onestring is NULL.
-            finstrval[i]="";
-        temp_bp +=ty_size;
-    }
-
-    if (false == strval.empty()) {
-        herr_t ret_vlen_claim;
-        if (true == is_scalar)
-            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
-        else
-            ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)&strval[0]);
-        if (ret_vlen_claim < 0){
-            if (false == is_scalar)
-                H5Sclose(mspace);
-            H5Tclose(memtype);
-            H5Tclose(dtypeid);
-            H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
-
-        }
-    }
-
-    if (false == is_scalar)
-        H5Sclose(mspace);
-    H5Tclose(memtype);
-    H5Tclose(dtypeid);
-    H5Sclose(dspace);
-
-    return true;
-
-}
-
-/**
- * @brief Print information about the data type
- *
- * @note Calling this indicates that the build_dmrpp utility could not
- * get chunk information, and is probably an error, but I'm not sure
- * that's always the case. jhrg 5/7/18
- *
- * @param dataset
- * @param layout_type
- */
-static void print_dataset_type_info(hid_t dataset, uint8_t layout_type) {
-    hid_t dtype_id = H5Dget_type(dataset);
-    if (dtype_id < 0) {
-        throw BESInternalError("Cannot obtain the correct HDF5 datatype.", __FILE__, __LINE__);
-    }
-
-    if (H5Tget_class(dtype_id) == H5T_INTEGER || H5Tget_class(dtype_id) == H5T_FLOAT) {
-        hid_t dcpl_id = H5Dget_create_plist(dataset);
-        if (dcpl_id < 0) {
-            throw BESInternalError("Cannot obtain the HDF5 dataset creation property list.", __FILE__, __LINE__);
-        }
-
-        try {
-            // Wrap the resources like dcpl_id in try/catch blocks so that the
-            // calls to H5Pclose(dcpl_id) for each error can be removed. jhrg 5/7/18
-            H5D_fill_value_t fvalue_status;
-            if (H5Pfill_value_defined(dcpl_id, &fvalue_status) < 0) {
-                H5Pclose(dcpl_id);
-                throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
-            }
-            if (fvalue_status == H5D_FILL_VALUE_UNDEFINED) {
-                // Replace with switch(), here and elsewhere. jhrg 5/7/18
-                if (layout_type == 1)
-                    cerr << " The storage size is 0 and the storage type is contiguous." << endl;
-                else if (layout_type == 2)
-                    cerr << " The storage size is 0 and the storage type is chunking." << endl;
-                else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
-
-                cerr << " The Fillvalue is undefined ." << endl;
-            } else {
-                if (layout_type == 1)
-                    cerr << " The storage size is 0 and the storage type is contiguous." << endl;
-                else if (layout_type == 2)
-                    cerr << " The storage size is 0 and the storage type is chunking." << endl;
-                else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
-
-                char *fvalue = NULL;
-                size_t fv_size = H5Tget_size(dtype_id);
-                if (fv_size == 1)
-                    fvalue = (char *) (malloc(1));
-                else if (fv_size == 2)
-                    fvalue = (char *) (malloc(2));
-                else if (fv_size == 4)
-                    fvalue = (char *) (malloc(4));
-                else if (fv_size == 8) fvalue = (char *) (malloc(8));
-
-                if (fv_size <= 8) {
-                    if (H5Pget_fill_value(dcpl_id, dtype_id, (void *) (fvalue)) < 0) {
-                        H5Pclose(dcpl_id);
-                        throw BESInternalError("Cannot obtain the fill value status.", __FILE__, __LINE__);
-                    }
-                    if (H5Tget_class(dtype_id) == H5T_INTEGER) {
-                        H5T_sign_t fv_sign = H5Tget_sign(dtype_id);
-                        if (fv_size == 1) {
-                            if (fv_sign == H5T_SGN_NONE) {
-                                cerr << "This dataset's datatype is unsigned char " << endl;
-                                cerr << "and the fillvalue is " << *fvalue << endl;
-                            } else {
-                                cerr << "This dataset's datatype is char and the fillvalue is " << *fvalue << endl;
-                            }
-                        } else if (fv_size == 2) {
-                            if (fv_sign == H5T_SGN_NONE) {
-                                cerr << "This dataset's datatype is unsigned short and the fillvalue is " << *fvalue
-                                     << endl;
-                            } else {
-                                cerr << "This dataset's datatype is short and the fillvalue is " << *fvalue << endl;
-                            }
-                        } else if (fv_size == 4) {
-                            if (fv_sign == H5T_SGN_NONE) {
-                                cerr << "This dataset's datatype is unsigned int and the fillvalue is " << *fvalue
-                                     << endl;
-                            } else {
-                                cerr << "This dataset's datatype is int and the fillvalue is " << *fvalue << endl;
-                            }
-                        } else if (fv_size == 8) {
-                            if (fv_sign == H5T_SGN_NONE) {
-                                cerr << "This dataset's datatype is unsigned long long and the fillvalue is " << *fvalue
-                                     << endl;
-                            } else {
-                                cerr << "This dataset's datatype is long long and the fillvalue is " << *fvalue << endl;
-                            }
-                        }
-                    }
-                    if (H5Tget_class(dtype_id) == H5T_FLOAT) {
-                        if (fv_size == 4) {
-                            cerr << "This dataset's datatype is float and the fillvalue is " << *fvalue << endl;
-                        } else if (fv_size == 8) {
-                            cerr << "This dataset's datatype is double and the fillvalue is " << *fvalue << endl;
-                        }
-                    }
-
-                    if (fvalue != NULL) free(fvalue);
-                } else
-                    cerr
-                            << "The size of the datatype is greater than 8 bytes, Use HDF5 API H5Pget_fill_value() to retrieve the fill value of this dataset."
-                            << endl;
-            }
-        }
-        catch (...) {
-            H5Pclose(dcpl_id);
-            throw;
-        }
-        H5Pclose(dcpl_id);
-    } else {
-        if (layout_type == 1)
-            cerr << " The storage size is 0 and the storage type is contiguous." << endl;
-        else if (layout_type == 2)
-            cerr << " The storage size is 0 and the storage type is chunking." << endl;
-        else if (layout_type == 3) cerr << " The storage size is 0 and the storage type is compact." << endl;
-
-        cerr
-                << "The datatype is neither float nor integer,use HDF5 API H5Pget_fill_value() to retrieve the fill value of this dataset."
-                << endl;
-    }
-}
-#endif
-
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
 // H5Z_FILTER_NONE          0   reserved indefinitely
@@ -420,7 +103,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type) {
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
-string h5_filter_name(int type){
+string h5_filter_name(int type) {
     string name;
     switch(type) {
         case H5Z_FILTER_NONE:
@@ -527,32 +210,6 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
     return status != H5D_FILL_VALUE_UNDEFINED;
 }
 
-#if 0
-enum H5DataType
-{
-    H5CHAR,
-    H5UCHAR,
-
-    H5INT16,
-    H5UINT16,
-    H5INT32,
-    H5UINT32,
-    H5INT64,
-    H5UINT64,
-
-    H5FLOAT32,
-    H5FLOAT64,
-
-    H5FSTRING,
-    H5VSTRING,
-
-    H5REFERENCE,
-    H5COMPOUND,
-    H5ARRAY,
-    H5UNSUPTYPE
-};
-#endif
-
 /**
  * @brief Get the HDF5 value as a string
  *
@@ -615,19 +272,17 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             }
             break;
 
+            // TODO jhrg 4/22/22
         case H5T_STRING:
-            return "unknown"; // FIXME Add support for String fill values. jhrg 4/22/22
-
+            return "unsupported-string";
         case H5T_ARRAY:
-            return "unknown"; // FIXME What to do for Array? jhrg 4/22/22
+            return "unsupported-array";
+        case H5T_COMPOUND:
+            return "unsupported-compound";
 
         case H5T_REFERENCE:
-        case H5T_COMPOUND:
         default:
-            return "unknown"; // FIXME What to do for these? jhrg 4/22/22
-#if 0
             throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
-#endif
     }
 
     return oss.str();
