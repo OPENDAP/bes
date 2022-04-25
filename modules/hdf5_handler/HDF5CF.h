@@ -701,6 +701,14 @@ public:
     {
         return _is_dap4;
     }
+
+    bool getIsCOARD() const 
+    {
+        return iscoard;
+    }
+
+  
+    
     /// Obtain the flag to see if ignored objects should be generated.
     virtual const bool Get_IgnoredInfo_Flag() = 0;
 
@@ -798,7 +806,7 @@ protected:
     File(const char *h5_path, hid_t file_id) :
         path(std::string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
             false), unsupported_attr_dspace(false), unsupported_var_attr_dspace(false), addeddimindex(0), check_ignored(
-            false), have_ignored(false), have_udim(false),_is_dap4(false)
+            false), have_ignored(false), have_udim(false),_is_dap4(false),iscoard(false)
     {
     }
 
@@ -839,6 +847,7 @@ protected:
     bool have_ignored;
     bool have_udim;
     bool _is_dap4;
+    bool iscoard;
     std::string ignored_msg;
 
 };
@@ -1072,7 +1081,6 @@ private:
     std::set<std::string> grp_cv_paths;
     std::vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
     //"map<string,string>dimcvars_2dlatlon"
-    bool iscoard;
 #if 0
     bool ll2d_no_cv;
 #endif
@@ -1205,7 +1213,7 @@ private:
 class EOS5File: public File {
 public:
     EOS5File(const char*he5_path, hid_t file_id) :
-        File(he5_path, file_id), iscoard(false), grids_multi_latloncvs(false), isaura(false), aura_name(NOTAURA),
+        File(he5_path, file_id), grids_multi_latloncvs(false), isaura(false), aura_name(NOTAURA),
         orig_num_grids(0)
     {
     }
@@ -1403,7 +1411,6 @@ private:
     std::vector<EOS5CFSwath *> eos5cfswaths;
     std::vector<EOS5CFZa *> eos5cfzas;
     std::map<std::string, std::string> eos5_to_cf_attr_map;
-    bool iscoard;
     bool grids_multi_latloncvs;
     bool isaura;
     EOS5AuraName aura_name;

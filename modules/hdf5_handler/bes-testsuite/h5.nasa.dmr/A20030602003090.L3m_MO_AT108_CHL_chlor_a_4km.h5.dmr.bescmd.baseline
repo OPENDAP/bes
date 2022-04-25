@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5">
-    <Dimension name="rows" size="4320"/>
     <Dimension name="columns" size="8640"/>
-    <Dimension name="rgb" size="3"/>
     <Dimension name="eightbitcolor" size="256"/>
+    <Dimension name="rgb" size="3"/>
+    <Dimension name="rows" size="4320"/>
+    <Float32 name="columns">
+        <Dim name="/columns"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="eightbitcolor">
+        <Dim name="/eightbitcolor"/>
+    </Float32>
+    <Float32 name="rgb">
+        <Dim name="/rgb"/>
+    </Float32>
+    <Float32 name="rows">
+        <Dim name="/rows"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="geophysical_data_chlor_a">
         <Dim name="/rows"/>
         <Dim name="/columns"/>
@@ -50,6 +68,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/geophysical_data/chlor_a</Value>
         </Attribute>
+        <Map name="/rows"/>
+        <Map name="/columns"/>
     </Float32>
     <String name="palette">
         <Dim name="/rgb"/>
@@ -60,25 +80,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/palette</Value>
         </Attribute>
+        <Map name="/rgb"/>
+        <Map name="/eightbitcolor"/>
     </String>
-    <Float32 name="columns">
-        <Dim name="/columns"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="eightbitcolor">
-        <Dim name="/eightbitcolor"/>
-    </Float32>
-    <Float32 name="rgb">
-        <Dim name="/rgb"/>
-    </Float32>
-    <Float32 name="rows">
-        <Dim name="/rows"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="product_name" type="String">
         <Value>A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc</Value>
     </Attribute>

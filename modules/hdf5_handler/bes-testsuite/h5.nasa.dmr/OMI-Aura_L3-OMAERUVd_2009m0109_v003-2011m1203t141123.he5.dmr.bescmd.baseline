@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L3-OMAERUVd_2009m0109_v003-2011m1203t141123.he5">
-    <Dimension name="lat" size="180"/>
     <Dimension name="lon" size="360"/>
+    <Dimension name="lat" size="180"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="FinalAerosolAbsOpticalDepth388">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
@@ -35,6 +47,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="FinalAerosolAbsOpticalDepth500">
         <Dim name="/lat"/>
@@ -69,6 +83,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="FinalAerosolExtOpticalDepth388">
         <Dim name="/lat"/>
@@ -103,6 +119,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="FinalAerosolExtOpticalDepth500">
         <Dim name="/lat"/>
@@ -137,6 +155,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="FinalAerosolSingleScattAlb388">
         <Dim name="/lat"/>
@@ -171,6 +191,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="FinalAerosolSingleScattAlb500">
         <Dim name="/lat"/>
@@ -205,6 +227,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="UVAerosolIndex">
         <Dim name="/lat"/>
@@ -239,6 +263,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -248,18 +274,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
