@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L3-OMSO2e_2012m0101_v003-2012m0103t014459.he5">
-    <Dimension name="lat" size="720"/>
     <Dimension name="lon" size="1440"/>
+    <Dimension name="lat" size="720"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="ColumnAmountO3">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
@@ -39,6 +51,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="ColumnAmountSO2_PBL">
         <Dim name="/lat"/>
@@ -77,6 +91,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Int32 name="LineNumber">
         <Dim name="/lat"/>
@@ -115,6 +131,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int32>
     <Int32 name="OrbitNumber">
         <Dim name="/lat"/>
@@ -153,6 +171,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int32>
     <Float32 name="RadiativeCloudFraction">
         <Dim name="/lat"/>
@@ -191,6 +211,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="RelativeAzimuthAngle">
         <Dim name="/lat"/>
@@ -229,6 +251,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Int32 name="SceneNumber">
         <Dim name="/lat"/>
@@ -267,6 +291,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int32>
     <Float32 name="SlantColumnAmountSO2">
         <Dim name="/lat"/>
@@ -305,6 +331,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="SolarZenithAngle">
         <Dim name="/lat"/>
@@ -343,6 +371,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Int16 name="TerrainHeight">
         <Dim name="/lat"/>
@@ -381,6 +411,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Float64 name="Time">
         <Dim name="/lat"/>
@@ -419,6 +451,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float64>
     <Float32 name="ViewingZenithAngle">
         <Dim name="/lat"/>
@@ -457,6 +491,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -466,18 +502,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

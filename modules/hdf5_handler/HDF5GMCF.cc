@@ -167,7 +167,7 @@ GMSPVar::GMSPVar(Var*var) {
 
 
 GMFile::GMFile(const char*file_fullpath, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),iscoard(false),have_nc4_non_coord(false)
+File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),have_nc4_non_coord(false)
 {
 
 }
