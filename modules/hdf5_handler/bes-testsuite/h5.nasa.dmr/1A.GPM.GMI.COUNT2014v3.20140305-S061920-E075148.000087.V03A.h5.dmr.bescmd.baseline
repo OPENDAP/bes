@@ -1,20 +1,256 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5">
-    <Dimension name="dim7" size="7"/>
-    <Dimension name="dim6" size="6"/>
-    <Dimension name="nscan1" size="2959"/>
     <Dimension name="nscan2" size="2959"/>
-    <Dimension name="GMIxyz" size="3"/>
-    <Dimension name="dim10" size="10"/>
-    <Dimension name="npixelcs" size="221"/>
-    <Dimension name="nchannel2" size="4"/>
     <Dimension name="npixelev" size="221"/>
-    <Dimension name="XYZ" size="3"/>
-    <Dimension name="npixelht" size="221"/>
-    <Dimension name="FakeDim0" size="3"/>
     <Dimension name="npixelfr" size="500"/>
-    <Dimension name="nchannel1" size="9"/>
+    <Dimension name="nscan1" size="2959"/>
+    <Dimension name="FakeDim0" size="3"/>
+    <Dimension name="GMIxyz" size="3"/>
     <Dimension name="VH" size="2"/>
+    <Dimension name="XYZ" size="3"/>
+    <Dimension name="dim10" size="10"/>
+    <Dimension name="dim6" size="6"/>
+    <Dimension name="dim7" size="7"/>
+    <Dimension name="nchannel1" size="9"/>
+    <Dimension name="nchannel2" size="4"/>
+    <Dimension name="npixelcs" size="221"/>
+    <Dimension name="npixelht" size="221"/>
+    <Float32 name="S2_Longitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelev"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelev</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S2/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S2_Latitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelev"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelev</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S2/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S4_Longitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelfr"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelfr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S4/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S4_Latitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelfr"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelfr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S4/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S5_Longitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelfr"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelfr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S5/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S5_Latitude">
+        <Dim name="/nscan2"/>
+        <Dim name="/npixelfr"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan2,npixelfr</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S5/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_Longitude">
+        <Dim name="/nscan1"/>
+        <Dim name="/npixelev"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan1,npixelev</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_Latitude">
+        <Dim name="/nscan1"/>
+        <Dim name="/npixelev"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan1,npixelev</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="FakeDim0">
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="GMIxyz">
+        <Dim name="/GMIxyz"/>
+        <Attribute name="comment" type="String">
+            <Value>x, y, z components in GMI instrument coordinate system.</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="VH">
+        <Dim name="/VH"/>
+        <Attribute name="comment" type="String">
+            <Value>Number of polarizations.</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="XYZ">
+        <Dim name="/XYZ"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="dim10">
+        <Dim name="/dim10"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="dim6">
+        <Dim name="/dim6"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="dim7">
+        <Dim name="/dim7"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nchannel1">
+        <Dim name="/nchannel1"/>
+        <Attribute name="comment" type="String">
+            <Value>Number of Swath S1 channels (10V 10H 19V 19H 23V 37V 37H 89V 89H).</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nchannel2">
+        <Dim name="/nchannel2"/>
+        <Attribute name="comment" type="String">
+            <Value>Number of Swath S2 channels (166V 166H 183+/-3V 183+/-8V).</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="npixelcs">
+        <Dim name="/npixelcs"/>
+        <Attribute name="comment" type="String">
+            <Value>Number of cold sky pixels in one scan.</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="npixelht">
+        <Dim name="/npixelht"/>
+        <Attribute name="comment" type="String">
+            <Value>Number of hot load pixels in one scan.</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <UInt16 name="gmi1aHeader_sampleRangeFile">
         <Dim name="/dim7"/>
         <Dim name="/dim6"/>
@@ -266,6 +502,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
     </Float32>
     <Float32 name="S2_navigation_scPos">
         <Dim name="/nscan1"/>
@@ -575,6 +813,9 @@
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude nchannel2</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
+        <Map name="/nchannel2"/>
     </UInt16>
     <Float32 name="S2_solarAzimuthAngle">
         <Dim name="/nscan2"/>
@@ -597,6 +838,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
     </Float32>
     <Float32 name="S2_sunData_phaseFromOrbitMidnight">
         <Dim name="/nscan2"/>
@@ -761,6 +1004,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
     </Float32>
     <Float32 name="S2_solarZenAngle">
         <Dim name="/nscan2"/>
@@ -783,6 +1028,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
     </Float32>
     <Int8 name="S2_scanStatus_operationalMode">
         <Dim name="/nscan2"/>
@@ -973,6 +1220,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S2_Longitude"/>
+        <Map name="/S2_Latitude"/>
     </Float32>
     <UInt16 name="S3_SMPL_INFO_EARTH_18G_STRT">
         <Dim name="/nscan2"/>
@@ -7520,6 +7769,9 @@
         <Attribute name="coordinates" type="String">
             <Value>S4_Longitude S4_Latitude nchannel1</Value>
         </Attribute>
+        <Map name="/S4_Longitude"/>
+        <Map name="/S4_Latitude"/>
+        <Map name="/nchannel1"/>
     </UInt16>
     <Float32 name="S4_incidenceAngle">
         <Dim name="/nscan2"/>
@@ -7542,6 +7794,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S4_Longitude"/>
+        <Map name="/S4_Latitude"/>
     </Float32>
     <Int16 name="S4_ScanTime_MilliSecond">
         <Dim name="/nscan1"/>
@@ -7724,6 +7978,9 @@
         <Attribute name="coordinates" type="String">
             <Value>S4_Longitude S4_Latitude VH</Value>
         </Attribute>
+        <Map name="/S4_Longitude"/>
+        <Map name="/S4_Latitude"/>
+        <Map name="/VH"/>
     </Byte>
     <Byte name="S5_ephemerisUsed">
         <Dim name="/nscan1"/>
@@ -7922,6 +8179,9 @@
         <Attribute name="coordinates" type="String">
             <Value>S5_Longitude S5_Latitude nchannel2</Value>
         </Attribute>
+        <Map name="/S5_Longitude"/>
+        <Map name="/S5_Latitude"/>
+        <Map name="/nchannel2"/>
     </UInt16>
     <Float32 name="S5_incidenceAngle">
         <Dim name="/nscan2"/>
@@ -7944,6 +8204,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S5_Longitude"/>
+        <Map name="/S5_Latitude"/>
     </Float32>
     <Byte name="S1_hotLoadBlanking">
         <Dim name="/nscan1"/>
@@ -8197,6 +8459,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_navigation_scPos">
         <Dim name="/nscan1"/>
@@ -8506,6 +8770,9 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude nchannel1</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
+        <Map name="/nchannel1"/>
     </UInt16>
     <Float32 name="S1_solarAzimuthAngle">
         <Dim name="/nscan1"/>
@@ -8528,6 +8795,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_sunData_phaseFromOrbitMidnight">
         <Dim name="/nscan1"/>
@@ -8692,6 +8961,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_solarZenAngle">
         <Dim name="/nscan1"/>
@@ -8714,6 +8985,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int8 name="S1_scanStatus_operationalMode">
         <Dim name="/nscan1"/>
@@ -8904,6 +9177,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Byte name="S1_coldSkyBlanking">
         <Dim name="/nscan1"/>
@@ -8941,243 +9216,10 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude VH</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
+        <Map name="/VH"/>
     </Byte>
-    <Float32 name="S2_Longitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelev"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelev</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S2/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S2_Latitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelev"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelev</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S2/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S4_Longitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelfr"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S4/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S4_Latitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelfr"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S4/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S5_Longitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelfr"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S5/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S5_Latitude">
-        <Dim name="/nscan2"/>
-        <Dim name="/npixelfr"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S5/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S1_Longitude">
-        <Dim name="/nscan1"/>
-        <Dim name="/npixelev"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan1,npixelev</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S1_Latitude">
-        <Dim name="/nscan1"/>
-        <Dim name="/npixelev"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan1,npixelev</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="FakeDim0">
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="GMIxyz">
-        <Dim name="/GMIxyz"/>
-        <Attribute name="comment" type="String">
-            <Value>x, y, z components in GMI instrument coordinate system.</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="VH">
-        <Dim name="/VH"/>
-        <Attribute name="comment" type="String">
-            <Value>Number of polarizations.</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="XYZ">
-        <Dim name="/XYZ"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="dim10">
-        <Dim name="/dim10"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="dim6">
-        <Dim name="/dim6"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="dim7">
-        <Dim name="/dim7"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nchannel1">
-        <Dim name="/nchannel1"/>
-        <Attribute name="comment" type="String">
-            <Value>Number of Swath S1 channels (10V 10H 19V 19H 23V 37V 37H 89V 89H).</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nchannel2">
-        <Dim name="/nchannel2"/>
-        <Attribute name="comment" type="String">
-            <Value>Number of Swath S2 channels (166V 166H 183+/-3V 183+/-8V).</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="npixelcs">
-        <Dim name="/npixelcs"/>
-        <Attribute name="comment" type="String">
-            <Value>Number of cold sky pixels in one scan.</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="npixelht">
-        <Dim name="/npixelht"/>
-        <Attribute name="comment" type="String">
-            <Value>Number of hot load pixels in one scan.</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="FileHeader" type="String">
         <Value>DOI=;
 AlgorithmID=1AGMI;

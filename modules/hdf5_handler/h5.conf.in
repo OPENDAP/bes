@@ -188,6 +188,10 @@ H5.EnableDMR64bitInt=false
 # Starting from 1.16.5, this key is set to true by default.
 H5.EnableCFDMR=true
 
+# The handler will add DAP4 coverage information to the DMR by default. It won't affect
+# the netcdf-like operations. If for some reasons, this is not desirable. Uncomment the
+# following line to turn off this feature.
+#H5.EnableDAP4Coverage=false
 
 # When this key is turned on, the fullnamepath attribute will
 # NOT be added if the HDF5 data storage size is 0. This is

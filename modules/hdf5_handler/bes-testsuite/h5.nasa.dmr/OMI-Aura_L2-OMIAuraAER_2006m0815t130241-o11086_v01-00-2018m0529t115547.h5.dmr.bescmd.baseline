@@ -1,1589 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5">
-    <Dimension name="nTimes" size="1643"/>
-    <Dimension name="nXtrack" size="60"/>
-    <Dimension name="nWavel3" size="3"/>
     <Dimension name="nCorners" size="4"/>
     <Dimension name="nLevels" size="5"/>
     <Dimension name="nWavel2" size="2"/>
-    <Int32 name="ANCILLARY_DATA_AIRS_CO_Flags">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>AIRS CO Flags</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The AIRS CO flags: 1 = AIRS CO L3 file from current day used, 2 = AIRS CO L3 file from previous day used, 3 = AIRS CO climatology used.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>3</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AIRS_CO_Flags</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ANCILLARY_DATA/AIRS_CO_Flags</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="ANCILLARY_DATA_AIRS_CO_Value">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>AIRS CO Value</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1/cm2</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The AIRS CO value (in molecules/cm2).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>9.999999870e+14</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000020e+20</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AIRS_CO_Value</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ANCILLARY_DATA/AIRS_CO_Value</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ANCILLARY_DATA_SurfaceAlbedoOceanCorrected">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nWavel3"/>
-        <Attribute name="long_name" type="String">
-            <Value>Surface Albedo Ocean Corrected at 354, 388 and 500 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The surface albedo ocean corrected at 354, 388 and 500 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SurfaceAlbedoOceanCorrected</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ANCILLARY_DATA/SurfaceAlbedoOceanCorrected</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ANCILLARY_DATA_TerrainPressure">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Terrain Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The terrain pressure (in hPa) at the center of the ground pixel (from the OMI Level 1B file).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1050.000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TerrainPressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ANCILLARY_DATA/TerrainPressure</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_FoV75Area">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Mean Area for 75% Field of View Pixels on the WGS-85 Ellipsoid</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>km2</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The mean area (in square km) of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>5000.000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FoV75Area</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/FoV75Area</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_FoV75CornerLatitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nCorners"/>
-        <Attribute name="long_name" type="String">
-            <Value>Corner Latitudes for 75% Field of View Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The geodetic latitudes (in degrees) of the corner coordinates of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-90.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FoV75CornerLatitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/FoV75CornerLatitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_FoV75CornerLongitude">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nCorners"/>
-        <Attribute name="long_name" type="String">
-            <Value>Corner Longitudes for 75% Field of View Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The geodetic longitudes (in degrees) of the corner coordinates of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-180.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FoV75CornerLongitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/FoV75CornerLongitude</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="GEOLOCATION_DATA_GroundPixelQualityFlags">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Ground Pixel Quality Flags</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The ground pixel quality flags (for the ground pixel):  Bits 0 to 3 together contain the land/water flags:  0 - shallow ocean, 1 - land, 2 - shallow inland water, 3 - ocean coastline/lake shoreline, 4 - ephemeral (intermittent) water, 5 - deep inland water, 6 - continental shelf ocean, 7 - deep ocean, 8 to 14 - not used, 15 - error flag for land/water, Bits 4 to 6 are flags that are set to 0 for FALSE or 1 for TRUE:  Bit 4 - sun glint possibility flag, Bit 5 - solar eclipse possibility flag, Bit 6 - geolocation error flag, Bit 7 is reserved for future use (currently set to 0), Bits 8 to 14 together contain the snow/ice flags (based on NISE):  0 - snow-free land, 1 to 100 - sea ice concentration (percent), 101 - permanent ice (Greenland, Antarctica), 102 - not used, 103 - dry snow, 104 - ocean (NISE-255), 105 to 123 - reserved for future use, 124 - mixed pixels at coastline (NISE-252), 125 - suspect ice value (NISE-253), 126 - corners undefined (NISE-254), 127 - error, Bit 15 - NISE nearest neighbor filling flag.</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>65534</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>GroundPixelQualityFlags</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/GroundPixelQualityFlags</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="GEOLOCATION_DATA_Level">
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Atmospheric Level</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>km</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The atmospheric level (in km).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>10.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Level</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_RelativeAzimuthAngle">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Relative Azimuth Angle (sun + 180 - view)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The relative (sun + 180 - view) azimuth angle (in degrees) at the center of the ground pixel.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-180.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>RelativeAzimuthAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/RelativeAzimuthAngle</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_SecondsInDay">
-        <Dim name="/nTimes"/>
-        <Attribute name="valid_max" type="Float32">
-            <Value>86401.00000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Seconds After UTC Midnight</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>s</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The time (in s) after UTC midnight at the start of the observation.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SecondsInDay</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/SecondsInDay</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="GEOLOCATION_DATA_SolarZenithAngle">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="valid_max" type="Float32">
-            <Value>105.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Solar Zenith Angle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The solar zenith angle (in degrees) at the center of the ground pixel.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float64 name="GEOLOCATION_DATA_TimeTAI93">
-        <Dim name="/nTimes"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time at Start of Scan (TAI93)</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 1993-01-01</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The TAI93 time (in continuous seconds since 12 a.m. UTC on January 1, 1993) at the start of the scan.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float64">
-            <Value>-5000000000.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float64">
-            <Value>10000000000.000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-1.2676506002282294e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TimeTAI93</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/TimeTAI93</Value>
-        </Attribute>
-    </Float64>
-    <String name="GEOLOCATION_DATA_TimeUTC">
-        <Dim name="/nTimes"/>
-        <Attribute name="long_name" type="String">
-            <Value>Time at Start of Scan (UTC)</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="String">
-            <Value>2004-07-15T00:00:00.000000Z</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="String">
-            <Value>2030-12-31T23:59:59.999999Z</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The UTC time at the start of the scan.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TimeUTC</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/TimeUTC</Value>
-        </Attribute>
-    </String>
-    <Float32 name="GEOLOCATION_DATA_ViewingZenithAngle">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The viewing zenith angle (in degrees) at the center of the ground pixel.</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Viewing Zenith Angle</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>70.50000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ViewingZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/GEOLOCATION_DATA/ViewingZenithAngle</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Absorption Optical Depth vs. Height at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol absorption optical depth vs. height at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolAbsorptionOpticalDepthVsHeight354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Absorption Optical Depth vs. Height at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol absorption optical depth vs. height at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolAbsorptionOpticalDepthVsHeight388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol absorption optical depth vs. height at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolAbsorptionOpticalDepthVsHeight500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="description" type="String">
-            <Value>The aerosol optical depth vs. height at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>12.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Optical Depth vs. Height at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolOpticalDepthVsHeight354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Optical Depth vs. Height at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol optical depth vs. height at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>10.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolOpticalDepthVsHeight388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Optical Depth vs. Height at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol optical depth vs. height at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>6.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolOpticalDepthVsHeight500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Single Scattering Albedo vs. Height at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol single scattering albedo vs. height at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolSingleScatteringAlbedoVsHeight354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="description" type="String">
-            <Value>The aerosol single scattering albedo vs. height at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Single Scattering Albedo vs. Height at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolSingleScatteringAlbedoVsHeight388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol single scattering albedo vs. height at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000010014</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolSingleScatteringAlbedoVsHeight500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="SCIENCE_DATA_AerosolType354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Aerosol Type (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The aerosol type (354-388 nm): 1 = smoke, 2 = dust, 3 = sulfate.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>3</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AerosolType354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AerosolType354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="SCIENCE_DATA_AlgorithmFlagsVsHeight354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Algorithm Flags vs. Heights (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>8</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The algorithm flags vs. height (354-388 nm): 0 = most reliable AOD, SSA and AAOD retrievals (minimum sub-pixel cloud contanimation), 1 = possible cloud contanimation, 2 = no longer used, 3 = out-of-bounds SSA or AOD above 6.0 at 500 nm, 4 = snow/ice contanimated, 5 = solar zenith angle above 70.0 degrees, 6 = sun glint angle over water below 40.0 degrees, 7 = terrain pressure below 250.0 hPa, 8 = likely affected by OMI row anomaly.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AlgorithmFlagsVsHeight354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/AlgorithmFlagsVsHeight354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="SCIENCE_DATA_CloudFraction388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Cloud Fraction at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The effective cloud fraction at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-0.01499999966</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CloudFraction388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/CloudFraction388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_CloudOpticalDepth388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The cloud optical depth at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>100.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Cloud Optical Depth at 388 nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CloudOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/CloudOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Absorption Optical Depth at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol absorption optical depth at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolAbsorptionOpticalDepth354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Absorption Optical Depth at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol absorption optical depth at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolAbsorptionOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Absorption Optical Depth at 500 nm (340-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol absorption optical depth at 500 nm (340-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolAbsorptionOpticalDepth500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolLayerHeight354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>km</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol layer height (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>10.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Layer Height (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolLayerHeight354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolLayerHeight354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Optical Depth at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol optical depth at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>12.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolOpticalDepth354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol optical depth at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>10.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Optical Depth at 388 nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Optical Depth at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol optical depth at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>6.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolOpticalDepth500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Single Scattering Albedo at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol single scattering albedo at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolSingleScatteringAlbedo354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Single Scattering Albedo at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol single scattering albedo at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolSingleScatteringAlbedo388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Aerosol Single Scattering Albedo at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final aerosol single scattering albedo at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000010014</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAerosolSingleScatteringAlbedo500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="SCIENCE_DATA_FinalAlgorithmFlags354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Algorithm Flags (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final algorithm flags (354-388 nm): 0 = most reliable AOD, SSA and AAOD retrievals (minimum sub-pixel cloud contanimation), 1 = possible cloud contanimation, 2 = no longer used, 3 = out-of-bounds SSA or AOD above 6.0 at 500 nm, 4 = snow/ice contanimated, 5 = solar zenith angle above 70.0 degrees, 6 = sun glint angle over water below 40.0 degrees, 7 = terrain pressure below 250.0 hPa, 8 = likely affected by OMI row anomaly.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>8</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalAlgorithmFlags354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalAlgorithmFlags354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Imaginary Part of Refractive Index at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final imaginary part of the refractive index at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalImaginaryPartOfRefractiveIndex354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalImaginaryPartOfRefractiveIndex354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Final Imaginary Part of Refractive Index at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The final imaginary part of the refractive index at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FinalImaginaryPartOfRefractiveIndex388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/FinalImaginaryPartOfRefractiveIndex388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="SCIENCE_DATA_HeightFlags354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Height Flags (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The height flags (354-388 nm): 1 = CALIOP climatology, 2 = GOCART climatology, 3 = interpolated (between 3.0 and 6.0 km within -45.0/-30.0 to +30.0/+45.0 degrees latitude), 4 = assumed (0.0, 1.5, 3.0, 6.0 or 10.0 km).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Int32">
-            <Value>4</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HeightFlags354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/HeightFlags354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex354">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Imaginary Part of Refractive Index at 354 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The imaginary part of the refractive index at 354 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ImaginaryPartOfRefractiveIndex354</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex354</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Imaginary Part of Refractive Index at 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The imaginary part of the refractive index at 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ImaginaryPartOfRefractiveIndex388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex500">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nLevels"/>
-        <Attribute name="long_name" type="String">
-            <Value>Imaginary Part of Refractive Index at 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The imaginary part of the refractive index at 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ImaginaryPartOfRefractiveIndex500</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex500</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_NormalizedRadiance">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nWavel3"/>
-        <Attribute name="long_name" type="String">
-            <Value>Normalized Radiances at 354, 388 and 500 nm (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The normalized radiances at 354, 388 and 500 nm (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>NormalizedRadiance</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/NormalizedRadiance</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_Reflectivity">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Dim name="/nWavel2"/>
-        <Attribute name="long_name" type="String">
-            <Value>Lambertian Equivalent Reflectivity at 354 and 388 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The Lambertian Equivalent Reflectivity at 354 and 388 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-0.1500000060</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>1.149999976</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Reflectivity</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/Reflectivity</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_Residue354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Residue (354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The Residue (354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-50.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>50.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Residue354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/Residue354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SCIENCE_DATA_UVAerosolIndex354and388">
-        <Dim name="/nTimes"/>
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>UV Aerosol Index (Mie 354-388 nm)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The UV Aerosol Index (Mie 354-388 nm).</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-50.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>50.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>UVAerosolIndex354and388</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SCIENCE_DATA/UVAerosolIndex354and388</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SENSOR_DATA_Wavelength">
-        <Dim name="/nWavel3"/>
-        <Attribute name="long_name" type="String">
-            <Value>Wavelength</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The relevant wavelengths.  There are three wavelengths that range from 354 to 500 nm.</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>300.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>500.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="standard_name" type="String">
-            <Value>sensor_band_central_radiation_wavelength</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>nm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Wavelength</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SENSOR_DATA/Wavelength</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nTimes">
-        <Dim name="/nTimes"/>
-        <Attribute name="long_name" type="String">
-            <Value>Scan-Line Number</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the scan-line number in the granule.  The values range from 1 to nTimes.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nTimes</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nXtrack">
-        <Dim name="/nXtrack"/>
-        <Attribute name="long_name" type="String">
-            <Value>Cross-Track-Position Number (1-Based)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="description" type="String">
-            <Value>The dimension representing the cross-track-position number of the observation in the scan line.  The values range from 1 to 60.</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nXtrack</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/nXtrack</Value>
-        </Attribute>
-    </Int32>
+    <Dimension name="nWavel3" size="3"/>
+    <Dimension name="nTimes" size="1643"/>
+    <Dimension name="nXtrack" size="60"/>
     <Int32 name="nCorners">
         <Dim name="/nCorners"/>
         <Attribute name="long_name" type="String">
@@ -1724,6 +146,1670 @@
             <Value>/GEOLOCATION_DATA/Longitude</Value>
         </Attribute>
     </Float32>
+    <Int32 name="ANCILLARY_DATA_AIRS_CO_Flags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>AIRS CO Flags</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The AIRS CO flags: 1 = AIRS CO L3 file from current day used, 2 = AIRS CO L3 file from previous day used, 3 = AIRS CO climatology used.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AIRS_CO_Flags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ANCILLARY_DATA/AIRS_CO_Flags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Float32 name="ANCILLARY_DATA_AIRS_CO_Value">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>AIRS CO Value</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1/cm2</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The AIRS CO value (in molecules/cm2).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>9.999999870e+14</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000020e+20</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AIRS_CO_Value</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ANCILLARY_DATA/AIRS_CO_Value</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="ANCILLARY_DATA_SurfaceAlbedoOceanCorrected">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nWavel3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Surface Albedo Ocean Corrected at 354, 388 and 500 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The surface albedo ocean corrected at 354, 388 and 500 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceAlbedoOceanCorrected</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ANCILLARY_DATA/SurfaceAlbedoOceanCorrected</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="ANCILLARY_DATA_TerrainPressure">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Terrain Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The terrain pressure (in hPa) at the center of the ground pixel (from the OMI Level 1B file).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1050.000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ANCILLARY_DATA/TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_FoV75Area">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Mean Area for 75% Field of View Pixels on the WGS-85 Ellipsoid</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>km2</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The mean area (in square km) of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>5000.000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FoV75Area</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/FoV75Area</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_FoV75CornerLatitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nCorners"/>
+        <Attribute name="long_name" type="String">
+            <Value>Corner Latitudes for 75% Field of View Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The geodetic latitudes (in degrees) of the corner coordinates of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FoV75CornerLatitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/FoV75CornerLatitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_FoV75CornerLongitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nCorners"/>
+        <Attribute name="long_name" type="String">
+            <Value>Corner Longitudes for 75% Field of View Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The geodetic longitudes (in degrees) of the corner coordinates of the 75% Field of View (i.e., overlapping) ground pixels (from OMPIXCOR).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FoV75CornerLongitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/FoV75CornerLongitude</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="GEOLOCATION_DATA_GroundPixelQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Ground Pixel Quality Flags</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The ground pixel quality flags (for the ground pixel):  Bits 0 to 3 together contain the land/water flags:  0 - shallow ocean, 1 - land, 2 - shallow inland water, 3 - ocean coastline/lake shoreline, 4 - ephemeral (intermittent) water, 5 - deep inland water, 6 - continental shelf ocean, 7 - deep ocean, 8 to 14 - not used, 15 - error flag for land/water, Bits 4 to 6 are flags that are set to 0 for FALSE or 1 for TRUE:  Bit 4 - sun glint possibility flag, Bit 5 - solar eclipse possibility flag, Bit 6 - geolocation error flag, Bit 7 is reserved for future use (currently set to 0), Bits 8 to 14 together contain the snow/ice flags (based on NISE):  0 - snow-free land, 1 to 100 - sea ice concentration (percent), 101 - permanent ice (Greenland, Antarctica), 102 - not used, 103 - dry snow, 104 - ocean (NISE-255), 105 to 123 - reserved for future use, 124 - mixed pixels at coastline (NISE-252), 125 - suspect ice value (NISE-253), 126 - corners undefined (NISE-254), 127 - error, Bit 15 - NISE nearest neighbor filling flag.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>65534</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Float32 name="GEOLOCATION_DATA_Level">
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Atmospheric Level</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The atmospheric level (in km).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Level</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/Level</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_RelativeAzimuthAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Relative Azimuth Angle (sun + 180 - view)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The relative (sun + 180 - view) azimuth angle (in degrees) at the center of the ground pixel.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RelativeAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/RelativeAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_SecondsInDay">
+        <Dim name="/nTimes"/>
+        <Attribute name="valid_max" type="Float32">
+            <Value>86401.00000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Seconds After UTC Midnight</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The time (in s) after UTC midnight at the start of the observation.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SecondsInDay</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/SecondsInDay</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="GEOLOCATION_DATA_SolarZenithAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="valid_max" type="Float32">
+            <Value>105.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Solar Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The solar zenith angle (in degrees) at the center of the ground pixel.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float64 name="GEOLOCATION_DATA_TimeTAI93">
+        <Dim name="/nTimes"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time at Start of Scan (TAI93)</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The TAI93 time (in continuous seconds since 12 a.m. UTC on January 1, 1993) at the start of the scan.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-5000000000.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10000000000.000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-1.2676506002282294e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TimeTAI93</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/TimeTAI93</Value>
+        </Attribute>
+    </Float64>
+    <String name="GEOLOCATION_DATA_TimeUTC">
+        <Dim name="/nTimes"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time at Start of Scan (UTC)</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="String">
+            <Value>2004-07-15T00:00:00.000000Z</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="String">
+            <Value>2030-12-31T23:59:59.999999Z</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The UTC time at the start of the scan.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TimeUTC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/TimeUTC</Value>
+        </Attribute>
+    </String>
+    <Float32 name="GEOLOCATION_DATA_ViewingZenithAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The viewing zenith angle (in degrees) at the center of the ground pixel.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Viewing Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>70.50000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/GEOLOCATION_DATA/ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Absorption Optical Depth vs. Height at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol absorption optical depth vs. height at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolAbsorptionOpticalDepthVsHeight354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Absorption Optical Depth vs. Height at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol absorption optical depth vs. height at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolAbsorptionOpticalDepthVsHeight388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Absorption Optical Depth vs. Height at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol absorption optical depth vs. height at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolAbsorptionOpticalDepthVsHeight500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="description" type="String">
+            <Value>The aerosol optical depth vs. height at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>12.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Optical Depth vs. Height at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolOpticalDepthVsHeight354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Optical Depth vs. Height at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol optical depth vs. height at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolOpticalDepthVsHeight388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Optical Depth vs. Height at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol optical depth vs. height at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>6.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolOpticalDepthVsHeight500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Single Scattering Albedo vs. Height at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol single scattering albedo vs. height at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolSingleScatteringAlbedoVsHeight354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="description" type="String">
+            <Value>The aerosol single scattering albedo vs. height at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Single Scattering Albedo vs. Height at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolSingleScatteringAlbedoVsHeight388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Single Scattering Albedo vs. Height at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol single scattering albedo vs. height at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000010014</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolSingleScatteringAlbedoVsHeight500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Int32 name="SCIENCE_DATA_AerosolType354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aerosol Type (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The aerosol type (354-388 nm): 1 = smoke, 2 = dust, 3 = sulfate.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AerosolType354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AerosolType354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Int32 name="SCIENCE_DATA_AlgorithmFlagsVsHeight354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Algorithm Flags vs. Heights (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The algorithm flags vs. height (354-388 nm): 0 = most reliable AOD, SSA and AAOD retrievals (minimum sub-pixel cloud contanimation), 1 = possible cloud contanimation, 2 = no longer used, 3 = out-of-bounds SSA or AOD above 6.0 at 500 nm, 4 = snow/ice contanimated, 5 = solar zenith angle above 70.0 degrees, 6 = sun glint angle over water below 40.0 degrees, 7 = terrain pressure below 250.0 hPa, 8 = likely affected by OMI row anomaly.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AlgorithmFlagsVsHeight354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/AlgorithmFlagsVsHeight354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Float32 name="SCIENCE_DATA_CloudFraction388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Cloud Fraction at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The effective cloud fraction at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.01499999966</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudFraction388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/CloudFraction388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_CloudOpticalDepth388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The cloud optical depth at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>100.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Cloud Optical Depth at 388 nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/CloudOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Absorption Optical Depth at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol absorption optical depth at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolAbsorptionOpticalDepth354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Absorption Optical Depth at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol absorption optical depth at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolAbsorptionOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Absorption Optical Depth at 500 nm (340-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol absorption optical depth at 500 nm (340-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolAbsorptionOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolLayerHeight354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol layer height (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Layer Height (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolLayerHeight354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolLayerHeight354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Optical Depth at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol optical depth at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>12.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolOpticalDepth354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol optical depth at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Optical Depth at 388 nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolOpticalDepth500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Optical Depth at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol optical depth at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>6.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Single Scattering Albedo at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol single scattering albedo at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolSingleScatteringAlbedo354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Single Scattering Albedo at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol single scattering albedo at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolSingleScatteringAlbedo388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Aerosol Single Scattering Albedo at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final aerosol single scattering albedo at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000010014</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolSingleScatteringAlbedo500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Int32 name="SCIENCE_DATA_FinalAlgorithmFlags354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Algorithm Flags (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final algorithm flags (354-388 nm): 0 = most reliable AOD, SSA and AAOD retrievals (minimum sub-pixel cloud contanimation), 1 = possible cloud contanimation, 2 = no longer used, 3 = out-of-bounds SSA or AOD above 6.0 at 500 nm, 4 = snow/ice contanimated, 5 = solar zenith angle above 70.0 degrees, 6 = sun glint angle over water below 40.0 degrees, 7 = terrain pressure below 250.0 hPa, 8 = likely affected by OMI row anomaly.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAlgorithmFlags354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalAlgorithmFlags354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Imaginary Part of Refractive Index at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final imaginary part of the refractive index at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalImaginaryPartOfRefractiveIndex354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalImaginaryPartOfRefractiveIndex354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_FinalImaginaryPartOfRefractiveIndex388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Final Imaginary Part of Refractive Index at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The final imaginary part of the refractive index at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalImaginaryPartOfRefractiveIndex388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/FinalImaginaryPartOfRefractiveIndex388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Int32 name="SCIENCE_DATA_HeightFlags354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Height Flags (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The height flags (354-388 nm): 1 = CALIOP climatology, 2 = GOCART climatology, 3 = interpolated (between 3.0 and 6.0 km within -45.0/-30.0 to +30.0/+45.0 degrees latitude), 4 = assumed (0.0, 1.5, 3.0, 6.0 or 10.0 km).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HeightFlags354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/HeightFlags354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Int32>
+    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex354">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Imaginary Part of Refractive Index at 354 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The imaginary part of the refractive index at 354 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ImaginaryPartOfRefractiveIndex354</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex354</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Imaginary Part of Refractive Index at 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The imaginary part of the refractive index at 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ImaginaryPartOfRefractiveIndex388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex500">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nLevels"/>
+        <Attribute name="long_name" type="String">
+            <Value>Imaginary Part of Refractive Index at 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The imaginary part of the refractive index at 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ImaginaryPartOfRefractiveIndex500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/ImaginaryPartOfRefractiveIndex500</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude GEOLOCATION_DATA_Level</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_NormalizedRadiance">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nWavel3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Normalized Radiances at 354, 388 and 500 nm (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The normalized radiances at 354, 388 and 500 nm (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NormalizedRadiance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/NormalizedRadiance</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude SENSOR_DATA_Wavelength</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_Reflectivity">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nWavel2"/>
+        <Attribute name="long_name" type="String">
+            <Value>Lambertian Equivalent Reflectivity at 354 and 388 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The Lambertian Equivalent Reflectivity at 354 and 388 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-0.1500000060</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>1.149999976</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Reflectivity</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/Reflectivity</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_Residue354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Residue (354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The Residue (354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-50.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Residue354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/Residue354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SCIENCE_DATA_UVAerosolIndex354and388">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>UV Aerosol Index (Mie 354-388 nm)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The UV Aerosol Index (Mie 354-388 nm).</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-50.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UVAerosolIndex354and388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SCIENCE_DATA/UVAerosolIndex354and388</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>GEOLOCATION_DATA_TimeTAI93 GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</Value>
+        </Attribute>
+        <Map name="/GEOLOCATION_DATA_Latitude"/>
+        <Map name="/GEOLOCATION_DATA_Longitude"/>
+    </Float32>
+    <Float32 name="SENSOR_DATA_Wavelength">
+        <Dim name="/nWavel3"/>
+        <Attribute name="long_name" type="String">
+            <Value>Wavelength</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The relevant wavelengths.  There are three wavelengths that range from 354 to 500 nm.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>300.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>500.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sensor_band_central_radiation_wavelength</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Wavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SENSOR_DATA/Wavelength</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nTimes">
+        <Dim name="/nTimes"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scan-Line Number</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the scan-line number in the granule.  The values range from 1 to nTimes.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nTimes</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nXtrack">
+        <Dim name="/nXtrack"/>
+        <Attribute name="long_name" type="String">
+            <Value>Cross-Track-Position Number (1-Based)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>The dimension representing the cross-track-position number of the observation in the scan line.  The values range from 1 to 60.</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nXtrack</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/nXtrack</Value>
+        </Attribute>
+    </Int32>
     <Attribute name="AuthorAffiliation" type="String">
         <Value>NASA/GSFC </Value>
     </Attribute>

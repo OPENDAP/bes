@@ -1,32 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="swath_unlim.h5">
+    <Dimension name="GeoTrack" size="20"/>
+    <Dimension name="GeoXtrack" size="10"/>
     <Dimension name="Bands" size="4"/>
     <Dimension name="Res2tr" size="3"/>
     <Dimension name="Res2xtr" size="4"/>
-    <Dimension name="GeoTrack" size="20"/>
-    <Dimension name="GeoXtrack" size="10"/>
-    <Float64 name="Spectra">
-        <Dim name="/Bands"/>
-        <Dim name="/Res2tr"/>
-        <Dim name="/Res2xtr"/>
-        <Attribute name="origname" type="String">
-            <Value>Spectra</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/Swath1/Data Fields/Spectra</Value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <Value>Bands Res2tr Res2xtr</Value>
-        </Attribute>
-    </Float64>
-    <String name="StructMetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>StructMetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
-        </Attribute>
-    </String>
     <Float32 name="Latitude">
         <Dim name="/GeoTrack"/>
         <Dim name="/GeoXtrack"/>
@@ -65,6 +43,31 @@
             <Value>level</Value>
         </Attribute>
     </Int32>
+    <Float64 name="Spectra">
+        <Dim name="/Bands"/>
+        <Dim name="/Res2tr"/>
+        <Dim name="/Res2xtr"/>
+        <Attribute name="origname" type="String">
+            <Value>Spectra</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/Swath1/Data Fields/Spectra</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Bands Res2tr Res2xtr</Value>
+        </Attribute>
+        <Map name="/Bands"/>
+        <Map name="/Res2tr"/>
+        <Map name="/Res2xtr"/>
+    </Float64>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
@@ -80,9 +83,9 @@
             <Value>/HDFEOS INFORMATION</Value>
         </Attribute>
     </Attribute>
-    <Attribute name="DODS_EXTRA" type="Container">                                                          
-        <Attribute name="Unlimited_Dimension" type="String">                                                
-            <Value>Bands Res2tr Res2xtr</Value>                                                             
-        </Attribute>                                                                                        
-    </Attribute> 
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Bands Res2tr Res2xtr</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

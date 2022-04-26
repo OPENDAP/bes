@@ -1,12 +1,80 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5">
-    <Dimension name="nspecies" size="5"/>
-    <Dimension name="sddim" size="12"/>
-    <Dimension name="nlyrs" size="28"/>
-    <Dimension name="ntemps" size="21"/>
-    <Dimension name="nprf" size="100"/>
     <Dimension name="nscan" size="2962"/>
     <Dimension name="npixel" size="221"/>
+    <Dimension name="nlyrs" size="28"/>
+    <Dimension name="nprf" size="100"/>
+    <Dimension name="nspecies" size="5"/>
+    <Dimension name="ntemps" size="21"/>
+    <Dimension name="sddim" size="12"/>
+    <Float32 name="S1_Longitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="S1_Latitude">
+        <Dim name="/nscan"/>
+        <Dim name="/npixel"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nscan,npixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/S1/Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nlyrs">
+        <Dim name="/nlyrs"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nprf">
+        <Dim name="/nprf"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nspecies">
+        <Dim name="/nspecies"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="ntemps">
+        <Dim name="/ntemps"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="sddim">
+        <Dim name="/sddim"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Byte name="GprofDHeadr_speciesDescription">
         <Dim name="/nspecies"/>
         <Dim name="/sddim"/>
@@ -98,6 +166,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int8 name="S1_pixelStatus">
         <Dim name="/nscan"/>
@@ -117,6 +187,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Int8 name="S1_qualityFlag">
         <Dim name="/nscan"/>
@@ -136,6 +208,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Int8 name="S1_orographicLiftIndex">
         <Dim name="/nscan"/>
@@ -155,6 +229,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Int16 name="S1_ScanTime_MilliSecond">
         <Dim name="/nscan"/>
@@ -336,6 +412,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Float32 name="S1_profileScale">
         <Dim name="/nscan"/>
@@ -356,6 +434,9 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
+        <Map name="/nspecies"/>
     </Float32>
     <Int8 name="S1_databaseExpansionIndex">
         <Dim name="/nscan"/>
@@ -375,6 +456,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Float32 name="S1_precip2ndTertial">
         <Dim name="/nscan"/>
@@ -394,6 +477,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_precip1stTertial">
         <Dim name="/nscan"/>
@@ -416,6 +501,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int16 name="S1_numOfSignificantProf">
         <Dim name="/nscan"/>
@@ -435,6 +522,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int16>
     <Int8 name="S1_retrievalType">
         <Dim name="/nscan"/>
@@ -454,6 +543,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Int16 name="S1_SCstatus_SCorientation">
         <Dim name="/nscan"/>
@@ -563,6 +654,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int8 name="S1_sunGlintAngle">
         <Dim name="/nscan"/>
@@ -585,6 +678,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Float32 name="S1_surfacePrecipitation">
         <Dim name="/nscan"/>
@@ -607,6 +702,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int8 name="S1_snowCoverIndex">
         <Dim name="/nscan"/>
@@ -626,6 +723,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Int16 name="S1_spare">
         <Dim name="/nscan"/>
@@ -645,6 +744,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int16>
     <Float32 name="S1_cloudWaterPath">
         <Dim name="/nscan"/>
@@ -667,6 +768,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int8 name="S1_totalColumnWaterVaporIndex">
         <Dim name="/nscan"/>
@@ -689,6 +792,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Float32 name="S1_mixedWaterPath">
         <Dim name="/nscan"/>
@@ -711,6 +816,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_probabilityOfPrecip">
         <Dim name="/nscan"/>
@@ -733,6 +840,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int16 name="S1_temp2mIndex">
         <Dim name="/nscan"/>
@@ -752,6 +861,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int16>
     <Float32 name="S1_mostLikelyPrecipitation">
         <Dim name="/nscan"/>
@@ -774,6 +885,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int16 name="S1_surfaceSkinTempIndex">
         <Dim name="/nscan"/>
@@ -796,6 +909,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int16>
     <Int8 name="S1_surfaceTypeIndex">
         <Dim name="/nscan"/>
@@ -815,6 +930,8 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Int8>
     <Float32 name="S1_liquidPrecipFraction">
         <Dim name="/nscan"/>
@@ -834,6 +951,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_rainWaterPath">
         <Dim name="/nscan"/>
@@ -856,6 +975,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Float32 name="S1_convectPrecipFraction">
         <Dim name="/nscan"/>
@@ -875,6 +996,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
     </Float32>
     <Int16 name="S1_profileNumber">
         <Dim name="/nscan"/>
@@ -895,75 +1018,10 @@
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude nspecies</Value>
         </Attribute>
+        <Map name="/S1_Longitude"/>
+        <Map name="/S1_Latitude"/>
+        <Map name="/nspecies"/>
     </Int16>
-    <Float32 name="S1_Longitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npixel"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan,npixel</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="S1_Latitude">
-        <Dim name="/nscan"/>
-        <Dim name="/npixel"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nscan,npixel</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/S1/Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.9</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nlyrs">
-        <Dim name="/nlyrs"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nprf">
-        <Dim name="/nprf"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="nspecies">
-        <Dim name="/nspecies"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="ntemps">
-        <Dim name="/ntemps"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="sddim">
-        <Dim name="/sddim"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="FileHeader" type="String">
         <Value>DOI=10.5067/GPM/GMI/GPM/GPROF2A;
 AlgorithmID=2AGPROFGMI;

@@ -730,6 +730,23 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
             map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
     }
 
+    // TODO: Need to wait for HYRAX-687's decision
+    if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+        gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
+    }
+
+    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+        gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
+
+    }
+
+
+    }
+    else {
     // Read Variable info.
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
@@ -742,6 +759,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
         gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
     }
 
+    }
     // GPM needs to be handled in a special way(mostly _FillValue)
     if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                       || GPM_L1 == f->getProductType())
@@ -852,7 +870,19 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
         
             }
         }
-   }
+    }
+
+    
+    // Add DAP4 Map for coverage 
+    if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+
+        // Obtain the coordinate variable names, these are mapped variables.
+        vector <string> cvar_name;
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) 
+            cvar_name.emplace_back((*it_cv)->getNewName()); 
+           
+        add_dap4_coverage(d4_root,cvar_name,f->getIsCOARD());
+    }
 
 }
 

@@ -1,302 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5">
-    <Dimension name="nTimes" size="1151"/>
     <Dimension name="nLats" size="73"/>
     <Dimension name="nLevels" size="121"/>
-    <Int32 name="Day">
-        <Dim name="/nTimes"/>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Day of Observation</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Day</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Day</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="Latitude">
-        <Dim name="/nLats"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degress_north</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Latitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nLats</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="Month">
-        <Dim name="/nTimes"/>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Month of Observation</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Month</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Month</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="NO2Day">
-        <Dim name="/nTimes"/>
-        <Dim name="/nLevels"/>
-        <Dim name="/nLats"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Nitrogen Dioxide vmr (Day)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>NO2Day</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels nLats</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="NO2DayCovariance">
-        <Dim name="/nTimes"/>
-        <Dim name="/nLevels"/>
-        <Dim name="/nLats"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Nitrogen Dioxide Covariance vmr (Day)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>NO2DayCovariance</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels nLats</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="NO2DayDataCount">
-        <Dim name="/nTimes"/>
-        <Dim name="/nLevels"/>
-        <Dim name="/nLats"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Nitrogen Dioxide Data Count (Day)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>NO2DayDataCount</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels nLats</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="NO2DayPrecision">
-        <Dim name="/nTimes"/>
-        <Dim name="/nLevels"/>
-        <Dim name="/nLats"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Nitrogen Dioxide Precision vmr (Day)</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>NO2DayPrecision</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels nLats</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Pressure">
-        <Dim name="/nLevels"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Pressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Pressure</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float64 name="Time">
-        <Dim name="/nTimes"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float64">
-            <Value>-999.00000000000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>TAI Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>seconds since 1993-01-01</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Time</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float64>
-    <Int32 name="Year">
-        <Dim name="/nTimes"/>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Year of Observation</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Year</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Year</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Int32>
-    <String name="StructMetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>StructMetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
-        </Attribute>
-    </String>
-    <String name="coremetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>coremetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
-        </Attribute>
-    </String>
+    <Dimension name="nTimes" size="1151"/>
     <Float32 name="nLats">
         <Dim name="/nLats"/>
         <Attribute name="missing_value" type="Float32">
@@ -369,6 +75,318 @@
             <Value>nTimes</Value>
         </Attribute>
     </Float64>
+    <Int32 name="Day">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Day of Observation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Day</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Day</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+    </Int32>
+    <Float32 name="Latitude">
+        <Dim name="/nLats"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degress_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nLats</Value>
+        </Attribute>
+        <Map name="/nLats"/>
+    </Float32>
+    <Int32 name="Month">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Month of Observation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Month</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Month</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+    </Int32>
+    <Float32 name="NO2Day">
+        <Dim name="/nTimes"/>
+        <Dim name="/nLevels"/>
+        <Dim name="/nLats"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Nitrogen Dioxide vmr (Day)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NO2Day</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLats</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
+    </Float32>
+    <Float32 name="NO2DayCovariance">
+        <Dim name="/nTimes"/>
+        <Dim name="/nLevels"/>
+        <Dim name="/nLats"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Nitrogen Dioxide Covariance vmr (Day)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NO2DayCovariance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLats</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
+    </Float32>
+    <Float32 name="NO2DayDataCount">
+        <Dim name="/nTimes"/>
+        <Dim name="/nLevels"/>
+        <Dim name="/nLats"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Nitrogen Dioxide Data Count (Day)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NO2DayDataCount</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLats</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
+    </Float32>
+    <Float32 name="NO2DayPrecision">
+        <Dim name="/nTimes"/>
+        <Dim name="/nLevels"/>
+        <Dim name="/nLats"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Nitrogen Dioxide Precision vmr (Day)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NO2DayPrecision</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLats</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+        <Map name="/nLevels"/>
+        <Map name="/nLats"/>
+    </Float32>
+    <Float32 name="Pressure">
+        <Dim name="/nLevels"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Pressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nLevels</Value>
+        </Attribute>
+        <Map name="/nLevels"/>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TAI Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1993-01-01</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Time</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+    </Float64>
+    <Int32 name="Year">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Year of Observation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Year</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Year</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/nTimes"/>
+    </Int32>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="coremetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>coremetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+        </Attribute>
+    </String>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

@@ -2,232 +2,6 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMPS-NPP_NMTO3-L3-DAILY_v2.1_2018m0102_2018m0104t012837.h5">
     <Dimension name="Latitude" size="180"/>
     <Dimension name="Longitude" size="360"/>
-    <Float32 name="ColumnAmountO3">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="long_name" type="String">
-            <Value>Best Total Ozone Solution</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>50.00000000</Value>
-            <Value>700.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ColumnAmountO3</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ColumnAmountO3</Value>
-        </Attribute>
-    </Float32>
-    <Byte name="LandSeaMask">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Byte">
-            <Value>0</Value>
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Land Sea Mask</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Byte">
-            <Value>255</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="flag_values" type="Byte">
-            <Value>0</Value>
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="flag_meanings" type="String">
-            <Value>ocean land</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LandSeaMask</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/LandSeaMask</Value>
-        </Attribute>
-    </Byte>
-    <Float32 name="PercentWater">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>0.000000000</Value>
-            <Value>100.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Percent Water Coverage per Grid Cell</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>%</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>PercentWater</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PercentWater</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="RadiativeCloudFraction">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="comment" type="String">
-            <Value>fc * Ic331 / Im331</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Radiative Cloud Fraction</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="valid_range" type="Float32">
-            <Value>0.000000000</Value>
-            <Value>1.000000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>RadiativeCloudFraction</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/RadiativeCloudFraction</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Reflectivity331">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-0.1500000060</Value>
-            <Value>1.149999976</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Effective Surface Reflectivity at 331 nm</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Reflectivity331</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Reflectivity331</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SolarZenithAngle">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>0.000000000</Value>
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Solar Zenith Angle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SolarZenithAngle</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="UVAerosolIndex">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>-30.00000000</Value>
-            <Value>30.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>UV Aerosol Index</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value> </Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>UVAerosolIndex</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/UVAerosolIndex</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ViewingZenithAngle">
-        <Dim name="/Latitude"/>
-        <Dim name="/Longitude"/>
-        <Attribute name="valid_range" type="Float32">
-            <Value>0.000000000</Value>
-            <Value>70.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-1.267650600e+30</Value>
-        </Attribute>
-        <Attribute name="DIMENSION_LABELS" type="String">
-            <Value>Latitude</Value>
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Viewing Zenith Angle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ViewingZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/ViewingZenithAngle</Value>
-        </Attribute>
-    </Float32>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
         <Attribute name="valid_range" type="Float32">
@@ -271,6 +45,248 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Longitude</Value>
         </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountO3">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="long_name" type="String">
+            <Value>Best Total Ozone Solution</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>50.00000000</Value>
+            <Value>700.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountO3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ColumnAmountO3</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Byte name="LandSeaMask">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Land Sea Mask</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Byte">
+            <Value>0</Value>
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>ocean land</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LandSeaMask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/LandSeaMask</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Byte>
+    <Float32 name="PercentWater">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>100.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Percent Water Coverage per Grid Cell</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>%</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>PercentWater</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PercentWater</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Float32 name="RadiativeCloudFraction">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="comment" type="String">
+            <Value>fc * Ic331 / Im331</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Radiative Cloud Fraction</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RadiativeCloudFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/RadiativeCloudFraction</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Float32 name="Reflectivity331">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-0.1500000060</Value>
+            <Value>1.149999976</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Effective Surface Reflectivity at 331 nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Reflectivity331</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Reflectivity331</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Solar Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SolarZenithAngle</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Float32 name="UVAerosolIndex">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-30.00000000</Value>
+            <Value>30.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UV Aerosol Index</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UVAerosolIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/UVAerosolIndex</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
+    </Float32>
+    <Float32 name="ViewingZenithAngle">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>70.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LABELS" type="String">
+            <Value>Latitude</Value>
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Viewing Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ViewingZenithAngle</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Longitude"/>
     </Float32>
     <Attribute name="DATA_QUALITY" type="Int16">
         <Value>0</Value>

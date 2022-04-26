@@ -2,356 +2,6 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010.he5">
     <Dimension name="Latitude" size="46"/>
     <Dimension name="Pressure" size="55"/>
-    <Float32 name="Convergence">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>O3Convergence</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Convergence</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Data Fields/Convergence</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="L2gpPrecision">
-        <Dim name="/Latitude"/>
-        <Dim name="/Pressure"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>O3Precision</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>vmr</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>L2gpPrecision</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpPrecision</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="L2gpValue">
-        <Dim name="/Latitude"/>
-        <Dim name="/Pressure"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>O3</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>vmr</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>L2gpValue</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpValue</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>nTimes nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Quality">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>O3Quality</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Quality</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Data Fields/Quality</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="Status">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>513</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>O3Status</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Int32">
-            <Value>513</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Status</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Data Fields/Status</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="ChunkNumber">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>ChunkNumber</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Int32">
-            <Value>-999</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ChunkNumber</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/ChunkNumber</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="LineOfSightAngle">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>LineOfSightAngle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>deg</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LineOfSightAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LineOfSightAngle</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="LocalSolarTime">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>h</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>LocalSolarTime</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LocalSolarTime</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LocalSolarTime</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="Longitude">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>deg</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Longitude</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="OrbitGeodeticAngle">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>OrbitGeodeticAngle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>deg</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>MLS-Specific</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>OrbitGeodeticAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/OrbitGeodeticAngle</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SolarZenithAngle">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>deg</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.9899902</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float32>
-    <Float64 name="Time">
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-999.98999023437500</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float64">
-            <Value>-999.98999023437500</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>s</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>Aura-Shared</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Time</Value>
-        </Attribute>
-        <Attribute name="orig_dimname" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
-    </Float64>
-    <String name="StructMetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>StructMetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
-        </Attribute>
-    </String>
-    <String name="coremetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>coremetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
-        </Attribute>
-    </String>
-    <String name="xmlmetadata">
-        <Attribute name="origname" type="String">
-            <Value>xmlmetadata</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/xmlmetadata</Value>
-        </Attribute>
-    </String>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
         <Attribute name="_FillValue" type="Float32">
@@ -406,6 +56,370 @@
             <Value>nLevels</Value>
         </Attribute>
     </Float32>
+    <Float32 name="Convergence">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3Convergence</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Convergence</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Data Fields/Convergence</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="L2gpPrecision">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3Precision</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>vmr</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>L2gpPrecision</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpPrecision</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
+    </Float32>
+    <Float32 name="L2gpValue">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>vmr</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>L2gpValue</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpValue</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
+    </Float32>
+    <Float32 name="Quality">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3Quality</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Quality</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Data Fields/Quality</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Int32 name="Status">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>513</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3Status</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>513</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Status</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Data Fields/Status</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Int32>
+    <Int32 name="ChunkNumber">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>ChunkNumber</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ChunkNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/ChunkNumber</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Int32>
+    <Float32 name="LineOfSightAngle">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>LineOfSightAngle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LineOfSightAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LineOfSightAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="LocalSolarTime">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>h</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Longitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="OrbitGeodeticAngle">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>OrbitGeodeticAngle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>MLS-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>OrbitGeodeticAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/OrbitGeodeticAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.9899902</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.98999023437500</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.98999023437500</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Time</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+        <Map name="/Latitude"/>
+    </Float64>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="coremetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>coremetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="xmlmetadata">
+        <Attribute name="origname" type="String">
+            <Value>xmlmetadata</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/xmlmetadata</Value>
+        </Attribute>
+    </String>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

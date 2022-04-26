@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L3-OMAEROe_2012m0213_v003-2012m0215t021315.he5">
-    <Dimension name="nWavelDiagnostic" size="5"/>
-    <Dimension name="lat" size="720"/>
     <Dimension name="lon" size="1440"/>
+    <Dimension name="lat" size="720"/>
+    <Dimension name="nWavelDiagnostic" size="5"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nWavelDiagnostic">
+        <Dim name="/nWavelDiagnostic"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
     <Int16 name="AbsorbingAerosolOpticalThicknessMW">
         <Dim name="/nWavelDiagnostic"/>
         <Dim name="/lat"/>
@@ -37,6 +55,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <UInt16 name="AerosolModelMW">
         <Dim name="/lat"/>
@@ -71,6 +92,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </UInt16>
     <Int16 name="AerosolOpticalThicknessMW">
         <Dim name="/nWavelDiagnostic"/>
@@ -106,6 +129,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="AerosolOpticalThicknessPassedThresholdMean">
         <Dim name="/lat"/>
@@ -140,6 +166,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="AerosolOpticalThicknessPassedThresholdStd">
         <Dim name="/lat"/>
@@ -174,6 +202,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoMW">
         <Dim name="/nWavelDiagnostic"/>
@@ -209,6 +239,9 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>nWavelDiagnostic YDim XDim</Value>
         </Attribute>
+        <Map name="/nWavelDiagnostic"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoPassedThresholdMean">
         <Dim name="/lat"/>
@@ -243,6 +276,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Int16 name="SingleScatteringAlbedoPassedThresholdStd">
         <Dim name="/lat"/>
@@ -277,6 +312,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Float32 name="SolarZenithAngle">
         <Dim name="/lat"/>
@@ -311,6 +348,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Int16 name="TerrainReflectivity">
         <Dim name="/lat"/>
@@ -345,6 +384,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Int16>
     <Float32 name="UVAerosolIndex">
         <Dim name="/lat"/>
@@ -379,6 +420,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="VISAerosolIndex">
         <Dim name="/lat"/>
@@ -413,6 +456,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Float32 name="ViewingZenithAngle">
         <Dim name="/lat"/>
@@ -447,6 +492,8 @@
         <Attribute name="orig_dimname_list" type="String">
             <Value>YDim XDim</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <String name="StructMetadata_0">
         <Attribute name="origname" type="String">
@@ -456,24 +503,6 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="nWavelDiagnostic">
-        <Dim name="/nWavelDiagnostic"/>
-        <Attribute name="units" type="String">
-            <Value>level</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
