@@ -120,6 +120,8 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
         << " strindex=" << strindex << " allbuf=" << allbuf << endl);
 
     // Tokenize the convbuf. 
+    // The following line causes the degradation of the performance.
+    // The code seems a leftover of a debugging process.
 #if 0
     for (int i = 0; i < strindex; i++) {
         tempvalue = tempvalue + elesize;
