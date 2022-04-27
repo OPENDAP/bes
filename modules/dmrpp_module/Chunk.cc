@@ -95,13 +95,6 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
  */
 void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message)
 {
-#if 0
-    string json_message = xml2json(xml_message.c_str());
-            rapidjson::Document d;
-            d.Parse(json_message.c_str());
-            // rapidjson::Value &message = d["Error"]["Message"];
-            rapidjson::Value &code = d["Error"]["Code"];
-#endif
     // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
     // for the low-down on this XML document.
     pugi::xml_document error;
@@ -420,25 +413,12 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
-#if 0
-    // strip off []; iss holds x,y,...,z
-    istringstream iss(pia.substr(1, pia.length() - 2));
-
-    char c;
-    unsigned int i;
-    while (!iss.eof()) {
-        iss >> i; // read an integer
-        cpia_vect.push_back(i);
-        iss >> c; // read a separator (,)
-    }
-#else
     try {
         split_by_comma(pia.substr(1, pia.length() - 2), cpia_vect);
     }
-    catch(std::invalid_argument &e) {
+    catch(const std::invalid_argument &e) {
         throw BESInternalError(string("while parsing a DMR++, chunk position string illegal character(s): ").append(e.what()), __FILE__, __LINE__);
     }
-#endif
 }
 
 
@@ -522,6 +502,10 @@ string Chunk::get_curl_range_arg_string() {
  * And if so it appends an additional parameter: "&tracking_context=<context value>"
  *
  * @note This is only added to data URLs that reference an S3 bucket.
+ *
+ * @note This adds a significant cost to the run-time behavior of the DMR++ code
+ * and should only be used for testing and, even then, probably rarely since the
+ * performance of the server will be reduced significantly.
  */
 void Chunk::add_tracking_query_param() {
 
@@ -633,115 +617,6 @@ checksum_fletcher32(const void *_data, size_t _len)
     return ((sum2 << 16) | sum1);
 } /* end H5_checksum_fletcher32() */
 
-#if 0
-/**
- * @brief Decompress data in the chunk, managing the Chunk's data buffers
- *
- * This method tracks if a chunk has already been decompressed, so, like read_chunk()
- * it can be called for a chunk that has already been decompressed without error.
- *
- * @param deflate True if the chunk should be 'inflated'
- * @param shuffle True if the chunk should be 'unshuffled'
- * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
- * @param elem_width The number of bytes per element
- */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned long long chunk_size,
-                          unsigned long long elem_width) {
-    // This code is pretty naive - there are apparently a number of
-    // different ways HDF5 can compress data, and it does also use a scheme
-    // where several algorithms can be applied in sequence. For now, get
-    // simple zlib deflate working.jhrg 1/15/17
-    // Added support for shuffle. Assuming unshuffle always is applied _after_
-    // inflating the data (reversing the shuffle --> deflate process). It is
-    // possible that data could just be deflated or shuffled (because we
-    // have test data are use only shuffle). jhrg 1/20/17
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    if (d_is_inflated)
-        return;
-
-    chunk_size *= elem_width;
-
-    if (deflate) {
-        char *dest = new char[chunk_size];
-        try {
-            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
-            // This replaces (and deletes) the original read_buffer with dest.
-#if DMRPP_USE_SUPER_CHUNKS
-            set_read_buffer(dest, chunk_size, chunk_size, true);
-#else
-            set_rbuf(dest, chunk_size);
-#endif
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (shuffle) {
-        // The internal buffer is chunk's full size at this point.
-        char *dest = new char[get_rbuf_size()];
-        try {
-            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
-#if DMRPP_USE_SUPER_CHUNKS
-            set_read_buffer(dest,get_rbuf_size(),get_rbuf_size(), true);
-#else
-            set_rbuf(dest, get_rbuf_size());
-#endif
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (fletcher32) {
-        // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
-#if ACTUALLY_USE_FLETCHER32_CHECKSUM
-        // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
-        // integer fletcher32 checksum. jhrg 10/15/21
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-align"
-        assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
-        assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0);
-        auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
-#pragma GCC diagnostic pop
-
-        // If the code should actually use the checksum (they can be expensive to compute), does it match
-        // with once computed on the data actually read? Maybe make this a bes.conf parameter?
-        // jhrg 10/15/21
-        if (f_checksum != checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
-            throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
-                                   __FILE__, __LINE__);
-        }
-#endif
-        if (d_read_buffer_size > FLETCHER32_CHECKSUM)
-            d_read_buffer_size -= FLETCHER32_CHECKSUM;
-        else {
-            throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
-                                   __FILE__, __LINE__);
-        }
-    }
-
-    d_is_inflated = true;
-
-#if 0 // This was handy during development for debugging. Keep it for a while (year or two) before we drop it ndp - 01/18/17
-    if(BESDebug::IsSet(MODULE)) {
-        unsigned long long chunk_buf_size = get_rbuf_size();
-        dods_float32 *vals = (dods_float32 *) get_rbuf();
-        ostream *os = BESDebug::GetStrm();
-        (*os) << std::fixed << std::setfill('_') << std::setw(10) << std::setprecision(0);
-        (*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
-        for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++) {
-            (*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
-        }
-    }
-#endif
-}
-#endif
-
 /**
  * @brief filter data in the chunk
  *
@@ -801,12 +676,9 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
             // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
             // integer fletcher32 checksum. jhrg 10/15/21
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-align"
             assert(get_rbuf_size() > FLETCHER32_CHECKSUM);
             //assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0); //probably wrong
             auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
-#pragma GCC diagnostic pop
 
             // If the code should actually use the checksum (they can be expensive to compute), does it match
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?
@@ -915,11 +787,11 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
     if (!d_query_marker.empty()) {
         string url_str = effective_url->str();
-        if(url_str.find("?") != string::npos){
-            url_str += "&";
+        if(url_str.find('?') != string::npos){
+            url_str.append("&");
         }
         else {
-            url_str +="?";
+            url_str.append("?");
         }
         url_str += d_query_marker;
         shared_ptr<http::url> query_marker_url( new http::url(url_str));

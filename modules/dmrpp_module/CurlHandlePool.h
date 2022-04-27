@@ -101,9 +101,6 @@ class CurlHandlePool {
 private:
     unsigned int d_max_easy_handles;
     std::vector<dmrpp_easy_handle *> d_easy_handles;
-#if 0
-    pthread_mutex_t d_get_easy_handle_mutex;
-#endif
     std::recursive_mutex d_get_easy_handle_mutex;
 
     friend class Lock;

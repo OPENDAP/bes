@@ -21,8 +21,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// #include "config.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
@@ -43,7 +41,6 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
-// TODO Needed? jhrg 11/23/21
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -72,7 +69,7 @@ using namespace libdap;
 
 // THe code can either search for a DAP variable's information in the XML, or it can
 // record that during the parse process. Set this when/if the code does the latter.
-// using this simplifies the lazy-load process, particularly for the DAP2 dds and
+// Using this simplifies the lazy-load process, particularly for the DAP2 DDS and
 // data responses (which have not yet been coded completely). jhrg 11/17/21
 #define USE_CACHED_XML_NODE 1
 
@@ -91,8 +88,7 @@ static inline bool is_eq(const char *value, const char *key)
 #if TREAT_NAMESPACES_AS_LITERALS
     return strcmp(value, key) == 0;
 #else
-    bool found = strcmp(value, key) == 0;
-    if (found) {
+    if (strcmp(value, key) == 0) {
         return true;
     }
     else {
@@ -991,14 +987,13 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
 
     if (!href.empty()) {
-        // TODO For many cases, there are many chunks that share a URL. We could store
-        //  a hash_map of known URLs and cut down on the total number of shared pointers.
-        //  jhrg 11/22/21
         shared_ptr<http::url> data_url(new http::url(href, href_trusted));
-        dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
+        dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset),
+                      chunk_position_in_array);
     }
     else {
-        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
+        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoi(size),
+                      stoi(offset), chunk_position_in_array);
     }
 }
 
@@ -1020,7 +1015,7 @@ void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
+void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
 {
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {

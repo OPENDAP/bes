@@ -25,8 +25,6 @@
 #ifndef h_dmz_h
 #define h_dmz_h 1
 
-//#include "config.h"
-
 #include <string>
 #include <vector>
 #include <set>
@@ -77,7 +75,7 @@ private:
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
-    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
+    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
 
@@ -131,7 +129,7 @@ public:
     virtual void load_all_attributes(libdap::DMR *dmr);
 
 #if 0
-    // This was here because with lazy loading of attributes, the glabal values did
+    // This was here because with lazy loading of attributes, the global values did
     // not show up. But I've dropped the lazy attr load feature since it provides
     // no measureable benefit for the test data we have. If we need lazy-attrs, the
     // software is still in the handler, just mostly disabled. jhrg 11/22/21

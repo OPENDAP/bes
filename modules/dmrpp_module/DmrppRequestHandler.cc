@@ -228,17 +228,17 @@ handle_exception(const string &file, int line)
     try {
         throw;
     }
-    catch (BESError &e) {
-        throw e;
+    catch (const BESError &e) {
+        throw;
     }
-    catch (InternalErr &e) {
+    catch (const InternalErr &e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(), file, line);
     }
-    catch (Error &e) {
+    catch (const Error &e) {
         throw BESDapError(e.get_error_message(), false, e.get_error_code(), file, line);
     }
-    catch (std::exception &e) {
-        BESInternalFatalError(string("C++ exception: ").append(e.what()), file, line);
+    catch (const std::exception &e) {
+        throw BESInternalFatalError(string("C++ exception: ").append(e.what()), file, line);
     }
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", file, line);

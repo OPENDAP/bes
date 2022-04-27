@@ -316,36 +316,6 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
-#if 0
-// This implmentation of the default constructor should have:
-// a) Utilized the other constructor:
-//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_transfer_threads); }
-//    rather than duplicating the logic.
-// b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
-//    which is already owns DmrppRequestHandler::d_max_transfer_threads and can pass it in.
-//
-//
-// Old default constructor. Duplicates logic.
-//
-CurlHandlePool::CurlHandlePool() {
-    d_max_easy_handles = DmrppRequestHandler::d_max_transfer_threads;
-
-    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
-        d_easy_handles.push_back(new dmrpp_easy_handle());
-    }
-    unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
-    if (status != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
-}
-//
-// One alternate would be to do this for the default constructor:
-CurlHandlePool::CurlHandlePool() {
-    CurlHandlePool(8);
-}
-//
-// - ndp 12/02/20
-#endif
-
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
@@ -357,28 +327,6 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
         throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 #endif
 }
-
-/**
- * @brief Add the given header & value to the curl slist.
- *
- * The call must free the slist after the curl_easy_perform() is called, not after
- * the headers are added to the curl handle.
- *
- * @param slist The list; initially pass nullptr to create a new list
- * @param header The header
- * @param value The value
- * @return The modified slist pointer or nullptr if an error occurred.
- */
-#if 0
-static struct curl_slist *append_http_header(curl_slist *slist, const string &header, const string &value) {
-    string full_header = header;
-    full_header.append(" ").append(value);
-
-    struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
-    return temp;
-}
-#endif
-
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.

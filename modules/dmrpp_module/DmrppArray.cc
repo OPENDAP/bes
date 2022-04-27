@@ -979,9 +979,12 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-            // FIXME Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
-            //  jhrg 11/19/21
+#if 0
+            // Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
+            // jhrg 11/19/21, 4/27/22
             super_chunk->read();
+#endif
+            super_chunk->read_unconstrained();
         }
     }
     else {      // Parallel transfers
@@ -1495,9 +1498,9 @@ void DmrppArray::read_contiguous_string()
 bool DmrppArray::read()
 {
     // If the chunks are not loaded, load them now. NB: load_chunks()
-    // reads data for HDF5 COMPACT storage, so read_p() will be true.
-    // Thus, call load_chunks() before testing read_p() to cover that
-    // case. jhrg 11/15/21
+    // reads data for HDF5 COMPACT storage, so read_p() will be true
+    // (but it does not read any other data). Thus, call load_chunks()
+    // before testing read_p() to cover that case. jhrg 11/15/21
     // String Arrays that use COMPACT storage appear to work. jhrg 3/3/22
     if (!get_chunks_loaded())
         load_chunks(this);
