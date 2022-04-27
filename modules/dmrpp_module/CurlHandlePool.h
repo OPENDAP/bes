@@ -39,27 +39,6 @@ namespace dmrpp {
 
 class Chunk;
 
-#if 0
-
-/**
- * RAII. Lock access to the get_easy_handle() and release_handle() methods.
- */
-class Lock {
-private:
-    pthread_mutex_t &m_mutex;
-
-    Lock();
-
-    Lock(const Lock &rhs);
-
-public:
-    Lock(pthread_mutex_t &lock);
-
-    virtual ~Lock();
-};
-
-#endif
-
 /**
  * @brief Bundle a libcurl easy handle with other information.
  *
