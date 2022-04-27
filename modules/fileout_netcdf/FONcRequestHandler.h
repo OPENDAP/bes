@@ -52,6 +52,7 @@ public:
     static std::string temp_dir;
     static bool byte_to_short;
     static bool use_compression;
+    static bool use_shuffle;
     static size_t chunk_size;
     static bool classic_model;
     static bool no_global_attrs;
