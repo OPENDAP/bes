@@ -463,7 +463,7 @@ void FONcArray::define(int ncid) {
 
                 int shuffle = 0;
                 // For integer, if the type size is >= 2, turn on the shuffle key always.
-                // For other types, turn off shuffle the key by default.
+                // For other types, turn off the shuffle key by default.
                 if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
                     NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
                     FONcRequestHandler::use_shuffle)                
