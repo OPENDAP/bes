@@ -50,7 +50,10 @@ using namespace std::chrono;
 RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
 static std::once_flag d_rst_init_once;
 
-
+/** @brief Return a pointer to a singleton timer instance.  If an instance does not exist
+ * it will create and initialize one.  The initialization sets the start_time to now and
+ * time_out disabled.
+ */
 RequestServiceTimer *
 RequestServiceTimer::TheTimer()
 {
@@ -70,6 +73,14 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
+/** @brief Set/Reset the timer start_time to now().
+ *
+ * @param timeout_ms the time_out, in milliseconds.  A timeout_ms of 0
+ * sets timeout_disabled to true.
+ *
+ * The RequestServiceTimer is a per request timer, the start method should
+ * be called prior to executing each request.
+ */
 void RequestServiceTimer::start(milliseconds timeout_ms){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
@@ -84,12 +95,14 @@ void RequestServiceTimer::start(milliseconds timeout_ms){
     start_time = steady_clock::now();
 }
 
-
+/**
+ * @brief Return the time duration in milliseconds since the timer was started.
+ *
+*/
 milliseconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return duration_cast<milliseconds>(steady_clock::now() - start_time);
 }
-
 
 /**
  * @brief If the time_out is enabled returns the time remaining. If the time_out is disabled returns 0.
@@ -112,11 +125,19 @@ milliseconds RequestServiceTimer::remaining() const {
     return remaining;
 }
 
+/** @brief if the time_out is disabled return false.
+ *
+ * If the time_out is enabled return false if there is time remaining
+ * else return true; the time_out has expired.
+*/
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return timeout_enabled && (remaining() <= milliseconds {0});
 }
 
+/** @brief Set the time_out is disabled.
+ *
+*/
 void RequestServiceTimer::disable_timeout(){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     timeout_enabled = false;
