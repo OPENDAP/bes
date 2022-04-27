@@ -230,4 +230,9 @@ AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue.dods], xfail)
 
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunk.dap], xfail)
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.dds])
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.das])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_chunk.dods], xfail)
 
