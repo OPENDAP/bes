@@ -120,6 +120,9 @@ public:
     void release_all_handles();
 };
 
+
+#if 0
+
 /**
  * Holds a collection of dmrpp_easy_handles that are being used together on
  * a single logical transfer. By definition, if one of these fails, they all
@@ -152,6 +155,8 @@ public:
         d_handles.push_back(h);
     }
 };
+
+#endif
 
 } // namespace dmrpp
 
