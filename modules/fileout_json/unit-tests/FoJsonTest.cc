@@ -55,12 +55,16 @@
 
 #include "FoInstanceJsonTransform.h"
 #include "FoDapJsonTransform.h"
+
+#include "TheBESKeys.h"
 #include "RequestServiceTimer.h"
 
 static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define BES_CANCEL_TIMEOUT_ON_SEND "BES.CancelTimeoutOnSend"
 
 namespace fojson {
 
@@ -111,6 +115,16 @@ public:
     // Called before each test
     void setUp()
     {
+        // FoJsonTransform now uses theBESKeys. dan 4/26/22
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/tmp/test.keys"; // empty file. dan 4/26/22
+
+        // Starting TheTimer with '0' disables bes-timeout.
+        RequestServiceTimer::TheTimer()->start(std::chrono::seconds{0});
+        // Starting TheTimer with a positive value sets bes-timeout to that value in seconds.
+
+        TheBESKeys::TheKeys()->set_key(BES_CANCEL_TIMEOUT_ON_SEND, "false");
+        // Set TheKeys() BES.CancelTimeoutOnSend ==> true to override bes-timeout set in TheTimer
+        // use sleep(#) in a test to simulate a delay to trip bes-timeout in the Transform.
     }
 
     // Called after each test
@@ -266,6 +280,9 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
     void test_instance_object_metadata_representation()
     {
+        RequestServiceTimer::TheTimer()->start(std::chrono::seconds{10});
+        sleep(11);
+
         DBG(cerr << endl);
         try {
             libdap::DataDDS *test_DDS = makeTestDDS();

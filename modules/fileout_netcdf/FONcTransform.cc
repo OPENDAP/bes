@@ -442,7 +442,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "preparing to stream " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
 
             if (is_streamable()) {
                 // write the what's been written
@@ -455,7 +455,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Here" , __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: prior to file_to_stream_helper " , __FILE__, __LINE__);
 
         byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
         BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);

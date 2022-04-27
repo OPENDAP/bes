@@ -43,7 +43,7 @@ private:
     static RequestServiceTimer *d_instance;
     mutable std::recursive_mutex d_rst_lock_mutex;
 
-    std::chrono::milliseconds bes_timeout{0};
+    std::chrono::milliseconds d_bes_timeout{0};
     std::chrono::steady_clock::time_point start_time{std::chrono::steady_clock::now()};
     bool timeout_enabled{false};
 

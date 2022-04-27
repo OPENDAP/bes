@@ -81,7 +81,7 @@ void get_data_values_as_xml(DDS *dds, XMLWriter *writer)
         DDS::Vars_iter i = dds->var_begin();
         while (i != dds->var_end()) {
             if ((*i)->send_p()) {
-                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "preparing to stream " + (*i)->name() , __FILE__, __LINE__);
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "bes-timeout: preparing to stream " + (*i)->name() , __FILE__, __LINE__);
 
                 BESDEBUG("xd", "Printing the values for " << (*i)->name() << " (" << (*i)->type_name() << ")" << endl);
                 dynamic_cast<XDOutput &>(**i).print_xml_data(writer, true);

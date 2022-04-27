@@ -76,6 +76,7 @@
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESDataHandlerInterface.h"
+#include "RequestServiceTimer.h"
 
 #include "test_utils.h"
 #include "test_config.h"
@@ -96,6 +97,7 @@ static bool debug_2 = false;
 
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
+#define BES_CANCEL_TIMEOUT_ON_SEND "BES.CancelTimeoutOnSend"
 
 #define MODULE "dap"
 #define plog std::string("ResponseBuilderTest::").append(__func__).append("() - ")
@@ -221,7 +223,6 @@ public:
         drb3 = new BESDapResponseBuilder();
         drb3->set_dataset_name((string) TEST_SRC_DIR + "/input-files/coads.data");
         drb3->set_ce("u,x,z[0]&grid(u,\"lat<10.0\")");
-        drb3->set_timeout(1);
 
         // Test escaping stuff. 5/4/2001 jhrg
         drb5 = new BESDapResponseBuilder();
@@ -233,7 +234,6 @@ public:
         drb6 = new BESDapResponseBuilder();
         drb6->set_dataset_name((string) TEST_SRC_DIR + "/input-files/bears.data");
         drb6->set_ce("rbSimpleFunc()");
-        drb6->set_timeout(10);
 
         cont_a = new AttrTable;
         cont_a->append_attr("size", "Int32", "7");
@@ -276,6 +276,14 @@ public:
             (string) TEST_BUILD_DIR + "/response_cache");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, "dap_response");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "100");
+
+        // Starting TheTimer with '0' disables bes-timeout.
+        RequestServiceTimer::TheTimer()->start(std::chrono::seconds{0});
+        // Starting TheTimer with a positive value sets bes-timeout to that value in seconds.
+
+        TheBESKeys::TheKeys()->set_key(BES_CANCEL_TIMEOUT_ON_SEND, "false");
+        // Set TheKeys() BES.CancelTimeoutOnSend ==> true to override bes-timeout set in TheTimer
+        // use sleep(#) in a test to simulate a delay to trip bes-timeout in the Transform.
 
         DBG2(cerr << plog << "setUp() - END" << endl);
     }
@@ -519,7 +527,6 @@ public:
 
     void store_dap4_result_test()
     {
-
         DBG(cerr << endl << plog << "BEGIN" << endl);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys";
@@ -701,13 +708,6 @@ public:
         drb5->set_ce("Grid%20u%5B0%5D");
         CPPUNIT_ASSERT(drb5->get_ce() == "Grid%20u[0]");
         DBG(cerr << plog << "END" << endl);
-    }
-
-    // This tests reading the timeout value from argv[].
-    void timeout_test()
-    {
-        CPPUNIT_ASSERT(drb3->get_timeout() == 1);
-        CPPUNIT_ASSERT(drb5->get_timeout() == 0);
     }
 
     void invoke_server_side_function_test()
