@@ -479,6 +479,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     pass=$2
     repeat=$3
     compression="Deflate"
+    shuffle="Shuffle"
     bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -491,6 +492,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
 
          AT_CHECK([ncdump -sh test.nc > tmp])
          AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
+         AT_CHECK([grep -m 1 $shuffle tmp >>$baseline.comp.tmp]) 
  
          ],
          [
@@ -498,6 +500,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
          AT_CHECK([ncdump -sh test.nc > tmp])
          dnl only need to check if the deflate compression appears.
          AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
+         AT_CHECK([grep -m 1 $shuffle tmp >>tmp2]) 
          AT_CHECK([diff -b -B $baseline.comp tmp2])
         
          AT_XFAIL_IF([test z$2 = zxfail])

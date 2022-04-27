@@ -43,4 +43,12 @@ FONc.RequestMaxSizeKB = 0
 # Uncomment the following line to suppress the output of global attributes.
 # FONc.NoGlobalAttrs = true
 
+# Uncomment the following line to apply the "shuffle" filter for all datatypes.
+# Note: 
+# 1. This key is only used when FONc.UseCompression is true.  
+# 2. When FONc.UseCompression is true, variables of integer datatype with the type size >=2
+#    will always apply shuffle filter to improve the performance. The following
+#    line doesn't need to be turned on.
+# FONc.UseShuffle=true
+
 
