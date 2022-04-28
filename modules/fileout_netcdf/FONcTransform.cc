@@ -423,7 +423,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
         if (is_streamable()) {
             // Verify the request hasn't exceeded bes_timeout.
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
             // Now that we are ready to start streaming the response data we
             // cancel any pending timeout alarm according to the configuration.
@@ -442,7 +442,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
 
             if (is_streamable()) {
                 // write the what's been written
@@ -455,7 +455,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: prior to file_to_stream_helper " , __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit" , __FILE__, __LINE__);
 
         byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
         BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);
@@ -851,7 +851,7 @@ void FONcTransform::transform_dap4_no_group() {
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
 
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_no_group() - Writing data for variable:  " << fbt->name() << endl);
@@ -1030,7 +1030,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_group() - Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);

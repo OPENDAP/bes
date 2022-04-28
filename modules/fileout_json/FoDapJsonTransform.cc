@@ -357,7 +357,7 @@ void FoDapJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrctr,
     }
 
     // Verify the request hasn't exceeded bes_timeout.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + " Ready to start streaming", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
     // Now that we are ready to start streaming the response data we
     // cancel any pending timeout alarm according to the configuration.
@@ -390,7 +390,7 @@ void FoDapJsonTransform::transform_node_worker(ostream *strm, vector<libdap::Bas
         libdap::BaseType *v = leaves[l];
         BESDEBUG(FoDapJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + v->name(), __FILE__, __LINE__);
 
         if (l > 0) {
             *strm << ",";
@@ -407,7 +407,7 @@ void FoDapJsonTransform::transform_node_worker(ostream *strm, vector<libdap::Bas
     for (std::vector<libdap::BaseType *>::size_type n = 0; n < nodes.size(); n++) {
         libdap::BaseType *v = nodes[n];
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + v->name(), __FILE__, __LINE__);
 
         transform(strm, v, indent + _indent_increment, sendData);
     }

@@ -249,11 +249,8 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        // Verify the request hasn't exceeded bes_timeout.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
-
-        // Now that we are ready to start streaming the response data we
-        // cancel any pending timeout alarm according to the configuration.
+        // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);

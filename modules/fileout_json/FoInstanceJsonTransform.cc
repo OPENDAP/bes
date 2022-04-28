@@ -279,7 +279,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
     bool sentSomething = false;
 
     // Verify the request hasn't exceeded bes_timeout.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + " Ready to start streaming", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired( prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
     // Now that we are ready to start streaming the response data we
     // cancel any pending timeout alarm according to the configuration.
@@ -312,7 +312,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
                 libdap::BaseType *v = *vi;
                 BESDEBUG(FoInstanceJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
 
-                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream: " + v->name(), __FILE__, __LINE__);
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting " + v->name(), __FILE__, __LINE__);
 
                 if (sentSomething) {
                     *strm << ",";

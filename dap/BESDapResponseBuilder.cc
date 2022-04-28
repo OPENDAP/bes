@@ -447,7 +447,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
 #endif
 
     // Verify the request hasn't exceeded bes_timeout.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: ready to stream DAS", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
     if (!constrained) {
         if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
@@ -484,7 +484,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream constrained DAS", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print_das(out);
@@ -495,7 +495,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream unconstrained DAS", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print_das(out);
@@ -531,7 +531,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: ready to stream DAS", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print(out);
@@ -593,7 +593,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream constrained DAS", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print_constrained(out);
@@ -605,7 +605,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),(*dds)->get_dap_version());
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream unconstrained DAS", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print_constrained(out);
@@ -719,7 +719,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: ready to stream data_dds", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -733,7 +733,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     // Send all variables in the current projection (send_p())
     for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream " + (*i)->name(), __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit " + (*i)->name(), __FILE__, __LINE__);
             (*i)->serialize(eval, **dds, m, ce_eval);
 #ifdef CLEAR_LOCAL_DATA
             (*i)->clear_local_data();
@@ -1254,7 +1254,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool with_mime_headers)
 {
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream DDX", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     if (d_dap2ce.empty()) {
@@ -1305,7 +1305,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream constrained DDX", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         (*dds)->print_xml_writer(out, true, "");
@@ -1317,7 +1317,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
             set_mime_text(out, dods_ddx, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream unconstrained DDX", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         // dds.print_constrained(out);
@@ -1354,7 +1354,7 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
     if (with_mime_headers) set_mime_text(out, dap4_dmr, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream DMR", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): '"<< dmr.request_xml_base() << "' (dmr: " << (void *) &dmr << ")" << endl);
@@ -1499,7 +1499,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     chunked_ostream cos(out, max((unsigned int) CHUNK_SIZE, xml.get_doc_size() + 2));
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: about to stream dap4_data", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     // using flush means that the DMR and CRLF are in the first chunk.

@@ -100,7 +100,7 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
 #endif
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +" bes-timeout: ready to stream file", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     // What if there is a special way to stream back a data file?

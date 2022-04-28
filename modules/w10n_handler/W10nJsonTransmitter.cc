@@ -219,7 +219,7 @@ void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterf
         string varName = getProjectedVariableName(dhi.data[POST_CONSTRAINT]);
 
         // Verify the request hasn't exceeded bes_timeout.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.

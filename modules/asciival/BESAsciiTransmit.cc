@@ -100,7 +100,7 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
         unique_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Ready to start streaming", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
         get_data_values_as_ascii(ascii_dds.get(), dhi.get_output_stream());
@@ -146,7 +146,7 @@ void BESAsciiTransmit::send_dap4_csv_helper(ostream &out, DMR *dmr, const string
     }
 
     // Verify the request hasn't exceeded bes_timeout.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: ready to start streaming", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
     print_values_as_ascii(dmr, out);
     out << flush;
