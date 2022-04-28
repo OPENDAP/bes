@@ -851,7 +851,7 @@ void FONcTransform::transform_dap4_no_group() {
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
 
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_no_group() - Writing data for variable:  " << fbt->name() << endl);
@@ -1030,8 +1030,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
-
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_group() - Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);
