@@ -116,7 +116,7 @@ public:
     void setUp()
     {
         // FoJsonTransform now uses theBESKeys. dan 4/26/22
-        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/tmp/test.keys"; // empty file. dan 4/26/22
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. dan 4/26/22
 
         // Starting TheTimer with '0' disables bes-timeout.
         RequestServiceTimer::TheTimer()->start(std::chrono::seconds{0});
