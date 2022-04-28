@@ -1,3 +1,0 @@
-# Intentionally empty
-# I had to add the log file to this because called code uses the VERBOSE log now.
-BES.LogName=./bes.log
