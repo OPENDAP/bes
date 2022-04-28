@@ -312,7 +312,7 @@ void FoInstanceJsonTransform::transform(std::ostream *strm, libdap::DDS *dds, st
                 libdap::BaseType *v = *vi;
                 BESDEBUG(FoInstanceJsonTransform_debug_key, "Processing top level variable: " << v->name() << endl);
 
-                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " Preparing to stream: " + v->name(), __FILE__, __LINE__);
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: preparing to stream: " + v->name(), __FILE__, __LINE__);
 
                 if (sentSomething) {
                     *strm << ",";

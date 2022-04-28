@@ -1666,11 +1666,8 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
     // parameter data, and store that data as Axis and Parameters
     transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
 
-    // Verify the request hasn't exceeded bes_timeout.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired("Ready to start streaming", __FILE__, __LINE__);
-
-    // Now that we are ready to start streaming the response data we
-    // cancel any pending timeout alarm according to the configuration.
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + " bes-timeout: ready to start streaming", __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     // Print the Coverage data to stream as CoverageJSON
