@@ -2,7 +2,7 @@
 // Created by James Gallagher on 2/25/22.
 //
 
-// This file is part of the BES, A component of the OPeNDAP Hyrax data server.
+// This file is part of the BES.
 
 // Copyright (c) 2022 OPeNDAP, Inc.
 // Author: James Gallagher <jgallagher@opendap.org>
@@ -28,16 +28,17 @@
  * for a CppUnit-based unit test.
  *
  * @note This is a WIP now but is intended to cut down on duplicated code in both
- * the BES and libdap4 software repositories. Still todo: move more of the bes_debug
- * logic into the template. And _use_ the template in other places besides
- * fileout_netcdf/unit-tests/HistoryUtilTest. jhrg 2/25/22
+ * the BES and libdap4 software repositories.
  */
 
 #ifndef HYRAX_GIT_RUN_TESTS_CPPUNIT_H
 #define HYRAX_GIT_RUN_TESTS_CPPUNIT_H
 
+#include <unistd.h>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
+
+#include "BESDebug.h"
 
 bool debug = false;
 
@@ -50,24 +51,25 @@ bool debug = false;
  * @tparam CLASS The CppUnit test class to run/test
  * @param argc The argc value passed to main
  * @param argv The command line parameters passed to main()
- * @param bes_debug_params The values sent to BESDebug::SetUp if the -b option is used with the test.
  * @return True if the test(s) passed, false otherwise.
  */
 template<class CLASS>
-bool bes_run_tests(int argc, char *argv[], const std::string &bes_debug_params)
+bool bes_run_tests(int argc, char *argv[], const std::string &besdebug_contexts)
 {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "dbh")) != -1)
+    while ((option_char = getopt(argc, argv, "dDh")) != -1) {
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a global
                 break;
-            case 'b':
+            case 'D':
                 debug = true;  // debug is a global
-                BESDebug::SetUp(bes_debug_params);
+                break;
+            case 'b':
+                BESDebug::SetUp(besdebug_contexts);
                 break;
             case 'h': {     // help - show test names
                 std::cerr << "Usage: the following tests can be run individually or in combination:" << std::endl;
@@ -81,6 +83,7 @@ bool bes_run_tests(int argc, char *argv[], const std::string &bes_debug_params)
             default:
                 break;
         }
+    }
 
     argc -= optind;
     argv += optind;

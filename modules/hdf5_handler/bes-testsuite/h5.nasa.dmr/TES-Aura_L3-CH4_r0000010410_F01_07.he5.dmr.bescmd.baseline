@@ -1,137 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TES-Aura_L3-CH4_r0000010410_F01_07.he5">
-    <Dimension name="Longitude" size="90"/>
     <Dimension name="Latitude" size="83"/>
+    <Dimension name="Longitude" size="90"/>
     <Dimension name="Pressure" size="15"/>
-    <Float32 name="CH4">
-        <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/Pressure"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>CH4</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>VMR</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>HIRDLS-MLS-TES-SHARED</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CH4</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>XDim YDim nLevels</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="CH4AtSurface">
-        <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>CH4AtSurface</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>VMR</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>TES-SPECIFIC</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>CH4AtSurface</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>XDim YDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SurfacePressure">
-        <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>SurfacePressure</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>hPa</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>TES-SPECIFIC</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SurfacePressure</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>XDim YDim</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="TotalColumnDensity">
-        <Dim name="/Longitude"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="missing_value" type="Float32">
-            <Value>-999.0000000</Value>
-        </Attribute>
-        <Attribute name="title" type="String">
-            <Value>TotalColumnDensity</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>Molecules/cm^2</Value>
-        </Attribute>
-        <Attribute name="UniqueFieldDefinition" type="String">
-            <Value>TES-SPECIFIC</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TotalColumnDensity</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity</Value>
-        </Attribute>
-        <Attribute name="orig_dimname_list" type="String">
-            <Value>XDim YDim</Value>
-        </Attribute>
-    </Float32>
-    <String name="StructMetadata_0">
-        <Attribute name="origname" type="String">
-            <Value>StructMetadata.0</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
-        </Attribute>
-    </String>
-    <String name="coremetadata">
-        <Attribute name="origname" type="String">
-            <Value>coremetadata</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HDFEOS INFORMATION/coremetadata</Value>
-        </Attribute>
-    </String>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
         <Attribute name="_FillValue" type="Float32">
@@ -213,6 +84,144 @@
             <Value>nLevels</Value>
         </Attribute>
     </Float32>
+    <Float32 name="CH4">
+        <Dim name="/Longitude"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CH4</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>VMR</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CH4</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>XDim YDim nLevels</Value>
+        </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+        <Map name="/Pressure"/>
+    </Float32>
+    <Float32 name="CH4AtSurface">
+        <Dim name="/Longitude"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CH4AtSurface</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>VMR</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CH4AtSurface</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>XDim YDim</Value>
+        </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="SurfacePressure">
+        <Dim name="/Longitude"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfacePressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfacePressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>XDim YDim</Value>
+        </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="TotalColumnDensity">
+        <Dim name="/Longitude"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Molecules/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>XDim YDim</Value>
+        </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="coremetadata">
+        <Attribute name="origname" type="String">
+            <Value>coremetadata</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/coremetadata</Value>
+        </Attribute>
+    </String>
     <Attribute name="CoreMetadata" type="String">
         <Value>
 GROUP                  = INVENTORYMETADATA

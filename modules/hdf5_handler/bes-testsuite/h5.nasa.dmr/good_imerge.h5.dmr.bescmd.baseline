@@ -1,198 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="good_imerge.h5">
-    <Dimension name="lon" size="3600"/>
     <Dimension name="lat" size="1800"/>
-    <Int16 name="HQprecipSource2">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HQprecipSource2</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HQprecipSource2</Value>
-        </Attribute>
-    </Int16>
-    <Int16 name="IRkalmanFilterWeight">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-10000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>IRkalmanFilterWeight</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/IRkalmanFilterWeight</Value>
-        </Attribute>
-    </Int16>
-    <Int8 name="HQobservationTime2">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>minutes</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int8">
-            <Value>-99</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HQobservationTime2</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HQobservationTime2</Value>
-        </Attribute>
-    </Int8>
-    <Float32 name="precipitationCal">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>mm/hr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>precipitationCal</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/precipitationCal</Value>
-        </Attribute>
-    </Float32>
-    <Int8 name="HQobservationTime1">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>minutes</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int8">
-            <Value>-99</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HQobservationTime1</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HQobservationTime1</Value>
-        </Attribute>
-    </Int8>
-    <Float32 name="precipitationUncal">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>mm/hr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>precipitationUncal</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/precipitationUncal</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="HQprecipitation">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>mm/hr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HQprecipitation</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HQprecipitation</Value>
-        </Attribute>
-    </Float32>
-    <Int8 name="probabilityLiquidPrecipitation">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>percent</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>probabilityLiquidPrecipitation</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/probabilityLiquidPrecipitation</Value>
-        </Attribute>
-    </Int8>
-    <Float32 name="randomError">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>mm/hr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>randomError</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/randomError</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="IRprecipitation">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="Units" type="String">
-            <Value>mm/hr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-99999.00000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>IRprecipitation</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/IRprecipitation</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="HQprecipSource1">
-        <Dim name="/lon"/>
-        <Dim name="/lat"/>
-        <Attribute name="DimensionNames" type="String">
-            <Value>nlon,nlat</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>HQprecipSource1</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/HQprecipSource1</Value>
-        </Attribute>
-    </Int16>
+    <Dimension name="lon" size="3600"/>
     <Float32 name="lat">
         <Dim name="/lat"/>
         <Attribute name="units" type="String">
@@ -217,6 +26,219 @@
             <Value>/lon</Value>
         </Attribute>
     </Float32>
+    <Int16 name="HQprecipSource2">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HQprecipSource2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HQprecipSource2</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
+    <Int16 name="IRkalmanFilterWeight">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-10000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IRkalmanFilterWeight</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/IRkalmanFilterWeight</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
+    <Int8 name="HQobservationTime2">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>minutes</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HQobservationTime2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HQobservationTime2</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int8>
+    <Float32 name="precipitationCal">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>precipitationCal</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/precipitationCal</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Float32>
+    <Int8 name="HQobservationTime1">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>minutes</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HQobservationTime1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HQobservationTime1</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int8>
+    <Float32 name="precipitationUncal">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>precipitationUncal</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/precipitationUncal</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Float32>
+    <Float32 name="HQprecipitation">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HQprecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HQprecipitation</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Float32>
+    <Int8 name="probabilityLiquidPrecipitation">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>probabilityLiquidPrecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/probabilityLiquidPrecipitation</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int8>
+    <Float32 name="randomError">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>randomError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/randomError</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Float32>
+    <Float32 name="IRprecipitation">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-99999.00000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IRprecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/IRprecipitation</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Float32>
+    <Int16 name="HQprecipSource1">
+        <Dim name="/lon"/>
+        <Dim name="/lat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>HQprecipSource1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HQprecipSource1</Value>
+        </Attribute>
+        <Map name="/lon"/>
+        <Map name="/lat"/>
+    </Int16>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3IMERGHH;
 AlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;

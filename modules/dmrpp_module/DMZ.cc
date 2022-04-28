@@ -973,7 +973,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         if (is_eq(attr.name(), "href")) {
             href = attr.value();
         }
-        else if (is_eq(attr.name(), "trust")) {
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
             href_trusted = is_eq(attr.value(), "true");
         }
         else if (is_eq(attr.name(), "offset")) {

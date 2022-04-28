@@ -24,11 +24,9 @@
 #include "config.h"
 
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <memory>
 #include <iterator>
-#include <algorithm>
 
 #include <unistd.h>
 #include <cstdlib>
@@ -39,54 +37,26 @@
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
-#include "h5common.h"
 
-//#include <libdap/D4Attributes.h>
+#include "h5common.h"   // This is in the hdf5 handler
+
 #include <libdap/Array.h>
 #include <libdap/util.h>
-
-
-#if 0
-/*
- * "Generic" chunk record.  Each chunk is keyed by the minimum logical
- * N-dimensional coordinates and the datatype size of the chunk.
- * The fastest-varying dimension is assumed to reference individual bytes of
- * the array, so a 100-element 1-D array of 4-byte integers would really be a
- * 2-D array with the slow varying dimension of size 100 and the fast varying
- * dimension of size 4 (the storage dimensionality has very little to do with
- * the real dimensionality).
- *
- * The chunk's file address, filter mask and size on disk are not key values.
- */
-typedef struct H5D_chunk_rec_t {
-    hsize_t scaled[H5O_LAYOUT_NDIMS];    /* Logical offset to start */
-    uint32_t nbytes;                      /* Size of stored data */
-    uint32_t filter_mask;                 /* Excluded filters */
-    haddr_t chunk_addr;                  /* Address of chunk in file */
-} H5D_chunk_rec_t;
-#endif
-
-//#include <DMRpp.h>
 #include <libdap/D4Attributes.h>
-#include <libdap/BaseType.h>
 #include <libdap/D4ParserSax2.h>
-//#include <GetOpt.h>
 
-//#include <BESDapNames.h>
 #include <TheBESKeys.h>
 #include <BESUtil.h>
 #include <BESDebug.h>
-
 #include <BESError.h>
 #include <BESNotFoundError.h>
 #include <BESInternalError.h>
-#include <BESDataHandlerInterface.h>
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 #include "DmrppMetadataStore.h"
-//#include "BESDapNames.h"
+
 #if 0
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
 //#include <H5Dpkg.h>
@@ -311,9 +281,7 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
     return true;
 
 }
-#endif
 
-#if 0
 /**
  * @brief Print information about the data type
  *
@@ -514,27 +482,23 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         for (int filter = 0; filter < numfilt; filter++) {
             size_t nelmts = 0;
             unsigned int flags, filter_info;
-            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, NULL, 0, NULL, &filter_info);
+            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, nullptr, 0, nullptr, &filter_info);
             VERBOSE(cerr << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
-                    // dc->set_deflate(true);
                     filters.append("deflate ");
                     break;
                 case H5Z_FILTER_SHUFFLE:
-                    // dc->set_shuffle(true);
                     filters.append("shuffle ");
                     break;
                 case H5Z_FILTER_FLETCHER32:
-                    // dc->set_fletcher32(true);
                     filters.append("fletcher32 ");
                     break;
-                default: {
+                default:
                     ostringstream oss("Unsupported HDF5 filter: ", std::ios::ate);
                     oss << filter_type;
                     oss << " (" << h5_filter_name(filter_type) << ")";
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
             }
         }
         //trimming trailing space from compression (aka filter) string
@@ -560,7 +524,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
  * @exception BESError is thrown on error.
  */
 static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
-    std::string byteOrder = "";
+    std::string byteOrder;
     H5T_order_t byte_order = H5T_ORDER_ERROR;
 
     try {
@@ -581,10 +545,10 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
             case H5T_ORDER_NONE:
                 break;
             default:
+                // unsupported enumerations: H5T_ORDER_[ERROR,VAX,MIXED,NONE]
                 ostringstream oss("Unsupported HDF5 dataset byteOrder: ", std::ios::ate);
                 oss << byte_order << ".";
-                BESInternalError(oss.str(), __FILE__, __LINE__);
-                break; // unsupported enumerations: H5T_ORDER_[ERROR,VAX,MIXED,NONE]
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
 
         unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
@@ -597,29 +561,17 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
         switch (layout_type) {
 
             case H5D_CONTIGUOUS: { /* Contiguous storage */
-                haddr_t cont_addr = 0;
-                hsize_t cont_size = 0;
-
                 VERBOSE(cerr << "Storage:   contiguous" << endl);
 
-                cont_addr = H5Dget_offset(dataset);
-                /* if statement never less than zero due to cont_addr being unsigned int. SBL 1.29.20
-                if (cont_addr < 0) {
-                        throw BESInternalError("Cannot obtain the offset.", __FILE__, __LINE__);
-                }*/
-                cont_size = H5Dget_storage_size(dataset);
-                /* if statement never less than zero due to cont_size being unsigned int. SBL 1.29.20
-                if (cont_size < 0) {
-                        throw BESInternalError("Cannot obtain the storage size.", __FILE__, __LINE__);
-                }*/
-
+                haddr_t cont_addr = H5Dget_offset(dataset);
+                hsize_t cont_size = H5Dget_storage_size(dataset);
 
                 VERBOSE(cerr << "     Addr: " << cont_addr << endl);
                 VERBOSE(cerr << "     Size: " << cont_size << endl);
                 VERBOSE(cerr << "byteOrder: " << byteOrder << endl);
 
-                if (cont_size > 0) {
-                    if (dc) dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
+                if (cont_size > 0 && dc) {
+                    dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
                 break;
             }
@@ -627,8 +579,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 hsize_t num_chunks = 0;
                 herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
                 if (status < 0) {
-                    throw BESInternalError("Could not get the number of chunks",
-                                           __FILE__, __LINE__);
+                    throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
                 }
 
                 VERBOSE(cerr << "Storage:   chunked." << endl);
@@ -642,7 +593,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t *) &chunk_dims[0]);
                 if (chunk_rank != dataset_rank)
                     throw BESNotFoundError(
-                            "Found a chunk with rank different than the dataset's (aka variables's) rank", __FILE__,
+                            "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
                             __LINE__);
 
                 if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
@@ -650,13 +601,12 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 for (unsigned int i = 0; i < num_chunks; ++i) {
 
                     vector<hsize_t> temp_coords(dataset_rank);
-                    vector<unsigned long long> chunk_coords(dataset_rank); //FIXME - see below
+                    vector<unsigned long long> chunk_coords(dataset_rank);
 
                     haddr_t addr = 0;
                     hsize_t size = 0;
 
-                    //H5_DLL herr_t H5Dget_chunk_info(hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *coord, unsigned *filter_mask, haddr_t *addr, hsize_t *size);
-                    status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], NULL, &addr, &size);
+                    status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], nullptr, &addr, &size);
                     if (status < 0) {
                         VERBOSE(cerr << "ERROR" << endl);
                         throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
@@ -677,27 +627,24 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
             }
 
             case H5D_COMPACT: { /* Compact storage */
-                //else if (layout_type == 3) {
                 VERBOSE(cerr << "Storage: compact" << endl);
 
                 size_t comp_size = H5Dget_storage_size(dataset);
                 VERBOSE(cerr << "   Size: " << comp_size << endl);
 
                 if (comp_size == 0) {
-                    throw BESInternalError("Cannot obtain the compact storage size.",
-                                           __FILE__, __LINE__);
+                    throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
                 }
 
                 vector<uint8_t> values;
 
-                Array *btp = dynamic_cast<Array *>(dc);
-                if (btp != NULL) {
+                auto btp = dynamic_cast<Array *>(dc);
+                if (btp != nullptr) {
                     dc->set_compact(true);
                     size_t memRequired = btp->length() * dsize;
 
                     if (comp_size != memRequired) {
-                        throw BESInternalError("Compact storage size does not match D4Array.",
-                                               __FILE__, __LINE__);
+                        throw BESInternalError("Compact storage size does not match D4Array.", __FILE__, __LINE__);
                     }
 
                     switch (btp->var()->type()) {
@@ -724,10 +671,11 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         case dods_str_c: {
                             if (H5Tis_variable_str(dtypeid) > 0) {
                                 vector<string> finstrval = {""};   // passed by reference to read_vlen_string
-                                read_vlen_string(dataset, 1, NULL, NULL, NULL, finstrval);
+                                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                 btp->set_value(finstrval, finstrval.size());
                                 btp->set_read_p(true);
-                            } else {
+                            }
+                            else {
                                 // For this case, the Array is really a single string - check for that
                                 // with the following assert - but is an Array because the string data
                                 // is stored as an array of chars (hello, FORTRAN). Read the chars, make
@@ -751,19 +699,18 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                             throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                     }
 
-                } else {
+                }
+                else {
                     throw BESInternalError("Compact storage variable is not a D4Array.",
                                            __FILE__, __LINE__);
                 }
                 break;
             }
 
-            default: {
+            default:
                 ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
                 oss << layout_type << ".";
-                BESInternalError(oss.str(), __FILE__, __LINE__);
-                break;
-            }
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
     catch (...) {
@@ -783,7 +730,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
  */
 static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     // variables in the group
-    for (Constructor::Vars_iter v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
+    for (auto v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
         D4Attributes *d4_attrs = (*v)->attributes();
@@ -794,7 +741,7 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         // Look for the full name path for this variable
         // If one was not given via an attribute, use BaseType::FQN() which
         // relies on the variable's position in the DAP dataset hierarchy.
-        D4Attribute *attr = d4_attrs->get("fullnamepath");
+        const D4Attribute *attr = d4_attrs->get("fullnamepath");
         string FQN;
         // I believe the logic is more clear in this way:
         // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
@@ -817,7 +764,12 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         } else {
             // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
             // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
-            H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
+            //
+            // A comment from an older version of the code:
+            // It's not an error if a DAP variable in a DMR from the hdf5 handler
+            // doesn't exist in the file _if_ there's no 'fullnamepath' because
+            // that variable was synthesized (likely for CF compliance)
+            H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
             FQN = (*v)->FQN();
             BESDEBUG("dmrpp", "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
@@ -846,13 +798,18 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     }
 
     // all groups in the group
-    D4Group::groupsIter g = group->grp_begin();
-    D4Group::groupsIter ge = group->grp_end();
-    while (g != ge)
-        get_chunks_for_all_variables(file, *g++);
+    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g)
+        get_chunks_for_all_variables(file, *g);
 }
 
-string cmdln(int argc, char *argv[]){
+/**
+ * @brief Recreate the command invocation given argv and argc.
+ * @param argc
+ * @param argv
+ * @return The command
+ */
+static string cmdln(int argc, char *argv[])
+{
     stringstream ss;
     for(int i=0; i<argc; i++) {
         if (i > 0)
@@ -862,53 +819,82 @@ string cmdln(int argc, char *argv[]){
     return ss.str();
 }
 
-void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
-
+/**
+ * @brief Write information to the the DMR++ about its provenance.
+ * @param argc Used to determine how this DMR++ was built
+ * @param argv Used to determine how this DMR++ was built
+ * @param dmrpp Add provenance information to this instance of DMRpp
+ * @note The DMRpp instance will free all memory allocated by this method.
+ */
+void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
+{
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    D4Attribute *version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
 
-    D4Attribute *build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
     version->attributes()->add_attribute_nocopy(build_dmrpp_version);
 
-    D4Attribute *bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
     bes_version->add_value(CVER);
     version->attributes()->add_attribute_nocopy(bes_version);
 
     stringstream ldv;
     ldv << libdap_name() << "-" << libdap_version();
-    D4Attribute *libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
     libdap4_version->add_value(ldv.str());
     version->attributes()->add_attribute_nocopy(libdap4_version);
 
     if(!TheBESKeys::ConfigFile.empty()) {
         // What is the BES configuration in play?
-        D4Attribute *config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
         config->add_value(TheBESKeys::TheKeys()->get_as_config());
         version->attributes()->add_attribute_nocopy(config);
     }
 
     // How was build_dmrpp invoked?
-    D4Attribute *invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+    auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
     invoke->add_value(cmdln(argc,argv));
     version->attributes()->add_attribute_nocopy(invoke);
 
     // Inject version and configuration attributes into DMR here.
-    D4Attributes *top_level_attrs = dmrpp->root()->attributes();
-    top_level_attrs->add_attribute_nocopy(version);
+    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+}
+
+/**
+ * @brief Add chunk information about to a DMRpp object
+ * @param h5_file_name Read information from this file
+ * @param dmrpp Dump the chunk information here
+ */
+void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
+{
+    // Open the hdf5 file
+    hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file < 0) {
+        throw BESNotFoundError(string("Error: HDF5 file '").append(h5_file_name).append("' cannot be opened."), __FILE__, __LINE__);
+    }
+
+    // iterate over all the variables in the DMR
+    try {
+        get_chunks_for_all_variables(file, dmrpp->root());
+        H5Fclose(file);
+    }
+    catch (...) {
+        H5Fclose(file);
+    }
 }
 
 void usage() {
     const char *help = R"(
     build_dmrpp -h: Show this help
 
-    build_dmrpp -V: Show build versions for componets that make up the program
+    build_dmrpp -V: Show build versions for components that make up the program
 
     build_dmrpp -c <bes.conf> -f <data file> [-u <href url>]: Build the DMR++ using the <bes.conf>
-       options to initialize the software for the <data file>. Optionally substitue the <href url>.
-       Builds the DMR using the HDF5 handler as configued using the options in the <bes.conf>.
+       options to initialize the software for the <data file>. Optionally substitute the <href url>.
+       Builds the DMR using the HDF5 handler as configured using the options in the <bes.conf>.
 
     build_dmrpp build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
        read from the given file (so it does not run the HDF5 handler code.
@@ -922,11 +908,10 @@ void usage() {
 }
 
 int main(int argc, char *argv[]) {
-    string h5_file_name = "";
-    string h5_dset_path = "";
-    string dmr_name = "";
-    string url_name = "";
-    int status = 0;
+    string h5_file_name;
+    string h5_dset_path;
+    string dmr_name;
+    string url_name;
     bool add_production_metadata = false;
 
     int option_char;
@@ -967,7 +952,7 @@ int main(int argc, char *argv[]) {
 
             case 'h':
                 usage();
-                exit(1);
+                exit(EXIT_FAILURE);
 
             default:
                 break;
@@ -976,14 +961,12 @@ int main(int argc, char *argv[]) {
 
     if (h5_file_name.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    hid_t file = 0;
     try {
         // Turn off automatic hdf5 error printing.
         // See: https://support.hdfgroup.org/HDF5/doc1.8/RM/RM_H5E.html#Error-SetAuto2
-        //if (!verbose) H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
         // For a given HDF5, get info for all the HDF5 datasets in a DMR or for a
         // given HDF5 dataset
@@ -997,44 +980,28 @@ int main(int argc, char *argv[]) {
             D4ParserSax2 parser;
             parser.intern(in, &dmrpp, false);
 
-            // Open the hdf5 file
-            file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-            if (file < 0) {
-                cerr << "Error: HDF5 file '" + h5_file_name + "' cannot be opened." << endl;
-                return 1;
-            }
+            add_chunk_information(h5_file_name, &dmrpp);
 
-            if(add_production_metadata) {
+            if (add_production_metadata) {
                 inject_version_and_configuration(argc, argv, &dmrpp);
             }
-
-            // iterate over all the variables in the DMR
-            get_chunks_for_all_variables(file, dmrpp.root());
 
             XMLWriter writer;
             dmrpp.print_dmrpp(writer, url_name);
 
             cout << writer.get_doc();
         } else {
-            bool found;
-            string bes_data_root;
-            try {
-                TheBESKeys::TheKeys()->get_value(ROOT_DIRECTORY, bes_data_root, found);
-                if (!found) {
-                    cerr << "Error: Could not find the BES root directory key." << endl;
-                    return 1;
-                }
-            }
-            catch (BESError &e) {
-                cerr << "BESError: " << e.get_message() << endl;
-                return 1;
+            string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");
+            if (bes_data_root.empty()) {
+                cerr << "Could not find the data directory." << endl;
+                return EXIT_FAILURE;
             }
 
             // Use the values from the bes.conf file... jhrg 5/21/18
             bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
             if (!mds) {
                 cerr << "The Metadata Store (MDS) must be configured for this command to work." << endl;
-                return 1;
+                return EXIT_FAILURE;
             }
 
             // Use the full path to open the file, but use the 'name' (which is the
@@ -1043,24 +1010,16 @@ int main(int argc, char *argv[]) {
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
 
-            //bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_name /*h5_file_path*/);
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
                 unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
-                if (!dmrpp.get()) {
+                if (!dmrpp) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
-                    return 1;
+                    return EXIT_FAILURE;
                 }
 
-                // Open the hdf5 file
-                file = H5Fopen(h5_file_path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-                if (file < 0) {
-                    cerr << "Error: HDF5 file '" + h5_file_path + "' cannot be opened." << endl;
-                    return 1;
-                }
-
-                get_chunks_for_all_variables(file, dmrpp->root());
+                add_chunk_information(h5_file_path, dmrpp.get());
 
                 dmrpp->set_href(url_name);
 
@@ -1073,24 +1032,22 @@ int main(int argc, char *argv[]) {
                 cout << writer.get_doc();
             } else {
                 cerr << "Error: Could not get a lock on the DMR for '" + h5_file_path + "'." << endl;
-                return 1;
+                return EXIT_FAILURE;
             }
         }
     }
-    catch (BESError &e) {
-        cerr << "BESError: " << e.get_message() << endl;
-        status = 1;
+    catch (const BESError &e) {
+        cerr << "Error: " << e.get_message() << endl;
+        return EXIT_FAILURE;
     }
-    catch (std::exception &e) {
+    catch (const std::exception &e) {
         cerr << "std::exception: " << e.what() << endl;
-        status = 1;
+        return EXIT_FAILURE;
     }
     catch (...) {
         cerr << "Unknown error." << endl;
-        status = 1;
+        return EXIT_FAILURE;
     }
 
-    H5Fclose(file);
-
-    return status;
+    return EXIT_SUCCESS;
 }
