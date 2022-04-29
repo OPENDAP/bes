@@ -22,7 +22,7 @@ AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baselin
 AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
 #
 # -c Inject complete BES configuration
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_srcdir}/test_bes.conf])
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${builddir}/test_bes.conf])
 #
 # -o Send output to a specific file
 # AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-o foo.dmrpp])
