@@ -146,6 +146,18 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
 
+    if(d_array_type == NC_NAT) {
+
+        string err = "fileout_netcdf: The datatype of this variable '" + _varname;
+        err += "' is not supported. It is very possible that you try to obtain ";
+        err += "a netCDF file that follows the netCDF classic model. ";
+        err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
+        err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
+        err += "follows the netCDF enhanced model should solve the problem.";
+
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
 #if !NDEBUG
     if (d4_dim_ids.size() > 0) {
         BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
