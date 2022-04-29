@@ -13,10 +13,10 @@ AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline])
 AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.baseline])
 #
 # -s Inject a "site.conf"
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp/use_cf.conf])
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
 #
 # -D Produce only a DMR
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp/use_cf.conf -D])
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
 #
 # -u Inject dmrpp:href URL
 AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])

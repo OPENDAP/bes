@@ -216,7 +216,7 @@ TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
-BASELINES_DIR="${abs_srcdir}/get_dmrpp"
+BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 

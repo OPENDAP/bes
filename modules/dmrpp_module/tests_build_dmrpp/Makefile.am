@@ -7,7 +7,7 @@ CLEANFILES =
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE_DMRPP)
 
-EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
+EXTRA_DIST = get_dmrpp_baselines $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
 DISTCLEANFILES = atconfig
@@ -19,7 +19,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
-check-local: atconfig atlocal  $(TESTSUITE_DMRPP)
+check-local: atconfig atlocal  $(TESTSUITE_DMRPP) $(builddir)/test_bes.conf
 	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
 
 clean-local:
@@ -29,7 +29,7 @@ clean-local:
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 \
-$(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4 test_bes.conf
+$(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 #$(top_srcdir)/modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
 
