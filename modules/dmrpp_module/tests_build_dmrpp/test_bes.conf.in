@@ -16,7 +16,7 @@ BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
 #BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
-BES.Catalog.catalog.RootDirectory=@abs_top_builddir@
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
 
 # The order is crucial here. The dmr++ files must be associated
