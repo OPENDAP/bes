@@ -25,7 +25,7 @@ AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.whe
 AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf])
 #
 # -o Send output to a specific file
-# AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-o foo.dmrpp])
+# AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-o ${abs_builddir}/foo.dmrpp])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
