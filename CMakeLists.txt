@@ -197,8 +197,8 @@ add_executable(bes
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
     dap/BESDapError.h
-    dap/BESDapErrorInfo.cc
-    dap/BESDapErrorInfo.h
+    # dap/BESDapErrorInfo.cc
+    # dap/BESDapErrorInfo.h
     dap/BESDapFunctionResponseCache.cc
     dap/BESDapFunctionResponseCache.h
     dap/BESDapModule.cc
@@ -638,6 +638,7 @@ add_executable(bes
     modules/debug_functions/DebugFunctions.cc
     modules/debug_functions/DebugFunctions.h
 
+	modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
 #    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
 #    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
 #    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
