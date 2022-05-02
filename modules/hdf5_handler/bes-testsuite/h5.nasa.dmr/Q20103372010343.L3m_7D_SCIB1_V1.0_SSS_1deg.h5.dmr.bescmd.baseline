@@ -2,6 +2,18 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5">
     <Dimension name="lat" size="180"/>
     <Dimension name="lon" size="360"/>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="l3m_data">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
@@ -38,6 +50,8 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-32767.00000</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
     </Float32>
     <Byte name="palette">
         <Dim size="3"/>
@@ -49,18 +63,6 @@
             <Value>/palette</Value>
         </Attribute>
     </Byte>
-    <Float32 name="lat">
-        <Dim name="/lat"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="lon">
-        <Dim name="/lon"/>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="Product_Name" type="String">
         <Value>Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg</Value>
     </Attribute>

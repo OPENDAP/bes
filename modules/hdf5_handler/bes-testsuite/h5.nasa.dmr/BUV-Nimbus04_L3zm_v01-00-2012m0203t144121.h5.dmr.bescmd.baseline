@@ -1,415 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5">
-    <Dimension name="Time" size="72"/>
     <Dimension name="Latitude" size="36"/>
+    <Dimension name="MixingRatioPressureLevels" size="15"/>
     <Dimension name="ProfilePressureLevels" size="21"/>
+    <Dimension name="Time" size="72"/>
+    <Dimension name="Wavelength" size="10"/>
     <Dimension name="FakeDim0" size="20"/>
     <Dimension name="FakeDim2" size="20"/>
-    <Dimension name="Wavelength" size="10"/>
     <Dimension name="FakeDim4" size="20"/>
-    <Dimension name="MixingRatioPressureLevels" size="15"/>
-    <Float32 name="AprioriProfileOzone">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/ProfilePressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean 21 Layer A Priori Ozone Profile</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AprioriProfileOzone</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/AprioriProfileOzone</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="AprioriTotalColumnOzone">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean A Priori Total Column Ozone</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>AprioriTotalColumnOzone</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/AprioriTotalColumnOzone</Value>
-        </Attribute>
-    </Float32>
-    <Int32 name="Date">
-        <Dim name="/Time"/>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-9999</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Year and Month in format yyyymm</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>Date</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/Date</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="IntegratingKernelProfile">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/FakeDim0"/>
-        <Dim name="/FakeDim2"/>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Integrating Kernel for layers 1 to 20</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>IntegratingKernelProfile</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/IntegratingKernelProfile</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="IntegratingKernelTotalColumn">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Column Integrating Kernel</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>IntegratingKernelTotalColumn</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/IntegratingKernelTotalColumn</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="JacobianDNDX">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/FakeDim0"/>
-        <Dim name="/Wavelength"/>
-        <Attribute name="units" type="String">
-            <Value>DU^-1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean DN/DX Jacobian for channels 1 thru 10 and layers 1 to 20</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>JacobianDNDX</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/JacobianDNDX</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="LocalStandardTime">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>hour</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Local Standard Time</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>24.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LocalStandardTime</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/LocalStandardTime</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="OrbitMode">
-        <Dim name="/Time"/>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-9999</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Satellite orientation at equator crossing  (Ascending = 1, descending = -1 or terminator = 0)</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>OrbitMode</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/OrbitMode</Value>
-        </Attribute>
-    </Int16>
-    <Float32 name="ProfileOzone">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/ProfilePressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean 21 Layer Retrieved Ozone Profile</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ProfileOzone</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/ProfileOzone</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="ProfileOzoneStdev">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/ProfilePressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>21 Layer Retrieved Ozone Profile Standard Deviation</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ProfileOzoneStdev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/ProfileOzoneStdev</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SmoothingErrorProfile">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/FakeDim0"/>
-        <Attribute name="units" type="String">
-            <Value>%</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Smoothing Error for Ozone Profile for layers 1 to 20</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SmoothingErrorProfile</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/SmoothingErrorProfile</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SmoothingErrorTotalColumn">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>%</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean Smoothing Error for Total Column Ozone</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SmoothingErrorTotalColumn</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/SmoothingErrorTotalColumn</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="SolarZenithAngle">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>degrees</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean Solar Zenith Angle</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>0.000000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>88.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>SolarZenithAngle</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/SolarZenithAngle</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="TotalColumnOzone">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean Retrieved Total Column Ozone</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TotalColumnOzone</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/TotalColumnOzone</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="TotalColumnOzoneStdev">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>DU</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Retrieved Total Column Ozone Standard Deviation</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TotalColumnOzoneStdev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/TotalColumnOzoneStdev</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="TotalCovarianceMatrix">
-        <Dim name="/FakeDim0"/>
-        <Dim name="/FakeDim4"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>DU^2</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Total Covariance Matrix for layers 1 to 20 (covariance matrix of an ensemble of states about the mean state)</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>TotalCovarianceMatrix</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/TotalCovarianceMatrix</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="VCI">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Volcanic Contamination Index Designating Periods Affected by Volcanic Eruptions (0 = unaffected, 1 = affected)</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-9999</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>VCI</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/VCI</Value>
-        </Attribute>
-    </Int16>
-    <Float32 name="VolumeMixingRatio">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/MixingRatioPressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>ppmv</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean 15 Layer Retrieved Mixing Ratios</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>VolumeMixingRatio</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/VolumeMixingRatio</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="VolumeMixingRatioStdev">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Dim name="/MixingRatioPressureLevels"/>
-        <Attribute name="units" type="String">
-            <Value>ppmv</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Mean 15 Layer Retrieved Mixing Ratio Standard Deviation</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.000000</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>VolumeMixingRatioStdev</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/VolumeMixingRatioStdev</Value>
-        </Attribute>
-    </Float32>
-    <Int16 name="nSamples">
-        <Dim name="/Time"/>
-        <Dim name="/Latitude"/>
-        <Attribute name="units" type="String">
-            <Value>NoUnits</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Number of Good Retrievals Used in Mean</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int16">
-            <Value>-9999</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nSamples</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Data_Fields/nSamples</Value>
-        </Attribute>
-    </Int16>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
         <Attribute name="units" type="String">
@@ -542,6 +140,458 @@
             <Value>level</Value>
         </Attribute>
     </Int32>
+    <Float32 name="AprioriProfileOzone">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/ProfilePressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean 21 Layer A Priori Ozone Profile</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AprioriProfileOzone</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/AprioriProfileOzone</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
+    </Float32>
+    <Float32 name="AprioriTotalColumnOzone">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean A Priori Total Column Ozone</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AprioriTotalColumnOzone</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/AprioriTotalColumnOzone</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Int32 name="Date">
+        <Dim name="/Time"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Year and Month in format yyyymm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Date</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/Date</Value>
+        </Attribute>
+        <Map name="/Time"/>
+    </Int32>
+    <Float32 name="IntegratingKernelProfile">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/FakeDim0"/>
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Integrating Kernel for layers 1 to 20</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IntegratingKernelProfile</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/IntegratingKernelProfile</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim2"/>
+    </Float32>
+    <Float32 name="IntegratingKernelTotalColumn">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Column Integrating Kernel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IntegratingKernelTotalColumn</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/IntegratingKernelTotalColumn</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+    </Float32>
+    <Float32 name="JacobianDNDX">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/FakeDim0"/>
+        <Dim name="/Wavelength"/>
+        <Attribute name="units" type="String">
+            <Value>DU^-1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean DN/DX Jacobian for channels 1 thru 10 and layers 1 to 20</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>JacobianDNDX</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/JacobianDNDX</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+        <Map name="/Wavelength"/>
+    </Float32>
+    <Float32 name="LocalStandardTime">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>hour</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Local Standard Time</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>24.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LocalStandardTime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/LocalStandardTime</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Int16 name="OrbitMode">
+        <Dim name="/Time"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Satellite orientation at equator crossing  (Ascending = 1, descending = -1 or terminator = 0)</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>OrbitMode</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/OrbitMode</Value>
+        </Attribute>
+        <Map name="/Time"/>
+    </Int16>
+    <Float32 name="ProfileOzone">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/ProfilePressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean 21 Layer Retrieved Ozone Profile</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ProfileOzone</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/ProfileOzone</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
+    </Float32>
+    <Float32 name="ProfileOzoneStdev">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/ProfilePressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>21 Layer Retrieved Ozone Profile Standard Deviation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ProfileOzoneStdev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/ProfileOzoneStdev</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/ProfilePressureLevels"/>
+    </Float32>
+    <Float32 name="SmoothingErrorProfile">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/FakeDim0"/>
+        <Attribute name="units" type="String">
+            <Value>%</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Smoothing Error for Ozone Profile for layers 1 to 20</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SmoothingErrorProfile</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/SmoothingErrorProfile</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/FakeDim0"/>
+    </Float32>
+    <Float32 name="SmoothingErrorTotalColumn">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>%</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean Smoothing Error for Total Column Ozone</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SmoothingErrorTotalColumn</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/SmoothingErrorTotalColumn</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean Solar Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>88.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/SolarZenithAngle</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="TotalColumnOzone">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean Retrieved Total Column Ozone</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnOzone</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/TotalColumnOzone</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="TotalColumnOzoneStdev">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Retrieved Total Column Ozone Standard Deviation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnOzoneStdev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/TotalColumnOzoneStdev</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Float32 name="TotalCovarianceMatrix">
+        <Dim name="/FakeDim0"/>
+        <Dim name="/FakeDim4"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>DU^2</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Total Covariance Matrix for layers 1 to 20 (covariance matrix of an ensemble of states about the mean state)</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalCovarianceMatrix</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/TotalCovarianceMatrix</Value>
+        </Attribute>
+        <Map name="/FakeDim0"/>
+        <Map name="/FakeDim4"/>
+        <Map name="/Latitude"/>
+    </Float32>
+    <Int16 name="VCI">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Volcanic Contamination Index Designating Periods Affected by Volcanic Eruptions (0 = unaffected, 1 = affected)</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>VCI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/VCI</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Int16>
+    <Float32 name="VolumeMixingRatio">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/MixingRatioPressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>ppmv</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean 15 Layer Retrieved Mixing Ratios</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>VolumeMixingRatio</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/VolumeMixingRatio</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/MixingRatioPressureLevels"/>
+    </Float32>
+    <Float32 name="VolumeMixingRatioStdev">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Dim name="/MixingRatioPressureLevels"/>
+        <Attribute name="units" type="String">
+            <Value>ppmv</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Mean 15 Layer Retrieved Mixing Ratio Standard Deviation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>VolumeMixingRatioStdev</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/VolumeMixingRatioStdev</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+        <Map name="/MixingRatioPressureLevels"/>
+    </Float32>
+    <Int16 name="nSamples">
+        <Dim name="/Time"/>
+        <Dim name="/Latitude"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Number of Good Retrievals Used in Mean</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nSamples</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Data_Fields/nSamples</Value>
+        </Attribute>
+        <Map name="/Time"/>
+        <Map name="/Latitude"/>
+    </Int16>
     <Attribute name="Satellite" type="String">
         <Value>Nimbus-04</Value>
     </Attribute>

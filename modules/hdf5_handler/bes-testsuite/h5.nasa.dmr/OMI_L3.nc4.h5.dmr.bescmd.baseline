@@ -2,6 +2,36 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI_L3.nc4.h5">
     <Dimension name="OMI_Column_Amount_O3_lat" size="720"/>
     <Dimension name="OMI_Column_Amount_O3_lon" size="1440"/>
+    <Float64 name="OMI_Column_Amount_O3_lat">
+        <Dim name="/OMI_Column_Amount_O3_lat"/>
+        <Attribute name="long_name" type="String">
+            <Value>latitude </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/OMI_Column_Amount_O3/lat</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="OMI_Column_Amount_O3_lon">
+        <Dim name="/OMI_Column_Amount_O3_lon"/>
+        <Attribute name="long_name" type="String">
+            <Value>longitude </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>lon</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/OMI_Column_Amount_O3/lon</Value>
+        </Attribute>
+    </Float64>
     <Float32 name="OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3">
         <Dim name="/OMI_Column_Amount_O3_lat"/>
         <Dim name="/OMI_Column_Amount_O3_lon"/>
@@ -36,6 +66,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3</Value>
         </Attribute>
+        <Map name="/OMI_Column_Amount_O3_lat"/>
+        <Map name="/OMI_Column_Amount_O3_lon"/>
     </Float32>
     <Float32 name="OMI_Column_Amount_O3_Data_Fields_Reflectivity331">
         <Dim name="/OMI_Column_Amount_O3_lat"/>
@@ -71,6 +103,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/OMI_Column_Amount_O3/Data_Fields/Reflectivity331</Value>
         </Attribute>
+        <Map name="/OMI_Column_Amount_O3_lat"/>
+        <Map name="/OMI_Column_Amount_O3_lon"/>
     </Float32>
     <Float32 name="OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex">
         <Dim name="/OMI_Column_Amount_O3_lat"/>
@@ -106,37 +140,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex</Value>
         </Attribute>
+        <Map name="/OMI_Column_Amount_O3_lat"/>
+        <Map name="/OMI_Column_Amount_O3_lon"/>
     </Float32>
-    <Float64 name="OMI_Column_Amount_O3_lat">
-        <Dim name="/OMI_Column_Amount_O3_lat"/>
-        <Attribute name="long_name" type="String">
-            <Value>latitude </Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north </Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/OMI_Column_Amount_O3/lat</Value>
-        </Attribute>
-    </Float64>
-    <Float64 name="OMI_Column_Amount_O3_lon">
-        <Dim name="/OMI_Column_Amount_O3_lon"/>
-        <Attribute name="long_name" type="String">
-            <Value>longitude </Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east </Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>lon</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/OMI_Column_Amount_O3/lon</Value>
-        </Attribute>
-    </Float64>
     <Attribute name="OrbitNumber" type="Int32">
         <Value>7510</Value>
         <Value>7511</Value>

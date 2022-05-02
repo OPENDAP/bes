@@ -1,19 +1,339 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5">
-    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis" size="400"/>
-    <Dimension name="METADATA_QA_STATISTICS_vertices" size="2"/>
-    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis" size="400"/>
-    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis" size="400"/>
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis" size="100"/>
+    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis" size="400"/>
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis" size="100"/>
+    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis" size="400"/>
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis" size="100"/>
+    <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis" size="400"/>
+    <Dimension name="METADATA_QA_STATISTICS_vertices" size="2"/>
+    <Dimension name="PRODUCT_corner" size="4"/>
+    <Dimension name="PRODUCT_ground_pixel" size="450"/>
     <Dimension name="PRODUCT_layer" size="34"/>
+    <Dimension name="PRODUCT_polynomial_exponents" size="6"/>
     <Dimension name="PRODUCT_vertices" size="2"/>
     <Dimension name="PRODUCT_time" size="1"/>
     <Dimension name="PRODUCT_scanline" size="71"/>
-    <Dimension name="PRODUCT_ground_pixel" size="450"/>
-    <Dimension name="PRODUCT_corner" size="4"/>
-    <Dimension name="PRODUCT_polynomial_exponents" size="6"/>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Histogram of the stratospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Histogram of the stratospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>nitrogendioxide_stratospheric_column_histogram_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_stratospheric_column_histogram_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Probability density function of the stratospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Probability density function of the stratospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>aerosol_nitrogendioxide_stratospheric_column_pdf_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_stratospheric_column_pdf_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Histogram of the total NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Histogram of the total NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>nitrogendioxide_total_column_histogram_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_total_column_histogram_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Probability density function of the total NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Probability density function of the total NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>nitrogendioxide_total_column_pdf_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_total_column_pdf_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Histogram of the tropospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Histogram of the tropospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>nitrogendioxide_tropospheric_column_histogram_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_tropospheric_column_histogram_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis">
+        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
+        <Attribute name="units" type="String">
+            <Value>mol m-2</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Probability density function of the tropospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Probability density function of the tropospheric NO2 vertical column</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>nitrogendioxide_tropospheric_column_pdf_bounds</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>nitrogendioxide_tropospheric_column_pdf_axis</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="METADATA_QA_STATISTICS_vertices">
+        <Dim name="/METADATA_QA_STATISTICS_vertices"/>
+    </Float32>
+    <Int32 name="PRODUCT_corner">
+        <Dim name="/PRODUCT_corner"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>pixel corner index</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>This coordinate variable defines the indices for the pixel corners; index starts at 0 (counter-clockwise, starting from south-western corner of the pixel in ascending part of the orbit)</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>corner</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/corner</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="PRODUCT_ground_pixel">
+        <Dim name="/PRODUCT_ground_pixel"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>across-track dimension index</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>This coordinate variable defines the indices across track, from west to east; index starts at 0</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ground_pixel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/ground_pixel</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="PRODUCT_layer">
+        <Dim name="/PRODUCT_layer"/>
+        <Attribute name="standard_name" type="String">
+            <Value>atmosphere_hybrid_sigma_pressure_coordinate</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TM5 atmospheric layer numbers</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>down</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="formula_terms" type="String">
+            <Value>ap: tm5_constant_a b: tm5_constant_b ps: /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>p(t, k, j, i, l) = ap(k, l) + b(k, l)*ps(t, j, i); k from surface to top of atmosphere; l=0 for base of layer, l=1 for top of layer.</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>layer</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/layer</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="PRODUCT_polynomial_exponents">
+        <Dim name="/PRODUCT_polynomial_exponents"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>polynomial exponents</Value>
+        </Attribute>
+        <Attribute name="ancillary_variables" type="String">
+            <Value>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/polynomial_coefficients</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>polynomial_exponents</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/polynomial_exponents</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="PRODUCT_vertices">
+        <Dim name="/PRODUCT_vertices"/>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TM5 atmospheric layer upper and lower bound indices</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2147483647</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>vertices</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/vertices</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_latitude">
+        <Dim name="/PRODUCT_time"/>
+        <Dim name="/PRODUCT_scanline"/>
+        <Attribute name="long_name" type="String">
+            <Value>sub satellite latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Latitude of the geodetic sub satellite point on the WGS84 reference ellipsoid</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>satellite_latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_longitude">
+        <Dim name="/PRODUCT_time"/>
+        <Dim name="/PRODUCT_scanline"/>
+        <Attribute name="long_name" type="String">
+            <Value>satellite_longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="comment" type="String">
+            <Value>Longitude of the geodetic sub satellite point on the WGS84 reference ellipsoid</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>9.969209968e+36</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>satellite_longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude</Value>
+        </Attribute>
+    </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
         <Dim name="/METADATA_QA_STATISTICS_vertices"/>
@@ -2708,326 +3028,6 @@
             <Value>/PRODUCT/time</Value>
         </Attribute>
     </Int32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Histogram of the stratospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Histogram of the stratospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>nitrogendioxide_stratospheric_column_histogram_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_stratospheric_column_histogram_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Probability density function of the stratospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Probability density function of the stratospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>aerosol_nitrogendioxide_stratospheric_column_pdf_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_stratospheric_column_pdf_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Histogram of the total NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Histogram of the total NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>nitrogendioxide_total_column_histogram_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_total_column_histogram_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Probability density function of the total NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Probability density function of the total NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>nitrogendioxide_total_column_pdf_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_total_column_pdf_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Histogram of the tropospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Histogram of the tropospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>nitrogendioxide_tropospheric_column_histogram_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_tropospheric_column_histogram_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis">
-        <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
-        <Attribute name="units" type="String">
-            <Value>mol m-2</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Probability density function of the tropospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>Probability density function of the tropospheric NO2 vertical column</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>nitrogendioxide_tropospheric_column_pdf_bounds</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>nitrogendioxide_tropospheric_column_pdf_axis</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_axis</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="METADATA_QA_STATISTICS_vertices">
-        <Dim name="/METADATA_QA_STATISTICS_vertices"/>
-    </Float32>
-    <Int32 name="PRODUCT_corner">
-        <Dim name="/PRODUCT_corner"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>pixel corner index</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>This coordinate variable defines the indices for the pixel corners; index starts at 0 (counter-clockwise, starting from south-western corner of the pixel in ascending part of the orbit)</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>corner</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/corner</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="PRODUCT_ground_pixel">
-        <Dim name="/PRODUCT_ground_pixel"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>X</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>across-track dimension index</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>This coordinate variable defines the indices across track, from west to east; index starts at 0</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>ground_pixel</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/ground_pixel</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="PRODUCT_layer">
-        <Dim name="/PRODUCT_layer"/>
-        <Attribute name="standard_name" type="String">
-            <Value>atmosphere_hybrid_sigma_pressure_coordinate</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TM5 atmospheric layer numbers</Value>
-        </Attribute>
-        <Attribute name="positive" type="String">
-            <Value>down</Value>
-        </Attribute>
-        <Attribute name="axis" type="String">
-            <Value>Z</Value>
-        </Attribute>
-        <Attribute name="formula_terms" type="String">
-            <Value>ap: tm5_constant_a b: tm5_constant_b ps: /PRODUCT/SUPPORT_DATA/INPUT_DATA/surface_pressure</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>p(t, k, j, i, l) = ap(k, l) + b(k, l)*ps(t, j, i); k from surface to top of atmosphere; l=0 for base of layer, l=1 for top of layer.</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>layer</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/layer</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="PRODUCT_polynomial_exponents">
-        <Dim name="/PRODUCT_polynomial_exponents"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>polynomial exponents</Value>
-        </Attribute>
-        <Attribute name="ancillary_variables" type="String">
-            <Value>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/polynomial_coefficients</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>polynomial_exponents</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/polynomial_exponents</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="PRODUCT_vertices">
-        <Dim name="/PRODUCT_vertices"/>
-        <Attribute name="units" type="String">
-            <Value>1</Value>
-        </Attribute>
-        <Attribute name="long_name" type="String">
-            <Value>TM5 atmospheric layer upper and lower bound indices</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Int32">
-            <Value>-2147483647</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>vertices</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/vertices</Value>
-        </Attribute>
-    </Int32>
-    <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_latitude">
-        <Dim name="/PRODUCT_time"/>
-        <Dim name="/PRODUCT_scanline"/>
-        <Attribute name="long_name" type="String">
-            <Value>sub satellite latitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_north</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Latitude of the geodetic sub satellite point on the WGS84 reference ellipsoid</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-90.00000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>90.00000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>satellite_latitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_latitude</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_longitude">
-        <Dim name="/PRODUCT_time"/>
-        <Dim name="/PRODUCT_scanline"/>
-        <Attribute name="long_name" type="String">
-            <Value>satellite_longitude</Value>
-        </Attribute>
-        <Attribute name="units" type="String">
-            <Value>degrees_east</Value>
-        </Attribute>
-        <Attribute name="comment" type="String">
-            <Value>Longitude of the geodetic sub satellite point on the WGS84 reference ellipsoid</Value>
-        </Attribute>
-        <Attribute name="valid_min" type="Float32">
-            <Value>-180.0000000</Value>
-        </Attribute>
-        <Attribute name="valid_max" type="Float32">
-            <Value>180.0000000</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>9.969209968e+36</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>satellite_longitude</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/satellite_longitude</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.7</Value>
     </Attribute>

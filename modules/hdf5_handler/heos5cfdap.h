@@ -59,7 +59,7 @@ void gen_eos5_cfdmr(libdap::D4Group*, HDF5CF::EOS5File*);
 void gen_dap_oneeos5cvar_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*,const hid_t, const std::string &);
 void gen_dap_eos5cf_gm_dmr(libdap::D4Group*,HDF5CF::EOS5File*);
 void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f);
-void gen_gm_oneproj_var(libdap::D4Group*, const HDF5CF::EOS5CVar*, const unsigned short); 
+void gen_gm_oneproj_var(libdap::D4Group*, const HDF5CF::EOS5CVar*, const unsigned short, HDF5CF::EOS5File *f); 
 void gen_gm_oneproj_spvar(libdap::D4Group*, const HDF5CF::EOS5CVar*); 
 void gen_gm_proj_var_info(libdap::D4Group* ,HDF5CF::EOS5File* );
 void add_var_sp_attrs_to_dap4(libdap::BaseType *d4_var,const HDF5CF::EOS5CVar* cvar);

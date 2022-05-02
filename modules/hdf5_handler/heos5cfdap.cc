@@ -2095,21 +2095,41 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     }
 
     // Read Variable info.
+    // TODO: We may need to make the cvar first for coverage support.
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
-    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-        gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+    if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+            gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+    
+        }
+        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+        }
+    
+        // Handle EOS5 grid mapping info.
+        if (f->Have_EOS5_Grids()==true) 
+            gen_dap_eos5cf_gm_dmr(d4_root,f);
+
     }
-
-    // Handle EOS5 grid mapping info.
-    if (f->Have_EOS5_Grids()==true) 
-        gen_dap_eos5cf_gm_dmr(d4_root,f);
-
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+    else {
+        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+        }
+    
+        // Handle EOS5 grid mapping info.
+        if (f->Have_EOS5_Grids()==true) 
+            gen_dap_eos5cf_gm_dmr(d4_root,f);
+    
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+            gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+    
+        }
 
     }
 
@@ -2162,6 +2182,16 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
     }
 
+    // Add DAP4 map for coverage
+    if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+
+        // Obtain the coordinate variable names, these are mapped variables.
+        vector <string> cvar_name;
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) 
+            cvar_name.emplace_back((*it_cv)->getNewName()); 
+           
+        add_dap4_coverage(d4_root,cvar_name,f->getIsCOARD());
+    }
 }
 
 
@@ -2428,7 +2458,7 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                gen_gm_oneproj_var(d4_root,*it_cv,cv_lat_miss_index);
+                gen_gm_oneproj_var(d4_root,*it_cv,cv_lat_miss_index,f);
                 cv_lat_miss_index++;
             }
         }
@@ -2439,7 +2469,7 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
 // grid_mapping attributes for all the non-cv variables.
 void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
                          const HDF5CF::EOS5CVar* cvar,
-                         const unsigned short g_suffix) {
+                         const unsigned short g_suffix, HDF5CF::EOS5File* f) {
 
     BESDEBUG("h5","Coming to gen_gm_oneproj_var()  "<<endl);
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
@@ -2483,7 +2513,14 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
         }
 
         // Add the grid_mapping attributes to all non-cv variables for the grid.
-        add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims);
+        vector<string> cvar_name;
+        if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+            const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
+            for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) 
+                cvar_name.emplace_back((*it_cv)->getNewName()); 
+
+        }
+        add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims,cvar_name);
     }
 
 }
