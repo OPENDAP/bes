@@ -61,6 +61,7 @@
 #include <BESStopWatch.h>
 #include <BESSyntaxUserError.h>
 #include <BESDapResponseBuilder.h>
+#include <RequestServiceTimer.h>
 
 #include "W10nJsonTransmitter.h"
 
@@ -69,6 +70,9 @@
 #include "w10n_utils.h"
 
 using namespace ::libdap;
+
+#define MODULE "w10n"
+#define prolog string("W10nJsonTransmitter::").append(__func__).append("() - ")
 
 #define W10N_JSON_TEMP_DIR "/tmp"
 
@@ -213,6 +217,9 @@ void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterf
         W10nJsonTransform ft(loaded_dds, dhi, &o_strm);
 
         string varName = getProjectedVariableName(dhi.data[POST_CONSTRAINT]);
+
+        // Verify the request hasn't exceeded bes_timeout.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.

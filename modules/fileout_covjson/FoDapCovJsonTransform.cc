@@ -45,6 +45,9 @@
 using std::ostringstream;
 using std::istringstream;
 
+#define MODULE "covj"
+#define prolog string("FoDapCovJsonTransform::").append(__func__).append("() - ")
+
 #include <libdap/DDS.h>
 #include <libdap/Structure.h>
 #include <libdap/Constructor.h>
@@ -58,6 +61,7 @@ using std::istringstream;
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <DapFunctionUtils.h>
+#include <RequestServiceTimer.h>
 #include "FoDapCovJsonTransform.h"
 #include "focovjson_utils.h"
 #include "FoCovJsonRequestHandler.h"
@@ -1661,6 +1665,10 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
     // Read through the source DDS leaves and nodes, extract all axes and
     // parameter data, and store that data as Axis and Parameters
     transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
+
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+    BESUtil::conditional_timeout_cancel();
 
     // Print the Coverage data to stream as CoverageJSON
     printCoverageJSON(strm, indent, testOverride);

@@ -40,6 +40,8 @@
 
 #include <string>
 #include <sstream>
+#include <future>         // std::async, std::future
+#include <chrono>         // std::chrono::milliseconds
 #include <algorithm>
 
 #include "BESInterface.h"
@@ -60,11 +62,13 @@
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 #include "ServerAdministrator.h"
+#include "RequestServiceTimer.h"
 
 #include "BESLog.h"
 
 // If not defined, this is false (source code file names are logged). jhrg 10/4/18
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
+#define prolog std::string("BESInterface::").append(__func__).append("() - ")
 
 using namespace std;
 
@@ -75,12 +79,14 @@ using namespace std;
 // differently. See my comment further down. jhrg 12/28/15
 #define USE_SIGWAIT 0
 
+#if 0
 // timeout period in seconds; 0 --> no timeout. This is a global value so
 // that it can be accessed by the signal handler. jhrg 1/4/16
 // I've made this globally visible so that other code that might want to
 // alter the timeout value can do so and this variable can be kept consistent.
 // See BESStreamResponseHandler::execute() for an example. jhrg 1/24/17
 volatile int bes_timeout = 0;
+#endif
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
@@ -291,10 +297,9 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
 }
 
 /**
- * @brief Set the global volatile int 'bes_timeout'
+ * @brief Set the int 'd_bes_timeout'
  * Use either the value of a 'bes_timeout' context or the value set in the BES keys
  * to set the global volatile int 'bes_timeout'
- * @return True if 'bes_timeout' was set, false otherwise.
  */
 void BESInterface::set_bes_timeout()
 {
@@ -302,8 +307,9 @@ void BESInterface::set_bes_timeout()
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
-        bes_timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+        d_bes_timeout = strtol(context.c_str(), NULL, 10);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from context)." << endl);
+
     }
     else {
         // Grab the BES Key for the timeout. Note that the Hyrax server generally
@@ -313,17 +319,9 @@ void BESInterface::set_bes_timeout()
         //
         // If the value is not set in teh BES keys, d_timeout_from_keys will get the
         // default value of 0. jhrg 4/20/22
-        d_timeout_from_keys = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
+        d_bes_timeout = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << d_bes_timeout << " seconds (from keys)." << endl);
     }
-#if 0
-    else if (d_timeout_from_keys != 0) {
-        found = true;
-        bes_timeout = d_timeout_from_keys;
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
-    }
-
-    return found;
-#endif
 }
 
 /**
@@ -331,7 +329,10 @@ void BESInterface::set_bes_timeout()
  */
 void BESInterface::clear_bes_timeout()
 {
-    bes_timeout = 0;
+    d_bes_timeout = 0;
+
+    // Clearing bes_timeout requires disabling the timeout in RequestServiceTimer::TheTimer()
+    RequestServiceTimer::TheTimer()->disable_timeout();
 }
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
@@ -418,11 +419,17 @@ int BESInterface::execute_request(const string &from)
 
         set_bes_timeout();
 
+        // Start the request service timer.  The value bes_timeout == 0 disables the timeout,
+        // otherwise the timeout can be disabled by BESUtil::conditional_timeout_cancel()
+        // used by the transmitters, transforms to disable request timeout as streaming begins.
+        RequestServiceTimer::TheTimer()->start(std::chrono::seconds{d_bes_timeout});
+        BESDEBUG("request_timer",prolog << RequestServiceTimer::TheTimer()->dump() << endl);
+
         // This method (execute_data_request_plan()) does two key things:
         // Calls the request handler to make a response object' (the C++
         // object that will hold the response) and then calls the transmitter
         // to actually send it or build and send it.
-        //
+
         // HK-474. The exception caused by the errant config file in the ticket is
         // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
         // below. jhrg 11/12//19
@@ -538,3 +545,4 @@ void BESInterface::dump(ostream & strm) const
 
     BESIndent::UnIndent();
 }
+

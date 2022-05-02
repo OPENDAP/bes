@@ -70,10 +70,7 @@ protected:
     std::string d_dap4ce;           /// DAP4 Constraint expression
     std::string d_dap4function;     /// DAP4 Server Side Function expression
     std::string d_btp_func_ce;      /// The BTP functions, extracted from the CE
-    int d_timeout;                  /// Response timeout after N seconds
     std::string d_default_protocol;    /// Version string for the library's default protocol version
-
-    bool d_cancel_timeout_on_send;  /// Should a timeout be cancelled once transmission starts?
 
     /**
      * Time, if any, that the client will wait for an async response.
@@ -89,8 +86,6 @@ protected:
      */
     std::string d_store_result;
 
-    void initialize();
-
 #ifdef DAP2_STORED_RESULTS
     bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 #endif
@@ -105,10 +100,8 @@ public:
      values. You must call at least set_dataset_name() or be requesting
      version information. */
     BESDapResponseBuilder() : d_dataset(""), d_dap2ce(""), d_dap4ce(""), d_dap4function(""),
-                              d_btp_func_ce(""), d_timeout(0), d_default_protocol(DAP_PROTOCOL_VERSION),
-                              d_cancel_timeout_on_send(false), d_async_accepted(""), d_store_result("") {
-        initialize();
-    }
+                              d_btp_func_ce(""), d_default_protocol(DAP_PROTOCOL_VERSION),
+                              d_async_accepted(""), d_store_result("") {};
 
     virtual ~BESDapResponseBuilder();
 
@@ -143,28 +136,6 @@ public:
     virtual std::string get_dataset_name() const;
 
     virtual void set_dataset_name(const std::string _dataset);
-
-    /** @name DDS_timeout
-     *  Old deprecated BESDapResponseBuilder timeout code. Do not use.
-     *  @deprecated
-     */
-    ///@{
-    void register_timeout() const;
-
-    void set_timeout(int timeout = 0);
-
-    int get_timeout() const;
-
-    void timeout_on() const;
-
-    void timeout_off();
-
-    virtual void establish_timeout(std::ostream &stream) const;
-
-    virtual void remove_timeout() const;
-    ///@}
-
-    void conditional_timeout_cancel();
 
     virtual void split_ce(libdap::ConstraintEvaluator &eval, const std::string &expr = "");
 

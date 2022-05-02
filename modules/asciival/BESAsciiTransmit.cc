@@ -64,12 +64,17 @@
 
 #include <BESDebug.h>
 
+#include "RequestServiceTimer.h"
+
 #include "BESAsciiTransmit.h"
 #include "get_ascii.h"
 #include "get_ascii_dap4.h"
 
 using namespace dap_asciival;
 using namespace libdap;
+
+#define MODULE "ascii"
+#define prolog string("BESAsciiTransmit::").append(__func__).append("() - ")
 
 BESAsciiTransmit::BESAsciiTransmit() :
         BESTransmitter()
@@ -85,10 +90,6 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
         BESDapResponseBuilder responseBuilder;
 
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.
         // Note that the BESResponseObject will manage the loaded_dds object's
@@ -97,6 +98,10 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
 
         // Send data values as CSV/ASCII
         unique_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
+
+        // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+        BESUtil::conditional_timeout_cancel();
 
         get_data_values_as_ascii(ascii_dds.get(), dhi.get_output_stream());
         dhi.get_output_stream() << flush;
@@ -140,9 +145,8 @@ void BESAsciiTransmit::send_dap4_csv_helper(ostream &out, DMR *dmr, const string
         throw Error(msg);
     }
 
-    // Now that we are ready to start building the response data we
-    // cancel any pending timeout alarm according to the configuration.
-    BESUtil::conditional_timeout_cancel();
+    // Verify the request hasn't exceeded bes_timeout.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
     print_values_as_ascii(dmr, out);
     out << flush;
