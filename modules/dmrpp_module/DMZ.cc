@@ -998,7 +998,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
     }
     else {
-        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
+        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stol(size), stol(offset), chunk_position_in_array);
     }
 }
 
