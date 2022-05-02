@@ -25,7 +25,6 @@
 #include <memory>
 #include <exception>
 #include <cstring>
-#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -41,7 +40,6 @@
 #include "url_impl.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
-#include "BESDebug.h"
 
 #include "DMZ.h"
 #include "Chunk.h"
@@ -51,6 +49,7 @@
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
+#include "run_tests_cppunit.h"
 #include "read_test_baseline.h"
 #include "test_config.h"
 
@@ -58,20 +57,16 @@ using namespace std;
 using namespace libdap;
 using namespace bes;
 
-static bool debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("DMZTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
 class DMZTest: public CppUnit::TestFixture {
 private:
-    DMZ *d_dmz;
+    unique_ptr<DMZ> d_dmz {nullptr};
 
     const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+    const string chunked_oneD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_oneD.h5.dmrpp");
     const string broken_dmrpp = string(TEST_SRC_DIR).append("/input-files/broken_elements.dmrpp");
     const string grid_2_2d_dmrpp = string(TEST_SRC_DIR).append("/input-files/grid_2_2d.h5.dmrpp");
     const string coads_climatology_dmrpp = string(TEST_SRC_DIR).append("/input-files/coads_climatology.dmrpp");
@@ -80,34 +75,26 @@ private:
 
 public:
     // Called once before everything gets tested
-    DMZTest() : d_dmz(nullptr) { }
+    DMZTest() = default;
 
     // Called at the end of the test
-    ~DMZTest() = default;
+    ~DMZTest() override = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
-        if (debug) cerr << endl;
-        if (bes_debug) BESDebug::SetUp("cerr,dmz");
-    }
-
-    // Called after each test
-    void tearDown()
-    {
-        delete d_dmz;
     }
 
     // This is a 'function try block' and provides a way to abstract the many
     // exception types. jhrg 10/28/21
-    void handle_fatal_exceptions() try {
+    static void handle_fatal_exceptions() try {
         throw;
     }
-    catch (BESInternalError &e) {
+    catch (const BESInternalError &e) {
         CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
     }
     catch (const std::exception &e) {
@@ -117,34 +104,16 @@ public:
         CPPUNIT_FAIL("Caught ? ");
     }
 
-    // The above replaces this block of code:
-#if 0
-    catch (BESInternalError &e) {
-        CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-    }
-    catch (BESError &e) {
-        CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-    }
-    catch (std::exception &e) {
-        CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-    }
-    catch (...) {
-        CPPUNIT_FAIL("Caught ? ");
-    }
-#endif
-
     void test_DMZ_ctor_1() {
-        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
         CPPUNIT_ASSERT(d_dmz);
-        // DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
-        // CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
         DBG(cerr << "d_dmz->d_xml_doc.document_element().name(): " << d_dmz->d_xml_doc.document_element().name() << endl);
         CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.document_element().name(), "Dataset") == 0);
     }
 
     void test_DMZ_ctor_2() {
         try {
-            d_dmz = new DMZ("no-such-file");    // Should return could not open
+            d_dmz.reset(new DMZ("no-such-file"));    // Should return could not open
             CPPUNIT_FAIL("DMZ ctor should not succeed with bad path.");
         }
         catch (const BESInternalError &e) {
@@ -154,27 +123,59 @@ public:
 
     void test_DMZ_ctor_3() {
         try {
-            d_dmz = new DMZ(string(TEST_SRC_DIR).append("/input-files/empty-file.txt"));    // Should return could not open
+            d_dmz.reset(new DMZ(string(TEST_SRC_DIR).append("/input-files/empty-file.txt")));    // Should return could not open
             CPPUNIT_FAIL("DMZ ctor should not succeed with empty file.");
         }
-        catch (BESInternalError &e) {
+        catch (const BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
         }
     }
     
     void test_DMZ_ctor_4() {
         try {
-            d_dmz = new DMZ(""); // zero length
+            d_dmz.reset(new DMZ("")); // zero length
             CPPUNIT_FAIL("DMZ ctor should not succeed with an empty path");
         }
-        catch (BESInternalError &e) {
+        catch (const BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
         }
     }
 
+    // This shows how to test the processing of different XML elements w/o first
+    // parsing a whole DMR++. jhrg 5/2/22
+    // TODO Adopt this pattern throughout this file? jhrg 5/2/22
+    void test_process_dataset_0() {
+        try {
+            pugi::xml_document doc;
+            string source {R"(<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+            xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0"
+            dmrVersion="1.0" name="chunked_fourD.h5" dmrpp:href="data/dmrpp/chunked_fourD.h5"/>)"};
+            pugi::xml_parse_result result = doc.load_string(source.c_str());
+            if (!result) {
+                DBG(cerr << "XML [" << source << "] parsed with errors" << endl);
+                DBG(cerr << "Error description: " << result.description() << endl);
+                CPPUNIT_FAIL("Could not parse the XML String");
+            }
+
+            d_dmz.reset(new DMZ());
+            DMR dmr;
+            d_dmz->process_dataset(&dmr, doc.first_child());
+
+            DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
+            CPPUNIT_ASSERT(dmr.dap_version() == "4.0");
+            CPPUNIT_ASSERT(dmr.dmr_version() == "1.0");
+            CPPUNIT_ASSERT(dmr.get_namespace() == "http://xml.opendap.org/ns/DAP/4.0#");
+            CPPUNIT_ASSERT(dmr.name() == "chunked_fourD.h5");
+            DBG(cerr << "d_dmz->d_dataset_elem_href->str(): " << d_dmz->d_dataset_elem_href->str() << endl);
+            CPPUNIT_ASSERT(d_dmz->d_dataset_elem_href->str() == string("file://") + TEST_DMRPP_CATALOG + "/data/dmrpp/chunked_fourD.h5");
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
     void test_process_dataset_1() {
         try {
-            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DMR dmr;
             d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_child());
             DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
@@ -192,20 +193,20 @@ public:
 
     void test_process_dataset_2() {
         try {
-            d_dmz = new DMZ(broken_dmrpp);
+            d_dmz.reset(new DMZ(broken_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_child());
             CPPUNIT_FAIL("DMZ ctor should fail when the Dataset element lacks a name attribute.");
         }
-        catch (BESInternalError &e) {
+        catch (const BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with missing Dataset name attribute");
         }
     }
 
     void test_build_thin_dmr_1() {
         try {
-            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -234,7 +235,7 @@ public:
 
     void test_build_thin_dmr_2() {
         try {
-            d_dmz = new DMZ(grid_2_2d_dmrpp);
+            d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -266,7 +267,7 @@ public:
 
     void test_build_thin_dmr_3() {
         try {
-            d_dmz = new DMZ(coads_climatology_dmrpp);
+            d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -298,7 +299,7 @@ public:
 
     void test_build_thin_dmr_4() {
         try {
-            d_dmz = new DMZ(test_simple_6_dmrpp);
+            d_dmz.reset(new DMZ(test_simple_6_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -328,7 +329,7 @@ public:
 
     void test_build_thin_dmr_5() {
         try {
-            d_dmz = new DMZ(test_array_6_1_dmrpp);
+            d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -370,7 +371,7 @@ public:
     }
 
     void test_build_basetype_chain_1() {
-        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -382,7 +383,7 @@ public:
     }
 
     void test_build_basetype_chain_2() {
-        d_dmz = new DMZ(grid_2_2d_dmrpp);
+        d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -400,7 +401,7 @@ public:
     }
 
     void test_build_basetype_chain_3() {
-        d_dmz = new DMZ(test_array_6_1_dmrpp);
+        d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -420,7 +421,7 @@ public:
     }
 
     void test_get_variable_xml_node_1() {
-        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -434,7 +435,7 @@ public:
     }
 
     void test_get_variable_xml_node_2() {
-        d_dmz = new DMZ(grid_2_2d_dmrpp);
+        d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -448,7 +449,7 @@ public:
     }
 
     void test_get_variable_xml_node_3() {
-        d_dmz = new DMZ(coads_climatology_dmrpp);
+        d_dmz.reset(new DMZ(coads_climatology_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -462,7 +463,7 @@ public:
     }
 
     void test_get_variable_xml_node_4() {
-        d_dmz = new DMZ(test_array_6_1_dmrpp);
+        d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
@@ -478,7 +479,7 @@ public:
 
     void test_load_attributes_1() {
         try {
-            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -506,7 +507,7 @@ public:
 
     void test_load_attributes_2() {
         try {
-            d_dmz = new DMZ(grid_2_2d_dmrpp);
+            d_dmz.reset(new DMZ(grid_2_2d_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -534,7 +535,7 @@ public:
 
     void test_load_attributes_3() {
         try {
-            d_dmz = new DMZ(test_array_6_1_dmrpp);
+            d_dmz.reset(new DMZ(test_array_6_1_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -562,7 +563,7 @@ public:
 
     void test_process_cds_node_1() {
         try {
-            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -586,7 +587,7 @@ public:
             int chunks_nodes = 0;
             for (auto child = var_node.child("dmrpp:chunks"); child; child = child.next_sibling()) {
                 ++chunks_nodes;
-                d_dmz->process_cds_node(dc, child);
+                dmrpp::DMZ::process_cds_node(dc, child);
             }
 
             CPPUNIT_ASSERT(chunks_nodes == 1);
@@ -602,9 +603,75 @@ public:
         }
     }
 
+    void test_process_cds_node_2() {
+        try {
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = *(dmr.root()->var_begin());
+            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            CPPUNIT_ASSERT(dc);
+
+            // goto the DOM tree node for this variable
+            pugi::xml_node var_node = d_dmz->get_variable_xml_node(btp);
+            if (var_node == nullptr)
+                throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
+                                       __LINE__);
+
+            // Chunks for this node will be held in the var_node siblings.
+            auto child = var_node.child("dmrpp:chunks");
+            size_t num_logical_chunk = dmrpp::DMZ::process_cds_node(dc, child);
+
+            CPPUNIT_ASSERT(num_logical_chunk == 160000);    // 20 * 20 * 20 * 20
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+    void test_process_cds_node_3() {
+        try {
+            d_dmz.reset(new DMZ(chunked_oneD_dmrpp));
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = *(dmr.root()->var_begin());
+            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            CPPUNIT_ASSERT(dc);
+
+            // goto the DOM tree node for this variable
+            pugi::xml_node var_node = d_dmz->get_variable_xml_node(btp);
+            if (var_node == nullptr)
+                throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
+                                       __LINE__);
+
+            // Chunks for this node will be held in the var_node siblings.
+            auto child = var_node.child("dmrpp:chunks");
+            size_t num_logical_chunk = dmrpp::DMZ::process_cds_node(dc, child);
+
+            CPPUNIT_ASSERT(num_logical_chunk == 10000);
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
     void test_load_chunks_1() {
         try {
-            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -619,7 +686,7 @@ public:
 
             d_dmz->load_chunks(btp);
 
-            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            auto const* dc = dynamic_cast<DmrppCommon *>(btp);
             auto c_sizes = dc->get_chunk_dimension_sizes();
             CPPUNIT_ASSERT(c_sizes.size() == 4);
             CPPUNIT_ASSERT(c_sizes.at(0) == 20);
@@ -649,7 +716,7 @@ public:
 
     void test_load_chunks_2() {
         try {
-            d_dmz = new DMZ(coads_climatology_dmrpp);
+            d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -664,56 +731,25 @@ public:
 
             d_dmz->load_chunks(btp);
 
-            auto *dc = dynamic_cast<DmrppCommon *>(btp);
-            auto c_sizes = dc->get_chunk_dimension_sizes();
-            CPPUNIT_ASSERT(c_sizes.size() == 0);
+            auto const* dc = dynamic_cast<DmrppCommon *>(btp);
+            auto const& c_sizes = dc->get_chunk_dimension_sizes();
+            CPPUNIT_ASSERT(c_sizes.empty());
 
             auto chunks = dc->get_immutable_chunks();
             DBG(cerr << "chunks.size(): " << chunks.size() << endl);
             CPPUNIT_ASSERT(chunks.size() == 1);
             CPPUNIT_ASSERT(chunks.at(0)->get_offset() == 3112560);
             CPPUNIT_ASSERT(chunks.at(0)->get_size() == 96);
-            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 0);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().empty());
         }
         catch (...) {
             handle_fatal_exceptions();
         }
     }
-
-#if 0
-    void test_load_global_attributes_1() {
-        try {
-            d_dmz = new DMZ(coads_climatology_dmrpp);
-            DmrppTypeFactory factory;
-            DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr);
-
-            XMLWriter xml;
-            dmr.print_dap4(xml);
-            DBG(cerr << "DMR: " << xml.get_doc() << endl);
-
-            d_dmz->load_global_attributes(&dmr);
-
-            XMLWriter xml2;
-            dmr.print_dap4(xml2);
-            DBG(cerr << "DMR: " << xml2.get_doc() << endl);
-
-            auto *attrs = dmr.root()->attributes();
-            CPPUNIT_ASSERT(!attrs->empty());
-            D4Attribute *history = attrs->get("NC_GLOBAL.history");
-            CPPUNIT_ASSERT(history);
-            CPPUNIT_ASSERT(history->name() == "history");
-            CPPUNIT_ASSERT(history->value(0).find("FERRET") != string::npos);
-        }
-        catch (...) {
-            handle_fatal_exceptions();
-        }
-    }
-#endif
 
     void test_load_all_attributes_1() {
         try {
-            d_dmz = new DMZ(coads_climatology_dmrpp);
+            d_dmz.reset(new DMZ(coads_climatology_dmrpp));
             DmrppTypeFactory factory;
             DMR dmr(&factory);
             d_dmz->build_thin_dmr(&dmr);
@@ -747,6 +783,7 @@ public:
     CPPUNIT_TEST(test_DMZ_ctor_3);
     CPPUNIT_TEST(test_DMZ_ctor_4);
 
+    CPPUNIT_TEST(test_process_dataset_0);
     CPPUNIT_TEST(test_process_dataset_1);
     CPPUNIT_TEST(test_process_dataset_2);
 
@@ -770,6 +807,8 @@ public:
     CPPUNIT_TEST(test_load_attributes_3);
 
     CPPUNIT_TEST(test_process_cds_node_1);
+    CPPUNIT_TEST(test_process_cds_node_2);
+    CPPUNIT_TEST(test_process_cds_node_3);
 
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);
@@ -789,6 +828,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DMZTest);
 
 int main(int argc, char*argv[])
 {
+    return bes_run_tests<dmrpp::DMZTest>(argc, argv, "cerr,dmz") ? 0 : 1;
+#if 0
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
@@ -826,4 +867,5 @@ int main(int argc, char*argv[])
     }
 
     return wasSuccessful ? 0 : 1;
+#endif
 }

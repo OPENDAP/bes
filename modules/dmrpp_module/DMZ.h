@@ -76,6 +76,7 @@ private:
     pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
+    void process_fill_value_chunks() const;
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
 
@@ -92,7 +93,7 @@ private:
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);
     static void process_attribute(libdap::D4Attributes *attributes, const pugi::xml_node &dap_attr_node);
 
-    static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
+    static size_t process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
     void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node) const;
 

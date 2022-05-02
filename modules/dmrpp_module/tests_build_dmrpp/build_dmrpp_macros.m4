@@ -211,12 +211,11 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
 GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
-TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
 
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
-BASELINES_DIR="${abs_srcdir}/get_dmrpp"
+BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 
@@ -227,7 +226,6 @@ params="$3"
 export PATH=${abs_top_builddir}/standalone:$PATH
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
-# TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}" # disabled in favor of a single file solution. ndp 3/28/22
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -243,6 +241,8 @@ AS_IF([test -z "$at_verbose"], [
     echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
     echo "#         DATA_DIR: ${DATA_DIR}"
     echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+    echo "#"
+    echo "# AT_GET_DMRPP_3_20() arguments: "
     echo "#           arg #1: $1"
     echo "#           arg #2: $2"
     echo "#           arg #3: $3"

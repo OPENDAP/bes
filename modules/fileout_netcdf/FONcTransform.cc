@@ -76,6 +76,9 @@
 using namespace libdap;
 using namespace std;
 
+#define MODULE "fonc"
+#define prolog std::string("FONcTransform::").append(__func__).append("() - ")
+
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
  *
@@ -247,7 +250,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
     // cancel any pending timeout alarm according to the configuration.
     BESUtil::conditional_timeout_cancel();
 
-    BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
+    BESDEBUG(MODULE, prolog << "Reading data into DataDDS" << endl);
 
     FONcUtils::reset();
 
@@ -282,7 +285,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!besDRB.get_btp_func_ce().empty()) {
-        BESDEBUG("fonc", "Found function(s) in CE: " << besDRB.get_btp_func_ce() << endl);
+        BESDEBUG(MODULE,  prolog << "Found function(s) in CE: " << besDRB.get_btp_func_ce() << endl);
 
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
@@ -335,7 +338,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
     // sent.
     for (auto vi = _dds->var_begin(), ve = _dds->var_end(); vi != ve; vi++) {
         if ((*vi)->send_p()) {
-            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << (*vi)->name() << "'" << endl);
+            BESDEBUG(MODULE,  prolog << "Converting variable '" << (*vi)->name() << "'" << endl);
 
             // This is a factory class call, and 'fg' is specialized for '*vi'
             FONcBaseType *fb = FONcUtils::convert((*vi), FONcTransform::_returnAs, FONcRequestHandler::classic_model);
@@ -352,18 +355,17 @@ void FONcTransform::transform_dap2(ostream &strm) {
     int stax;
     if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
         if (FONcRequestHandler::classic_model) {
-            BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file in classic mode. fileName:  "
+            BESDEBUG(MODULE,  prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
                     << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL, &_ncid);
         }
         else {
-            BESDEBUG("fonc",
-                     "FONcTransform::transform() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
         }
     }
     else {
-        BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
+        BESDEBUG(MODULE,  prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
         stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
     }
 
@@ -388,14 +390,14 @@ void FONcTransform::transform_dap2(ostream &strm) {
         // that object to the netcdf file. This also adds the attributes
         // for the variables to the netcdf file
         for (FONcBaseType *fbt: _fonc_vars) {
-            BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE,  prolog << "Defining variable:  " << fbt->name() << endl);
             fbt->define(_ncid);
         }
 
         if (FONcRequestHandler::no_global_attrs == false) {
             // Add any global attributes to the netcdf file
             AttrTable &globals = _dds->get_attr_table();
-            BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
+            BESDEBUG(MODULE,  prolog << "Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
             if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
@@ -421,11 +423,11 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
         if (is_streamable()) {
             byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-            BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
+            BESDEBUG(MODULE,  prolog << "First write data to stream, count:  " << byteCount << endl);
         }
 
         for (FONcBaseType *fbt: _fonc_vars) {
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE,  prolog << "Writing data for variable:  " << fbt->name() << endl);
 
             fbt->set_dds(_dds);
             fbt->set_eval(&eval);
@@ -436,7 +438,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             if (is_streamable()) {
                 // write the what's been written
                 byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-                BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
+                BESDEBUG(MODULE,  prolog << "Writing data to stream, count:  " << byteCount << endl);
             }
         }
 
@@ -445,7 +447,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
         byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-        BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);
+        BESDEBUG(MODULE,  prolog << "After nc_close() count:  " << byteCount << endl);
     }
     catch (BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
@@ -544,7 +546,7 @@ throw_if_dap4_response_too_big(DMR *dmr)
  */
 void FONcTransform::transform_dap4() {
     BESUtil::conditional_timeout_cancel();
-    BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     FONcUtils::reset();
 
@@ -572,7 +574,6 @@ void FONcTransform::transform_dap4() {
     // embedded structures. It only grabs the variables that are to be
     // sent.
 
-    BESDEBUG("fonc", "Coming into transform_dap4() " << endl);
 
     // First check if this DMR has groups etc.
     bool support_group = check_group_support();
@@ -580,8 +581,7 @@ void FONcTransform::transform_dap4() {
     if (true == support_group) {
 
         int stax = -1;
-        BESDEBUG("fonc",
-                 "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+        BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
         stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
@@ -597,7 +597,7 @@ void FONcTransform::transform_dap4() {
 
 #if !NDEBUG
         for (std::set<string>::iterator it = _included_grp_names.begin(); it != _included_grp_names.end(); ++it)
-            BESDEBUG("fonc", "included group list name is: " << *it << endl);
+            BESDEBUG(MODULE,  prolog << "Included group list name is: " << *it << endl);
 #endif
         // Build a global dimension name table for all variables if
         // the constraint is not empty!
@@ -608,13 +608,13 @@ void FONcTransform::transform_dap4() {
         map<string, unsigned long>::iterator it;
 
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
-            BESDEBUG("fonc", "Final GFQN dim name is: " << it->first << endl);
-            BESDEBUG("fonc", "Final GFQN dim size is: " << it->second << endl);
+            BESDEBUG(MODULE,  prolog << "Final GFQN dim name is: " << it->first << endl);
+            BESDEBUG(MODULE,  prolog << "Final GFQN dim size is: " << it->second << endl);
         }
 
         for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
-            BESDEBUG("fonc", "Final VFQN dim name is: " << it->first << endl);
-            BESDEBUG("fonc", "Final VFQN dim size is: " << it->second << endl);
+            BESDEBUG(MODULE,  prolog << "Final VFQN dim name is: " << it->first << endl);
+            BESDEBUG(MODULE,  prolog << "Final VFQN dim size is: " << it->second << endl);
         }
 #endif
 
@@ -646,14 +646,14 @@ void FONcTransform::transform_dap4() {
         vector <string> root_d4_dimname_list;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
             string d4_temp_dimname = git->first.substr(1);
-            //BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
+            //BESDEBUG(MODULE,  prolog << "d4_temp_dimname: "<<d4_temp_dimname<<endl);
             if (d4_temp_dimname.find('/') == string::npos)
                 root_d4_dimname_list.push_back(d4_temp_dimname);
         }
 
 #if !NDEBUG
         for (unsigned int i = 0; i < root_d4_dimname_list.size(); i++)
-            BESDEBUG("fonc", "root_d4 dim name is: " << root_d4_dimname_list[i] << endl);
+            BESDEBUG(MODULE,  prolog << "root_d4 dim name is: " << root_d4_dimname_list[i] << endl);
 #endif
 
         // Only remember the root dimension names that are like "dim1,dim2,..."
@@ -665,7 +665,7 @@ void FONcTransform::transform_dap4() {
                 continue;
             else {
                 string temp_suffix = root_d4_dimname_list[i].substr(3);
-                //BESDEBUG("fonc", "temp_suffix: "<<temp_suffix<<endl);
+                //BESDEBUG(MODULE,  prolog << "temp_suffix: "<<temp_suffix<<endl);
                 bool ignored_suffix = false;
                 for (unsigned int j = 0; j < temp_suffix.size(); j++) {
                     if (!isdigit(temp_suffix[j])) {
@@ -682,17 +682,17 @@ void FONcTransform::transform_dap4() {
 
 #if !NDEBUG
         for (unsigned int i = 0; i < root_dim_suffix_nums.size(); i++)
-            BESDEBUG("fonc", "root_dim_suffix_nums: " << root_dim_suffix_nums[i] << endl);
+            BESDEBUG(MODULE,  prolog << "root_dim_suffix_nums: " << root_dim_suffix_nums[i] << endl);
 
 
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
-            BESDEBUG("fonc", "RFinal GFQN dim name is: " << it->first << endl);
-            BESDEBUG("fonc", "RFinal GFQN dim size is: " << it->second << endl);
+            BESDEBUG(MODULE,  prolog << "RFinal GFQN dim name is: " << it->first << endl);
+            BESDEBUG(MODULE,  prolog << "RFinal GFQN dim size is: " << it->second << endl);
         }
 
         for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
-            BESDEBUG("fonc", "RFinal VFQN dim name is: " << it->first << endl);
-            BESDEBUG("fonc", "RFinal VFQN dim size is: " << it->second << endl);
+            BESDEBUG(MODULE,  prolog << "RFinal VFQN dim name is: " << it->first << endl);
+            BESDEBUG(MODULE,  prolog << "RFinal VFQN dim size is: " << it->second << endl);
         }
 #endif
 
@@ -705,6 +705,8 @@ void FONcTransform::transform_dap4() {
     }
     else // No group, handle as the classic way
         transform_dap4_no_group();
+
+    BESDEBUG(MODULE,  prolog << "END" << endl);
 
     return;
 }
@@ -720,10 +722,10 @@ void FONcTransform::transform_dap4_no_group() {
 #if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
-        BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
-        BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
-        BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
-        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
     }
 #endif
     Constructor::Vars_iter vi = root_grp->var_begin();
@@ -733,8 +735,7 @@ void FONcTransform::transform_dap4_no_group() {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
 
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_no_group() - Converting variable '" << v->name() << "'" << endl);
+            BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
@@ -747,11 +748,11 @@ void FONcTransform::transform_dap4_no_group() {
 
 #if !NDEBUG
     if (root_grp->grp_begin() == root_grp->grp_end())
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " << endl);
+        BESDEBUG(MODULE,  prolog << "No group  " << endl);
     else
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " << endl);
+        BESDEBUG(MODULE,  prolog << "Has group  " << endl);
     for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi)
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
+        BESDEBUG(MODULE,  prolog << "Group name:  " << (*gi)->name() << endl);
 #endif
 
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
@@ -760,21 +761,18 @@ void FONcTransform::transform_dap4_no_group() {
     int stax = -1;
     if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
         if (FONcRequestHandler::classic_model) {
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_no_group() - Opening NetCDF-4 cache file in classic mode. fileName:  "
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
                              << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL, &_ncid);
         }
         else {
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_no_group() - Opening NetCDF-4 cache file. fileName:  " << _localfile
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile
                                                                                                            << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
         }
     }
     else {
-        BESDEBUG("fonc",
-                 "FONcTransform::transform_dap4_no_group() - Opening NetCDF-3 cache file. fileName:  " << _localfile
+        BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile
                                                                                                        << endl);
         stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
     }
@@ -795,7 +793,7 @@ void FONcTransform::transform_dap4_no_group() {
         vector<FONcBaseType *>::iterator e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Defining variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE, prolog << "Defining variable:  " << fbt->name() << endl);
             //fbt->set_is_dap4(true);
             fbt->define(_ncid);
         }
@@ -806,13 +804,12 @@ void FONcTransform::transform_dap4_no_group() {
             D4Group *root_grp = _dmr->root();
             D4Attributes *d4_attrs = root_grp->attributes();
 
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_no_group() handle GLOBAL DAP4 attributes " << d4_attrs << endl);
+            BESDEBUG(MODULE, prolog << "Handle GLOBAL DAP4 attributes " << d4_attrs << endl);
 #if !NDEBUG
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
                  ii != ee; ++ii) {
                 string name = (*ii)->name();
-                BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is " << name << endl);
+                BESDEBUG(MODULE, prolog << "GLOBAL attribute name is " << name << endl);
             }
 #endif
             bool is_netCDF_enhanced = false;
@@ -838,8 +835,7 @@ void FONcTransform::transform_dap4_no_group() {
         e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_no_group() - Writing data for variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
             fbt->write(_ncid);
         }
 
@@ -863,8 +859,7 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
     bool included_grp = false;
 
     if (_dmr->get_ce_empty()) {
-        BESDEBUG("fonc",
-                 "Check-get_ce_empty. FONcTransform::transform_dap4() in group  - group name:  " << grp->FQN() << endl);
+        BESDEBUG(MODULE, prolog << "In group  - group name:  " << grp->FQN() << endl);
         included_grp = true;
     }
         // Always include the root and its attributes.
@@ -897,7 +892,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
                                                   int par_grp_id, map<string, int> &fdimname_to_id,
                                                   vector<int> &rds_nums) {
 
-    BESDEBUG("fonc", "transform_dap4_group_internal() - inside" << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
     int grp_id = -1;
     int stax = -1;
 
@@ -907,7 +902,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         grp_id = _ncid;
     else {
         stax = nc_def_grp(par_grp_id, (*grp).name().c_str(), &grp_id);
-        BESDEBUG("fonc", "transform_dap4_group_internal() - group name is " << (*grp).name() << endl);
+        BESDEBUG(MODULE,  prolog << "Group name is " << (*grp).name() << endl);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
 
@@ -917,10 +912,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
 #if !NDEBUG
-        BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
-        BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
-        BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
-        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+        BESDEBUG(MODULE, prolog << "Check dimensions" << endl);
+        BESDEBUG(MODULE, prolog << "Dim name is: " << (*di)->name() << endl);
+        BESDEBUG(MODULE, prolog << "Dim size is: " << (*di)->size() << endl);
+        BESDEBUG(MODULE, prolog << "Fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
 #endif
 
         unsigned long dimsize = (*di)->size();
@@ -951,8 +946,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
 
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_group() - Converting variable '" << v->name() << "'" << endl);
+            BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
@@ -970,9 +964,9 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
 #if !NDEBUG
     if (grp->grp_begin() == grp->grp_end())
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " << endl);
+        BESDEBUG(MODULE, prolog << "No group" << endl);
     else
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " << endl);
+        BESDEBUG(MODULE, prolog << "Has group" << endl);
 #endif
 
 
@@ -985,7 +979,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Defining variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE,  prolog << "Defining variable:  " << fbt->name() << endl);
             //fbt->set_is_dap4(true);
             fbt->define(grp_id);
         }
@@ -1003,7 +997,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
         if (true == add_attr) {
             D4Attributes *d4_attrs = grp->attributes();
-            BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl);
+            BESDEBUG(MODULE, prolog << "Adding Group Attributes" << endl);
             // add dap4 group attributes.
             FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
             // *** Add the json history here
@@ -1014,15 +1008,14 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            BESDEBUG("fonc",
-                     "FONcTransform::transform_dap4_group() - Writing data for variable:  " << fbt->name() << endl);
+            BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);
             fbt->write(grp_id);
         }
 
         // Now handle all the child groups.
         for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
-            BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
+            BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
             transform_dap4_group(*gi, false, grp_id, fdimname_to_id, rds_nums);
         }
 
@@ -1031,7 +1024,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }
-
+    BESDEBUG(MODULE,  prolog << "END" << endl);
 }
 
 
@@ -1048,12 +1041,11 @@ bool FONcTransform::check_group_support() {
 void FONcTransform::gen_included_grp_list(D4Group *grp) {
     bool grp_has_var = false;
     if (grp) {
-        BESDEBUG("fnoc", "<coming to the D4 group  has name " << grp->name() << endl);
-        BESDEBUG("fnoc", "<coming to the D4 group  has fullpath " << grp->FQN() << endl);
+        BESDEBUG(MODULE,  prolog << "Processing D4 Group: " << grp->name() << " fullpath: " << grp->FQN() << endl);
 
         if (grp->var_begin() != grp->var_end()) {
 
-            BESDEBUG("fnoc", "<has the vars  " << endl);
+            BESDEBUG(MODULE, prolog << "Has child variables" << endl);
             Constructor::Vars_iter vi = grp->var_begin();
             Constructor::Vars_iter ve = grp->var_end();
 
@@ -1073,7 +1065,7 @@ void FONcTransform::gen_included_grp_list(D4Group *grp) {
         }
         // Loop through the subgroups to build up the list.
         for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
-            BESDEBUG("fonc", "obtain included groups  - group name:  " << (*gi)->name() << endl);
+            BESDEBUG(MODULE, prolog << "Obtain included groups - group name:  " << (*gi)->name() << endl);
             gen_included_grp_list(*gi);
         }
     }
@@ -1123,11 +1115,10 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
         for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
 #if !NDEBUG
-            BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
-            BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
-            BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
-            BESDEBUG("fonc",
-                     "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+            BESDEBUG(MODULE, prolog << "Check dimensions" << endl);
+            BESDEBUG(MODULE, prolog << "Dim name is: " << (*di)->name() << endl);
+            BESDEBUG(MODULE, prolog << "Dim size is: " << (*di)->size() << endl);
+            BESDEBUG(MODULE, prolog << "Fully qualfied dim name: " << (*di)->fully_qualified_name() << endl);
 #endif
             unsigned long dimsize = (*di)->size();
             if ((*di)->constrained()) {
@@ -1153,14 +1144,14 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
                     if ((*dim_i).name != "") {
                         D4Dimension *d4dim = t_a->dimension_D4dim(dim_i);
                         if (d4dim) {
-                            BESDEBUG("fonc", "transform_dap4() check dim- dim name is: " << d4dim->name() << endl);
-                            BESDEBUG("fonc", "transform_dap4() check dim- dim size is: " << d4dim->size() << endl);
-                            BESDEBUG("fonc", "transform_dap4() check dim- fully_qualfied_dim name is: "
+                            BESDEBUG(MODULE, prolog << "Check dim- dim name is: " << d4dim->name() << endl);
+                            BESDEBUG(MODULE, prolog << "Check dim- dim size is: " << d4dim->size() << endl);
+                            BESDEBUG(MODULE, prolog << "Check dim- fully_qualfied_dim name is: "
                                     << d4dim->fully_qualified_name() << endl);
 
                             unsigned long dimsize = t_a->dimension_size(dim_i, true);
 #if !NDEBUG
-                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: " << dimsize << endl);
+                            BESDEBUG(MODULE, prolog << "Check dim- final dim size is: " << dimsize << endl);
 #endif
                             pair<map<string, unsigned long>::iterator, bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(
@@ -1184,21 +1175,20 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
 #if !NDEBUG
     map<string, unsigned long>::iterator it;
     for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
-        BESDEBUG("fonc", "GFQN dim name is: " << it->first << endl);
-        BESDEBUG("fonc", "GFQN dim size is: " << it->second << endl);
+        BESDEBUG(MODULE, prolog << "GFQN dim name is: " << it->first << endl);
+        BESDEBUG(MODULE, prolog << "GFQN dim size is: " << it->second << endl);
     }
 
     for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
-        BESDEBUG("fonc", "VFQN dim name is: " << it->first << endl);
-        BESDEBUG("fonc", "VFQN dim size is: " << it->second << endl);
+        BESDEBUG(MODULE, prolog << "VFQN dim name is: " << it->first << endl);
+        BESDEBUG(MODULE, prolog << "VFQN dim size is: " << it->second << endl);
     }
 
 #endif
 
     // Go through all the descendent groups.
     for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
-        BESDEBUG("fonc",
-                 "FONcTransform::check_and_obtain_dimensions() in group  - group name:  " << (*gi)->name() << endl);
+        BESDEBUG(MODULE,prolog << "In group:  " << (*gi)->name() << endl);
         check_and_obtain_dimensions(*gi, false);
     }
 

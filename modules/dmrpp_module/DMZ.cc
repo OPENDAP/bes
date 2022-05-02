@@ -969,7 +969,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         if (is_eq(attr.name(), "href")) {
             href = attr.value();
         }
-        else if (is_eq(attr.name(), "trust")) {
+        else if (is_eq(attr.name(), "trust") || is_eq(attr.name(), "dmrpp:trust")) {
             href_trusted = is_eq(attr.value(), "true");
         }
         else if (is_eq(attr.name(), "offset")) {
@@ -1003,14 +1003,21 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
  * @param dc
  * @param chunks
  */
-void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
+size_t DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
-    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child /*&& !cds_found*/; child = child.next_sibling()) {
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
             string sizes = child.child_value();
             dc->parse_chunk_dimension_sizes(sizes);
         }
     }
+
+    size_t num_logical_chunks = 1;
+    for (auto dim_size: dc->get_chunk_dimension_sizes()) {
+        num_logical_chunks *= dim_size;
+    }
+
+    return num_logical_chunks;
 }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
@@ -1024,7 +1031,7 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
     }
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
-    process_cds_node(dc, chunks);
+    size_t num_logical_chunks = process_cds_node(dc, chunks);
 
     // Chunks for this node will be held in the var_node siblings.
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
@@ -1032,6 +1039,18 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
             process_chunk(dc, chunk);
         }
     }
+
+    if (dc->get_chunks_size() < num_logical_chunks)
+        process_fill_value_chunks();
+}
+
+void DMZ::process_fill_value_chunks() const
+{
+    // Build a map of the chunks parsed from the DMR++ based on the CDS info
+
+    // Add the missing chunks.
+    //  Use a child of Chunk? - these Chunks only have to allocate memory and
+    //  use memset of the fill value.
 }
 
 /**

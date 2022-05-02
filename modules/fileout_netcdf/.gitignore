@@ -91,3 +91,4 @@ data/build_test_data/bes.conf
 /tests/mem-pressure-tests/standalone-dap4-2.nc4
 /tests/mem-pressure-tests/standalone-dap4-3.nc4
 /tests/mem-pressure-tests/standalone-dap4-4.nc4
+/tests/testsuite-functions

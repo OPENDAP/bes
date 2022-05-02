@@ -140,6 +140,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
     if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
         throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
 
+    // TODO Rewrite this to use split. jhrg 5/2/22
     string space(" ");
     size_t strPos = 0;
     string strVal;
@@ -149,7 +150,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         // Process space delimited content
         while ((strPos = chunk_dims.find(space)) != string::npos) {
             strVal = chunk_dims.substr(0, strPos);
-
+            // TODO stoull (CDS uses uint64_t) jhrg 5/2/22
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
             chunk_dims.erase(0, strPos + space.length());
         }

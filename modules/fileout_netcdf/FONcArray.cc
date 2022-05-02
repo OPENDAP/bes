@@ -146,6 +146,18 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
 
+    if(d_array_type == NC_NAT) {
+
+        string err = "fileout_netcdf: The datatype of this variable '" + _varname;
+        err += "' is not supported. It is very possible that you try to obtain ";
+        err += "a netCDF file that follows the netCDF classic model. ";
+        err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
+        err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
+        err += "follows the netCDF enhanced model should solve the problem.";
+
+        throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
 #if !NDEBUG
     if (d4_dim_ids.size() > 0) {
         BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
@@ -460,7 +472,15 @@ void FONcArray::define(int ncid) {
             // TODO Make this more adaptable to the Array's data type. Find out when it's
             //  best to use shuffle, et c. jhrg 7/22/18
             if (FONcRequestHandler::use_compression) {
+
                 int shuffle = 0;
+                // For integer, if the type size is >= 2, turn on the shuffle key always.
+                // For other types, turn off the shuffle key by default.
+                if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                    NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                    FONcRequestHandler::use_shuffle)                
+                    shuffle = 1;
+                
                 int deflate = 1;
                 int deflate_level = 4;
                 stax = nc_def_var_deflate(ncid, _varid, shuffle, deflate, deflate_level);

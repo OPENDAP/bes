@@ -1,19 +1,35 @@
 # chunked_threeD_asymmetric.h5]chunked_threeD.h5
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-AT_INIT([bes/modules/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
+AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 
 m4_include([build_dmrpp_macros.m4])
 
-
+################################################################################
+# Test get_dmrpp using command line options
+#
+# Simple tests, no commandline options
 AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline])
 AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.baseline])
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp/use_cf.conf])
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp/use_cf.conf -D])
+#
+# -s Inject a "site.conf"
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
+#
+# -D Produce only a DMR
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
+#
+# -u Inject dmrpp:href URL
+AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
+#
+# -c Inject complete BES configuration
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf])
+#
+# -o Send output to a specific file
+# AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-o ${abs_builddir}/foo.dmrpp])
 
-
-
+################################################################################
 # Test build_dmrpp using pre-built DMRs
+#
 # AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/chunked_enum.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/chunked_opaque.h5])
