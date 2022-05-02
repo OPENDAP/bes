@@ -22,3 +22,4 @@
 /unit-tests/DmrppRequestHandler.Tpo
 
 /tests_build_dmrpp/testsuite_dmrpp_tests
+/tests_build_dmrpp/test_bes.conf
