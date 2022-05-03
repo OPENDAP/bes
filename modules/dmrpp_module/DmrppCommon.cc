@@ -291,6 +291,11 @@ unsigned long DmrppCommon::add_chunk(
 /**
  * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
  *
+ * NB: This method is used by build_dmrpp during the production of the dmr++ file. The fact that the URL is
+ * not set is fine in that circumstance because when the DMZ parser reads the dmr++ the chunks without
+ * the explicit URL (dmrpp:href attribute) will inherit the primary URL (dmrpp:href) value from the top
+ * level Dataset element.
+ *
  * @param byte_order The stored byte order of the chunk
  * @param size The sie of the chunk
  * @param offset Chunk offset in the target dataset binary object.
@@ -311,6 +316,11 @@ unsigned long DmrppCommon::add_chunk(
 
 /**
  * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
+ *
+ * NB: This method is used by build_dmrpp during the production of the dmr++ file. The fact that the URL is
+ * not set is fine in that circumstance because when the DMZ parser reads the dmr++ the chunks without
+ * the explicit URL (dmrpp:href attributes) will inherit the primary URL (dmrpp:href) value from the top
+ * level Dataset element.
  *
  * @param byte_order The stored byte order of the chunk
  * @param size The sie of the chunk

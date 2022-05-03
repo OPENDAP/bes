@@ -1240,10 +1240,12 @@ void DmrppArray::read_chunks()
     //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
+    bool found_needed_chunks = false;
     for(const auto& chunk: get_immutable_chunks()){
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed){
+            found_needed_chunks = true;
             bool added = current_super_chunk->add_chunk(chunk);
             if(!added){
                 sc_id.str(std::string()); // Clears stringstream.
@@ -1257,6 +1259,12 @@ void DmrppArray::read_chunks()
                 }
             }
         }
+    }
+
+    BESDEBUG(dmrpp_3, prolog << "found_needed_chunks: " << (found_needed_chunks?"true":"false") << endl);
+
+    if(!found_needed_chunks){
+        throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__, __LINE__);
     }
 
     reserve_value_capacity(get_size(true));
