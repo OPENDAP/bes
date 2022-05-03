@@ -35,6 +35,7 @@ using std::endl;
 #include <libdap/DDS.h>
 
 #include <BESDebug.h>
+#include <RequestServiceTimer.h>
 
 #include "get_xml_data.h"
 #include "XDOutput.h"
@@ -57,6 +58,9 @@ const char *DAP_SCHEMA = "http://xml.opendap.org/ns/dap/3.3#";
 
 using namespace libdap;
 
+#define MODULE "xml_data"
+#define prolog string("get_xml_data::").append(__func__).append("() - ")
+
 namespace xml_data {
 
 /** Using the XDOutput::print_ascii(), write the data values to an
@@ -77,6 +81,8 @@ void get_data_values_as_xml(DDS *dds, XMLWriter *writer)
         DDS::Vars_iter i = dds->var_begin();
         while (i != dds->var_end()) {
             if ((*i)->send_p()) {
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + (*i)->name() , __FILE__, __LINE__);
+
                 BESDEBUG("xd", "Printing the values for " << (*i)->name() << " (" << (*i)->type_name() << ")" << endl);
                 dynamic_cast<XDOutput &>(**i).print_xml_data(writer, true);
             }

@@ -38,7 +38,8 @@ TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
-ServerAdministratorTest kvp_utils_test
+ServerAdministratorTest kvp_utils_test \
+RequestTimerTest
 
 # Debugging code is compiled out of the project when
 # BES_DEVELOPER is not set, and so running the debugT tests
@@ -196,3 +197,4 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
 
+RequestTimerTest_SOURCES = RequestTimerTest.cc
