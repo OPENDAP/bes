@@ -118,7 +118,7 @@ class BESDataHandlerInterface;
 class BESInterface: public BESObj {
 private:
     std::ostream *d_strm {nullptr};
-    int d_timeout_from_keys {0}; ///< Command timeout; can be overridden using setContext
+    int d_bes_timeout {0}; ///< Command timeout; can be overridden using setContext
 
 protected:
     BESDataHandlerInterface *d_dhi_ptr {nullptr}; ///< Allocated by the child class

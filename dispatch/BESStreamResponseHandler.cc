@@ -52,8 +52,13 @@ using std::ostream;
 #include "BESDataNames.h"
 #include "BESContainer.h"
 #include "BESDataHandlerInterface.h"
+#include "BESUtil.h"
+#include "RequestServiceTimer.h"
 
 #define BES_STREAM_BUFFER_SIZE 4096
+
+#define MODULE "bes"
+#define prolog std::string("BESStreamResponseHandler::").append(__func__).append("() - ")
 
 BESStreamResponseHandler::BESStreamResponseHandler(const string &name) :
     BESResponseHandler(name)
@@ -64,7 +69,7 @@ BESStreamResponseHandler::~BESStreamResponseHandler()
 {
 }
 
-extern volatile int bes_timeout; // defined in BESInterface. jhrg 1/24/17
+//extern volatile int bes_timeout; // defined in BESInterface. jhrg 1/24/17
 
 /** @brief executes the command 'get file <filename>;' by
  * streaming the specified file
@@ -80,6 +85,7 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     d_response_object = 0;
 
+
     // Hack. We put this here because the bes timeout period should not
     // include the time it takes to send  data for a file transfer response.
     //
@@ -87,10 +93,15 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     // operation and have that run from the call to BESInterface::transmist_data().
     // pcw talks about that below.
     // jhrg 1/24/17
+#if 0
     if (bes_timeout != 0) {
         bes_timeout = 0;
         alarm(bes_timeout);
     }
+#endif
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+    BESUtil::conditional_timeout_cancel();
 
     // What if there is a special way to stream back a data file?
     // Should we pass this off to the request handlers and put

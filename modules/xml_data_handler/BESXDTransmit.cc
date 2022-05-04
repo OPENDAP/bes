@@ -47,12 +47,16 @@
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 #include <DapFunctionUtils.h>
+#include <RequestServiceTimer.h>
 
 #include "BESXDTransmit.h"
 #include "get_xml_data.h"
 
 using namespace xml_data;
 using namespace libdap;
+
+#define MODULE "xml_data"
+#define prolog string("BESXDTransmit::").append(__func__).append("() - ")
 
 void BESXDTransmit::send_basic_ascii(BESResponseObject * obj, BESDataHandlerInterface & dhi)
 {
@@ -118,6 +122,7 @@ void BESXDTransmit::send_basic_ascii(BESResponseObject * obj, BESDataHandlerInte
             // in the data if the variable has the send flag set.
             for (DDS::Vars_iter i = dds->var_begin(); i != dds->var_end(); i++) {
                 if ((*i)->send_p()) {
+                    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + (*i)->name() , __FILE__, __LINE__);
                     (*i)->intern_data(ce, *dds);
                 }
             }
@@ -150,6 +155,9 @@ void BESXDTransmit::send_basic_ascii(BESResponseObject * obj, BESDataHandlerInte
         // send it as ascii
         BESDEBUG("xd", "converting to xd datadds" << endl);
         DDS *xd_dds = dds_to_xd_dds(dds);
+
+        // Verify the request hasn't exceeded bes_timeout.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
         // Now that we are ready to start building the response data we
         // cancel any pending timeout alarm according to the configuration.

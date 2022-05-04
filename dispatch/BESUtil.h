@@ -114,6 +114,7 @@ public:
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
+    static void exit_on_request_timeout();
 
     /** Convert a string to all lower case **/
     static unsigned int replace_all(std::string &s, std::string find_this, std::string replace_with_this);

@@ -457,7 +457,7 @@ int TheBESKeys::read_int_key(const string &key, int default_value)
         std::istringstream iss(value);
         int int_val;
         iss >> int_val;
-        if (iss.eof() || iss.bad() || iss.fail())
+        if (!iss.eof() || iss.bad() || iss.fail())
             return default_value;
         else
             return int_val;

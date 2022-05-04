@@ -54,6 +54,9 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
+#include "TheBESKeys.h"
+#include "RequestServiceTimer.h"
+
 #include "test_config.h"
 #include "focovjson_utils.h"
 
@@ -63,6 +66,8 @@ static bool debug = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define BES_CANCEL_TIMEOUT_ON_SEND "BES.CancelTimeoutOnSend"
 
 namespace focovjson {
 
@@ -106,11 +111,25 @@ public:
     // Called at the end of the test
     virtual ~FoCovJsonTest() = default;
 
-    // Called before each test - use the default impls for these
-    // void setUp()
+    // Called before each test
+    void setUp()
+    {
+        // FoJsonTransform now uses theBESKeys. dan 4/26/22
+        TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. dan 4/26/22
+
+        // Starting TheTimer with '0' disables bes-timeout.
+        RequestServiceTimer::TheTimer()->start(std::chrono::seconds{0});
+        // Starting TheTimer with a positive value sets bes-timeout to that value in seconds.
+
+        TheBESKeys::TheKeys()->set_key(BES_CANCEL_TIMEOUT_ON_SEND, "false");
+        // Set TheKeys() BES.CancelTimeoutOnSend ==> true to override bes-timeout set in TheTimer
+        // use sleep(#) in a test to simulate a delay to trip bes-timeout in the Transform.
+    }
 
     // Called after each test
-    // void tearDown()
+    void tearDown()
+    {
+    }
 
     CPPUNIT_TEST_SUITE(FoCovJsonTest);
 

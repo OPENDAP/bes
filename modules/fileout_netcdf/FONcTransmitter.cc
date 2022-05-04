@@ -54,7 +54,7 @@
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TempFile.h>
-
+#include <RequestServiceTimer.h>
 
 #include <BESLog.h>
 #include <BESError.h>
@@ -248,6 +248,10 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 #endif
 
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+
+        // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+        BESUtil::conditional_timeout_cancel();
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
