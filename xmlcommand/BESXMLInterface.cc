@@ -149,12 +149,12 @@ void BESXMLInterface::build_data_request_plan()
                 // BESXMLCommand object
                 string node_name = (char *) current_node->name;
 
-                if(node_name == SETCONTAINER_STR){
+                if (node_name == SETCONTAINER_STR) {
                     string name;
                     string value;
-                    map<string,string> props;
+                    map<string, string> props;
                     BESXMLUtils::GetNodeInfo(current_node, name, value, props);
-                    BESDEBUG(MODULE, prolog << "In "  << SETCONTAINER_STR << " element. Value: " << value << endl);
+                    BESDEBUG(MODULE, prolog << "In " << SETCONTAINER_STR << " element. Value: " << value << endl);
                     TheBESKeys::TheKeys()->load_dynamic_config(value);
                 }
 
@@ -166,37 +166,50 @@ void BESXMLInterface::build_data_request_plan()
                 p_xmlcmd_builder bldr = BESXMLCommand::find_command(node_name);
                 if (!bldr)
                     throw BESSyntaxUserError(string("Unable to find command for ").append(node_name), __FILE__,
-                        __LINE__);
+                                             __LINE__);
 
                 BESXMLCommand *current_cmd = bldr(d_xml_interface_dhi);
                 if (!current_cmd)
                     throw BESInternalError(string("Failed to build command object for ").append(node_name), __FILE__,
-                        __LINE__);
+                                           __LINE__);
 
-                // push this new command to the back of the list
-                d_xml_cmd_list.push_back(current_cmd);
+                // SPECIAL CASE: Process setContext xml_commands here; do not add to d_xml_cmd_list.
+                if (node_name == SET_CONTEXT_STR) {
+                    current_cmd->parse_request(current_node);
 
-                // only one of the commands in a request can build a response
-                bool cmd_has_response = current_cmd->has_response();
-                if (has_response && cmd_has_response)
-                    throw BESSyntaxUserError("Commands with multiple responses not supported.", __FILE__, __LINE__);
+                    // Call SetContextsResponseHandler::execute() here not in execute_data_request_plan().
+                    //
+                    // SetContextsResponseHandler::execute() only calls BESContextManager::set_context(),
+                    // and these actions need to occur before execute_data_request_plan().
+                    BESDataHandlerInterface &setContext_xml_dhi = current_cmd->get_xmlcmd_dhi();
+                    setContext_xml_dhi.response_handler->execute(setContext_xml_dhi);
 
-                has_response = cmd_has_response;
+                } else {
+                    // push this new command to the back of the list
+                    d_xml_cmd_list.push_back(current_cmd);
 
-                // parse the request given the current node
-                current_cmd->parse_request(current_node);
+                    // only one of the commands in a request can build a response
+                    bool cmd_has_response = current_cmd->has_response();
+                    if (has_response && cmd_has_response)
+                        throw BESSyntaxUserError("Commands with multiple responses not supported.", __FILE__, __LINE__);
 
-                // Check if the correct transmitter is present. We look for it again in do_transmit()
-                // where it is actually used. This test just keeps us from building a response that
-                // cannot be transmitted. jhrg 11/8/17
-                //
-                // TODO We could add the 'transmitter' to the DHI.
-                BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+                    has_response = cmd_has_response;
 
-                string return_as = current_dhi.data[RETURN_CMD];
-                if (!return_as.empty() && !BESReturnManager::TheManager()->find_transmitter(return_as))
-                    throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,
-                        __LINE__);
+                    // parse the request given the current node
+                    current_cmd->parse_request(current_node);
+
+                    // Check if the correct transmitter is present. We look for it again in do_transmit()
+                    // where it is actually used. This test just keeps us from building a response that
+                    // cannot be transmitted. jhrg 11/8/17
+                    //
+                    // TODO We could add the 'transmitter' to the DHI.
+                    BESDataHandlerInterface &current_dhi = current_cmd->get_xmlcmd_dhi();
+
+                    string return_as = current_dhi.data[RETURN_CMD];
+                    if (!return_as.empty() && !BESReturnManager::TheManager()->find_transmitter(return_as))
+                        throw BESSyntaxUserError(string("Unable to find transmitter ").append(return_as), __FILE__,
+                                                 __LINE__);
+                }
             }
 
             current_node = current_node->next;
