@@ -177,7 +177,6 @@ void BESXMLInterface::build_data_request_plan()
                 if (node_name == SET_CONTEXT_STR) {
                     current_cmd->parse_request(current_node);
                 } else {
-
                     // push this new command to the back of the list
                     d_xml_cmd_list.push_back(current_cmd);
 

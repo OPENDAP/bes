@@ -87,9 +87,9 @@ void BESXMLSetContextCommand::parse_request(xmlNode *node)
     // action
    BESXMLCommand::set_response();
 
-   // Call BESSetContextResponseHandler::execute() here not in execute_data_request_plan().
+   // Call SetContextsResponseHandler::execute() here not in execute_data_request_plan().
    //
-   // BESSetContextResponseHandler::execute() only calls BESContextManager::set_context(),
+   // SetContextsResponseHandler::execute() only calls BESContextManager::set_context(),
    // and these actions need to occur before execute_data_request_plan().
    d_xmlcmd_dhi.response_handler->execute(d_xmlcmd_dhi);
 }
