@@ -176,6 +176,14 @@ void BESXMLInterface::build_data_request_plan()
                 // SPECIAL CASE: Process setContext xml_commands here; do not add to d_xml_cmd_list.
                 if (node_name == SET_CONTEXT_STR) {
                     current_cmd->parse_request(current_node);
+
+                    // Call SetContextsResponseHandler::execute() here not in execute_data_request_plan().
+                    //
+                    // SetContextsResponseHandler::execute() only calls BESContextManager::set_context(),
+                    // and these actions need to occur before execute_data_request_plan().
+                    BESDataHandlerInterface setContext_xml_dhi = current_cmd->get_xmlcmd_dhi();
+                    setContext_xml_dhi.response_handler->execute(setContext_xml_dhi);
+
                 } else {
                     // push this new command to the back of the list
                     d_xml_cmd_list.push_back(current_cmd);
