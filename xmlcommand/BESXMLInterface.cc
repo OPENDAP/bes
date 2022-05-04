@@ -181,7 +181,7 @@ void BESXMLInterface::build_data_request_plan()
                     //
                     // SetContextsResponseHandler::execute() only calls BESContextManager::set_context(),
                     // and these actions need to occur before execute_data_request_plan().
-                    BESDataHandlerInterface setContext_xml_dhi = current_cmd->get_xmlcmd_dhi();
+                    BESDataHandlerInterface &setContext_xml_dhi = current_cmd->get_xmlcmd_dhi();
                     setContext_xml_dhi.response_handler->execute(setContext_xml_dhi);
 
                 } else {
