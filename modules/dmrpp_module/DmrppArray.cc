@@ -1260,10 +1260,8 @@ void DmrppArray::read_chunks()
             }
         }
     }
-
     BESDEBUG(dmrpp_3, prolog << "found_needed_chunks: " << (found_needed_chunks?"true":"false") << endl);
-
-    if(!found_needed_chunks){
+    if(!found_needed_chunks){  // Ouch! Something went horribly wrong...
         throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__, __LINE__);
     }
 
