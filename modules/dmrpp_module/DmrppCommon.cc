@@ -197,9 +197,18 @@ void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
     }
 }
 
+
 /**
- * @brief Add a new chunk as defined by an h4:byteStream element
- * @return The number of chunk refs (byteStreams) held.
+ * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
+ *
+ * @param data_url The URL, file or http(s) protocol, that identifies the location of the binary object that holds
+ * the referenced chunk
+ * @param byte_order The stored byte order of the chunk
+ * @param size The sie of the chunk
+ * @param offset Chunk offset in the target dataset binary object.
+ * @param position_in_array A string description of the chunks position in the array
+ * with a nominal format of [x,y,...,z] where x, ..., are unsigned integers
+ * @return The number of chunks in the internal chunks vector for this variable.
  */
 unsigned long DmrppCommon::add_chunk(
         std::shared_ptr<http::url> data_url,
@@ -213,6 +222,18 @@ unsigned long DmrppCommon::add_chunk(
     return add_chunk(move(data_url), byte_order, size, offset, cpia_vector);
 }
 
+
+/**
+ * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
+ *
+ * @param data_url The URL, file or http(s) protocol, that identifies the location of the binary object that holds
+ * the referenced chunk
+ * @param byte_order The stored byte order of the chunk
+ * @param size The sie of the chunk
+ * @param offset Chunk offset in the target dataset binary object.
+ * @param position_in_array Described as a vector of unsigned long long values
+ * @return The number of chunk refs (byteStreams) held in the internal chunks vector..
+ */
 unsigned long DmrppCommon::add_chunk(
         std::shared_ptr<http::url> data_url,
         const string &byte_order,
@@ -267,6 +288,21 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
+/**
+ * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
+ *
+ * NB: This method is used by build_dmrpp during the production of the dmr++ file. The fact that the URL is
+ * not set is fine in that circumstance because when the DMZ parser reads the dmr++ the chunks without
+ * the explicit URL (dmrpp:href attribute) will inherit the primary URL (dmrpp:href) value from the top
+ * level Dataset element.
+ *
+ * @param byte_order The stored byte order of the chunk
+ * @param size The sie of the chunk
+ * @param offset Chunk offset in the target dataset binary object.
+ * @param position_in_array A string description of the chunks position in the array
+ * with a nominal format of [x,y,...,z] where x, ..., are unsigned integers
+ * @return The number of chunk refs (byteStreams) held in the internal chunks vector..
+ */
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         unsigned long long size,
@@ -278,6 +314,20 @@ unsigned long DmrppCommon::add_chunk(
     return add_chunk(byte_order, size, offset, cpia_vector);
 }
 
+/**
+ * @brief Adds a chunk to the vector of chunk refs (byteStreams) and returns the size of the chunks internal vector.
+ *
+ * NB: This method is used by build_dmrpp during the production of the dmr++ file. The fact that the URL is
+ * not set is fine in that circumstance because when the DMZ parser reads the dmr++ the chunks without
+ * the explicit URL (dmrpp:href attributes) will inherit the primary URL (dmrpp:href) value from the top
+ * level Dataset element.
+ *
+ * @param byte_order The stored byte order of the chunk
+ * @param size The sie of the chunk
+ * @param offset Chunk offset in the target dataset binary object.
+ * @param position_in_array Described as a vector of unsigned long long values
+ * @return The number of chunk refs (byteStreams) held in the internal chunks vector..
+ */
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         unsigned long long size,
