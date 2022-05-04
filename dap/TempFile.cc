@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h> // for wait
+#include <sstream>      // std::stringstream
 
 #include <cstdlib>
 #include <cstring>
@@ -40,8 +41,14 @@
 
 #include "TempFile.h"
 #include "BESLog.h"
+#include "BESUtil.h"
+#include "BESDebug.h"
 
 using namespace std;
+
+#define MODULE "dap"
+#define prolog string("TempFile::").append(__func__).append("() - ")
+
 
 namespace bes {
 
@@ -68,6 +75,102 @@ void TempFile::sigpipe_handler(int sig)
     }
 }
 
+string mkdir_error_msg(int error_value){
+    string s;
+    switch(error_value){
+        case EACCES:
+            s = "The parent directory does not allow write permission to "
+                "the process, or one of the directories in pathname did not "
+                "allow search permission.";
+            break;
+
+        case EDQUOT:
+            s = "The user's quota of disk blocks or inodes on the "
+                "filesystem has been exhausted.";
+            break;
+
+        case EEXIST:
+            s = "The pathname already exists (not necessarily as a directory). "
+                "This includes the case where pathname is a symbolic link, "
+                "dangling or not.";
+            break;
+
+        case EFAULT:
+            s = "The pathname points outside your accessible address space.";
+            break;
+
+        case EINVAL:
+            s = "The final component (\"basename\") of the new directory's "
+                "pathname is invalid (e.g., it contains characters not "
+                "permitted by the underlying filesystem).";
+            break;
+
+        case ELOOP:
+            s = "Too many symbolic links were encountered in resolving pathname.";
+            break;
+
+        case EMLINK:
+            s = "The number of links to the parent directory would exceed LINK_MAX.";
+            break;
+
+        case ENAMETOOLONG:
+            s = "The pathname was too long.";
+            break;
+
+        case ENOENT:
+            s = "A directory component in pathname does not exist or is a dangling symbolic link.";
+            break;
+
+        case ENOMEM:
+            s = "Insufficient kernel memory was available.";
+            break;
+
+        case ENOSPC:
+            s = "The device containing pathname has no room for the new directory. Or, "
+                "The new directory cannot be created because the user's disk quota is exhausted.";
+            break;
+
+        case ENOTDIR:
+            s = "A component used as a directory in pathname is not, in fact, a directory.";
+            break;
+
+        case EPERM:
+            s = "The filesystem containing pathname does not support the creation of directories.";
+            break;
+
+        case EROFS:
+            s = "The pathname refers to a file on a read-only filesystem.";
+            break;
+
+        default:
+            s = "Unknown value of errno found after failed mkdir() call.";
+            break;
+    }
+    return s;
+}
+
+void TempFile::mk_temp_dir(const std::string &dir_name){
+    char tmp_name[dir_name.length() + 1];
+    std::string::size_type len = dir_name.copy(tmp_name, dir_name.length());
+    tmp_name[len] = '\0';
+
+    mode_t mode = umask(007);
+    if(mkdir(tmp_name, mode)){
+        if(errno != EEXIST){
+            stringstream msg;
+            msg << prolog  << "ERROR - Failed to create temp directory: " << dir_name;
+            msg << " errno: " << errno << " reason: " << mkdir_error_msg(errno);
+            throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
+        }
+        else {
+            BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " exists.");
+        }
+    }
+    else {
+        BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " was created.");
+    }
+}
+
 /**
  * @brief Get a new temporary file
  *
@@ -81,11 +184,14 @@ void TempFile::sigpipe_handler(int sig)
  * file pathname.
  * @param keep_temps Keep the temporary files.
  */
-TempFile::TempFile(const std::string &path_template, bool keep_temps)
+TempFile::TempFile(const std::string &dir_name, const std::string &file_template, bool keep_temps)
     : d_keep_temps(keep_temps)
 {
-    char tmp_name[path_template.length() + 1];
-    std::string::size_type len = path_template.copy(tmp_name, path_template.length());
+    mk_temp_dir(dir_name);
+    string target_file = BESUtil::pathConcat(dir_name,file_template);
+
+    char tmp_name[target_file.length() + 1];
+    std::string::size_type len = target_file.copy(tmp_name, target_file.length());
     tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using

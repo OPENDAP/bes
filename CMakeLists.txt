@@ -405,7 +405,6 @@ add_executable(bes
     dispatch/BESNames.h
     dispatch/BESNotFoundError.h
 		dispatch/BESObj.h
-		dispatch/BESObj.cc
     dispatch/BESPlugin.h
     dispatch/BESPluginFactory.h
     dispatch/BESProcIdResponseHandler.cc

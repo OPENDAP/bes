@@ -58,7 +58,9 @@
 
 #include <BESLog.h>
 #include <BESError.h>
+#include <BESInternalFatalError.h>
 #include <BESDapError.h>
+#include "BESDMRResponse.h"
 #include <stringbuffer.h>
 
 #include "FONcBaseType.h"
@@ -120,9 +122,12 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
+        auto bdds = dynamic_cast<BESDataDDSResponse *>(obj);
+        if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
+        auto dds = bdds->get_dds();
 
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir, "/dap2_nc_"+dds->filename()+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
 
@@ -226,8 +231,12 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
 
+        auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
+        if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
+        auto dmr = bdmr->get_dmr();
+
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir,  "/dap4_nc_"+dmr->filename()+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
