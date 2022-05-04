@@ -150,12 +150,9 @@ string mkdir_error_msg(int error_value){
 }
 
 void TempFile::mk_temp_dir(const std::string &dir_name){
-    char tmp_name[dir_name.length() + 1];
-    std::string::size_type len = dir_name.copy(tmp_name, dir_name.length());
-    tmp_name[len] = '\0';
 
     mode_t mode = umask(007);
-    if(mkdir(tmp_name, mode)){
+    if(mkdir(dir_name.c_str(), mode)){
         if(errno != EEXIST){
             stringstream msg;
             msg << prolog  << "ERROR - Failed to create temp directory: " << dir_name;
