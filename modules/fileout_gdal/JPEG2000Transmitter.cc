@@ -156,7 +156,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     // now we need to read the data
     BESDEBUG("JPEG20002", "JPEG2000Transmitter::send_data - reading data into DataDDS" << endl);
 
-    bes::TempFile temp_file(JPEG2000Transmitter::temp_dir, "jp2_XXXXXX");
+    bes::TempFile temp_file(JPEG2000Transmitter::temp_dir, "jp2000_XXXXXX");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
