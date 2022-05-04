@@ -17,7 +17,7 @@ BES.module.fong = @bes_modules_dir@/libfong_module.so
 # File Out GDAL (FONg) module specific parameters
 
 # Directory to store temporary files during transformation
-FONg.Tempdir = /tmp
+FONg.Tempdir = /tmp/hyrax_fong
 
 # URL to the FONg Reference Page at docs.opendap.org"
 FONg.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL
