@@ -126,8 +126,10 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
         if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
         auto dds = bdds->get_dds();
 
+        string base_name = dds->filename().substr(dds->filename().find_last_of("/\\") + 1);
+
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir, "/dap2_nc_"+dds->filename()+"_XXXXXX");
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir, "/dap2_nc_"+base_name+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
 
@@ -235,8 +237,10 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
         auto dmr = bdmr->get_dmr();
 
+        string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
+
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir,  "/dap4_nc_"+dmr->filename()+"_XXXXXX");
+        bes::TempFile temp_file(FONcRequestHandler::temp_dir,  "/dap4_nc_"+base_name+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
