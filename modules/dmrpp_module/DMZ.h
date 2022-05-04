@@ -52,6 +52,7 @@ class url;
 
 namespace dmrpp {
 
+class Chunk;
 class DmrppCommon;
 
 /**
@@ -78,6 +79,10 @@ private:
     void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
     void process_fill_value_chunks() const;
 
+    static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
+    static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);
+    static std::set< std::vector<unsigned long long> > get_chunk_map(const std::vector<std::shared_ptr<Chunk>> &chunks);
+
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
 
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
@@ -93,7 +98,7 @@ private:
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);
     static void process_attribute(libdap::D4Attributes *attributes, const pugi::xml_node &dap_attr_node);
 
-    static size_t process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
+    static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
     void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node) const;
 
@@ -119,23 +124,7 @@ public:
 
     virtual void load_chunks(libdap::BaseType *btp);
 
-#if 0
-    // These were originally part of the design and intended to speed the delivery
-    // of the metadata responses, but the pugixml parser is so fast I don't think
-    // they are needed. Add them later if we really need them. jhrg 11/22/21
-    std::string get_attribute_xml(std::string path);
-    std::string get_variable_xml(std::string path);
-#endif
-
     virtual void load_all_attributes(libdap::DMR *dmr);
-
-#if 0
-    // This was here because with lazy loading of attributes, the global values did
-    // not show up. But I've dropped the lazy attr load feature since it provides
-    // no measureable benefit for the test data we have. If we need lazy-attrs, the
-    // software is still in the handler, just mostly disabled. jhrg 11/22/21
-    virtual void load_global_attributes(libdap::DMR *dmr);
-#endif
 };
 
 } // namespace dmrpp

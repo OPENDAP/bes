@@ -69,12 +69,6 @@ private:
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
-#if 0
-    bool d_uses_fill_value {false};
-    // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/22/22
-    std::string d_fill_value;
-#endif
-
     // These are used only during the libcurl callback; they are not duplicated by the
     // copy ctor or assignment operator.
 
@@ -105,20 +99,12 @@ private:
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
+    friend class DMZMockChunk;
 
 protected:
 
     void _duplicate(const Chunk &bs)
     {
-#if 0
-        // See above
-        d_read_buffer_is_mine = true;
-        d_bytes_read = 0;
-        d_read_buffer = nullptr;
-        d_read_buffer_size = 0;
-        d_is_read = false;
-        d_is_inflated = false;
-#endif
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
@@ -239,28 +225,6 @@ public:
 #endif
         set_position_in_array(pia_vec);
     }
-
-#if 0
-    Chunk(std::shared_ptr<http::url> data_url,
-          std::string order,
-          std::string fill_value,
-          const std::vector<unsigned long long> &pia_vec) :
-            d_data_url(std::move(data_url)),
-            d_byte_order(std::move(order)),
-            d_uses_fill_value(true),
-            d_fill_value(std::move(fill_value))
-    {
-        set_position_in_array(pia_vec);
-    }
-
-    Chunk(std::string order, std::string fill_value, const std::vector<unsigned long long> &pia_vec) :
-            d_byte_order(std::move(order)),
-            d_uses_fill_value(true),
-            d_fill_value(std::move(fill_value))
-    {
-        set_position_in_array(pia_vec);
-    }
-#endif
 
     Chunk(const Chunk &h4bs)
     {
@@ -437,7 +401,6 @@ public:
         return d_chunk_position_in_array;
     }
 
-
     void add_tracking_query_param();
 
     void set_position_in_array(const std::string &pia);
@@ -450,9 +413,6 @@ public:
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }
 
-    //virtual bool get_is_inflated() const { return d_is_inflated; }
-    //virtual void set_is_inflated(bool state) { d_is_inflated = state; }
-
     virtual std::string get_curl_range_arg_string();
 
     static void parse_chunk_position_in_array_string(const std::string &pia, std::vector<unsigned long long> &pia_vect);
@@ -461,22 +421,6 @@ public:
 
     virtual std::string to_string() const;
 };
-
-#if 0
-/// Chunk data decompression function for use with pthreads
-struct inflate_chunk_args {
-    Chunk *chunk;
-    bool deflate;
-    bool shuffle;
-    unsigned int chunk_size;
-    unsigned int elem_width;
-
-    inflate_chunk_args(Chunk *c, bool d, bool s, unsigned int c_size, unsigned int e_size):
-    chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
-};
-
-void *inflate_chunk(void *args);
-#endif
 
 } // namespace dmrpp
 

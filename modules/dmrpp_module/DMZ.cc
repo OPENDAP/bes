@@ -25,7 +25,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <unordered_set>
 #include <cstring>
 
 #include <libdap/BaseType.h>
@@ -48,6 +48,7 @@
 #include "url_impl.h"           // see bes/http
 #include "DMRpp.h"
 #include "DMZ.h"                // this includes the pugixml header
+#include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppD4Group.h"
@@ -1003,7 +1004,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
  * @param dc
  * @param chunks
  */
-size_t DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
+void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
     for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
@@ -1011,13 +1012,6 @@ size_t DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
             dc->parse_chunk_dimension_sizes(sizes);
         }
     }
-
-    size_t num_logical_chunks = 1;
-    for (auto dim_size: dc->get_chunk_dimension_sizes()) {
-        num_logical_chunks *= dim_size;
-    }
-
-    return num_logical_chunks;
 }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
@@ -1031,7 +1025,7 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
     }
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
-    size_t num_logical_chunks = process_cds_node(dc, chunks);
+    process_cds_node(dc, chunks);
 
     // Chunks for this node will be held in the var_node siblings.
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
@@ -1039,9 +1033,6 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
             process_chunk(dc, chunk);
         }
     }
-
-    if (dc->get_chunks_size() < num_logical_chunks)
-        process_fill_value_chunks();
 }
 
 void DMZ::process_fill_value_chunks() const
@@ -1051,6 +1042,42 @@ void DMZ::process_fill_value_chunks() const
     // Add the missing chunks.
     //  Use a child of Chunk? - these Chunks only have to allocate memory and
     //  use memset of the fill value.
+}
+
+vector<unsigned long long> DMZ::get_array_dims(Array *array)
+{
+    vector<unsigned long long> array_dim_sizes;
+    for (auto i= array->dim_begin(), e = array->dim_end(); i != e; ++i) {
+        array_dim_sizes.push_back(array->dimension_size(i));
+    }
+
+    return array_dim_sizes;
+}
+
+size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, const DmrppCommon *dc)
+{
+    auto const& chunk_dim_sizes = dc->get_chunk_dimension_sizes();
+    if (chunk_dim_sizes.size() != array_dim_sizes.size())
+        throw BESInternalError("Expected the chunk and array rank to match.", __FILE__, __LINE__);
+
+    size_t num_logical_chunks = 1;
+    auto i = array_dim_sizes.rbegin();
+    for (auto chunk_dim_size: chunk_dim_sizes) {
+        auto array_dim_size = *i++;
+        num_logical_chunks *= array_dim_size / chunk_dim_size;
+    }
+
+    return num_logical_chunks;
+}
+
+set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chunk>> &chunks)
+{
+    set< vector<unsigned long long> > chunk_map;
+    for (auto const &chunk: chunks) {
+        chunk_map.insert(chunk->get_position_in_array());
+    }
+
+    return chunk_map;
 }
 
 /**
@@ -1080,13 +1107,28 @@ void DMZ::load_chunks(BaseType *btp)
     if (child) {
         chunks_found = 1;
         process_chunks(dc(btp), child);
+        // TODO Add the missing chunk information here. jhrg 5/4/22
+        auto array = dynamic_cast<Array*>(btp);
+        if (array) {
+            auto const &array_dim_sizes = get_array_dims(array);
+            size_t num_logical_chunks = logical_chunks(array_dim_sizes, dc(btp));
+            // do we need to run this code?
+            if (num_logical_chunks != dc(btp)->get_chunks_size()) {
+                // build a chunk map - cannot use unordered_set<
+                set< vector<unsigned long long> > chunk_map;
+                for (auto const &chunk: dc(btp)->get_immutable_chunks()) {
+                    chunk_map.insert(chunk->get_position_in_array());
+                }
+                // mark the chunks present
+                // add fill value chunks
+            }
+        }
     }
 
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
         chunk_found = 1;
         process_chunk(dc(btp), chunk);
-
     }
 
     auto compact = var_node.child("dmrpp:compact");

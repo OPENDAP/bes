@@ -34,7 +34,9 @@
 #include <libdap/DMR.h>
 #include <libdap/D4Group.h>
 #include <libdap/D4Attributes.h>
+#include <libdap/D4Dimensions.h>
 #include <libdap/Array.h>
+#include <libdap/Byte.h>
 #include <libdap/XMLWriter.h>
 
 #include "url_impl.h"
@@ -60,6 +62,11 @@ using namespace bes;
 #define prolog std::string("DMZTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
+
+class DMZMockChunk: public Chunk {
+public:
+    DMZMockChunk() = default;
+};
 
 class DMZTest: public CppUnit::TestFixture {
 private:
@@ -603,71 +610,130 @@ public:
         }
     }
 
-    void test_process_cds_node_2() {
-        try {
-            d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
-            DmrppTypeFactory factory;
-            DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr);
+    void test_get_array_dims_1() {
+        unique_ptr<libdap::Array> a(new Array("a", new libdap::Byte("a")));
+        a->append_dim(10);
+        a->append_dim(20);
 
-            XMLWriter xml;
-            dmr.print_dap4(xml);
-            DBG(cerr << "DMR: " << xml.get_doc() << endl);
-
-            // Given a thin DMR, load in the attributes of the first variable
-            BaseType *btp = *(dmr.root()->var_begin());
-            auto *dc = dynamic_cast<DmrppCommon *>(btp);
-            CPPUNIT_ASSERT(dc);
-
-            // goto the DOM tree node for this variable
-            pugi::xml_node var_node = d_dmz->get_variable_xml_node(btp);
-            if (var_node == nullptr)
-                throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
-                                       __LINE__);
-
-            // Chunks for this node will be held in the var_node siblings.
-            auto child = var_node.child("dmrpp:chunks");
-            size_t num_logical_chunk = dmrpp::DMZ::process_cds_node(dc, child);
-
-            CPPUNIT_ASSERT(num_logical_chunk == 16);    // 40/20 * 40/20) * 40/20 * 40/20
-        }
-        catch (...) {
-            handle_fatal_exceptions();
-        }
+        auto const array_dim_sizes = DMZ::get_array_dims(a.get());
+        CPPUNIT_ASSERT_MESSAGE("Should have two dimensions", array_dim_sizes.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("Should be 10", array_dim_sizes.at(0) == 10);
+        CPPUNIT_ASSERT_MESSAGE("Should be 20", array_dim_sizes.at(1) == 20);
     }
 
-    void test_process_cds_node_3() {
-        try {
-            d_dmz.reset(new DMZ(chunked_oneD_dmrpp));
-            DmrppTypeFactory factory;
-            DMR dmr(&factory);
-            d_dmz->build_thin_dmr(&dmr);
+    void test_get_array_dims_2() {
+        unique_ptr<libdap::Array> a(new Array("a", new libdap::Byte("a")));
+        a->append_dim(new libdap::D4Dimension("a1", 10));
+        a->append_dim(new libdap::D4Dimension("a2", 20));
 
-            XMLWriter xml;
-            dmr.print_dap4(xml);
-            DBG(cerr << "DMR: " << xml.get_doc() << endl);
-
-            // Given a thin DMR, load in the attributes of the first variable
-            BaseType *btp = *(dmr.root()->var_begin());
-            auto *dc = dynamic_cast<DmrppCommon *>(btp);
-            CPPUNIT_ASSERT(dc);
-
-            // goto the DOM tree node for this variable
-            pugi::xml_node var_node = d_dmz->get_variable_xml_node(btp);
-            if (var_node == nullptr)
-                throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
-                                       __LINE__);
-
-            // Chunks for this node will be held in the var_node siblings.
-            auto child = var_node.child("dmrpp:chunks");
-            size_t num_logical_chunk = dmrpp::DMZ::process_cds_node(dc, child);
-
-            CPPUNIT_ASSERT(num_logical_chunk == 4);
-        }
-        catch (...) {
-            handle_fatal_exceptions();
-        }
+        auto const array_dim_sizes = DMZ::get_array_dims(a.get());
+        CPPUNIT_ASSERT_MESSAGE("Should have two dimensions", array_dim_sizes.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("Should be 10", array_dim_sizes.at(0) == 10);
+        CPPUNIT_ASSERT_MESSAGE("Should be 20", array_dim_sizes.at(1) == 20);
     }
+
+    void test_get_array_dims_3() {
+        unique_ptr<libdap::Array> a(new Array("a", new libdap::Byte("a")));
+        a->append_dim(10);
+
+        auto const array_dim_sizes = DMZ::get_array_dims(a.get());
+        CPPUNIT_ASSERT_MESSAGE("Should have two dimensions", array_dim_sizes.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("Should be 10", array_dim_sizes.at(0) == 10);
+    }
+
+    void test_get_array_dims_4() {
+        unique_ptr<libdap::Array> a(new Array("a", new libdap::Byte("a")));
+
+        auto const array_dim_sizes = DMZ::get_array_dims(a.get());
+        CPPUNIT_ASSERT_MESSAGE("Should have two dimensions", array_dim_sizes.size() == 0);
+    }
+
+    void test_logical_chunks_1() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+
+        vector<unsigned long long> cds_values = { 20, 20, 20, 20};
+        dc->set_chunk_dimension_sizes(cds_values);
+
+        vector<unsigned long long> array_dim_sizes;
+        array_dim_sizes.push_back(40);
+        array_dim_sizes.push_back(40);
+        array_dim_sizes.push_back(40);
+        array_dim_sizes.push_back(40);
+
+        size_t num_logical_chunks = DMZ::logical_chunks(array_dim_sizes, dc.get());
+
+        CPPUNIT_ASSERT(num_logical_chunks == 16);
+    }
+
+    void test_logical_chunks_2() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+
+        vector<unsigned long long> cds_values = { 1000 };
+        dc->set_chunk_dimension_sizes(cds_values);
+
+        vector<unsigned long long> array_dim_sizes;
+        array_dim_sizes.push_back(4000);
+
+        size_t num_logical_chunks = DMZ::logical_chunks(array_dim_sizes, dc.get());
+
+        CPPUNIT_ASSERT(num_logical_chunks == 4);
+    }
+
+    void test_logical_chunks_3() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+
+        vector<unsigned long long> cds_values = { 2, 3, 4 };
+        dc->set_chunk_dimension_sizes(cds_values);
+
+        vector<unsigned long long> array_dim_sizes;
+        array_dim_sizes.push_back(4);
+        array_dim_sizes.push_back(6);
+        array_dim_sizes.push_back(8);
+
+        size_t num_logical_chunks = DMZ::logical_chunks(array_dim_sizes, dc.get());
+
+        CPPUNIT_ASSERT(num_logical_chunks == 8);
+    }
+
+    /// Helper to build Chunks for test_get_chunk_map tests
+    shared_ptr<Chunk> get_another_chunk(unsigned long long i1, unsigned long long i2) {
+        shared_ptr<Chunk> c1(new Chunk);
+        vector<unsigned long long> c1_pia{i1, i2};
+        c1->set_position_in_array(c1_pia);
+        return c1;
+    }
+
+    // set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chunk>> &chunks)
+    void test_get_chunk_map_1() {
+        vector<shared_ptr<Chunk>> vc;
+        vc.push_back(get_another_chunk(0, 0));
+
+        set< vector<unsigned long long> > chunks = DMZ::get_chunk_map(vc);
+
+        CPPUNIT_ASSERT(!chunks.empty());
+        CPPUNIT_ASSERT(chunks.size() == 1);
+        vector<unsigned long long> c1_pia{0, 0};
+        CPPUNIT_ASSERT(chunks.find(c1_pia) != chunks.end());
+    }
+
+#if 0
+
+    void test_get_chunk_map_2() {
+        vector<shared_ptr<Chunk>> vc;
+        vc.push_back(get_another_chunk(0, 0));
+        vector<unsigned long long> c2_pia{0, 2};
+        vc.push_back()
+        vector<unsigned long long> c3_pia{2, 0};
+
+        set< vector<unsigned long long> > chunks = DMZ::get_chunk_map(vc);
+        CPPUNIT_ASSERT(!chunks.empty());
+        CPPUNIT_ASSERT(chunks.size() == 1);
+        CPPUNIT_ASSERT(chunks.find(c1_pia) != chunks.end());
+        vector<unsigned long long> c1_pia2{0, 0};
+        CPPUNIT_ASSERT(chunks.find(c1_pia2) != chunks.end());
+    }
+
+#endif
 
     void test_load_chunks_1() {
         try {
@@ -807,8 +873,17 @@ public:
     CPPUNIT_TEST(test_load_attributes_3);
 
     CPPUNIT_TEST(test_process_cds_node_1);
-    CPPUNIT_TEST_FAIL(test_process_cds_node_2);
-    CPPUNIT_TEST_FAIL(test_process_cds_node_3);
+
+    CPPUNIT_TEST(test_get_array_dims_1);
+    CPPUNIT_TEST(test_get_array_dims_2);
+    CPPUNIT_TEST(test_get_array_dims_3);
+    CPPUNIT_TEST(test_get_array_dims_4);
+
+    CPPUNIT_TEST(test_logical_chunks_1);
+    CPPUNIT_TEST(test_logical_chunks_2);
+    CPPUNIT_TEST(test_logical_chunks_3);
+
+    CPPUNIT_TEST(test_get_chunk_map_1);
 
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);

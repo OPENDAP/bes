@@ -104,14 +104,6 @@ private:
     pugi::xml_node d_xml_node;
 
 protected:
-#if 0
-    /// @brief Returns a copy of the internal Chunk vector.
-    /// @see get_immutable_chunks()
-    virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
-    	return d_chunks;
-    }
-#endif
-
     virtual char *read_atomic(const std::string &name);
 
     // This declaration allows code in the SuperChunky program to use the protected method.
@@ -214,11 +206,8 @@ public:
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
-    // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
     void set_chunk_dimension_sizes(const std::vector<unsigned long long> &chunk_dims) {
-        // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
-        // it didn't work, maybe because of the differing element types?
         for (auto chunk_dim : chunk_dims) {
             d_chunk_dimension_sizes.push_back(chunk_dim);
         }
