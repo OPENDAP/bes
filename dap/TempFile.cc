@@ -76,6 +76,10 @@ void TempFile::sigpipe_handler(int sig)
 }
 
 
+/**
+ * @brief Attempts to create the directory identified by dir_name, throws an exception if it fails.
+ * @param dir_name
+ */
 void TempFile::mk_temp_dir(const std::string &dir_name){
 
     mode_t mode = umask(007);
@@ -104,8 +108,10 @@ void TempFile::mk_temp_dir(const std::string &dir_name){
  *
  * @note If you pass in a bad template, behavior of this class is undefined.
  *
+ * @param dir_name The nae of the directory in which the temporary file
+ * will be created.
  * @param path_template Template passed to mkstemp() to build the temporary
- * file pathname.
+ * filename.
  * @param keep_temps Keep the temporary files.
  */
 TempFile::TempFile(const std::string &dir_name, const std::string &file_template, bool keep_temps)
@@ -118,7 +124,6 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
 
     string target_file = BESUtil::pathConcat(dir_name,file_template);
     BESDEBUG(MODULE, prolog << "target_file: " << target_file << endl);
-
 
     char tmp_name[target_file.length() + 1];
     std::string::size_type len = target_file.copy(tmp_name, target_file.length());
@@ -151,7 +156,6 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
             throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
         }
     }
-
     open_files->insert(std::pair<string, int>(d_fname, d_fd));
 }
 
