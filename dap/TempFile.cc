@@ -29,7 +29,6 @@
 #include <signal.h>
 #include <sys/wait.h> // for wait
 #include <sstream>      // std::stringstream
-#include <mutex>
 
 #include <cstdlib>
 #include <cstring>

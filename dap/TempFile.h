@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <mutex>
 
 namespace bes {
 
