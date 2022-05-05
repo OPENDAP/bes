@@ -50,6 +50,8 @@ using namespace std;
 #define MODULE "dap"
 #define prolog string("TempFile::").append(__func__).append("() - ")
 
+#define STRICT 0
+
 namespace bes {
 
 std::once_flag TempFile::d_init_once;
@@ -97,6 +99,7 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
         }
         else {
             BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " exists." << endl);
+#if STRICT
             uid_t uid = getuid();
             gid_t gid = getgid();
             BESDEBUG(MODULE,prolog << "Assuming ownership of " << dir_name << " (uid: " << uid << " gid: "<< gid << ")" << endl);
@@ -115,6 +118,7 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
                 msg << " errno: " << errno << " reason: " << strerror(errno);
                 throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
             }
+#endif
         }
     }
     else {
@@ -174,7 +178,6 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     d_fname.assign(tmp_name);
-
 
     std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
 
