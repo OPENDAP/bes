@@ -37,8 +37,21 @@ namespace functions {
  * the array's data.
  *
  * @note The code does use multiplication, but only performs N-1 multiplies
- * for a N dimensions in set_indices() (called once) and not in next()
+ * for a N dimensional array in set_indices() (called once) and not in next()
  * which will likely be called many times.
+ *
+ * reset(): zero internal state
+ * next(): move to the next element, incrementing the shape information
+ *          and returning an offset into a linear vector for that element.
+ * 			Calling next() when the object is at the last element should
+ * 			return one past the last element. calling next() after that
+ * 			should throw an exception.
+ * vector<int> indices(): for the given state of the odometer, return the
+ *          indices that match the offset.
+ * offset(): return the offset
+ * end(): should return one past the last valid offset - the value
+ *	        returned by next() when it indicates all elements/indices have been visited.
+ *
  */
 class Odometer
 {
@@ -48,12 +61,12 @@ public:
 private:
     // The state set by the ctor
     shape d_shape;
-    unsigned int d_highest_offset;
-    unsigned int d_rank;
+    size_t d_highest_offset;
+    size_t d_rank;
 
     // The varying state of the Odometer
     shape d_indices;
-    unsigned int d_offset;
+    size_t d_offset{0};
 
 public:
     /**
@@ -64,7 +77,7 @@ public:
      * Initially, the Odometer object is set to index 0, 0, ..., 0 that
      * matches the offset 0
      */
-    Odometer(shape shape) : d_shape(shape), d_offset(0)
+    explicit Odometer(shape shape) : d_shape(std::move(shape))
     {
         d_rank = d_shape.size();
 
@@ -76,33 +89,6 @@ public:
 
         d_indices.resize(d_rank, 0);
     }
-#if 0
-    // This might be a good idea, but I didn't need it. The three D case is probably
-    // more important. jhrg 5/26/15
-    Odometer(unsigned int x, unsigned int y) : d_offset(0)
-    {
-        d_rank = 2;
-        d_shape.push_back(x);
-        d_shape.push_back(y);
-
-        // compute the highest offset value based on the array shape
-        d_highest_offset = 1;
-        for (unsigned int i = 0; i < d_rank; ++i) {
-            d_highest_offset *= d_shape.at(i);
-        }
-
-        d_indices.resize(d_rank, 0);
-    }
-#endif
-    /*
-     * 	reset(): zero internal state
-     * 	next(): move to the next element, incrementing the shape information and returning an offset into a linear vector for that element.
-     * 			Calling next() when the object is at the last element should return one past the last element. calling next() after that should throw an exception.
-     * 	vector<int> indices(): for the given state of the odometer, return the indices that match the offset.
-     * 	offset(): return the offset
-     * 	end(): should return one past the last valid offset - the value returned by next() when it indicates all elements/indices have been visited.
-     *
-     */
 
     /**
      * Reset the internal state. The offset is reset to the 0th element
@@ -129,8 +115,8 @@ public:
     inline unsigned int next()
     {
         // About 2.4 seconds for 10^9 elements
-        shape::reverse_iterator si = d_shape.rbegin();
-        for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
+        auto si = d_shape.rbegin();
+        for (auto i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
             if (++(*i) == *si) {
                 *i = 0;
             }
@@ -155,22 +141,12 @@ public:
     inline unsigned int set_indices(const shape &indices)
     {
         d_indices = indices;
-#if 0
-        d_offset = 0;
-        unsigned int chunk_size = 1;
-#endif
+
         // I copied this algorithm from Nathan's code in NDimenensionalArray in the
         // ugrid function module. jhrg 5/22/15
-#if 0
-        shape::reverse_iterator si = d_shape.rbegin();
-        for (shape::reverse_iterator i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si) {
-            // The initial multiply is always 1 * N in both cases
-            d_offset += chunk_size * *i;
-            chunk_size *= *si;
-        }
-#endif
-        shape::reverse_iterator shape_index = d_shape.rbegin();
-        shape::reverse_iterator index = d_indices.rbegin(), index_end = d_indices.rend();
+
+        auto shape_index = d_shape.rbegin();
+        auto index = d_indices.rbegin(), index_end = d_indices.rend();
         d_offset = *index++;
         unsigned int chunk_size = *shape_index++;
         while (index != index_end) {

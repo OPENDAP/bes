@@ -1120,13 +1120,10 @@ void DMZ::load_chunks(BaseType *btp)
             size_t num_logical_chunks = logical_chunks(array_dim_sizes, dc(btp));
             // do we need to run this code?
             if (num_logical_chunks != dc(btp)->get_chunks_size()) {
-                // build a chunk map - cannot use unordered_set<
-                set< vector<unsigned long long> > chunk_map;
-                for (auto const &chunk: dc(btp)->get_immutable_chunks()) {
-                    chunk_map.insert(chunk->get_position_in_array());
-                }
-                // mark the chunks present
-                // add fill value chunks
+                // build a chunk map - cannot use unordered_set<>
+                auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
+                // use odometer code to iterate over all the logical chunks and
+                // add fill value chunks for the logical chunks that are missing
             }
         }
     }
