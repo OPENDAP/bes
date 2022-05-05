@@ -22,7 +22,7 @@ BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 # FONc.ClassicModel: When making a netCDF4 file, use only the 'classic' netCDF 
 # data model.
 
-FONc.Tempdir = /tmp
+FONc.Tempdir = /tmp/hyrax_fonc
 
 FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf
 

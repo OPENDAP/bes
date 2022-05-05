@@ -989,12 +989,10 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
 
     if (!href.empty()) {
         shared_ptr<http::url> data_url(new http::url(href, href_trusted));
-        dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset),
-                      chunk_position_in_array);
+        dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
     }
     else {
-        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoi(size),
-                      stoi(offset), chunk_position_in_array);
+        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
     }
 }
 
