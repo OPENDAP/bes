@@ -99,17 +99,19 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
             BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " exists." << endl);
             uid_t uid = getuid();
             gid_t gid = getgid();
-            BESDEBUG(MODULE,prolog << "Assuming ownership. uid: " << uid << " gid: "<< gid << endl);
+            BESDEBUG(MODULE,prolog << "Assuming ownership of " << dir_name << " (uid: " << uid << " gid: "<< gid << ")" << endl);
             if(chown(dir_name.c_str(),uid,gid)){
                 stringstream msg;
-                msg << prolog  << "ERROR - Failed to assume ownership of: " << dir_name;
+                msg << prolog  << "ERROR - Failed to assume ownership (uid: "<< uid;
+                msg << " gid: " << gid << ") of: " << dir_name;
                 msg << " errno: " << errno << " reason: " << strerror(errno);
                 throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
             }
             BESDEBUG(MODULE,prolog << "Changing permissions to mode: " << std::oct << mode << endl);
             if(chmod(dir_name.c_str(),mode)){
                 stringstream msg;
-                msg << prolog  << "ERROR - Failed to change permissions for: " << dir_name;
+                msg << prolog  << "ERROR - Failed to change permissions (mode: " << std::oct << mode;
+                msg << ") for: " << dir_name;
                 msg << " errno: " << errno << " reason: " << strerror(errno);
                 throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
             }
