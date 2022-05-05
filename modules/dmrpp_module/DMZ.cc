@@ -54,6 +54,7 @@
 #include "DmrppD4Group.h"
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppChunkOdometer.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -1052,6 +1053,16 @@ vector<unsigned long long> DMZ::get_array_dims(Array *array)
     return array_dim_sizes;
 }
 
+/**
+ * @brief Compute the number of chunks assuming none are elided using fill values
+ * Note that it's possible to use a chunk size that does not divide the array
+ * dimensions evenly. For example, if an array (1D) has 40,000 elements and a
+ * chunk size of 9501, then there are 5 'logical chunks,' 4 with 9501 elements and
+ * one with the remainder (1966). To find this number this method uses ceil().
+ * @param array_dim_sizes A vector of the array dimension sizes
+ * @param dc A pointer to the DmrppCommon information
+ * @return The number of logical chunks.
+ */
 size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, const DmrppCommon *dc)
 {
     auto const& chunk_dim_sizes = dc->get_chunk_dimension_sizes();
@@ -1063,10 +1074,10 @@ size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, c
     }
 
     size_t num_logical_chunks = 1;
-    auto i = array_dim_sizes.rbegin();
+    auto i = array_dim_sizes.begin();
     for (auto chunk_dim_size: chunk_dim_sizes) {
         auto array_dim_size = *i++;
-        num_logical_chunks *= array_dim_size / chunk_dim_size;
+        num_logical_chunks *= (size_t)ceil((float)array_dim_size / (float)chunk_dim_size);
     }
 
     return num_logical_chunks;
@@ -1118,8 +1129,14 @@ void DMZ::load_chunks(BaseType *btp)
             size_t num_logical_chunks = logical_chunks(array_dim_sizes, dc(btp));
             // do we need to run this code?
             if (num_logical_chunks != dc(btp)->get_chunks_size()) {
+                ostringstream oss;
+                oss << "FAIL: Missing chunks are not yet supported. There are only " << dc(btp)->get_chunks_size()
+                    << " chunks when there should be " << num_logical_chunks;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+
                 // build a chunk map - cannot use unordered_set<>
                 auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
+
                 // use odometer code to iterate over all the logical chunks and
                 // add fill value chunks for the logical chunks that are missing
             }

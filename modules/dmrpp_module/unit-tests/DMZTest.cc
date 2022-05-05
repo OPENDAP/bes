@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of libdap, A C++ implementation of the OPeNDAP Data
+// This file is part of bes, A C++ implementation of the OPeNDAP Data
 // Access Protocol.
 
 // Copyright (c) 2021 OPeNDAP, Inc.
@@ -62,11 +62,6 @@ using namespace bes;
 #define prolog std::string("DMZTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
-
-class DMZMockChunk: public Chunk {
-public:
-    DMZMockChunk() = default;
-};
 
 class DMZTest: public CppUnit::TestFixture {
 private:
@@ -695,6 +690,22 @@ public:
         CPPUNIT_ASSERT(num_logical_chunks == 8);
     }
 
+    void test_logical_chunks_4() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+
+        vector<unsigned long long> cds_values = { 41, 50, 53 };
+        dc->set_chunk_dimension_sizes(cds_values);
+
+        vector<unsigned long long> array_dim_sizes;
+        array_dim_sizes.push_back(100);
+        array_dim_sizes.push_back(50);
+        array_dim_sizes.push_back(200);
+
+        size_t num_logical_chunks = DMZ::logical_chunks(array_dim_sizes, dc.get());
+
+        CPPUNIT_ASSERT(num_logical_chunks == 12);
+    }
+
     /// Helper to build Chunks for test_get_chunk_map tests
     shared_ptr<Chunk> get_another_chunk(unsigned long long i1, unsigned long long i2) {
         shared_ptr<Chunk> c1(new Chunk);
@@ -879,6 +890,7 @@ public:
     CPPUNIT_TEST(test_logical_chunks_1);
     CPPUNIT_TEST(test_logical_chunks_2);
     CPPUNIT_TEST(test_logical_chunks_3);
+    CPPUNIT_TEST(test_logical_chunks_4);
 
     CPPUNIT_TEST(test_get_chunk_map_1);
     CPPUNIT_TEST(test_get_chunk_map_2);

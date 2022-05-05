@@ -27,7 +27,7 @@
 
 #include <vector>
 
-namespace functions {
+namespace dmrpp {
 
 /**
  * Map the indices of a N-dimensional array to the offset into memory
@@ -42,22 +42,16 @@ namespace functions {
  *
  * reset(): zero internal state
  *
- * next(): move to the next element, incrementing the shape information
+ * bool next(): move to the next element, incrementing the shape information
  *          and returning an offset into a linear vector for that element.
- * 			Calling next() when the object is at the last element should
- * 			return one past the last element. calling next() after that
- * 			should throw an exception.
+ * 			Calling next() when the object is at the last element returns
+ * 			false. Calling next() after that is probably a bad idea.
  *
  * vector<int> indices(): for the given state of the odometer, return the
  *          indices that match the offset.
  *
- * offset(): return the offset
- *
- * end(): should return one past the last valid offset - the value
- *	        returned by next() when it indicates all elements/indices
- *	        have been visited.
  */
-class DMRppChunkOdometer
+class DmrppChunkOdometer
 {
 public:
     typedef std::vector<unsigned long long> shape;
@@ -66,13 +60,20 @@ private:
     // The state set by the ctor
     shape d_shape;
     shape d_array_shape;
+#if 0
     unsigned long long d_highest_offset;
+#endif
 
     // The varying state of the Odometer
     shape d_indices;
+#if 0
     unsigned long long d_offset = 0;
+#endif
 
 public:
+    DmrppChunkOdometer() = default;
+    ~DmrppChunkOdometer() = default;
+
     /**
      * Build an instance of Odometer using the given 'shape'. Each element
      * of the shape vector is the size of the corresponding dimension. E.G.,
@@ -81,25 +82,30 @@ public:
      * Initially, the Odometer object is set to index 0, 0, ..., 0 that
      * matches the offset 0
      */
-    DMRppChunkOdometer(shape chunk_shape, shape array_shape) :
+    DmrppChunkOdometer(shape chunk_shape, shape array_shape) :
         d_shape(std::move(chunk_shape)), d_array_shape(std::move(array_shape))
     {
+#if 0
         // compute the highest offset value based on the array shape
         d_highest_offset = 1;
         for (auto dim_size: d_shape)
             d_highest_offset *= dim_size;
 
         d_indices.resize(d_shape.size(), 0);
+#endif
+        reset();
     }
 
     /**
      * Reset the internal state. The offset is reset to the 0th element
      * and the indices are reset to 0, 0, ..., 0.
      */
-    void reset()
+    void reset() noexcept
     {
         d_indices.resize(d_shape.size(), 0);
+#if 0
         d_offset = 0;
+#endif
     }
 
     /**
@@ -113,9 +119,10 @@ public:
      * matches the one returned by end() when next has been called when the object
      * index is at the last element.
      */
-    inline unsigned int next()
+    inline bool next()
     {
         // About 2.4 seconds for 10^9 elements
+        bool status = false;    // false indicates the last 'odometer value' has been found
         auto si = d_shape.rbegin();
         auto ai = d_array_shape.rbegin();
         for (auto i = d_indices.rbegin(), e = d_indices.rend(); i != e; ++i, ++si, ++ai) {
@@ -124,13 +131,15 @@ public:
                 *i = 0;
             }
             else {
+                status = true;
                 break;
             }
         }
 
-        return ++d_offset;
+        return status;
     }
 
+#if 0
     /**
      * Given a set of indices, update offset to match the position
      * in the memory/vector they correspond to given the Odometer's
@@ -164,6 +173,7 @@ public:
 
         return set_indices(temp);
     }
+#endif
 
     /**
      * Return the current set of indices. These match the current offset.
@@ -171,11 +181,12 @@ public:
      *
      * To access the ith index, use [i] or .at(i)
      */
-    inline void indices(shape &indices)
+    inline const shape &indices()
     {
-        indices = d_indices;
+        return d_indices;
     }
 
+#if 0
     /**
      * The offset into memory for the current element.
      */
@@ -195,6 +206,7 @@ public:
     {
         return d_highest_offset;
     }
+#endif
 
 };
 
