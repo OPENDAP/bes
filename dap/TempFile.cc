@@ -133,7 +133,7 @@ void TempFile::init() {
     open_files.reset(new std::map<string, int>());
 }
 
-TempFile::TempFile(bool keep_temps): d_fd(-1), d_keep_temps(keep_temps) {
+TempFile::TempFile(bool keep_temps): d_keep_temps(keep_temps) {
     std::call_once(d_init_once,TempFile::init);
 }
 
@@ -211,13 +211,11 @@ string TempFile::create(const std::string &dir_name, const std::string &file_tem
 TempFile::~TempFile()
 {
     try {
-        if(d_fd != -1) {
-            if (close(d_fd) == -1) {
-                stringstream msg;
-                msg << "Error closing temporary file: '" << d_fname ;
-                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
-                ERROR_LOG(msg.str());
-            }
+        if(d_fd != -1 && close(d_fd) == -1) {
+            stringstream msg;
+            msg << "Error closing temporary file: '" << d_fname ;
+            msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+            ERROR_LOG(msg.str());
         }
         if (!d_keep_temps && !d_fname.empty()) {
             if (unlink(d_fname.c_str()) == -1) {

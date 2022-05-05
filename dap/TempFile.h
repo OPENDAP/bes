@@ -55,7 +55,7 @@ private:
     static std::unique_ptr< std::map<std::string, int> > open_files;
 
     // Instance variables
-    int d_fd;
+    int d_fd = -1;
     std::string d_fname;
     bool d_keep_temps;
 
