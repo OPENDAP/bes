@@ -130,7 +130,7 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
  * @brief Initialize static class members, should only be called once using std::call_once()
  */
 void TempFile::init() {
-    open_files = unique_ptr<std::map<string, int>>(new std::map<string, int>());
+    open_files.reset(new std::map<string, int>());
 }
 
 /**
