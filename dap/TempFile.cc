@@ -35,6 +35,7 @@
 #include <cerrno>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>

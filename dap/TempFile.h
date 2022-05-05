@@ -31,6 +31,7 @@
 #include <string>
 #include <map>
 #include <mutex>
+#include <memory>
 
 namespace bes {
 
