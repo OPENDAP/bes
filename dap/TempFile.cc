@@ -107,6 +107,9 @@ void TempFile::mk_temp_dir(const std::string &dir_name) const {
  */
 void TempFile::init() {
     open_files = new std::map<string, int>();
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
 }
 
 /**
@@ -155,22 +158,32 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
     }
     d_fname.assign(tmp_name);
 
-    // Check to see if there are already active TempFile things,
-    // we can tell because if open_files->size() is zero then this
-    // is the first and we need to register SIGPIPE handler
-    if (open_files->empty()) {
-        struct sigaction act;
-        sigemptyset(&act.sa_mask);
-        sigaddset(&act.sa_mask, SIGPIPE);
-        act.sa_flags = 0;
+    {
+        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
 
-        act.sa_handler = bes::TempFile::sigpipe_handler;
+        // Check to see if there are already active TempFile things,
+        // we can tell because if open_files->size() is zero then this
+        // is the first and we need to register SIGPIPE handler
+        if (open_files->empty()) {
+            struct sigaction act;
+            sigemptyset(&act.sa_mask);
+            sigaddset(&act.sa_mask, SIGPIPE);
+            act.sa_flags = 0;
 
-        if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
-            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
+            act.sa_handler = bes::TempFile::sigpipe_handler;
+
+            if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
+                throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
+            }
         }
+        open_files->insert(std::pair<string, int>(d_fname, d_fd));
     }
-    open_files->insert(std::pair<string, int>(d_fname, d_fd));
+
+}
+
+void TempFile::delete_instance() {
+    delete open_files;
+    open_files = nullptr;
 }
 
 /**
@@ -199,11 +212,16 @@ TempFile::~TempFile()
         cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
 
-    open_files->erase(d_fname);
-
-    if (open_files->empty()) {
-        if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
-            ERROR_LOG(string("Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ").append("(").append(strerror(errno)).append(")"));
+    {
+        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
+        open_files->erase(d_fname);
+        if (open_files->empty()) {
+            if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
+                stringstream msg;
+                msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
+                msg << " errno: " << errno << " message: " << strerror(errno);
+                ERROR_LOG(msg.str());
+            }
         }
     }
 }
