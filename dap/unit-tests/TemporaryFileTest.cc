@@ -67,7 +67,7 @@ using namespace std;
 
 
 class TemporaryFileTest: public CppUnit::TestFixture {
-    const string TEMP_DIR=string(TEST_BUILD_DIR).append("/tf_test");
+    const string TEMP_DIR=string(TEST_BUILD_DIR).append("/temp_file_test");
     const string TEMP_FILE_TEMPLATE = "tmp_XXXXXX";
     const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 private:
@@ -79,7 +79,6 @@ public:
 
     ~TemporaryFileTest()
     {
-        rmdir(TEMP_DIR.c_str());
     }
 
     void setUp()
