@@ -66,7 +66,7 @@ struct sigaction TempFile::cached_sigpipe_handler;
 void TempFile::sigpipe_handler(int sig)
 {
     if (sig == SIGPIPE) {
-        for(auto &mpair: *open_files){
+        for(const auto &mpair: *open_files){
             if (unlink((mpair.first).c_str()) == -1)
                 ERROR_LOG(string("Error unlinking temporary file: '").append(mpair.first).append("': ").append(strerror(errno)).append("\n"));
         }
