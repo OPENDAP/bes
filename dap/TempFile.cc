@@ -85,7 +85,7 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
 
     mode_t mode = S_IRWXU | S_IRWXG;
     stringstream ss;
-    ss << prolog << "mode: " <<  std::oct << mode << "(8) " << std::dec << mode << "(10) " << std::hex << mode << "(16)" << endl;
+    ss << prolog << "mode: " <<  std::oct << mode << endl;
     BESDEBUG(MODULE, ss.str());
 
     if(mkdir(dir_name.c_str(), mode)){
@@ -97,6 +97,22 @@ void TempFile::mk_temp_dir(const std::string &dir_name) {
         }
         else {
             BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " exists." << endl);
+            uid_t uid = getuid();
+            gid_t gid = getgid();
+            BESDEBUG(MODULE,prolog << "Assuming ownership. uid: " << uid << " gid: "<< gid << endl);
+            if(chown(dir_name.c_str(),uid,gid)){
+                stringstream msg;
+                msg << prolog  << "ERROR - Failed to assume ownership of: " << dir_name;
+                msg << " errno: " << errno << " reason: " << strerror(errno);
+                throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
+            }
+            BESDEBUG(MODULE,prolog << "Changing permissions to mode: " << std::oct << mode << endl);
+            if(chmod(dir_name.c_str(),mode)){
+                stringstream msg;
+                msg << prolog  << "ERROR - Failed to change permissions for: " << dir_name;
+                msg << " errno: " << errno << " reason: " << strerror(errno);
+                throw BESInternalFatalError(msg.str(),__FILE__,__LINE__);
+            }
         }
     }
     else {

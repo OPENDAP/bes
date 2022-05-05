@@ -85,7 +85,7 @@ public:
     {
         DBG2(cerr << __func__ << "() - BEGIN" << endl);
 
-        if (debug) BESDebug::SetUp("cerr,dap");
+        if (debug_2) BESDebug::SetUp("cerr,dap");
 
         // Because TemporaryFile uses the BESLog macro ERROR we have
         // to configure the BESKeys with the BES config file name so
@@ -399,10 +399,10 @@ int main(int argc, char*argv[])
     while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true;  // debug is a static global
             break;
         case 'D':
-            debug_2 = 1;
+            debug_2 = true;
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: TemporaryFileTest has the following tests:" << endl;
