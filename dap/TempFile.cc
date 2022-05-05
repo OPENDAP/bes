@@ -52,9 +52,7 @@ using namespace std;
 
 namespace bes {
 
-// static std::once_flag d_tfile_init_once;
-std::once_flag TempFile::d_tfile_init;
-
+std::once_flag TempFile::d_init_once;
 std::unique_ptr< std::map<std::string, int> > TempFile::open_files;
 struct sigaction TempFile::cached_sigpipe_handler;
 
@@ -85,7 +83,11 @@ void TempFile::sigpipe_handler(int sig)
  */
 void TempFile::mk_temp_dir(const std::string &dir_name) {
 
-    mode_t mode = umask(007);
+    mode_t mode = S_IRWXU | S_IRWXG;
+    stringstream ss;
+    ss << prolog << "mode: " <<  std::oct << mode << "(8) " << std::dec << mode << "(10) " << std::hex << mode << "(16)" << endl;
+    BESDEBUG(MODULE, ss.str());
+
     if(mkdir(dir_name.c_str(), mode)){
         if(errno != EEXIST){
             stringstream msg;
@@ -127,7 +129,7 @@ void TempFile::init() {
 TempFile::TempFile(const std::string &dir_name, const std::string &file_template, bool keep_temps)
     : d_keep_temps(keep_temps)
 {
-    std::call_once(d_tfile_init,TempFile::init);
+    std::call_once(d_init_once,TempFile::init);
 
     BESDEBUG(MODULE, prolog << "dir_name: " << dir_name << endl);
     mk_temp_dir(dir_name);

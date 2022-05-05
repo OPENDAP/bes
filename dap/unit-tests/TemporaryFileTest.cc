@@ -45,6 +45,7 @@
 #include "BESInternalFatalError.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
+#include "BESDebug.h"
 #include "TempFile.h"
 
 #include "test_config.h"
@@ -66,7 +67,7 @@ using namespace std;
 
 
 class TemporaryFileTest: public CppUnit::TestFixture {
-    const string TEMP_DIR=TEST_BUILD_DIR;
+    const string TEMP_DIR=string(TEST_BUILD_DIR).append("/tf_test");
     const string TEMP_FILE_TEMPLATE = "tmp_XXXXXX";
     const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 private:
@@ -78,11 +79,15 @@ public:
 
     ~TemporaryFileTest()
     {
+        rmdir(TEMP_DIR.c_str());
     }
 
     void setUp()
     {
         DBG2(cerr << __func__ << "() - BEGIN" << endl);
+
+        if (debug) BESDebug::SetUp("cerr,dap");
+
         // Because TemporaryFile uses the BESLog macro ERROR we have
         // to configure the BESKeys with the BES config file name so
         // that there is a log file name... Oy.
