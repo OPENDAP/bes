@@ -53,7 +53,7 @@ namespace bes {
 
 static std::once_flag d_tfile_init_once;
 
-std::map<string, int> *TempFile::open_files = nullptr;
+std::unique_ptr< std::map<std::string, int> > TempFile::open_files;
 struct sigaction TempFile::cached_sigpipe_handler;
 
 
@@ -65,10 +65,9 @@ struct sigaction TempFile::cached_sigpipe_handler;
 void TempFile::sigpipe_handler(int sig)
 {
     if (sig == SIGPIPE) {
-        std::map<string, int>::iterator it;
-        for (it = open_files->begin(); it != open_files->end(); ++it) {
-            if (unlink((it->first).c_str()) == -1)
-                ERROR_LOG(string("Error unlinking temporary file: '").append(it->first).append("': ").append(strerror(errno)).append("\n"));
+        for(auto &mpair: *open_files){
+            if (unlink((mpair.first).c_str()) == -1)
+                ERROR_LOG(string("Error unlinking temporary file: '").append(mpair.first).append("': ").append(strerror(errno)).append("\n"));
         }
         // Files cleaned up? Sweet! Time to bail...
         sigaction(SIGPIPE, &cached_sigpipe_handler, 0);
@@ -82,7 +81,7 @@ void TempFile::sigpipe_handler(int sig)
  * @brief Attempts to create the directory identified by dir_name, throws an exception if it fails.
  * @param dir_name
  */
-void TempFile::mk_temp_dir(const std::string &dir_name) const {
+void TempFile::mk_temp_dir(const std::string &dir_name) {
 
     mode_t mode = umask(007);
     if(mkdir(dir_name.c_str(), mode)){
@@ -105,10 +104,7 @@ void TempFile::mk_temp_dir(const std::string &dir_name) const {
  * @brief Initialize static class members, should only be called once using std::call_once()
  */
 void TempFile::init() {
-    open_files = new std::map<string, int>();
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
+    open_files = unique_ptr<std::map<string, int>>(new std::map<string, int>());
 }
 
 /**
@@ -157,32 +153,27 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
     }
     d_fname.assign(tmp_name);
 
-    {
-        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
 
-        // Check to see if there are already active TempFile things,
-        // we can tell because if open_files->size() is zero then this
-        // is the first and we need to register SIGPIPE handler
-        if (open_files->empty()) {
-            struct sigaction act;
-            sigemptyset(&act.sa_mask);
-            sigaddset(&act.sa_mask, SIGPIPE);
-            act.sa_flags = 0;
+    std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
 
-            act.sa_handler = bes::TempFile::sigpipe_handler;
+    // Check to see if there are already active TempFile things,
+    // we can tell because if open_files->size() is zero then this
+    // is the first and we need to register SIGPIPE handler
+    if (open_files->empty()) {
+        struct sigaction act;
+        sigemptyset(&act.sa_mask);
+        sigaddset(&act.sa_mask, SIGPIPE);
+        act.sa_flags = 0;
 
-            if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
-                throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
-            }
+        act.sa_handler = bes::TempFile::sigpipe_handler;
+
+        if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
+            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
         }
-        open_files->insert(std::pair<string, int>(d_fname, d_fd));
     }
+    open_files->insert(std::pair<string, int>(d_fname, d_fd));
 
-}
 
-void TempFile::delete_instance() {
-    delete open_files;
-    open_files = nullptr;
 }
 
 /**
@@ -211,16 +202,15 @@ TempFile::~TempFile()
         cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
 
-    {
-        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
-        open_files->erase(d_fname);
-        if (open_files->empty()) {
-            if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
-                stringstream msg;
-                msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
-                msg << " errno: " << errno << " message: " << strerror(errno);
-                ERROR_LOG(msg.str());
-            }
+
+    std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
+    open_files->erase(d_fname);
+    if (open_files->empty()) {
+        if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
+            stringstream msg;
+            msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
+            msg << " errno: " << errno << " message: " << strerror(errno);
+            ERROR_LOG(msg.str());
         }
     }
 }

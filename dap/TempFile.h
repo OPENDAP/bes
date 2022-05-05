@@ -44,22 +44,20 @@ namespace bes {
  */
 class TempFile {
 private:
-    static std::map<std::string, int> *open_files;
+    // Lifecycle controls
     static struct sigaction cached_sigpipe_handler;
     mutable std::recursive_mutex d_tf_lock_mutex;
+    static void init();
 
+    // Holds the static list of all open files
+    static std::unique_ptr< std::map<std::string, int> > open_files;
 
+    // Instance variables
     int d_fd;
     std::string d_fname;
     bool d_keep_temps;
 
-
-
-    // Thread safe lifecycle controls
-    static void init();
-    static void delete_instance();
-
-    void mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp") const;
+    static void mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp") ;
 
     friend class TemporaryFileTest;
 
