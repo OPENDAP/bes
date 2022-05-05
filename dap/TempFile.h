@@ -49,6 +49,7 @@ private:
     static struct sigaction cached_sigpipe_handler;
     mutable std::recursive_mutex d_tf_lock_mutex;
     static void init();
+    static std::once_flag d_tfile_init;
 
     // Holds the static list of all open files
     static std::unique_ptr< std::map<std::string, int> > open_files;
