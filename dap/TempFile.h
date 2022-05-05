@@ -33,9 +33,6 @@
 
 namespace bes {
 
-const std::string default_tmp_file_template = "opendapXXXXXX";
-const std::string default_dir = "/tmp";
-
 /**
  * @brief Get a new temporary file
  *
@@ -55,14 +52,15 @@ private:
 
     friend class TemporaryFileTest;
 
-    void mk_temp_dir(const std::string &dir_name = default_dir);
+    static void init();
+    void mk_temp_dir(const std::string &dir_name = "/tmp") const;
 
 public:
     // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
     // compile unless this is declared public.
     static void sigpipe_handler(int signal);
 
-    explicit TempFile(const std::string &dir_name = default_dir, const std::string &path_template = default_tmp_file_template, bool keep_temps = false);
+    explicit TempFile(const std::string &dir_name = "/tmp", const std::string &path_template = "opendapXXXXXX", bool keep_temps = false);
 
     ~TempFile();
 

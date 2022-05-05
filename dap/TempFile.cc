@@ -29,6 +29,7 @@
 #include <signal.h>
 #include <sys/wait.h> // for wait
 #include <sstream>      // std::stringstream
+#include <mutex>
 
 #include <cstdlib>
 #include <cstring>
@@ -49,11 +50,13 @@ using namespace std;
 #define MODULE "dap"
 #define prolog string("TempFile::").append(__func__).append("() - ")
 
-
 namespace bes {
 
-std::map<string, int> *TempFile::open_files = new std::map<string, int>;
+static std::once_flag d_tfile_init_once;
+
+std::map<string, int> *TempFile::open_files = nullptr;
 struct sigaction TempFile::cached_sigpipe_handler;
+
 
 /**
  * We need to make sure that all of the open temporary files get cleaned up if
@@ -80,7 +83,7 @@ void TempFile::sigpipe_handler(int sig)
  * @brief Attempts to create the directory identified by dir_name, throws an exception if it fails.
  * @param dir_name
  */
-void TempFile::mk_temp_dir(const std::string &dir_name){
+void TempFile::mk_temp_dir(const std::string &dir_name) const {
 
     mode_t mode = umask(007);
     if(mkdir(dir_name.c_str(), mode)){
@@ -97,6 +100,13 @@ void TempFile::mk_temp_dir(const std::string &dir_name){
     else {
         BESDEBUG(MODULE,prolog << "The temp directory: " << dir_name << " was created." << endl);
     }
+}
+
+/**
+ * @brief Initialize static class members, should only be called once using std::call_once()
+ */
+void TempFile::init() {
+    open_files = new std::map<string, int>();
 }
 
 /**
@@ -117,6 +127,8 @@ void TempFile::mk_temp_dir(const std::string &dir_name){
 TempFile::TempFile(const std::string &dir_name, const std::string &file_template, bool keep_temps)
     : d_keep_temps(keep_temps)
 {
+    std::call_once(d_tfile_init_once,TempFile::init);
+
     BESDEBUG(MODULE, prolog << "dir_name: " << dir_name << endl);
     mk_temp_dir(dir_name);
 
@@ -143,7 +155,9 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
     }
     d_fname.assign(tmp_name);
 
-    // only register the SIGPIPE handler once. First time, size() is zero.
+    // Check to see if there are already active TempFile things,
+    // we can tell because if open_files->size() is zero then this
+    // is the first and we need to register SIGPIPE handler
     if (open_files->empty()) {
         struct sigaction act;
         sigemptyset(&act.sa_mask);
