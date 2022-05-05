@@ -1057,8 +1057,12 @@ vector<unsigned long long> DMZ::get_array_dims(Array *array)
 size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, const DmrppCommon *dc)
 {
     auto const& chunk_dim_sizes = dc->get_chunk_dimension_sizes();
-    if (chunk_dim_sizes.size() != array_dim_sizes.size())
-        throw BESInternalError("Expected the chunk and array rank to match.", __FILE__, __LINE__);
+    if (chunk_dim_sizes.size() != array_dim_sizes.size()) {
+        ostringstream oss;
+        oss << "Expected the chunk and array rank to match (chunk: " << chunk_dim_sizes.size() << ", array: "
+            << array_dim_sizes.size() << ")";
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
 
     size_t num_logical_chunks = 1;
     auto i = array_dim_sizes.rbegin();
@@ -1109,7 +1113,9 @@ void DMZ::load_chunks(BaseType *btp)
         process_chunks(dc(btp), child);
         // TODO Add the missing chunk information here. jhrg 5/4/22
         auto array = dynamic_cast<Array*>(btp);
-        if (array) {
+        // It's possible to have a chunk, but not have a chunk dimension sizes element
+        // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
+        if (array && !dc(btp)->get_chunk_dimension_sizes().empty()) {
             auto const &array_dim_sizes = get_array_dims(array);
             size_t num_logical_chunks = logical_chunks(array_dim_sizes, dc(btp));
             // do we need to run this code?

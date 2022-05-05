@@ -716,24 +716,21 @@ public:
         CPPUNIT_ASSERT(chunks.find(c1_pia) != chunks.end());
     }
 
-#if 0
-
     void test_get_chunk_map_2() {
         vector<shared_ptr<Chunk>> vc;
         vc.push_back(get_another_chunk(0, 0));
-        vector<unsigned long long> c2_pia{0, 2};
-        vc.push_back()
-        vector<unsigned long long> c3_pia{2, 0};
+        vc.push_back(get_another_chunk(0, 2));
+        vc.push_back(get_another_chunk(2, 2));
 
         set< vector<unsigned long long> > chunks = DMZ::get_chunk_map(vc);
         CPPUNIT_ASSERT(!chunks.empty());
-        CPPUNIT_ASSERT(chunks.size() == 1);
-        CPPUNIT_ASSERT(chunks.find(c1_pia) != chunks.end());
-        vector<unsigned long long> c1_pia2{0, 0};
-        CPPUNIT_ASSERT(chunks.find(c1_pia2) != chunks.end());
-    }
+        CPPUNIT_ASSERT(chunks.size() == 3);
 
-#endif
+        vector<unsigned long long> pia1{2, 2};
+        CPPUNIT_ASSERT(chunks.find(pia1) != chunks.end());
+        vector<unsigned long long> pia2{2, 0};
+        CPPUNIT_ASSERT(chunks.find(pia2) == chunks.end());
+    }
 
     void test_load_chunks_1() {
         try {
@@ -884,6 +881,7 @@ public:
     CPPUNIT_TEST(test_logical_chunks_3);
 
     CPPUNIT_TEST(test_get_chunk_map_1);
+    CPPUNIT_TEST(test_get_chunk_map_2);
 
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);
