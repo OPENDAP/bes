@@ -133,6 +133,11 @@ void TempFile::init() {
     open_files.reset(new std::map<string, int>());
 }
 
+TempFile::TempFile(bool keep_temps): d_fd(-1), d_keep_temps(keep_temps) {
+    std::call_once(d_init_once,TempFile::init);
+}
+
+
 /**
  * @brief Get a new temporary file
  *
@@ -148,11 +153,8 @@ void TempFile::init() {
  * filename.
  * @param keep_temps Keep the temporary files.
  */
-TempFile::TempFile(const std::string &dir_name, const std::string &file_template, bool keep_temps)
-    : d_keep_temps(keep_temps)
+string TempFile::create(const std::string &dir_name, const std::string &file_template)
 {
-    std::call_once(d_init_once,TempFile::init);
-
     BESDEBUG(MODULE, prolog << "dir_name: " << dir_name << endl);
     mk_temp_dir(dir_name);
 
@@ -198,7 +200,7 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
     }
     open_files->insert(std::pair<string, int>(d_fname, d_fd));
 
-
+    return d_fname;
 }
 
 /**
@@ -209,12 +211,20 @@ TempFile::TempFile(const std::string &dir_name, const std::string &file_template
 TempFile::~TempFile()
 {
     try {
-        if (close(d_fd) == -1) {
-            ERROR_LOG(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
+        if(d_fd != -1) {
+            if (close(d_fd) == -1) {
+                stringstream msg;
+                msg << "Error closing temporary file: '" << d_fname ;
+                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+                ERROR_LOG(msg.str());
+            }
         }
-        if (!d_keep_temps) {
+        if (!d_keep_temps && !d_fname.empty()) {
             if (unlink(d_fname.c_str()) == -1) {
-                ERROR_LOG(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
+                stringstream msg;
+                msg << "Error unlinking temporary file: '" << d_fname ;
+                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+                ERROR_LOG(msg.str());
             }
         }
     }
@@ -229,13 +239,15 @@ TempFile::~TempFile()
 
 
     std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
-    open_files->erase(d_fname);
-    if (open_files->empty()) {
-        if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
-            stringstream msg;
-            msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
-            msg << " errno: " << errno << " message: " << strerror(errno);
-            ERROR_LOG(msg.str());
+    if(!d_fname.empty()) {
+        open_files->erase(d_fname);
+        if (open_files->empty()) {
+            if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
+                stringstream msg;
+                msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
+                msg << " errno: " << errno << " message: " << strerror(errno);
+                ERROR_LOG(msg.str());
+            }
         }
     }
 }

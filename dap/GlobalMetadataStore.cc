@@ -343,7 +343,7 @@ GlobalMetadataStore::get_instance()
         d_enabled = d_instance->cache_enabled();
         if (!d_enabled) {
             delete d_instance;
-            d_instance = NULL;
+            d_instance = nullptr;
             BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
         }
         else {
@@ -1253,9 +1253,10 @@ GlobalMetadataStore::get_dmr_object(const string &name)
 DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
-    TempFile dds_tmp(get_cache_directory(), "/mds_dds_XXXXXX");
+    TempFile dds_tmp;
+    string dds_tmp_name = dds_tmp.create(get_cache_directory(), "/mds_dds_XXXXXX");
 
-    fstream dds_fs(dds_tmp.get_name().c_str(), std::fstream::out);
+    fstream dds_fs(dds_tmp_name.c_str(), std::fstream::out);
     try {
         write_dds_response(name, dds_fs);     // throws BESInternalError if not found
         dds_fs.close();
@@ -1267,10 +1268,11 @@ GlobalMetadataStore::get_dds_object(const string &name)
 
     BaseTypeFactory btf;
     unique_ptr<DDS> dds(new DDS(&btf));
-    dds->parse(dds_tmp.get_name());
+    dds->parse(dds_tmp_name);
 
-    TempFile das_tmp(get_cache_directory(), "/mds_das_XXXXXX");
-    fstream das_fs(das_tmp.get_name().c_str(), std::fstream::out);
+    TempFile das_tmp;
+    string das_tmp_name = das_tmp.create(get_cache_directory(), "/mds_das_XXXXXX");
+    fstream das_fs(das_tmp_name.c_str(), std::fstream::out);
     try {
         write_das_response(name, das_fs);     // throws BESInternalError if not found
         das_fs.close();
@@ -1281,7 +1283,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     }
 
     unique_ptr<DAS> das(new DAS());
-    das->parse(das_tmp.get_name());
+    das->parse(das_tmp_name);
 
     dds->transfer_attributes(das.get());
     dds->set_factory(nullptr);

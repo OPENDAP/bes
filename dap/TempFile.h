@@ -68,9 +68,11 @@ public:
     // compile unless this is declared public.
     static void sigpipe_handler(int signal);
 
-    explicit TempFile(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendapXXXXXX", bool keep_temps = false);
-
+    explicit TempFile(bool keep_temps = false);
     ~TempFile();
+
+    std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendapXXXXXX");
+
 
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }
