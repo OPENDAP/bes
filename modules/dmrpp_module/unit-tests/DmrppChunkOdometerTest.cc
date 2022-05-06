@@ -23,6 +23,9 @@
 // Created by James Gallagher on 5/5/22.
 //
 
+#include <vector>
+#include <algorithm>
+
 #include "DmrppChunkOdometer.h"
 
 #include "run_tests_cppunit.h"
@@ -36,7 +39,7 @@ namespace dmrpp {
 
 class DmrppChunkOdometerTest: public CppUnit::TestFixture {
 private:
-    DmrppChunkOdometer d_odometer;
+    //DmrppChunkOdometer d_odometer;
 
 public:
     // Called once before everything gets tested
@@ -136,19 +139,35 @@ public:
         CPPUNIT_ASSERT(s2.at(0) == 0);
         CPPUNIT_ASSERT(s2.at(1) == 0);
         CPPUNIT_ASSERT(s2.at(2) == 159);
-        // TODO finish. jhrg 5/5/22
-#if 0
         CPPUNIT_ASSERT(odometer.next());
         const DmrppChunkOdometer::shape &s3 = odometer.indices();
-        CPPUNIT_ASSERT(s3.at(0) == 0);
-        CPPUNIT_ASSERT(s3.at(1) == 50);
-        CPPUNIT_ASSERT(s2.at(2) == 0);
+        DBG(for_each(s3.begin(), s3.end(), [](unsigned long long x) { cerr << x << " "; }));
+        CPPUNIT_ASSERT(s3.at(0) == 41);
+        CPPUNIT_ASSERT(s3.at(1) == 0);
+        CPPUNIT_ASSERT(s3.at(2) == 0);
+        CPPUNIT_ASSERT(odometer.next());
+        CPPUNIT_ASSERT(odometer.next());
+        CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
         const DmrppChunkOdometer::shape &s4 = odometer.indices();
-        CPPUNIT_ASSERT(s4.at(0) == 20);
-        CPPUNIT_ASSERT(s4.at(1) == 20);
-        CPPUNIT_ASSERT(!odometer.next());
-#endif
+        DBG(for_each(s4.begin(), s4.end(), [](unsigned long long x) { cerr << x << " "; }));
+        CPPUNIT_ASSERT(s4.at(0) == 82);
+        CPPUNIT_ASSERT(s4.at(1) == 0);
+        CPPUNIT_ASSERT(s4.at(2) == 0);
+    }
+
+    void threeD_loop_odometer_test() {
+        vector<unsigned long long> array_size{100, 50, 200};
+        vector<unsigned long long> chunk_size{41, 23, 53};
+        DmrppChunkOdometer odometer(array_size, chunk_size);
+        int count = 0;
+        do {
+            const DmrppChunkOdometer::shape &s = odometer.indices();
+            DBG(for_each(s.begin(), s.end(), [](unsigned long long x) { cerr << x << " "; }));
+            ++count;
+        } while (odometer.next());
+
+        CPPUNIT_ASSERT(count == 36);
     }
 
     CPPUNIT_TEST_SUITE( DmrppChunkOdometerTest );
@@ -159,7 +178,8 @@ public:
 
     CPPUNIT_TEST(oneD_asym_odometer_test);
     CPPUNIT_TEST(threeD_asym_odometer_test);
-    
+    CPPUNIT_TEST(threeD_loop_odometer_test);
+
     CPPUNIT_TEST_SUITE_END();
 };
 
