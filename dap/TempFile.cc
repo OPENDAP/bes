@@ -68,12 +68,17 @@ void TempFile::sigpipe_handler(int sig)
 {
     if (sig == SIGPIPE) {
         for(const auto &mpair: *open_files){
-            if (unlink((mpair.first).c_str()) == -1)
-                ERROR_LOG(string("Error unlinking temporary file: '").append(mpair.first).append("': ").append(strerror(errno)).append("\n"));
+            if (unlink((mpair.first).c_str()) == -1) {
+                stringstream msg;
+                msg << "Error unlinking temporary file: '" << mpair.first << "'";
+                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+                ERROR_LOG(msg.str());
+            }
         }
         // Files cleaned up? Sweet! Time to bail...
-        sigaction(SIGPIPE, &cached_sigpipe_handler, 0);
-        // signal(SIGPIPE, SIG_DFL);
+        // Remove this SIGPIPE handler
+        sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr);
+        // Re-raise SIGPIPE
         raise(SIGPIPE);
     }
 }
@@ -183,8 +188,9 @@ string TempFile::create(const std::string &dir_name, const std::string &file_tem
 
     if (d_fd == -1) {
         stringstream msg;
-        msg << "Failed to open the temporary file using mkstemp(). errno: " << errno;
-        msg << " message: " << strerror(errno) <<  " FileTemplate: " + target_file;
+        msg << "Failed to open the temporary file using mkstemp()";
+        msg << " errno: " << errno << " message: " << strerror(errno);
+        msg << " FileTemplate: " + target_file;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     d_fname.assign(tmp_name);
@@ -201,7 +207,10 @@ string TempFile::create(const std::string &dir_name, const std::string &file_tem
         act.sa_handler = bes::TempFile::sigpipe_handler;
 
         if (sigaction(SIGPIPE, &act, &cached_sigpipe_handler)) {
-            throw BESInternalFatalError("Could not register a handler to catch SIGPIPE.", __FILE__, __LINE__);
+            stringstream msg;
+            msg << "Could not register a handler to catch SIGPIPE.";
+            msg << " errno: " << errno << " message: " << strerror(errno);
+            throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
     }
     open_files->insert(std::pair<string, int>(d_fname, d_fd));
