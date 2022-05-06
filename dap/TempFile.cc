@@ -156,6 +156,8 @@ TempFile::TempFile(bool keep_temps): d_keep_temps(keep_temps) {
  */
 string TempFile::create(const std::string &dir_name, const std::string &file_template)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
+
     BESDEBUG(MODULE, prolog << "dir_name: " << dir_name << endl);
     mk_temp_dir(dir_name);
 
@@ -187,11 +189,9 @@ string TempFile::create(const std::string &dir_name, const std::string &file_tem
     }
     d_fname.assign(tmp_name);
 
-    std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
-
     // Check to see if there are already active TempFile things,
     // we can tell because if open_files->size() is zero then this
-    // is the first and we need to register SIGPIPE handler
+    // is the first, and we need to register SIGPIPE handler.
     if (open_files->empty()) {
         struct sigaction act;
         sigemptyset(&act.sa_mask);
@@ -241,10 +241,12 @@ TempFile::~TempFile()
         cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
 
-    std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
     if(!d_fname.empty()) {
+        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
         open_files->erase(d_fname);
         if (open_files->empty()) {
+            // No more files means we can unload the SIGPIPE handler
+            // If more files are created at a later time then it will get reloaded.
             if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
                 stringstream msg;
                 msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
