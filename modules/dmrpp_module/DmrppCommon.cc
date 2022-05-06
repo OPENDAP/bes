@@ -301,9 +301,10 @@ unsigned long DmrppCommon::add_chunk(
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         const string &fill_value,
+        unsigned long long chunk_size,
         const vector<unsigned long long> &position_in_array)
 {
-    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, position_in_array));
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, chunk_size, position_in_array));
 
     d_chunks.push_back(chunk);
     return d_chunks.size();

@@ -700,6 +700,10 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     d_is_inflated = true;
 }
 
+void Chunk::load_fill_values() {
+
+}
+
 /**
  * This method is for reading one chunk after the other, using a CURL handle
  * from the CurlHandlePool.
@@ -712,6 +716,11 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 void Chunk::read_chunk() {
     if (d_is_read) {
         BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
+        return;
+    }
+
+    if (d_uses_fill_value) {
+        load_fill_values();
         return;
     }
 

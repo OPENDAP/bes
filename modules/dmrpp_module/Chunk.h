@@ -208,9 +208,9 @@ public:
         set_position_in_array(pia_vec);
     }
 
-    Chunk(std::string order, std::string fill_value, std::vector<unsigned long long> pia) :
-            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_uses_fill_value(true),
-            d_chunk_position_in_array(std::move(pia)) {
+    Chunk(std::string order, std::string fill_value, unsigned long long chunk_size, std::vector<unsigned long long> pia) :
+            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
+            d_uses_fill_value(true), d_chunk_position_in_array(std::move(pia)) {
     }
 
     Chunk(const Chunk &h4bs)
@@ -259,13 +259,11 @@ public:
         return d_offset;
     }
 
-#if 1
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
 
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual std::string get_fill_value() const { return d_fill_value; }
-#endif
 
     /// @return Get the data url for this Chunk's data block
     virtual std::shared_ptr<http::url>  get_data_url() const;
@@ -323,32 +321,6 @@ public:
         return d_read_buffer;
     }
 
-#if 0  // Superseded by Chunk::set_read_buffer(); - ndp 12/17/20
-    /**
-     * @brief Set the read buffer
-     *
-     * Transfer control of the buffer to this object. The buffer must have been
-     * allocated using 'new char[size]'. This object will delete any previously
-     * allocated buffer and take control of the one passed in with this method.
-     * The size and number of bytes read are set to the value of 'size.'
-     *
-     * FIXME Is the assumption here is that the buffer has been populated with values prior to calling this method?
-     *
-     * @param buf The new buffer to be used by this instance.
-     * @param size The size of the new buffer.
-     */
-    virtual void set_rbuf(char *buf, unsigned int buf_size)
-    {
-        if(d_read_buffer_is_mine)
-            delete[] d_read_buffer;
-
-        d_read_buffer = buf;
-        d_read_buffer_size = buf_size;
-
-        set_bytes_read(buf_size);
-    }
-#endif
-
     /**
      * @brief Set the target read buffer for this chunk.
      *
@@ -394,6 +366,7 @@ public:
     void set_position_in_array(const std::vector<unsigned long long> &pia);
 
     virtual void read_chunk();
+    virtual void load_fill_values();
 
     virtual void filter_chunk(const std::string &filters, unsigned long long chunk_size, unsigned long long elem_width);
 

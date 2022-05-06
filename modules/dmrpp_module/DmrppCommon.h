@@ -259,6 +259,7 @@ public:
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
+            unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;

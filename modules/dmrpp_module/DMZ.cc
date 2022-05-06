@@ -75,6 +75,8 @@ using namespace libdap;
 // data responses (which have not yet been coded completely). jhrg 11/17/21
 #define USE_CACHED_XML_NODE 1
 
+#define SUPPORT_FILL_VALUE_CHUNKS 1
+
 #define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
@@ -1107,10 +1109,17 @@ set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chu
     return chunk_map;
 }
 
+/**
+ * @brief Add missing chunks as 'fill value chunks'
+ * @param dc
+ * @param chunk_map A set<> with one element for each chunk
+ * @param chunk_shape The shape of a chunk for this array
+ * @param array_shape The shape of the array
+ * @param chunk_size the number of bytes in the chunk
+ */
 void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map, const shape &chunk_shape,
-                                    const shape &array_shape)
+                                    const shape &array_shape, unsigned long long chunk_size)
 {
-
     // Use an Odometer to walk over each potential chunk
     DmrppChunkOdometer odometer(array_shape, chunk_shape);
     do {
@@ -1118,7 +1127,7 @@ void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map
         if (chunk_map.find(s) == chunk_map.end()) {
             // Fill Value chunk
             // what we need byte order, pia, fill value
-            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), s);
+            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), chunk_size, s);
         }
     } while (odometer.next());
 }
@@ -1150,25 +1159,30 @@ void DMZ::load_chunks(BaseType *btp)
     if (child) {
         chunks_found = 1;
         process_chunks(dc(btp), child);
-        // TODO Add the missing chunk information here. jhrg 5/4/22
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
         if (array && !dc(btp)->get_chunk_dimension_sizes().empty()) {
-            auto const &array_dim_sizes = get_array_dims(array);
-            size_t num_logical_chunks = logical_chunks(array_dim_sizes, dc(btp));
+            auto const &array_shape = get_array_dims(array);
+            size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
             if (num_logical_chunks != dc(btp)->get_chunks_size()) {
+#if !SUPPORT_FILL_VALUE_CHUNKS
                 ostringstream oss;
                 oss << "FAIL: Missing chunks are not yet supported. There are only " << dc(btp)->get_chunks_size()
                     << " chunks when there should be " << num_logical_chunks;
                 throw BESInternalError(oss.str(), __FILE__, __LINE__);
-
-                // build a chunk map - cannot use unordered_set<>
+#else
                 auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
-
-                // use odometer code to iterate over all the logical chunks and
-                // add fill value chunks for the logical chunks that are missing
+                // Since the variable has some chunks that hold only fill values, add those chunks
+                // to the vector of chunks.
+                auto const &chunk_shape = dc(btp)->get_chunk_dimension_sizes();
+                unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
+                for (auto dim_size: chunk_shape)
+                    chunk_size_bytes *= dim_size;
+                process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
+                                          array_shape, chunk_size_bytes);
+#endif
             }
         }
     }

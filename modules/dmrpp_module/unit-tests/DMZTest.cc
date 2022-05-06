@@ -754,12 +754,13 @@ public:
         set<shape> cm;
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 10000);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                  [](const shared_ptr<Chunk> c) { cerr << c->get_fill_value() << " "; }));
 
         vector<shared_ptr<Chunk>> vspc = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(vspc.at(0)->get_size() == 10000);
         CPPUNIT_ASSERT(vspc.at(0)->get_uses_fill_value() == true);
         CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(0) == 0);
 
@@ -792,7 +793,7 @@ public:
 
         shape cs{10000};
         shape as{40000};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 20000);
         CPPUNIT_ASSERT_MESSAGE("There should be two chunks", dc->get_immutable_chunks().size() == 4);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -804,6 +805,7 @@ public:
         CPPUNIT_ASSERT(vspc.at(1)->get_uses_fill_value() == false);
         CPPUNIT_ASSERT(vspc.at(1)->get_position_in_array().at(0) == 20000);
 
+        CPPUNIT_ASSERT(vspc.at(2)->get_size() == 20000);    // two bytes per chunk (simulated) in this test
         CPPUNIT_ASSERT(vspc.at(2)->get_uses_fill_value() == true);
         CPPUNIT_ASSERT(vspc.at(2)->get_position_in_array().at(0) == 10000);
 
@@ -829,7 +831,7 @@ public:
 
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 21);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
@@ -852,6 +854,8 @@ public:
         CPPUNIT_ASSERT(vspc.at(5)->get_uses_fill_value() == true);
         CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(0) == 3);
         CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(1) == 14);
+
+        CPPUNIT_ASSERT(vspc.at(3)->get_size() == 21);
     }
 
     void test_process_fill_value_chunks_all_fill_2D() {
@@ -863,7 +867,7 @@ public:
         set<shape> cm;
         shape cs{3, 7};
         shape as{6, 16};
-        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as, 1);
         CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
         DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
                      [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
