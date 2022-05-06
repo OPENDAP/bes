@@ -1254,7 +1254,7 @@ DDS *
 GlobalMetadataStore::get_dds_object(const string &name)
 {
     TempFile dds_tmp;
-    string dds_tmp_name = dds_tmp.create(get_cache_directory(), "mds_dds_XXXXXX");
+    string dds_tmp_name = dds_tmp.create(get_cache_directory(), "mds_dds");
 
     fstream dds_fs(dds_tmp_name.c_str(), std::fstream::out);
     try {
@@ -1271,7 +1271,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     dds->parse(dds_tmp_name);
 
     TempFile das_tmp;
-    string das_tmp_name = das_tmp.create(get_cache_directory(), "mds_das_XXXXXX");
+    string das_tmp_name = das_tmp.create(get_cache_directory(), "mds_das");
     fstream das_fs(das_tmp_name.c_str(), std::fstream::out);
     try {
         write_das_response(name, das_fs);     // throws BESInternalError if not found

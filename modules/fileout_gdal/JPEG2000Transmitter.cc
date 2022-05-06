@@ -157,7 +157,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     BESDEBUG("JPEG20002", "JPEG2000Transmitter::send_data - reading data into DataDDS" << endl);
 
     bes::TempFile temp_file;
-    string temp_file_name = temp_file.create(JPEG2000Transmitter::temp_dir, "jp2000_XXXXXX");
+    string temp_file_name = temp_file.create(JPEG2000Transmitter::temp_dir, "jp2000_");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.

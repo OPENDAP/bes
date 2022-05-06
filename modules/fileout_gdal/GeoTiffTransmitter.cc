@@ -203,7 +203,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
 
     // This closes the file when it goes out of scope. jhrg 8/25/17
     bes::TempFile temp_file;
-    string temp_file_name = temp_file.create(GeoTiffTransmitter::temp_dir, "geotiff_XXXXXX");
+    string temp_file_name = temp_file.create(GeoTiffTransmitter::temp_dir, "geotiff_");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
