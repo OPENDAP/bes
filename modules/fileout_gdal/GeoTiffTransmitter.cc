@@ -202,7 +202,8 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     }
 
     // This closes the file when it goes out of scope. jhrg 8/25/17
-    bes::TempFile temp_file(GeoTiffTransmitter::temp_dir, "geotiff_XXXXXX");
+    bes::TempFile temp_file;
+    string temp_file_name = temp_file.create(GeoTiffTransmitter::temp_dir, "geotiff_");
 #if 0
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
@@ -223,10 +224,10 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
         throw BESInternalError("Failed to open the temporary file: " + temp_file_name, __FILE__, __LINE__);
 #endif
     // transform the OPeNDAP DataDDS to the geotiff file
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transforming into temporary file " << temp_file.get_name() << endl);
+    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transforming into temporary file " << temp_file_name << endl);
 
     try {
-        FONgTransform ft(dds, bdds->get_ce(), temp_file.get_name());
+        FONgTransform ft(dds, bdds->get_ce(), temp_file_name);
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
         RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
@@ -235,9 +236,9 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_geotiff();
 
-        BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transmitting temp file " << temp_file.get_name() << endl );
+        BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transmitting temp file " << temp_file_name << endl );
 
-        GeoTiffTransmitter::return_temp_stream(temp_file.get_name(), strm);
+        GeoTiffTransmitter::return_temp_stream(temp_file_name, strm);
     }
     catch (Error &e) {
 #if 0

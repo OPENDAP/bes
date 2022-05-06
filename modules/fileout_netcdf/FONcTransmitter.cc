@@ -129,18 +129,19 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
         string base_name = dds->filename().substr(dds->filename().find_last_of("/\\") + 1);
 
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir, "/dap2_nc_"+base_name+"_XXXXXX");
+        bes::TempFile temp_file;
+        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir, "dap2_nc_"+base_name);
 
-        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file_name, dhi.data[RETURN_CMD]);
 
 #if 0
         // This is used to signal the BESUtil::file_to_stream_task() this code is done
@@ -240,13 +241,14 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
 
         // This object closes the file when it goes out of scope.
-        bes::TempFile temp_file(FONcRequestHandler::temp_dir,  "/dap4_nc_"+base_name+"_XXXXXX");
+        bes::TempFile temp_file;
+        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir,  "dap4_nc_"+base_name);
 
-        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
-        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file_name, dhi.data[RETURN_CMD]);
 
         // Call the transform function for DAP4.
         ft.transform_dap4();
@@ -266,10 +268,10 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
-        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
-        BESUtil::file_to_stream(temp_file.get_name(),strm);
+        BESUtil::file_to_stream(temp_file_name,strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);

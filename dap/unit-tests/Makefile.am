@@ -56,7 +56,7 @@ pathinfo_files:
 	(cd pathinfo_files && ln -s nc link_to_nc)
 
 clean-local:
-	-rm -rf mds pathinfo_files response_cache tmp
+	-rm -rf mds pathinfo_files response_cache tmp temp_file_test
 
 EXTRA_DIST = input-files mds_baselines test_utils.cc test_utils.h TestFunction.h \
 test_config.h.in bes.conf.in
