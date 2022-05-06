@@ -222,7 +222,7 @@ jobs:
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
         - |
           if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
-            make check -j16
+            make check -j16 2>&1 > /dev/null
             make coverage
           fi
         - sonar-scanner -X -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
