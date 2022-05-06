@@ -130,7 +130,7 @@ void FONcTransmitter::send_dap2_data(BESResponseObject *obj, BESDataHandlerInter
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file;
-        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir, "/dap2_nc_"+base_name+"_XXXXXX");
+        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir, "dap2_nc_"+base_name+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
@@ -242,7 +242,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file;
-        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir,  "/dap4_nc_"+base_name+"_XXXXXX");
+        string temp_file_name = temp_file.create(FONcRequestHandler::temp_dir,  "dap4_nc_"+base_name+"_XXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:

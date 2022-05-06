@@ -139,19 +139,20 @@ TempFile::TempFile(bool keep_temps): d_keep_temps(keep_temps) {
 
 
 /**
- * @brief Get a new temporary file
+ * @brief Create a new temporary file
  *
- * Get a new temporary file using the given template. The template must give
- * the fully qualified path for the temporary file and must end in one or more
- * Xs (but six are usually used) with no characters following.
+ * Get a new temporary file using the given directory and temporary file template.
+ * If the directory does not exist it will be created.
+ * The temporary file template and must end in six Xs with no characters following.
  *
- * @note If you pass in a bad template, behavior of this class is undefined.
+ * @note If you pass in a bad template, a BESInternalError will be thrown.
  *
- * @param dir_name The nae of the directory in which the temporary file
+ * @param dir_name The name of the directory in which the temporary file
  * will be created.
  * @param path_template Template passed to mkstemp() to build the temporary
  * filename.
  * @param keep_temps Keep the temporary files.
+ * @return The name of the temporary file.
  */
 string TempFile::create(const std::string &dir_name, const std::string &file_template)
 {
@@ -159,6 +160,11 @@ string TempFile::create(const std::string &dir_name, const std::string &file_tem
     mk_temp_dir(dir_name);
 
     BESDEBUG(MODULE, prolog << "file_template: " << file_template << endl);
+    if(!BESUtil::endsWith(file_template,"XXXXXX")){
+        stringstream msg;
+        msg << prolog << "ERROR - The temporary file template: '"<< file_template << "' does not end in XXXXXX.";
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
 
     string target_file = BESUtil::pathConcat(dir_name,file_template);
     BESDEBUG(MODULE, prolog << "target_file: " << target_file << endl);
@@ -234,7 +240,6 @@ TempFile::~TempFile()
     catch (...) {
         cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
     }
-
 
     std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
     if(!d_fname.empty()) {

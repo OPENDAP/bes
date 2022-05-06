@@ -71,8 +71,7 @@ public:
     explicit TempFile(bool keep_temps = false);
     ~TempFile();
 
-    std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendapXXXXXX");
-
+    std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendap_XXXXXX");
 
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }
