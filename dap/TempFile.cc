@@ -66,21 +66,31 @@ struct sigaction TempFile::cached_sigpipe_handler;
  */
 void TempFile::sigpipe_handler(int sig)
 {
-    if (sig == SIGPIPE) {
-        for(const auto &mpair: *open_files){
-            if (unlink((mpair.first).c_str()) == -1) {
-                stringstream msg;
-                msg << "Error unlinking temporary file: '" << mpair.first << "'";
-                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
-                ERROR_LOG(msg.str());
+    try {
+        if (sig == SIGPIPE) {
+            for (const auto &mpair: *open_files) {
+                if (unlink((mpair.first).c_str()) == -1) {
+                    stringstream msg;
+                    msg << "Error unlinking temporary file: '" << mpair.first << "'";
+                    msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+                    ERROR_LOG(msg.str());
+                }
             }
+            // Files cleaned up? Sweet! Time to bail...
+            // Remove this SIGPIPE handler
+            sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr);
+            // Re-raise SIGPIPE
+            raise(SIGPIPE);
         }
-        // Files cleaned up? Sweet! Time to bail...
-        // Remove this SIGPIPE handler
-        sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr);
-        // Re-raise SIGPIPE
-        raise(SIGPIPE);
     }
+    catch (BESError &e) {
+        cerr << "Encountered BESError. Message: " << e.get_verbose_message();
+        cerr << " (location: " << __FILE__ << " at line: " << __LINE__ << ")" <<  endl;
+    }
+    catch (...) {
+        cerr << "Encountered unknown error in " << __FILE__ << " at line: " << __LINE__ << endl;
+    }
+
 }
 
 
@@ -138,6 +148,10 @@ void TempFile::init() {
     open_files.reset(new std::map<string, int>());
 }
 
+/**
+ *
+ * @param keep_temps Keep the temporary files.
+ */
 TempFile::TempFile(bool keep_temps): d_keep_temps(keep_temps) {
     std::call_once(d_init_once,TempFile::init);
 }
@@ -152,7 +166,6 @@ TempFile::TempFile(bool keep_temps): d_keep_temps(keep_temps) {
  * @param dir_name The name of the directory in which the temporary file
  * will be created.
  * @param temp_file_prefix A prefix to be used for the temporary file.
- * @param keep_temps Keep the temporary files.
  * @return The name of the temporary file.
  */
 string TempFile::create(const std::string &dir_name, const std::string &temp_file_prefix)
@@ -229,38 +242,38 @@ TempFile::~TempFile()
             msg << " errno: " << errno << " message: " << strerror(errno) << endl;
             ERROR_LOG(msg.str());
         }
-        if (!d_keep_temps && !d_fname.empty()) {
-            if (unlink(d_fname.c_str()) == -1) {
-                stringstream msg;
-                msg << "Error unlinking temporary file: '" << d_fname ;
-                msg << " errno: " << errno << " message: " << strerror(errno) << endl;
-                ERROR_LOG(msg.str());
+        if(!d_fname.empty()) {
+            std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
+            if (!d_keep_temps) {
+                if (unlink(d_fname.c_str()) == -1) {
+                    stringstream msg;
+                    msg << "Error unlinking temporary file: '" << d_fname ;
+                    msg << " errno: " << errno << " message: " << strerror(errno) << endl;
+                    ERROR_LOG(msg.str());
+                }
+            }
+            open_files->erase(d_fname);
+            if (open_files->empty()) {
+                // No more files means we can unload the SIGPIPE handler
+                // If more files are created at a later time then it will get reloaded.
+                if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
+                    stringstream msg;
+                    msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
+                    msg << " errno: " << errno << " message: " << strerror(errno);
+                    ERROR_LOG(msg.str());
+                }
             }
         }
     }
     catch (BESError &e) {
-        // This  protects against BESLog (i.e., ERROR) throwing an exception.
-        // If BESLog has failed, we cannot log the error, punt and write to stderr.
-        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog (" << e.get_verbose_message() << ").";
+        cerr << "Encountered BESError will closing " << d_fname << " Message: " << e.get_verbose_message();
+        cerr << " (location: " << __FILE__ << " at line: " << __LINE__ << ")" <<  endl;
     }
     catch (...) {
-        cerr << "Could not close temporary file '" << d_fname << "' due to an error in BESlog.";
+        cerr << "Encountered unknown error while closing " << d_fname;
+        cerr << "  " << __FILE__ << " at line: " << __LINE__ << endl;
     }
 
-    if(!d_fname.empty()) {
-        std::lock_guard<std::recursive_mutex> lock_me(d_tf_lock_mutex);
-        open_files->erase(d_fname);
-        if (open_files->empty()) {
-            // No more files means we can unload the SIGPIPE handler
-            // If more files are created at a later time then it will get reloaded.
-            if (sigaction(SIGPIPE, &cached_sigpipe_handler, nullptr)) {
-                stringstream msg;
-                msg << "Could not de-register the SIGPIPE handler function cached_sigpipe_handler(). ";
-                msg << " errno: " << errno << " message: " << strerror(errno);
-                ERROR_LOG(msg.str());
-            }
-        }
-    }
 }
 
 } // namespace bes
