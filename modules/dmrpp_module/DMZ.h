@@ -52,6 +52,8 @@ class url;
 
 namespace dmrpp {
 
+using shape = std::vector<unsigned long long>;
+
 class Chunk;
 class DmrppCommon;
 
@@ -73,11 +75,16 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
+    /// Holds names of the XML elements thst define variables (e.g., Byte)
+    static const std::set<std::string> variable_elements;
+
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
-    void process_fill_value_chunks() const;
+
+    static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,
+                                   const shape &array_shape);
 
     static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
     static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);

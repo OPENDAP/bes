@@ -298,40 +298,6 @@ unsigned long DmrppCommon::add_chunk(
     return d_chunks.size();
 }
 
-#if 0
-unsigned long DmrppCommon::add_chunk(
-        shared_ptr<http::url> data_url,
-        const string &byte_order,
-        const string &fill_value,
-        const string &position_in_array)
-{
-    vector<unsigned long long> cpia_vector;
-    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(move(data_url), byte_order, fill_value, cpia_vector);
-}
-
-unsigned long DmrppCommon::add_chunk(
-        shared_ptr<http::url> data_url,
-        const string &byte_order,
-        const string &fill_value,
-        const vector<unsigned long long> &position_in_array)
-{
-    shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, fill_value, position_in_array));
-
-    d_chunks.push_back(chunk);
-    return d_chunks.size();
-}
-
-unsigned long DmrppCommon::add_chunk(
-        const string &byte_order,
-        const string &fill_value,
-        const string &position_in_array)
-{
-    vector<unsigned long long> cpia_vector;
-    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(byte_order, fill_value, cpia_vector);
-}
-
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         const string &fill_value,
@@ -342,8 +308,6 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
-
-#endif
 
 /**
  * @brief read method for the atomic types

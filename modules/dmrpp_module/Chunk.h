@@ -64,8 +64,10 @@ private:
     std::shared_ptr<http::url> d_data_url;
     std::string d_query_marker;
     std::string d_byte_order;
-    unsigned long long d_size {0};
-    unsigned long long d_offset {0};
+    std::string d_fill_value;
+    unsigned long long d_size{0};
+    unsigned long long d_offset{0};
+    bool d_uses_fill_value{false};
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
@@ -99,7 +101,6 @@ private:
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
-    friend class DMZMockChunk;
 
 protected:
 
@@ -109,6 +110,8 @@ protected:
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
+        d_fill_value = bs.d_fill_value;
+        d_uses_fill_value = bs.d_uses_fill_value;
         d_query_marker = bs.d_query_marker;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
@@ -136,15 +139,10 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(std::shared_ptr<http::url> data_url,
-          std::string order,
-          unsigned long long size,
-          unsigned long long offset,
-          const std::string &pia_str = "") :
-            d_data_url(std::move(data_url)),
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset)
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size,
+          unsigned long long offset, const std::string &pia_str = "") :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size),  d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -162,14 +160,8 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(std::string order,
-          unsigned long long size,
-          unsigned long long offset,
-          const std::string &pia_str = "") :
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset)
-    {
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,  const std::string &pia_str = "") :
+            d_byte_order(std::move(order)),  d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -186,16 +178,10 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(std::shared_ptr<http::url> data_url,
-          std::string order,
-          unsigned long long size,
-          unsigned long long offset,
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec) :
-            d_data_url(std::move(data_url)),
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset)
-    {
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -213,17 +199,18 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(std::string order,
-          unsigned long long size,
-          unsigned long long offset,
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,
           const std::vector<unsigned long long> &pia_vec) :
-            d_byte_order(std::move(order)),
-            d_size(size), d_offset(offset)
-    {
+            d_byte_order(std::move(order)), d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_vec);
+    }
+
+    Chunk(std::string order, std::string fill_value, std::vector<unsigned long long> pia) :
+            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_uses_fill_value(true),
+            d_chunk_position_in_array(std::move(pia)) {
     }
 
     Chunk(const Chunk &h4bs)
@@ -272,7 +259,7 @@ public:
         return d_offset;
     }
 
-#if 0
+#if 1
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
 

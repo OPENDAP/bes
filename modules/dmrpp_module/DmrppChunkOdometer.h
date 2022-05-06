@@ -29,6 +29,8 @@
 
 namespace dmrpp {
 
+using shape = std::vector<unsigned long long>;
+
 /**
  * Map the indices of a N-dimensional array to the offset into memory
  * (i.e., a vector) that matches those indices. This code can be used
@@ -53,22 +55,13 @@ namespace dmrpp {
  */
 class DmrppChunkOdometer
 {
-public:
-    typedef std::vector<unsigned long long> shape;
-
 private:
     // The state set by the ctor
     shape d_shape;
     shape d_array_shape;
-#if 0
-    unsigned long long d_highest_offset;
-#endif
 
     // The varying state of the Odometer
     shape d_indices;
-#if 0
-    unsigned long long d_offset = 0;
-#endif
 
 public:
     DmrppChunkOdometer() = default;
@@ -85,14 +78,6 @@ public:
     DmrppChunkOdometer(shape chunk_shape, shape array_shape) :
         d_shape(std::move(chunk_shape)), d_array_shape(std::move(array_shape))
     {
-#if 0
-        // compute the highest offset value based on the array shape
-        d_highest_offset = 1;
-        for (auto dim_size: d_shape)
-            d_highest_offset *= dim_size;
-
-        d_indices.resize(d_shape.size(), 0);
-#endif
         reset();
     }
 
@@ -103,9 +88,6 @@ public:
     void reset() noexcept
     {
         d_indices.resize(d_shape.size(), 0);
-#if 0
-        d_offset = 0;
-#endif
     }
 
     /**
@@ -121,7 +103,6 @@ public:
      */
     inline bool next()
     {
-        // About 2.4 seconds for 10^9 elements
         bool status = false;    // false indicates the last 'odometer value' has been found
         auto si = d_shape.rbegin();
         auto ai = d_array_shape.rbegin();
@@ -139,75 +120,16 @@ public:
         return status;
     }
 
-#if 0
-    /**
-     * Given a set of indices, update offset to match the position
-     * in the memory/vector they correspond to given the Odometer's
-     * initial shape.
-     * @param indices Indices of an element
-     * @return The position in linear memory of that element
-     */
-    inline unsigned int set_indices(const shape &indices)
-    {
-        d_indices = indices;
-
-        // I copied this algorithm from Nathan's code in NDimenensionalArray in the
-        // ugrid function module. jhrg 5/22/15
-
-        auto shape_index = d_shape.rbegin();
-        auto index = d_indices.rbegin(), index_end = d_indices.rend();
-        d_offset = *index++;
-        unsigned int chunk_size = *shape_index++;
-        while (index != index_end) {
-            d_offset += chunk_size * *index++;
-            chunk_size *= *shape_index++;
-        }
-
-        return d_offset;
-    }
-
-    unsigned int set_indices(const std::vector<int> &indices)
-    {
-        shape temp;
-        std::copy(indices.begin(), indices.end(), std::back_inserter(temp));
-
-        return set_indices(temp);
-    }
-#endif
-
     /**
      * Return the current set of indices. These match the current offset.
      * Both the offset and indices are incremented by the next() method.
      *
      * To access the ith index, use [i] or .at(i)
      */
-    inline const shape &indices()
+    inline const shape &indices() const noexcept
     {
         return d_indices;
     }
-
-#if 0
-    /**
-     * The offset into memory for the current element.
-     */
-    inline unsigned int offset()
-    {
-        return d_offset;
-    }
-
-    /**
-     * Return the sentinel value that indicates that the offset (returned by
-     * offset()) is at the end of the array. When offset() < end() the values
-     * of offset() and indices() are valid elements of the array being indexed.
-     * When offset() == end(), the values are no longer valid and the last
-     * array element has been visited.
-     */
-    inline unsigned int end()
-    {
-        return d_highest_offset;
-    }
-#endif
-
 };
 
 }	// namespace libdap

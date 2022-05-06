@@ -55,7 +55,7 @@ public:
 
     void default_odometer_test() {
         DmrppChunkOdometer odometer;
-        const DmrppChunkOdometer::shape &s = odometer.indices();
+        const shape &s = odometer.indices();
         CPPUNIT_ASSERT(s.empty());
         CPPUNIT_ASSERT(!odometer.next());
         CPPUNIT_ASSERT(!odometer.next());
@@ -65,18 +65,18 @@ public:
         vector<unsigned long long> array_size{40000};
         vector<unsigned long long> chunk_size{10000};
         DmrppChunkOdometer odometer(array_size, chunk_size);
-        const DmrppChunkOdometer::shape &s = odometer.indices();
+        const shape &s = odometer.indices();
         CPPUNIT_ASSERT(s.size() == 1);
         CPPUNIT_ASSERT(s.at(0) == 0);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s2 = odometer.indices();
+        const shape &s2 = odometer.indices();
         CPPUNIT_ASSERT(s2.at(0) == 10000);
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s3 = odometer.indices();
+        const shape &s3 = odometer.indices();
         CPPUNIT_ASSERT(s3.at(0) == 30000);
         CPPUNIT_ASSERT(!odometer.next());
-        const DmrppChunkOdometer::shape &s4 = odometer.indices();
+        const shape &s4 = odometer.indices();
         CPPUNIT_ASSERT(s4.at(0) == 0);
     }
 
@@ -84,20 +84,20 @@ public:
         vector<unsigned long long> array_size{40, 40};
         vector<unsigned long long> chunk_size{20, 20};
         DmrppChunkOdometer odometer(array_size, chunk_size);
-        const DmrppChunkOdometer::shape &s = odometer.indices();
+        const shape &s = odometer.indices();
         CPPUNIT_ASSERT(s.size() == 2);
         CPPUNIT_ASSERT(s.at(0) == 0);
         CPPUNIT_ASSERT(s.at(1) == 0);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s2 = odometer.indices();
+        const shape &s2 = odometer.indices();
         CPPUNIT_ASSERT(s2.at(0) == 0);
         CPPUNIT_ASSERT(s2.at(1) == 20);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s3 = odometer.indices();
+        const shape &s3 = odometer.indices();
         CPPUNIT_ASSERT(s3.at(0) == 20);
         CPPUNIT_ASSERT(s3.at(1) == 0);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s4 = odometer.indices();
+        const shape &s4 = odometer.indices();
         CPPUNIT_ASSERT(s4.at(0) == 20);
         CPPUNIT_ASSERT(s4.at(1) == 20);
         CPPUNIT_ASSERT(!odometer.next());
@@ -107,18 +107,18 @@ public:
         vector<unsigned long long> array_size{40000};
         vector<unsigned long long> chunk_size{9501};
         DmrppChunkOdometer odometer(array_size, chunk_size);
-        const DmrppChunkOdometer::shape &s = odometer.indices();
+        const shape &s = odometer.indices();
         CPPUNIT_ASSERT(s.size() == 1);
         CPPUNIT_ASSERT(s.at(0) == 0);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s2 = odometer.indices();
+        const shape &s2 = odometer.indices();
         CPPUNIT_ASSERT(s2.at(0) == 9501);
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s3 = odometer.indices();
+        const shape &s3 = odometer.indices();
         CPPUNIT_ASSERT(s3.at(0) == 28503);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s4 = odometer.indices();
+        const shape &s4 = odometer.indices();
         CPPUNIT_ASSERT(s4.at(0) == 38004);
         CPPUNIT_ASSERT(!odometer.next());
     }
@@ -127,7 +127,7 @@ public:
         vector<unsigned long long> array_size{100, 50, 200};
         vector<unsigned long long> chunk_size{41, 50, 53};
         DmrppChunkOdometer odometer(array_size, chunk_size);
-        const DmrppChunkOdometer::shape &s = odometer.indices();
+        const shape &s = odometer.indices();
         CPPUNIT_ASSERT(s.size() == 3);
         CPPUNIT_ASSERT(s.at(0) == 0);
         CPPUNIT_ASSERT(s.at(1) == 0);
@@ -135,12 +135,12 @@ public:
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s2 = odometer.indices();
+        const shape &s2 = odometer.indices();
         CPPUNIT_ASSERT(s2.at(0) == 0);
         CPPUNIT_ASSERT(s2.at(1) == 0);
         CPPUNIT_ASSERT(s2.at(2) == 159);
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s3 = odometer.indices();
+        const shape &s3 = odometer.indices();
         DBG(for_each(s3.begin(), s3.end(), [](unsigned long long x) { cerr << x << " "; }));
         CPPUNIT_ASSERT(s3.at(0) == 41);
         CPPUNIT_ASSERT(s3.at(1) == 0);
@@ -149,8 +149,9 @@ public:
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
         CPPUNIT_ASSERT(odometer.next());
-        const DmrppChunkOdometer::shape &s4 = odometer.indices();
+        const shape &s4 = odometer.indices();
         DBG(for_each(s4.begin(), s4.end(), [](unsigned long long x) { cerr << x << " "; }));
+        DBG(cerr << endl);
         CPPUNIT_ASSERT(s4.at(0) == 82);
         CPPUNIT_ASSERT(s4.at(1) == 0);
         CPPUNIT_ASSERT(s4.at(2) == 0);
@@ -162,8 +163,9 @@ public:
         DmrppChunkOdometer odometer(array_size, chunk_size);
         int count = 0;
         do {
-            const DmrppChunkOdometer::shape &s = odometer.indices();
+            const shape &s = odometer.indices();
             DBG(for_each(s.begin(), s.end(), [](unsigned long long x) { cerr << x << " "; }));
+            DBG(cerr << endl);
             ++count;
         } while (odometer.next());
 

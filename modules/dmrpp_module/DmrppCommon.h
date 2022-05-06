@@ -77,8 +77,8 @@ class DmrppCommon {
 
 	friend class DmrppCommonTest;
     friend class DmrppParserTest;
+    friend class DMZTest;
 
-private:
     bool d_compact = false;
 	std::string d_filters;
 	std::string d_byte_order;
@@ -256,31 +256,10 @@ public:
             unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
 
-#if 0
-
-    virtual unsigned long add_chunk(
-            const std::string &byte_order,
-            const std::string &fill_value,
-            const std::string &position_in_array);
-
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
             const std::vector<unsigned long long> &position_in_array);
-
-    virtual unsigned long add_chunk(
-            std::shared_ptr<http::url> data_url,
-            const std::string &byte_order,
-            const std::string &fill_value,
-            const std::string &position_in_array);
-
-    virtual unsigned long add_chunk(
-            std::shared_ptr<http::url> data_url,
-            const std::string &byte_order,
-            const std::string &fill_value,
-            const std::vector<unsigned long long> &position_in_array);
-
-#endif
 
     virtual void dump(std::ostream & strm) const;
 };

@@ -231,11 +231,15 @@ public:
         CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
+#if 0
+
     void add_tracking_query_param_test_2()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         CPPUNIT_ASSERT(S3_TRACKING_CONTEXT == "cloudydap");
     }
+
+#endif
 
     void add_tracking_query_param_test_3()
     {
@@ -377,7 +381,9 @@ public:
     CPPUNIT_TEST(test_process_s3_error_response_4);
 
     CPPUNIT_TEST(add_tracking_query_param_test);
-    CPPUNIT_TEST(add_tracking_query_param_test_2);
+#if 0
+        CPPUNIT_TEST(add_tracking_query_param_test_2);
+#endif
     CPPUNIT_TEST(add_tracking_query_param_test_3);
     CPPUNIT_TEST(add_tracking_query_param_test_4);
     CPPUNIT_TEST(add_tracking_query_param_test_4_1);

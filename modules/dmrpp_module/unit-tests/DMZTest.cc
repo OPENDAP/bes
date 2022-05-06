@@ -25,6 +25,7 @@
 #include <memory>
 #include <exception>
 #include <cstring>
+#include <algorithm>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -743,6 +744,144 @@ public:
         CPPUNIT_ASSERT(chunks.find(pia2) == chunks.end());
     }
 
+    // Test the case when there are no chunks in the DMR++ - the array is all fill values
+    void test_process_fill_value_chunks_all_fill() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
+        dc->d_fill_value = "17";
+        dc->d_byte_order = "LE";
+
+        set<shape> cm;
+        shape cs{10000};
+        shape as{40000};
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 4);
+        DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
+                 [](const shared_ptr<Chunk> c) { cerr << c->get_fill_value() << " "; }));
+
+        vector<shared_ptr<Chunk>> vspc = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(vspc.at(0)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(0) == 0);
+
+        CPPUNIT_ASSERT(vspc.at(1)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(1)->get_position_in_array().at(0) == 10000);
+
+        CPPUNIT_ASSERT(vspc.at(2)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(2)->get_position_in_array().at(0) == 20000);
+
+        CPPUNIT_ASSERT(vspc.at(3)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(0) == 30000);
+    }
+
+    void test_process_fill_value_chunks_some_fill() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
+        dc->d_fill_value = "17";
+        dc->d_byte_order = "LE";
+        // load up some chunks to simulate parsing the DMR++
+        dc->add_chunk("LE", 10000, 0, "[0]");
+        dc->add_chunk("LE", 10000, 20000, "[20000]");
+
+        set<shape> cm;
+        // Add two chunks
+        shape c1{0};
+        shape c2{20000};
+        cm.insert(c1);
+        cm.insert(c2);
+
+
+        shape cs{10000};
+        shape as{40000};
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        CPPUNIT_ASSERT_MESSAGE("There should be two chunks", dc->get_immutable_chunks().size() == 4);
+        DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
+                     [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
+
+        vector<shared_ptr<Chunk>> vspc = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(vspc.at(0)->get_uses_fill_value() == false);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(0) == 0);
+
+        CPPUNIT_ASSERT(vspc.at(1)->get_uses_fill_value() == false);
+        CPPUNIT_ASSERT(vspc.at(1)->get_position_in_array().at(0) == 20000);
+
+        CPPUNIT_ASSERT(vspc.at(2)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(2)->get_position_in_array().at(0) == 10000);
+
+        CPPUNIT_ASSERT(vspc.at(3)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(0) == 30000);
+    }
+
+    void test_process_fill_value_chunks_some_fill_2D() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
+        dc->d_fill_value = "17";
+        dc->d_byte_order = "LE";
+        // load up some chunks to simulate parsing the DMR++
+        dc->add_chunk("LE", 21, 0, "[0,0]");
+        dc->add_chunk("LE", 21, 20000, "[0,14]");
+        dc->add_chunk("LE", 21, 30000, "[3,7]");
+
+
+        set<shape> cm;
+        shape c1{0,0}; cm.insert(c1);
+        shape c2{0,14}; cm.insert(c2);
+        shape c3{3,7}; cm.insert(c3);
+
+        shape cs{3, 7};
+        shape as{6, 16};
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
+        DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
+                     [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
+
+        vector<shared_ptr<Chunk>> vspc = dc->get_immutable_chunks();
+        // These two chunks were added to simulate parsing the DMR++
+        CPPUNIT_ASSERT(vspc.at(0)->get_uses_fill_value() == false);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(0) == 0);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(1) == 0);
+        // skip second chunk
+        CPPUNIT_ASSERT(vspc.at(2)->get_uses_fill_value() == false);
+        CPPUNIT_ASSERT(vspc.at(2)->get_position_in_array().at(0) == 3);
+        CPPUNIT_ASSERT(vspc.at(2)->get_position_in_array().at(1) == 7);
+
+        // These two chunks were added as fill value chunks
+        CPPUNIT_ASSERT(vspc.at(3)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(0) == 0);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(1) == 7);
+        // skipped 3,0
+        CPPUNIT_ASSERT(vspc.at(5)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(0) == 3);
+        CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(1) == 14);
+    }
+
+    void test_process_fill_value_chunks_all_fill_2D() {
+        unique_ptr<DmrppCommon> dc(new DmrppCommon);
+        // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
+        dc->d_fill_value = "17";
+        dc->d_byte_order = "LE";
+
+        set<shape> cm;
+        shape cs{3, 7};
+        shape as{6, 16};
+        DMZ::process_fill_value_chunks(dc.get(), cm, cs, as);
+        CPPUNIT_ASSERT_MESSAGE("There should be four chunks", dc->get_immutable_chunks().size() == 6);
+        DBG(for_each(dc->get_immutable_chunks().begin(), dc->get_immutable_chunks().end(),
+                     [](const shared_ptr<Chunk> c) { cerr << c->get_uses_fill_value() << " "; }));
+
+        vector<shared_ptr<Chunk>> vspc = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(vspc.at(0)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(0) == 0);
+        CPPUNIT_ASSERT(vspc.at(0)->get_position_in_array().at(1) == 0);
+
+        CPPUNIT_ASSERT(vspc.at(3)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(0) == 3);
+        CPPUNIT_ASSERT(vspc.at(3)->get_position_in_array().at(1) == 0);
+
+        CPPUNIT_ASSERT(vspc.at(5)->get_uses_fill_value() == true);
+        CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(0) == 3);
+        CPPUNIT_ASSERT(vspc.at(5)->get_position_in_array().at(1) == 14);
+    }
+
     void test_load_chunks_1() {
         try {
             d_dmz.reset(new DMZ(chunked_fourD_dmrpp));
@@ -894,6 +1033,11 @@ public:
 
     CPPUNIT_TEST(test_get_chunk_map_1);
     CPPUNIT_TEST(test_get_chunk_map_2);
+
+    CPPUNIT_TEST(test_process_fill_value_chunks_all_fill);
+    CPPUNIT_TEST(test_process_fill_value_chunks_some_fill);
+    CPPUNIT_TEST(test_process_fill_value_chunks_all_fill_2D);
+    CPPUNIT_TEST(test_process_fill_value_chunks_some_fill_2D);
 
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);

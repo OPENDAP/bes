@@ -80,9 +80,13 @@ using namespace libdap;
 
 namespace dmrpp {
 
-const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
+using shape = std::vector<unsigned long long>;
+
+#if 1
+const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
+#endif
 
 /// @brief Are the C-style strings equal?
 static inline bool is_eq(const char *value, const char *key)
@@ -1034,15 +1038,11 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
     }
 }
 
-void DMZ::process_fill_value_chunks() const
-{
-    // Build a map of the chunks parsed from the DMR++ based on the CDS info
-
-    // Add the missing chunks.
-    //  Use a child of Chunk? - these Chunks only have to allocate memory and
-    //  use memset of the fill value.
-}
-
+/**
+ * @brief Get a vector describing the shape and size of an Array
+ * @param array The Array
+ * @return A vector of integers that holds the size of each dimension of the Array
+ */
 vector<unsigned long long> DMZ::get_array_dims(Array *array)
 {
     vector<unsigned long long> array_dim_sizes;
@@ -1083,6 +1083,20 @@ size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, c
     return num_logical_chunks;
 }
 
+/**
+ * @brief Get a set<> of vectors that describe this variables actual chunks
+ * In an HDF5 file, each chunked variable may have some chunks that hold only
+ * fill values. As an optimization, HDF5 does not waste space in the data file
+ * by writing those values to the file. This code builds a set< vector<> > that
+ * describes the indices of each chunk in a variable.
+ *
+ * The 'chunk map' can be used, along with an exhaustive enumeration of all _possible_
+ * chunks, to find those 'fill value chunks.'
+ *
+ * @param chunks The list of chunk objects parsed from the DMR++ for this variable
+ * @return A set where each element is a vector of chunk indices. The number of
+ * elements in the set should equal the number of chunks in the _chunks_ parameter.
+ */
 set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chunk>> &chunks)
 {
     set< vector<unsigned long long> > chunk_map;
@@ -1091,6 +1105,22 @@ set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chu
     }
 
     return chunk_map;
+}
+
+void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map, const shape &chunk_shape,
+                                    const shape &array_shape)
+{
+
+    // Use an Odometer to walk over each potential chunk
+    DmrppChunkOdometer odometer(array_shape, chunk_shape);
+    do {
+        const auto &s = odometer.indices();
+        if (chunk_map.find(s) == chunk_map.end()) {
+            // Fill Value chunk
+            // what we need byte order, pia, fill value
+            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), s);
+        }
+    } while (odometer.next());
 }
 
 /**
