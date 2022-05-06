@@ -24,7 +24,6 @@
 #ifndef HYRAX_GIT_SUPERCHUNK_H
 #define HYRAX_GIT_SUPERCHUNK_H
 
-
 #include <vector>
 #include <memory>
 #include <thread>
@@ -33,7 +32,6 @@
 
 
 #include "Chunk.h"
-
 
 namespace dmrpp {
 
@@ -68,19 +66,20 @@ public:
         delete[] d_read_buffer;
     }
 
-    virtual std::string id(){ return d_id; }
+    virtual std::string id() const { return d_id; }
 
     virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
-    std::shared_ptr<http::url> get_data_url(){ return d_data_url; }
-    virtual unsigned long long get_size(){ return d_size; }
-    virtual unsigned long long get_offset(){ return d_offset; }
+    std::shared_ptr<http::url> get_data_url() { return d_data_url; }
+    virtual unsigned long long get_size() const { return d_size; }
+    virtual unsigned long long get_offset() const { return d_offset; }
 
-    virtual void read(){
+    virtual void read() {
         retrieve_data();
         process_child_chunks();
     }
-    virtual void read_unconstrained(){
+
+    virtual void read_unconstrained() {
         retrieve_data();
         process_child_chunks_unconstrained();
     }
@@ -89,10 +88,9 @@ public:
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
 
-
     virtual bool empty(){ return d_chunks.empty(); }
 
-    std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
+    std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;

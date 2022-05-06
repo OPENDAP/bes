@@ -946,26 +946,26 @@ void DmrppArray::read_chunks_unconstrained()
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
-    for(const auto& chunk: get_immutable_chunks()){
+    for(const auto& chunk: get_immutable_chunks()) {
         bool added = current_super_chunk->add_chunk(chunk);
-        if(!added){
+        if (!added) {
             sc_id.str(std::string());
             sc_id << name() << "-" << sc_count++;
             current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
             super_chunks.push(current_super_chunk);
-            if(!current_super_chunk->add_chunk(chunk)){
+            if (!current_super_chunk->add_chunk(chunk)) {
                 stringstream msg ;
                 msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
         }
     }
+
     reserve_value_capacity(get_size());
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
-
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
@@ -979,11 +979,6 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-#if 0
-            // Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
-            // jhrg 11/19/21, 4/27/22
-            super_chunk->read();
-#endif
             super_chunk->read_unconstrained();
         }
     }
