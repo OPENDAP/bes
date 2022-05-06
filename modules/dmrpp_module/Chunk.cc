@@ -636,7 +636,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
-    for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i){
+    for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
         string filter = *i;
 
         if (filter == "deflate"){
@@ -654,7 +654,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 delete[] dest;
                 throw;
             }
-        }// end if(filter == deflate)
+        }// end filter is deflate
         else if (filter == "shuffle"){
             // The internal buffer is chunk's full size at this point.
             char *dest = new char[get_rbuf_size()];
@@ -670,7 +670,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 delete[] dest;
                 throw;
             }
-        }//end if(filter == shuffle)
+        } //end filter is shuffle
         else if (filter == "fletcher32"){
             // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
@@ -695,13 +695,19 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
                                        __FILE__, __LINE__);
             }
-        } //end if(filter == fletcher32)
-    }// end for loop
+        } // end filter is fletcher32
+    } // end for loop
     d_is_inflated = true;
 }
 
+/**
+ * @brief Load the chunk with fill values - temporary implementation
+ * @todo Replace memset with something better that loads the real value.
+ */
 void Chunk::load_fill_values() {
-
+    set_rbuf_to_size();
+    memset(get_rbuf(), 0x00, get_rbuf_size());
+    set_bytes_read(get_rbuf_size());
 }
 
 /**

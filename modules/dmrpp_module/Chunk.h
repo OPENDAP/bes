@@ -332,12 +332,8 @@ public:
      * when the Chunk object's destructor is called. If false then the Chunk's destructor will not attempt to
      * free/delete the memory pointed to by buf. (default: true)
      */
-     void set_read_buffer(
-            char *buf,
-            unsigned long long buf_size,
-            unsigned long long bytes_read = 0,
-            bool assume_ownership = true ){
-
+     void set_read_buffer(char *buf, unsigned long long buf_size, unsigned long long bytes_read = 0,
+                          bool assume_ownership = true ) {
         if(d_read_buffer_is_mine)
             delete[] d_read_buffer;
 
