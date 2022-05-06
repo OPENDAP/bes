@@ -264,7 +264,7 @@ TempFile::~TempFile()
             }
         }
     }
-    catch (BESError &e) {
+    catch (BESError const &e) {
         cerr << "Encountered BESError will closing " << d_fname << " Message: " << e.get_verbose_message();
         cerr << " (location: " << __FILE__ << " at line: " << __LINE__ << ")" <<  endl;
     }
