@@ -90,7 +90,6 @@ void TempFile::sigpipe_handler(int sig)
     catch (...) {
         cerr << "Encountered unknown error in " << __FILE__ << " at line: " << __LINE__ << endl;
     }
-
 }
 
 
@@ -273,7 +272,6 @@ TempFile::~TempFile()
         cerr << "Encountered unknown error while closing " << d_fname;
         cerr << "  " << __FILE__ << " at line: " << __LINE__ << endl;
     }
-
 }
 
 } // namespace bes
