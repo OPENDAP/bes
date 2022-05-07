@@ -1235,7 +1235,7 @@ void DmrppArray::read_chunks()
 
     // TODO We know that non-contiguous chunks may be forward or backward in the file from
     //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
-    //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
+    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     bool found_needed_chunks = false;

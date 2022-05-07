@@ -30,12 +30,11 @@
 #include <queue>
 #include <sstream>
 
-
 #include "Chunk.h"
 
 namespace dmrpp {
 
-// Forward Declaration;
+// Forward Declaration
 class DmrppArray;
 
 /**
@@ -53,12 +52,15 @@ private:
     bool d_is_read;
     char *d_read_buffer;
 
+    bool d_uses_fill_value{false};
+
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
     void read_aggregate_bytes();
+    void read_fill_value_chunk();
 
 public:
-
+    // TODO Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
     explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
     d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
@@ -143,9 +145,6 @@ void process_chunks_unconstrained_concurrent(
         DmrppArray *array,
         const std::vector<unsigned long long> &array_shape);
 
+} // namespace dmrpp
 
-
-}// namespace dmrpp
-
-
-#endif //HYRAX_GIT_SUPERCHUNK_H
+#endif // HYRAX_GIT_SUPERCHUNK_H
