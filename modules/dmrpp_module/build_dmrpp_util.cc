@@ -341,7 +341,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
     if (fill_value_defined) {
         string fill_value = get_hdf5_fill_value(dataset);
         dc->set_uses_fill_value(fill_value_defined);
-        dc->set_fill_value(fill_value);
+        dc->set_fill_value_string(fill_value);
     }
 
     try {

@@ -192,7 +192,7 @@ public:
     virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
 
     /// @brief Set the fill value (using a string)
-    virtual void set_fill_value(const std::string &fv) { d_fill_value = fv; }
+    virtual void set_fill_value_string(const std::string &fv) { d_fill_value = fv; }
 
     /// @brief Set the libdap data type to use with the fill value
     virtual void set_fill_value_type(libdap::Type t) { d_fill_value_type = t; }

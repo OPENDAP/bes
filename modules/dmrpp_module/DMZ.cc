@@ -1019,6 +1019,52 @@ void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
     }
 }
 
+static void add_fill_value_information(DmrppCommon *dc, const string &value_string, libdap::Type fv_type)
+{
+    dc->set_fill_value_string(value_string);
+    dc->set_fill_value_type(fv_type);
+    dc->set_uses_fill_value(true);
+
+    switch (fv_type) {
+        case libdap::dods_byte_c:
+        case libdap::dods_uint8_c:
+        case libdap::dods_int8_c:
+            break;
+
+        case libdap::dods_uint16_c:
+            break;
+
+        case libdap::dods_int16_c:
+            break;
+
+        case libdap::dods_uint32_c:
+            break;
+
+        case libdap::dods_int32_c: {
+            auto value = unique_ptr<int32_t>(new int32_t);
+            unsigned int value_size = sizeof(int32_t);
+            *value = stoi(value_string);
+            //dc->set_fill_value(value);
+            break;
+        }
+
+        case libdap::dods_uint64_c:
+            break;
+
+        case libdap::dods_int64_c:
+            break;
+
+        case libdap::dods_float32_c:
+            break;
+
+        case libdap::dods_float64_c:
+            break;
+
+        default:
+            throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
+    }
+ }
+
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
 void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
@@ -1028,15 +1074,12 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
             dc->set_filter(attr.value());
         }
         else if (is_eq(attr.name(), "fillValue")) {
-            // TODO Move code - just started - in Chunk.cc here.
             // Fill values are only supported for Arrays (5/9/22)
             auto array = dynamic_cast<libdap::Array*>(dc);
             if (!array)
                 throw BESInternalError("Fill Value chunks are only supported for Arrays.", __FILE__, __LINE__);
 
-            dc->set_fill_value(attr.value());
-            dc->set_fill_value_type(array->var()->type());
-            dc->set_uses_fill_value(true);
+            add_fill_value_information(dc, attr.value(), array->var()->type());
         }
         else if (is_eq(attr.name(), "byteOrder")) {
             dc->ingest_byte_order(attr.value());

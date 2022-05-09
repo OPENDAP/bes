@@ -705,7 +705,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
  * @todo Replace memset with something better that loads the real value.
  */
 void Chunk::load_fill_values() {
-    // TODO Move this to DMZ.cc
+#if 0
     switch (d_fill_value_type) {
         case libdap::dods_byte_c:
         case libdap::dods_uint8_c:
@@ -742,16 +742,25 @@ void Chunk::load_fill_values() {
             throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
     }
 
-    unsigned int value_size = 4; // FIXME jhrg 5/9/22
+    unsigned int value_size = 4;
     unsigned long long buffer_size = get_rbuf_size() / value_size;
     assert(get_rbuf_size() % value_size == 0);
+#endif
 
-    auto buffer = reinterpret_cast<int32_t*>(get_rbuf());
-    for (int i = 0; i < buffer_size; ++i) {
-        *buffer++ = -99;  // FIXME jhrg 5/9/22
+    // read this from the chunk
+    auto value = unique_ptr<int32_t>(new int32_t);
+    *value = -99;
+    unsigned int value_size = sizeof(int32_t);
+
+    unsigned long long num_values = get_rbuf_size() / value_size;
+    char *buffer = get_rbuf();
+
+    for (int i = 0; i < num_values; ++i, buffer += value_size) {
+        memcpy(buffer, value.get(), value_size);
     }
 
-    set_bytes_read(get_rbuf_size());
+
+        set_bytes_read(get_rbuf_size());
 }
 
 /**
