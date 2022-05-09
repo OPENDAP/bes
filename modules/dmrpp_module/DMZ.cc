@@ -728,7 +728,7 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &/*parent_node*/, stac
  * that corresponds to the DMR++ XML document this class manages).
  * @return The xml_node pointer
  */
-xml_node DMZ::get_variable_xml_node(BaseType *btp) const
+xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
 #if USE_CACHED_XML_NODE
     auto node = dc(btp)->get_xml_node();
@@ -792,7 +792,7 @@ DMZ::load_attributes(BaseType *btp)
             break;
         }
 
-        // FIXME There are no tests for this code. The above bock for Array
+        // FIXME There are no tests for this code. The above block for Array
         //  was needed, so it seems likely that this will be too, but ...
         //  jhrg 11/16/21
         case dods_structure_c:
@@ -1027,6 +1027,20 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
         if (is_eq(attr.name(), "compressionType")) {
             dc->set_filter(attr.value());
         }
+        else if (is_eq(attr.name(), "fillValue")) {
+            // TODO Move code - just started - in Chunk.cc here.
+            // Fill values are only supported for Arrays (5/9/22)
+            auto array = dynamic_cast<libdap::Array*>(dc);
+            if (!array)
+                throw BESInternalError("Fill Value chunks are only supported for Arrays.", __FILE__, __LINE__);
+
+            dc->set_fill_value(attr.value());
+            dc->set_fill_value_type(array->var()->type());
+            dc->set_uses_fill_value(true);
+        }
+        else if (is_eq(attr.name(), "byteOrder")) {
+            dc->ingest_byte_order(attr.value());
+        }
     }
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
@@ -1127,7 +1141,7 @@ void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map
         if (chunk_map.find(s) == chunk_map.end()) {
             // Fill Value chunk
             // what we need byte order, pia, fill value
-            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), chunk_size, s);
+            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), dc->get_fill_value_type(), chunk_size, s);
         }
     } while (odometer.next());
 }

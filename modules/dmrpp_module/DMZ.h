@@ -79,7 +79,7 @@ private:
     static const std::set<std::string> variable_elements;
 
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
-    pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
+    static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
 

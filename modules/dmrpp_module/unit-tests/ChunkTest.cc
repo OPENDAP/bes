@@ -225,6 +225,7 @@ public:
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
 
+#if ENABLE_TRACKING_QUERY_PARAMETER
     void add_tracking_query_param_test()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -364,6 +365,7 @@ public:
         }
 
     }
+#endif
 
    CPPUNIT_TEST_SUITE( ChunkTest );
 
@@ -380,7 +382,8 @@ public:
     CPPUNIT_TEST(test_process_s3_error_response_3);
     CPPUNIT_TEST(test_process_s3_error_response_4);
 
-    CPPUNIT_TEST(add_tracking_query_param_test);
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        CPPUNIT_TEST(add_tracking_query_param_test);
 #if 0
         CPPUNIT_TEST(add_tracking_query_param_test_2);
 #endif
@@ -393,6 +396,7 @@ public:
 #endif
 
     CPPUNIT_TEST(add_tracking_query_param_test_5_1);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

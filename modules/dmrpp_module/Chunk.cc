@@ -705,8 +705,52 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
  * @todo Replace memset with something better that loads the real value.
  */
 void Chunk::load_fill_values() {
-    set_rbuf_to_size();
-    memset(get_rbuf(), 0x00, get_rbuf_size());
+    // TODO Move this to DMZ.cc
+    switch (d_fill_value_type) {
+        case libdap::dods_byte_c:
+        case libdap::dods_uint8_c:
+            break;
+
+        case libdap::dods_int8_c:
+            break;
+
+        case libdap::dods_uint16_c:
+            break;
+
+        case libdap::dods_int16_c:
+            break;
+
+        case libdap::dods_uint32_c:
+            break;
+
+        case libdap::dods_int32_c:
+            break;
+
+        case libdap::dods_uint64_c:
+            break;
+
+        case libdap::dods_int64_c:
+            break;
+
+        case libdap::dods_float32_c:
+            break;
+
+        case libdap::dods_float64_c:
+            break;
+
+        default:
+            throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
+    }
+
+    unsigned int value_size = 4; // FIXME jhrg 5/9/22
+    unsigned long long buffer_size = get_rbuf_size() / value_size;
+    assert(get_rbuf_size() % value_size == 0);
+
+    auto buffer = reinterpret_cast<int32_t*>(get_rbuf());
+    for (int i = 0; i < buffer_size; ++i) {
+        *buffer++ = -99;  // FIXME jhrg 5/9/22
+    }
+
     set_bytes_read(get_rbuf_size());
 }
 
@@ -720,35 +764,36 @@ void Chunk::load_fill_values() {
  * @param elem_width
  */
 void Chunk::read_chunk() {
-    if (d_is_read) {
-        BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
+    if (d_is_read)
         return;
-    }
+
+    // By default, d_read_buffer_is_mine is true. But if this is part of a SuperChunk
+    // then the SuperChunk will have allocated memory and d_read_buffer_is_mine is false.
+    if (d_read_buffer_is_mine)
+        set_rbuf_to_size();
 
     if (d_uses_fill_value) {
         load_fill_values();
-        return;
     }
+    else {
+        dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+        if (!handle)
+            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
-    set_rbuf_to_size();
-
-    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
-    if (!handle)
-        throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
-
-    try {
-        handle->read_data();  // retries until success when appropriate, else throws
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-    }
-    catch (...) {
-        // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
-        //  It may be that this is the code that catches throws from
-        //  chunk_write_data and based on read_data()'s behavior, the
-        //  code should probably stop _all_ transfers, reclaim all
-        //  handles and send a failure message up the call stack.
-        //  jhrg 4/7/21
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-        throw;
+        try {
+            handle->read_data();  // retries until success when appropriate, else throws
+            DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        }
+        catch (...) {
+            // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
+            //  It may be that this is the code that catches throws from
+            //  chunk_write_data and based on read_data()'s behavior, the
+            //  code should probably stop _all_ transfers, reclaim all
+            //  handles and send a failure message up the call stack.
+            //  jhrg 4/7/21
+            DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+            throw;
+        }
     }
 
     // If the expected byte count was not read, it's an error.
@@ -792,12 +837,12 @@ string Chunk::to_string() const {
     return oss.str();
 }
 
-
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
 
+#if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
     if (!d_query_marker.empty()) {
@@ -812,6 +857,7 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
         shared_ptr<http::url> query_marker_url( new http::url(url_str));
         return query_marker_url;
     }
+#endif
 
     return effective_url;
 }

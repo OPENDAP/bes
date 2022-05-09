@@ -27,7 +27,6 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
@@ -38,11 +37,9 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
-#if 1
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
-#endif
 
 #include "url_impl.h"
 #include "BESIndent.h"
@@ -54,7 +51,6 @@
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "byteswap_compat.h"
-
 
 using namespace std;
 using namespace libdap;
@@ -301,10 +297,11 @@ unsigned long DmrppCommon::add_chunk(
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         const string &fill_value,
+        libdap::Type fv_type,
         unsigned long long chunk_size,
         const vector<unsigned long long> &position_in_array)
 {
-    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, chunk_size, position_in_array));
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, fv_type, chunk_size, position_in_array));
 
     d_chunks.push_back(chunk);
     return d_chunks.size();

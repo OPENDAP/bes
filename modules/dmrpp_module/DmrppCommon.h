@@ -94,6 +94,7 @@ class DmrppCommon {
     bool d_uses_fill_value {false};
     // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/24/22
     std::string d_fill_value;
+    libdap::Type d_fill_value_type{libdap::dods_null_c};
 
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
@@ -187,11 +188,14 @@ public:
         return elements;
     }
 
-    /// @brief Return true if the the chunk uses 'fill value.'
+    /// @brief Set the uses_fill_value property
     virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
 
-    /// @brief Return the fill value as a string or "" if get_fill_value() is false
+    /// @brief Set the fill value (using a string)
     virtual void set_fill_value(const std::string &fv) { d_fill_value = fv; }
+
+    /// @brief Set the libdap data type to use with the fill value
+    virtual void set_fill_value_type(libdap::Type t) { d_fill_value_type = t; }
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
@@ -199,6 +203,8 @@ public:
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual std::string get_fill_value() const { return d_fill_value; }
 
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual libdap::Type get_fill_value_type() const { return d_fill_value_type; }
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
@@ -259,6 +265,7 @@ public:
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             const std::string &fill_value,
+            libdap::Type fv_type,
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 

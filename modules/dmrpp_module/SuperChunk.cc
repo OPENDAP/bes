@@ -545,6 +545,7 @@ void SuperChunk::read_fill_value_chunk()
  * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read.
  */
 void SuperChunk::retrieve_data() {
+    // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
     if (d_is_read) {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
@@ -575,6 +576,7 @@ void SuperChunk::retrieve_data() {
     else
         read_aggregate_bytes();
 
+    // TODO Check if Chunk::read() sets these. jhrg 5/9/22
     // Set each Chunk's read state to true.
     // Set each chunks byte count to the expected
     // size for the chunk - because upstream events

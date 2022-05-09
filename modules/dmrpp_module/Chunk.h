@@ -68,6 +68,7 @@ private:
     unsigned long long d_size{0};
     unsigned long long d_offset{0};
     bool d_uses_fill_value{false};
+    libdap::Type d_fill_value_type{libdap::dods_null_c};
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
@@ -208,9 +209,9 @@ public:
         set_position_in_array(pia_vec);
     }
 
-    Chunk(std::string order, std::string fill_value, unsigned long long chunk_size, std::vector<unsigned long long> pia) :
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia) :
             d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
-            d_uses_fill_value(true), d_chunk_position_in_array(std::move(pia)) {
+            d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
     }
 
     Chunk(const Chunk &h4bs)
