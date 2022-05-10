@@ -1024,43 +1024,6 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
     dc->set_fill_value_string(value_string);
     dc->set_fill_value_type(fv_type);
     dc->set_uses_fill_value(true);
-
-#if 0
-    switch (fv_type) {
-        case libdap::dods_byte_c:
-        case libdap::dods_uint8_c:
-        case libdap::dods_int8_c:
-            break;
-
-        case libdap::dods_uint16_c:
-            break;
-
-        case libdap::dods_int16_c:
-            break;
-
-        case libdap::dods_uint32_c:
-            break;
-
-        case libdap::dods_int32_c: {
-            break;
-        }
-
-        case libdap::dods_uint64_c:
-            break;
-
-        case libdap::dods_int64_c:
-            break;
-
-        case libdap::dods_float32_c:
-            break;
-
-        case libdap::dods_float64_c:
-            break;
-
-        default:
-            throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
-    }
-#endif
  }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
@@ -1210,6 +1173,8 @@ void DMZ::load_chunks(BaseType *btp)
     int chunks_found = 0;
     int chunk_found = 0;
     int compact_found = 0;
+
+    // Chunked data
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
         chunks_found = 1;
@@ -1222,12 +1187,6 @@ void DMZ::load_chunks(BaseType *btp)
             size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
             if (num_logical_chunks != dc(btp)->get_chunks_size()) {
-#if !SUPPORT_FILL_VALUE_CHUNKS
-                ostringstream oss;
-                oss << "FAIL: Missing chunks are not yet supported. There are only " << dc(btp)->get_chunks_size()
-                    << " chunks when there should be " << num_logical_chunks;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-#else
                 auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
                 // Since the variable has some chunks that hold only fill values, add those chunks
                 // to the vector of chunks.
@@ -1237,11 +1196,11 @@ void DMZ::load_chunks(BaseType *btp)
                     chunk_size_bytes *= dim_size;
                 process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
                                           array_shape, chunk_size_bytes);
-#endif
             }
         }
     }
 
+    // Contiguous data
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
         chunk_found = 1;
