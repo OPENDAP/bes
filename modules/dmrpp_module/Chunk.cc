@@ -717,8 +717,7 @@ void Chunk::load_fill_values() {
         memcpy(buffer, value.get(), value_size);
     }
 
-
-        set_bytes_read(get_rbuf_size());
+    set_bytes_read(get_rbuf_size());
 }
 
 /**

@@ -62,6 +62,24 @@ class SuperChunk;
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
 /**
+ * @brief hold the value used to fill empty chunks
+ */
+union fill_value_union {
+    int8_t int8;
+    int16_t int16;
+    int32_t int32;
+    int64_t int64;
+
+    uint8_t uint8;
+    uint16_t uint16;
+    uint32_t uint32;
+    uint64_t uint64;
+
+    float f;
+    double d;
+};
+
+/**
  * @brief Size and offset information of data included in DMR++ files.
  *
  * A mixin class the provides common behavior for the libdap types
@@ -93,8 +111,9 @@ class DmrppCommon {
 
     bool d_uses_fill_value {false};
     // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/24/22
-    std::string d_fill_value;
+    std::string d_fill_value_str;
     libdap::Type d_fill_value_type{libdap::dods_null_c};
+    // fill_value_union d_fill_value;
 
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
@@ -192,7 +211,7 @@ public:
     virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
 
     /// @brief Set the fill value (using a string)
-    virtual void set_fill_value_string(const std::string &fv) { d_fill_value = fv; }
+    virtual void set_fill_value_string(const std::string &fv) { d_fill_value_str = fv; }
 
     /// @brief Set the libdap data type to use with the fill value
     virtual void set_fill_value_type(libdap::Type t) { d_fill_value_type = t; }
@@ -201,7 +220,7 @@ public:
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
 
     /// @return Return the fill value as a string or "" if get_fill_value() is false
-    virtual std::string get_fill_value() const { return d_fill_value; }
+    virtual std::string get_fill_value() const { return d_fill_value_str; }
 
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual libdap::Type get_fill_value_type() const { return d_fill_value_type; }

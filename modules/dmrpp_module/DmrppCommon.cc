@@ -361,8 +361,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
-    if (d_uses_fill_value && !d_fill_value.empty()) {
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fillValue", (const xmlChar*) d_fill_value.c_str()) < 0)
+    if (d_uses_fill_value && !d_fill_value_str.empty()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fillValue", (const xmlChar*) d_fill_value_str.c_str()) < 0)
             throw BESInternalError("Could not write fillValue attribute.", __FILE__, __LINE__);
     }
 
@@ -387,26 +387,11 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-#if 0
-    for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
-#endif
-
     for(auto chunk: get_immutable_chunks()) {
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
-#if 0
-        if (chunk->get_uses_fill_value()) {
-            // Get fill value string:
-            ostringstream fill_value;
-            fill_value << chunk->get_fill_value();
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "fillValue",
-                                            (const xmlChar *) fill_value.str().c_str()) < 0)
-                throw BESInternalError("Could not write attribute fillValue", __FILE__, __LINE__);
-        }
-        else {
-#endif
             // Get offset string:
             ostringstream offset;
             offset << chunk->get_offset();
@@ -420,9 +405,6 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "nBytes",
                                             (const xmlChar *) nBytes.str().c_str()) < 0)
                 throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
-#if 0
-    }
-#endif
 
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:

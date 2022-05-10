@@ -748,7 +748,7 @@ public:
     void test_process_fill_value_chunks_all_fill() {
         unique_ptr<DmrppCommon> dc(new DmrppCommon);
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
-        dc->d_fill_value = "17";
+        dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
 
         set<shape> cm;
@@ -777,7 +777,7 @@ public:
     void test_process_fill_value_chunks_some_fill() {
         unique_ptr<DmrppCommon> dc(new DmrppCommon);
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
-        dc->d_fill_value = "17";
+        dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
         // load up some chunks to simulate parsing the DMR++
         dc->add_chunk("LE", 10000, 0, "[0]");
@@ -816,7 +816,7 @@ public:
     void test_process_fill_value_chunks_some_fill_2D() {
         unique_ptr<DmrppCommon> dc(new DmrppCommon);
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
-        dc->d_fill_value = "17";
+        dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
         // load up some chunks to simulate parsing the DMR++
         dc->add_chunk("LE", 21, 0, "[0,0]");
@@ -861,7 +861,7 @@ public:
     void test_process_fill_value_chunks_all_fill_2D() {
         unique_ptr<DmrppCommon> dc(new DmrppCommon);
         // process_fill_value_chunks() uses these values and calls DmrppCommon::add_chunk()
-        dc->d_fill_value = "17";
+        dc->d_fill_value_str = "17";
         dc->d_byte_order = "LE";
 
         set<shape> cm;
