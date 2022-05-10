@@ -1025,6 +1025,7 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
     dc->set_fill_value_type(fv_type);
     dc->set_uses_fill_value(true);
 
+#if 0
     switch (fv_type) {
         case libdap::dods_byte_c:
         case libdap::dods_uint8_c:
@@ -1041,11 +1042,6 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
             break;
 
         case libdap::dods_int32_c: {
-            // FIXME 5/10/22
-#if 0
-            dc->d_value_size = sizeof(int32_t);
-            dc->d_fill_value.int32 = stoi(value_string);
-#endif
             break;
         }
 
@@ -1064,6 +1060,7 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
         default:
             throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
     }
+#endif
  }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks

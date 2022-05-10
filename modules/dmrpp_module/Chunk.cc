@@ -700,21 +700,107 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     d_is_inflated = true;
 }
 
+static unsigned int get_value_size(libdap::Type type) 
+{
+    switch(type) {
+        case libdap::dods_int8_c:
+            return sizeof(int8_t);
+            
+        case libdap::dods_int16_c:
+            return sizeof(int16_t);
+            
+        case libdap::dods_int32_c:
+            return sizeof(int32_t);
+            
+        case libdap::dods_int64_c:
+            return sizeof(int64_t);
+            
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            return sizeof(uint8_t);
+            
+        case libdap::dods_uint16_c:
+            return sizeof(uint16_t);
+            
+        case libdap::dods_uint32_c:
+            return sizeof(uint32_t);
+            
+        case libdap::dods_uint64_c:
+            return sizeof(uint64_t);
+
+        case libdap::dods_float32_c:
+            return sizeof(float);
+            
+        case libdap::dods_float64_c:
+            return sizeof(double);
+
+        default:
+            throw BESInternalError("Unknown fill value type.", __FILE__, __LINE__);
+    }
+}
+
+const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
+{
+    switch(type) {
+        case libdap::dods_int8_c:
+            fv.int8 = (int8_t)stoi(v);
+            return (const char *)&fv.int8;
+
+        case libdap::dods_int16_c:
+            fv.int16 = (int16_t)stoi(v);
+            return (const char *)&fv.int16;
+
+        case libdap::dods_int32_c:
+            fv.int32 = (int32_t)stoi(v);
+            return (const char *)&fv.int32;
+
+        case libdap::dods_int64_c:
+            fv.int64 = (int64_t)stoll(v);
+            return (const char *)&fv.int64;
+
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            fv.uint8 = (uint8_t)stoi(v);
+            return (const char *)&fv.uint8;
+
+        case libdap::dods_uint16_c:
+            fv.uint16 = (uint16_t)stoi(v);
+            return (const char *)&fv.uint16;
+
+        case libdap::dods_uint32_c:
+            fv.uint32 = (uint32_t)stoul(v);
+            return (const char *)&fv.uint32;
+
+        case libdap::dods_uint64_c:
+            fv.uint64 = (uint64_t)stoull(v);
+            return (const char *)&fv.uint64;
+
+        case libdap::dods_float32_c:
+            fv.f = stof(v);
+            return (const char *)&fv.f;
+
+        case libdap::dods_float64_c:
+            fv.d = stod(v);
+            return (const char *)&fv.d;
+
+        default:
+            throw BESInternalError("Unknown fill value type.", __FILE__, __LINE__);
+    }
+}
+
 /**
  * @brief Load the chunk with fill values - temporary implementation
- * @todo Replace memset with something better that loads the real value.
  */
 void Chunk::load_fill_values() {
-    // read this from the chunk
-    auto value = unique_ptr<int32_t>(new int32_t);
-    *value = -99;
-    unsigned int value_size = sizeof(int32_t);
+    fill_value fv;
+    const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value);
+    unsigned int value_size = get_value_size(d_fill_value_type);
 
     unsigned long long num_values = get_rbuf_size() / value_size;
     char *buffer = get_rbuf();
 
     for (int i = 0; i < num_values; ++i, buffer += value_size) {
-        memcpy(buffer, value.get(), value_size);
+        memcpy(buffer, value, value_size);
     }
 
     set_bytes_read(get_rbuf_size());

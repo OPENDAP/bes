@@ -47,6 +47,21 @@
 
 namespace dmrpp {
 
+union fill_value {
+    int8_t int8;
+    int16_t int16;
+    int32_t int32;
+    int64_t int64;
+
+    uint8_t uint8;
+    uint16_t uint16;
+    uint32_t uint32;
+    uint64_t uint64;
+
+    float f;
+    double d;
+};
+
 // Callback functions used by chunk readers
 size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
