@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="https://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="https://xml.opendap.org/dap/dmrpp/1.0.0#"
-    dapVersion="4.0" dmrVersion="1.0" name="FValue_chunk.h5" dmrpp:href="data/fill_value/FValue_chunk.h5"
-    dmrpp:version="3.20.10">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_chunk.h5">
     <Int32 name="chunks_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-99" byteOrder="LE">
-            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4016" nBytes="16" chunkPositionInArray="[0,0]"/>
-            <dmrpp:chunk offset="4032" nBytes="16" chunkPositionInArray="[2,2]"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int32>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
@@ -96,3 +92,7 @@ H5.SmallDataMemCacheEntries=0
         </Attribute>
     </Attribute>
 </Dataset>
+
+The data:
+Int32 chunks_all_fill[4][4] = {{0, 1, -99, -99},{1, 2, -99, -99},{-99, -99, 4, 5},{-99, -99, 5, 6}};
+
