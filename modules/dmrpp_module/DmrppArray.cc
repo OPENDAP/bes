@@ -1513,7 +1513,7 @@ bool DmrppArray::read()
     //  files. In addition, the way libdap stores string data means that we need
     //  to build c++ string objects from the raw data we read from the source
     //  data file. Thus, the code for strings (and URLs) is a special case.
-    //  Currently we can process only arrays with one element. jhrg 3/3/22
+    //  Currently, we can process only arrays with one element. jhrg 3/3/22
 
     if ((var()->type() == dods_str_c || var()->type() == dods_url_c)) {
         // FIXME Add support for both of these things once the DMR++ has the needed

@@ -1041,10 +1041,11 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
             break;
 
         case libdap::dods_int32_c: {
-            auto value = unique_ptr<int32_t>(new int32_t);
-            unsigned int value_size = sizeof(int32_t);
-            *value = stoi(value_string);
-            //dc->set_fill_value(value);
+            // FIXME 5/10/22
+#if 0
+            dc->d_value_size = sizeof(int32_t);
+            dc->d_fill_value.int32 = stoi(value_string);
+#endif
             break;
         }
 

@@ -113,7 +113,7 @@ class DmrppCommon {
     // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/24/22
     std::string d_fill_value_str;
     libdap::Type d_fill_value_type{libdap::dods_null_c};
-    // fill_value_union d_fill_value;
+    fill_value_union d_fill_value;
 
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
