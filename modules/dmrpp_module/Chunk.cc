@@ -705,48 +705,6 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
  * @todo Replace memset with something better that loads the real value.
  */
 void Chunk::load_fill_values() {
-#if 0
-    switch (d_fill_value_type) {
-        case libdap::dods_byte_c:
-        case libdap::dods_uint8_c:
-            break;
-
-        case libdap::dods_int8_c:
-            break;
-
-        case libdap::dods_uint16_c:
-            break;
-
-        case libdap::dods_int16_c:
-            break;
-
-        case libdap::dods_uint32_c:
-            break;
-
-        case libdap::dods_int32_c:
-            break;
-
-        case libdap::dods_uint64_c:
-            break;
-
-        case libdap::dods_int64_c:
-            break;
-
-        case libdap::dods_float32_c:
-            break;
-
-        case libdap::dods_float64_c:
-            break;
-
-        default:
-            throw BESInternalError("Unsupported array fill value type.", __FILE__, __LINE__);
-    }
-
-    unsigned int value_size = 4;
-    unsigned long long buffer_size = get_rbuf_size() / value_size;
-    assert(get_rbuf_size() % value_size == 0);
-#endif
-
     // read this from the chunk
     auto value = unique_ptr<int32_t>(new int32_t);
     *value = -99;
