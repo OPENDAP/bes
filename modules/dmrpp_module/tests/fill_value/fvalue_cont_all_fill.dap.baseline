@@ -1,48 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue.h5">
-    <Int32 name="chunks_all_fill">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
-    <Int32 name="chunks_fill_not_write">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
-    <Int32 name="chunks_fill_notdefined">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
-    <Int32 name="chunks_some_fill">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
-    <Int32 name="compact_all_fill">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
     <Int32 name="cont_all_fill">
-        <Dim size="4"/>
-        <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int32>
-    <Int32 name="cont_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
@@ -136,11 +94,5 @@ H5.SmallDataMemCacheEntries=0
 </Dataset>
 
 The data:
-Int32 chunks_all_fill[4][4] = {{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
-Int32 chunks_fill_not_write[4][4] = {{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
-Int32 chunks_fill_notdefined[4][4] = {{0, 1, -99, -99},{1, 2, -99, -99},{-99, -99, 4, 5},{-99, -99, 5, 6}};
-Int32 chunks_some_fill[4][4] = {{0, 1, -99, -99},{1, 2, -99, -99},{-99, -99, 4, 5},{-99, -99, 5, 6}};
-Int32 compact_all_fill[4][4] = {{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
 Int32 cont_all_fill[4][4] = {{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
-Int32 cont_some_fill[4][4] = {{0, 1, -99, -99},{1, 2, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
 
