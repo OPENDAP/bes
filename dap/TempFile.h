@@ -30,11 +30,10 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <mutex>
+#include <memory>
 
 namespace bes {
-
-const std::string default_tmp_file_template = "opendapXXXXXX";
-const std::string default_dir = "/tmp";
 
 /**
  * @brief Get a new temporary file
@@ -46,25 +45,33 @@ const std::string default_dir = "/tmp";
  */
 class TempFile {
 private:
-    int d_fd;
+    // Lifecycle controls
+    static struct sigaction cached_sigpipe_handler;
+    mutable std::recursive_mutex d_tf_lock_mutex;
+    static void init();
+    static std::once_flag d_init_once;
+
+    // Holds the static list of all open files
+    static std::unique_ptr< std::map<std::string, int> > open_files;
+
+    // Instance variables
+    int d_fd = -1;
     std::string d_fname;
     bool d_keep_temps;
 
-    static std::map<std::string, int> *open_files;
-    static struct sigaction cached_sigpipe_handler;
+    static void mk_temp_dir(const std::string &dir_name = "/tmp/hyrax_tmp") ;
 
     friend class TemporaryFileTest;
-
-    void mk_temp_dir(const std::string &dir_name = default_dir);
 
 public:
     // Odd, but even with TemporaryFileTest declared as a friend, the tests won't
     // compile unless this is declared public.
     static void sigpipe_handler(int signal);
 
-    explicit TempFile(const std::string &dir_name = default_dir, const std::string &path_template = default_tmp_file_template, bool keep_temps = false);
-
+    explicit TempFile(bool keep_temps = false);
     ~TempFile();
+
+    std::string create(const std::string &dir_name = "/tmp/hyrax_tmp", const std::string &path_template = "opendap");
 
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }

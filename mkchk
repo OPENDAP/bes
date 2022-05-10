@@ -1,1 +1,1 @@
-make -k -j20 check 2>&1 | tee mk.log | grep FAIL
+make -k -j20 check 2>&1 | tee mk.log | grep -e "Making check in" -e "FAILED"
