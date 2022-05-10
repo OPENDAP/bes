@@ -1198,6 +1198,21 @@ void DMZ::load_chunks(BaseType *btp)
                                           array_shape, chunk_size_bytes);
             }
         }
+        // If both chunks and chunk_dimension_sizes are empty, this is contiguous storage
+        // with nothing but fill values. Make a single chunk that can hold the fill values.
+        else if (array && dc(btp)->get_immutable_chunks().empty()) {
+            auto const &array_shape = get_array_dims(array);
+            // Since there is one chunk, the chunk size and array size are one and the same.
+            unsigned long long array_size_bytes = 1;
+            for (auto dim_size: array_shape)
+                array_size_bytes *= dim_size;
+            // array size above is in _elements_, multiply by the element width to get bytes
+            array_size_bytes *= array->var()->width();
+            // Position in array is 0, 0, ..., 0 were the number of zeros is the number of array dimensions
+            shape pia(0,array_shape.size());
+            auto dcp = dc(btp);
+            dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+        }
     }
 
     // Contiguous data
