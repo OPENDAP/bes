@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue.h5">
+    <Int32 name="chunks_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="chunks_fill_not_write">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="chunks_fill_notdefined">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4384" nBytes="16" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4416" nBytes="16" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="4432" nBytes="16" chunkPositionInArray="[2,0]"/>
+            <dmrpp:chunk offset="4400" nBytes="16" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="chunks_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4288" nBytes="16" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4304" nBytes="16" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="compact_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99"/>
+        <dmrpp:compact>nf///53///+d////nf///53///+d////nf///53///+d////nf///53///+d////nf///53///+d////nf///w==</dmrpp:compact>
+    </Int32>
+    <Int32 name="cont_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99"/>
+    </Int32>
+    <Int32 name="cont_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="-99" byteOrder="LE">
+            <dmrpp:chunk offset="4320" nBytes="64"/>
+        </dmrpp:chunks>
+    </Int32>
+</Dataset>
