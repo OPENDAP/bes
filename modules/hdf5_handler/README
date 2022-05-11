@@ -15,26 +15,34 @@ are to be organized and accessed. The HDF5 file format is self-describing in
 the sense that the structures of HDF5 objects are described within the file.
 
  The HDF5 handler is a Hyrax Back-end Server(BES) module that maps HDF5 
-objects into OPeNDAP's DAP2 data model. This allows users to access the data 
+objects to DAP4 and DAP2 data models. This allows users to access the data 
 in remote  HDF5 files using the OPeNDAP clients. There can be many ways to 
 serve HDF5 data but this handler differentiates itself by putting the goal of 
-following CF conventions to support NASA HDF5/HDF-EOS5 products first. The 
-HDF5 handler team strives to achieve what is called "CF-compliant" status of 
+following CF conventions to support NASA HDF5/HDF-EOS5/netCDF-4 products first. 
+The HDF5 handler team tries to achieve what is called "CF-compliant" status of 
 all NASA HDF5 data products. This means that OPeNDAP visualization client 
 users should feel easy in accessing and visualizing the remote NASA 
-HDF5/HDF-EOS5 data products if NASA data centers provide the Hyrax OPeNDAP 
-services.
+HDF5/HDF-EOS5/netCDF-4 data products if NASA data centers provide the Hyrax 
+OPeNDAP services.
 
- Since some NASA HDF5/HDF-EOS5 products either do not follow or only partially 
+ For some NASA HDF5/HDF-EOS5 products either do not follow or only partially 
 follow CF conventions, the handler developers tried to make them be 
 CF-compliant  so that OPeNDAP client tools can visualize these products.
 This can be realized by the developers' knowledge and experiences as well
 as intensive discussions with developers of the corresponding NASA data 
 centers. The output of this handler has been checked carefully with OPeNDAP 
 client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
+ Many new NASA HDF5 products are generated via the netCDF-4 APIs. These products
+are normally called netCDF-4 products. These products generally follow the
+netCDF data model and CF conventions. The HDF5 handler can still follow the CF
+conventions to map these products to either DAP2 or DAP4. Moreover, because
+DAP4 supports the group hierarchy, the HDF5 handler can also use the generic
+mapping to map netCDF-4 like products to DAP4 with the support of group hierarchy.
 
- A comprehensive list of the improvements since the 2.0.0 release is
-available on the next section.
+For more information about the HDF5 handler, check the HDF5 handler user's guide at
+https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
+
+ A comprehensive list of the improvements can be found below.
 
 What's new for Hyrax 1.16.5
  - Now based on HDF5-1.12.1
@@ -349,7 +357,7 @@ The new version addresses this issue by closing the HDF5 object IDs gradually.
 parsing StructMetadata and generating the attribute in DAS output for HDF-EOS5
  files.
   
-What's new for version 2.0.0
+What's new for version 2.0.0(May 2012)
 ----------------------------
 
   This version has significant changes in handling NASA HDF5/HDF-EOS5 data 
@@ -375,7 +383,7 @@ should work with HDF5 1.8.5 and versions after. To achieve better performance,
 section of INSTALL file on how to get the latest RPMs of HDF5.
 
 
-Supported NASA HDF5/HDF-EOS5 data products in CF Option in the current release
+Supported NASA HDF5/HDF-EOS5 data products in CF Option in version 2.0.0(May 2012)
 -------------------------------------------------------------------------------
 
         AURA OMI/HIRDLS/MLS/TES
@@ -390,7 +398,7 @@ GOSAT/acos products. We plan to add new NASA HDF5 and HDF-EOS5 products in the
 future release.
 
 
-Supported HDF5 data types for both CF and default options
+Supported HDF5 data types for both CF and default options in version 2.0.0(May 2012)
 ---------------------------------------------------------
 
   NASA data products do not use all HDF5 datatypes provided by the HDF5 
@@ -405,14 +413,14 @@ Generally, non-supported data types are ignored.
         HDF5 string. 
                   
 
-Supported HDF5 data types for the default option only
+Supported HDF5 data types for the default option only(May 2012)
 -----------------------------------------------------
 
 	Compounds: Compound data types are mapped into DAP2 Structure.
 
 	References: Object or regional references are mapped into URLs.
 
-Other mapping information
+Other mapping information(May 2012)
 -------------------------
 
 CF option:
@@ -433,7 +441,7 @@ Default option:
         Comments: Comments are mapped into DAS attributes.
 
 
-Implementation details in general
+Implementation details in general(May 2012)
 ----------------------------------
 
   The implementation largely follows the design. Please read the following
@@ -461,7 +469,7 @@ design note for details at
            - The DAP2 variable and attribute names strictly follow the object 
              name conventions in the section 3.2.3 of the design note.
 
-Implementation Details for HDF-EOS5 in CF option 
+Implementation Details for HDF-EOS5 in CF option(May 2012) 
 ------------------------------------------------
 
         Swath: Based on the dimension information specified in the 
@@ -491,7 +499,7 @@ Implementation Details for HDF-EOS5 in CF option
         attribute format in DAS output. 
 
 
-Testing the HDF5 handler
+Testing the HDF5 handler(May 2012)
 ------------------------
 
   The handler source package has more than 50 test files under data/ directory.
@@ -501,7 +509,7 @@ for generating the test HDF5 files are also available under data/src directory
  although they are not compiled during the building or testing the handler.  
 
 
-Limitations for the CF option
+Limitations for the CF option(May 2012)
 -----------------------------
 
         o Generally the mappings of 64-bit integer, time, enum, bitfield, 
@@ -547,7 +555,7 @@ Limitations for the CF option
         successfully. We strongly recommend you to use the latest HDF5 and
         NetCDF RPMs.
 
-Limitations in default option
+Limitations in default option(May 2012)
 -----------------------------
 
 	o No support for HDF5 files that have a '.' in a group/dataset
@@ -563,7 +571,7 @@ Limitations in default option
         NULL dataspace is not supported.
 
 
-Additional background on the HDF5 handler
+Additional background on the HDF5 handler(May 2012)
 -----------------------------------------
   The HDF5 handler is one component of the Hyrax BES; the Hyrax BES
  software is designed to allow any number of handlers to be
@@ -571,7 +579,7 @@ configured easily. See the BES Server README and INSTALL files for
 information about configuration, including how to use this handler.
 
 
-Installing the HDF5 handler in Hyrax
+Installing the HDF5 handler in Hyrax(May 2012)
 ------------------------------------
 
   The Linux RPM package will install h5.conf file with all options true except
