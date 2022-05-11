@@ -184,6 +184,10 @@ void BESXMLInterface::build_data_request_plan()
                     BESDataHandlerInterface &setContext_xml_dhi = current_cmd->get_xmlcmd_dhi();
                     setContext_xml_dhi.response_handler->execute(setContext_xml_dhi);
 
+                    // current_cmd is leaked in this case without delete. In the else block below, it
+                    // will be deleted by the BESXMLInterface destructor when that iterates through
+                    // d_xml_cmd_list. jhrg 5/11/22
+                    delete current_cmd;
                 } else {
                     // push this new command to the back of the list
                     d_xml_cmd_list.push_back(current_cmd);
