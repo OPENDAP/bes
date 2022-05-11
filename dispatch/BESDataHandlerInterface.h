@@ -107,6 +107,11 @@ public:
 	BESDataHandlerInterface(const BESDataHandlerInterface &from);
 	BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
 
+    // Added 5/11/22 based on valgrind output. jhrg
+    ~BESDataHandlerInterface() override {
+        clean();
+    }
+
 	/// deprecated
 	void make_copy(const BESDataHandlerInterface &copy_from);
 
