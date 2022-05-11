@@ -162,7 +162,7 @@ public:
 		return data;
 	}
 
-	void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif //  BESDataHandlerInterface_h_

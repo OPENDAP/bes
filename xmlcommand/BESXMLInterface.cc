@@ -175,6 +175,11 @@ void BESXMLInterface::build_data_request_plan()
 
                 // SPECIAL CASE: Process setContext xml_commands here; do not add to d_xml_cmd_list.
                 if (node_name == SET_CONTEXT_STR) {
+                    // TODO Something in there leaks 32 bytes for every SetCOntext command in a bescmd
+                    //  xml file. I tried removing the containers on the list of the same name, but that
+                    //  broke tests. Maybe use shared_ptr<> for that list? Maybe look at how the objects
+                    //  are managed in the 'else' clause below, because that apparently does not leak.
+                    //  jhrg 5/11/22
                     current_cmd->parse_request(current_node);
 
                     // Call SetContextsResponseHandler::execute() here not in execute_data_request_plan().
