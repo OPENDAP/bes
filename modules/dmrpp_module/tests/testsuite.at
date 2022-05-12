@@ -244,3 +244,5 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_compact_all_fill.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_cont_some_fill.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_cont_all_fill.dap])
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_with_fill_ce.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_cont_some_fill_ce.dap])
