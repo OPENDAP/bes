@@ -223,7 +223,6 @@ is_hdf5_fill_value_defined(hid_t dataset_id)
 string
 get_value_as_string(hid_t h5_type_id, vector<char> &value)
 {
-    ostringstream oss;
     H5T_class_t class_type = H5Tget_class(h5_type_id);
     int sign;
     switch (class_type) {
@@ -232,45 +231,48 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             switch (H5Tget_size(h5_type_id)) {
                 case 1:
                     if (sign == H5T_SGN_2)
-                        oss << *(int8_t *)(value.data());
+                        return to_string(*(int8_t *)(value.data()));
                     else
-                        oss << *(uint8_t *)(value.data());
-                    break;
+                        return to_string(*(uint8_t *)(value.data()));
+                    
                 case 2:
                     if (sign == H5T_SGN_2)
-                        oss << *(int16_t *)(value.data());
+                        return to_string(*(int16_t *)(value.data()));
                     else
-                        oss << *(uint16_t *)(value.data());
-                    break;
+                        return to_string(*(uint16_t *)(value.data()));
+                    
                 case 4:
                     if (sign == H5T_SGN_2)
-                        oss << *(int32_t *)(value.data());
+                        return to_string(*(int32_t *)(value.data()));
                     else
-                        oss << *(uint32_t *)(value.data());
-                    break;
+                        return to_string(*(uint32_t *)(value.data()));
+                    
                 case 8:
                     if (sign == H5T_SGN_2)
-                        oss << *(int64_t *)(value.data());
+                        return to_string(*(int64_t *)(value.data()));
                     else
-                        oss << *(uint64_t *)(value.data());
-                    break;
+                        return to_string(*(uint64_t *)(value.data()));
+                    
                 default:
                     throw BESInternalError("Unable extract integer fill value.", __FILE__, __LINE__);
             }
-            break;
+            
 
-        case H5T_FLOAT:
+        case H5T_FLOAT: {
+            ostringstream oss;
             switch (H5Tget_size(h5_type_id)) {
                 case 4:
-                    oss << *(float*)(value.data());
-                    break;
+                    oss << *(float *) (value.data());
+                    return oss.str();
+
                 case 8:
-                    oss << *(double*)(value.data());
-                    break;
+                    oss << *(double *) (value.data());
+                    return oss.str();
+
                 default:
                     throw BESInternalError("Unable extract float fill value.", __FILE__, __LINE__);
             }
-            break;
+        }
 
             // TODO jhrg 4/22/22
         case H5T_STRING:
@@ -284,8 +286,6 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
         default:
             throw BESInternalError("Unable extract fill value.", __FILE__, __LINE__);
     }
-
-    return oss.str();
 }
 
 /**

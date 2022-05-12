@@ -187,7 +187,7 @@ public:
         oss << test_name << ": Expected " << val << ", but got " << str_value;
         DBG(cerr << oss.str() << endl);
 
-        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value == expected);
+        CPPUNIT_ASSERT_MESSAGE(oss.str(), str_value.find(expected) != string::npos);
     }
 
     void get_value_as_string_test_char() {
@@ -287,7 +287,7 @@ public:
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_cont_some_fill);
         CPPUNIT_TEST(is_hdf5_fill_value_defined_test_compact_all_fill);
 
-        CPPUNIT_TEST_FAIL(get_value_as_string_test_char);   // FIXME jhrg 4/22/22
+        CPPUNIT_TEST(get_value_as_string_test_char);
 
         CPPUNIT_TEST(get_value_as_string_test_short);
         CPPUNIT_TEST(get_value_as_string_test_short_2);
