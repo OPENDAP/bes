@@ -1,56 +1,53 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_int64.h5" dmrpp:href="data/fill_value/FValue_int64.h5" dmrpp:version="3.20.10">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_int64.h5">
     <Int64 name="chunks_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999">
-            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="chunks_fill_not_write">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999">
-            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="chunks_fill_notdefined">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks byteOrder="LE">
-            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4480" nBytes="32" chunkPositionInArray="[0,0]"/>
-            <dmrpp:chunk offset="4544" nBytes="32" chunkPositionInArray="[0,2]"/>
-            <dmrpp:chunk offset="4576" nBytes="32" chunkPositionInArray="[2,0]"/>
-            <dmrpp:chunk offset="4512" nBytes="32" chunkPositionInArray="[2,2]"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="chunks_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999" byteOrder="LE">
-            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4288" nBytes="32" chunkPositionInArray="[0,0]"/>
-            <dmrpp:chunk offset="4320" nBytes="32" chunkPositionInArray="[2,2]"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="compact_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999"/>
-        <dmrpp:compact>8dj////////x2P////////HY////////8dj////////x2P////////HY////////8dj////////x2P////////HY////////8dj////////x2P////////HY////////8dj////////x2P////////HY////////8dj///////8=</dmrpp:compact>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="cont_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Int64 name="cont_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-9999" byteOrder="LE">
-            <dmrpp:chunk offset="4352" nBytes="128"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Int64>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
@@ -137,3 +134,13 @@ H5.SmallDataMemCacheEntries=0
         </Attribute>
     </Attribute>
 </Dataset>
+
+The data:
+Int64 chunks_all_fill[4][4] = {{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999}};
+Int64 chunks_fill_not_write[4][4] = {{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999}};
+Int64 chunks_fill_notdefined[4][4] = {{0, 1, -9999, -9999},{1, 2, -9999, -9999},{-9999, -9999, 4, 5},{-9999, -9999, 5, 6}};
+Int64 chunks_some_fill[4][4] = {{0, 1, -9999, -9999},{1, 2, -9999, -9999},{-9999, -9999, 4, 5},{-9999, -9999, 5, 6}};
+Int64 compact_all_fill[4][4] = {{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999}};
+Int64 cont_all_fill[4][4] = {{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999}};
+Int64 cont_some_fill[4][4] = {{0, 1, -9999, -9999},{1, 2, -9999, -9999},{-9999, -9999, -9999, -9999},{-9999, -9999, -9999, -9999}};
+
