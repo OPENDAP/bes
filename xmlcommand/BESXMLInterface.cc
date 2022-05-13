@@ -175,7 +175,7 @@ void BESXMLInterface::build_data_request_plan()
 
                 // SPECIAL CASE: Process setContext xml_commands here; do not add to d_xml_cmd_list.
                 if (node_name == SET_CONTEXT_STR) {
-                    // TODO Something in there leaks 32 bytes for every SetCOntext command in a bescmd
+                    // TODO Something in there leaks 32 bytes for every SetContext command in a bescmd
                     //  xml file. I tried removing the containers on the list of the same name, but that
                     //  broke tests. Maybe use shared_ptr<> for that list? Maybe look at how the objects
                     //  are managed in the 'else' clause below, because that apparently does not leak.

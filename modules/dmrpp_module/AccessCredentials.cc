@@ -22,24 +22,9 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
-#if 0
-#include "CredentialsManager.h"
-#include <BESDebug.h>
-#include <BESInternalError.h>
-#include <kvp_utils.h>
-#include <TheBESKeys.h>
-#include <AllowedHosts.h>
-#include <sys/stat.h>
-#endif
 #include <string>
 #include <sstream>
-#if 0
-#include <locale>
 
-#include <iomanip>
-#include <cstring>
-
-#endif
 #include "AccessCredentials.h"
 
 using std::string;
@@ -48,18 +33,10 @@ using std::pair;
 using std::stringstream;
 using std::endl;
 
-#if 0
-// Scope: public members of AccessCredentials
-const string AccessCredentials::ID_KEY = "id";
-const string AccessCredentials::KEY_KEY = "key";
-const string AccessCredentials::REGION_KEY = "region";
-const string AccessCredentials::URL_KEY = "url";
-#else
 const char *AccessCredentials::ID_KEY = "id";
 const char *AccessCredentials::KEY_KEY = "key";
 const char *AccessCredentials::REGION_KEY = "region";
 const char *AccessCredentials::URL_KEY = "url";
-#endif
 
 /**
  * Retrieves the value of key

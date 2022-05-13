@@ -366,7 +366,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not write fillValue attribute.", __FILE__, __LINE__);
     }
 
-    if(!d_chunks.empty()) { // get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+    if(!d_chunks.empty()) {
         auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
