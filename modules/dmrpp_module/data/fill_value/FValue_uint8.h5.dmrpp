@@ -1,54 +1,57 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_int8.h5">
-    <Int8 name="chunks_all_fill">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_uint8.h5" dmrpp:href="data/fill_value/FValue_uint8.h5" dmrpp:version="3.20.10">
+    <Byte name="chunks_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="chunks_fill_not_write">
+        <dmrpp:chunks fillValue="255">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Byte>
+    <Byte name="chunks_fill_not_write">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="chunks_fill_notdefined">
+        <dmrpp:chunks fillValue="255">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Byte>
+    <Byte name="chunks_fill_notdefined">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="chunks_some_fill">
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4312" nBytes="4" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4320" nBytes="4" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="4324" nBytes="4" chunkPositionInArray="[2,0]"/>
+            <dmrpp:chunk offset="4316" nBytes="4" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </Byte>
+    <Byte name="chunks_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="compact_all_fill">
+        <dmrpp:chunks fillValue="255" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4288" nBytes="4" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4292" nBytes="4" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </Byte>
+    <Byte name="compact_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="cont_all_fill">
+        <dmrpp:chunks fillValue="255"/>
+        <dmrpp:compact>/////////////////////w==</dmrpp:compact>
+    </Byte>
+    <Byte name="cont_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
-    <Int8 name="cont_some_fill">
+        <dmrpp:chunks fillValue="255"/>
+    </Byte>
+    <Byte name="cont_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
-    </Int8>
+        <dmrpp:chunks fillValue="255" byteOrder="LE">
+            <dmrpp:chunk offset="4296" nBytes="16"/>
+        </dmrpp:chunks>
+    </Byte>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
             <Value>3.20.10</Value>
@@ -130,17 +133,7 @@ H5.SmallDataMemCacheEntries=0
 </Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp -c /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gq/T/conf_XXXX.wGd5XclU -f ./FValue_int8.h5 -r /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gq/T/dmr_XXXX.4q66Sg7l -u data/fill_value/FValue_int8.h5 -M</Value>
+            <Value>build_dmrpp -c /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gq/T/conf_XXXX.KMdGi6Ix -f ./FValue_uint8.h5 -r /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gq/T/dmr_XXXX.0Up7lEzA -u data/fill_value/FValue_uint8.h5 -M</Value>
         </Attribute>
     </Attribute>
 </Dataset>
-
-The data:
-Int8 chunks_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 chunks_fill_not_write[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 chunks_fill_notdefined[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, 4, 5},{-127, -127, 5, 6}};
-Int8 chunks_some_fill[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, 4, 5},{-127, -127, 5, 6}};
-Int8 compact_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 cont_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 cont_some_fill[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-

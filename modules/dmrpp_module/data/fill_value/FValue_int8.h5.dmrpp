@@ -1,53 +1,56 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_int8.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_int8.h5" dmrpp:href="data/fill_value/FValue_int8.h5" dmrpp:version="3.20.10">
     <Int8 name="chunks_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
     </Int8>
     <Int8 name="chunks_fill_not_write">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
     </Int8>
     <Int8 name="chunks_fill_notdefined">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4312" nBytes="4" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4320" nBytes="4" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="4324" nBytes="4" chunkPositionInArray="[2,0]"/>
+            <dmrpp:chunk offset="4316" nBytes="4" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
     </Int8>
     <Int8 name="chunks_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4288" nBytes="4" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4292" nBytes="4" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
     </Int8>
     <Int8 name="compact_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127"/>
+        <dmrpp:compact>gYGBgYGBgYGBgYGBgYGBgQ==</dmrpp:compact>
     </Int8>
     <Int8 name="cont_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127"/>
     </Int8>
     <Int8 name="cont_some_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
+        <dmrpp:chunks fillValue="-127" byteOrder="LE">
+            <dmrpp:chunk offset="4296" nBytes="16"/>
+        </dmrpp:chunks>
     </Int8>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
@@ -134,13 +137,3 @@ H5.SmallDataMemCacheEntries=0
         </Attribute>
     </Attribute>
 </Dataset>
-
-The data:
-Int8 chunks_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 chunks_fill_not_write[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 chunks_fill_notdefined[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, 4, 5},{-127, -127, 5, 6}};
-Int8 chunks_some_fill[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, 4, 5},{-127, -127, 5, 6}};
-Int8 compact_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 cont_all_fill[4][4] = {{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-Int8 cont_some_fill[4][4] = {{0, 1, -127, -127},{1, 2, -127, -127},{-127, -127, -127, -127},{-127, -127, -127, -127}};
-
