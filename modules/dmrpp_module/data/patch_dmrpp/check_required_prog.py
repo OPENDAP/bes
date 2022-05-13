@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-import subprocess
+
 
 #The fuction module_exist() checks if the module file exists.
 def module_exist(module_path):

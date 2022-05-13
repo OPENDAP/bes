@@ -52,6 +52,8 @@ std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
 atomic_uint chunk_processing_thread_counter(0);
 #define COMPUTE_THREADS "compute_threads"
 
+#define DMRPP_ENABLE_THREAD_TIMERS 0
+
 /**
  * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
  *
@@ -74,6 +76,8 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
 {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
 
+    // TODO If this is a SuperChunk, hasn't the data been read by SuperChunk::Retrieve_data()?
+    //  If so, calling read() here is not needed. Same question below. jhg 5/7/22
     chunk->read_chunk();
 
     if(array) {
@@ -83,9 +87,10 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
-        array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk,
-                            constrained_array_shape);
+        array->insert_chunk(0, &target_element_address, &chunk_source_address,
+                            chunk, constrained_array_shape);
     }
+
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
@@ -121,6 +126,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
+
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
@@ -132,7 +138,6 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
  */
 bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
-
 #if DMRPP_ENABLE_THREAD_TIMERS
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
@@ -152,7 +157,6 @@ bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
  */
 bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
-
 #if DMRPP_ENABLE_THREAD_TIMERS
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
@@ -160,6 +164,7 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
     BESStopWatch sw(COMPUTE_THREADS);
     sw.start(timer_tag.str());
 #endif
+
     process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
 }
@@ -210,7 +215,6 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
     }
     return retval;
 }
-
 
 /**
  * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
@@ -292,9 +296,6 @@ void process_chunks_concurrent(
         throw;
     }
 }
-
-
-
 
 /**
  * @brief Uses std::async and std::future to concurrently retrieve/inflate/shuffle/insert/etc the Chunks in the queue "chunks".
@@ -380,6 +381,7 @@ void process_chunks_unconstrained_concurrent(
         throw;
     }
 }
+
 //#####################################################################################################################
 //#####################################################################################################################
 //#####################################################################################################################
@@ -388,12 +390,33 @@ void process_chunks_unconstrained_concurrent(
 //
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-
+// TODO There are (at least) two ways to handle 'fill value chunks.' The code can group
+//  them all together as one big SuperChunk or store each FV chunk in its own SuperChunk.
+//  (Of course, there are alternatives...) Using one SuperChunk is probably faster but
+//  will require more work on the SuperChunk code. I think we should postpone that for now
+//  to focus on getting the values correct (because that problem has yet to be solved).
+//  I will add a ticket to return to this code and make that modification. jhrg 5/7/22
+//
 /**
  * @brief Attempts to add a new Chunk to this SuperChunk.
  *
- * If the passed chunk has the same data url, and is it is contiguous with the
- * current end if the SuperChunk the Chunk is added, otherwise it is skipped.
+ * The candidate_chunk is added to this SuperChunk if: it is contiguous with
+ * the end of the this SuperChunk and has the same data_url. Note that if the
+ * SuperChunk is empty, candidate_chunk meets those criteria by default.
+ *
+ * @note This method was modified to support fill value chunks as part of the
+ * work on HYRAX-635. As a stop-gap implementation, each fill value chunk will
+ * get its own SuperChunk, even though that is not the most efficient way forward.
+ * See HYRAX-713 for a bit more on this. To add FV chunk support, FV chunks can
+ * ony be added when d_chunks is empty. Thus, the is_contiguous(...) test must
+ * fail if the chunk uses fill values. To make this hack easier to unwind later
+ * on, I'm going to make that test right here - so it's obvious. jhrg 5/7/22
+ *
+ * @todo Should candidate_chunk be passed by reference? Maybe calls to this
+ *   method should use move()? jhrg 5/7/22
+ *
+ * @todo Should this _only_ be called when d_chunks is not empty? jhrg 5/7/22
+ *
  * @param candidate_chunk The Chunk to add.
  * @return True when the chunk is added, false otherwise.
  */
@@ -403,17 +426,22 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
         d_chunks.push_back(candidate_chunk);
         d_offset = candidate_chunk->get_offset();
         d_size = candidate_chunk->get_size();
-        d_data_url = candidate_chunk->get_data_url();
+        // When get_uses_fill_value() is true, returns a shared_ptr<Chunk> initialized to nullptr. jhrg 5/7/22
+        d_uses_fill_value = candidate_chunk->get_uses_fill_value();
+        if (!d_uses_fill_value)
+            d_data_url = candidate_chunk->get_data_url();
+        else
+            d_data_url = nullptr;
         chunk_was_added =  true;
     }
-    else if(is_contiguous(candidate_chunk) ){
+    // For now, if a chunk uses fill values, it gets its own SuperChunk. jhrg 5/7/22
+    else if(!candidate_chunk->get_uses_fill_value() && is_contiguous(candidate_chunk)){
         this->d_chunks.push_back(candidate_chunk);
         d_size += candidate_chunk->get_size();
         chunk_was_added =  true;
     }
     return chunk_was_added;
 }
-
 
 /**
  * @brief Returns true if candidate_chunk is "contiguous" with the end of the SuperChunk instance.
@@ -423,6 +451,8 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
  *
  * Currently the rule is that the offset of the candidate_chunk must be the same as the current
  * offset + size of the SuperChunk, and the data_url is the same as the one in the SuperChunk.
+ *
+ * @todo Declare candidate_chunk as a reference to avoid needless copy.
  *
  * @param candidate_chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
@@ -440,7 +470,7 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
 /**
  * @brief  Assigns each Chunk held by the SuperChunk a read buffer.
  *
- * Each Chunks read buffer is mapped to the corresponding section of the SuperChunk's
+ * Each Chunk's read buffer is mapped to the corresponding section of the SuperChunk's
  * enclosing read buffer.
  *
  * This is a convenience/helper function for SuperChunk::read()
@@ -451,19 +481,18 @@ void SuperChunk::map_chunks_to_buffer()
     for(const auto &chunk : d_chunks){
         chunk->set_read_buffer(d_read_buffer + bindex, chunk->get_size(),0, false);
         bindex += chunk->get_size();
-        if(bindex>d_size){
+        if (bindex > d_size) {
             stringstream msg;
             msg << "ERROR The computed buffer index, " << bindex << " is larger than expected size of the SuperChunk. ";
             msg << "d_size: " << d_size;
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
-
         }
     }
 }
 
 /**
  * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
- * This is a convenience/helper function for SuperChunk::read()
+ * This is a convenience/helper function for SuperChunk::retrieve_data()
  */
 void SuperChunk::read_aggregate_bytes()
 {
@@ -493,20 +522,40 @@ void SuperChunk::read_aggregate_bytes()
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
+
     d_is_read = true;
 }
 
+/**
+ * @brief Load a SuperChunk with fill values
+ *
+ * @note The initial version of this method works with SuperChunks that can
+ * only hold a single fill value chunk. This will hopefully change as the code
+ * for FV chunks is optimized. jhrg 5/7/22
+ */
+void SuperChunk::read_fill_value_chunk()
+{
+    if (d_chunks.size() != 1)
+        throw BESInternalError("Found a SuperChunk with uses_fill_value true but more than one child chunk.", __FILE__, __LINE__);
+
+    d_chunks.front()->read_chunk();
+}
 
 /**
  * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read.
  */
 void SuperChunk::retrieve_data() {
+    // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
     if (d_is_read) {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
 
-    if(!d_read_buffer){
+    // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
+    //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
+    //  the chunk size and read state so the last for loop can be removed.
+    //  jhrg 5/6/22
+    if (!d_read_buffer) {
         // Allocate memory for SuperChunk receive buffer.
         // release memory in destructor.
         d_read_buffer = new char[d_size];
@@ -520,21 +569,26 @@ void SuperChunk::retrieve_data() {
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into d_read_buffer
-    read_aggregate_bytes();
+    //
+    // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
+    if (d_uses_fill_value)
+        read_fill_value_chunk();
+    else
+        read_aggregate_bytes();
 
+    // TODO Check if Chunk::read() sets these. jhrg 5/9/22
     // Set each Chunk's read state to true.
     // Set each chunks byte count to the expected
     // size for the chunk - because upstream events
     // have assured this to be true.
-    for(auto chunk : d_chunks){
+    for(const auto& chunk : d_chunks){
         chunk->set_is_read(true);
         chunk->set_bytes_read(chunk->get_size());
     }
 }
 
-
 /**
- * @brief Reads the SuperChunk, inflates/deshuffles the subordinate chunks as required and copies the values into array
+ * @brief Reads the SuperChunk, inflates/de-shuffles the subordinate chunks as required and copies the values into array
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::process_child_chunks() {
@@ -545,7 +599,7 @@ void SuperChunk::process_child_chunks() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
-    if(!DmrppRequestHandler::d_use_compute_threads){
+    if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
         BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing. id: " + d_id);

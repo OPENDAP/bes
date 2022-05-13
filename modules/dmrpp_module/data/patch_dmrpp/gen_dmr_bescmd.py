@@ -1,6 +1,5 @@
-import string
-import os
 import argparse as ap
+import os
 
 parser = ap.ArgumentParser(description='generate bescmd files for missing var fonc hdf5 file and the original hdf5 dmr file.')
 parser.add_argument('-i',  nargs=1,

@@ -21,13 +21,11 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// #include "config.h"
-
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include <unordered_set>
 #include <cstring>
 
 #include <libdap/BaseType.h>
@@ -43,7 +41,6 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
-// TODO Needed? jhrg 11/23/21
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -51,11 +48,13 @@
 #include "url_impl.h"           // see bes/http
 #include "DMRpp.h"
 #include "DMZ.h"                // this includes the pugixml header
+#include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppD4Group.h"
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppChunkOdometer.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -72,18 +71,24 @@ using namespace libdap;
 
 // THe code can either search for a DAP variable's information in the XML, or it can
 // record that during the parse process. Set this when/if the code does the latter.
-// using this simplifies the lazy-load process, particularly for the DAP2 dds and
+// Using this simplifies the lazy-load process, particularly for the DAP2 DDS and
 // data responses (which have not yet been coded completely). jhrg 11/17/21
 #define USE_CACHED_XML_NODE 1
+
+#define SUPPORT_FILL_VALUE_CHUNKS 1
 
 #define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
-const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
+using shape = std::vector<unsigned long long>;
+
+#if 1
+const std::set<std::string> DMZ::variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
+#endif
 
 /// @brief Are the C-style strings equal?
 static inline bool is_eq(const char *value, const char *key)
@@ -91,8 +96,7 @@ static inline bool is_eq(const char *value, const char *key)
 #if TREAT_NAMESPACES_AS_LITERALS
     return strcmp(value, key) == 0;
 #else
-    bool found = strcmp(value, key) == 0;
-    if (found) {
+    if (strcmp(value, key) == 0) {
         return true;
     }
     else {
@@ -724,7 +728,7 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &/*parent_node*/, stac
  * that corresponds to the DMR++ XML document this class manages).
  * @return The xml_node pointer
  */
-xml_node DMZ::get_variable_xml_node(BaseType *btp) const
+xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
 #if USE_CACHED_XML_NODE
     auto node = dc(btp)->get_xml_node();
@@ -788,7 +792,7 @@ DMZ::load_attributes(BaseType *btp)
             break;
         }
 
-        // FIXME There are no tests for this code. The above bock for Array
+        // FIXME There are no tests for this code. The above block for Array
         //  was needed, so it seems likely that this will be too, but ...
         //  jhrg 11/16/21
         case dods_structure_c:
@@ -991,9 +995,6 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
 
     if (!href.empty()) {
-        // TODO For many cases, there are many chunks that share a URL. We could store
-        //  a hash_map of known URLs and cut down on the total number of shared pointers.
-        //  jhrg 11/22/21
         shared_ptr<http::url> data_url(new http::url(href, href_trusted));
         dc->add_chunk(data_url, dc->get_byte_order(), stoull(size), stoull(offset), chunk_position_in_array);
     }
@@ -1010,7 +1011,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
  */
 void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
-    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child /*&& !cds_found*/; child = child.next_sibling()) {
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
             string sizes = child.child_value();
             dc->parse_chunk_dimension_sizes(sizes);
@@ -1018,13 +1019,31 @@ void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
     }
 }
 
+static void add_fill_value_information(DmrppCommon *dc, const string &value_string, libdap::Type fv_type)
+{
+    dc->set_fill_value_string(value_string);
+    dc->set_fill_value_type(fv_type);
+    dc->set_uses_fill_value(true);
+ }
+
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
+void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
 {
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
             dc->set_filter(attr.value());
+        }
+        else if (is_eq(attr.name(), "fillValue")) {
+            // Fill values are only supported for Arrays (5/9/22)
+            auto array = dynamic_cast<libdap::Array*>(dc);
+            if (!array)
+                throw BESInternalError("Fill Value chunks are only supported for Arrays.", __FILE__, __LINE__);
+
+            add_fill_value_information(dc, attr.value(), array->var()->type());
+        }
+        else if (is_eq(attr.name(), "byteOrder")) {
+            dc->ingest_byte_order(attr.value());
         }
     }
 
@@ -1037,6 +1056,98 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
             process_chunk(dc, chunk);
         }
     }
+}
+
+/**
+ * @brief Get a vector describing the shape and size of an Array
+ * @param array The Array
+ * @return A vector of integers that holds the size of each dimension of the Array
+ */
+vector<unsigned long long> DMZ::get_array_dims(Array *array)
+{
+    vector<unsigned long long> array_dim_sizes;
+    for (auto i= array->dim_begin(), e = array->dim_end(); i != e; ++i) {
+        array_dim_sizes.push_back(array->dimension_size(i));
+    }
+
+    return array_dim_sizes;
+}
+
+/**
+ * @brief Compute the number of chunks assuming none are elided using fill values
+ * Note that it's possible to use a chunk size that does not divide the array
+ * dimensions evenly. For example, if an array (1D) has 40,000 elements and a
+ * chunk size of 9501, then there are 5 'logical chunks,' 4 with 9501 elements and
+ * one with the remainder (1966). To find this number this method uses ceil().
+ * @param array_dim_sizes A vector of the array dimension sizes
+ * @param dc A pointer to the DmrppCommon information
+ * @return The number of logical chunks.
+ */
+size_t DMZ::logical_chunks(const vector <unsigned long long> &array_dim_sizes, const DmrppCommon *dc)
+{
+    auto const& chunk_dim_sizes = dc->get_chunk_dimension_sizes();
+    if (chunk_dim_sizes.size() != array_dim_sizes.size()) {
+        ostringstream oss;
+        oss << "Expected the chunk and array rank to match (chunk: " << chunk_dim_sizes.size() << ", array: "
+            << array_dim_sizes.size() << ")";
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    size_t num_logical_chunks = 1;
+    auto i = array_dim_sizes.begin();
+    for (auto chunk_dim_size: chunk_dim_sizes) {
+        auto array_dim_size = *i++;
+        num_logical_chunks *= (size_t)ceil((float)array_dim_size / (float)chunk_dim_size);
+    }
+
+    return num_logical_chunks;
+}
+
+/**
+ * @brief Get a set<> of vectors that describe this variables actual chunks
+ * In an HDF5 file, each chunked variable may have some chunks that hold only
+ * fill values. As an optimization, HDF5 does not waste space in the data file
+ * by writing those values to the file. This code builds a set< vector<> > that
+ * describes the indices of each chunk in a variable.
+ *
+ * The 'chunk map' can be used, along with an exhaustive enumeration of all _possible_
+ * chunks, to find those 'fill value chunks.'
+ *
+ * @param chunks The list of chunk objects parsed from the DMR++ for this variable
+ * @return A set where each element is a vector of chunk indices. The number of
+ * elements in the set should equal the number of chunks in the _chunks_ parameter.
+ */
+set< vector<unsigned long long> > DMZ::get_chunk_map(const vector<shared_ptr<Chunk>> &chunks)
+{
+    set< vector<unsigned long long> > chunk_map;
+    for (auto const &chunk: chunks) {
+        chunk_map.insert(chunk->get_position_in_array());
+    }
+
+    return chunk_map;
+}
+
+/**
+ * @brief Add missing chunks as 'fill value chunks'
+ * @param dc
+ * @param chunk_map A set<> with one element for each chunk
+ * @param chunk_shape The shape of a chunk for this array
+ * @param array_shape The shape of the array
+ * @param chunk_size the number of bytes in the chunk
+ */
+void DMZ::process_fill_value_chunks(DmrppCommon *dc, const set<shape> &chunk_map, const shape &chunk_shape,
+                                    const shape &array_shape, unsigned long long chunk_size)
+{
+    // Use an Odometer to walk over each potential chunk
+    DmrppChunkOdometer odometer(array_shape, chunk_shape);
+    do {
+        const auto &s = odometer.indices();
+        if (chunk_map.find(s) == chunk_map.end()) {
+            // Fill Value chunk
+            // what we need byte order, pia, fill value
+            dc->add_chunk(dc->get_byte_order(), dc->get_fill_value(), dc->get_fill_value_type(), chunk_size, s);
+        }
+    } while (odometer.next());
 }
 
 /**
@@ -1062,17 +1173,53 @@ void DMZ::load_chunks(BaseType *btp)
     int chunks_found = 0;
     int chunk_found = 0;
     int compact_found = 0;
+
+    // Chunked data
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
         chunks_found = 1;
         process_chunks(dc(btp), child);
+        auto array = dynamic_cast<Array*>(btp);
+        // It's possible to have a chunk, but not have a chunk dimension sizes element
+        // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
+        if (array && !dc(btp)->get_chunk_dimension_sizes().empty()) {
+            auto const &array_shape = get_array_dims(array);
+            size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
+            // do we need to run this code?
+            if (num_logical_chunks != dc(btp)->get_chunks_size()) {
+                auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
+                // Since the variable has some chunks that hold only fill values, add those chunks
+                // to the vector of chunks.
+                auto const &chunk_shape = dc(btp)->get_chunk_dimension_sizes();
+                unsigned long long chunk_size_bytes = array->var()->width(); // start with the element size in bytes
+                for (auto dim_size: chunk_shape)
+                    chunk_size_bytes *= dim_size;
+                process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
+                                          array_shape, chunk_size_bytes);
+            }
+        }
+        // If both chunks and chunk_dimension_sizes are empty, this is contiguous storage
+        // with nothing but fill values. Make a single chunk that can hold the fill values.
+        else if (array && dc(btp)->get_immutable_chunks().empty()) {
+            auto const &array_shape = get_array_dims(array);
+            // Since there is one chunk, the chunk size and array size are one and the same.
+            unsigned long long array_size_bytes = 1;
+            for (auto dim_size: array_shape)
+                array_size_bytes *= dim_size;
+            // array size above is in _elements_, multiply by the element width to get bytes
+            array_size_bytes *= array->var()->width();
+            // Position in array is 0, 0, ..., 0 were the number of zeros is the number of array dimensions
+            shape pia(0,array_shape.size());
+            auto dcp = dc(btp);
+            dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+        }
     }
 
+    // Contiguous data
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
         chunk_found = 1;
         process_chunk(dc(btp), chunk);
-
     }
 
     auto compact = var_node.child("dmrpp:compact");

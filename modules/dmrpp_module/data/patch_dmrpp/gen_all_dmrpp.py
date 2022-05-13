@@ -1,8 +1,7 @@
+import argparse as ap
 import os
-import string
 import subprocess
 import sys
-import argparse as ap
 
 parser = ap.ArgumentParser(description='generate the original dmrpp file based on the HDF5 file name.')
 parser.add_argument('-u',  type=str,

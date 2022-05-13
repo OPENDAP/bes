@@ -146,84 +146,6 @@ void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<S
     }
 }
 
-#if 0
-void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks){
-        if(var->is_simple_type())
-            return;
-        if(var->is_constructor_type())
-            return;
-        if(var->is_vector_type()){
-            auto array = dynamic_cast<DmrppArray*>(var);
-            if(array){
-                // Now we get the chunkyness
-                auto chunk_dim_sizes = array->get_chunk_dimension_sizes();
-                //unsigned int chunk_size_in_elements = array->get_chunk_size_in_elements();
-                auto chunks = array->get_immutable_chunks();
-                unsigned long long next_contiguous_chunk_offset = 0;
-
-                //unsigned long long super_chunk_index = 0;
-                vector<vector<const Chunk *> *> super_chunks;
-                auto currentSuperChunk = new vector<const Chunk *>();
-                super_chunks.push_back(currentSuperChunk); // first super chunk...
-
-                if(debug) cout << "SuperChunking array: "<< array->name() << endl;
-
-                bool first = true;
-                for(auto chunk:chunks){
-                    auto current_offset = chunk.get_offset();
-                    auto current_size = chunk.get_size();
-                    // auto c_pia = chunk.get_position_in_array();
-
-                    if(!first){
-                        if(current_offset!=next_contiguous_chunk_offset){
-                            // The current chunk is not contiguous with the previous
-                            unsigned long long gap_size = current_offset - next_contiguous_chunk_offset;
-                            if(debug) {
-                                cout <<  "FOUND GAP  current_offset: " << current_offset <<
-                                     " nbytes: " << current_offset <<
-                                     " next_contiguous_chunk_offset: " << next_contiguous_chunk_offset <<
-                                     " gap_size: " << gap_size <<
-                                     " currentSuperChunk.size(): " <<  currentSuperChunk->size() << endl;
-                            }
-                            // If we were working on a SuperChunk (i.e. the current SuperChunk contains chunks)
-                            // then we need to start a new one.
-                            if(!currentSuperChunk->empty()){
-                                currentSuperChunk = new vector<const Chunk *>();
-                                super_chunks.push_back(currentSuperChunk); // next super chunk...
-                            }
-                        }
-                    }
-                    currentSuperChunk->push_back(&chunk);
-                    next_contiguous_chunk_offset = current_offset + current_size;
-                    first = false;
-                }
-                // Dump the currentSuperChunk if it doesn't have anything in it.
-                if(currentSuperChunk->empty()) {
-                    super_chunks.pop_back();
-                    delete currentSuperChunk;
-                }
-                cout << "SuperChunk Inventory For Array: " << array->name() << endl;
-                unsigned long long sc_count=0;
-                for(auto super_chunk: super_chunks) {
-                    cout << "    SuperChunk[" << sc_count++ << "] contains : " << super_chunk->size() << " chunks."
-                         << endl;
-                    if (debug) {
-                        for (auto chunk:*super_chunk) {
-                            cout << "        " << chunk->to_string() << endl;
-                        }
-                    }
-                }
-
-            }
-            else {
-                cerr << prolog << " ERROR! The variable: "<< var->name()
-                << " is not an instance of DmrppArray. SKIPPING"<< endl;
-            }
-
-        }
-    }
-#endif
-
     void inventory_super_chunks(libdap::D4Group *group, bool only_constrained, vector<SuperChunk *> &super_chunks){
 
         // Process Groups - RECURSION HAPPENS HERE.
@@ -306,11 +228,7 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
 
 int main(int argc, char *argv[]) {
     string bes_log_file("superchunky_bes.log");
-    //string bes_debug_log_file("cerr");
-    //string bes_debug_keys( "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr");
-    //string http_cache_dir;
     string prefix;
-    //string http_netrc_file;
     string cache_effective_urls("false");
     char *prefixCstr = getenv("prefix");
     if (prefixCstr) {
@@ -328,15 +246,10 @@ int main(int argc, char *argv[]) {
     TheBESKeys::TheKeys()->set_key("AllowedHosts", "^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
     TheBESKeys::TheKeys()->set_key("Http.cache.effective.urls", cache_effective_urls, false); // Set AllowedHosts to allow any file
 
-
-    // if (bes_debug) BESDebug::SetUp(bes_debug_log_file + "," + bes_debug_keys); // Enable BESDebug settings
-
-
     BESIndent::SetIndent("");
 
     for(auto i=1; i<argc; i++){
         string dmrpp_filename(argv[i]);
-        //dmrpp::inventory_super_chunks(dmrpp_filename);
 
         dmrpp::DMRpp *dmrpp = dmrpp::get_dmrpp( dmrpp_filename);
         dump_vars(*dmrpp);

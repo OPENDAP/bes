@@ -60,9 +60,20 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/d_int.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_1_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_2_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/nc4_group_atomic.h5])
-AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5])
+#
+# ntypes.h5 has a bunch of really odd variables and default fill values
+# for them all. Not sure where to go with this. Kent suggested that we
+# punt on implementing String fill values, e.g., so maybe this file should
+# be modified or dropped from the tests? jhrg 4/22/22
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5], xfail)
+
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_float.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_int_scalar.h5])
+
+# Test data files with various fill value schemes. These won't work until
+# more work is done on fill value support. jhrg 4/22/22
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_chunk.h5])
 
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])

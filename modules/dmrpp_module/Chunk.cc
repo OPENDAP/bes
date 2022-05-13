@@ -95,13 +95,6 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
  */
 void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message)
 {
-#if 0
-    string json_message = xml2json(xml_message.c_str());
-            rapidjson::Document d;
-            d.Parse(json_message.c_str());
-            // rapidjson::Value &message = d["Error"]["Message"];
-            rapidjson::Value &code = d["Error"]["Code"];
-#endif
     // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
     // for the low-down on this XML document.
     pugi::xml_document error;
@@ -420,25 +413,12 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
-#if 0
-    // strip off []; iss holds x,y,...,z
-    istringstream iss(pia.substr(1, pia.length() - 2));
-
-    char c;
-    unsigned int i;
-    while (!iss.eof()) {
-        iss >> i; // read an integer
-        cpia_vect.push_back(i);
-        iss >> c; // read a separator (,)
-    }
-#else
     try {
         split_by_comma(pia.substr(1, pia.length() - 2), cpia_vect);
     }
-    catch(std::invalid_argument &e) {
+    catch(const std::invalid_argument &e) {
         throw BESInternalError(string("while parsing a DMR++, chunk position string illegal character(s): ").append(e.what()), __FILE__, __LINE__);
     }
-#endif
 }
 
 
@@ -456,30 +436,6 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
  * @param pia The chunk position string. Syntax parsed: "[1,2,3,4]"
  */
 void Chunk::set_position_in_array(const string &pia) {
-#if 0
-    if (pia.empty()) return;
-
-    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
-
-    // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
-    // [1] is a minimal 'position in array' string.
-    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
-        throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
-
-    if (pia.find_first_not_of("[]1234567890,") != string::npos)
-        throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
-
-    // strip off []; iss holds x,y,...,z
-    istringstream iss(pia.substr(1, pia.length() - 2));
-
-    char c;
-    unsigned int i;
-    while (!iss.eof()) {
-        iss >> i; // read an integer
-        d_chunk_position_in_array.push_back(i);
-        iss >> c; // read a separator (,)
-    }
-#endif
     parse_chunk_position_in_array_string(pia,d_chunk_position_in_array);
 }
 
@@ -522,6 +478,10 @@ string Chunk::get_curl_range_arg_string() {
  * And if so it appends an additional parameter: "&tracking_context=<context value>"
  *
  * @note This is only added to data URLs that reference an S3 bucket.
+ *
+ * @note This adds a significant cost to the run-time behavior of the DMR++ code
+ * and should only be used for testing and, even then, probably rarely since the
+ * performance of the server will be reduced significantly.
  */
 void Chunk::add_tracking_query_param() {
 
@@ -633,115 +593,6 @@ checksum_fletcher32(const void *_data, size_t _len)
     return ((sum2 << 16) | sum1);
 } /* end H5_checksum_fletcher32() */
 
-#if 0
-/**
- * @brief Decompress data in the chunk, managing the Chunk's data buffers
- *
- * This method tracks if a chunk has already been decompressed, so, like read_chunk()
- * it can be called for a chunk that has already been decompressed without error.
- *
- * @param deflate True if the chunk should be 'inflated'
- * @param shuffle True if the chunk should be 'unshuffled'
- * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
- * @param elem_width The number of bytes per element
- */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned long long chunk_size,
-                          unsigned long long elem_width) {
-    // This code is pretty naive - there are apparently a number of
-    // different ways HDF5 can compress data, and it does also use a scheme
-    // where several algorithms can be applied in sequence. For now, get
-    // simple zlib deflate working.jhrg 1/15/17
-    // Added support for shuffle. Assuming unshuffle always is applied _after_
-    // inflating the data (reversing the shuffle --> deflate process). It is
-    // possible that data could just be deflated or shuffled (because we
-    // have test data are use only shuffle). jhrg 1/20/17
-    // The file that implements the deflate filter is H5Zdeflate.c in the hdf5 source.
-    // The file that implements the shuffle filter is H5Zshuffle.c.
-
-    if (d_is_inflated)
-        return;
-
-    chunk_size *= elem_width;
-
-    if (deflate) {
-        char *dest = new char[chunk_size];
-        try {
-            inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
-            // This replaces (and deletes) the original read_buffer with dest.
-#if DMRPP_USE_SUPER_CHUNKS
-            set_read_buffer(dest, chunk_size, chunk_size, true);
-#else
-            set_rbuf(dest, chunk_size);
-#endif
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (shuffle) {
-        // The internal buffer is chunk's full size at this point.
-        char *dest = new char[get_rbuf_size()];
-        try {
-            unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
-#if DMRPP_USE_SUPER_CHUNKS
-            set_read_buffer(dest,get_rbuf_size(),get_rbuf_size(), true);
-#else
-            set_rbuf(dest, get_rbuf_size());
-#endif
-        }
-        catch (...) {
-            delete[] dest;
-            throw;
-        }
-    }
-
-    if (fletcher32) {
-        // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
-#if ACTUALLY_USE_FLETCHER32_CHECKSUM
-        // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
-        // integer fletcher32 checksum. jhrg 10/15/21
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-align"
-        assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
-        assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0);
-        auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
-#pragma GCC diagnostic pop
-
-        // If the code should actually use the checksum (they can be expensive to compute), does it match
-        // with once computed on the data actually read? Maybe make this a bes.conf parameter?
-        // jhrg 10/15/21
-        if (f_checksum != checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
-            throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
-                                   __FILE__, __LINE__);
-        }
-#endif
-        if (d_read_buffer_size > FLETCHER32_CHECKSUM)
-            d_read_buffer_size -= FLETCHER32_CHECKSUM;
-        else {
-            throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
-                                   __FILE__, __LINE__);
-        }
-    }
-
-    d_is_inflated = true;
-
-#if 0 // This was handy during development for debugging. Keep it for a while (year or two) before we drop it ndp - 01/18/17
-    if(BESDebug::IsSet(MODULE)) {
-        unsigned long long chunk_buf_size = get_rbuf_size();
-        dods_float32 *vals = (dods_float32 *) get_rbuf();
-        ostream *os = BESDebug::GetStrm();
-        (*os) << std::fixed << std::setfill('_') << std::setw(10) << std::setprecision(0);
-        (*os) << "DmrppArray::"<< __func__ <<"() - Chunk[" << i << "]: " << endl;
-        for(unsigned long long k=0; k< chunk_buf_size/prototype()->width(); k++) {
-            (*os) << vals[k] << ", " << ((k==0)|((k+1)%10)?"":"\n");
-        }
-    }
-#endif
-}
-#endif
-
 /**
  * @brief filter data in the chunk
  *
@@ -761,7 +612,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
-    for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i){
+    for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
         string filter = *i;
 
         if (filter == "deflate"){
@@ -779,7 +630,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 delete[] dest;
                 throw;
             }
-        }// end if(filter == deflate)
+        }// end filter is deflate
         else if (filter == "shuffle"){
             // The internal buffer is chunk's full size at this point.
             char *dest = new char[get_rbuf_size()];
@@ -795,18 +646,15 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 delete[] dest;
                 throw;
             }
-        }//end if(filter == shuffle)
+        } //end filter is shuffle
         else if (filter == "fletcher32"){
             // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
             // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
             // integer fletcher32 checksum. jhrg 10/15/21
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-align"
             assert(get_rbuf_size() > FLETCHER32_CHECKSUM);
             //assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0); //probably wrong
             auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
-#pragma GCC diagnostic pop
 
             // If the code should actually use the checksum (they can be expensive to compute), does it match
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?
@@ -823,9 +671,115 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
                                        __FILE__, __LINE__);
             }
-        } //end if(filter == fletcher32)
-    }// end for loop
+        } // end filter is fletcher32
+    } // end for loop
     d_is_inflated = true;
+}
+
+static unsigned int get_value_size(libdap::Type type) 
+{
+    switch(type) {
+        case libdap::dods_int8_c:
+            return sizeof(int8_t);
+            
+        case libdap::dods_int16_c:
+            return sizeof(int16_t);
+            
+        case libdap::dods_int32_c:
+            return sizeof(int32_t);
+            
+        case libdap::dods_int64_c:
+            return sizeof(int64_t);
+            
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            return sizeof(uint8_t);
+            
+        case libdap::dods_uint16_c:
+            return sizeof(uint16_t);
+            
+        case libdap::dods_uint32_c:
+            return sizeof(uint32_t);
+            
+        case libdap::dods_uint64_c:
+            return sizeof(uint64_t);
+
+        case libdap::dods_float32_c:
+            return sizeof(float);
+            
+        case libdap::dods_float64_c:
+            return sizeof(double);
+
+        default:
+            throw BESInternalError("Unknown fill value type.", __FILE__, __LINE__);
+    }
+}
+
+const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
+{
+    switch(type) {
+        case libdap::dods_int8_c:
+            fv.int8 = (int8_t)stoi(v);
+            return (const char *)&fv.int8;
+
+        case libdap::dods_int16_c:
+            fv.int16 = (int16_t)stoi(v);
+            return (const char *)&fv.int16;
+
+        case libdap::dods_int32_c:
+            fv.int32 = (int32_t)stoi(v);
+            return (const char *)&fv.int32;
+
+        case libdap::dods_int64_c:
+            fv.int64 = (int64_t)stoll(v);
+            return (const char *)&fv.int64;
+
+        case libdap::dods_uint8_c:
+        case libdap::dods_byte_c:
+            fv.uint8 = (uint8_t)stoi(v);
+            return (const char *)&fv.uint8;
+
+        case libdap::dods_uint16_c:
+            fv.uint16 = (uint16_t)stoi(v);
+            return (const char *)&fv.uint16;
+
+        case libdap::dods_uint32_c:
+            fv.uint32 = (uint32_t)stoul(v);
+            return (const char *)&fv.uint32;
+
+        case libdap::dods_uint64_c:
+            fv.uint64 = (uint64_t)stoull(v);
+            return (const char *)&fv.uint64;
+
+        case libdap::dods_float32_c:
+            fv.f = stof(v);
+            return (const char *)&fv.f;
+
+        case libdap::dods_float64_c:
+            fv.d = stod(v);
+            return (const char *)&fv.d;
+
+        default:
+            throw BESInternalError("Unknown fill value type.", __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @brief Load the chunk with fill values - temporary implementation
+ */
+void Chunk::load_fill_values() {
+    fill_value fv;
+    const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value);
+    unsigned int value_size = get_value_size(d_fill_value_type);
+
+    unsigned long long num_values = get_rbuf_size() / value_size;
+    char *buffer = get_rbuf();
+
+    for (int i = 0; i < num_values; ++i, buffer += value_size) {
+        memcpy(buffer, value, value_size);
+    }
+
+    set_bytes_read(get_rbuf_size());
 }
 
 /**
@@ -838,30 +792,36 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
  * @param elem_width
  */
 void Chunk::read_chunk() {
-    if (d_is_read) {
-        BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
+    if (d_is_read)
         return;
+
+    // By default, d_read_buffer_is_mine is true. But if this is part of a SuperChunk
+    // then the SuperChunk will have allocated memory and d_read_buffer_is_mine is false.
+    if (d_read_buffer_is_mine)
+        set_rbuf_to_size();
+
+    if (d_uses_fill_value) {
+        load_fill_values();
     }
+    else {
+        dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+        if (!handle)
+            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
-    set_rbuf_to_size();
-
-    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
-    if (!handle)
-        throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
-
-    try {
-        handle->read_data();  // retries until success when appropriate, else throws
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-    }
-    catch (...) {
-        // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
-        //  It may be that this is the code that catches throws from
-        //  chunk_write_data and based on read_data()'s behavior, the
-        //  code should probably stop _all_ transfers, reclaim all
-        //  handles and send a failure message up the call stack.
-        //  jhrg 4/7/21
-        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-        throw;
+        try {
+            handle->read_data();  // retries until success when appropriate, else throws
+            DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        }
+        catch (...) {
+            // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
+            //  It may be that this is the code that catches throws from
+            //  chunk_write_data and based on read_data()'s behavior, the
+            //  code should probably stop _all_ transfers, reclaim all
+            //  handles and send a failure message up the call stack.
+            //  jhrg 4/7/21
+            DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+            throw;
+        }
     }
 
     // If the expected byte count was not read, it's an error.
@@ -905,26 +865,27 @@ string Chunk::to_string() const {
     return oss.str();
 }
 
-
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
 
+#if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
     if (!d_query_marker.empty()) {
         string url_str = effective_url->str();
-        if(url_str.find("?") != string::npos){
-            url_str += "&";
+        if(url_str.find('?') != string::npos){
+            url_str.append("&");
         }
         else {
-            url_str +="?";
+            url_str.append("?");
         }
         url_str += d_query_marker;
         shared_ptr<http::url> query_marker_url( new http::url(url_str));
         return query_marker_url;
     }
+#endif
 
     return effective_url;
 }

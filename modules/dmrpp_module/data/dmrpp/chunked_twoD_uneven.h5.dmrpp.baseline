@@ -9,7 +9,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/d_10_odd_chunks</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>50 41</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4016" nBytes="8200" chunkPositionInArray="[0,0]"/>
             <dmrpp:chunk offset="12216" nBytes="8200" chunkPositionInArray="[0,41]"/>

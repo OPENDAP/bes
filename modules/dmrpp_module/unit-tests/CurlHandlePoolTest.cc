@@ -358,7 +358,7 @@ public:
         auto array = new MockDmrppArray;
         vector<unsigned long long> array_shape = {1};
 
-        vector<size_t> chunk_dim_sizes = {1};
+        vector<unsigned long long> chunk_dim_sizes = {1};
         array->set_chunk_dimension_sizes(chunk_dim_sizes);
 
         try {

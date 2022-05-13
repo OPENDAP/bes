@@ -25,8 +25,6 @@
 #ifndef h_dmz_h
 #define h_dmz_h 1
 
-//#include "config.h"
-
 #include <string>
 #include <vector>
 #include <set>
@@ -54,6 +52,9 @@ class url;
 
 namespace dmrpp {
 
+using shape = std::vector<unsigned long long>;
+
+class Chunk;
 class DmrppCommon;
 
 /**
@@ -74,10 +75,20 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
+    /// Holds names of the XML elements thst define variables (e.g., Byte)
+    static const std::set<std::string> variable_elements;
+
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
-    pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
+    static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
-    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
+    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
+
+    static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,
+                                   const shape &array_shape, unsigned long long chunk_size);
+
+    static std::vector<unsigned long long int> get_array_dims(libdap::Array *array);
+    static size_t logical_chunks(const std::vector<unsigned long long> &array_dim_sizes, const dmrpp::DmrppCommon *dc);
+    static std::set< std::vector<unsigned long long> > get_chunk_map(const std::vector<std::shared_ptr<Chunk>> &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
 
@@ -120,23 +131,7 @@ public:
 
     virtual void load_chunks(libdap::BaseType *btp);
 
-#if 0
-    // These were originally part of the design and intended to speed the delivery
-    // of the metadata responses, but the pugixml parser is so fast I don't think
-    // they are needed. Add them later if we really need them. jhrg 11/22/21
-    std::string get_attribute_xml(std::string path);
-    std::string get_variable_xml(std::string path);
-#endif
-
     virtual void load_all_attributes(libdap::DMR *dmr);
-
-#if 0
-    // This was here because with lazy loading of attributes, the glabal values did
-    // not show up. But I've dropped the lazy attr load feature since it provides
-    // no measureable benefit for the test data we have. If we need lazy-attrs, the
-    // software is still in the handler, just mostly disabled. jhrg 11/22/21
-    virtual void load_global_attributes(libdap::DMR *dmr);
-#endif
 };
 
 } // namespace dmrpp

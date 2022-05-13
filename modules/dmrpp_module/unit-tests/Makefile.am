@@ -2,6 +2,7 @@
 # Tests
 
 AUTOMAKE_OPTIONS = foreign
+# using .cc files above this dir seems to break 'subdir-objects' jhrg 5/5/22
 
 # TODO set these with configure. jhrg 11/26/19
 OPENSSL_LIBS=-lcrypto
@@ -64,7 +65,7 @@ BUILT_SOURCES = test_config.h
 BES_CONF_IN = bes.conf.in
 BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
-test_config.h: $(srcdir)/test_config.h.in Makefile
+test_config.h: $(srcdir)/test_config.h.in Makefile.am
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	mod_abs_builddir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_builddir}'))"`; \
@@ -94,9 +95,13 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
+
 UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
-DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest
+DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest build_dmrpp_util_test \
+DmrppChunkOdometerTest
+
 else
+
 UNIT_TESTS =
 
 check-local:
@@ -106,6 +111,7 @@ check-local:
 	@echo "check target in unit-tests directory                     *"
 	@echo "**********************************************************"
 	@echo ""
+
 endif
 
 clean-local:
@@ -144,3 +150,10 @@ DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DMZTest_SOURCES = DMZTest.cc
 DMZTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+DmrppChunkOdometerTest_SOURCES = DmrppChunkOdometerTest.cc
+DmrppChunkOdometerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+build_dmrpp_util_test_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
+build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc $(top_srcdir)/modules/hdf5_handler/h5common.cc
+build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)

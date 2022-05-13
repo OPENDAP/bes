@@ -13,7 +13,7 @@
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
-                        <dmrpp:chunks byteOrder="LE">
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
                             <dmrpp:chunk offset="40672" nBytes="128"/>
                         </dmrpp:chunks>
                     </Float32>
@@ -27,7 +27,7 @@
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
-                        <dmrpp:chunks byteOrder="LE">
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
                             <dmrpp:chunk offset="40800" nBytes="128"/>
                         </dmrpp:chunks>
                     </Float32>
@@ -37,7 +37,7 @@
     </Group>
     <Group name="HDFEOS INFORMATION">
         <String name="StructMetadata.0">
-            <dmrpp:chunks>
+            <dmrpp:chunks fillValue="unsupported-string">
                 <dmrpp:chunk offset="5304" nBytes="32000"/>
             </dmrpp:chunks>
         </String>

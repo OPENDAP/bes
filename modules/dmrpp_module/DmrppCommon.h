@@ -62,6 +62,24 @@ class SuperChunk;
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
 /**
+ * @brief hold the value used to fill empty chunks
+ */
+union fill_value_union {
+    int8_t int8;
+    int16_t int16;
+    int32_t int32;
+    int64_t int64;
+
+    uint8_t uint8;
+    uint16_t uint16;
+    uint32_t uint32;
+    uint64_t uint64;
+
+    float f;
+    double d;
+};
+
+/**
  * @brief Size and offset information of data included in DMR++ files.
  *
  * A mixin class the provides common behavior for the libdap types
@@ -77,8 +95,8 @@ class DmrppCommon {
 
 	friend class DmrppCommonTest;
     friend class DmrppParserTest;
+    friend class DMZTest;
 
-private:
     bool d_compact = false;
 	std::string d_filters;
 	std::string d_byte_order;
@@ -91,6 +109,12 @@ private:
     bool d_chunks_loaded = false;
     bool d_attributes_loaded = false;
 
+    bool d_uses_fill_value {false};
+    // Convert fill_value to the correct numeric datatype at the time of use. jhrg 4/24/22
+    std::string d_fill_value_str;
+    libdap::Type d_fill_value_type{libdap::dods_null_c};
+    fill_value_union d_fill_value;
+
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
     // feature is implemented. The xml_node object is used to simplify finding where
@@ -100,14 +124,6 @@ private:
     pugi::xml_node d_xml_node;
 
 protected:
-#if 0
-    /// @brief Returns a copy of the internal Chunk vector.
-    /// @see get_immutable_chunks()
-    virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
-    	return d_chunks;
-    }
-#endif
-
     virtual char *read_atomic(const std::string &name);
 
     // This declaration allows code in the SuperChunky program to use the protected method.
@@ -121,7 +137,7 @@ public:
 
     DmrppCommon() = default;
 
-    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(dmz) { }
+    explicit DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(std::move(dmz)) { }
 
     DmrppCommon(const DmrppCommon &) = default;
 
@@ -191,17 +207,32 @@ public:
         return elements;
     }
 
+    /// @brief Set the uses_fill_value property
+    virtual void set_uses_fill_value(bool ufv) { d_uses_fill_value = ufv; }
+
+    /// @brief Set the fill value (using a string)
+    virtual void set_fill_value_string(const std::string &fv) { d_fill_value_str = fv; }
+
+    /// @brief Set the libdap data type to use with the fill value
+    virtual void set_fill_value_type(libdap::Type t) { d_fill_value_type = t; }
+
+    /// @return Return true if the the chunk uses 'fill value.'
+    virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
+
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual std::string get_fill_value() const { return d_fill_value_str; }
+
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual libdap::Type get_fill_value_type() const { return d_fill_value_type; }
+
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
-    // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
-    void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims) {
-        // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
-        // it didn't work, maybe because of the differing element types?
+    void set_chunk_dimension_sizes(const std::vector<unsigned long long> &chunk_dims) {
         for (auto chunk_dim : chunk_dims) {
             d_chunk_dimension_sizes.push_back(chunk_dim);
         }
@@ -219,6 +250,11 @@ public:
     virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
+    // There are two main versions of add_chunk: One that takes a size and offset
+    // and one that takes a fill value. However, for each of those, there are versions
+    // that take a data URL (or not) and versions that take the 'chunk position in
+    // array' information as a string or as a vector< uint64_t >. Thus, there are
+    // a total of eight of these 'add_chunk()' functions. jhrg 4/22/22
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
@@ -243,6 +279,13 @@ public:
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            const std::string &fill_value,
+            libdap::Type fv_type,
+            unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;

@@ -27,7 +27,6 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
@@ -38,11 +37,9 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
-#if 1
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
-#endif
 
 #include "url_impl.h"
 #include "BESIndent.h"
@@ -54,7 +51,6 @@
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "byteswap_compat.h"
-
 
 using namespace std;
 using namespace libdap;
@@ -91,11 +87,9 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
             string *error = NULL;
             if ((status = pthread_join(threads[i], (void **) &error)) < 0) {
                 BESDEBUG(dmrpp_3, "Could not join thread " << i << ", " << strerror(status)<< endl);
-                // ERROR_LOG("Failed to join thread " << i << " during clean up from an exception: " << strerror(status) << endl);
             }
             else if (error != NULL) {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", error exit: " << *error << endl);
-                // ERROR_LOG("Joined thread " << i << ", error exit" << *error << endl);
             }
             else {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", successful exit." << endl);
@@ -142,6 +136,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
     if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
         throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
 
+    // TODO Rewrite this to use split. jhrg 5/2/22
     string space(" ");
     size_t strPos = 0;
     string strVal;
@@ -151,7 +146,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         // Process space delimited content
         while ((strPos = chunk_dims.find(space)) != string::npos) {
             strVal = chunk_dims.substr(0, strPos);
-
+            // TODO stoull (CDS uses uint64_t) jhrg 5/2/22
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
             chunk_dims.erase(0, strPos + space.length());
         }
@@ -211,7 +206,7 @@ void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
  * @return The number of chunks in the internal chunks vector for this variable.
  */
 unsigned long DmrppCommon::add_chunk(
-        std::shared_ptr<http::url> data_url,
+        shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
@@ -235,54 +230,13 @@ unsigned long DmrppCommon::add_chunk(
  * @return The number of chunk refs (byteStreams) held in the internal chunks vector..
  */
 unsigned long DmrppCommon::add_chunk(
-        std::shared_ptr<http::url> data_url,
+        shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
     std::shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, size, offset, position_in_array));
-#if 0
-    auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
-    if(!array){
-        stringstream msg;
-        msg << prolog << "ERROR  DmrrpCommon::add_chunk() may only be called on an instance of DmrppArray. ";
-        msg << "The variable";
-        auto bt = dynamic_cast<libdap::BaseType *>(this);
-        if(bt){
-            msg  << " " << bt->type_name() << " " << bt->name();
-        }
-        msg << " is not an instance of DmrppArray.";
-        msg << "this: " << (void **) this << " ";
-        msg << "byte_order: " << byte_order << " ";
-        msg << "size: " << size << " ";
-        msg << "offset: " << offset << " ";
-        throw BESInternalError(msg.str(),__FILE__, __LINE__);
-    }
-
-    if(d_super_chunks.empty())
-        d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk()));
-
-    auto currentSuperChunk = d_super_chunks.back();
-
-    bool chunk_was_added = currentSuperChunk->add_chunk(chunk);
-    if(!chunk_was_added){
-        if(currentSuperChunk->empty()){
-            stringstream msg;
-            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
-        }
-        // This means that the chunk was not contiguous with the currentSuperChunk
-        currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk());
-        chunk_was_added = currentSuperChunk->add_chunk(chunk);
-        if(!chunk_was_added) {
-            stringstream msg;
-            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
-        }
-        d_super_chunks.push_back(currentSuperChunk);
-    }
-#endif
 
     d_chunks.push_back(chunk);
     return d_chunks.size();
@@ -334,7 +288,20 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    std::shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+    shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        const string &fill_value,
+        libdap::Type fv_type,
+        unsigned long long chunk_size,
+        const vector<unsigned long long> &position_in_array)
+{
+    shared_ptr<Chunk> chunk(new Chunk(byte_order, fill_value, fv_type, chunk_size, position_in_array));
 
     d_chunks.push_back(chunk);
     return d_chunks.size();
@@ -372,9 +339,16 @@ DmrppCommon::read_atomic(const string &name)
 
 /**
  * @brief Print the Chunk information.
+ *
  * @note Should not be called when the d_chunks vector has no elements because it
  * will write out a <chunks> element that is going to be empty when it might just
  * be the case that the chunks have not been read.
+ *
+ * @note Added support for chunks that use the HDF5 Fill Value system - Those chunks
+ * have _no data_ to read and thus no offset or length. They do have a Chunk Position
+ * in Array and Fill Value, however. Here's an example:
+ *
+ *       <dmrpp:chunk  fillValue="-32678" chunkPositionInArray="[...]"/>
  */
 void
 DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
@@ -387,8 +361,12 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
+    if (d_uses_fill_value && !d_fill_value_str.empty()) {
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "fillValue", (const xmlChar*) d_fill_value_str.c_str()) < 0)
+            throw BESInternalError("Could not write fillValue attribute.", __FILE__, __LINE__);
+    }
 
-    if(get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+    if(!d_chunks.empty()) {
         auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
@@ -397,7 +375,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         }
     }
 
-    if (d_chunk_dimension_sizes.size() > 0) {
+    if (!d_chunk_dimension_sizes.empty()) { //d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
         copy(d_chunk_dimension_sizes.begin(), d_chunk_dimension_sizes.end(), ostream_iterator<unsigned int>(oss, " "));
@@ -409,24 +387,24 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-    // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
-
-    for(auto chunk: get_immutable_chunks()){
+    for(auto chunk: get_immutable_chunks()) {
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
-        // Get offset string:
-        ostringstream offset;
-        offset << chunk->get_offset();
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.str().c_str()) < 0)
-            throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
+            // Get offset string:
+            ostringstream offset;
+            offset << chunk->get_offset();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "offset",
+                                            (const xmlChar *) offset.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
 
-        // Get nBytes string:
-        ostringstream nBytes;
-        nBytes << chunk->get_size();
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.str().c_str()) < 0)
-            throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
+            // Get nBytes string:
+            ostringstream nBytes;
+            nBytes << chunk->get_size();
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "nBytes",
+                                            (const xmlChar *) nBytes.str().c_str()) < 0)
+                throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
 
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:

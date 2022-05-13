@@ -136,7 +136,7 @@ void BESDataHandlerInterface::clean()
     if (response_handler) {
         delete response_handler;
     }
-    response_handler = 0;
+    response_handler = nullptr;
 }
 
 /** @brief returns the response object using the response handler

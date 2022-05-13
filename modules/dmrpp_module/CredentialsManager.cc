@@ -94,29 +94,6 @@ std::string get_env_value(const string &key){
     return value;
 }
 
-#if 0
-/**
- *  Get get the specified bes.conf configuration value. This function
- *  returns an empty string if the configuration variable is
- *  not found, AND if the environment value is set but empty.
- * @param key The configuration value to retrieve
- * @return The value of the configuration variable,
- * or the empty string is not found.
- */
-std::string get_config_value(const string &key){
-    string value;
-    bool key_found=false;
-    TheBESKeys::TheKeys()->get_value(key, value, key_found);
-    if (key_found) {
-        BESDEBUG(CREDS, prolog << "Using " << key << " from TheBESKeys" << endl);
-    }
-    else {
-        value.clear();
-    }
-    return value;
-}
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
 // class CredentialsManager
@@ -132,9 +109,6 @@ CredentialsManager *CredentialsManager::theCM(){
     return theMngr;
 }
 
-/**
- *
- */
 void CredentialsManager::initialize_instance()
 {
     theMngr = new CredentialsManager;

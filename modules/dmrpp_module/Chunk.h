@@ -39,10 +39,28 @@
 // This is used to track access to 'cloudydap' accesses in the S3 logs
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
+//
+// We disabled this (via ENABLE_TRACKING_QUERY_PARAMETER) because it
+// used regexes and was a performance killer. jhrg 4/22/22
 #define S3_TRACKING_CONTEXT "cloudydap"
 #define ENABLE_TRACKING_QUERY_PARAMETER 0
 
 namespace dmrpp {
+
+union fill_value {
+    int8_t int8;
+    int16_t int16;
+    int32_t int32;
+    int64_t int64;
+
+    uint8_t uint8;
+    uint16_t uint16;
+    uint32_t uint32;
+    uint64_t uint64;
+
+    float f;
+    double d;
+};
 
 // Callback functions used by chunk readers
 size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
@@ -61,14 +79,16 @@ private:
     std::shared_ptr<http::url> d_data_url;
     std::string d_query_marker;
     std::string d_byte_order;
-    unsigned long long d_size;
-    unsigned long long d_offset;
+    std::string d_fill_value;
+    unsigned long long d_size{0};
+    unsigned long long d_offset{0};
+    bool d_uses_fill_value{false};
+    libdap::Type d_fill_value_type{libdap::dods_null_c};
 
     std::vector<unsigned long long> d_chunk_position_in_array;
 
-    // These are used only during the libcurl callback;
-    // they are not duplicated by the copy ctor or assignment
-    // operator.
+    // These are used only during the libcurl callback; they are not duplicated by the
+    // copy ctor or assignment operator.
 
     /**
      *  d_read_buffer_is_mine
@@ -86,16 +106,13 @@ private:
      *  dropping the old pointer (no delete[]) and taking possession of
      *  the new memory so it is correctly released as described here.
      */
-    bool d_read_buffer_is_mine;
-    unsigned long long d_bytes_read;
-    char *d_read_buffer;
-    unsigned long long d_read_buffer_size;
-    bool d_is_read;
-    bool d_is_inflated;
+    bool d_read_buffer_is_mine {true};
+    unsigned long long d_bytes_read {0};
+    char *d_read_buffer {nullptr};
+    unsigned long long d_read_buffer_size {0};
+    bool d_is_read {false};
+    bool d_is_inflated {false};
     std::string d_response_content_type;
-
-    // static const std::string tracking_context;
-
 
     friend class ChunkTest;
     friend class DmrppCommonTest;
@@ -105,18 +122,12 @@ protected:
 
     void _duplicate(const Chunk &bs)
     {
-        // See above
-        d_read_buffer_is_mine = true;
-        d_bytes_read = 0;
-        d_read_buffer = nullptr;
-        d_read_buffer_size = 0;
-        d_is_read = false;
-        d_is_inflated = false;
-
         d_size = bs.d_size;
         d_offset = bs.d_offset;
         d_data_url = bs.d_data_url;
         d_byte_order = bs.d_byte_order;
+        d_fill_value = bs.d_fill_value;
+        d_uses_fill_value = bs.d_uses_fill_value;
         d_query_marker = bs.d_query_marker;
         d_chunk_position_in_array = bs.d_chunk_position_in_array;
     }
@@ -132,12 +143,7 @@ public:
      *
      * @see Chunk::add_tracking_query_param()
      */
-    Chunk() :
-        d_data_url(nullptr), d_size(0), d_offset(0),
-        d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
-        d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
-    {
-    }
+    Chunk() = default;
 
     /**
      * @brief Get a chunk initialized with values
@@ -149,22 +155,10 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(
-            std::shared_ptr<http::url> data_url,
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::string &pia_str = "") :
-            d_data_url(std::move(data_url)),
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size,
+          unsigned long long offset, const std::string &pia_str = "") :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size),  d_offset(offset)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
@@ -182,21 +176,8 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::string &pia_str = "") :
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
-    {
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,  const std::string &pia_str = "") :
+            d_byte_order(std::move(order)),  d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -213,23 +194,10 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(
-            std::shared_ptr<http::url> data_url,
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::vector<unsigned long long> &pia_vec) :
-            d_data_url(std::move(data_url)),
-            d_byte_order(std::move(order)),
-            d_size(size),
-            d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
-    {
+    Chunk(std::shared_ptr<http::url> data_url, std::string order, unsigned long long size, unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec) :
+            d_data_url(std::move(data_url)), d_byte_order(std::move(order)),
+            d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
@@ -247,27 +215,19 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(
-            std::string order,
-            unsigned long long size,
-            unsigned long long offset,
-            const std::vector<unsigned long long> &pia_vec) :
-            d_query_marker(""),
-            d_byte_order(std::move(order)),
-            d_size(size), d_offset(offset),
-            d_read_buffer_is_mine(true),
-            d_bytes_read(0),
-            d_read_buffer(nullptr),
-            d_read_buffer_size(0),
-            d_is_read(false),
-            d_is_inflated(false)
-    {
+    Chunk(std::string order, unsigned long long size, unsigned long long offset,
+          const std::vector<unsigned long long> &pia_vec) :
+            d_byte_order(std::move(order)), d_size(size), d_offset(offset) {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_vec);
     }
 
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long chunk_size, std::vector<unsigned long long> pia) :
+            d_byte_order(std::move(order)), d_fill_value(std::move(fill_value)), d_size(chunk_size),
+            d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
+    }
 
     Chunk(const Chunk &h4bs)
     {
@@ -300,41 +260,37 @@ public:
     /// @brief Set the response type of the last response
     void  set_response_content_type(const std::string &ct) { d_response_content_type = ct; }
 
-    /// @brief Get the chunk byte order
+    /// @return Get the chunk byte order
     virtual std::string get_byte_order() { return d_byte_order; }
 
-    /**
-     * @brief Get the size of this Chunk's data block on disk
-     */
+    /// @return Get the size of this Chunk's data block on disk
     virtual unsigned long long get_size() const
     {
         return d_size;
     }
 
-    /**
-     * @brief Get the offset to this Chunk's data block
-     */
+    /// @return  Get the offset to this Chunk's data block
     virtual unsigned long long get_offset() const
     {
         return d_offset;
     }
 
-    /**
-     * @brief Get the data url for this Chunk's data block
-     */
+    /// @return Return true if the the chunk uses 'fill value.'
+    virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
+
+    /// @return Return the fill value as a string or "" if get_fill_value() is false
+    virtual std::string get_fill_value() const { return d_fill_value; }
+
+    /// @return Get the data url for this Chunk's data block
     virtual std::shared_ptr<http::url>  get_data_url() const;
 
-    /**
-     * @brief Set the data url for this Chunk's data block
-     */
+    /// @brief Set the data url for this Chunk's data block
     virtual void set_data_url(std::shared_ptr<http::url> data_url)
     {
         d_data_url = std::move(data_url);
     }
 
-    /**
-     * @brief Get the number of bytes read so far for this Chunk.
-     */
+    /// @return Get the number of bytes read so far for this Chunk.
     virtual unsigned long long get_bytes_read() const
     {
         return d_bytes_read;
@@ -374,40 +330,12 @@ public:
         set_bytes_read(0);
     }
 
-    /**
-     * Returns a pointer to the memory buffer for this Chunk. The
-     * return value is NULL if no memory has been allocated.
-     */
+    /// @return A pointer to the memory buffer for this Chunk.
+    /// The return value is NULL if no memory has been allocated.
     virtual char *get_rbuf()
     {
         return d_read_buffer;
     }
-
-#if 0  // Superseded by Chunk::set_read_buffer(); - ndp 12/17/20
-    /**
-     * @brief Set the read buffer
-     *
-     * Transfer control of the buffer to this object. The buffer must have been
-     * allocated using 'new char[size]'. This object will delete any previously
-     * allocated buffer and take control of the one passed in with this method.
-     * The size and number of bytes read are set to the value of 'size.'
-     *
-     * FIXME Is the assumption here is that the buffer has been populated with values prior to calling this method?
-     *
-     * @param buf The new buffer to be used by this instance.
-     * @param size The size of the new buffer.
-     */
-    virtual void set_rbuf(char *buf, unsigned int buf_size)
-    {
-        if(d_read_buffer_is_mine)
-            delete[] d_read_buffer;
-
-        d_read_buffer = buf;
-        d_read_buffer_size = buf_size;
-
-        set_bytes_read(buf_size);
-    }
-#endif
 
     /**
      * @brief Set the target read buffer for this chunk.
@@ -420,12 +348,8 @@ public:
      * when the Chunk object's destructor is called. If false then the Chunk's destructor will not attempt to
      * free/delete the memory pointed to by buf. (default: true)
      */
-     void set_read_buffer(
-            char *buf,
-            unsigned long long buf_size,
-            unsigned long long bytes_read = 0,
-            bool assume_ownership = true ){
-
+     void set_read_buffer(char *buf, unsigned long long buf_size, unsigned long long bytes_read = 0,
+                          bool assume_ownership = true ) {
         if(d_read_buffer_is_mine)
             delete[] d_read_buffer;
 
@@ -436,22 +360,17 @@ public:
         set_bytes_read(bytes_read);
     }
 
-    /**
-     * Returns the size, in bytes, of the current read buffer for this Chunk.
-     */
+    /// @return The size, in bytes, of the current read buffer for this Chunk.
     virtual unsigned long long get_rbuf_size() const
     {
         return d_read_buffer_size;
     }
 
-    /**
-     * @return The chunk's position in the array, as a vector of ints.
-     */
+    /// @return The chunk's position in the array, as a vector of ints.
     virtual const std::vector<unsigned long long> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }
-
 
     void add_tracking_query_param();
 
@@ -459,14 +378,12 @@ public:
     void set_position_in_array(const std::vector<unsigned long long> &pia);
 
     virtual void read_chunk();
+    virtual void load_fill_values();
 
     virtual void filter_chunk(const std::string &filters, unsigned long long chunk_size, unsigned long long elem_width);
 
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }
-
-    //virtual bool get_is_inflated() const { return d_is_inflated; }
-    //virtual void set_is_inflated(bool state) { d_is_inflated = state; }
 
     virtual std::string get_curl_range_arg_string();
 
@@ -476,22 +393,6 @@ public:
 
     virtual std::string to_string() const;
 };
-
-#if 0
-/// Chunk data decompression function for use with pthreads
-struct inflate_chunk_args {
-    Chunk *chunk;
-    bool deflate;
-    bool shuffle;
-    unsigned int chunk_size;
-    unsigned int elem_width;
-
-    inflate_chunk_args(Chunk *c, bool d, bool s, unsigned int c_size, unsigned int e_size):
-    chunk(c), deflate(d), shuffle(s), chunk_size(c_size), elem_width(e_size) {}
-};
-
-void *inflate_chunk(void *args);
-#endif
 
 } // namespace dmrpp
 
