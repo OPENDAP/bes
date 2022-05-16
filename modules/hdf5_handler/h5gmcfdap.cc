@@ -342,12 +342,6 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         // Handle special variables
         f->Handle_SpVar();
 
-        // When cv memory cache is on, the unit attributes are needed to
-        // distinguish whether this is lat/lon. Generally, memory cache 
-        // is not used. This snipnet will not be accessed.
-        //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
-        //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
-
         // Handle unsupported datatypes including the attributes
         f->Handle_Unsupported_Dtype(true);
 
@@ -360,17 +354,6 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         // Include handling internal netCDF-4 attributes
         f->Handle_Unsupported_Others(include_attr);
 
-#if 0
-        else {
-
-            // Handle unsupported datatypes
-            f->Handle_Unsupported_Dtype(include_attr);
-
-            // Handle unsupported dataspaces
-            f->Handle_Unsupported_Dspace(include_attr);
-
-        }
-#endif
         // Need to handle the "coordinate" attributes 
         f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
 
@@ -720,8 +703,6 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
     vector<HDF5CF::Var *>::const_iterator       it_v;
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-    vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
-    vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     // Root and low-level group attributes.
@@ -766,17 +747,17 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
         update_GPM_special_attrs_cfdmr(d4_root,cvars);
     
 
-    for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
+    for (auto it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
         BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
         gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename);
     }
 
     // We use the attribute container to store the group attributes.
     if (false == grps.empty()) {
-        for (it_g = grps.begin();
+        for (auto it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
 
-            D4Attribute *tmp_grp = new D4Attribute;
+            auto tmp_grp = new D4Attribute;
             tmp_grp->set_name((*it_g)->getNewName());
 
             // Make the type as a container
@@ -857,8 +838,8 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                     }
         
                     if(unlimited_dim_names != "") {
-                        D4Attribute *dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
-                        D4Attribute *unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
+                        auto dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
+                        auto unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
                         unlimited_dim_attr->add_value(unlimited_dim_names);
                         dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
                         d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
@@ -974,9 +955,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
@@ -1010,9 +991,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
            
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
@@ -1028,7 +1009,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                int nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
@@ -1047,9 +1028,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
                 delete bt;
@@ -1083,9 +1064,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
                 delete bt;
@@ -1101,7 +1082,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                int nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFSpecialCVArray * ar = nullptr;
                 ar = new HDF5GMCFSpecialCVArray(
@@ -1114,9 +1095,9 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName())
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
@@ -1163,7 +1144,6 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
     if (bt) {
 
         const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
-        vector <HDF5CF::Dimension*>:: const_iterator it_d;
 
         if(dims.empty())
             throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
@@ -1189,11 +1169,11 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         }
 
 
-        for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for(auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if (""==(*it_d)->getNewName()) 
-                ar->append_dim((*it_d)->getSize());
+                ar->append_dim((int)((*it_d)->getSize()));
             else 
-                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
         }
 
         dds.add_var(ar);
@@ -1300,8 +1280,7 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
             // we need to add the corresponding fill values.
             if(!d4_attr) {
                 bool is_cvar = false;
-                vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-                for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+                for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
                     if ((*it_cv)->getNewName() == (*vi)->name()) {
                         is_cvar = true;
                         break;
@@ -1440,9 +1419,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1478,9 +1457,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
            
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1499,7 +1478,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                int nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
@@ -1518,9 +1497,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
@@ -1557,9 +1536,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
@@ -1591,9 +1570,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName())
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -1649,7 +1628,6 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
     if (bt) {
 
         const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
-        vector <HDF5CF::Dimension*>:: const_iterator it_d;
 
         if(dims.empty())
             throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
@@ -1675,11 +1653,11 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         }
 
 
-        for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for(auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if (""==(*it_d)->getNewName()) 
-                ar->append_dim((*it_d)->getSize());
+                ar->append_dim((int)((*it_d)->getSize()));
             else 
-                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
         }
 
         ar->set_is_dap4(true);
@@ -1687,7 +1665,6 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         map_cfh5_var_attrs_to_dap4(spvar,d4_var);
         d4_root->add_var_nocopy(d4_var);
  
-        //dds.add_var(ar);
         delete bt;
         delete ar;
     }

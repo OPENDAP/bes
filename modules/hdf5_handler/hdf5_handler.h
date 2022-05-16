@@ -95,7 +95,7 @@ typedef struct DSattr {
     /// Name of HDF5 group or dataset
     char name[DODS_NAMELEN];
     /// Memory type
-    int type;
+    hid_t type;
     /// Number of dimensions
     int ndims;
     /// Size of each dimension

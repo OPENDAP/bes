@@ -445,7 +445,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
 }
 
-// Retrieve HDF5 dataset datatype
+// Retrieve HDF5 dataset compression ratio
 float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) 
 {
 

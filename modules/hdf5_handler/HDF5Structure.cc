@@ -53,6 +53,7 @@ HDF5Structure::~HDF5Structure()
 }
 HDF5Structure::HDF5Structure(const HDF5Structure &rhs) : Structure(rhs)
 {
+    m_duplicate(rhs);
 }
 
 HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
@@ -60,8 +61,12 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     if (this == &rhs)
         return *this;
 
+#if 0
     dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
+#endif
 
+    libdap::Structure::operator=(rhs);
+    m_duplicate(rhs);
 
     return *this;
 }

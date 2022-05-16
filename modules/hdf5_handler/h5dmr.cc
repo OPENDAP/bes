@@ -441,7 +441,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             else {
                 //Need to add this pure dimension to the corresponding DAP4 group
                 D4Dimensions *d4_dims = par_grp->dims();
-                string d4dim_name = string(oname.begin(),oname.end()-1);   
+                auto d4dim_name = string(oname.begin(),oname.end()-1);   
                 D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
                 if(d4_dim == nullptr) {
                     d4_dim = new D4Dimension(d4dim_name,dt_inst.nelmts);
@@ -540,7 +540,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
             if (oid == "") {
                 try {
-                    D4Group* tem_d4_cgroup = new D4Group(grp_name);
+                    auto tem_d4_cgroup = new D4Group(grp_name);
 
                     // Add this new DAP4 group 
                     par_grp->add_group_nocopy(tem_d4_cgroup);
@@ -667,13 +667,13 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
         }
         delete bt; 
-        bt = 0;
+        bt = nullptr;
     }
     else {
         // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. 
-        HDF5Array *ar = new HDF5Array(newvarname, filename, bt);
-        delete bt; bt = 0;
+        auto ar = new HDF5Array(newvarname, filename, bt);
+        delete bt; bt = nullptr;
 
         // set number of elements and variable name values.
         // This essentially stores in the struct.
@@ -693,8 +693,10 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
                         "number of dimensions: overflow");
         }
         dimnames_size = (int)(dt_inst.dimnames.size());
+#if 0
 //cerr<<"dimnames_size is "<<dimnames_size <<endl;
 //cerr<<"ndims is "<<dt_inst.ndims <<endl;
+#endif
             
         if(dimnames_size ==dt_inst.ndims) {
 
@@ -739,7 +741,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 #endif
         // Add this var to DAP4 group.
         d4_grp->add_var_nocopy(new_var);
-        delete ar; ar = 0;
+        delete ar; ar = nullptr;
     }
     BESDEBUG("h5", "<read_objects_base_type(dmr)" << endl);
 
@@ -779,8 +781,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
                 dt_inst.need << endl);
 
             // Create the Array of structure.
-            HDF5Array *ar = new HDF5Array(newvarname, filename, structure);
-            delete structure; structure = 0;
+            auto ar = new HDF5Array(newvarname, filename, structure);
+            delete structure; structure = nullptr;
 
 
             // These parameters are used in the data read function.
@@ -830,7 +832,7 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             // Add this var to DAP4 group
             if(new_var) 
                 d4_grp->add_var_nocopy(new_var);
-            delete ar; ar = 0;
+            delete ar; ar = nullptr;
         }//  end if 
         else {// A scalar structure
 
@@ -873,7 +875,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
     }
 
     // Obtain the number of attributes
-    int num_attr = obj_info.num_attrs;
+    int num_attr = (int)(obj_info.num_attrs);
     if (num_attr < 0 ) {
         string msg = "Fail to get the number of attributes for the HDF5 object. ";
         throw InternalErr(__FILE__, __LINE__,msg);
@@ -925,16 +927,17 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         BESDEBUG("h5", "arttr_name= " << attr_name << endl);
 
         // Create the DAP4 attribute mapped from HDF5
-        D4Attribute *d4_attr = new D4Attribute(attr_name,dap4_attr_type);
+        auto d4_attr = new D4Attribute(attr_name,dap4_attr_type);
 
         // We have to handle variable length string differently. 
-        if (H5Tis_variable_str(ty_id)) { 
+        if (H5Tis_variable_str(ty_id))  
             write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,nullptr,true);
-        }// if (H5Tis_variable_str(ty_id)
         else {
 
             vector<char> value;
+#if 0
             //value.resize(attr_inst.need + sizeof(char));
+#endif
             value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
   
@@ -975,7 +978,6 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                 // Write this value. the "loc" can always be set to 0 since
                 // tempvalue will be moved to the next value.
                 for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
-                     //print_rep = print_attr(ty_id, 0, (void*)&value[0]);
                      print_rep = print_attr(ty_id, 0, tempvalue);
                     if (print_rep.c_str() != nullptr) {
 
@@ -1087,7 +1089,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
 
     BESDEBUG("h5", "dap4->get_softlink():" << temp_varname << endl);
-    D4Attribute *d4_slinfo = new D4Attribute;
+    auto d4_slinfo = new D4Attribute;
     d4_slinfo->set_name(temp_varname);
 
     // Make the type as a container
@@ -1095,7 +1097,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
     string softlink_name = "linkname";
 
-    D4Attribute *softlink_src = new D4Attribute(softlink_name,attr_str_c);
+    auto softlink_src = new D4Attribute(softlink_name,attr_str_c);
     softlink_src->add_value(oname);
 
     d4_slinfo->attributes()->add_attribute_nocopy(softlink_src);

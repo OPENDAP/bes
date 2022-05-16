@@ -325,7 +325,7 @@ public:
     }
 
     /// Get the compression ratio of this dataset
-    int getCompRatio() const
+    float getCompRatio() const
     {
         return this->comp_ratio;
     }
@@ -337,7 +337,7 @@ private:
     std::string fullpath;
     H5DataType dtype;
     int rank;
-    int comp_ratio;
+    float comp_ratio;
     size_t total_elems;
     bool zero_storage_size;
     bool unsupported_attr_dtype;

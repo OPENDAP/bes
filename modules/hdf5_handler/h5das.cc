@@ -152,7 +152,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             // Obtain the number of attributes
-            int num_attr = obj_info.num_attrs;
+            int num_attr = (int)obj_info.num_attrs;
             if (num_attr < 0) {
                 H5Gclose(cgroup);
                 string msg = "Fail to get the number of attributes for group ";
@@ -224,7 +224,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             // Obtain the number of attributes
-            int num_attr = obj_info.num_attrs;
+            int num_attr = (int)(obj_info.num_attrs);
             if (num_attr < 0) {
                 H5Dclose(dset);
                 string msg = "Fail to get the number of attributes for dataset ";
@@ -580,23 +580,12 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
     string softlink_value_name = "LINKTARGET";
 
     // Get the link target information. We always return the link value in a string format.
+    vector<char>buf((val_size + 1) * sizeof(char));
 
-    //char *buf = null;
-    try {
-        //buf = new char[(val_size + 1) * sizeof(char)];
-        vector<char>buf((val_size + 1) * sizeof(char));
-        // get link target name
-        if (H5Lget_val(pgroup, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) {
-            //delete[] buf;
-            throw InternalErr(__FILE__, __LINE__, "unable to get link value");
-        }
-        attr_softlink_ptr->append_attr(softlink_value_name, STRING, &buf[0]);
-        //delete[] buf;
-    }
-    catch (...) {
-        //delete[] buf;
-        throw;
-    }
+    // get link target name
+    if (H5Lget_val(pgroup, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) 
+        throw InternalErr(__FILE__, __LINE__, "unable to get link value");
+    attr_softlink_ptr->append_attr(softlink_value_name, STRING, &buf[0]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -712,7 +701,7 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 /// \param is_group indicates whether it's a dataset or group
 /// \return nothing
 ///////////////////////////////////////////////////////////////////////////////
-void add_group_structure_info(DAS & das, const char *gname, char *oname, bool is_group)
+void add_group_structure_info(DAS & das, const char *gname, const char *oname, bool is_group)
 {
 
     string h5_spec_char("/");
@@ -723,7 +712,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname, bool is
         throw InternalErr(__FILE__, __LINE__, "The wrong HDF5 group name.");
     }
 
-    string full_path = string(gname);
+    auto full_path = string(gname);
 
     // Change the HDF5 special character '/' with DAP notion '.' 
     // to make sure the group structure can be handled by DAP properly.

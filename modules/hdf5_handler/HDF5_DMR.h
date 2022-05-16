@@ -19,6 +19,7 @@
 
 
 /**
+ * Keep the old comments from GDAL handler. Need to clean up this later. KY 2022-05-16
  * This specialization of DMR is used to manage the 'resource' of the open
  * HDF4 dataset handle so that the BES will close that handle once the
  * framework is done working with the file. This provides a way for the

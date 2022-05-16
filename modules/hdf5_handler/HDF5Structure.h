@@ -44,9 +44,15 @@ class HDF5Structure:public libdap::Structure {
   private:
 
     std::string var_path;
+
+    void m_duplicate(const HDF5Structure & src) {
+        var_path = src.var_path;
+    }
+
     void do_structure_read(hid_t dsetid, hid_t dtypeid,std::vector <char> &values,bool has_values, int values_offset);
     friend class HDF5Array;
   public:
+
     /// Constructor
     HDF5Structure(const std::string &n, const std::string &vpath, const std::string &d);
     HDF5Structure(const HDF5Structure &rhs);

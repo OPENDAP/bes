@@ -260,25 +260,15 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
             break;
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
-            ;
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
-            ;
         HANDLE_CASE(H5CHAR, HDF5CFInt16)
-            ;
         HANDLE_CASE(H5UCHAR, HDF5CFByte)
-            ;
         HANDLE_CASE(H5INT16, HDF5CFInt16)
-            ;
         HANDLE_CASE(H5UINT16, HDF5CFUInt16)
-            ;
         HANDLE_CASE(H5INT32, HDF5CFInt32)
-            ;
         HANDLE_CASE(H5UINT32, HDF5CFUInt32)
-            ;
         HANDLE_CASE(H5FSTRING, Str)
-            ;
         HANDLE_CASE(H5VSTRING, Str)
-            ;
         default:
             throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
 #undef HANDLE_CASE
@@ -762,9 +752,9 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
         for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if ("" == (*it_d)->getNewName())
-                ar->append_dim((*it_d)->getSize());
+                ar->append_dim((int)((*it_d)->getSize()));
             else
-                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
         }
 
         delete bt;
@@ -845,11 +835,10 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_LAMAZ == cv_proj_code || HE5_GCTP_PS == cv_proj_code) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
         string dim0name = dims[0]->getNewName();
-        int dim0size = dims[0]->getSize();
+        int dim0size = (int)(dims[0]->getSize());
         string dim1name = dims[1]->getNewName();
-        int dim1size = dims[1]->getSize();
+        int dim1size = (int)(dims[1]->getSize());
 
         //3. Add the 1-D CV variables and the dummy projection variable
         BaseType *bt_dim0 = nullptr;
@@ -931,9 +920,9 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {
 
         string dim0name = (dims[0])->getNewName();
-        int dim0size = dims[0]->getSize();
+        int dim0size = (int)(dims[0]->getSize());
         string dim1name = (dims[1])->getNewName();
-        int dim1size = dims[1]->getSize();
+        int dim1size = (int)(dims[1]->getSize());
 
         //2. Add 1D CF attributes to the 1-D CV variables and the dummy grid_mapping variable
         AttrTable *at = das.get_table(dim0name);
@@ -1175,7 +1164,7 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
         string dap2_attrtype = HDF5CFDAPUtil::print_type(mem_dtype);
         D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
-        D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
+        auto d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
         if(dap4_attrtype == attr_str_c) {
             if("coordinates" == (*it_ra)->getNewName()) {
                 bool chg_coor_value = false;
@@ -1195,7 +1184,9 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
                                       (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
                         temp_start_pos += strsize[loc];
                         //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
+#if 0
                         //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+#endif
                         tempstring = HDF5CFDAPUtil::escattr(tempstring);
                         d4_attr->add_value(tempstring);
                     }
@@ -1212,7 +1203,7 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
     // Here we add the "origname" and "fullnamepath" attributes since they are crucial to DMRPP generation.
-    D4Attribute *d4_attr = new D4Attribute("origname",attr_str_c);
+    auto d4_attr = new D4Attribute("origname",attr_str_c);
     d4_attr->add_value(var->getName());
     d4_var->attributes()->add_attribute_nocopy(d4_attr);
     d4_attr = new D4Attribute("fullnamepath",attr_str_c);
@@ -1345,7 +1336,7 @@ void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *d4_con,const HDF5CF::A
 D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
 
     D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4(attr->getType());
-    D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+    auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
     if(dap4_attrtype == attr_str_c) {
             
         const vector<size_t>& strsize = attr->getStrSize();
@@ -1418,7 +1409,9 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
 
         // I did this map is based on my best understanding. I cannot be certain about south pole. KY
         // CF: straight_vertical_longitude_from_pole
+#if 0
         //at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
+#endif
         add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, s_vert_lon_pole.str());
 
         ostringstream s_lat_true_scale;
@@ -1508,7 +1501,7 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
     for (; vi != ve; vi++) {
         // Should not add grid_mapping info for the coordinate variables. 
         if((*vi)->is_vector_type() && (cvar_name.end() == find(cvar_name.begin(), cvar_name.end(),(*vi)->name()))) {
-            Array *t_a = dynamic_cast<Array*>(*vi);
+            auto t_a = dynamic_cast<Array*>(*vi);
             if(t_a->dimensions() >1) {
                 Array::Dim_iter dim_i = t_a->dim_begin();
                 Array::Dim_iter dim_e = t_a->dim_end();
@@ -1539,11 +1532,10 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_LAMAZ == cv_proj_code || HE5_GCTP_PS == cv_proj_code) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
         string dim0name = dims[0]->getNewName();
-        int dim0size = dims[0]->getSize();
+        int dim0size = (int)(dims[0]->getSize());
         string dim1name = dims[1]->getNewName();
-        int dim1size = dims[1]->getSize();
+        int dim1size = (int)(dims[1]->getSize());
 
         //3. Add the 1-D CV variables and the dummy projection variable
         BaseType *bt_dim0 = nullptr;
@@ -1620,7 +1612,7 @@ void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
 // Direct CF to DAP4, helper function to DAP4 group  attributes.  
 void add_grp_dap4_attr(D4Group *d4_grp,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
-    D4Attribute *d4_attr = new D4Attribute(attr_name,attr_type);
+    auto d4_attr = new D4Attribute(attr_name,attr_type);
     d4_attr->add_value(attr_value);
     d4_grp->attributes()->add_attribute_nocopy(d4_attr);
 
@@ -1628,7 +1620,7 @@ void add_grp_dap4_attr(D4Group *d4_grp,const string& attr_name, D4AttributeType 
 // Direct CF to DAP4, helper function to DAP4 variable  attributes.  
 void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
-    D4Attribute *d4_attr = new D4Attribute(attr_name,attr_type);
+    auto d4_attr = new D4Attribute(attr_name,attr_type);
     d4_attr->add_value(attr_value);
     var->attributes()->add_attribute_nocopy(d4_attr);
 
@@ -1653,7 +1645,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type()) {
 
-            Array *t_a = static_cast<Array *>(*vi);
+            auto t_a = static_cast<Array *>(*vi);
 
             // The maps are essentially coordinate variables.
             // We've sorted the coordinate variables already, so
@@ -1689,7 +1681,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
                 // Need to ensure the map array can be found.
                 unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
                 if(it_ma != d4map_array_maps.end()) {
-                    D4Map *d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
                     (*it_hm)->maps()->add_map(d4_map);
                 }
             }
@@ -1704,8 +1696,8 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             // If we cannot find the "coordinates",then this var doesn't have a map.
             vector<string> coord_names;
             D4Attributes *d4_attrs = (*it_hm)->attributes();
-            D4Attribute *d4_attr = d4_attrs->find("coordinates");
-            if (d4_attr != NULL) {
+            const D4Attribute *d4_attr = d4_attrs->find("coordinates");
+            if (d4_attr != nullptr) {
                 // For all the coordinates the CF option can handle,  
                 // the attribute is a one-element string.
                 if(d4_attr->type() == attr_str_c && d4_attr->num_values() == 1) {
@@ -1720,7 +1712,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
 
                 unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(*it_c);
                 if(it_ma != d4map_array_maps.end()) {
-                    D4Map *d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
                     (*it_hm)->maps()->add_map(d4_map);
                 }
 

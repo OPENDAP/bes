@@ -42,7 +42,7 @@
 #include <libdap/DAS.h>
 #include <libdap/Str.h>
 
-void add_group_structure_info(libdap::DAS & das, const char *gname, char *oname,
+void add_group_structure_info(libdap::DAS & das, const char *gname, const char *oname,
                               bool is_group);
 void depth_first(hid_t, const char *, libdap::DAS &);
 void find_gloattr(hid_t file, libdap::DAS & das);
