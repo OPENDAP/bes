@@ -78,12 +78,14 @@ public:
 
     virtual void read() {
         retrieve_data(); // TODO process_child_chunks() also calls retrieve_data(). jhrg 5/9/22
-        process_child_chunks();
+        if (!d_uses_fill_value) // Fill Value chunks need no filtering
+            process_child_chunks();
     }
 
     virtual void read_unconstrained() {
         retrieve_data();    // TODO process_child_chunks_unconstrained() also calls retrieve_data(). jhrg 5/9/22
-        process_child_chunks_unconstrained();
+        if (!d_uses_fill_value)
+            process_child_chunks_unconstrained();
     }
 
     virtual void retrieve_data();
