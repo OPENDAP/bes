@@ -108,7 +108,7 @@ HDF5BaseArray::format_constraint (int *offset, int *step, int *count)
         p++;
     }// "while (p != dim_end ())"
 
-    return nels;
+    return (int)nels;
 }
 
 void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
@@ -135,12 +135,12 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
-        set_value((dods_int32 *) &val[0], nelms);
+        set_value(&val[0], nelms);
     }
     else {
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value((dods_int32 *) &val[0], nelms);
+        set_value(&val[0], nelms);
     }
 }
 
@@ -152,7 +152,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     vector<int>count;
     vector<int>step;
 
-    int ndims = h5_dimsizes.size();
+    int ndims = (int)(h5_dimsizes.size());
     if(ndims == 0)
         throw InternalErr(__FILE__, __LINE__, "Currently we only support array numeric data in the cache, the number of dimension for this file is 0");
     
@@ -547,7 +547,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     if(mem_data_cache == nullptr)
         throw InternalErr(__FILE__,__LINE__,"The memory data cache should NOT be nullptr.");
 
-    HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
+    auto mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
         
         BESDEBUG("h5","Cache flag: 1 small data cache, 2 large data cache genenral"
@@ -555,7 +555,9 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
        
         BESDEBUG("h5","Data Memory Cache hit, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
 
+#if 0
         //const string var_name = mem_cache_ptr->get_varname();
+#endif
 
         // Obtain the buffer and do subsetting
         const size_t var_size = mem_cache_ptr->get_var_buf_size();
@@ -597,7 +599,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 #if 0
     	//HDF5DataMemCache* new_mem_cache = new HDF5DataMemCache(varname);
 #endif
-    	HDF5DataMemCache* new_mem_cache_ele = new HDF5DataMemCache();
+    	auto new_mem_cache_ele = new HDF5DataMemCache();
        	new_mem_cache_ele->set_databuf(buf);
 
         // Add this entry to the cache list

@@ -64,7 +64,7 @@ Var::Var(Var *var)
     dimnameflag = var->dimnameflag;
     coord_attr_add_path = var->coord_attr_add_path;
 
-    for (vector<Attribute*>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
+    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
         Attribute* attr = new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
@@ -76,7 +76,7 @@ Var::Var(Var *var)
         attrs.push_back(attr);
     }
 
-    for (vector<Dimension*>::iterator ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
+    for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
         Dimension *dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
@@ -95,7 +95,7 @@ bool CVar::isLatLon() const
         string lat_unit_value = "degrees_north";
         string lon_unit_value = "degrees_east";
 
-        for (vector<Attribute *>::const_iterator ira = this->attrs.begin(); ira != this->attrs.end(); ira++) {
+        for (auto ira = this->attrs.begin(); ira != this->attrs.end(); ira++) {
 
             if ((H5FSTRING == (*ira)->getType()) || (H5VSTRING == (*ira)->getType())) {
                 if (attr_name == (*ira)->newname) {
@@ -164,9 +164,6 @@ Var::~Var()
     for_each(this->attrs.begin(), this->attrs.end(), delete_elem());
 }
 
-Attribute::~Attribute()
-{
-}
 
 void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr)
 {
@@ -204,14 +201,14 @@ void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_a
         int num_attrs = 0;
 
         if (H5OGET_INFO(root_id, &oinfo) < 0)
-        throw1("Error obtaining the info for the root group");
+            throw1("Error obtaining the info for the root group");
 
-        num_attrs = oinfo.num_attrs;
+        num_attrs = (int)(oinfo.num_attrs);
         bool temp_unsup_attr_atype = false;
         bool temp_unsup_attr_dspace = false;
 
         for (int j = 0; j < num_attrs; j++) {
-            Attribute * attr = new Attribute();
+            auto attr = new Attribute();
             try {
                 this->Retrieve_H5_Attr_Info(attr, root_id, j, temp_unsup_attr_atype, temp_unsup_attr_dspace);
             }
@@ -319,7 +316,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 // Retrieve group attribute if the attribute flag is true
                 if (true == include_attr) {
 
-                    int num_attrs = oinfo.num_attrs;
+                    int num_attrs = (int)(oinfo.num_attrs);
                     bool temp_unsup_attr_dtype = false;
                     bool temp_unsup_attr_dspace = false;
 
@@ -381,7 +378,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 // Retrieve the attribute info. if asked
                 if (true == include_attr) {
 
-                    int num_attrs = oinfo.num_attrs;
+                    int num_attrs = (int)(oinfo.num_attrs);
                     bool temp_unsup_attr_dtype = false;
                     bool temp_unsup_attr_dspace = false;
 
@@ -446,7 +443,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 }
 
 // Retrieve HDF5 dataset compression ratio
-float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id) 
+float File::Retrieve_H5_VarCompRatio(const Var *var, const hid_t dset_id) const 
 {
 
     float comp_ratio = 1.0;
@@ -470,7 +467,7 @@ float File::Retrieve_H5_VarCompRatio(Var *var, hid_t dset_id)
             if ((ty_id = H5Dget_type(dset_id)) < 0)
             throw1("unable to obtain hdf5 datatype for the dataset ");
             size_t type_size = H5Tget_size(ty_id);
-            comp_ratio = ((float) (var->total_elems) * type_size) / dstorage_size;
+            comp_ratio = ((float)((var->total_elems) * type_size))/dstorage_size;
             H5Tclose(ty_id);
         }
 
@@ -487,7 +484,7 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
 
     // Obtain the data type of the variable. 
     if ((ty_id = H5Dget_type(dset_id)) < 0)
-    throw2("unable to obtain hdf5 datatype for the dataset ", varname);
+        throw2("unable to obtain hdf5 datatype for the dataset ", varname);
 
     // The following datatype class and datatype will not be supported for the CF option.
     //   H5T_TIME,  H5T_BITFIELD
@@ -510,7 +507,7 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
         unsup_var_dtype = true;
 
     if (H5Tclose(ty_id) < 0)
-    throw1("Unable to close the HDF5 datatype ");;
+        throw1("Unable to close the HDF5 datatype ");;
 }
 
 // Retrieve the HDF5 dataset dimension information
@@ -543,7 +540,7 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
                     var->total_elems = (size_t) h5_total_elms;
                 int ndims = H5Sget_simple_extent_ndims(dspace_id);
                 if (ndims < 0)
-                throw2("Cannot get the hdf5 dataspace number of dimension for the variable ", varname);
+                    throw2("Cannot get the hdf5 dataspace number of dimension for the variable ", varname);
 
                 var->rank = ndims;
                 if (ndims != 0) {
@@ -554,13 +551,14 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
                 // The netcdf DAP client supports the representation of the unlimited dimension. 
                 // So we need to check.
                 if (H5Sget_simple_extent_dims(dspace_id, &dsize[0], &maxsize[0]) < 0)
-                throw2("Cannot obtain the dim. info for the variable ", varname);
+                    throw2("Cannot obtain the dim. info for the variable ", varname);
 
                 for (int i = 0; i < ndims; i++) {
-                    Dimension * dim = new Dimension(dsize[i]);
+                    auto dim = new Dimension(dsize[i]);
                     if (maxsize[i] == H5S_UNLIMITED) {
                         dim->unlimited_dim = true;
-                        if (false == have_udim) have_udim = true;
+                        if (false == have_udim) 
+                            have_udim = true;
                     }
                     var->dims.push_back(dim);
                 }
@@ -570,7 +568,7 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
         var->unsupported_dspace = unsup_var_dspace;
 
         if (H5Sclose(dspace_id) < 0)
-        throw1("Cannot close the HDF5 dataspace .");
+            throw1("Cannot close the HDF5 dataspace .");
 
     }
 
@@ -729,17 +727,17 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 void File::Retrieve_H5_Supported_Attr_Values() 
 {
 
-    for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
+    for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
         Retrieve_H5_Attr_Value(*ira, "/");
 
-    for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-        for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+        for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
             Retrieve_H5_Attr_Value(*ira, (*irg)->path);
         }
     }
 
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
             Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
         }
     }
@@ -747,13 +745,13 @@ void File::Retrieve_H5_Supported_Attr_Values()
 
 void File::Retrieve_H5_Var_Attr_Values(Var *var) 
 {
-    for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
+    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
         Retrieve_H5_Attr_Value(*ira, var->fullpath);
     }
 }
 
 // Retrieve the values of a specific HDF5 attribute.
-void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
+void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name)
 {
 
     // Define HDF5 object Ids.
@@ -768,23 +766,23 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
         // Open the object that hold this attribute
         obj_id = H5Oopen(this->fileid, obj_name.c_str(), H5P_DEFAULT);
         if (obj_id < 0)
-        throw2("Cannot open the object ", obj_name);
+            throw2("Cannot open the object ", obj_name);
 
         attr_id = H5Aopen(obj_id, (attr->name).c_str(), H5P_DEFAULT);
         if (attr_id < 0)
-        throw4("Cannot open the attribute ", attr->name, " of object ", obj_name);
+            throw4("Cannot open the attribute ", attr->name, " of object ", obj_name);
 
         ty_id = H5Aget_type(attr_id);
         if (ty_id < 0)
-        throw4("Cannot obtain the datatype of  the attribute ", attr->name, " of object ", obj_name);
+            throw4("Cannot obtain the datatype of  the attribute ", attr->name, " of object ", obj_name);
 
         memtype_id = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
         if (memtype_id < 0)
-        throw2("Cannot obtain the memory datatype for the attribute ", attr->name);
+            throw2("Cannot obtain the memory datatype for the attribute ", attr->name);
 
         size_t ty_size = H5Tget_size(memtype_id);
         if (0 == ty_size)
-        throw4("Cannot obtain the dtype size for the attribute ", attr->name, " of object ", obj_name);
+            throw4("Cannot obtain the dtype size for the attribute ", attr->name, " of object ", obj_name);
 
         size_t total_bytes = attr->count * ty_size;
 
@@ -796,7 +794,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
             temp_buf.resize(total_bytes);
 
             if (H5Aread(attr_id, memtype_id, &temp_buf[0]) < 0)
-            throw4("Cannot obtain the value of the attribute ", attr->name, " of object ", obj_name);
+                throw4("Cannot obtain the value of the attribute ", attr->name, " of object ", obj_name);
 
             char *temp_bp = nullptr;
             char *ptr_1stvlen_ptr = &temp_buf[0];
@@ -824,11 +822,11 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
             if (ptr_1stvlen_ptr != nullptr) {
                 aspace_id = H5Aget_space(attr_id);
                 if (aspace_id < 0)
-                throw4("Cannot obtain space id for ", attr->name, " of object ", obj_name);
+                    throw4("Cannot obtain space id for ", attr->name, " of object ", obj_name);
 
                 // Reclaim any VL memory if necessary.
                 if (H5Dvlen_reclaim(memtype_id, aspace_id, H5P_DEFAULT, &temp_buf[0]) < 0)
-                throw4("Cannot reclaim VL memory for ", attr->name, " of object ", obj_name);
+                    throw4("Cannot reclaim VL memory for ", attr->name, " of object ", obj_name);
 
                 H5Sclose(aspace_id);
             }
@@ -867,7 +865,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
                 vector<size_t> sect_newsize;
                 sect_newsize.resize(num_sect);
 
-                string total_fstring = string(attr->value.begin(), attr->value.end());
+                auto total_fstring = string(attr->value.begin(), attr->value.end());
 
                 string new_total_fstring = HDF5CFUtil::trim_string(memtype_id, total_fstring, num_sect, sect_size,
                     sect_newsize);
@@ -1030,10 +1028,10 @@ void File::Handle_Group_Unsupported_Dtype()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
             if (false == (*irg)->attrs.empty()) {
                 if (true == (*irg)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
+                    for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
@@ -1056,7 +1054,7 @@ void File::Gen_Group_Unsupported_Dtype_Info()
     // First root
     if (false == this->root_attrs.empty()) {
         //if (true == this->unsupported_attr_dtype) {
-            for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
+            for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
                 H5DataType temp_dtype = (*ira)->getType();
                 // TODO: Don't know why we still include 64-bit integer here.
                 //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
@@ -1070,10 +1068,10 @@ void File::Gen_Group_Unsupported_Dtype_Info()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
             if (false == (*irg)->attrs.empty()) {
                 //if (true == (*irg)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
+                    for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
                         // TODO: Don't know why we still include 64-bit integer here.
                         //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
@@ -1093,7 +1091,7 @@ void File::Handle_Var_Unsupported_Dtype()
 {
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dtype) {
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end();) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end();) {
                 H5DataType temp_dtype = (*irv)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*irv);
@@ -1114,7 +1112,7 @@ void File::Gen_Var_Unsupported_Dtype_Info()
 
     if (false == this->vars.empty()) {
         //if (true == this->unsupported_var_dtype) {
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 H5DataType temp_dtype = (*irv)->getType();
                 //TODO: don't know why 64-bit integer is still listed here.
                 //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
@@ -1132,10 +1130,10 @@ void File::Gen_Var_Unsupported_Dtype_Info()
 void File::Handle_VarAttr_Unsupported_Dtype() 
 {
     if (false == this->vars.empty()) {
-        for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
                 if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
+                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
@@ -1156,10 +1154,10 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
 {
 
     if (false == this->vars.empty()) {
-        for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
                 //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
                         // TODO: check why 64-bit integer is still listed here.
                         //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
@@ -1181,14 +1179,14 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
 void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() 
 {
 
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
         // attribute REFERENCE_LIST is okay to ignore. No need to report.
         bool is_ignored = ignored_dimscale_ref_list((*irv));
         if (false == (*irv)->attrs.empty()) {
             //if (true == (*irv)->unsupported_attr_dtype) {
-                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     H5DataType temp_dtype = (*ira)->getType();
                     // TODO: check why 64-bit is still listed here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
@@ -1213,7 +1211,7 @@ void File::Handle_GroupAttr_Unsupported_Dspace()
     // First root
     if (false == this->root_attrs.empty()) {
         if (true == this->unsupported_attr_dspace) {
-            for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end();) {
+            for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end();) {
                 // Remove 0-size attribute
                 if ((*ira)->count == 0) {
                     delete (*ira);
@@ -1228,10 +1226,10 @@ void File::Handle_GroupAttr_Unsupported_Dspace()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
             if (false == (*irg)->attrs.empty()) {
                 if (true == (*irg)->unsupported_attr_dspace) {
-                    for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
+                    for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
                         if ((*ira)->count == 0) {
                             delete (*ira);
                             ira = (*irg)->attrs.erase(ira);
@@ -1252,10 +1250,10 @@ void File::Handle_VarAttr_Unsupported_Dspace()
 
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_attr_dspace) {
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if (false == (*irv)->attrs.empty()) {
                     if (true == (*irv)->unsupported_attr_dspace) {
-                        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
+                        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
                             if (0 == (*ira)->count) {
                                 delete (*ira);
                                 ira = (*irv)->attrs.erase(ira);
@@ -1278,7 +1276,7 @@ void File::Handle_Unsupported_Dspace(bool include_attr)
     // The unsupported data space 
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end();) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end();) {
                 if (true == (*irv)->unsupported_dspace) {
                     delete (*irv);
                     irv = this->vars.erase(irv);
@@ -1308,7 +1306,7 @@ void File::Gen_Unsupported_Dspace_Info()
     // the only case this function checks is the H5S_NULL case.
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if (true == (*irv)->unsupported_dspace) {
                     this->add_ignored_info_objs(true, (*irv)->fullpath);
                 }
@@ -1348,14 +1346,14 @@ void File::Handle_Unsupported_Others(bool include_attr)
                 }
             }
 #endif
-            for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if (true == Check_DropLongStr((*irv), nullptr)) {
                     this->add_ignored_droplongstr_hdr();
                     this->add_ignored_var_longstr_info((*irv), nullptr);
                 }
                 // netCDF java doesn't have  limitation for attributes
 #if 0
-                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     if (true == Check_DropLongStr((*irv), (*ira))) {
                         this->add_ignored_droplongstr_hdr();
                         this->add_ignored_var_longstr_info((*irv), (*ira));
@@ -1372,29 +1370,29 @@ void File::Handle_Unsupported_Others(bool include_attr)
 void File::Flatten_Obj_Name(bool include_attr) 
 {
 
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
 
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
             (*ird)->newname = get_CF_string((*ird)->newname);
         }
     }
 
     if (true == include_attr) {
 
-        for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
+        for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
             (*ira)->newname = get_CF_string((*ira)->newname);
         }
 
-        for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
             (*irg)->newname = get_CF_string((*irg)->newname);
-            for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
+            for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
                 (*ira)->newname = get_CF_string((*ira)->newname);
             }
         }
 
-        for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                 (*ira)->newname = get_CF_string((*ira)->newname);
             }
         }
@@ -1454,13 +1452,13 @@ void File::Handle_Obj_AttrNameClashing()
     Handle_General_NameClashing(objnameset, this->root_attrs);
 
     // For group attributes
-    for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
         objnameset.clear();
         Handle_General_NameClashing(objnameset, (*irg)->attrs);
     }
 
     // For variable attributes
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         objnameset.clear();
         Handle_General_NameClashing(objnameset, (*irv)->attrs);
     }
@@ -1471,7 +1469,10 @@ void File::Handle_Obj_AttrNameClashing()
 template<class T> void File::Handle_General_NameClashing(set<string>&objnameset, vector<T*>& objvec) 
 {
 
+#if 0
 //    set<string> objnameset;
+#endif
+
     pair<set<string>::iterator, bool> setret;
     set<string>::iterator iss;
 
@@ -1794,7 +1795,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 #endif
 
 // Rretrieve the variable attribute in string.var_path is the variable path.
-string File::Retrieve_Str_Attr_Value(Attribute *attr, const string var_path)
+string File::Retrieve_Str_Attr_Value(Attribute *attr, const string & var_path)
 {
 
     if (attr != nullptr && var_path != "") {
@@ -1807,7 +1808,7 @@ string File::Retrieve_Str_Attr_Value(Attribute *attr, const string var_path)
 }
 
 //Check if the attribute value of this variable is the input value.
-bool File::Is_Str_Attr(Attribute* attr, string varfullpath, const string &attrname, const string& strvalue)
+bool File::Is_Str_Attr(Attribute* attr, const string& varfullpath, const string &attrname, const string& strvalue)
 {
     bool ret_value = false;
     if (attrname == get_CF_string(attr->newname)) {
@@ -1845,7 +1846,7 @@ void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float flo
 
 // Products like GPM use string type for MissingValue, we need to change them to the corresponding variable datatype and 
 // get the value corrected.
-void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var) 
+void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) 
 {
 
     char *pEnd;
@@ -1970,7 +1971,7 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 
     bool rep_attr = true;
     bool rem_attr = false;
-    for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
+    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
         if ((*ira)->name == attr_name) {
             if (true == Is_Str_Attr(*ira, var->fullpath, attr_name, strvalue))
                 rep_attr = false;
@@ -1982,7 +1983,7 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 
     // Remove the attribute if the attribute value is not strvalue
     if (true == rem_attr) {
-        for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
+        for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
             if ((*ira)->name == attr_name) {
                 delete (*ira);
                 var->attrs.erase(ira);
@@ -1993,7 +1994,7 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 
     // Add the attribute with strvalue
     if (true == rep_attr) {
-        Attribute * attr = new Attribute();
+        auto attr = new Attribute();
         Add_Str_Attr(attr, attr_name, strvalue);
         var->attrs.push_back(attr);
     }
@@ -2029,21 +2030,21 @@ void File::Add_Supplement_Attrs(bool add_path)
     if (false == add_path) return;
 
     // Adding variable original name(origname) and full path(fullpath)
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        Attribute * attr = new Attribute();
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        auto attr = new Attribute();
         const string varname = (*irv)->name;
         const string attrname = "origname";
         Add_Str_Attr(attr, attrname, varname);
         (*irv)->attrs.push_back(attr);
     }
 
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         // Turn off the fullnamepath attribute when zero_storage_size is 0.
         // Use the BES key since quite a few testing cases will be affected.
         // KY 2020-03-23
         if((*irv)->zero_storage_size==false 
            || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-            Attribute * attr = new Attribute();
+            auto attr = new Attribute();
             const string varname = (*irv)->fullpath;
             const string attrname = "fullnamepath";
             Add_Str_Attr(attr, attrname, varname);
@@ -2052,11 +2053,11 @@ void File::Add_Supplement_Attrs(bool add_path)
     }
 
     // Adding group path
-    for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
         // Only when this group has attributes, the original path of the group has some values. So add it.
         if (false == (*irg)->attrs.empty()) {
 
-            Attribute * attr = new Attribute();
+            auto attr = new Attribute();
             const string varname = (*irg)->path;
             const string attrname = "fullnamepath";
             Add_Str_Attr(attr, attrname, varname);
@@ -2087,14 +2088,14 @@ void File::Replace_Var_Info(Var *src, Var *target)
     target->unsupported_attr_dtype = src->unsupported_attr_dtype;
     target->unsupported_dspace = src->unsupported_dspace;
 #if 0
-    for (vector<Attribute*>::iterator ira = target->attrs.begin();
+    for (auto ira = target->attrs.begin();
         ira!=target->attrs.end(); ++ira) {
         delete (*ira);
         target->attrs.erase(ira);
         ira--;
     }
 #endif
-    for (vector<Dimension*>::iterator ird = target->dims.begin(); ird != target->dims.end();) {
+    for (auto ird = target->dims.begin(); ird != target->dims.end();) {
         delete (*ird);
         ird = target->dims.erase(ird);
     }
@@ -2115,8 +2116,8 @@ void File::Replace_Var_Info(Var *src, Var *target)
     }
 #endif
 
-    for (vector<Dimension*>::iterator ird = src->dims.begin(); ird != src->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
+    for (auto ird = src->dims.begin(); ird != src->dims.end(); ++ird) {
+        auto dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         target->dims.push_back(dim);
@@ -2135,12 +2136,12 @@ void File::Replace_Var_Attrs(Var *src, Var *target)
         delete_elem ());
 #endif
 
-    for (vector<Attribute*>::iterator ira = target->attrs.begin(); ira != target->attrs.end();) {
+    for (auto ira = target->attrs.begin(); ira != target->attrs.end();) {
         delete (*ira);
         ira = target->attrs.erase(ira);
     }
-    for (vector<Attribute*>::iterator ira = src->attrs.begin(); ira != src->attrs.end(); ++ira) {
-        Attribute* attr = new Attribute();
+    for (auto ira = src->attrs.begin(); ira != src->attrs.end(); ++ira) {
+        auto attr = new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
         attr->dtype = (*ira)->dtype;
@@ -2161,7 +2162,7 @@ bool File::is_var_under_group(const string &varname, const string &grpname, cons
 {
 
     bool ret_value = false;
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         if ((*irv)->rank == var_rank) {
             if ((*irv)->name == varname) {
@@ -2187,9 +2188,9 @@ bool File::is_var_under_group(const string &varname, const string &grpname, cons
 bool File::Have_Grid_Mapping_Attrs(){
 
     bool ret_value = false;
-    for (vector<Var *>::iterator irv = this->vars.begin();
+    for (auto irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
-        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+        for (auto ira = (*irv)->attrs.begin();
             ira != (*irv)->attrs.end(); ++ira) {
             if((*ira)->name =="grid_mapping") {
                 ret_value = true;
@@ -2206,9 +2207,9 @@ bool File::Have_Grid_Mapping_Attrs(){
 
 void File::Handle_Grid_Mapping_Vars(){
 
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         string attr_value;
-        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
             if((*ira)->name =="grid_mapping") {
                 Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
                 attr_value.resize((*ira)->value.size());
@@ -2237,7 +2238,7 @@ string File::Check_Grid_Mapping_VarName(const string & a_value,const string & va
     
     string var_path = HDF5CFUtil::obtain_string_before_lastslash(var_fpath);
     string gmap_new_name;
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         if((*irv)->name == a_value){
             if(var_path == HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) {
                 gmap_new_name = (*irv)->newname;
@@ -2252,7 +2253,7 @@ string File::Check_Grid_Mapping_VarName(const string & a_value,const string & va
 string File::Check_Grid_Mapping_FullPath(const string & a_value) {
 
     string gmap_new_name;
-    for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         if((*irv)->fullpath == a_value){
             gmap_new_name = (*irv)->newname;
             break;
@@ -2265,11 +2266,11 @@ string File::Check_Grid_Mapping_FullPath(const string & a_value) {
 void File::remove_netCDF_internal_attributes(bool include_attr) {
 
     if(true == include_attr) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
+        for (auto irv = this->vars.begin();
              irv != this->vars.end(); ++irv) {
             bool var_has_dimscale = false;
             
-            for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+            for(auto ira = (*irv)->attrs.begin();
                 ira != (*irv)->attrs.end();) {
                 if((*ira)->name == "CLASS") {
                     string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
@@ -2331,7 +2332,7 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
             }
 
             if(true == var_has_dimscale) {
-                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                for(auto ira = (*irv)->attrs.begin();
                     ira != (*irv)->attrs.end();++ira) {
                     if((*ira)->name == "NAME") {// Add a BES Key 
                         delete(*ira);
@@ -2527,7 +2528,7 @@ bool File::ignored_dimscale_ref_list(Var *var)
 
     bool has_dimscale = false;
     bool has_reference_list = false;
-    for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
+    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
         if ((*ira)->name == "REFERENCE_LIST" && false == HDF5CFUtil::cf_strict_support_type((*ira)->getType(),_is_dap4))
             has_reference_list = true;
         if ((*ira)->name == "CLASS") {
@@ -2554,7 +2555,7 @@ bool File::ignored_dimscale_ref_list(Var *var)
 }
 
 // Check if the long string can should be dropped from a dataset or an attribute. Users can set up a BES key to turn it off or on.
-bool File::Check_DropLongStr(Var *var, Attribute * attr) 
+bool File::Check_DropLongStr(const Var *var, const Attribute * attr) 
 {
 
     bool drop_longstr = false;
@@ -2789,7 +2790,7 @@ void File::add_ignored_grp_longstr_info(const string& grp_path, const string & a
 }
 
 // Provide if the long variable string is dropped.
-void File::add_ignored_var_longstr_info(Var *var, Attribute *attr) 
+void File::add_ignored_var_longstr_info(const Var *var, const Attribute *attr) 
 {
 
     if (nullptr == attr)
@@ -2819,7 +2820,7 @@ void File::add_ignored_droplongstr_hdr()
 void File::release_standalone_var_vector(vector<Var*>&temp_vars)
 {
 
-    for (vector<Var *>::iterator i = temp_vars.begin(); i != temp_vars.end();) {
+    for (auto i = temp_vars.begin(); i != temp_vars.end();) {
         delete (*i);
         i = temp_vars.erase(i);
     }

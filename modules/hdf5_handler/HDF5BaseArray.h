@@ -55,14 +55,12 @@
 
 class HDF5BaseArray: public libdap::Array {
 public:
-    HDF5BaseArray(const std::string & n = "", libdap::BaseType * v = 0) :
+    HDF5BaseArray(const std::string & n = "", libdap::BaseType * v = nullptr) :
         libdap::Array(n, v)
     {
     }
 
-    virtual ~ HDF5BaseArray()
-    {
-    }
+     ~HDF5BaseArray() override = default;
 
 protected:
 #if 0

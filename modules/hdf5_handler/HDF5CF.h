@@ -165,15 +165,15 @@ public:
 
 protected:
     explicit Dimension(hsize_t dimsize) :
-        size(dimsize), name(""), newname(""), unlimited_dim(false)
+        size(dimsize)
     {
     }
 
 private:
     hsize_t size;
-    std::string name;
-    std::string newname;
-    bool unlimited_dim;
+    std::string name ="";
+    std::string newname = "";
+    bool unlimited_dim = false;
 
     friend class EOS5File;
     friend class GMFile;
@@ -189,12 +189,9 @@ private:
 class Attribute {
 
 public:
-    Attribute() :
-        dtype(H5UNSUPTYPE), count(0), fstrsize(0), is_cset_ascii(true)
-    {
-    }
+    Attribute() = default;
 
-    ~Attribute();
+    ~Attribute() = default;
 
     const std::string & getName() const
     {
@@ -238,12 +235,12 @@ public:
 private:
     std::string name;
     std::string newname;
-    H5DataType dtype;
-    hsize_t count;
+    H5DataType dtype = H5UNSUPTYPE;
+    hsize_t count = 0;
     std::vector<size_t> strsize;
-    size_t fstrsize;
+    size_t fstrsize = 0;
     std::vector<char> value;
-    bool is_cset_ascii;
+    bool is_cset_ascii = true;
 
     friend class File;
     friend class GMFile;
@@ -258,11 +255,7 @@ private:
 /// This class represents one HDF5 dataset(CF variable)
 class Var {
 public:
-    Var() :
-        dtype(H5UNSUPTYPE), rank(-1), comp_ratio(1), total_elems(0), zero_storage_size(false),unsupported_attr_dtype(false),
-        unsupported_attr_dspace(false), unsupported_dspace(false), dimnameflag(false),coord_attr_add_path(true)
-    {
-    }
+    Var() = default;
     explicit Var(Var*var);
     virtual ~Var();
 
@@ -291,12 +284,12 @@ public:
 
     }
 
-    const bool getZeroStorageSize() const
+    bool getZeroStorageSize() const
     {
         return this->zero_storage_size;
     }
 
-    const bool getCoorAttrAddPath() const
+    bool getCoorAttrAddPath() const
     {
         return this->coord_attr_add_path;
     }
@@ -335,16 +328,16 @@ private:
     std::string newname;
     std::string name;
     std::string fullpath;
-    H5DataType dtype;
-    int rank;
-    float comp_ratio;
-    size_t total_elems;
-    bool zero_storage_size;
-    bool unsupported_attr_dtype;
-    bool unsupported_attr_dspace;
-    bool unsupported_dspace;
-    bool dimnameflag;
-    bool coord_attr_add_path;
+    H5DataType dtype = H5UNSUPTYPE;
+    int rank = -1;
+    float comp_ratio = 1.0;
+    size_t total_elems = 0;
+    bool zero_storage_size = false;
+    bool unsupported_attr_dtype = false;
+    bool unsupported_attr_dspace = false;
+    bool unsupported_dspace = false;
+    bool dimnameflag = false;
+    bool coord_attr_add_path = true;
 
     std::vector<Attribute *> attrs;
     std::vector<Dimension *> dims;
@@ -361,13 +354,10 @@ private:
 /// This class is a derived class of Var. It represents a coordinate variable.
 class CVar: public Var {
 public:
-    CVar() :
-        cvartype(CV_UNSUPPORTED)
-    {
-    }
-    virtual ~CVar()
-    {
-    }
+
+    CVar() = default;
+    ~CVar() override = default;
+
     /// Get the coordinate variable type of this variable
     CVType getCVType() const
     {
@@ -381,7 +371,7 @@ private:
     // This assumption is based on the exact match between
     // variables and dimensions
     std::string cfdimname;
-    CVType cvartype;
+    CVType cvartype = CV_UNSUPPORTED;
 
     friend class File;
     friend class GMFile;
@@ -415,9 +405,9 @@ public:
     }
 
 private:
-    H5DataType otype;
-    int sdbit;
-    int numofdbits;
+    H5DataType otype = H5UNSUPTYPE;
+    int sdbit = -1;
+    int numofdbits = -1;
 
     friend class File;
     friend class GMFile;
@@ -722,12 +712,12 @@ protected:
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
     void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
         
-    void Retrieve_H5_Attr_Value(Attribute *attr, std::string);
+    void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &);
 
     void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype); 
     void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace);
 
-    float Retrieve_H5_VarCompRatio(Var*, hid_t);
+    float Retrieve_H5_VarCompRatio(const Var*, const hid_t) const;
 
     void Handle_Group_Unsupported_Dtype() ;
     void Handle_Var_Unsupported_Dtype() ;
@@ -758,11 +748,11 @@ protected:
     void Replace_Var_Attrs(Var *src, Var*target);
 
     void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) ;
-    std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string var_path);
-    bool Is_Str_Attr(Attribute* attr, std::string varfullpath, const std::string &attrname, const std::string& strvalue);
+    std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string& var_path);
+    bool Is_Str_Attr(Attribute* attr, const std::string & varfullpath, const std::string &attrname, const std::string& strvalue);
     void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) ;
     void Replace_Var_Str_Attr(Var* var, const std::string &attr_name, const std::string& strvalue);
-    void Change_Attr_One_Str_to_Others(Attribute *attr, Var *var) ;
+    void Change_Attr_One_Str_to_Others(Attribute *attr, const Var *var) ;
 
     // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
     bool Is_geolatlon(const std::string &var_name, bool is_lat);
@@ -790,8 +780,8 @@ protected:
     void add_ignored_info_objs(bool is_dim_related, const std::string & obj_path);
     void add_no_ignored_info();
     bool ignored_dimscale_ref_list(Var *var);
-    bool Check_DropLongStr(Var *var, Attribute *attr) ;
-    void add_ignored_var_longstr_info(Var*var, Attribute *attr) ;
+    bool Check_DropLongStr(const Var *var, const Attribute *attr) ;
+    void add_ignored_var_longstr_info(const Var*var, const Attribute *attr) ;
     void add_ignored_grp_longstr_info(const std::string& grp_path, const std::string& attr_name);
     void add_ignored_droplongstr_hdr();
     bool Check_VarDropLongStr(const std::string &varpath, const std::vector<Dimension *>&, H5DataType) const;
