@@ -381,14 +381,10 @@ private:
 /// This class is a derived class of Var. It represents a special general HDF5 product(currently ACOS and OCO-2)
 class GMSPVar: public Var {
 public:
-    GMSPVar() :
-        otype(H5UNSUPTYPE), sdbit(-1), numofdbits(-1)
-    {
-    }
+    GMSPVar() = default;
     explicit GMSPVar(Var *var);
-    virtual ~GMSPVar()
-    {
-    }
+    ~GMSPVar() override = default;
+
     H5DataType getOriginalType() const
     {
         return this->otype;
@@ -416,14 +412,9 @@ private:
 /// This class is a derived class of CVar. It represents a coordinate variable for general HDF5 files.
 class GMCVar: public CVar {
 public:
-    GMCVar() :
-        product_type(General_Product)
-    {
-    }
+    GMCVar()  = default;
     explicit GMCVar(Var*var);
-    virtual ~GMCVar()
-    {
-    }
+    ~GMCVar() override = default;
 
     /// Get the data type of this variable
     H5GCFProduct getPtType() const
@@ -432,28 +423,21 @@ public:
     }
 
 private:
-    H5GCFProduct product_type;
+    H5GCFProduct product_type = General_Product;
     friend class GMFile;
 };
 
 /// This class is a derived class of CVar. It represents a coordinate variable for HDF-EOS5 files.
 class EOS5CVar: public CVar {
 public:
-    EOS5CVar() :
-        eos_type(OTHERVARS), is_2dlatlon(false), point_lower(0.0), point_upper(0.0), point_left(0.0), point_right(0.0), xdimsize(
-            0), ydimsize(0), eos5_pixelreg(HE5_HDFE_CENTER),            // may change later
-        eos5_origin(HE5_HDFE_GD_UL), // may change later
-        eos5_projcode(HE5_GCTP_GEO), //may change later
-        zone(-1), sphere(0)
+    EOS5CVar() 
     {
         std::fill_n(param, 13, 0);
     }
     ;
     explicit EOS5CVar(Var *);
 
-    virtual ~EOS5CVar()
-    {
-    }
+    ~EOS5CVar() override = default;
 
     EOS5Type getEos5Type() const
     {
@@ -520,31 +504,27 @@ public:
     }
 
 private:
-    EOS5Type eos_type;
-    bool is_2dlatlon;
-    float point_lower;
-    float point_upper;
-    float point_left;
-    float point_right;
-    int xdimsize;
-    int ydimsize;
-    EOS5GridPRType eos5_pixelreg;
-    EOS5GridOriginType eos5_origin;
-    EOS5GridPCType eos5_projcode;
-
+    EOS5Type eos_type = OTHERVARS;
+    bool is_2dlatlon = false;
+    float point_lower = 0.0;
+    float point_upper = 0.0;
+    float point_left = 0.0;
+    float point_right = 0.0;
+    int xdimsize = 0;
+    int ydimsize = 0;
+    EOS5GridPRType eos5_pixelreg = HE5_HDFE_CENTER; // May change later
+    EOS5GridOriginType eos5_origin = HE5_HDFE_GD_UL; // May change later
+    EOS5GridPCType eos5_projcode = HE5_GCTP_GEO; // May change later
+    int zone = -1;
+    int sphere = 0;
     double param[13];
-    int zone;
-    int sphere;
     friend class EOS5File;
 };
 
 /// This class represents an HDF5 group. The group will be flattened according to the CF conventions.
 class Group {
 public:
-    Group() :
-        unsupported_attr_dtype(false), unsupported_attr_dspace(false)
-    {
-    }
+    Group() = default;
     ~Group();
 
 
@@ -571,8 +551,8 @@ private:
     std::string path;
 
     std::vector<Attribute *> attrs;
-    bool unsupported_attr_dtype;
-    bool unsupported_attr_dspace;
+    bool unsupported_attr_dtype = false;
+    bool unsupported_attr_dspace = false;
 
     friend class File;
     friend class GMFile;
@@ -771,8 +751,10 @@ protected:
     void Gen_DimScale_VarAttr_Unsupported_Dtype_Info() ;
     void add_ignored_info_page_header();
     void add_ignored_info_obj_header();
+#if 0
     // void add_ignored_info_obj_dtype_header();
     //void add_ignored_info_obj_dspace_header();
+#endif
     void add_ignored_info_links_header();
     void add_ignored_info_links(const std::string& link_name);
     void add_ignored_info_namedtypes(const std::string&, const std::string&);
@@ -794,16 +776,14 @@ protected:
 
 protected:
     File(const char *h5_path, hid_t file_id) :
-        path(std::string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
-            false), unsupported_attr_dspace(false), unsupported_var_attr_dspace(false), addeddimindex(0), check_ignored(
-            false), have_ignored(false), have_udim(false),_is_dap4(false),iscoard(false)
+        path(std::string(h5_path)), fileid(file_id)
     {
     }
 
     // TODO: Will see if having time to make the following memembers private. See ESDIS-560
     std::string path;
     hid_t fileid;
-    hid_t rootid;
+    hid_t rootid = -1;
 
     /// Var vectors.
     std::vector<Var *> vars;
@@ -814,12 +794,12 @@ protected:
     /// Non-root group vectors.
     std::vector<Group*> groups;
 
-    bool unsupported_var_dtype;
-    bool unsupported_attr_dtype;
+    bool unsupported_var_dtype = false;
+    bool unsupported_attr_dtype = false;
 
-    bool unsupported_var_dspace;
-    bool unsupported_attr_dspace;
-    bool unsupported_var_attr_dspace;
+    bool unsupported_var_dspace = false;
+    bool unsupported_attr_dspace = false;
+    bool unsupported_var_attr_dspace = false;
 
     std::set<std::string> dimnamelist;
     //"set<string>unlimited_dimnamelist "
@@ -830,14 +810,14 @@ protected:
 
     /// Handle added dimension names
     std::map<hsize_t, std::string> dimsize_to_fakedimname;
-    int addeddimindex;
+    int addeddimindex = 0;
     std::vector<std::pair<hsize_t, std::string>>dup_dimsize_dimname;
 
-    bool check_ignored;
-    bool have_ignored;
-    bool have_udim;
-    bool _is_dap4;
-    bool iscoard;
+    bool check_ignored = false;
+    bool have_ignored = false;
+    bool have_udim = false;
+    bool _is_dap4 = false;
+    bool iscoard = false;
     std::string ignored_msg;
 
 };
@@ -846,7 +826,7 @@ protected:
 class GMFile: public File {
 public:
     GMFile(const char*path, hid_t file_id, H5GCFProduct product, GMPattern gproduct_pattern);
-    virtual ~GMFile();
+    ~GMFile() override;
 
     H5GCFProduct getProductType() const
     {
@@ -864,7 +844,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
+    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr) override;
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
     virtual void Retrieve_H5_Supported_Attr_Values();
