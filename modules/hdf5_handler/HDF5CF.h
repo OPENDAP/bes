@@ -1056,7 +1056,7 @@ private:
 #if 0
     bool ll2d_no_cv;
 #endif
-    bool have_nc4_non_coord;
+    bool have_nc4_non_coord = false;
 
 };
 

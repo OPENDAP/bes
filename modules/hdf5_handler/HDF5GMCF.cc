@@ -143,9 +143,9 @@ GMSPVar::GMSPVar(Var*var) {
     sdbit = -1;
     numofdbits = -1;
 
-    for (vector<Attribute*>::iterator ira = var->attrs.begin();
+    for (auto ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
-        Attribute* attr= new Attribute();
+        auto attr= new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
@@ -154,11 +154,11 @@ GMSPVar::GMSPVar(Var*var) {
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
         attrs.push_back(attr);
-    } // "for (vector<Attribute*>::iterator ira = var->attrs.begin()"
+    } 
 
-    for (vector<Dimension*>::iterator ird = var->dims.begin();
+    for (auto ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
+        auto dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dim->unlimited_dim = (*ird)->unlimited_dim;
@@ -168,7 +168,7 @@ GMSPVar::GMSPVar(Var*var) {
 
 
 GMFile::GMFile(const char*file_fullpath, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),have_nc4_non_coord(false)
+File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern)
 {
 
 }
@@ -178,13 +178,13 @@ GMFile::~GMFile()
 {
 
     if (!this->cvars.empty()){
-        for (vector<GMCVar *>:: const_iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
+        for (auto i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
            delete *i;
         }
     }
 
     if (!this->spvars.empty()){
-        for (vector<GMSPVar *>:: const_iterator i= this->spvars.begin(); i!=this->spvars.end(); ++i) {
+        for (auto i= this->spvars.begin(); i!=this->spvars.end(); ++i) {
            delete *i;
         }
     }
@@ -242,21 +242,21 @@ void GMFile::Update_Product_Type()  {
     if(GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) {
 
         // Check Dimscale attributes 
+#if 0
         //Check_General_Product_Pattern();
+#endif
         Check_Dimscale_General_Product_Pattern();
         if(GENERAL_DIMSCALE == this->gproduct_pattern){
             if(GPMS_L3 == this->product_type) {
-                for (vector<Var *>::iterator irv = this->vars.begin();
+                for (auto irv = this->vars.begin();
                     irv != this->vars.end(); ++irv) 
                         (*irv)->newname = (*irv)->name;
             }
             this->product_type = General_Product;
         }
     }
-//#if 0
     else if(General_Product == this->product_type)
         Check_General_Product_Pattern();
-//#endif
 }
 
 void GMFile::Remove_Unneeded_Objects()  {
@@ -271,15 +271,13 @@ void GMFile::Remove_Unneeded_Objects()  {
         set<string> nc4_non_coord_set;
         string nc4_non_coord="_nc4_non_coord_";
         size_t nc4_non_coord_size= nc4_non_coord.size();
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                                    irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if((*irv)->name.find(nc4_non_coord)==0) 
                 nc4_non_coord_set.insert((*irv)->name.substr(nc4_non_coord_size,(*irv)->name.size()-nc4_non_coord_size));
             
         }
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                                    irv != this->vars.end();) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end();) {
             if(nc4_non_coord_set.find((*irv)->name)!=nc4_non_coord_set.end()){
                 delete(*irv);
                 irv=this->vars.erase(irv);
@@ -288,12 +286,11 @@ void GMFile::Remove_Unneeded_Objects()  {
                 ++irv;
         }
 
-        if(nc4_non_coord_set.size()!=0)
+        if(nc4_non_coord_set.empty()==false)
             this->have_nc4_non_coord = true;
     }
     else if(GPM_L3_New == this->product_type) {
-        for (vector<Group *>::iterator irg = this->groups.begin();
-            irg != this->groups.end(); ) {
+        for (auto irg = this->groups.begin();  irg != this->groups.end(); ) {
             if((*irg)->attrs.empty()) {
                 delete(*irg);
                 irg = this->groups.erase(irg);
@@ -309,8 +306,7 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
     // Here I don't check whether this is a netCDF file by 
     // using Check_Dimscale_General_Product_Pattern() to see if it returns true.
     // We will see if we need this.
-    for (vector<Group *>::iterator irg = this->groups.begin();
-        irg != this->groups.end(); ) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ) {
         if((*irg)->path.find("/InputPointers")==0) {
             delete(*irg);
             irg = this->groups.erase(irg);
@@ -320,8 +316,7 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
             ++irg;
     }
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
          if((*irv)->fullpath.find("/InputPointers")==0) {
             delete(*irv);
             irv = this->vars.erase(irv);
@@ -333,11 +328,10 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
 }
 void GMFile::Retrieve_H5_CVar_Supported_Attr_Values() {
 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-          ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
           
         if ((*ircv)->cvartype != CV_NONLATLON_MISS){
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            for (auto ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
             }
@@ -354,11 +348,9 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     File::Retrieve_H5_Supported_Attr_Values();
 
     //Coordinate variable attributes 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-          ircv != this->cvars.end(); ++ircv) {
-          
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
         if ((*ircv)->cvartype != CV_NONLATLON_MISS){
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            for (auto ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
             }
@@ -366,10 +358,8 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     }
 
     // Special variable attributes
-    for (vector<GMSPVar *>::iterator irspv = this->spvars.begin();
-          irspv != this->spvars.end(); ++irspv) {
-          
-        for (vector<Attribute *>::iterator ira = (*irspv)->attrs.begin();
+    for (auto irspv = this->spvars.begin(); irspv != this->spvars.end(); ++irspv) {
+        for (auto ira = (*irspv)->attrs.begin();
               ira != (*irspv)->attrs.end(); ++ira) {
             Retrieve_H5_Attr_Value(*ira,(*irspv)->fullpath);
             Adjust_H5_Attr_Value(*ira);
@@ -394,7 +384,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  {
             attr->value.resize(new_attrvalues.size());
             copy(new_attrvalues.begin(),new_attrvalues.end(),attr->value.begin()); 
         }
-    } // "end if (product_type == ACOS_L2S_OR_OCO2_L1B)"
+    } 
 }
 
 // Unsupported datatype
@@ -412,11 +402,9 @@ void GMFile:: Handle_Unsupported_Dtype(bool include_attr) {
 void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
 
     BESDEBUG("h5", "Coming to Handle_GM_Unsupported_Dtype()"<<endl);
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ) {
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                 ira != (*ircv)->attrs.end(); ) {
+            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
@@ -442,13 +430,11 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             ++ircv;
         }
        
-    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-    for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ) {
+    } 
 
+    for (auto ircv = this->spvars.begin(); ircv != this->spvars.end(); ) {
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                ira != (*ircv)->attrs.end(); ) {
+            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
@@ -468,7 +454,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             ++ircv;
         }
             
-    }// "end for (vector<GMSPVar *>::iterator ircv = this->spvars.begin()"
+    }
 }
 
 // Datatype ignore information.
@@ -511,14 +497,12 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
         || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
         || (OBPG_L3 == this->product_type)) {
 
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-            irv != this->cvars.end(); ++irv) {
+        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
             // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
+                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
                         // TODO: check why 64-bit integer is included here.
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
@@ -530,63 +514,59 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-            } // end "if (false == (*irv)->attrs.empty())" 
-        }// end "for(vector<GMCVar*>"    
+            }  
+        } 
 
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-            irv != this->spvars.end(); ++irv) {
+        for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
             // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        //TODO; check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                            // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                            // is okay to ignore if the variable has another attribute
-                            // CLASS="DIMENSION_SCALE"
-                            if (("DIMENSION_LIST" !=(*ira)->name) &&
-                                ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
-                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    //TODO; check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                        // is okay to ignore if the variable has another attribute
+                        // CLASS="DIMENSION_SCALE"
+                        if (("DIMENSION_LIST" !=(*ira)->name) &&
+                            ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
+                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                     }
-            } // "if (false == (*irv)->attrs.empty())"  
-        }// "for(vector<GMSPVar*>"    
+                }
+            }   
+        }    
     }// "if((General_Product == ......)"
     else {
- 
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-            irv != this->cvars.end(); ++irv) {
+        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        // TODO: check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
-                    }
-                //}
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    // TODO: check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) 
+                          this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
+                }
             }
-        }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
+        }
 
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-            irv != this->spvars.end(); ++irv) {
+        for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        //TODO: check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    //TODO: check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                     }
-                //}
+                }
             }
         }// for(vector<GMSPVar *> 
 
