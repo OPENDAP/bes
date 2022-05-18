@@ -47,9 +47,6 @@ HDF5CFInt32::HDF5CFInt32(const string &n, const string &d) : Int32(n, d)
 HDF5CFInt32::HDF5CFInt32(const string &n, const string &d,const string &d_f) : Int32(n, d),filename(d_f)
 {
 }
-HDF5CFInt32::~HDF5CFInt32()
-{
-}
 BaseType *HDF5CFInt32::ptr_duplicate()
 {
     return new HDF5CFInt32(*this);

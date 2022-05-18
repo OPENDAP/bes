@@ -77,7 +77,7 @@ bool check_eos5(hid_t file_id) {
 
         if (has_eos_attr >0) {
 
-            // All HDF-EOS5 conditions are fulfilled, return true;
+            // All HDF-EOS5 conditions are fulfilled, return true
             // Otherwise, return false or throw an error.
             htri_t has_eos_dset = -1;
 

@@ -59,9 +59,9 @@ GMCVar::GMCVar(Var*var) {
     unsupported_dspace = var->unsupported_dspace;
     coord_attr_add_path = false;
     
-    for (vector<Attribute*>::iterator ira = var->attrs.begin();
+    for (auto ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
-        Attribute* attr= new Attribute();
+        auto attr= new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
@@ -70,16 +70,17 @@ GMCVar::GMCVar(Var*var) {
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
         attrs.push_back(attr);
-    } //for (vector<Attribute*>::iterator ira = var->attrs.begin()
+    } 
 
-    for (vector<Dimension*>::iterator ird = var->dims.begin();
+    for (auto ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
+        auto dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
-    } // for (vector<Dimension*>::iterator ird = var->dims.begin()
+    } 
+
     product_type = General_Product;
 
 }

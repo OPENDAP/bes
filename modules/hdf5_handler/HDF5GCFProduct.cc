@@ -381,7 +381,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
                         }
                         else {
 
-                            int num_attrs = soinfo.num_attrs;
+                            int num_attrs = (int)(soinfo.num_attrs);
 
                             // Loop through all the attributes to see if the GPM level 1 swath header exists.
                             for (int j = 0; j < num_attrs; j++) {
@@ -468,7 +468,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
                 if (((0 == attr2_value.find(SeaWiFS_ATTR2_FPVALUE)) &&
                      (attr2_value.find(SeaWiFS_ATTR2_L2PVALUE)!=string::npos))
                    ||(0 == attr3_value.find(SeaWiFS_ATTR3_L2FPVALUE))) { 
-                    // "h5","coming to seaWiFS level 2" <<endl;
+                    // "h5","coming to seaWiFS level 2" <<endl
                     s_lflag = 2;
                     ret_flag = true; 
                 }
@@ -926,7 +926,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int num_elm = H5Sget_simple_extent_npoints(attr_space);
+    int num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
     if (0 == num_elm) {
         string msg = "cannot get the number for the attribute ";
         msg += string(s_attr_name);
