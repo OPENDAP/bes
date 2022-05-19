@@ -875,7 +875,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
     }
 
     // Obtain the number of attributes
-    int num_attr = (int)(obj_info.num_attrs);
+    auto num_attr = (int)(obj_info.num_attrs);
     if (num_attr < 0 ) {
         string msg = "Fail to get the number of attributes for the HDF5 object. ";
         throw InternalErr(__FILE__, __LINE__,msg);

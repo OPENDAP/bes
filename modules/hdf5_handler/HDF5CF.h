@@ -942,7 +942,7 @@ protected:
     void Add_Dim_Name_GPM() ;
     void Add_Dim_Name_Mea_SeaWiFS() ;
     void Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var*) ;
-    void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *, Attribute*) ;
+    void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *, const Attribute*) ;
 
     void Add_Dim_Name_Mea_Ozonel3z() ;
     bool check_cv(const std::string & varname) const;
@@ -963,7 +963,7 @@ protected:
         ;
 
     bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() ;
-    void Build_lat1D_latlon_candidate(Var*, const std::vector<Var*>&);
+    void Build_lat1D_latlon_candidate(const Var*, const std::vector<Var*>&);
     void Build_latg1D_latlon_candidate(Var*, const std::vector<Var*>&);
     void Build_unique_latlon_candidate();
     void Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() ;

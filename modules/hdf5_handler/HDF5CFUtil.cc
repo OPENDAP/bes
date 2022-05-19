@@ -571,7 +571,7 @@ int HDF5CFUtil::int_to_str(int x, char str[], int d)
 void HDF5CFUtil::dtoa(double n, char *res, int afterpoint)
 {
     // Extract integer part
-    int ipart = (int)n;
+    auto ipart = (int)n;
  
     // Extract the double part
     double fpart = n - (double)ipart;

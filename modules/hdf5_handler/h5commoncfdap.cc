@@ -836,9 +836,9 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
         string dim0name = dims[0]->getNewName();
-        int dim0size = (int)(dims[0]->getSize());
+        auto dim0size = (int)(dims[0]->getSize());
         string dim1name = dims[1]->getNewName();
-        int dim1size = (int)(dims[1]->getSize());
+        auto dim1size = (int)(dims[1]->getSize());
 
         //3. Add the 1-D CV variables and the dummy projection variable
         BaseType *bt_dim0 = nullptr;
@@ -920,9 +920,9 @@ void add_cf_grid_cv_attrs(DAS & das, const vector<HDF5CF::Var*>& vars, EOS5GridP
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {
 
         string dim0name = (dims[0])->getNewName();
-        int dim0size = (int)(dims[0]->getSize());
+        auto dim0size = (int)(dims[0]->getSize());
         string dim1name = (dims[1])->getNewName();
-        int dim1size = (int)(dims[1]->getSize());
+        auto dim1size = (int)(dims[1]->getSize());
 
         //2. Add 1D CF attributes to the 1-D CV variables and the dummy grid_mapping variable
         AttrTable *at = das.get_table(dim0name);
@@ -1533,9 +1533,9 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
         string dim0name = dims[0]->getNewName();
-        int dim0size = (int)(dims[0]->getSize());
+        auto dim0size = (int)(dims[0]->getSize());
         string dim1name = dims[1]->getNewName();
-        int dim1size = (int)(dims[1]->getSize());
+        auto dim1size = (int)(dims[1]->getSize());
 
         //3. Add the 1-D CV variables and the dummy projection variable
         BaseType *bt_dim0 = nullptr;

@@ -152,7 +152,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             // Obtain the number of attributes
-            int num_attr = (int)obj_info.num_attrs;
+            auto num_attr = (int)obj_info.num_attrs;
             if (num_attr < 0) {
                 H5Gclose(cgroup);
                 string msg = "Fail to get the number of attributes for group ";
@@ -224,7 +224,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             // Obtain the number of attributes
-            int num_attr = (int)(obj_info.num_attrs);
+            auto num_attr = (int)(obj_info.num_attrs);
             if (num_attr < 0) {
                 H5Dclose(dset);
                 string msg = "Fail to get the number of attributes for dataset ";
@@ -426,7 +426,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 BESDEBUG("h5", "=read_objects(): ndims=" << (int) attr_inst. ndims << endl);
 
                 // Get the attribute datatype size
-                int elesize = (int) H5Tget_size(ty_id);
+                auto elesize = (int) H5Tget_size(ty_id);
                 if (elesize == 0) {
                     BESDEBUG("h5", "=read_objects(): elesize=0" << endl);
                     H5Tclose(ty_id);

@@ -152,7 +152,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     vector<int>count;
     vector<int>step;
 
-    int ndims = (int)(h5_dimsizes.size());
+    auto ndims = (int)(h5_dimsizes.size());
     if(ndims == 0)
         throw InternalErr(__FILE__, __LINE__, "Currently we only support array numeric data in the cache, the number of dimension for this file is 0");
     

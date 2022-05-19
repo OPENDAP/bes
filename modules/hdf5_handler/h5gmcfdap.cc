@@ -1009,7 +1009,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (int)((cvar->getDimensions()[0])->getSize());
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
@@ -1082,7 +1082,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
                 }
-                int nelem = (int)((cvar->getDimensions()[0])->getSize());
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFSpecialCVArray * ar = nullptr;
                 ar = new HDF5GMCFSpecialCVArray(
@@ -1478,7 +1478,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (int)((cvar->getDimensions()[0])->getSize());
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDF5GMCFMissNonLLCVArray *ar = nullptr;
 
