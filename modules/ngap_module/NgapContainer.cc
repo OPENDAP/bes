@@ -178,14 +178,15 @@ string NgapContainer::access() {
     string trusted_url_hack="\" dmrpp:trust=\"true\"";
 
     string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+    BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
+
     string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
+    BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
 
     string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-    string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
-
-    BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
-    BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
     BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
+
+    string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
     BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
 
     string type = get_container_type();
