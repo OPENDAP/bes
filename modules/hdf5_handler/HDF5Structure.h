@@ -56,7 +56,7 @@ class HDF5Structure:public libdap::Structure {
     /// Constructor
     HDF5Structure(const std::string &n, const std::string &vpath, const std::string &d);
     HDF5Structure(const HDF5Structure &rhs);
-    virtual ~ HDF5Structure();
+    ~ HDF5Structure() override = default;
 
     /// Assignment operator for dynamic cast into generic Structure.
     HDF5Structure & operator=(const HDF5Structure & rhs);
@@ -65,15 +65,10 @@ class HDF5Structure:public libdap::Structure {
     /// 
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class  
-    virtual libdap::BaseType *ptr_duplicate();
+    libdap::BaseType *ptr_duplicate() override;
 
     /// Reads HDF5 structure data by calling each member's read method in this structure.
-    virtual bool read();
-
-
-    /// See return_type function defined in h5dds.cc.  
-    friend std::string return_type(hid_t datatype);
-
+    bool read() override;
 
 
 };

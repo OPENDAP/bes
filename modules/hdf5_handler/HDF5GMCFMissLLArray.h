@@ -44,7 +44,7 @@
 
 class HDF5GMCFMissLLArray:public HDF5BaseArray {
     public:
-        HDF5GMCFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const string &varfullpath, H5GCFProduct h5_product_type, CVType h5_cvartype, const string & n="",  libdap::BaseType * v = 0):
+        HDF5GMCFMissLLArray(int h5_rank, const string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const string &varfullpath, H5GCFProduct h5_product_type, CVType h5_cvartype, const string & n="",  libdap::BaseType * v = nullptr):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -56,10 +56,10 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     {
     }
         
-    virtual ~ HDF5GMCFMissLLArray() {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDF5GMCFMissLLArray() override = default;
+    
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
     
 
     private:
@@ -74,7 +74,7 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     //template<class T> 
     template<typename T> 
     void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const std::string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
-    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
     void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
 
     void obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
@@ -82,7 +82,9 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     void obtain_lat_lon_info(const vector<char>& grid_info_value1,
                              const vector<char>& grid_info_value2,int& latsize,int& lonsize,
                              float& lat_start,float& lon_start,float& lat_res,float& lon_res);
+#if 0
     //void send_gpm_l3_ll_to_dap(const vector<char>& grid_info_value,int* offset,int* step,int nelms,bool add_cache, void*buf);
+#endif
     void send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,float lat_start,float lon_start,float lat_res, float lon_res, 
                                const int* offset, const int* step, const int nelms, const bool add_cache, void*buf);
 };

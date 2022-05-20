@@ -106,9 +106,6 @@ class HDF5Array:public libdap::Array {
     /// Reads HDF5 array data into local buffer
     bool read() override;
 
-    /// See return_type function defined in h5dds.cc.
-    friend std::string return_type(hid_t datatype);
-
     /// remembers memory size needed.    
     void set_memneed(size_t need);
 

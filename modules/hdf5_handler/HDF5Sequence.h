@@ -45,11 +45,9 @@ class HDF5Sequence:public libdap::Sequence {
   public:
 
     HDF5Sequence(const std::string &n, const std::string &d);
-    virtual ~ HDF5Sequence();
+    ~ HDF5Sequence() override = default;
 
-    virtual libdap::BaseType *ptr_duplicate();
-
-    friend std::string return_type(hid_t datatype);
+    libdap::BaseType *ptr_duplicate() override;
 
 
 };

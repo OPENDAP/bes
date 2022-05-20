@@ -63,9 +63,6 @@ class HDF5Byte:public libdap::Byte {
     /// Reads HDF5 byte data into local buffer
     bool read() override;
 
-    /// See return_type function defined in h5dds.cc.
-    friend std::string return_type(hid_t datatype);
-
 };
 
 #endif
