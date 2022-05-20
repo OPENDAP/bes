@@ -174,14 +174,18 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
     BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
 
-    // TODO 10/8/21 Is this a syntax error? Should the \" be after 'true'. jhrg
-    string trusted_url_hack="\" dmrpp:trust=\"true";
-    string data_access_url_with_trusted_attr_str = data_access_url_str + trusted_url_hack;
-    string dmrpp_url_with_trusted_attr_str = dmrpp_url_str + trusted_url_hack;
-    string missing_data_url_with_trusted_attr_str = missing_data_url_str + trusted_url_hack;
+    string href="href=\"";
+    string trusted_url_hack="\" dmrpp:trust=\"true\"";
 
+    string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+    string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
+
+    string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+    string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+
+    BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
     BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
-    BESDEBUG(MODULE, prolog << "       dmrpp_url_with_trusted_attr_str: " << dmrpp_url_with_trusted_attr_str << endl);
+    BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
     BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
 
     string type = get_container_type();
@@ -192,8 +196,8 @@ string NgapContainer::access() {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
         map<string,string> content_filters;
         if (inject_data_url()) {
-            content_filters.insert(pair<string,string>(DATA_ACCESS_URL_KEY,data_access_url_with_trusted_attr_str));
-            content_filters.insert(pair<string,string>(MISSING_DATA_ACCESS_URL_KEY,missing_data_url_with_trusted_attr_str));
+            content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+            content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         }
         shared_ptr<http::url> dmrpp_url(new http::url(dmrpp_url_str, true));
         {
