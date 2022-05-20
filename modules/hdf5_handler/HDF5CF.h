@@ -1293,12 +1293,12 @@ protected:
     template<class T> void Create_Unique_DimName(T*, std::set<std::string>&, Dimension *, int, EOS5Type) ;
 
     template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t);
-    std::string Obtain_Var_EOS5Type_GroupName(Var*, EOS5Type) ;
-    int Check_EOS5Swath_FieldType(Var*) ;
+    std::string Obtain_Var_EOS5Type_GroupName(const Var*, EOS5Type) const;
+    int Check_EOS5Swath_FieldType(const Var*) const;
     void Get_Unique_Name(std::set<std::string>&, std::string&) ;
 
     template<class T> std::string Create_Unique_FakeDimName(T*, EOS5Type) ;
-    template<class T> void Set_NonParse_Var_Dims(T*, Var*, std::map<hsize_t, std::string>&, int, EOS5Type) ;
+    template<class T> void Set_NonParse_Var_Dims(T*, Var*, const std::map<hsize_t, std::string>&, int, EOS5Type) ;
 
     void Handle_Grid_CVar(bool) ;
     void Handle_Augmented_Grid_CVar() ;
@@ -1306,8 +1306,8 @@ protected:
 
     void Handle_Multi_Nonaugment_Grid_CVar() ;
     void Handle_Single_Nonaugment_Grid_CVar(EOS5CFGrid*) ;
-    bool Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(EOS5CFGrid *, std::set<std::string>&) ;
-    bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *, std::set<std::string>&) ;
+    bool Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(const EOS5CFGrid *, std::set<std::string>&) ;
+    bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(const EOS5CFGrid *, std::set<std::string>&) ;
     void Handle_NonLatLon_Grid_CVar(EOS5CFGrid *, std::set<std::string>&) ;
     void Remove_MultiDim_LatLon_EOS5CFGrid() ;
     void Adjust_EOS5GridDimNames(EOS5CFGrid *) ;
