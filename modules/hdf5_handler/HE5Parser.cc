@@ -32,9 +32,6 @@ using namespace std;
 
 HE5Parser::HE5Parser()
 {
-    structure_state = -1;       // Za/Swath/Grid state 
-    parser_state = 0;           // Parser's current state 
-    err_msg = "";               // error message.
 }
 
 HE5Parser::~HE5Parser()

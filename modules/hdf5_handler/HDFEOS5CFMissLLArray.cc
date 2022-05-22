@@ -61,7 +61,7 @@ bool HDFEOS5CFMissLLArray::read()
                                                                                                     
         string cache_key;
         // Check if this file is included in the non-cache directory                    
-        if( (cur_lrd_non_cache_dir_list.size() == 0) ||                                 
+        if( (cur_lrd_non_cache_dir_list.empty()) ||                                 
     	    ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {  
             short cache_flag = 2;
 		        vector<string> cur_cache_dlist;                                                         
@@ -146,14 +146,11 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     lowright[1] = point_lower;
 
 
-    int i = 0;
     int j = 0;
-    int k = 0;
-
     int r = -1;
 
-    for (k = j = 0; j < ydimsize; ++j) {
-        for (i = 0; i < xdimsize; ++i) {
+    for (int k = j = 0; j < ydimsize; ++j) {
+        for (int i = 0; i < xdimsize; ++i) {
             rows[k] = j;
             cols[k] = i;
             ++k;
@@ -232,7 +229,9 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             vector<double> var_value;
             var_value.resize(xdimsize*ydimsize);
 
+#if 0
             //Latitude starts from 0, longitude starts from xdimsize*ydimsize*sizeof(double);
+#endif
             off_t fpos = lseek(fd,var_offset,SEEK_SET);
             if(fpos == -1) {
                 throw InternalErr (__FILE__, __LINE__,
@@ -480,14 +479,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	// Now offset,step and val will always be valid. line 74 and 85 assure this.
 	if ( HE5_HDFE_CENTER == eos5_pixelreg ) {
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0]+i*step[0] + 0.5F) * lat_step + start) / 1000000.0;
+		val[i] = ((offset[0]+i*step[0] + 0.5F) * lat_step + start) / 1000000.0F;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(ydimsize);
                 for (int total_i = 0; total_i < ydimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i + 0.5F) * lat_step + start) / 1000000.0;
+		    total_val[total_i] = ((total_i + 0.5F) * lat_step + start) / 1000000.0F;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*ydimsize);
             }
@@ -495,14 +494,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	}
 	else { // HE5_HDFE_CORNER 
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0]+i * step[0])*lat_step + start) / 1000000.0;
+		val[i] = ((float)(offset[0]+i * step[0])*lat_step + start) / 1000000.0F;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(ydimsize);
                 for (int total_i = 0; total_i < ydimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i) * lat_step + start) / 1000000.0;
+		    total_val[total_i] = ((float)(total_i) * lat_step + start) / 1000000.0F;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*ydimsize);
             }
@@ -531,14 +530,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 
 	if (HE5_HDFE_CENTER == eos5_pixelreg) {
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0] + i *step[0] + 0.5F) * lon_step + start ) / 1000000.0;
+		val[i] = ((offset[0] + i *step[0] + 0.5F) * lon_step + start ) / 1000000.0F;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(xdimsize);
                 for (int total_i = 0; total_i < xdimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i+0.5F) * lon_step + start) / 1000000.0;
+		    total_val[total_i] = ((total_i+0.5F) * lon_step + start) / 1000000.0F;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*xdimsize);
             }
@@ -546,14 +545,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	}
 	else { // HE5_HDFE_CORNER 
 	    for (int i = 0; i < nelms; i++)
-		val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0;
+		val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
 
             // If the memory cache is turned on, we have to save all values to the buf
             if(add_cache == true) {
             	vector<float>total_val;
 		total_val.resize(xdimsize);
                 for (int total_i = 0; total_i < xdimsize; total_i++)
-		    total_val[total_i] = ((float)(total_i) * lon_step + start) / 1000000.0;
+		    total_val[total_i] = ((float)(total_i) * lon_step + start) / 1000000.0F;
                 // Note: the float is size 4 
                 memcpy(buf,&total_val[0],4*xdimsize);
             }

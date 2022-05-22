@@ -58,17 +58,17 @@ public:
 	ZA, SWATH, GRID
     };
     /// Have the parser's state in terms of structure.
-    int  structure_state;
+    int  structure_state = -1;
 
     enum {
 	DATA_FIELD, GEO_FIELD
     };
 
     /// Have the StructMetadata parser's state.
-    int  parser_state;
+    int  parser_state = 0;
 
     /// Have any parse error message.
-    std::string err_msg;	
+    std::string err_msg = "";	
 
     HE5Parser();
     virtual ~ HE5Parser();
