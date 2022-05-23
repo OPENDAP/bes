@@ -28,26 +28,18 @@
 
 #include "config.h"
 
-#include <cstdio>
 #include <map>
 #include <sstream>
 #include <string>
-#include <fstream>
-#include <streambuf>
-#include <time.h>
 
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
-#include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
-#include "BESUtil.h"
 #include "TheBESKeys.h"
-#include "AllowedHosts.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
-#include "HttpUtils.h"
 #include "RemoteResource.h"
 #include "url_impl.h"
 
