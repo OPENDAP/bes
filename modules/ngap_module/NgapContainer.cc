@@ -68,7 +68,7 @@ NgapContainer::NgapContainer(const string &sym_name,
                              const string &real_name,
                              const string &type) :
         BESContainer(sym_name, real_name, type),
-        d_dmrpp_rresource(0) {
+        d_dmrpp_rresource(nullptr) {
     initialize();
 }
 
