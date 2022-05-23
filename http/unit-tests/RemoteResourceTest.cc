@@ -604,6 +604,68 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+     * Test of the RemoteResource content filtering method.
+     */
+    void filter_test_more_focus() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        string source_file = BESUtil::pathConcat(d_data_dir,"filter_test_02_source.xml");
+        if(debug) cerr << prolog << "source_file: " << source_file << endl;
+
+        string baseline_file = BESUtil::pathConcat(d_data_dir,"filter_test_02_source.xml.baseline");
+        if(debug) cerr << prolog << "baseline_file: " << baseline_file << endl;
+
+        string tmp_file;
+        try {
+            copy_to_temp(source_file,tmp_file);
+            if(debug) cerr << prolog << "temp_file: " << tmp_file << endl;
+            string href="href=\"";
+            string trusted_url_hack="\" dmrpp:trust=\"true\"";
+
+            string data_access_url_key = "href=\"OPeNDAP_DMRpp_DATA_ACCESS_URL\"";
+            if(debug) cerr << prolog << "                   data_access_url_key: " << data_access_url_key << endl;
+
+            string data_access_url_with_trusted_attr_str = "href=\"file://original_file_ref\" dmrpp=\"trust\"";
+            if(debug) cerr << prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl;
+
+            string missing_data_access_url_key = "href=\"OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL\"";
+            if(debug) cerr << prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl;
+
+            string missing_data_url_with_trusted_attr_str = "href=\"file://missing_file_ref\' dmrpp:trust=\"true\"";
+            if(debug) cerr << prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl;
+
+
+            std::map<std::string,std::string> filter;
+            filter.insert(pair<string,string>(data_access_url_key,data_access_url_with_trusted_attr_str));
+            filter.insert(pair<string,string>(missing_data_access_url_key,missing_data_url_with_trusted_attr_str));
+
+            RemoteResource foo;
+            foo.d_resourceCacheFileName = tmp_file;
+            foo.filter_retrieved_resource(filter);
+
+            bool result_matched = compare(tmp_file,baseline_file);
+            stringstream info_msg;
+            info_msg << prolog << "The filtered file: "<< tmp_file << (result_matched?" MATCHED ":" DID NOT MATCH ")
+                     << "the baseline file: " << baseline_file << endl;
+            if(debug) cerr << info_msg.str();
+            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
+        }
+        catch(BESError be){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
+            msg << be.get_file() << " " << be.get_line() << endl;
+            if(debug) cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        // By unlinking here we only are doing it if the test is successful. This allows for forensic on broke tests.
+        if(!tmp_file.empty()){
+            unlink(tmp_file.c_str());
+            if(debug) cerr << prolog << "unlink call on: " << tmp_file << endl;
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -615,6 +677,7 @@ public:
     CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
+    CPPUNIT_TEST(filter_test_more_focus);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
