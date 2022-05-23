@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.20.9-76">
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/IMERG/3B-HH/06;
+DOIauthority=http://dx.doi.org/;
+DOIshortName=3IMERGHH;
+AlgorithmID=3IMERGHH;
+AlgorithmVersion=3IMERGH_6.3;
+FileName=3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5;
+SatelliteName=MULTI;
+InstrumentName=MERGED;
+GenerationDateTime=2020-05-04T06:20:10.000Z;
+StartGranuleDateTime=2020-01-01T00:00:00.000Z;
+StopGranuleDateTime=2020-01-01T00:29:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=HALF_HOUR;
+ProcessingSystem=PPS;
+ProductVersion=V06B;
+EmptyGranule=NOT_EMPTY;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=6a;
+TKCodeBuildVersion=0;
+MetadataVersion=6a;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V6.3IMERGHH.blueprint.xml;
+BlueprintVersion=BV_62;
+TKIOVersion=3.93;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.9-76</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.9-76</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.8-33</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.RootDirectory=/tmp/tmpawld7778/
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Container.Persistence=strict
+BES.Data.RootDirectory=/dev/null
+BES.DefaultResponseMethod=POST
+BES.FollowSymLinks=Yes
+BES.Group=group_name
+BES.Info.Buffered=no
+BES.Info.Type=xml
+BES.LogName=./bes.log
+BES.LogVerbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.ProcessManagerMethod=multiple
+BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.Uncompress.NumTries=10
+BES.Uncompress.Retry=2000
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.User=user_name
+BES.module.cmd=/usr/lib64/bes/libdap_xml_module.so
+BES.module.dap=/usr/lib64/bes/libdap_module.so
+BES.module.dmrpp=/usr/lib64/bes/libdmrpp_module.so
+BES.module.fonc=/usr/lib64/bes/libfonc_module.so
+BES.module.h5=/usr/lib64/bes/libhdf5_module.so
+BES.module.nc=/usr/lib64/bes/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+H5.CheckIgnoreObj=false
+H5.DefaultHandleDimension=true
+H5.DisableStructMetaAttr=true
+H5.DiskCacheComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheSize=10000
+H5.DiskMetaDataCachePath=/tmp
+H5.EnableAddPathAttrs=true
+H5.EnableCF=false
+H5.EnableCFDMR=true
+H5.EnableCheckNameClashing=true
+H5.EnableDiskDDSCache=false
+H5.EnableDiskDataCache=false
+H5.EnableDiskMetaDataCache=false
+H5.EnableDropLongString=true
+H5.EnableEOSGeoCacheFile=false
+H5.EnableFillValueCheck=true
+H5.KeepVarLeadingUnderscore=false
+H5.LargeDataMemCacheEntries=0
+H5.MetaDataMemCacheEntries=300
+H5.SmallDataMemCacheEntries=0
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /tmp/conf_XqDN -f /tmp/tmpawld7778//3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5 -r /tmp/dmr_1tsd -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="Grid">
+        <Dimension name="time" size="1"/>
+        <Dimension name="lon" size="3600"/>
+        <Dimension name="lat" size="1800"/>
+        <Dimension name="latv" size="2"/>
+        <Dimension name="lonv" size="2"/>
+        <Dimension name="nv" size="2"/>
+        <Float32 name="precipitationQualityIndex">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="9945949" nBytes="8337" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="9954286" nBytes="9462" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="9963748" nBytes="9073" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="9972821" nBytes="11721" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="9984542" nBytes="13342" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="9997884" nBytes="10819" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="10008703" nBytes="10679" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="10019382" nBytes="13834" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="10033216" nBytes="11432" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="10044648" nBytes="8365" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="10053013" nBytes="9388" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="10062401" nBytes="11224" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="10073625" nBytes="12490" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="10086115" nBytes="15101" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="10101216" nBytes="18215" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="10119431" nBytes="15534" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="10134965" nBytes="10598" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="10145563" nBytes="10648" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="10156211" nBytes="13489" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="10169700" nBytes="13487" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="10183187" nBytes="12153" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="10195340" nBytes="10822" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="10206162" nBytes="11636" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="10217798" nBytes="9954" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10598230" nBytes="8906" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Int16 name="IRkalmanFilterWeight">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 291 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="9306607" nBytes="5503" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="9312110" nBytes="10490" chunkPositionInArray="[0,291,0]"/>
+                <dmrpp:chunk offset="9322600" nBytes="8698" chunkPositionInArray="[0,582,0]"/>
+                <dmrpp:chunk offset="9331298" nBytes="8982" chunkPositionInArray="[0,873,0]"/>
+                <dmrpp:chunk offset="9340280" nBytes="5215" chunkPositionInArray="[0,1164,0]"/>
+                <dmrpp:chunk offset="9345495" nBytes="10935" chunkPositionInArray="[0,1455,0]"/>
+                <dmrpp:chunk offset="9356430" nBytes="9786" chunkPositionInArray="[0,1746,0]"/>
+                <dmrpp:chunk offset="9366216" nBytes="14222" chunkPositionInArray="[0,2037,0]"/>
+                <dmrpp:chunk offset="9380438" nBytes="7262" chunkPositionInArray="[0,2328,0]"/>
+                <dmrpp:chunk offset="9387700" nBytes="16161" chunkPositionInArray="[0,2619,0]"/>
+                <dmrpp:chunk offset="9403861" nBytes="11624" chunkPositionInArray="[0,2910,0]"/>
+                <dmrpp:chunk offset="9415485" nBytes="9551" chunkPositionInArray="[0,3201,0]"/>
+                <dmrpp:chunk offset="10577315" nBytes="5396" chunkPositionInArray="[0,3492,0]"/>
+            </dmrpp:chunks>
+        </Int16>
+        <Int16 name="HQprecipSource">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 291 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="7717671" nBytes="7025" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="7724696" nBytes="7626" chunkPositionInArray="[0,291,0]"/>
+                <dmrpp:chunk offset="7732322" nBytes="5857" chunkPositionInArray="[0,582,0]"/>
+                <dmrpp:chunk offset="7738179" nBytes="4861" chunkPositionInArray="[0,873,0]"/>
+                <dmrpp:chunk offset="7743040" nBytes="4825" chunkPositionInArray="[0,1164,0]"/>
+                <dmrpp:chunk offset="7747865" nBytes="4162" chunkPositionInArray="[0,1455,0]"/>
+                <dmrpp:chunk offset="7752027" nBytes="3865" chunkPositionInArray="[0,1746,0]"/>
+                <dmrpp:chunk offset="7755892" nBytes="3645" chunkPositionInArray="[0,2037,0]"/>
+                <dmrpp:chunk offset="7759537" nBytes="7797" chunkPositionInArray="[0,2328,0]"/>
+                <dmrpp:chunk offset="7767334" nBytes="8781" chunkPositionInArray="[0,2619,0]"/>
+                <dmrpp:chunk offset="7776115" nBytes="6395" chunkPositionInArray="[0,2910,0]"/>
+                <dmrpp:chunk offset="7782510" nBytes="4543" chunkPositionInArray="[0,3201,0]"/>
+                <dmrpp:chunk offset="10528917" nBytes="3163" chunkPositionInArray="[0,3492,0]"/>
+            </dmrpp:chunks>
+        </Int16>
+        <Float32 name="lon">
+            <Dim name="/Grid/lon"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>longitude</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Longitude at the center of
+			0.10 degree grid intervals of longitude 
+			from -180 to 180.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>lon_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>X</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>3600</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10240613" nBytes="6507" chunkPositionInArray="[0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="precipitationCal">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="29354" nBytes="117894" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="147248" nBytes="113648" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="260896" nBytes="179721" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="440617" nBytes="111712" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="552329" nBytes="84279" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="636608" nBytes="70525" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="707133" nBytes="67457" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="774590" nBytes="130969" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="905559" nBytes="172617" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="1078176" nBytes="119493" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="1197669" nBytes="148053" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="1345722" nBytes="108742" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="1454464" nBytes="69863" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="1524327" nBytes="46193" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="1570520" nBytes="75208" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="1645728" nBytes="65604" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="1711332" nBytes="94713" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="1806045" nBytes="66370" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="1872415" nBytes="74085" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="1946500" nBytes="66821" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="2013321" nBytes="139657" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="2152978" nBytes="105787" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="2258765" nBytes="82649" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="2341414" nBytes="125902" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10268963" nBytes="85835" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Int32 name="time">
+            <Dim name="/Grid/time"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Representative time of data in 
+			seconds since 1970-01-01 00:00:00 UTC.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>time_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>T</Value>
+            </Attribute>
+            <Attribute name="calendar" type="String">
+                <Value>julian</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>32</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10237014" nBytes="15" chunkPositionInArray="[0]"/>
+            </dmrpp:chunks>
+        </Int32>
+        <Float32 name="lat_bnds">
+            <Dim name="/Grid/lat"/>
+            <Dim name="/Grid/latv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lat,latv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lat latv</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1800 2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10262652" nBytes="6311" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="precipitationUncal">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="2470452" nBytes="117894" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="2588346" nBytes="113610" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="2701956" nBytes="179725" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="2881681" nBytes="111174" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="2992855" nBytes="80310" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="3073165" nBytes="67289" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="3140454" nBytes="65303" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="3205757" nBytes="119213" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="3324970" nBytes="156315" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="3481285" nBytes="106334" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="3587619" nBytes="147966" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="3735585" nBytes="108507" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="3844092" nBytes="69673" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="3913765" nBytes="38895" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="3952660" nBytes="66427" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="4019087" nBytes="62544" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="4081631" nBytes="90735" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="4172366" nBytes="64420" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="4236786" nBytes="71728" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="4308514" nBytes="65252" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="4373766" nBytes="130663" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="4504429" nBytes="99579" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="4604008" nBytes="81544" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="4685552" nBytes="125539" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10354798" nBytes="85549" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="lat">
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>latitude</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Latitude at the center of
+			0.10 degree grid intervals of latitude
+			from -90 to 90.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>lat_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>Y</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10247120" nBytes="3315" chunkPositionInArray="[0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="HQprecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="7218405" nBytes="21689" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="7240094" nBytes="63370" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="7303464" nBytes="27480" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="7330944" nBytes="19401" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="7350345" nBytes="22231" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="7372576" nBytes="15937" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="7388513" nBytes="18892" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="7407405" nBytes="18258" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="7425663" nBytes="20713" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="7446376" nBytes="32411" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="7478787" nBytes="16524" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="7495311" nBytes="6937" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="7502248" nBytes="13507" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="7515755" nBytes="17857" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="7533612" nBytes="6692" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="7540304" nBytes="9379" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="7549683" nBytes="52527" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="7602210" nBytes="28680" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="7630890" nBytes="16754" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="7647644" nBytes="10743" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="7658387" nBytes="19605" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="7677992" nBytes="19670" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="7697662" nBytes="13131" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="7710793" nBytes="3742" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10524569" nBytes="4348" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Int16 name="probabilityLiquidPrecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 291 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="9428172" nBytes="32359" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="9460531" nBytes="34436" chunkPositionInArray="[0,291,0]"/>
+                <dmrpp:chunk offset="9494967" nBytes="48640" chunkPositionInArray="[0,582,0]"/>
+                <dmrpp:chunk offset="9543607" nBytes="39876" chunkPositionInArray="[0,873,0]"/>
+                <dmrpp:chunk offset="9583483" nBytes="43662" chunkPositionInArray="[0,1164,0]"/>
+                <dmrpp:chunk offset="9627145" nBytes="32268" chunkPositionInArray="[0,1455,0]"/>
+                <dmrpp:chunk offset="9659413" nBytes="71980" chunkPositionInArray="[0,1746,0]"/>
+                <dmrpp:chunk offset="9731393" nBytes="64068" chunkPositionInArray="[0,2037,0]"/>
+                <dmrpp:chunk offset="9795461" nBytes="46188" chunkPositionInArray="[0,2328,0]"/>
+                <dmrpp:chunk offset="9841649" nBytes="25287" chunkPositionInArray="[0,2619,0]"/>
+                <dmrpp:chunk offset="9866936" nBytes="36907" chunkPositionInArray="[0,2910,0]"/>
+                <dmrpp:chunk offset="9903843" nBytes="38970" chunkPositionInArray="[0,3201,0]"/>
+                <dmrpp:chunk offset="10582711" nBytes="15519" chunkPositionInArray="[0,3492,0]"/>
+            </dmrpp:chunks>
+        </Int16>
+        <Int16 name="HQobservationTime">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>minutes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>minutes</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 291 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="7790189" nBytes="11455" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="7801644" nBytes="9606" chunkPositionInArray="[0,291,0]"/>
+                <dmrpp:chunk offset="7811250" nBytes="8971" chunkPositionInArray="[0,582,0]"/>
+                <dmrpp:chunk offset="7820221" nBytes="8849" chunkPositionInArray="[0,873,0]"/>
+                <dmrpp:chunk offset="7829070" nBytes="8788" chunkPositionInArray="[0,1164,0]"/>
+                <dmrpp:chunk offset="7837858" nBytes="5957" chunkPositionInArray="[0,1455,0]"/>
+                <dmrpp:chunk offset="7843815" nBytes="7149" chunkPositionInArray="[0,1746,0]"/>
+                <dmrpp:chunk offset="7850964" nBytes="5513" chunkPositionInArray="[0,2037,0]"/>
+                <dmrpp:chunk offset="7856477" nBytes="16283" chunkPositionInArray="[0,2328,0]"/>
+                <dmrpp:chunk offset="7872760" nBytes="13312" chunkPositionInArray="[0,2619,0]"/>
+                <dmrpp:chunk offset="7886072" nBytes="9562" chunkPositionInArray="[0,2910,0]"/>
+                <dmrpp:chunk offset="7895634" nBytes="6055" chunkPositionInArray="[0,3201,0]"/>
+                <dmrpp:chunk offset="10532080" nBytes="3527" chunkPositionInArray="[0,3492,0]"/>
+            </dmrpp:chunks>
+        </Int16>
+        <Float32 name="randomError">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="4814227" nBytes="116395" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="4930622" nBytes="113273" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="5043895" nBytes="177313" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="5221208" nBytes="109913" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="5331121" nBytes="82754" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="5413875" nBytes="69220" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="5483095" nBytes="66688" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="5549783" nBytes="128554" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="5678337" nBytes="169663" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="5848000" nBytes="117919" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="5965919" nBytes="145554" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="6111473" nBytes="107030" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="6218503" nBytes="68685" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="6287188" nBytes="45140" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="6332328" nBytes="73642" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="6405970" nBytes="64485" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="6470455" nBytes="94698" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="6565153" nBytes="65611" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="6630764" nBytes="73005" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="6703769" nBytes="65557" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="6769326" nBytes="136993" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="6906319" nBytes="103706" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="7010025" nBytes="81289" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="7091314" nBytes="123955" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10440347" nBytes="84222" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Int32 name="time_bnds">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/nv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,nv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time nv</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>32 2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="3971" nBytes="19" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Int32>
+        <Float32 name="IRprecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>1 145 1800</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="7904825" nBytes="63296" chunkPositionInArray="[0,0,0]"/>
+                <dmrpp:chunk offset="7968121" nBytes="100005" chunkPositionInArray="[0,145,0]"/>
+                <dmrpp:chunk offset="8068126" nBytes="94116" chunkPositionInArray="[0,290,0]"/>
+                <dmrpp:chunk offset="8162242" nBytes="74947" chunkPositionInArray="[0,435,0]"/>
+                <dmrpp:chunk offset="8237189" nBytes="50203" chunkPositionInArray="[0,580,0]"/>
+                <dmrpp:chunk offset="8287392" nBytes="35901" chunkPositionInArray="[0,725,0]"/>
+                <dmrpp:chunk offset="8323293" nBytes="33206" chunkPositionInArray="[0,870,0]"/>
+                <dmrpp:chunk offset="8356499" nBytes="86178" chunkPositionInArray="[0,1015,0]"/>
+                <dmrpp:chunk offset="8442677" nBytes="108058" chunkPositionInArray="[0,1160,0]"/>
+                <dmrpp:chunk offset="8550735" nBytes="86656" chunkPositionInArray="[0,1305,0]"/>
+                <dmrpp:chunk offset="8637391" nBytes="81956" chunkPositionInArray="[0,1450,0]"/>
+                <dmrpp:chunk offset="8719347" nBytes="31912" chunkPositionInArray="[0,1595,0]"/>
+                <dmrpp:chunk offset="8751259" nBytes="11324" chunkPositionInArray="[0,1740,0]"/>
+                <dmrpp:chunk offset="8762583" nBytes="38345" chunkPositionInArray="[0,1885,0]"/>
+                <dmrpp:chunk offset="8800928" nBytes="36669" chunkPositionInArray="[0,2030,0]"/>
+                <dmrpp:chunk offset="8837597" nBytes="33043" chunkPositionInArray="[0,2175,0]"/>
+                <dmrpp:chunk offset="8870640" nBytes="67685" chunkPositionInArray="[0,2320,0]"/>
+                <dmrpp:chunk offset="8938325" nBytes="59435" chunkPositionInArray="[0,2465,0]"/>
+                <dmrpp:chunk offset="8997760" nBytes="38651" chunkPositionInArray="[0,2610,0]"/>
+                <dmrpp:chunk offset="9036411" nBytes="29165" chunkPositionInArray="[0,2755,0]"/>
+                <dmrpp:chunk offset="9065576" nBytes="77679" chunkPositionInArray="[0,2900,0]"/>
+                <dmrpp:chunk offset="9143255" nBytes="64240" chunkPositionInArray="[0,3045,0]"/>
+                <dmrpp:chunk offset="9207495" nBytes="33053" chunkPositionInArray="[0,3190,0]"/>
+                <dmrpp:chunk offset="9240548" nBytes="62923" chunkPositionInArray="[0,3335,0]"/>
+                <dmrpp:chunk offset="10535607" nBytes="41708" chunkPositionInArray="[0,3480,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="lon_bnds">
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lonv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon,lonv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lon lonv</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>3600 2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10250435" nBytes="12217" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="missing_test_data_1">
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lonv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon,lonv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lon lonv</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>3600 2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10250435" nBytes="12217" chunkPositionInArray="[0,0]" dmrpp:href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Float32 name="missing_test_data_2">
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lonv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon,lonv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lon lonv</Value>
+            </Attribute>
+            <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>3600 2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="10250435" nBytes="12217" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Attribute name="GridHeader" type="String">
+            <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.1;
+LongitudeResolution=0.1;
+NorthBoundingCoordinate=90;
+SouthBoundingCoordinate=-90;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+        </Attribute>
+    </Group>
+</Dataset>
