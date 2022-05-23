@@ -50,7 +50,7 @@ void HDF5Module::initialize(const string & modname)
 {
     BESDEBUG(HDF5_NAME, prolog << "Initializing HDF5 module " << modname << endl);
 
-    BESRequestHandler *handler = new HDF5RequestHandler(modname);
+    auto handler = new HDF5RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
     BESDapService::handle_dap_service(modname);
@@ -60,7 +60,7 @@ void HDF5Module::initialize(const string & modname)
     }
 
     if (!BESContainerStorageList::TheList()->ref_persistence(HDF5_CATALOG)) {
-        BESContainerStorage *csc = new BESFileContainerStorage(HDF5_CATALOG);
+        auto csc = new BESFileContainerStorage(HDF5_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 

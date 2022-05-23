@@ -46,8 +46,8 @@ class HDF5PathFinder {
 
 
   public:
-    HDF5PathFinder();
-    virtual ~ HDF5PathFinder();
+    HDF5PathFinder() = default;
+    ~ HDF5PathFinder() = default;
 
     /// Adds \a name and \a id object number into an internal map
     /// 
@@ -56,7 +56,7 @@ class HDF5PathFinder {
     /// \see h5das.cc
     /// \return true if addition is successful
     /// \return false otherwise
-    bool add(std::string id, const std::string name);
+    bool add(const std::string & id, const std::string & name);
 
     /// Check if \a id object is already visited by looking up in the map.
     ///
@@ -64,13 +64,13 @@ class HDF5PathFinder {
     /// \see h5das.cc
     /// \return true if \a id object is already visited 
     /// \return false otherwise
-    bool visited(std::string id);
+    bool visited(const std::string & id);
 
     /// Get the object name of \a id object in the map.
     ///
     /// \param id  HDF5 object number
     /// \see h5das.cc
     /// \return object name string
-    std::string get_name(std::string id);
+    std::string get_name(const std::string & id);
 
 };

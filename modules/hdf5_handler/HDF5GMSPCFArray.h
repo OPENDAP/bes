@@ -44,7 +44,7 @@
 
 class HDF5GMSPCFArray:public HDF5BaseArray {
     public:
-        HDF5GMSPCFArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const std::string &varfullpath, H5DataType h5_otype, int h5_sdbit, int h5_numofdbits, const std::string & n="",  libdap::BaseType * v = 0):
+        HDF5GMSPCFArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, const std::string &varfullpath, H5DataType h5_otype, int h5_sdbit, int h5_numofdbits, const std::string & n="",  libdap::BaseType * v = nullptr):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -58,11 +58,10 @@ class HDF5GMSPCFArray:public HDF5BaseArray {
 {
 }
         
-        virtual ~ HDF5GMSPCFArray() {
-        }
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
-        virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+        ~ HDF5GMSPCFArray() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
+        void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
 
 
     private:

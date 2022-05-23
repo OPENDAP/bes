@@ -47,9 +47,6 @@ HDF5CFByte::HDF5CFByte(const string &n, const string &d,const string &d_f) : Byt
 {
 }
 
-HDF5CFByte::~HDF5CFByte()
-{
-}
 BaseType *HDF5CFByte::ptr_duplicate()
 {
     return new HDF5CFByte(*this);

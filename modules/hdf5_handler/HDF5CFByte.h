@@ -47,9 +47,9 @@ class HDF5CFByte:public libdap::Byte {
     public:
         HDF5CFByte(const std::string & n, const std::string &d);
         HDF5CFByte(const std::string & n, const std::string &d,const std::string &d_f);
-        virtual ~ HDF5CFByte();
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
+        ~ HDF5CFByte() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
 };
 
 #endif                          // _HDF5CFBYTE_H

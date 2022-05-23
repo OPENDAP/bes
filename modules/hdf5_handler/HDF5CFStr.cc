@@ -50,9 +50,6 @@ HDF5CFStr::HDF5CFStr(const string &n, const string &d,const string &h5_varname)
 {
 }
 
-HDF5CFStr::~HDF5CFStr()
-{
-}
 BaseType *HDF5CFStr::ptr_duplicate()
 {
     return new HDF5CFStr(*this);

@@ -93,9 +93,9 @@ struct HDF5CFUtil {
 
                /// Trim the string with many NULL terms or garbage characters to simply a string
                /// with a NULL terminator. This method will not handle the NULL PAD case.
-               static std::string trim_string(hid_t dtypeid,const std::string s, int num_sect, size_t section_size, std::vector<size_t>& sect_newsize);
+               static std::string trim_string(hid_t dtypeid,const std::string & s, int num_sect, size_t section_size, std::vector<size_t>& sect_newsize);
 
-               static std::string obtain_string_after_lastslash(const std::string s);
+               static std::string obtain_string_after_lastslash(const std::string & s);
                static std::string obtain_string_before_lastslash(const std::string & s);
                static std::string remove_substrings(std::string str, const std::string &s);
                static void cha_co(std::string &co,const std::string & vpath);
@@ -171,7 +171,7 @@ struct HDF5CFUtil {
 
 static inline struct flock *lock(int type) {
     static struct flock lock;
-    lock.l_type = type;
+    lock.l_type = (short)type;
     lock.l_whence = SEEK_SET;
     lock.l_start = 0;
     lock.l_len = 0;
@@ -181,7 +181,7 @@ static inline struct flock *lock(int type) {
 }
 
 static inline std::string get_errno() {
-        char *s_err = strerror(errno);
+        const char *s_err = strerror(errno);
         if (s_err)
                 return s_err;
         else

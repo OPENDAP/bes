@@ -67,20 +67,17 @@ class HDF5Str:public libdap::Str {
 
     /// Constructor
     HDF5Str(const std::string &n, const std::string &vpath, const std::string &d);
-    virtual ~ HDF5Str() { }
+    ~ HDF5Str() override = default;
 
     /// Clone this instance.
     /// 
     /// Allocate a new instance and copy *this into it. This method must
     /// perform a deep copy.
     /// \return A newly allocated copy of this class    
-    virtual libdap::BaseType *ptr_duplicate();
+    libdap::BaseType *ptr_duplicate() override;
 
     /// Reads HDF5 string data into local buffer  
-    virtual bool read();
-
-    /// See return_type function defined in h5dds.cc.    
-    friend std::string return_type(hid_t datatype);
+    bool read() override;
 
 
 };

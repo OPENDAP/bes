@@ -69,7 +69,6 @@ bool HDF5Url::read()
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
 
-//    hid_t dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
         throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");

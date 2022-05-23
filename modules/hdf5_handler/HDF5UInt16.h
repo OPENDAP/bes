@@ -53,19 +53,17 @@ class HDF5UInt16:public libdap::UInt16 {
 
     /// Constructor
     HDF5UInt16(const std::string &n, const std::string &vpath, const std::string &d);
-    virtual ~ HDF5UInt16() { }
+    ~ HDF5UInt16() override = default;
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class    
-    virtual libdap::BaseType *ptr_duplicate();
+    libdap::BaseType *ptr_duplicate() override;
 
     /// Reads HDF5 unsigned 16-bit integer data into local buffer
-    virtual bool read();
+    bool read() override;
 
-    /// See return_type function defined in h5dds.cc.  
-    friend std::string return_type(hid_t datatype);
 #if 0
     /// returns HDF5 dataset id.
     hid_t get_did();

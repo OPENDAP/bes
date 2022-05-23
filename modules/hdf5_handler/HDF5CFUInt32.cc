@@ -43,14 +43,10 @@ HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d) : UInt32(n, d)
 {
 }
 
-HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d,const string &d_f) : UInt32(n, d)
+HDF5CFUInt32::HDF5CFUInt32(const string &n, const string &d,const string &d_f) : UInt32(n, d), filename(d_f)
 {
-    filename = d_f;
 }
 
-HDF5CFUInt32::~HDF5CFUInt32()
-{
-}
 BaseType *HDF5CFUInt32::ptr_duplicate()
 {
     return new HDF5CFUInt32(*this);

@@ -13,9 +13,6 @@ HDF5CFGeoCFProj::HDF5CFGeoCFProj(const string & n, const string &d ) : Byte(n, d
 {
 }
 
-HDF5CFGeoCFProj::~HDF5CFGeoCFProj()
-{
-}
 BaseType *HDF5CFGeoCFProj::ptr_duplicate()
 {
     return new HDF5CFGeoCFProj(*this);

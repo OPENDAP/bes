@@ -59,9 +59,9 @@ GMCVar::GMCVar(Var*var) {
     unsupported_dspace = var->unsupported_dspace;
     coord_attr_add_path = false;
     
-    for (vector<Attribute*>::iterator ira = var->attrs.begin();
+    for (auto ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
-        Attribute* attr= new Attribute();
+        auto attr= new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
@@ -70,16 +70,17 @@ GMCVar::GMCVar(Var*var) {
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
         attrs.push_back(attr);
-    } //for (vector<Attribute*>::iterator ira = var->attrs.begin()
+    } 
 
-    for (vector<Dimension*>::iterator ird = var->dims.begin();
+    for (auto ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
+        auto dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dim->unlimited_dim = (*ird)->unlimited_dim;
         dims.push_back(dim);
-    } // for (vector<Dimension*>::iterator ird = var->dims.begin()
+    } 
+
     product_type = General_Product;
 
 }
@@ -142,9 +143,9 @@ GMSPVar::GMSPVar(Var*var) {
     sdbit = -1;
     numofdbits = -1;
 
-    for (vector<Attribute*>::iterator ira = var->attrs.begin();
+    for (auto ira = var->attrs.begin();
         ira!=var->attrs.end(); ++ira) {
-        Attribute* attr= new Attribute();
+        auto attr= new Attribute();
         attr->name = (*ira)->name;
         attr->newname = (*ira)->newname;
         attr->dtype =(*ira)->dtype;
@@ -153,11 +154,11 @@ GMSPVar::GMSPVar(Var*var) {
         attr->fstrsize = (*ira)->fstrsize;
         attr->value =(*ira)->value;
         attrs.push_back(attr);
-    } // "for (vector<Attribute*>::iterator ira = var->attrs.begin()"
+    } 
 
-    for (vector<Dimension*>::iterator ird = var->dims.begin();
+    for (auto ird = var->dims.begin();
         ird!=var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
+        auto dim = new Dimension((*ird)->size);
         dim->name = (*ird)->name;
         dim->newname = (*ird)->newname;
         dim->unlimited_dim = (*ird)->unlimited_dim;
@@ -167,7 +168,7 @@ GMSPVar::GMSPVar(Var*var) {
 
 
 GMFile::GMFile(const char*file_fullpath, hid_t file_id, H5GCFProduct product_type, GMPattern gproduct_pattern):
-File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern),have_nc4_non_coord(false)
+File(file_fullpath,file_id), product_type(product_type),gproduct_pattern(gproduct_pattern)
 {
 
 }
@@ -177,13 +178,13 @@ GMFile::~GMFile()
 {
 
     if (!this->cvars.empty()){
-        for (vector<GMCVar *>:: const_iterator i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
+        for (auto i= this->cvars.begin(); i!=this->cvars.end(); ++i) {
            delete *i;
         }
     }
 
     if (!this->spvars.empty()){
-        for (vector<GMSPVar *>:: const_iterator i= this->spvars.begin(); i!=this->spvars.end(); ++i) {
+        for (auto i= this->spvars.begin(); i!=this->spvars.end(); ++i) {
            delete *i;
         }
     }
@@ -241,21 +242,21 @@ void GMFile::Update_Product_Type()  {
     if(GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) {
 
         // Check Dimscale attributes 
+#if 0
         //Check_General_Product_Pattern();
+#endif
         Check_Dimscale_General_Product_Pattern();
         if(GENERAL_DIMSCALE == this->gproduct_pattern){
             if(GPMS_L3 == this->product_type) {
-                for (vector<Var *>::iterator irv = this->vars.begin();
+                for (auto irv = this->vars.begin();
                     irv != this->vars.end(); ++irv) 
                         (*irv)->newname = (*irv)->name;
             }
             this->product_type = General_Product;
         }
     }
-//#if 0
     else if(General_Product == this->product_type)
         Check_General_Product_Pattern();
-//#endif
 }
 
 void GMFile::Remove_Unneeded_Objects()  {
@@ -270,15 +271,13 @@ void GMFile::Remove_Unneeded_Objects()  {
         set<string> nc4_non_coord_set;
         string nc4_non_coord="_nc4_non_coord_";
         size_t nc4_non_coord_size= nc4_non_coord.size();
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                                    irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if((*irv)->name.find(nc4_non_coord)==0) 
                 nc4_non_coord_set.insert((*irv)->name.substr(nc4_non_coord_size,(*irv)->name.size()-nc4_non_coord_size));
             
         }
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                                    irv != this->vars.end();) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end();) {
             if(nc4_non_coord_set.find((*irv)->name)!=nc4_non_coord_set.end()){
                 delete(*irv);
                 irv=this->vars.erase(irv);
@@ -287,12 +286,11 @@ void GMFile::Remove_Unneeded_Objects()  {
                 ++irv;
         }
 
-        if(nc4_non_coord_set.size()!=0)
+        if(nc4_non_coord_set.empty()==false)
             this->have_nc4_non_coord = true;
     }
     else if(GPM_L3_New == this->product_type) {
-        for (vector<Group *>::iterator irg = this->groups.begin();
-            irg != this->groups.end(); ) {
+        for (auto irg = this->groups.begin();  irg != this->groups.end(); ) {
             if((*irg)->attrs.empty()) {
                 delete(*irg);
                 irg = this->groups.erase(irg);
@@ -308,8 +306,7 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
     // Here I don't check whether this is a netCDF file by 
     // using Check_Dimscale_General_Product_Pattern() to see if it returns true.
     // We will see if we need this.
-    for (vector<Group *>::iterator irg = this->groups.begin();
-        irg != this->groups.end(); ) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ) {
         if((*irg)->path.find("/InputPointers")==0) {
             delete(*irg);
             irg = this->groups.erase(irg);
@@ -319,8 +316,7 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
             ++irg;
     }
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
          if((*irv)->fullpath.find("/InputPointers")==0) {
             delete(*irv);
             irv = this->vars.erase(irv);
@@ -332,11 +328,10 @@ void GMFile::Remove_OMPSNPP_InputPointers()  {
 }
 void GMFile::Retrieve_H5_CVar_Supported_Attr_Values() {
 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-          ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
           
         if ((*ircv)->cvartype != CV_NONLATLON_MISS){
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            for (auto ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
             }
@@ -353,11 +348,9 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     File::Retrieve_H5_Supported_Attr_Values();
 
     //Coordinate variable attributes 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-          ircv != this->cvars.end(); ++ircv) {
-          
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
         if ((*ircv)->cvartype != CV_NONLATLON_MISS){
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+            for (auto ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ++ira) {
                 Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
             }
@@ -365,10 +358,8 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     }
 
     // Special variable attributes
-    for (vector<GMSPVar *>::iterator irspv = this->spvars.begin();
-          irspv != this->spvars.end(); ++irspv) {
-          
-        for (vector<Attribute *>::iterator ira = (*irspv)->attrs.begin();
+    for (auto irspv = this->spvars.begin(); irspv != this->spvars.end(); ++irspv) {
+        for (auto ira = (*irspv)->attrs.begin();
               ira != (*irspv)->attrs.end(); ++ira) {
             Retrieve_H5_Attr_Value(*ira,(*irspv)->fullpath);
             Adjust_H5_Attr_Value(*ira);
@@ -393,7 +384,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  {
             attr->value.resize(new_attrvalues.size());
             copy(new_attrvalues.begin(),new_attrvalues.end(),attr->value.begin()); 
         }
-    } // "end if (product_type == ACOS_L2S_OR_OCO2_L1B)"
+    } 
 }
 
 // Unsupported datatype
@@ -411,11 +402,9 @@ void GMFile:: Handle_Unsupported_Dtype(bool include_attr) {
 void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
 
     BESDEBUG("h5", "Coming to Handle_GM_Unsupported_Dtype()"<<endl);
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ) {
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                 ira != (*ircv)->attrs.end(); ) {
+            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
@@ -441,13 +430,11 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             ++ircv;
         }
        
-    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-    for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ) {
+    } 
 
+    for (auto ircv = this->spvars.begin(); ircv != this->spvars.end(); ) {
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                ira != (*ircv)->attrs.end(); ) {
+            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
@@ -467,7 +454,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             ++ircv;
         }
             
-    }// "end for (vector<GMSPVar *>::iterator ircv = this->spvars.begin()"
+    }
 }
 
 // Datatype ignore information.
@@ -510,14 +497,12 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
         || (Mea_Ozone == this->product_type)  || (Mea_SeaWiFS_L2 == this->product_type) || (Mea_SeaWiFS_L3 == this->product_type)
         || (OBPG_L3 == this->product_type)) {
 
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-            irv != this->cvars.end(); ++irv) {
+        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
             // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
+                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
                         // TODO: check why 64-bit integer is included here.
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
@@ -529,65 +514,61 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
-            } // end "if (false == (*irv)->attrs.empty())" 
-        }// end "for(vector<GMCVar*>"    
+            }  
+        } 
 
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-            irv != this->spvars.end(); ++irv) {
+        for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
             // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
             // attribute REFERENCE_LIST is okay to ignore. No need to report.
             bool is_ignored = ignored_dimscale_ref_list((*irv));
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        //TODO; check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                            // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                            // is okay to ignore if the variable has another attribute
-                            // CLASS="DIMENSION_SCALE"
-                            if (("DIMENSION_LIST" !=(*ira)->name) &&
-                                ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
-                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    //TODO; check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                        // is okay to ignore if the variable has another attribute
+                        // CLASS="DIMENSION_SCALE"
+                        if (("DIMENSION_LIST" !=(*ira)->name) &&
+                            ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
+                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                     }
-            } // "if (false == (*irv)->attrs.empty())"  
-        }// "for(vector<GMSPVar*>"    
+                }
+            }   
+        }    
     }// "if((General_Product == ......)"
     else {
- 
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-            irv != this->cvars.end(); ++irv) {
+        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        // TODO: check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                                this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
-                    }
-                //}
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    // TODO: check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) 
+                          this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
+                }
             }
-        }// for (vector<GMCVar *>::iterator irv = this->cvars.begin() STOP adding end logic comments
+        }
 
-        for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-            irv != this->spvars.end(); ++irv) {
+        for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
             if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
-                        //TODO: check why 64-bit integer is included here.
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                            this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
-                        }
+#if 0
+                //if (true == (*irv)->unsupported_attr_dtype) 
+#endif
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                    H5DataType temp_dtype = (*ira)->getType();
+                    //TODO: check why 64-bit integer is included here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                     }
-                //}
+                }
             }
-        }// for(vector<GMSPVar *> 
+        }
 
     }// else
 
@@ -610,8 +591,7 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
 
     BESDEBUG("h5", "Coming to GMFile:Handle_GM_Unsupported_Dspace()"<<endl);
     if(true == this->unsupported_var_dspace) {
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ) {
+        for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ) {
             if (true  == (*ircv)->unsupported_dspace ) {
             
                 // This may need to be checked carefully in the future,
@@ -625,11 +605,9 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
             else {
                 ++ircv;
             }
-        } // "for (vector<GMCVar *>::iterator ircv = this->cvars.begin();"
+        } 
 
-        for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ) {
-
+        for (auto ircv = this->spvars.begin(); ircv != this->spvars.end(); ) {
             if (true == (*ircv)->unsupported_dspace) {
                 delete (*ircv);
                 ircv = this->spvars.erase(ircv);
@@ -638,17 +616,15 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
                 ++ircv;
             }
             
-        }// for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-    }// if(true == this->unsupported_dspace) 
+        }
+    }// if
 
     if(true == include_attr) {
         if(true == this->unsupported_var_attr_dspace) {
-            for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                ircv != this->cvars.end(); ++ircv) {
+            for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
                 if (false == (*ircv)->attrs.empty()) {
                     if (true == (*ircv)->unsupported_attr_dspace) {
-                        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                            ira != (*ircv)->attrs.end(); ) {
+                        for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                             if (0 == (*ira)->count) {
                                 delete (*ira);
                                 ira = (*ircv)->attrs.erase(ira);
@@ -661,12 +637,10 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
                 }
             }
 
-            for (vector<GMSPVar *>::iterator ircv = this->spvars.begin();
-                ircv != this->spvars.end(); ++ircv) {
+            for (auto ircv = this->spvars.begin(); ircv != this->spvars.end(); ++ircv) {
                 if (false == (*ircv)->attrs.empty()) {
                     if (true == (*ircv)->unsupported_attr_dspace) {
-                        for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                            ira != (*ircv)->attrs.end(); ) {
+                        for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
                             if (0 == (*ira)->count) {
                                 delete (*ira);
                                 ira = (*ircv)->attrs.erase(ira);
@@ -677,9 +651,9 @@ void GMFile:: Handle_GM_Unsupported_Dspace(bool include_attr)  {
                         }
                     }
                 }
-            }
-        }// if(true == this->unsupported_var_attr_dspace)
-    }// if(true == include_attr)
+            } // for 
+        }// if
+    }// if
 
 }
 
@@ -710,7 +684,7 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
       remove_netCDF_internal_attributes(include_attr);
       if(include_attr == true) {
             // We also need to remove the _nc3_strict from the root attributes
-            for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end();)  {
+            for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end();)  {
 
                 if((*ira)->name == "_nc3_strict") {
                     delete(*ira);
@@ -730,10 +704,8 @@ void GMFile:: Handle_Unsupported_Others(bool include_attr)  {
                     ++ira;
                 }
             }
-            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
-                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                     ira != (*irv)->attrs.end();) {
+            for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
+                for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
                     if((*ira)->name == "CLASS") {
                         string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
 
@@ -864,7 +836,7 @@ void GMFile::Add_Dim_Name() {
             break;
         default:
            throw1("Cannot generate dim. names for unsupported datatype");
-    } // switch(product_type)
+    } 
 
 // Just for debugging
 #if 0
@@ -896,16 +868,14 @@ void GMFile::Add_Dim_Name_Mea_SeaWiFS() {
     pair<set<string>::iterator,bool> setret;
     if (Mea_SeaWiFS_L3 == product_type) 
         iscoard = true;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone((*irv));
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-            ird !=(*irv)->dims.end();++ird) { 
+        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
                 Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
         }
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+    } 
  
     if (true == dimnamelist.empty()) 
         throw1("This product should have the dimension names, but no dimension names are found");
@@ -921,8 +891,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
     bool has_class = false;
     bool has_reflist = false;
 
-    for(vector<Attribute *>::iterator ira = var->attrs.begin();
-          ira != var->attrs.end();ira++) {
+    for(auto ira = var->attrs.begin(); ira != var->attrs.end();ira++) {
         if ("DIMENSION_LIST" == (*ira)->name) {
            dimlistattr = *ira;
            has_dimlist = true;  
@@ -936,7 +905,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
             break;
         if (true == has_class && true == has_reflist) 
             break; 
-    } // for(vector<Attribute *>::iterator ira = var->attrs.begin(); ...
+    } 
 
     if (true == has_dimlist) 
         Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(var,dimlistattr);
@@ -964,12 +933,11 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
-        for (vector<Dimension *>::iterator ird= var->dims.begin();
-            ird != var->dims.end(); ++ird) {
-                Add_One_FakeDim_Name(*ird);
-                setsizeret = fakedimsize.insert((*ird)->size);
-                if (false == setsizeret.second)   
-                    Adjust_Duplicate_FakeDim_Name(*ird);
+        for (auto ird= var->dims.begin(); ird != var->dims.end(); ++ird) {
+            Add_One_FakeDim_Name(*ird);
+            setsizeret = fakedimsize.insert((*ird)->size);
+            if (false == setsizeret.second)   
+                Adjust_Duplicate_FakeDim_Name(*ird);
         }
 // Just for debugging
 #if 0
@@ -989,7 +957,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 }
 
 // Helper function to support dimensions of MeaSUrES SeaWiFS and OZone products
-void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*dimlistattr) 
+void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,const Attribute*dimlistattr) 
 {
     
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
@@ -1042,8 +1010,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
         int vlbuf_index = 0;
 
         // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
-        for (vector<Dimension *>::iterator ird = var->dims.begin();
-                ird != var->dims.end(); ++ird) {
+        for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
 
             if(vlbuf[vlbuf_index].p== nullptr) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
@@ -1073,7 +1040,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
             if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
 
-            string objname_str = string(objname.begin(),objname.end());
+            auto objname_str = string(objname.begin(),objname.end());
             string trim_objname = objname_str.substr(0,objnamelen);
             (*ird)->name = string(trim_objname.begin(),trim_objname.end());
 
@@ -1085,7 +1052,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
             H5Dclose(ref_dset);
             objname.clear();
             vlbuf_index++;
-        }// for (vector<Dimension *>::iterator ird = var->dims.begin()
+        }// end of for 
 
         if(vlbuf.size()!= 0) {
 
@@ -1135,8 +1102,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
     iscoard = true;
     bool use_dimscale = false;
 
-    for (vector<Group *>::iterator irg = this->groups.begin();
-        irg != this->groups.end(); ++ irg) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++ irg) {
         if ("/Dimensions" == (*irg)->path) {
             use_dimscale = true;
             break;
@@ -1149,11 +1115,8 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
         bool has_class = false;
         bool has_reflist = false;
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); irv++) {
-
-            for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                ira != (*irv)->attrs.end();ira++) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
+            for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
                 if ("DIMENSION_LIST" == (*ira)->name) 
                     has_dimlist = true;  
             }
@@ -1162,11 +1125,9 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
         }
 
         if (true == has_dimlist) {
-            for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); irv++) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
 
-                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                    ira != (*irv)->attrs.end();ira++) {
+                for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
                     if ("CLASS" == (*ira)->name) 
                         has_class = true;
                     if ("REFERENCE_LIST" == (*ira)->name) 
@@ -1182,17 +1143,15 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
             } 
             if (true == has_class && true == has_reflist) 
                 use_dimscale = true;
-        } // if (true == has_dimlist)
-    } // if (false == use_dimscale)
+        } // end of if (true == has_dimlist)
+    } // end of if (false == use_dimscale)
 
     if (true == use_dimscale) {
 
         pair<set<string>::iterator,bool> setret;
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone((*irv));
-            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                ird !=(*irv)->dims.end();++ird) { 
+            for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {  
                 setret = dimnamelist.insert((*ird)->name);
                 if(true == setret.second) 
                     Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
@@ -1201,7 +1160,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
  
         if (true == dimnamelist.empty()) 
             throw1("This product should have the dimension names, but no dimension names are found");
-    } // if (true == use_dimscale)    
+    } // end of if (true == use_dimscale)    
 
     else {
 
@@ -1210,15 +1169,14 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
         pair<multimap<hsize_t,string>::iterator,multimap<hsize_t,string>::iterator> mm_er_ret;
         multimap<hsize_t,string>::iterator irmm;
  
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             bool is_cv = check_cv((*irv)->name);
             if (true == is_cv) {
                 if ((*irv)->dims.size() != 1)
                     throw3("The coordinate variable", (*irv)->name," must be one dimension for the zonal average product");
                 ozonedimsize_to_dimname.insert(pair<hsize_t,string>(((*irv)->dims)[0]->size,(*irv)->fullpath));
             }
-        }// for (vector<Var *>::iterator irv = this->vars.begin(); ...
+        }// end of for 
 
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
@@ -1227,11 +1185,9 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
         set<string> tempdimnamelist;
         bool fakedimflag = false;
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
-            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                ird != (*irv)->dims.end(); ++ird) {
+            for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
 
                 fakedimflag = true;
                 mm_er_ret = ozonedimsize_to_dimname.equal_range((*ird)->size);
@@ -1254,11 +1210,11 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
                         Adjust_Duplicate_FakeDim_Name(*ird);
                 }
             
-            } // for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+            } // end of for 
             tempdimnamelist.clear();
             fakedimsize.clear();
-        } // for (vector<Var *>::iterator irv = this->vars.begin();
-    } // else
+        } // end of for 
+    } // end of else
 }
 
 // This is a special helper function for MeaSURES ozone products
@@ -1303,11 +1259,9 @@ void GMFile::Add_Dim_Name_GPM()
 
     // We find that GPM has an attribute DimensionNames(nlon,nlat) in this case.
     // We will use this attribute to specify the dimension names.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); irv++) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
 
-        for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) {
+        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
 
             if("DimensionNames" == (*ira)->name) {
 
@@ -1361,11 +1315,11 @@ void GMFile::Add_Dim_Name_GPM()
                         }
                     }
 
-                }// for(unsigned int i = 0; i<ind_elems.size(); ++i)
+                }// end of for
                 break;
 
-            } //if("DimensionNames" == (*ira)->name)
-        } //for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin()
+            } //end of if
+        } //end of for 
 
 #if 0
         if(false == has_dim_name_attr) {
@@ -1375,7 +1329,7 @@ void GMFile::Add_Dim_Name_GPM()
         }
             
 #endif
-    } //for (vector<Var *>::iterator irv = this->vars.begin();
+    } //end of for 
  
 }
      
@@ -1383,8 +1337,7 @@ void GMFile::Add_Dim_Name_GPM()
 void GMFile::Add_Dim_Name_Aqu_L3()
 {
     BESDEBUG("h5", "Coming to Add_Dim_Name_Aqu_L3()"<<endl);
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); irv++) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
         if ("l3m_data" == (*irv)->name) {
            ((*irv)->dims)[0]->name = "lat";
            ((*irv)->dims)[0]->newname = "lat";
@@ -1405,7 +1358,7 @@ void GMFile::Add_Dim_Name_Aqu_L3()
         }
 #endif
 
-    }// for (vector<Var *>::iterator irv = this->vars.begin()
+    }// end of for 
 }
 
 // Add dimension names for OSMAPL2S(note: the SMAP change their structures. The code doesn't not apply to them.)
@@ -1423,8 +1376,7 @@ void GMFile::Add_Dim_Name_OSMAPL2S(){
     multimap<hsize_t,string>::iterator irmm; 
 
     // Generate dimension names based on the size of "???_lat"(one coordinate variable) 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         tempvarname = (*irv)->name;
         if ((tempvarname.size() > key.size())&& 
             (key == tempvarname.substr(tempvarname.size()-key.size(),key.size()))){
@@ -1444,11 +1396,8 @@ void GMFile::Add_Dim_Name_OSMAPL2S(){
     bool fakedimflag = false;
 
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
-
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
 
             fakedimflag = true;
             mm_er_ret = osmapl2sdimsize_to_dimname.equal_range((*ird)->size);
@@ -1470,29 +1419,26 @@ void GMFile::Add_Dim_Name_OSMAPL2S(){
                  if (!setsizeret.second)  
                     Adjust_Duplicate_FakeDim_Name(*ird);
             }
-        } // for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+        } // end of for ird
         tempdimnamelist.clear();
         fakedimsize.clear();
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+    } // end of for irv
 }
 
 //Add dimension names for ACOS level2S or OCO2 level1B products
 void GMFile::Add_Dim_Name_ACOS_L2S_OCO2_L1B(){
  
     BESDEBUG("h5", "Coming to Add_Dim_Name_ACOS_L2S_OCO2_L1B()"<<endl);
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
                 Add_One_FakeDim_Name(*ird);
                 setsizeret = fakedimsize.insert((*ird)->size);
                 if (false == setsizeret.second)   
                     Adjust_Duplicate_FakeDim_Name(*ird);
         }
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+    } // end of for irv 
 }
 
 // Add dimension names for general products. Read the descrption of Check_General_Product_Pattern() for different patterns we support.
@@ -1525,12 +1471,12 @@ void GMFile::Add_Dim_Name_General_Product(){
 void GMFile::Check_General_Product_Pattern()  {
 
     BESDEBUG("h5", "Coming to Check_General_Product_Pattern()"<<endl);
-    if(false == Check_Dimscale_General_Product_Pattern()) {
+    if (false == Check_Dimscale_General_Product_Pattern()) {
         //HERE add a check for the GPM. (choose 5 variables equally distance for the attribute)
-        if(false == Check_And_Update_New_GPM_L3()) 
-        if(false == Check_LatLon2D_General_Product_Pattern()) 
-            if(false == Check_LatLon1D_General_Product_Pattern())
-                Check_LatLon_With_Coordinate_Attr_General_Product_Pattern();
+        if (false == Check_And_Update_New_GPM_L3()) 
+            if (false == Check_LatLon2D_General_Product_Pattern()) 
+                if (false == Check_LatLon1D_General_Product_Pattern())
+                    Check_LatLon_With_Coordinate_Attr_General_Product_Pattern();
     }
 
 }
@@ -1545,14 +1491,12 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
     bool has_dimscalelist  = false;
 
     // Check if containing the "DIMENSION_LIST" attribute;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-          ira != (*irv)->attrs.end();ira++) {
-           if ("DIMENSION_LIST" == (*ira)->name) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
+            if ("DIMENSION_LIST" == (*ira)->name) {
                 has_dimlist = true;
                 break;
-           }
+            }
         }
         if (true == has_dimlist)
             break;
@@ -1563,12 +1507,8 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
     // Actually "REFERENCE_LIST" is not necessary for a dimension scale dataset. If a dimension scale doesn't
     // have a "REFERENCE_LIST", it is still valid. But no other variables use this dimension scale. We found
     // such a case in a matched_airs_aqua product. KY 2012-12-03
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-
-
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-          ira != (*irv)->attrs.end();ira++) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
             if ("CLASS" == (*ira)->name) {
 
                 Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
@@ -1584,10 +1524,8 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
                 }
             }
         }
-
         if (true == has_dimscalelist)
             break;
-        
     }
 
     if (true == has_dimscalelist) {
@@ -1602,17 +1540,15 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
             
             bool is_general_dimscale = false;
 
-            for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                  
                 bool has_class_dscale = false;
                 bool has_name = false;
                 bool has_netcdf4_id = false;
 
-                for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                    ira != (*irv)->attrs.end();ira++) {
-                    if ("CLASS" == (*ira)->name) {
+                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
 
+                    if ("CLASS" == (*ira)->name) {
                         Retrieve_H5_Attr_Value(*ira,(*irv)->fullpath);
                         string class_value;
                         class_value.resize((*ira)->value.size());
@@ -1633,7 +1569,6 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
 
                 if(true == is_general_dimscale)
                     break;
-
             }
 
             if (true == is_general_dimscale) {
@@ -1649,7 +1584,7 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
 bool GMFile::Check_And_Update_New_GPM_L3() {
 
     bool is_new_gpm_l3 = false;
-    unsigned int num_vars = this->vars.size();
+    unsigned num_vars = this->vars.size();
     unsigned sel_steps = num_vars/5;
     string dim_name="DimensionNames";
     bool has_dim_name = false;
@@ -1658,7 +1593,7 @@ bool GMFile::Check_And_Update_New_GPM_L3() {
 
     // Given DimensionNames exists in almost every variable in the new GPM product,
     // We will check the existence of this attribute for at most 5 variables. 
-//#if 0
+
     vector<Var *>::iterator it_var_end;
 
     if(sel_steps ==1)
@@ -1666,11 +1601,9 @@ bool GMFile::Check_And_Update_New_GPM_L3() {
     else 
         it_var_end = this->vars.begin()+5*sel_steps;
         
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != it_var_end; irv+=sel_steps) {
-        //irv != this->vars.end(); irv+=sel_steps) {
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-          ira != (*irv)->attrs.end();ira++) {
+    for (auto irv = this->vars.begin(); irv != it_var_end; irv+=sel_steps) {
+        for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
+
             if(H5FSTRING == (*ira)->getType()) {
                 if((*ira)->name == dim_name){
                     has_dim_name = true;
@@ -1681,7 +1614,6 @@ bool GMFile::Check_And_Update_New_GPM_L3() {
         if(true == has_dim_name) 
             break;
     }
-//#endif
 
 
 
@@ -1690,19 +1622,19 @@ bool GMFile::Check_And_Update_New_GPM_L3() {
     if(true == has_dim_name) {
         string attr_name_subset = "GridHeader";
         BESDEBUG("h5", "GMFile::Check_And_Update_New_GPM_L3() has attribute <DimensionNames>. "<<endl);
-        for (vector<Group *>::iterator irg = this->groups.begin();
-            irg != this->groups.end(); ++ irg) {
-            for(vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
-                ira != (*irg)->attrs.end();ira++) {
+        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++ irg) {
+            for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();ira++) {
+
                 string attr_name = (*ira)->name;
+
                 // We identify this as a new GPM level 3 product.
-                if(attr_name.find(attr_name_subset)!=string::npos) {
+                if (attr_name.find(attr_name_subset)!=string::npos) {
                     this->product_type = GPM_L3_New;
                     is_new_gpm_l3 = true;
                     break;
                 }
             }
-            if(true == is_new_gpm_l3)
+            if (true == is_new_gpm_l3)
                 break;
         }
     }
@@ -1831,7 +1763,6 @@ bool GMFile::Check_LatLon2D_General_Product_Pattern_Name_Size(const string & lat
 
     // Only when both lat/lon are found can we support this case.
     // Before that, we also need to check if the lat/lon shares the same dimensions.
-    //if(2 == ll_flag) 
     if(true == ll_flag) {
 
         bool latlon_size_match = true;
@@ -1930,23 +1861,21 @@ bool GMFile::Check_LatLon1D_General_Product_Pattern_Name_Size(const string & lat
 
             // For a normal grid, a >2D variable should exist to have both lat and lon size, 
             // if such a variable that has the same size exists, we will treat it as a normal grid.
-            for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if((*irv)->rank >=2) {
                     short ll_size_flag = 0;
-                    for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-                       ird != (*irv)->dims.end(); ++ird) {
+                    for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
                         if(lat_size == (*ird)->size) {
                             ll_size_flag++;
                             if(2 == ll_size_flag){
                                 break;
                             }
                         }
-                     }
-                     if(2 == ll_size_flag) {
+                    }
+                    if(2 == ll_size_flag) {
                         latlon_size_match_grid = true;
                         break;
-                     }
+                    }
                 }
             }
         }
@@ -1982,11 +1911,10 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
     vector<Var*> tempvar_lon;
 
     // Check if having both lat, lon names stored in the coordinate attribute value by looping through rank >1 variables.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+
         if((*irv)->rank >=2) {
-            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
-                ira !=(*irv)->attrs.end();++ira) {
+            for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
 
                 // If having attribute "coordinates" for this variable, checking the values and 
                 // see if having lat/lon,latitude/longitude, Latitude/Longitude pairs.
@@ -1997,7 +1925,7 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
                     char sep=' ';
                     HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
                        
-                    for(vector<string>::iterator irs=coord_values.begin();irs!=coord_values.end();++irs) {
+                    for(auto irs=coord_values.begin();irs!=coord_values.end();++irs) {
                         string coord_value_suffix1;
                         string coord_value_suffix2;
                         string coord_value_suffix3;
@@ -2024,22 +1952,23 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
 
                     if(true == coor_has_lat_flag && true == coor_has_lon_flag)
                         break;
-                }// end if((*ira)->name
-            }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin()
+                }// end of if((*ira)->name
+            }// end of for (ira)
+
             if(true == coor_has_lat_flag && true == coor_has_lon_flag) 
                 break;
             else {
                 coor_has_lat_flag = false;
                 coor_has_lon_flag = false;
             }
-        } // if((*irv)->rank >=2) 
-    }//  for (vector<Var *>::iterator irv = this->vars.begin()
+        } // end of if 
+    }//  end of for 
 
     // Check the variable names that include latitude and longitude suffixes such as lat,latitude and Latitude. 
     if(true == coor_has_lat_flag && true == coor_has_lon_flag) {
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-            irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+
             bool var_is_lat = false;
             bool var_is_lon = false;
          
@@ -2063,24 +1992,24 @@ bool GMFile::Check_LatLon_With_Coordinate_Attr_General_Product_Pattern()  {
             // Find the lat/lon candidate, save them to  temporary vectors
             if(true == var_is_lat) {
                 if((*irv)->rank > 0) {
-                    Var * lat = new Var(*irv);
+                    auto lat = new Var(*irv);
                     tempvar_lat.push_back(lat);
                 }
             }
             else if(true == var_is_lon) {
                 if((*irv)->rank >0) {
-                    Var * lon = new Var(*irv);
+                    auto lon = new Var(*irv);
                     tempvar_lon.push_back(lon);
                 }
             }
-        }// for (vector<Var *>::iterator
+        }// for of irv
 
         // Build up latloncv_candidate_pairs,  Name_Size_2Pairs struct, 
         // 1) Compare the rank, dimension sizes and the dimension orders of tempvar_lon against tempvar_lat
         //      rank >=2 the sizes,orders, should be consistent
         //      rank =1, no check issue.
         //   2) If the conditions are fulfilled, save them to the Name_Size struct 
-        for(vector<Var*>:: iterator irlat = tempvar_lat.begin(); irlat!=tempvar_lat.end();++irlat) {
+        for (auto irlat = tempvar_lat.begin(); irlat!=tempvar_lat.end();++irlat) {
 
             // Check the rank =1 case
             if((*irlat)->rank == 1) 
@@ -2119,8 +2048,7 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
             int num_2d_rank = 0;
             int num_g2d_rank = 0;
             vector<struct Name_Size_2Pairs> temp_1d_latlon_pairs;
-            for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); 
-                ivs!=latloncv_candidate_pairs.end();++ivs) {
+            for(auto ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
                 if(1 == (*ivs).rank) {
                     num_1d_rank++;
                     temp_1d_latlon_pairs.push_back(*ivs);
@@ -2138,24 +2066,23 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
 
                 // Check if lat and lon share the same size and the dimension of a variable 
                 // that has the "coordinates" only holds one size.
-                for(vector<struct Name_Size_2Pairs>::iterator ivs=temp_1d_latlon_pairs.begin();
-                    ivs!=temp_1d_latlon_pairs.end();++ivs) {
+                for(auto ivs=temp_1d_latlon_pairs.begin(); ivs!=temp_1d_latlon_pairs.end();++ivs) {
                     if((*ivs).size1 != (*ivs).size2) {
                         ret_value = true;
                         break;
                     }
                     else {
 
-                    // If 1-D lat and lon share the same size,we need to check if there is a variable
-                    // that has both lat and lon as the coordinates but only has one dimension that holds the size.
-                    // If this is true, this is not the GENERAL_LATLON_COOR_ATTR case(SMAP level 2 follows into the category).
+                        // If 1-D lat and lon share the same size,we need to check if there is a variable
+                        // that has both lat and lon as the coordinates but only has one dimension that holds the size.
+                        // If this is true, this is not the GENERAL_LATLON_COOR_ATTR case(SMAP level 2 follows into the category).
                     
                         ret_value = true;
-                        for (vector<Var *>::iterator irv = this->vars.begin();
-                            irv != this->vars.end(); ++irv) {
+                        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+
                             if((*irv)->rank >=2) {
-                                for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
-                                    ira !=(*irv)->attrs.end();++ira) {
+                                for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+
                                     // Check if this variable has the "coordinates" attribute
                                     if((*ira)->name == co_attrname) {
                                         Retrieve_H5_Attr_Value((*ira),(*irv)->fullpath);
@@ -2165,7 +2092,7 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
                                         HDF5CFUtil::Split_helper(coord_values,orig_attr_value,sep);
                                         bool has_lat_flag = false;
                                         bool has_lon_flag = false;
-                                        for (vector<string>::iterator itcv=coord_values.begin();itcv!=coord_values.end();++itcv) {
+                                        for (auto itcv=coord_values.begin();itcv!=coord_values.end();++itcv) {
                                             if((*ivs).name1 == (*itcv)) 
 	                                        has_lat_flag = true;
                                             else if((*ivs).name2 == (*itcv))
@@ -2174,7 +2101,7 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
                                         // Find both lat and lon, now check the dim. size 
                                         if(true == has_lat_flag && true == has_lon_flag) {
                                             short has_same_ll_size = 0;
-                                            for(vector<Dimension *>::iterator ird = (*irv)->dims.begin();ird!=(*irv)->dims.end();++ird){
+                                            for(auto ird = (*irv)->dims.begin();ird!=(*irv)->dims.end();++ird){
                                                 if((*ird)->size == (*ivs).size1)
                                                     has_same_ll_size++;
                                             }
@@ -2184,18 +2111,19 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
                                             }
                                         }
                                     }
-                                }// for (vector<Attribute *>:: iterator ira 
+                                }// end of for ira 
+
                                 if(false == ret_value)
                                     break;
-                            }// if((*irv)->rank >=2) 
-                        }// for (vector<Var *>::iterator irv
+                            }// end of if irv
+                        }// end of for irv
 
                         if(true == ret_value) 
                             break;
                     }// else 
-                }// for(vector<struct Name_Size_2Pairs>::iterator ivs
-            } // else if(num_1d_rank!=0)
-        }// if(latloncv_candidate_pairs.size() >0)
+                }// end of for ivs
+            } // else of if num_1d_rank
+        }// end of if of latloncv_candidate_pairs
         
         release_standalone_var_vector(tempvar_lat);
         release_standalone_var_vector(tempvar_lon);
@@ -2213,14 +2141,14 @@ cerr<<"This product is the coordinate type "<<endl;
 }
 
 // Build 1-D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
-void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) {
+void GMFile::Build_lat1D_latlon_candidate(const Var *lat,const vector<Var*> &lon_vec) {
 
     BESDEBUG("h5", "Coming to Build_lat1D_latlon_candidate()"<<endl);
     set<string> lon_candidate_path;
     vector< pair<string,hsize_t> > lon_path_size_vec;
 
     // Obtain the path and the size info. from all the potential qualified longitude candidate.
-    for(vector<Var *>::const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+    for(auto irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
         if (lat->rank == (*irlon)->rank) {
             pair<string,hsize_t>lon_path_size;
@@ -2249,7 +2177,7 @@ void GMFile::Build_lat1D_latlon_candidate(Var *lat,const vector<Var*> &lon_vec) 
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         pair<string,hsize_t> lon_final_path_size;
         short num_lon_match = 0;
-        for(vector <pair<string,hsize_t> >::iterator islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon) {
+        for (auto islon =lon_path_size_vec.begin();islon!=lon_path_size_vec.end();++islon) {
             // Search the longitude path and see if it matches with the latitude.
             if(HDF5CFUtil::obtain_string_before_lastslash((*islon).first)==lat_path) {
                 num_lon_match++;
@@ -2279,7 +2207,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
     set<string> lon_candidate_path;
 
     // We will check if the longitude shares the same dimensions of the latitude
-    for(vector<Var*>:: const_iterator irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
+    for(auto irlon = lon_vec.begin(); irlon!=lon_vec.end();++irlon) {
 
         if (lat->rank == (*irlon)->rank) {
 
@@ -2302,7 +2230,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         vector <string> lon_final_candidate_path_vec;
-        for(set<string>::iterator islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+        for(auto islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
 
             // Search the path.
             if(HDF5CFUtil::obtain_string_before_lastslash(*islon_path)==lat_path) 
@@ -2340,7 +2268,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
             string lon_name_prefix1;
             string lon_name_prefix2;
 
-            for(vector<string>::iterator ilon = lon_final_candidate_path_vec.begin(); ilon!=lon_final_candidate_path_vec.end();++ilon) {
+            for(auto ilon = lon_final_candidate_path_vec.begin(); ilon!=lon_final_candidate_path_vec.end();++ilon) {
                 string lon_name = HDF5CFUtil::obtain_string_after_lastslash(*ilon);
                 if(lon_name.size() >3) {
                     lon_name_prefix1 = lon_name.substr(0,lon_name.size()-3);
@@ -2360,8 +2288,8 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 
                 }
             }
-        }// else if(lon_final_candidate_path_vec.size() >1) 
-    }//  if(lon_candidate_path.size() > 1)
+        }// end else of if lon_final_candidate_path_vec 
+    }//  end of if(lon_candidate_path.size() > 1)
 
     else if(lon_candidate_path.size() == 1) {//insert this lat/lon pair to the struct
 
@@ -2394,7 +2322,7 @@ void GMFile::Build_unique_latlon_candidate() {
     }
 
     // set is pre-sorted. we used a quick way to remove multiple elements.
-    for(set<int>::reverse_iterator its= duplicate_index.rbegin();its!=duplicate_index.rend();++its) {
+    for(auto its= duplicate_index.rbegin();its!=duplicate_index.rend();++its) {
         latloncv_candidate_pairs[*its] = latloncv_candidate_pairs.back();
         latloncv_candidate_pairs.pop_back();
     }
@@ -2533,18 +2461,16 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
     size_t latdimsize1 = 0;
 
     // Need to generate fake dimensions.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
  
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
         int num_dup_dim_size = 0;
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
-                Add_One_FakeDim_Name(*ird);
-                setsizeret = fakedimsize.insert((*ird)->size);
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+            Add_One_FakeDim_Name(*ird);
+            setsizeret = fakedimsize.insert((*ird)->size);
 
-                // Avoid the same size dimension sharing the same dimension name.
+            // Avoid the same size dimension sharing the same dimension name.
             if (false == setsizeret.second){   
                 num_dup_dim_size++;
                 Adjust_Duplicate_FakeDim_Name2(*ird,num_dup_dim_size);
@@ -2575,8 +2501,7 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
 
     // Now we need to change a dimension of a general variable that shares the same size of lat
     // to the dimension name of the lat. 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         int lat_dim0_index = 0;
         int lat_dim1_index = 0;
         bool has_lat_dims_size = false;
@@ -2601,11 +2526,15 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
         }
         // Find the lat's dimension sizes, change the (fake) dimension names.
         if(true == has_lat_dims_size) {
-            ((*irv)->dims[lat_dim0_index])->name = latdimname0;
-            //((*irv)->dims[lat_dim0_index])->newname = latdimname0;
 
+            ((*irv)->dims[lat_dim0_index])->name = latdimname0;
+#if 0
+            //((*irv)->dims[lat_dim0_index])->newname = latdimname0;
+#endif
             ((*irv)->dims[lat_dim1_index])->name = latdimname1;
+#if 0
             //((*irv)->dims[lat_dim1_index])->newname = latdimname1;
+#endif
 
         }
     }
@@ -2617,12 +2546,9 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
     // Obtain the tempdimnamelist set.
     set<string>tempdimnamelist;
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) 
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) 
             tempdimnamelist.insert((*ird)->name);
-
     }
 
     // Generate the final dimnamelist,it is a contiguous order: FakeDim0,FakeDim1 etc.
@@ -2640,8 +2566,8 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
     // we need to generate a map from original name to the final name.
     if(finaldimnamelist != tempdimnamelist) {
         map<string,string> tempdimname_to_finaldimname;
-        set<string>:: iterator tempit = tempdimnamelist.begin();
-        set<string>:: iterator finalit = finaldimnamelist.begin();
+        auto tempit = tempdimnamelist.begin();
+        auto finalit = finaldimnamelist.begin();
         while(tempit != tempdimnamelist.end()) {
             tempdimname_to_finaldimname[*tempit] = *finalit;
             tempit++;
@@ -2649,13 +2575,10 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
         } 
 
         // Change the dimension names of every variable to the final dimension name list.
-        for (vector<Var *>::iterator irv = this->vars.begin();
-             irv != this->vars.end(); ++irv) {
-            for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-                ird != (*irv)->dims.end(); ++ird) {
-                if(tempdimname_to_finaldimname.find((*ird)->name) !=tempdimname_to_finaldimname.end()){
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+                if(tempdimname_to_finaldimname.find((*ird)->name) !=tempdimname_to_finaldimname.end())
                     (*ird)->name = tempdimname_to_finaldimname[(*ird)->name];
-                }
                 else 
                     throw3("The  dimension names ",(*ird)->name, "cannot be found in the dim. name list.");
             }
@@ -2668,10 +2591,8 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
 
     // We need to update dimname_to_dimsize map. This may be used in the future.
     dimname_to_dimsize.clear();
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
             if(finaldimnamelist.find((*ird)->name)!=finaldimnamelist.end()) {
                 dimname_to_dimsize[(*ird)->name] = (*ird)->size;
                 dimname_to_unlimited[(*ird)->name] = (*ird)->unlimited_dim;
@@ -2684,12 +2605,9 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
     }
  
     // Finally set dimension newname
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) 
             (*ird)->newname = (*ird)->name;    
-        }
     }
  
 }
@@ -2700,13 +2618,11 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()  {
 
     BESDEBUG("h5", "Coming to Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()"<<endl);
     // Only need to add the fake dimension names
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
         int num_dup_dim_size = 0;
-        for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
-            ird != (*irv)->dims.end(); ++ird) {
+        for (auto ird= (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
             Add_One_FakeDim_Name(*ird);
             setsizeret = fakedimsize.insert((*ird)->size);
             // Avoid the same size dimension sharing the same dimension name.
@@ -2750,20 +2666,18 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product()  {
     pair<set<string>::iterator,bool> setret;
     this->iscoard = true;
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // Obtain all the dimension names for this variable
         Handle_UseDimscale_Var_Dim_Names_General_Product((*irv));
 
         // Need to update dimenamelist and dimname_to_dimsize and dimname_to_unlimited maps for future use.
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-            ird !=(*irv)->dims.end();++ird) { 
+        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {  
             setret = dimnamelist.insert((*ird)->name);
             if (true == setret.second) 
                 Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
         }
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+    } // end of for 
  
     if (true == dimnamelist.empty()) 
         throw1("This product should have the dimension names, but no dimension names are found");
@@ -2778,8 +2692,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
     bool has_dimlist = false;
     bool has_dimclass   = false;
 
-    for(vector<Attribute *>::iterator ira = var->attrs.begin();
-          ira != var->attrs.end();ira++) {
+    for(auto ira = var->attrs.begin(); ira != var->attrs.end();ira++) {
         if ("DIMENSION_LIST" == (*ira)->name) {
             dimlistattr = *ira;
             has_dimlist = true;  
@@ -2799,7 +2712,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
             }
         }
 
-    } // for(vector<Attribute *>::iterator ira = var->attrs.begin(); ...
+    } // end of for
 
     // This is a general variable, we need to find the corresponding coordinate variables.
     if (true == has_dimlist) 
@@ -2892,8 +2805,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
         int vlbuf_index = 0;
 
         // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
-        for (vector<Dimension *>::iterator ird = var->dims.begin();
-                ird != var->dims.end(); ++ird) {
+        for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
 
             if(vlbuf[vlbuf_index].p== nullptr) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
@@ -2907,7 +2819,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
             if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
 
-            string objname_str = string(objname.begin(),objname.end());
+            auto objname_str = string(objname.begin(),objname.end());
 
             // We need to remove the first character of the object name since the first character
             // of the object full path is always "/" and this will be changed to "_".
@@ -2927,8 +2839,9 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
 #endif
             objname.clear();
             vlbuf_index++;
-        }// for (vector<Dimension *>::iterator ird = var->dims.begin()
-        if(vlbuf.size()!= 0) {
+        }// end of for ird 
+
+        if(vlbuf.empty() == false) {
 
             if ((aspace_id = H5Aget_space(attr_id)) < 0)
                 throw2("Cannot get hdf5 dataspace id for the attribute ",dimlistattr->name);
@@ -3031,10 +2944,9 @@ void GMFile::Handle_CVar_GPM_L1()  {
     // the fake coordinate variables of these two dimensions should not be generated.
     // So we need to remember these dimension names.
     set<string> ll_dim_set;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
         if((*irv)->rank == 2 && (*irv)->name == "Latitude") {
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             size_t lat_pos = (*irv)->fullpath.rfind("Latitude");
             string lat_path = (*irv)->fullpath.substr(0,lat_pos);
             GMcvar->cfdimname = lat_path + ((*irv)->dims)[0]->name;    
@@ -3047,7 +2959,7 @@ void GMFile::Handle_CVar_GPM_L1()  {
         }
        
         if((*irv)->rank == 2 && (*irv)->name == "Longitude") {
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             size_t lon_pos = (*irv)->fullpath.rfind("Longitude");
             string lon_path = (*irv)->fullpath.substr(0,lon_pos);
             GMcvar->cfdimname = lon_path + ((*irv)->dims)[1]->name;    
@@ -3061,7 +2973,7 @@ void GMFile::Handle_CVar_GPM_L1()  {
         else {
             ++irv;
         }
-    }// for (vector<Var *>::iterator irv = this->vars.begin();...
+    }// end of for irv 
 
 #if 0
     // Loop through all variables and create a dim set.
@@ -3089,11 +3001,11 @@ cerr<<"dim name is "<<(*ird)->name <<endl;
         // We will not create fake coordinate variables for the
         // dimensions of latitude and longitude.
         if((ll_dim_set.find(itd->first)) == ll_dim_set.end()) {
-            GMCVar*GMcvar = new GMCVar();
+            auto GMcvar = new GMCVar();
             Create_Missing_CV(GMcvar,itd->first);
             this->cvars.push_back(GMcvar);
         }
-    }//for (map<string,hsize_t>::iterator itd = dimname_to_dimsize.begin(); ...
+    }//end of for (map<string,hsize_t>.
 
 }
 
@@ -3108,7 +3020,7 @@ void GMFile::Handle_CVar_GPM_L3() {
     for (map<string,hsize_t>::const_iterator itd = dimname_to_dimsize.begin();
                                             itd!=dimname_to_dimsize.end();++itd) {
 
-        GMCVar*GMcvar = new GMCVar();
+        auto GMcvar = new GMCVar();
         if("nlon" == itd->first || "nlat" == itd->first
            || "lnH" == itd->first || "ltH" == itd->first
            || "lnL" == itd->first || "ltL" == itd->first) {
@@ -3117,7 +3029,7 @@ void GMFile::Handle_CVar_GPM_L3() {
             GMcvar->fullpath = GMcvar->name;
             GMcvar->rank = 1;
             GMcvar->dtype = H5FLOAT32; 
-            Dimension* gmcvar_dim = new Dimension(itd->second);
+            auto gmcvar_dim = new Dimension(itd->second);
             gmcvar_dim->name = GMcvar->name;
             gmcvar_dim->newname = gmcvar_dim->name;
             GMcvar->dims.push_back(gmcvar_dim); 
@@ -3138,7 +3050,7 @@ void GMFile::Handle_CVar_GPM_L3() {
             GMcvar->fullpath = GMcvar->name;
             GMcvar->rank = 1;
             GMcvar->dtype = H5FLOAT32;
-            Dimension* gmcvar_dim = new Dimension(itd->second);
+            auto gmcvar_dim = new Dimension(itd->second);
             gmcvar_dim->name = GMcvar->name;
             gmcvar_dim->newname = gmcvar_dim->name;
             GMcvar->dims.push_back(gmcvar_dim);
@@ -3149,7 +3061,7 @@ void GMFile::Handle_CVar_GPM_L3() {
         else 
             Create_Missing_CV(GMcvar,itd->first);
         this->cvars.push_back(GMcvar);
-    }//for (map<string,hsize_t>::iterator itd = dimname_to_dimsize.begin(); ...
+    }//end of for
 }
 
 // Handle Coordinate variables for MeaSuRES SeaWiFS
@@ -3159,10 +3071,8 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
-    for (set<string>::iterator irs = dimnamelist.begin();
-            irs != dimnamelist.end();++irs) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ) {
+    for (auto irs = dimnamelist.begin(); irs != dimnamelist.end();++irs) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
             if ((*irs)== (*irv)->fullpath) {
 
                 if (!iscoard && (("/natrack" == (*irs)) 
@@ -3176,22 +3086,20 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(*irs);
-                GMCVar* GMcvar = new GMCVar(*irv);
+                auto GMcvar = new GMCVar(*irv);
                 GMcvar->cfdimname = *irs;
                 GMcvar->cvartype = CV_EXIST;
                 GMcvar->product_type = product_type;
                 this->cvars.push_back(GMcvar); 
                 delete(*irv);
                 irv = this->vars.erase(irv);
-                   //irv--;
-            } // if ((*irs)== (*irv)->fullpath)
+            } // end of if irs
             else if(false == iscoard) { 
-            // 2-D lat/lon, natrack maps to lat, nxtrack maps to lon.
-                 
+                // 2-D lat/lon, natrack maps to lat, nxtrack maps to lon.
                 if ((((*irs) =="/natrack") && ((*irv)->fullpath == "/latitude"))
                   ||(((*irs) =="/nxtrack") && ((*irv)->fullpath == "/longitude"))) {
                     tempdimnamelist.erase(*irs);
-                    GMCVar* GMcvar = new GMCVar(*irv);
+                    auto GMcvar = new GMCVar(*irv);
                     GMcvar->cfdimname = *irs;    
                     GMcvar->cvartype = CV_EXIST;
                     GMcvar->product_type = product_type;
@@ -3203,19 +3111,19 @@ void GMFile::Handle_CVar_Mea_SeaWiFS() {
                     ++irv;
                 }
 
-            }// else if(false == iscoard)
+            }// end of else if(false == iscoard)
             else {
                 ++irv;
             }
-        } // for (vector<Var *>::iterator irv = this->vars.begin() ... 
-    } // for (set<string>::iterator irs = dimnamelist.begin() ...
+        } // end of for irv  ... 
+    } // end of for irs  ...
 
     // Creating the missing "third-dimension" according to the dimension names.
     // This may never happen for the current MeaSure SeaWiFS, but put it here for code coherence and completeness.
     // KY 12-30-2011
     for (set<string>::iterator irs = tempdimnamelist.begin();
         irs != tempdimnamelist.end();++irs) {
-        GMCVar*GMcvar = new GMCVar();
+        auto GMcvar = new GMCVar();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3238,8 +3146,7 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
 
     set<string> itset;
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
 
         tempvarname = (*irv)->name;
 
@@ -3252,7 +3159,7 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
                 throw5("variable ",tempvarname," must have dimension ",osmapl2sdim0," , but not found ");
 
             tempdimnamelist.erase(osmapl2sdim0);
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             GMcvar->newname = GMcvar->name; // Remove the path, just use the variable name
             GMcvar->cfdimname = osmapl2sdim0;    
             GMcvar->cvartype = CV_EXIST;
@@ -3260,7 +3167,7 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
             this->cvars.push_back(GMcvar);
             delete(*irv);
             irv = this->vars.erase(irv);
-        }// if ((tempvarname.size() > key0.size())&& ...
+        }// end of if 
                     
         else if ((tempvarname.size() > key1.size())&& 
                 (key1 == tempvarname.substr(tempvarname.size()-key1.size(),key1.size()))){
@@ -3272,7 +3179,7 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
 
             tempdimnamelist.erase(osmapl2sdim1);
 
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             GMcvar->newname = GMcvar->name;
             GMcvar->cfdimname = osmapl2sdim1;    
             GMcvar->cvartype = CV_EXIST;
@@ -3280,18 +3187,17 @@ void GMFile::Handle_CVar_OSMAPL2S()  {
             this->cvars.push_back(GMcvar);
             delete(*irv);
             irv = this->vars.erase(irv);
-        }// else if ((tempvarname.size() > key1.size())&& ...
+        }// end of else if ((tempvarname.size() > key1.size())&& ...
         else {
             ++irv;
         }
         if (true == foundkey0 && true == foundkey1) 
             break;
-    } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+    } // end of for 
 
-    for (set<string>::iterator irs = tempdimnamelist.begin();
-        irs != tempdimnamelist.end();++irs) {
+    for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();++irs) {
 
-        GMCVar*GMcvar = new GMCVar();
+        auto GMcvar = new GMCVar();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3303,19 +3209,17 @@ void GMFile::Handle_CVar_Aqu_L3()  {
 
     BESDEBUG("h5", "Coming to Handle_CVar_Aqu_L3()"<<endl);
     iscoard = true;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         if ( "l3m_data" == (*irv)->name) { 
-            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                        ird != (*irv)->dims.end(); ++ird) {
-                GMCVar*GMcvar = new GMCVar();
+            for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+                auto GMcvar = new GMCVar();
                 GMcvar->name = (*ird)->name;
                 GMcvar->newname = GMcvar->name;
                 GMcvar->fullpath = GMcvar->name;
                 GMcvar->rank = 1;
                 GMcvar->dtype = H5FLOAT32; 
-                Dimension* gmcvar_dim = new Dimension((*ird)->size);
+                auto gmcvar_dim = new Dimension((*ird)->size);
                 gmcvar_dim->name = GMcvar->name;
                 gmcvar_dim->newname = gmcvar_dim->name;
                 GMcvar->dims.push_back(gmcvar_dim); 
@@ -3324,9 +3228,9 @@ void GMFile::Handle_CVar_Aqu_L3()  {
                 if ("lon" == GMcvar->name ) GMcvar->cvartype = CV_LON_MISS;
                 GMcvar->product_type = product_type;
                 this->cvars.push_back(GMcvar);
-            } // for (vector<Dimension *>::iterator ird = (*irv)->dims.begin(); ...
-        } // if ( "l3m_data" == (*irv)->name) 
-    }//for (vector<Var *>::iterator irv = this->vars.begin(); ...
+            } // end of for 
+        } // end of if  
+    }//end of for 
  
 }
 
@@ -3340,10 +3244,8 @@ void GMFile::Handle_CVar_Mea_Ozone() {
     if(false == iscoard) 
         throw1("Measure Ozone level 3 zonal average product must follow COARDS conventions");
 
-    for (set<string>::iterator irs = dimnamelist.begin();
-            irs != dimnamelist.end();++irs) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ) {
+    for (auto irs = dimnamelist.begin(); irs != dimnamelist.end();++irs) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
             if ((*irs)== (*irv)->fullpath) {
 
                 if((*irv)->dims.size()!=1) 
@@ -3351,24 +3253,23 @@ void GMFile::Handle_CVar_Mea_Ozone() {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(*irs);
-                GMCVar* GMcvar = new GMCVar(*irv);
+                auto GMcvar = new GMCVar(*irv);
                 GMcvar->cfdimname = *irs;
                 GMcvar->cvartype = CV_EXIST;
                 GMcvar->product_type = product_type;
                 this->cvars.push_back(GMcvar); 
                 delete(*irv);
                 irv = this->vars.erase(irv);
-            } // if ((*irs)== (*irv)->fullpath)
+            } // end of if 
             else {
                 ++irv;
             }
-        } // for (vector<Var *>::iterator irv = this->vars.begin();
-    } // for (set<string>::iterator irs = dimnamelist.begin();
+        } // end of for irv 
+    } // end of for irs 
 
-    for (set<string>::iterator irs = tempdimnamelist.begin();
-        irs != tempdimnamelist.end();irs++) {
+    for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
 
-        GMCVar*GMcvar = new GMCVar();
+        auto GMcvar = new GMCVar();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3381,10 +3282,8 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
-    for (set<string>::iterator irs = dimnamelist.begin();
-            irs != dimnamelist.end();++irs) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ) {
+    for (auto irs = dimnamelist.begin(); irs != dimnamelist.end();++irs) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
 
             // This is the dimension scale dataset; it should be changed to a coordinate variable.
             if ((*irs)== (*irv)->fullpath) {
@@ -3393,7 +3292,7 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
 
                 // Create Coordinate variables.
                 tempdimnamelist.erase(*irs);
-                GMCVar* GMcvar = new GMCVar(*irv);
+                auto GMcvar = new GMCVar(*irv);
                 GMcvar->cfdimname = *irs;
 
                 // Check if this is just a netCDF-4 dimension. 
@@ -3409,20 +3308,19 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
                 this->cvars.push_back(GMcvar); 
                 delete(*irv);
                 irv = this->vars.erase(irv);
-            } // if ((*irs)== (*irv)->fullpath)
+            } // end of if irs
             else {
                 ++irv;
             }
-       } // for (vector<Var *>::iterator irv = this->vars.begin();
-    } // for (set<string>::iterator irs = dimnamelist.begin();
+       } // end of for  irv 
+    } // end of for irs 
 
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     Update_M2DLatLon_Dimscale_CVs();
 
     // Add other missing coordinate variables.
-    for (set<string>::iterator irs = tempdimnamelist.begin();
-        irs != tempdimnamelist.end();irs++) {
-        GMCVar*GMcvar = new GMCVar();
+    for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
+        auto GMcvar = new GMCVar();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -3516,8 +3414,8 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
         // We need to remember the dim names that the 2-D lat/lon CVs are associated with.
         set<string>dim_names_2d_cvs;
 
-        for(vector<Var *>::iterator irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv){
-            GMCVar *lat = new GMCVar(*irv);
+        for(auto irv = tempcvar_2dlat.begin();irv != tempcvar_2dlat.end();++irv){
+            auto lat = new GMCVar(*irv);
             // Latitude is always corresponding to the first dimension.
             lat->cfdimname = (*irv)->getDimensions()[0]->name;
             dim_names_2d_cvs.insert(lat->cfdimname);
@@ -3525,8 +3423,8 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
             lat->product_type = product_type;
             this->cvars.push_back(lat);
         }
-        for(vector<Var *>::iterator irv = tempcvar_2dlon.begin();irv != tempcvar_2dlon.end();++irv){
-            GMCVar *lon = new GMCVar(*irv);
+        for(auto irv = tempcvar_2dlon.begin();irv != tempcvar_2dlon.end();++irv){
+            auto lon = new GMCVar(*irv);
             // Longitude is always corresponding to the second dimension.
             lon->cfdimname = (*irv)->getDimensions()[1]->name;
             dim_names_2d_cvs.insert(lon->cfdimname);
@@ -3538,7 +3436,7 @@ cerr<<"Final candidate 2-D Left lon variable full path is "<<(*irv)->fullpath <<
         // 8. Move the originally assigned 1-D CVs that are replaced by 2-D CVs back to the general variable list. 
         //    Also remove the CV created by the pure dimensions. 
         //    Dimension names are used to identify those 1-D CVs.
-        for(vector<GMCVar*>::iterator ircv= this->cvars.begin();ircv !=this->cvars.end();) {
+        for(auto ircv= this->cvars.begin();ircv !=this->cvars.end();) {
             if(1 == (*ircv)->rank) {
                 if(dim_names_2d_cvs.find((*ircv)->cfdimname)!=dim_names_2d_cvs.end()) {
                     if(CV_FILLINDEX == (*ircv)->cvartype) {// This is pure dimension
@@ -3629,15 +3527,13 @@ bool GMFile::Check_1DGeolocation_Dimscale()  {
     hsize_t lon_size = 0;
 
     // We need to consider both 1-D lat/lon and the 1-D zonal average case(1-D lat only). 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-            ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->cvartype == CV_EXIST) {
             string attr_name ="units";
             string lat_unit_value = "degrees_north";
             string lon_unit_value = "degrees_east";
 
-           for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                     ira != (*ircv)->attrs.end();ira++) {
+           for(auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end();ira++) {
 
                 if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lat_unit_value)) {
                     lat_size = (*ircv)->getDimensions()[0]->size;
@@ -3669,11 +3565,10 @@ bool GMFile::Check_1DGeolocation_Dimscale()  {
                 if(lat_size == lon_size) { 
                     bool var_has_latdim = false;
                     bool var_has_londim = false;
-                    for (vector<Var *>::iterator irv = this->vars.begin();
+                    for (auto irv = this->vars.begin();
                         irv != this->vars.end(); ++irv) {
                         if((*irv)->rank >= 2) {
-                            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                                ird !=(*irv)->dims.end();++ird) {
+                            for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
                                 if((*ird)->name == lat_dimname)
                                     var_has_latdim = true;
                                 else if((*ird)->name == lon_dimname)
@@ -3697,8 +3592,7 @@ bool GMFile::Check_1DGeolocation_Dimscale()  {
                 // Multiple groups, need to check if having 2-D lat/lon pairs 
                 bool has_2d_latname_flag = false;
                 bool has_2d_lonname_flag = false;
-                for (vector<Var *>::iterator irv = this->vars.begin();
-                    irv != this->vars.end(); ++irv) {
+                for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                     if((*irv)->rank == 2) { 
                         
                         //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
@@ -3720,11 +3614,9 @@ bool GMFile::Check_1DGeolocation_Dimscale()  {
                     has_2d_latname_flag = false;
                     has_2d_lonname_flag = false;
 
-                    for (vector<Var *>::iterator irv = this->vars.begin();
-                        irv != this->vars.end(); ++irv) {
+                    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) { 
                         if((*irv)->rank == 2) {
-                            for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                                ira != (*irv)->attrs.end(); ++ira) {
+                            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
 
                                 if (false == has_2d_latname_flag) {
 
@@ -3783,8 +3675,7 @@ cerr<<"Possibly has 2D lat/lon CVs. "<<endl;
 void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cvar_1dlon) {
 
     BESDEBUG("h5", "Coming to Obtain_1DLatLon_CVs()"<<endl);
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-            ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
 
         if((*ircv)->cvartype == CV_EXIST) {
 
@@ -3792,12 +3683,11 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
             string lat_unit_value = "degrees_north";
             string lon_unit_value = "degrees_east";
 
-           for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                     ira != (*ircv)->attrs.end();ira++) {
+           for(auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end();ira++) {
 
                 // 1-D latitude
                 if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lat_unit_value)) {
-                    GMCVar *lat = new GMCVar(*ircv);
+                    auto lat = new GMCVar(*ircv);
                     lat->cfdimname = (*ircv)->getDimensions()[0]->name;
                     lat->cvartype = (*ircv)->cvartype;
                     lat->product_type = (*ircv)->product_type;
@@ -3805,15 +3695,15 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
                 }
                 // 1-D longitude
                 else if(true == Is_Str_Attr(*ira,(*ircv)->fullpath,attr_name,lon_unit_value)){ 
-                    GMCVar *lon = new GMCVar(*ircv);
+                    auto lon = new GMCVar(*ircv);
                     lon->cfdimname = (*ircv)->getDimensions()[0]->name;
                     lon->cvartype = (*ircv)->cvartype;
                     lon->product_type = (*ircv)->product_type;
                     cvar_1dlon.push_back(lon);
                 }
             }
-        }// if((*ircv)->cvartype == CV_EXIST)
-    }// for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+        }// end of if((*ircv)->cvartype == CV_EXIST)
+    }// end of for (ircv = this->cvars.begin();
 
 }
 
@@ -3823,8 +3713,7 @@ void GMFile::Obtain_1DLatLon_CVs(vector<GMCVar*> &cvar_1dlat,vector<GMCVar*> &cv
 void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlon,map<string,int> & latlon2d_path_to_index) {
 
     BESDEBUG("h5", "Coming to Obtain_2DLatLon_Vars()"<<endl);
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         if((*irv)->rank == 2) { 
                         
             //Note: When the 2nd parameter is true in the function Is_geolatlon, it checks the lat/latitude/Latitude 
@@ -3837,7 +3726,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
             else {
 
                 bool has_2dlat = false;
-                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                for (auto ira = (*irv)->attrs.begin();
                     ira != (*irv)->attrs.end(); ++ira) {
 
                     // When the third parameter of has_latlon_cf_units is set to true, it checks latitude
@@ -3861,7 +3750,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                 var_2dlon.push_back(lon);
             }
             else {
-                for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+                for (auto ira = (*irv)->attrs.begin();
                     ira != (*irv)->attrs.end(); ++ira) {
 
                     // When the third parameter of has_latlon_cf_units is set to false, it checks longitude
@@ -3874,7 +3763,7 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
                 }
             }
         } // if((*irv)->rank == 2)
-    } // for (vector<Var *>::iterator irv
+    } // for (auto irv
 }
 
 //  Sequeeze the 2-D lat/lon vectors by removing the ones that share the same dims with 1-D lat/lon CVs.
@@ -3887,11 +3776,10 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 
     BESDEBUG("h5", "Coming to Obtain_2DLLVars_With_Dims_not_1DLLCVars()"<<endl);
     // First latitude at var_2dlat
-    for(vector<Var *>::iterator irv = var_2dlat.begin();irv != var_2dlat.end();) {
+    for(auto irv = var_2dlat.begin();irv != var_2dlat.end();) {
         bool remove_2dlat = false;
-        for(vector<GMCVar *>::iterator ircv = cvar_1dlat.begin();ircv != cvar_1dlat.end();++ircv) {
-            for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
-                ird!=(*irv)->dims.end(); ++ird) {
+        for(auto ircv = cvar_1dlat.begin();ircv != cvar_1dlat.end();++ircv) {
+            for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end(); ++ird) {
                 if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
                    (*ird)->size == (*ircv)->getDimensions()[0]->size) {
                     latlon2d_path_to_index.erase((*irv)->fullpath);
@@ -3907,13 +3795,13 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 
         if(false == remove_2dlat)
             ++irv;
-    }// for(vector<Var *>::iterator irv = var_2dlat.begin()
+    }// end of for(auto irv = var_2dlat.begin()
 
     // Second longitude
-    for(vector<Var *>::iterator irv = var_2dlon.begin();irv != var_2dlon.end();) {
+    for(auto irv = var_2dlon.begin();irv != var_2dlon.end();) {
         bool remove_2dlon = false;
-        for(vector<GMCVar *>::iterator ircv = cvar_1dlon.begin();ircv != cvar_1dlon.end();++ircv) {
-            for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
+        for(auto ircv = cvar_1dlon.begin();ircv != cvar_1dlon.end();++ircv) {
+            for (auto ird = (*irv)->dims.begin();
                 ird!=(*irv)->dims.end(); ++ird) {
                 if((*ird)->name == (*ircv)->getDimensions()[0]->name &&
                    (*ird)->size == (*ircv)->getDimensions()[0]->size) {
@@ -3930,7 +3818,7 @@ void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
 
         if(false == remove_2dlon)
             ++irv;
-    } // for(vector<Var *>::iterator irv = var_2dlon.begin()
+    } // end of for(auto irv = var_2dlon.begin()
 
 }
 
@@ -3943,8 +3831,8 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,
     // If no, remove that lat from the vector.
     vector<string> lon2d_group_paths;
 
-    for(vector<Var *>::iterator irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();) {
-        for(vector<Var *>::iterator irv_2dlon = var_2dlon.begin();irv_2dlon != var_2dlon.end();++irv_2dlon) {
+    for(auto irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();) {
+        for(auto irv_2dlon = var_2dlon.begin();irv_2dlon != var_2dlon.end();++irv_2dlon) {
             if(((*irv_2dlat)->getDimensions()[0]->name == (*irv_2dlon)->getDimensions()[0]->name) &&
                ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
                ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
@@ -3959,12 +3847,14 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,
             irv_2dlat = var_2dlat.erase(irv_2dlat);
         }
         else {// Find lons,check if they are under the same group
+#if 0
             //string lat2d_group_path = (*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/"));
+#endif
             string lat2d_group_path = HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlat)->fullpath);
 
             // Check how many lon2d shares the same group with the lat2d
             short lon2d_has_lat2d_group_path_flag = 0;
-            for(vector<string>::iterator ivs = lon2d_group_paths.begin();ivs!=lon2d_group_paths.end();++ivs) {
+            for(auto ivs = lon2d_group_paths.begin();ivs!=lon2d_group_paths.end();++ivs) {
                 if((*ivs)==lat2d_group_path) 
                     lon2d_has_lat2d_group_path_flag++;
             }
@@ -3995,7 +3885,7 @@ void GMFile::Obtain_2DLLCVar_Candidate(vector<Var*> &var_2dlat,
     }
 
 #if 0
-for(vector<Var *>::iterator irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();++irv_2dlat) 
+for(auto irv_2dlat = var_2dlat.begin();irv_2dlat !=var_2dlat.end();++irv_2dlat) 
 cerr<<"2 left 2-D lat variable full path is: "<<(*irv_2dlat)->fullpath <<endl;
 #endif
  
@@ -4005,17 +3895,19 @@ cerr<<"2 left 2-D lat variable full path is: "<<(*irv_2dlat)->fullpath <<endl;
     vector<string> lat2d_group_paths;
 
     // Check the longitude 
-    for(vector<Var *>::iterator irv_2dlon = var_2dlon.begin();irv_2dlon !=var_2dlon.end();) {
-        for(vector<Var *>::iterator irv_2dlat = var_2dlat.begin();irv_2dlat != var_2dlat.end();++irv_2dlat) {
+    for(auto irv_2dlon = var_2dlon.begin();irv_2dlon !=var_2dlon.end();) {
+        for(auto irv_2dlat = var_2dlat.begin();irv_2dlat != var_2dlat.end();++irv_2dlat) {
             if(((*irv_2dlat)->getDimensions()[0]->name == (*irv_2dlon)->getDimensions()[0]->name) &&
                ((*irv_2dlat)->getDimensions()[0]->size == (*irv_2dlon)->getDimensions()[0]->size) &&
                ((*irv_2dlat)->getDimensions()[1]->name == (*irv_2dlon)->getDimensions()[1]->name) &&
                ((*irv_2dlat)->getDimensions()[1]->size == (*irv_2dlon)->getDimensions()[1]->size)) 
                lat2d_group_paths.push_back(HDF5CFUtil::obtain_string_before_lastslash((*irv_2dlat)->fullpath)); 
+#if 0
                 //lat2d_group_paths.push_back((*irv_2dlat)->fullpath.substr(0,(*irv_2dlat)->fullpath.find_last_of("/")));
+#endif
         }
         // Doesn't find any lats that shares the same dims,remove this lon from this vector
-        if(0 == lat2d_group_paths.size()) {
+        if(lat2d_group_paths.empty()) {
             latlon2d_path_to_index.erase((*irv_2dlon)->fullpath);
             delete(*irv_2dlon);
             irv_2dlon = var_2dlon.erase(irv_2dlon);
@@ -4025,7 +3917,7 @@ cerr<<"2 left 2-D lat variable full path is: "<<(*irv_2dlat)->fullpath <<endl;
 
             // Check how many lat2d shares the same group with the lon2d
             short lat2d_has_lon2d_group_path_flag = 0;
-            for(vector<string>::iterator ivs = lat2d_group_paths.begin();ivs!=lat2d_group_paths.end();++ivs) {
+            for(auto ivs = lat2d_group_paths.begin();ivs!=lat2d_group_paths.end();++ivs) {
                 if((*ivs)==lon2d_group_path) 
                     lat2d_has_lon2d_group_path_flag++;
             }
@@ -4147,13 +4039,13 @@ void GMFile::Obtain_unique_2dCV(vector<Var*> &var_ll,map<string,int>&latlon2d_pa
  
                     }
                 }
-            }// if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
-        }// for(int j = i+1; j<var_ll.size();j++)
-    }// for( int i = 0; i <var_ll.size();i++)
+            }// end of if((var_ll[i]->getDimensions()[0]->name == var_ll[j]->getDimensions()[0]->name)
+        }// end of for(int j = i+1; j<var_ll.size();j++)
+    }// end of for( int i = 0; i <var_ll.size();i++)
 
     // Remove the shared 2-D lat/lon CVs from the 2-D lat/lon CV candidates. 
     int var_index = 0;
-    for(vector<Var*>::iterator itv = var_ll.begin(); itv!= var_ll.end();) {
+    for(auto itv = var_ll.begin(); itv!= var_ll.end();) {
         if(true == var_share_dims[var_index]) {
             latlon2d_path_to_index.erase((*itv)->fullpath);        
             delete(*itv);
@@ -4173,7 +4065,7 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
     BESDEBUG("h5", "Coming to Remove_2DLLCVar_Final_Candidate_from_Vars()"<<endl);
     //Sort the 2-D lat/lon var index according to the ascending order before removing the 2-D lat/lon vars
     sort(var2d_index.begin(),var2d_index.end());
-    vector<Var *>::iterator it = this->vars.begin();
+    auto it = this->vars.begin();
 
     // This is a performance optimiziation operation.
     // We find it is typical for swath files that have many many general variables but only have very few lat/lon CVs.
@@ -4201,15 +4093,13 @@ bool GMFile::Check_Var_2D_CVars(Var *var)  {
 
     BESDEBUG("h5", "Coming to Check_Var_2D_CVars()"<<endl);
     bool ret_value = true;
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-        ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->rank==2) {
             short first_dim_index = 0;
             short first_dim_times = 0;
             short second_dim_index = 0;
             short second_dim_times = 0;
-            for (vector<Dimension *>::iterator ird = var->dims.begin();
-                ird != var->dims.end(); ++ird) {
+            for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
                 if((*ird)->name == ((*ircv)->getDimensions()[0])->name) {
                     first_dim_index = distance(var->dims.begin(),ird);  
                     first_dim_times++;
@@ -4246,7 +4136,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
     char sc = ' ';
     char backslash = '/';
 
-    for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
+    for (auto ira =var->attrs.begin(); ira !=var->attrs.end();) {
 
         // We only check the original attribute name
         // Remove the original "coordinates" attribute.
@@ -4290,7 +4180,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
             flatten_coor_value += get_CF_string(orig_coor_value.substr(ele_start_pos));
 
         // Generate the new "coordinates" attribute.
-        Attribute *attr = new Attribute();
+        auto attr = new Attribute();
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
         var->coord_attr_add_path = false;
@@ -4314,7 +4204,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr_EOS5(Var *var)  {
     // Assume the separator is always a space.
     char sc = ' ';
 
-    for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
+    for (auto ira =var->attrs.begin(); ira !=var->attrs.end();) {
 
         // We only check the original attribute name
         // Remove the original "coordinates" attribute.
@@ -4396,7 +4286,7 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname)  {
     latlon_2d_cv_check1 = true;
 #if 0
     // If having 2-D lat/lon, the corresponding dimension must be pure and the CV type must be FILLINDEX.
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+    for (auto ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->cvartype == CV_FILLINDEX){ 
             latlon_2d_cv_check1 = true;
@@ -4412,10 +4302,10 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname)  {
         BESDEBUG("h5","Coming to check if having 2d latlon coordinates for a netCDF-4 like product. "<<endl);
 
         // check if units attribute values have CF lat/lon units "degrees_north" or "degrees_east".
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+        for (auto ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {       
             if((*ircv)->cvartype == CV_EXIST) {
-                for(vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
+                for(auto ira = (*ircv)->attrs.begin();
                      ira != (*ircv)->attrs.end();ira++) {
                     string attr_name ="units";
                     string lat_unit_value = "degrees_north";
@@ -4444,7 +4334,7 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname)  {
         short LatLon_flag   = 0;
         short latilong_flag = 0;
             
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+        for (auto ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {       
             if((*ircv)->cvartype == CV_EXIST) {
                 if((*ircv)->name == "lat")
@@ -4483,7 +4373,7 @@ bool  GMFile::Check_2DLatLon_Dimscale(string & latname, string &lonname)  {
     // KY 2015-12-03
     if(true == latlon_2d_cv_check1 && true == latlon_2d_cv_check2 && true == latlon_2d_cv_check3) {
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
+        for (auto irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
 
             // 
@@ -4566,7 +4456,7 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
     iscoard = false;
 
     // Update latitude.
-    for (vector<Var *>::iterator irv = this->vars.begin();
+    for (auto irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 
         if((*irv)->rank == 2) {
@@ -4627,7 +4517,7 @@ void GMFile::Update_2DLatLon_Dimscale_CV(const string &latname,const string &lon
     }
 
     // Update longitude.
-    for (vector<Var *>::iterator irv = this->vars.begin();
+    for (auto irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 
         if((*irv)->rank == 2) {
@@ -4717,8 +4607,7 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
     pair<set<string>::iterator,bool> setret;
     set<string>tempdimnamelist = dimnamelist;
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // This is the dimension scale dataset; it should be changed to a coordinate variable.
         if (gp_latname== (*irv)->name) {
@@ -4726,7 +4615,7 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
             // For latitude, regardless 1D or 2D, the first dimension needs to be updated.
             // Create Coordinate variables.
             tempdimnamelist.erase(((*irv)->dims[0])->name);
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             GMcvar->cfdimname = ((*irv)->dims[0])->name;
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
@@ -4734,11 +4623,10 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
             delete(*irv);
             this->vars.erase(irv);
             break;
-        } // if ((*irs)== (*irv)->fullpath)
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+        } // end of if 
+    } // end of for 
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // This is the dimension scale dataset; it should be changed to a coordinate variable.
         if (gp_lonname== (*irv)->name) {
@@ -4753,7 +4641,7 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
                 londimname = ((*irv)->dims[0])->name;
                
             tempdimnamelist.erase(londimname);
-            GMCVar* GMcvar = new GMCVar(*irv);
+            auto GMcvar = new GMCVar(*irv);
             GMcvar->cfdimname = londimname;
             GMcvar->cvartype = CV_EXIST;
             GMcvar->product_type = product_type;
@@ -4761,14 +4649,13 @@ void GMFile::Handle_CVar_LatLon_General_Product()  {
             delete(*irv);
             this->vars.erase(irv);
             break;
-        } // if ((*irs)== (*irv)->fullpath)
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+        } // end of if 
+    } // end of for 
 
     //
     // Add other missing coordinate variables.
-    for (set<string>::iterator irs = tempdimnamelist.begin();
-        irs != tempdimnamelist.end();irs++) {
-        GMCVar*GMcvar = new GMCVar();
+    for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
+        auto GMcvar = new GMCVar();
         Create_Missing_CV(GMcvar,*irs);
         this->cvars.push_back(GMcvar);
     }
@@ -4783,8 +4670,7 @@ void GMFile::Handle_CVar_OBPG_L3()  {
             Handle_CVar_Dimscale_General_Product();
 
     // Change the CV Type of the corresponding CVs of lat and lon from CV_FILLINDEX to CV_LATMISS or CV_LONMISS
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // Here I try to avoid using the dimension name row and column to find the lat/lon dimension size.
         // So I am looking for a 2-D floating-point array or a 2-D array under the group geophsical_data.
@@ -4812,15 +4698,13 @@ void GMFile::Handle_CVar_OBPG_L3()  {
                     lat_size = temp_size;
                     lat_name = temp_name;
                 }
-                for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                    ircv != this->cvars.end(); ++ircv) {
+                for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
                     if((*ircv)->cvartype == CV_FILLINDEX) {
                         if((*ircv)->getDimensions()[0]->size == lat_size &&
                            (*ircv)->getDimensions()[0]->name == lat_name) {
                             (*ircv)->cvartype = CV_LAT_MISS;
                             (*ircv)->dtype = ll_dtype;
-                            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                                ira != (*ircv)->attrs.end(); ++ira) {
+                            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ++ira) {
                                 if ((*ira)->name == "NAME") {
                                     delete (*ira);
                                     (*ircv)->attrs.erase(ira);
@@ -4832,8 +4716,7 @@ void GMFile::Handle_CVar_OBPG_L3()  {
                            (*ircv)->getDimensions()[0]->name == lon_name) {
                             (*ircv)->cvartype = CV_LON_MISS;
                             (*ircv)->dtype = ll_dtype;
-                            for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
-                                ira != (*ircv)->attrs.end(); ++ira) {
+                            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ++ira) {
                                 if ((*ira)->name == "NAME") {
                                     delete (*ira);
                                     (*ircv)->attrs.erase(ira);
@@ -4841,14 +4724,13 @@ void GMFile::Handle_CVar_OBPG_L3()  {
                                 }
                             }
                         }
-
                     }
                 }
                 break;
 
-            } // if(((*irv)->fullpath.find("/geophsical_data") == 0) || ((*irv)->dtype == H5FLOAT32))
-        } // if((*irv)->rank == 2)
-    } // for (vector<Var *>::iterator irv = this->vars.begin();
+            } // end of if(((*irv)->fullpath.find("/geophsical_data") == 0) || ((*irv)->dtype == H5FLOAT32))
+        } // end of if((*irv)->rank == 2)
+    } // end of for (auto irv = this->vars.begin();
 
 }
 
@@ -4861,8 +4743,7 @@ void GMFile::Handle_SpVar() {
     else if(GPM_L1 == product_type) {
         // Loop through the variable list to build the coordinates.
         // These variables need to be removed.
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                    irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if((*irv)->name=="AlgorithmRuntimeInfo") {
                 delete(*irv);
                 this->vars.erase(irv); 
@@ -4874,8 +4755,7 @@ void GMFile::Handle_SpVar() {
     // GPM level-3 These variables need to be removed.
     else if(GPMM_L3 == product_type || GPMS_L3 == product_type || GPM_L3_New==product_type) {
 
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                    irv != this->vars.end(); ) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
             if((*irv)->name=="InputFileNames") {
                 delete(*irv);
                 irv = this->vars.erase(irv);
@@ -4891,9 +4771,7 @@ void GMFile::Handle_SpVar() {
             else {
                 ++irv;
             }
-
         }
-
    }
 
 }
@@ -4904,12 +4782,12 @@ void GMFile::Handle_SpVar_ACOS_OCO2()  {
     BESDEBUG("h5", "Coming to Handle_SpVar_ACOS_OCO2()"<<endl);
     //The ACOS or OCO2 have 64-bit variables. DAP2 doesn't support 64-bit variables.
     // So we will not handle attributes yet.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ) {
+
         if (H5INT64 == (*irv)->getType()) {
             
             // First: Time Part of soundingid
-            GMSPVar * spvar = new GMSPVar(*irv);
+            auto spvar = new GMSPVar(*irv);
             spvar->name = (*irv)->name +"_Time";
             spvar->newname = (*irv)->newname+"_Time";
             spvar->dtype = H5INT32;
@@ -4921,7 +4799,7 @@ void GMFile::Handle_SpVar_ACOS_OCO2()  {
             this->spvars.push_back(spvar);
 
             // Second: Date Part of soundingid
-            GMSPVar * spvar2 = new GMSPVar(*irv);
+            auto spvar2 = new GMSPVar(*irv);
             spvar2->name = (*irv)->name +"_Date";
             spvar2->newname = (*irv)->newname+"_Date";
             spvar2->dtype = H5INT32;
@@ -4934,11 +4812,11 @@ void GMFile::Handle_SpVar_ACOS_OCO2()  {
 
             delete(*irv);
             irv = this->vars.erase(irv);
-        } // if (H5INT64 == (*irv)->getType())
+        } // end of if (H5INT64 == (*irv)->getType())
         else {
             ++irv;
         }
-    } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+    } // end of for (auto irv = this->vars.begin(); ...
 }
 
 // Adjust Object names, For some products, NASA data centers don't need 
@@ -4954,9 +4832,9 @@ void GMFile::Adjust_Obj_Name()  {
 
 // Just for debugging
 #if 0
-for (vector<Var*>::iterator irv2 = this->vars.begin();
+for (auto irv2 = this->vars.begin();
     irv2 != this->vars.end(); irv2++) {
-    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+    for (auto ird = (*irv2)->dims.begin();
          ird !=(*irv2)->dims.end(); ird++) {
          cerr<<"Dimension name afet Adjust_Obj_Name "<<(*ird)->newname <<endl;
     }
@@ -4972,16 +4850,14 @@ void GMFile:: Adjust_GPM_L3_Obj_Name()  {
     string objnewname;
     // In this definition, root group is not considered as a group.
     if(this->groups.size() <= 1) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                   irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             objnewname =  HDF5CFUtil::obtain_string_after_lastslash((*irv)->newname);
             if (objnewname !="") 
                 (*irv)->newname = objnewname;
         }
     }
     else {
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                   irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             size_t grid_group_path_pos = ((*irv)->newname.substr(1)).find_first_of("/");
             objnewname =  ((*irv)->newname).substr(grid_group_path_pos+2);
             (*irv)->newname = objnewname;
@@ -4994,15 +4870,14 @@ void GMFile:: Adjust_Mea_Ozone_Obj_Name()  {
 
     BESDEBUG("h5", "Coming to Adjust_Mea_Ozone_Obj_Name()"<<endl);
     string objnewname;
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                   irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         objnewname =  HDF5CFUtil::obtain_string_after_lastslash((*irv)->newname);
         if (objnewname !="") 
            (*irv)->newname = objnewname;
 
 #if 0
 //Just for debugging
-for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+for (auto ird = (*irv)->dims.begin();
                 ird !=(*irv)->dims.end();++ird) {
  cerr<<"Ozone dim. name "<<(*ird)->name <<endl;
  cerr<<"Ozone dim. new name "<<(*ird)->newname <<endl;
@@ -5011,14 +4886,13 @@ for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
 
     }
 
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         objnewname =  HDF5CFUtil::obtain_string_after_lastslash((*irv)->newname);
         if (objnewname !="")
            (*irv)->newname = objnewname;
 #if 0
  //Just for debugging
-for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+for (auto ird = (*irv)->dims.begin();
                 ird !=(*irv)->dims.end();++ird) {
  cerr<<"Ozone CV dim. name "<<(*ird)->name <<endl;
  cerr<<"Ozone CV dim. new name "<<(*ird)->newname <<endl;
@@ -5035,46 +4909,37 @@ void GMFile::Flatten_Obj_Name(bool include_attr) {
     File::Flatten_Obj_Name(include_attr);
 
     // Coordinate variables
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-             irv != this->cvars.end(); ++irv) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
 
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                        ird != (*irv)->dims.end(); ++ird) { 
+        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) 
             (*ird)->newname = get_CF_string((*ird)->newname);
-        }
 
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) 
+            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira)
                 (*ira)->newname = File::get_CF_string((*ira)->newname);
-                
         }
 
     }
 
     // Special variables
-    for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                irv != this->spvars.end(); ++irv) {
+    for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
         (*irv)->newname = get_CF_string((*irv)->newname);
 
-        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                     ird != (*irv)->dims.end(); ++ird) 
+        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird)
             (*ird)->newname = get_CF_string((*ird)->newname);
 
         if (true == include_attr) {
-            for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                        ira != (*irv)->attrs.end(); ++ira) 
+            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira)
                   (*ira)->newname = File::get_CF_string((*ira)->newname);
-                
         }
     }
 
 // Just for debugging
 #if 0
-for (vector<Var*>::iterator irv2 = this->vars.begin();
+for (auto irv2 = this->vars.begin();
     irv2 != this->vars.end(); irv2++) {
-    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+    for (auto ird = (*irv2)->dims.begin();
          ird !=(*irv2)->dims.end(); ird++) {
          cerr<<"Dimension name afet Flatten_Obj_Name "<<(*ird)->newname <<endl;
     }
@@ -5122,8 +4987,7 @@ void GMFile::Handle_GMCVar_AttrNameClashing()  {
     BESDEBUG("h5", "Coming to Handle_GMCVar_AttrNameClashing()"<<endl);
     set<string> objnameset;
 
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-        irv != this->cvars.end(); ++irv) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         Handle_General_NameClashing(objnameset,(*irv)->attrs);
         objnameset.clear();
     }
@@ -5135,8 +4999,7 @@ void GMFile::Handle_GMSPVar_AttrNameClashing()  {
     BESDEBUG("h5", "Coming to Handle_GMSPVar_AttrNameClashing()"<<endl);
     set<string> objnameset;
 
-    for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-        irv != this->spvars.end(); ++irv) {
+    for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
         Handle_General_NameClashing(objnameset,(*irv)->attrs);
         objnameset.clear();
     }
@@ -5153,7 +5016,6 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
     set<string>::iterator iss;
 
     vector<string> clashnamelist;
-    vector<string>::iterator ivs;
 
     map<int,int> cl_to_ol;
     int ol_index = 0;
@@ -5161,8 +5023,7 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
 
     typename vector<T*>::iterator irv;
 
-    for (irv = objvec.begin();
-                irv != objvec.end(); ++irv) {
+    for (irv = objvec.begin(); irv != objvec.end(); ++irv) {
 
         setret = objnameset.insert((*irv)->newname);
         if (false == setret.second ) {
@@ -5176,7 +5037,7 @@ GMFile::GMHandle_General_NameClashing(set <string>&objnameset, vector<T*>& objve
 
     // Now change the clashed elements to unique elements; 
     // Generate the set which has the same size as the original vector.
-    for (ivs=clashnamelist.begin(); ivs!=clashnamelist.end(); ++ivs) {
+    for (auto ivs=clashnamelist.begin(); ivs!=clashnamelist.end(); ++ivs) {
         int clash_index = 1;
         string temp_clashname = *ivs +'_';
         HDF5CFUtil::gen_unique_name(temp_clashname,objnameset,clash_index);
@@ -5207,10 +5068,8 @@ void GMFile::Handle_DimNameClashing() {
     pair<set<string>::iterator,bool> setret;
 
     // First: Generate the dimset/dimvar based on coordinate variables.
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-             irv !=this->cvars.end(); ++irv) {
-        for (vector <Dimension *>:: iterator ird = (*irv)->dims.begin();
-            ird !=(*irv)->dims.end();++ird) {
+    for (auto irv = this->cvars.begin(); irv !=this->cvars.end(); ++irv) {
+        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
             setret = dimnameset.insert((*ird)->name);
             if (true == setret.second) 
                 vdims.push_back(*ird); 
@@ -5220,11 +5079,11 @@ void GMFile::Handle_DimNameClashing() {
     // For some cases, dimension names are provided but there are no corresponding coordinate
     // variables. For now, we will assume no such cases.
     // Actually, we find such a case in our fake testsuite. So we need to fix it.
-    for(vector<Var *>::iterator irv= this->vars.begin();
-        irv != this->vars.end();++irv) {
-        for (vector <Dimension *>:: iterator ird = (*irv)->dims.begin();
-            ird !=(*irv)->dims.end();++ird) {
+    for(auto irv= this->vars.begin(); irv != this->vars.end();++irv) {
+        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
+#if 0
             //setret = dimnameset.insert((*ird)->newname);
+#endif
             setret = dimnameset.insert((*ird)->name);
             if (setret.second) vdims.push_back(*ird);
         }
@@ -5233,7 +5092,7 @@ void GMFile::Handle_DimNameClashing() {
     GMHandle_General_NameClashing(dimnewnameset,vdims);
    
     // Third: Make dimname_to_dimnewname map
-    for (vector<Dimension*>::iterator ird = vdims.begin();ird!=vdims.end();++ird) {
+    for (auto ird = vdims.begin();ird!=vdims.end();++ird) {
         mapret = dimname_to_dimnewname.insert(pair<string,string>((*ird)->name,(*ird)->newname));
         if (false == mapret.second) 
             throw4("The dimension name ",(*ird)->name," should map to ",
@@ -5241,16 +5100,12 @@ void GMFile::Handle_DimNameClashing() {
     }
 
     // Fourth: Change the original dimension new names to the unique dimension new names
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-        irv !=this->cvars.end(); ++irv)
-        for (vector <Dimension *>:: iterator ird = (*irv)->dims.begin();
-            ird!=(*irv)->dims.end();++ird) 
+    for (auto irv = this->cvars.begin(); irv !=this->cvars.end(); ++irv)
+        for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end();++ird)
            (*ird)->newname = dimname_to_dimnewname[(*ird)->name];
 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-         irv != this->vars.end(); ++irv)
-        for (vector <Dimension *>:: iterator ird = (*irv)->dims.begin();
-            ird !=(*irv)->dims.end();++ird) 
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv)
+        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird)
            (*ird)->newname = dimname_to_dimnewname[(*ird)->name];
 
 }
@@ -5261,9 +5116,9 @@ void GMFile::Adjust_Dim_Name() {
     BESDEBUG("h5", "GMFile:Coming to Adjust_Dim_Name()"<<endl);
 #if 0
     // Just for debugging
-for (vector<Var*>::iterator irv2 = this->vars.begin();
+for (auto irv2 = this->vars.begin();
        irv2 != this->vars.end(); irv2++) {
-    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+    for (auto ird = (*irv2)->dims.begin();
            ird !=(*irv2)->dims.end(); ird++) {
          cerr<<"Dimension new name "<<(*ird)->newname <<endl;
        }
@@ -5272,8 +5127,7 @@ for (vector<Var*>::iterator irv2 = this->vars.begin();
 
     // Only need for COARD conventions.
     if( true == iscoard) {
-        for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-             irv !=this->cvars.end(); ++irv) {
+        for (auto irv = this->cvars.begin(); irv !=this->cvars.end(); ++irv) {
 #if 0
 cerr<<"1D Cvariable name is "<<(*irv)->name <<endl;
 cerr<<"1D Cvariable new name is "<<(*irv)->newname <<endl;
@@ -5286,10 +5140,8 @@ cerr<<"1D Cvariable dim new name is "<<((*irv)->dims)[0]->newname <<endl;
                 ((*irv)->dims)[0]->newname = (*irv)->newname;
 
                 // For all variables that have this dimension,the dimension newname should also change.
-                for (vector<Var*>::iterator irv2 = this->vars.begin();
-                    irv2 != this->vars.end(); ++irv2) {
-                    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
-                        ird !=(*irv2)->dims.end(); ++ird) {
+                for (auto irv2 = this->vars.begin(); irv2 != this->vars.end(); ++irv2) {
+                    for (auto ird = (*irv2)->dims.begin(); ird !=(*irv2)->dims.end(); ++ird) {
                         // This is the key, the dimension name of this dimension 
                         // should be equal to the dimension name of the coordinate variable.
                         // Then the dimension name matches and the dimension name should be changed to
@@ -5298,15 +5150,15 @@ cerr<<"1D Cvariable dim new name is "<<((*irv)->dims)[0]->newname <<endl;
                             (*ird)->newname = ((*irv)->dims)[0]->newname;
                     }
                 }
-            } // if ((*irv)->newname != (((*irv)->dims)[0]->newname))
-        }// for (vector<GMCVar *>::iterator irv = this->cvars.begin(); ...
-   } // if( true == iscoard) 
+            } // end of if ((*irv)->newname != (((*irv)->dims)[0]->newname))
+        }// end of for (auto irv = this->cvars.begin(); ...
+   } // end of if( true == iscoard) 
 
 // Just for debugging
 #if 0
-for (vector<Var*>::iterator irv2 = this->vars.begin();
+for (auto irv2 = this->vars.begin();
     irv2 != this->vars.end(); irv2++) {
-    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
+    for (auto ird = (*irv2)->dims.begin();
          ird !=(*irv2)->dims.end(); ird++) {
          cerr<<"Dimension name afet Adjust_Dim_Name "<<(*ird)->newname <<endl;
     }
@@ -5326,10 +5178,9 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
 
        if(true == add_path) {
             // Adding variable original name(origname) and full path(fullpath)
-            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
+            for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
                 if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
-                    Attribute * attr = new Attribute();
+                    auto attr = new Attribute();
                     const string varname = (*irv)->name;
                     const string attrname = "origname";
                     Add_Str_Attr(attr,attrname,varname);
@@ -5337,7 +5188,7 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 }
             }
 
-            for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+            for (auto irv = this->cvars.begin();
                     irv != this->cvars.end(); ++irv) {
                 // Turn off the fullnamepath attribute when zero_storage_size is 0.
                 // Use the BES key since quite a few testing cases will be affected.
@@ -5345,7 +5196,7 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 if((*irv)->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
                     if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
-                        Attribute * attr = new Attribute();
+                        auto attr = new Attribute();
                         const string varname = (*irv)->fullpath;
                         const string attrname = "fullnamepath";
                         Add_Str_Attr(attr,attrname,varname);
@@ -5354,23 +5205,21 @@ GMFile:: Add_Supplement_Attrs(bool add_path)  {
                 }
             }
 
-            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                    irv != this->spvars.end(); ++irv) {
-                Attribute * attr = new Attribute();
+            for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
+                auto attr = new Attribute();
                 const string varname = (*irv)->name;
                 const string attrname = "origname";
                 Add_Str_Attr(attr,attrname,varname);
                 (*irv)->attrs.push_back(attr);
             }
 
-            for (vector<GMSPVar *>::iterator irv = this->spvars.begin();
-                irv != this->spvars.end(); ++irv) {
+            for (auto irv = this->spvars.begin(); irv != this->spvars.end(); ++irv) {
                 // Turn off the fullnamepath attribute when zero_storage_size is 0.
                 // Use the BES key since quite a few testing cases will be affected.
                 // KY 2020-03-23
                 if((*irv)->zero_storage_size == false
                    || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
-                    Attribute * attr = new Attribute();
+                    auto attr = new Attribute();
                     const string varname = (*irv)->fullpath;
                     const string attrname = "fullnamepath";
                     Add_Str_Attr(attr,attrname,varname);
@@ -5427,7 +5276,7 @@ GMFile:: Add_GPM_Attrs()  {
     }
      
     
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
+    for (auto irv = this->cvars.begin();
                 irv != this->cvars.end(); ++irv) {
         bool has_fvalue_attr = false;
 
@@ -5471,7 +5320,7 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            Attribute*attr = new Attribute();
+            auto attr = new Attribute();
 
             {
             if((*irv)->name == "nchannel1") 
@@ -5579,7 +5428,7 @@ GMFile:: Add_GPM_Attrs()  {
             
             string comment;
             const string attrname = "comment";
-            Attribute*attr = new Attribute();
+            auto attr = new Attribute();
 
             {
             if((*irv)->name == "chn") 
@@ -5632,18 +5481,18 @@ GMFile:: Add_GPM_Attrs()  {
       if ((*irv)->cvartype == CV_SPECIAL) {
             if((*irv)->name == "nlayer" || (*irv)->name == "hgt"
                || (*irv)->name == "nalt") {
-                Attribute*attr = new Attribute();
+                auto attr = new Attribute();
                 string unit_value = "km";
                 Add_Str_Attr(attr,attr2_new_name,unit_value);
                 (*irv)->attrs.push_back(attr);
 
-                Attribute*attr1 = new Attribute();
+                auto attr1 = new Attribute();
                 string attr1_axis="axis";
                 string attr1_value = "Z";
                 Add_Str_Attr(attr1,attr1_axis,attr1_value);
                 (*irv)->attrs.push_back(attr1);
 
-                Attribute*attr2 = new Attribute();
+                auto attr2 = new Attribute();
                 string attr2_positive="positive";
                 string attr2_value = "up";
                 Add_Str_Attr(attr2,attr2_positive,attr2_value);
@@ -5651,7 +5500,7 @@ GMFile:: Add_GPM_Attrs()  {
 
             }
             if((*irv)->name == "hgt" || (*irv)->name == "nalt"){
-                Attribute*attr1 = new Attribute();
+                auto attr1 = new Attribute();
                 string comment ="Number of heights above the earth ellipsoid";
                 Add_Str_Attr(attr1,"comment",comment);
                 (*irv)->attrs.push_back(attr1);
@@ -5703,10 +5552,8 @@ GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value)  {
     const string Unit_name = "Units";
     const string unit_name = "units";
 
-    vector<HDF5CF::Attribute *>::iterator ira;
-    
     // Delete "units"  and "Units"
-    for(ira = var->attrs.begin(); ira!= var->attrs.end();) {
+    for(auto ira = var->attrs.begin(); ira!= var->attrs.end();) {
         if(unit_name == (*ira)->name) {
             delete(*ira);
             ira = var->attrs.erase(ira); 
@@ -5721,7 +5568,7 @@ GMFile:: Correct_GPM_L1_LatLon_units(Var *var, const string unit_value)  {
     // Add the correct units for Latitude and Longitude 
     // Note: the reason we do this way, for some versions of GPM, units is degrees,
     // rather than degrees_north.. So units also needs to be corrected to follow CF.
-    Attribute *attr = new Attribute();
+    auto attr = new Attribute();
     Add_Str_Attr(attr,unit_name,unit_value);
     var->attrs.push_back(attr);
 }
@@ -5782,7 +5629,7 @@ GMFile:: Add_Aqu_Attrs()  {
             memcpy(&valid_max_value,(void*)(&((*ira)->value[0])),(*ira)->value.size());
         }
         
-    }// for (ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
+    }// end of for (ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
 
     // New version Aqu(Q20112132011243.L3m_MO_SCI_V3.0_SSS_1deg.bz2) files seem to have CF attributes added. 
     // In this case, we should not add extra CF attributes, or duplicate values may appear. KY 2015-06-20
@@ -5792,8 +5639,7 @@ GMFile:: Add_Aqu_Attrs()  {
     bool has_valid_max = false;
     bool has_fillvalue = false;
 
-    for (it_v = vars.begin();
-                it_v != vars.end(); ++it_v) {
+    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
         if ("l3m_data" == (*it_v)->name) {
             for (ira = (*it_v)->attrs.begin(); ira != (*it_v)->attrs.end(); ++ira) {
                 if (longname_attr_name == (*ira)->name) 
@@ -5809,12 +5655,11 @@ GMFile:: Add_Aqu_Attrs()  {
             }
             break;
         }
-    } // for (it_v = vars.begin(); ...
+    } // end of for (it_v = vars.begin(); ...
 
 
     // Level 3 variable name is l3m_data
-    for (it_v = vars.begin();
-                it_v != vars.end(); ++it_v) {
+    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
         if ("l3m_data" == (*it_v)->name) {
 
             Attribute *attr = nullptr;
@@ -5872,8 +5717,7 @@ GMFile:: Add_SeaWiFS_Attrs()  {
     vector<HDF5CF::Attribute *>::const_iterator ira;
 
 
-    for (it_v = vars.begin();
-                it_v != vars.end(); ++it_v) {
+    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
         if (H5FLOAT32 == (*it_v)->dtype) {
             bool has_fillvalue = false;
             bool has_validrange = false;
@@ -5891,12 +5735,12 @@ GMFile:: Add_SeaWiFS_Attrs()  {
             }
             // Add the fill value
             if (has_fillvalue != true && has_validrange != true ) {
-                Attribute* attr = new Attribute();
+                auto attr = new Attribute();
                 Add_One_Float_Attr(attr,fill_value_attr_name,_FillValue);
                 (*it_v)->attrs.push_back(attr);
             }
-        }// if (H5FLOAT32 == (*it_v)->dtype)
-    }// for (it_v = vars.begin(); ...
+        }
+    }
 }
 
 // Leave the following code for the time being
@@ -5911,7 +5755,7 @@ void GMFile:: Handle_Coor_Attr() {
     string lat_unit_attrvalue ="degrees_north";
     string lon_unit_attrvalue ="degrees_east";
 
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+    for (auto ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
 //cerr<<"CV name is "<<(*ircv)->name << " cv type is "<<(*ircv)->cvartype <<endl;
 
@@ -5936,7 +5780,7 @@ void GMFile:: Handle_Coor_Attr() {
            Add_Str_Attr(attr,unit_attrname,lon_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
-    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin(); ...
+    } // for (auto ircv = this->cvars.begin(); ...
    
     // No need to handle MeaSUREs SeaWiFS level 2 products
     if(product_type == Mea_SeaWiFS_L2) 
@@ -5955,7 +5799,7 @@ void GMFile:: Handle_Coor_Attr() {
    
 
     // Now handle the 2-D lat/lon case(note: this only applies to the one that dim. scale doesn't apply)
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+    for (auto ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->rank == 2) {
 
@@ -5970,7 +5814,7 @@ void GMFile:: Handle_Coor_Attr() {
     // Check the dimension names of 2-D lat/lon CVs
     string ll2d_dimname0,ll2d_dimname1;
     bool has_ll2d_coords = false;
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+    for (auto ircv = this->cvars.begin();
         ircv != this->cvars.end(); ++ircv) {
         if((*ircv)->rank == 2) {
             // Note: we should still use the original dim. name to match the general variables. 
@@ -5984,7 +5828,7 @@ void GMFile:: Handle_Coor_Attr() {
     
     if(true == has_ll2d_coords) {
  
-        for (vector<Var *>::iterator irv = this->vars.begin();
+        for (auto irv = this->vars.begin();
                 irv != this->vars.end(); ++irv) {
 
             bool coor_attr_keep_exist = false;
@@ -5993,7 +5837,7 @@ void GMFile:: Handle_Coor_Attr() {
             if(((*irv)->rank >=2)) { 
                 
                 short ll2dim_flag = 0;
-                for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+                for (auto ird = (*irv)->dims.begin();
                     ird != (*irv)->dims.end(); ++ ird) {
                     if((*ird)->name == ll2d_dimname0)
                         ll2dim_flag++;
@@ -6009,7 +5853,7 @@ void GMFile:: Handle_Coor_Attr() {
                     coor_attr_keep_exist = true;
 
                 if (false == coor_attr_keep_exist) {
-                    for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
+                    for (auto ira =(*irv)->attrs.begin();
                         ira !=(*irv)->attrs.end();) {
                         if ((*ira)->newname == co_attrname) {
                             delete (*ira);
@@ -6018,12 +5862,12 @@ void GMFile:: Handle_Coor_Attr() {
                         else {
                             ++ira;
                         }
-                    }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
+                    }// for (auto ira =(*irv)->attrs.begin(); ...
                 
                     // Generate the "coordinates" attribute only for variables that have both 2-D lat/lon dim. names.
-                    for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
+                    for (auto ird = (*irv)->dims.begin();
                         ird != (*irv)->dims.end(); ++ ird) {
-                        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+                        for (auto ircv = this->cvars.begin();
                             ircv != this->cvars.end(); ++ircv) {
                             if ((*ird)->name == (*ircv)->cfdimname) 
                                 co_attrvalue = (co_attrvalue.empty())
@@ -6038,7 +5882,7 @@ void GMFile:: Handle_Coor_Attr() {
                     }
 
                     co_attrvalue.clear();
-                } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+                } // for (auto irv = this->vars.begin(); ...
             }
         }
     }
@@ -6059,25 +5903,24 @@ void GMFile:: Handle_Coor_Attr() {
 
     // Attribute units should be added for coordinate variables that
     // have the type CV_NONLATLON_MISS,CV_LAT_MISS and CV_LON_MISS.
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-        ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
 
         if ((*ircv)->cvartype == CV_NONLATLON_MISS) {
-           Attribute * attr = new Attribute();
+           auto attr = new Attribute();
            Add_Str_Attr(attr,unit_attrname,nonll_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
         else if ((*ircv)->cvartype == CV_LAT_MISS) {
-           Attribute * attr = new Attribute();
+           auto attr = new Attribute();
            Add_Str_Attr(attr,unit_attrname,lat_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
         else if ((*ircv)->cvartype == CV_LON_MISS) {
-           Attribute * attr = new Attribute();
+           auto attr = new Attribute();
            Add_Str_Attr(attr,unit_attrname,lon_unit_attrvalue);
            (*ircv)->attrs.push_back(attr);
         }
-    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin(); ...
+    } // end of for 
    
     // No need to handle MeaSUREs SeaWiFS level 2 products
     if(product_type == Mea_SeaWiFS_L2) 
@@ -6100,8 +5943,7 @@ void GMFile:: Handle_Coor_Attr() {
         // If we find that there are groups that should check the coordinates attribute of the variable. 
         // We should flatten the path inside the coordinates.(this is the case mainly for netcdf-4 2D lat/lon case)
         if(grp_cv_paths.size() >0) {
-            for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
 
                     // Check the "coordinates" attribute and flatten the values. 
@@ -6113,8 +5955,7 @@ void GMFile:: Handle_Coor_Attr() {
     }
    
     // Now handle the 2-D lat/lon case
-    for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-        ircv != this->cvars.end(); ++ircv) {
+    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
 
         if((*ircv)->rank == 2 && (*ircv)->cvartype == CV_EXIST) {
 
@@ -6143,16 +5984,15 @@ void GMFile:: Handle_Coor_Attr() {
             //else if(true == Is_geolatlon((*ircv)->name,true))
             if(true == Is_geolatlon((*ircv)->name,true))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lat_unit_attrvalue);
-
             else if(true == Is_geolatlon((*ircv)->name,false))
                 Replace_Var_Str_Attr((*ircv),unit_attrname,lon_unit_attrvalue);
         }
-    } // for (vector<GMCVar *>::iterator ircv = this->cvars.begin()
+    } // for (auto ircv = this->cvars.begin()
     
     // If we find that there are groups that we should check the coordinates attribute of the variable under, 
     // we should flatten the path inside the coordinates. Note this is for 2D-latlon CV netCDF-4-like case.
     if(grp_cv_paths.size() >0) {
-        for (vector<Var *>::iterator irv = this->vars.begin();
+        for (auto irv = this->vars.begin();
             irv != this->vars.end(); ++irv) {
             if(grp_cv_paths.find(HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) != grp_cv_paths.end()){ 
 
@@ -6171,7 +6011,7 @@ void GMFile:: Handle_Coor_Attr() {
     else {// For other cases. Need to see if there is a case. KY 2016-07-07
         string ll2d_dimname0;
         string ll2d_dimname1;
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
+        for (auto ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
             if((*ircv)->rank == 2) {
                 // Note: we should still use the original dim. name to match the general variables. 
@@ -6198,10 +6038,9 @@ void GMFile:: Handle_Coor_Attr() {
         // We also need to find if we have coordinates attribute for >=2D variables.
         // If not, the handler has to figure out the coordinates. 
         bool has_coor_attr_ge_2d_vars = false;
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                                irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
             if((*irv)->rank >=2){
-                for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+                for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
                     // We will check if we have the coordinate attribute 
                     if((*ira)->name == co_attrname) {
                         has_coor_attr_ge_2d_vars = true;
@@ -6219,11 +6058,10 @@ void GMFile:: Handle_Coor_Attr() {
         if(force_flatten_coor_attr == true && has_coor_attr_ge_2d_vars == true)
             is_hybrid_eos5 = Is_Hybrid_EOS5();
 #endif
-        for (vector<Var *>::iterator irv = this->vars.begin();
-                irv != this->vars.end(); ++irv) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
             bool has_coor = false;
-            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+            for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
                 // We will check if we have the coordinate attribute 
                 if((*ira)->name == co_attrname) {
                     has_coor = true;
@@ -6261,8 +6099,7 @@ void GMFile:: Handle_Coor_Attr() {
 
                 // Need to delete the original "coordinates" and rebuild the "coordinates" if this var is associated with the 2-D lat/lon CVs.
                 if (false == coor_attr_keep_exist) {
-                    for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin();
-                        ira !=(*irv)->attrs.end();) {
+                    for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();) {
                         if ((*ira)->newname == co_attrname) {
                             delete (*ira);
                             ira = (*irv)->attrs.erase(ira);
@@ -6270,13 +6107,11 @@ void GMFile:: Handle_Coor_Attr() {
                         else {
                             ++ira;
                         }
-                    }// for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ...
+                    }// for (auto ira =(*irv)->attrs.begin(); ...
                 
                     // Generate the new "coordinates" attribute. 
-                    for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                        ird != (*irv)->dims.end(); ++ ird) {
-                        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                            ircv != this->cvars.end(); ++ircv) {
+                    for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ ird) {
+                        for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
                             if ((*ird)->name == (*ircv)->cfdimname) 
                                 co_attrvalue = (co_attrvalue.empty())
                                     ?(*ircv)->newname:co_attrvalue + " "+(*ircv)->newname;
@@ -6284,14 +6119,14 @@ void GMFile:: Handle_Coor_Attr() {
                     }
 
                     if (false == co_attrvalue.empty()) {
-                        Attribute * attr = new Attribute();
+                        auto attr = new Attribute();
                         Add_Str_Attr(attr,co_attrname,co_attrvalue);
                        (*irv)->attrs.push_back(attr);
                     }
 
                     co_attrvalue.clear();
                     (*irv)->coord_attr_add_path = false;
-                } // for (vector<Var *>::iterator irv = this->vars.begin(); ...
+                } // for (auto irv = this->vars.begin(); ...
             }
         }
     }
@@ -6326,20 +6161,19 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
     map<string,string>cfdimname_to_cvar2dname;
 
     // Loop through cv variables to build 2-D cv dimname set and the mapping from cfdimname to 2-D cvar name.
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
 
         //This CVar must be 2-D array.
         if((*irv)->rank == 2) { 
 
+#if 0
 //cerr<<"2-D cv name is "<<(*irv)->name <<endl;
 //cerr<<"2-D cv new name is "<<(*irv)->newname <<endl;
 //cerr<<"(*irv)->cfdimname is "<<(*irv)->cfdimname <<endl;
+#endif
 
-            for(vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                  ird != (*irv)->dims.end(); ++ird) {
+            for(auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) 
                 cvar_2d_dimset.insert((*ird)->name);
-            }
 
             // Generate cfdimname to cvar2d map
             mapret = cfdimname_to_cvar2dname.insert(pair<string,string>((*irv)->cfdimname,(*irv)->newname));      
@@ -6350,8 +6184,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
     }
 
     // Loop through the variable list to build the coordinates.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
 
         // Only apply to >2D variables.
         if((*irv)->rank >=2) {
@@ -6359,8 +6192,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
             // The variable dimension names must be found in the 2D cvar dim. nameset.
             // The flag must be at least 2.
             short have_2d_dimnames_flag = 0;
-            for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                ird !=(*irv)->dims.end();++ird) {
+            for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
                 if (cvar_2d_dimset.find((*ird)->name)!=cvar_2d_dimset.end())    
                     have_2d_dimnames_flag++;
             }
@@ -6405,8 +6237,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                     // If there is no /a1/a2/latitude, the /a1/latitude can be used as the coordinate of /a1/a2/foo.
                     // But we want to check if var_path is the same as cfdim_path first. So we check cfdimname_to_cvarname again.
                     if(var_path == cfdim_path) {
-                        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
-                            ird!=(*irv)->dims.end();++ird) {
+                        for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end();++ird) {
                             if(reduced_dimname == (*ird)->name) {
                                cv_2d_flag++;
                                cv_2d_names.push_back(itm->second);
@@ -6443,8 +6274,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                         // If there is no /a1/a2/latitude, the /a1/latitude can be used as the coordinate of /a1/a2/foo.
                         // 
                         if(var_path.find(cfdim_path)!=string::npos) {
-                            for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
-                                ird!=(*irv)->dims.end();++ird) {
+                            for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end();++ird) {
                                 if(reduced_dimname == (*ird)->name) {
                                    cv_2d_flag++;
                                    cv_2d_names.push_back(itm->second);
@@ -6462,15 +6292,14 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                     // Add latitude and longitude to the 'coordinates' attribute.
                     co_attrvalue = cv_2d_names[0] + " " + cv_2d_names[1];
                     if((*irv)->rank >2) {
-                        for (vector<Dimension *>::iterator ird = (*irv)->dims.begin();
-                            ird !=(*irv)->dims.end();++ird) {
+                        for (auto ird = (*irv)->dims.begin(); ird !=(*irv)->dims.end();++ird) {
 
                             // Add 3rd-dimension to the 'coordinates' attribute.
                             if(cv_2d_dimnames.find((*ird)->name) == cv_2d_dimnames.end())
                                 co_attrvalue = co_attrvalue + " " +(*ird)->newname;
                         }
                     }
-                    Attribute * attr = new Attribute();
+                    auto attr = new Attribute();
                     Add_Str_Attr(attr,co_attrname,co_attrvalue);
                     (*irv)->attrs.push_back(attr);
                     (*irv)->coord_attr_add_path = false;
@@ -6487,10 +6316,9 @@ void GMFile::Handle_LatLon_With_CoordinateAttr_Coor_Attr()  {
     string co_attrname = "coordinates";
 
     // Loop through all rank >1 variables 
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         if((*irv)->rank >= 2) {
-            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end(); ++ira) { 
+            for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end(); ++ira) { 
                 if((*ira)->name == co_attrname) {
                     // If having the coordinates attribute, check if the "coordinates" variables match 2-D lat/lon CV condition,
                     // if yes, flatten the coordinates attribute.
@@ -6530,7 +6358,7 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values)  {
 
     // Some products ignore the first "/" of the coordinate path in the coordinate attribute, we will correct this 
     if((coord_values_vec[0])[0] !='/') {
-        for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+        for(auto irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
             if(((*irs).find_first_of('/'))!=string::npos) {
                 *irs = '/' + (*irs);
             }
@@ -6538,11 +6366,11 @@ bool GMFile::Coord_Match_LatLon_NameSize(const string & coord_values)  {
     }
 
     //Loop through all coordinate path stored in the coordinate patch vector,
-    for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+    for(auto irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
 
         // Loop through all the lat/lon pairs generated in the Check_LatLon_With_Coordinate_Attr routine
         // Remember the index and number appeared for both lat and lon.
-        for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+        for(auto ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
             if((*irs) == (*ivs).name1){
                 match_lat_name_pair_index = distance(latloncv_candidate_pairs.begin(),ivs);
                 num_match_lat++;
@@ -6577,9 +6405,9 @@ bool GMFile::Coord_Match_LatLon_NameSize_Same_Group(const string &coord_values,c
     HDF5CFUtil::Split_helper(coord_values_vec,coord_values,sep);
  
     // Assume the 3rd-variable is also located under the same group if rank >=2
-    for(vector<string>::iterator irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
+    for(auto irs=coord_values_vec.begin();irs!=coord_values_vec.end();++irs){
 //cerr<<"coordinate values are "<<*irs <<endl;
-        for(vector<struct Name_Size_2Pairs>::iterator ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
+        for(auto ivs=latloncv_candidate_pairs.begin(); ivs!=latloncv_candidate_pairs.end();++ivs) {
             string lat_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name1);
             string lat_path = HDF5CFUtil::obtain_string_before_lastslash((*ivs).name1);
             string lon_name = HDF5CFUtil::obtain_string_after_lastslash((*ivs).name2);
@@ -6662,8 +6490,7 @@ bool GMFile::Is_netCDF_Dimension(Var *var)  {
 
     bool is_only_dimension = false;
 
-    for(vector<Attribute *>::iterator ira = var->attrs.begin();
-          ira != var->attrs.end();ira++) {
+    for(auto ira = var->attrs.begin(); ira != var->attrs.end();ira++) {
 
         if ("NAME" == (*ira)->name) {
 
@@ -6678,7 +6505,7 @@ bool GMFile::Is_netCDF_Dimension(Var *var)  {
            
             break;
         }
-    } // for(vector<Attribute *>::iterator ira = var->attrs.begin(); ...
+    } // for(auto ira = var->attrs.begin(); ...
 
     return is_only_dimension;
 }
@@ -6699,12 +6526,11 @@ GMFile::Is_Hybrid_EOS5() {
     // We will just check the attribute under /HDFEOS INFORMATION.
 
     // First check if the HDFEOS groups are included
-    for (vector<Group *>::iterator irg = this->groups.begin();
-        irg != this->groups.end(); ++ irg) {
+    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++ irg) {
         if ("/HDFEOS" == (*irg)->path) 
             has_group_hdfeos = true;
         else if("/HDFEOS INFORMATION" == (*irg)->path) {
-            for(vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+            for(auto ira = (*irg)->attrs.begin();
                 ira != (*irg)->attrs.end();ira++) {
                 if("HDFEOSVersion" == (*ira)->name)
                     has_group_hdfeos_info = true;
@@ -6730,8 +6556,7 @@ void GMFile::Handle_Hybrid_EOS5() {
     string zas_str="ZAS_";
     string df_str="Data_Fields_";
     string gf_str="Geolocation_Fields_";
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); irv++) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
         string temp_var_name = (*irv)->newname;
 
         bool remove_eos = Remove_EOS5_Strings(temp_var_name);
@@ -6750,10 +6575,8 @@ void GMFile::Handle_Hybrid_EOS5() {
     }
 
     // Now we need to handle the dimension names.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-        irv != this->vars.end(); irv++) {
-        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
-            ird!=(*irv)->dims.end(); ++ird) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
+        for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end(); ++ird) {
             string temp_dim_name = (*ird)->newname;
             bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
             
@@ -6772,8 +6595,7 @@ void GMFile::Handle_Hybrid_EOS5() {
     }
 
     // We have to loop through all CVs.
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-                irv != this->cvars.end(); ++irv) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
         string temp_var_name = (*irv)->newname;
 
         bool remove_eos = Remove_EOS5_Strings(temp_var_name);
@@ -6791,10 +6613,8 @@ void GMFile::Handle_Hybrid_EOS5() {
         }
     }
     // Now we need to handle the dimension names.
-    for (vector<GMCVar *>::iterator irv = this->cvars.begin();
-        irv != this->cvars.end(); irv++) {
-        for (vector<Dimension*>::iterator ird = (*irv)->dims.begin();
-            ird!=(*irv)->dims.end(); ++ird) {
+    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); irv++) {
+        for (auto ird = (*irv)->dims.begin(); ird!=(*irv)->dims.end(); ++ird) {
             string temp_dim_name = (*ird)->newname;
             bool remove_eos = Remove_EOS5_Strings(temp_dim_name);
             
@@ -6815,10 +6635,8 @@ void GMFile::Handle_Hybrid_EOS5() {
     // Update the coordinate attribute values
     // We need to remove the HDFEOS special information from the coordinates attributes 
     // since the variable names in the DAP output are already updated.
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                     irv != this->vars.end(); irv++) {
-        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
-                     ira != (*irv)->attrs.end();ira++) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
+        for(auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();ira++) {
             // We cannot use Retrieve_Str_Attr_value for "coordinates" since "coordinates" may be added by the handler.
             // KY 2017-11-3
             if((*ira)->name == "coordinates") {
@@ -6998,14 +6816,11 @@ void GMFile:: Remove_Unused_FakeDimVars() {
     if(this->unsupported_var_dtype == true) {
 
         // Need to check if we have coordinate variables such as FakeDim?
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                 ircv != this->cvars.end();) {
+        for (auto ircv = this->cvars.begin(); ircv != this->cvars.end();) {
             if((*ircv)->newname.find("FakeDim")==0) {
                 bool var_has_fakedim = false;
-                for (vector<Var*>::iterator irv2 = this->vars.begin();
-                    irv2 != this->vars.end(); irv2++) {
-                    for (vector<Dimension *>::iterator ird = (*irv2)->dims.begin();
-                         ird !=(*irv2)->dims.end(); ird++) {
+                for (auto irv2 = this->vars.begin(); irv2 != this->vars.end(); irv2++) {
+                    for (auto ird = (*irv2)->dims.begin(); ird !=(*irv2)->dims.end(); ird++) {
                         if((*ird)->newname == (*ircv)->newname){
                             var_has_fakedim = true;
                             break;
@@ -7042,14 +6857,12 @@ void GMFile::Rename_NC4_NonCoordVars() {
     if(true == this->have_nc4_non_coord) {
         string nc4_non_coord="_nc4_non_coord_";
         size_t nc4_non_coord_size= nc4_non_coord.size();
-        for (vector<Var*>::iterator irv = this->vars.begin();
-                 irv != this->vars.end(); irv++) {
+        for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
             if((*irv)->name.find(nc4_non_coord)==0)
                 (*irv)->newname = (*irv)->newname.substr(nc4_non_coord_size,(*irv)->newname.size()-nc4_non_coord_size);
         }
  
-        for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
-                 ircv != this->cvars.end();++ircv) {
+        for (auto ircv = this->cvars.begin(); ircv != this->cvars.end();++ircv) {
             if((*ircv)->name.find(nc4_non_coord)==0)
                 (*ircv)->newname = (*ircv)->newname.substr(nc4_non_coord_size,(*ircv)->newname.size()-nc4_non_coord_size);
         }
@@ -7061,10 +6874,9 @@ void GMFile::Add_Path_Coord_Attr() {
 
     BESDEBUG("h5", "GMFile::Coming to Add_Path_Coor_Attr()"<<endl);
     string co_attrname = "coordinates";
-    for (vector<Var *>::iterator irv = this->vars.begin();
-                                irv != this->vars.end(); ++irv) {
+    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
         if((*irv)->coord_attr_add_path == true) {
-            for (vector<Attribute *>:: iterator ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
+            for (auto ira =(*irv)->attrs.begin(); ira !=(*irv)->attrs.end();++ira) {
                 // We will check if we have the coordinate attribute 
                 if((*ira)->name == co_attrname) {
                     string coor_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
@@ -7080,9 +6892,13 @@ void GMFile::Add_Path_Coord_Attr() {
                         else 
                             new_coor_value += sep+cvalue_vec[i];
                         
+#if 0
 //cout<<"co1["<<i<<"]= "<<cvalue_vec[i]<<endl;
+#endif
                     }
+#if 0
 //cout<<"new_coor_value is "<<new_coor_value<<endl;
+#endif
                         Replace_Var_Str_Attr((*irv),co_attrname,new_coor_value);
                         break;
                 }
@@ -7100,8 +6916,7 @@ void GMFile::Add_Path_Coord_Attr() {
 void 
 GMFile::release_standalone_GMCVar_vector(vector<GMCVar*>&tempgc_vars){
 
-    for (vector<GMCVar *>::iterator i = tempgc_vars.begin();
-            i != tempgc_vars.end(); ) {
+    for (auto i = tempgc_vars.begin(); i != tempgc_vars.end(); ) {
         delete(*i);
         i = tempgc_vars.erase(i);
     }
@@ -7128,8 +6943,9 @@ GMFile::ignored_dimscale_ref_list(Var *var) {
 
         bool has_dimscale = false;
         bool has_reference_list = false;
-        for(vector<Attribute *>::iterator ira = var->attrs.begin();
-                     ira != var->attrs.end();ira++) {
+
+        for(auto ira = var->attrs.begin(); ira != var->attrs.end();ira++) {
+
              if((*ira)->name == "REFERENCE_LIST" && 
                 false == HDF5CFUtil::cf_strict_support_type((*ira)->getType()))
                 has_reference_list = true;

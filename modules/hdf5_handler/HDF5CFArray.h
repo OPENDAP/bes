@@ -58,7 +58,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     const float h5_comp_ratio,
                     const bool h5_is_dap4,
                     const std::string & n="",  
-                    libdap::BaseType * v = 0):
+                    libdap::BaseType * v = nullptr):
                     HDF5BaseArray(n,v),
                     rank(h5_rank),
                     fileid(h5_file_id),
@@ -74,16 +74,16 @@ class HDF5CFArray:public HDF5BaseArray {
         {
         }
         
-    virtual ~ HDF5CFArray() {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    ~ HDF5CFArray() override = default;
+    
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
 
     // Currently this routine is only used for 64-bit integer mapping to DAP4.
     libdap::BaseType *h5cfdims_transform_to_dap4_int64(libdap::D4Group *root);
-    //libdap::BaseType *h5cfdims_transform_to_dap4(libdap::D4Group *root);
 #if 0
+    //libdap::BaseType *h5cfdims_transform_to_dap4(libdap::D4Group *root);
     //void read_data_from_mem_cache(void*buf);
     //void read_data_from_file(bool add_cache,void*buf);
     //int format_constraint (int *cor, int *step, int *edg);

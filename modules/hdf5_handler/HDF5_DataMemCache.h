@@ -15,7 +15,9 @@
 
 class HDF5DataMemCache : public libdap::DapObj {
 private:
+#if 0
     //string varname;
+#endif
     std::vector <char>  databuf;
 public:
     HDF5DataMemCache() = default;
@@ -24,7 +26,7 @@ public:
     //HDF5DataMemCache(const HDF5DataMemCache & h5datacache);
     //const string get_varname() {return varname;}
 #endif
-    const size_t get_var_buf_size() {return databuf.size();}
+    size_t get_var_buf_size() const {return databuf.size();}
 #if 0
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
 #endif
@@ -33,7 +35,7 @@ public:
     //void set_varname(const string& name) {varname = name; }
 #endif
     void set_databuf(const std::vector<char> &buf){databuf = buf;}
-    virtual ~HDF5DataMemCache() = default;
+    ~HDF5DataMemCache() override = default;
     void dump(std::ostream &strm) const override;
     
 };

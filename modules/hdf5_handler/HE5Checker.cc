@@ -116,7 +116,7 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
 
     // No need to check for the file that only has one grid or no grid.
     if (1 == p->grid_list.size() ||
-        0 == p->grid_list.size() ) return false;
+        p->grid_list.empty() ) return false;
 
     unsigned int i = 0;
     // Store name size pair.

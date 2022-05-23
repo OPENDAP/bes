@@ -48,11 +48,9 @@ HDF5Structure::HDF5Structure(const string & n, const string &vpath, const string
 {
 }
 
-HDF5Structure::~HDF5Structure()
-{
-}
 HDF5Structure::HDF5Structure(const HDF5Structure &rhs) : Structure(rhs)
 {
+    m_duplicate(rhs);
 }
 
 HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
@@ -60,8 +58,12 @@ HDF5Structure & HDF5Structure::operator=(const HDF5Structure & rhs)
     if (this == &rhs)
         return *this;
 
+#if 0
     dynamic_cast < Structure & >(*this) = rhs;  // run Structure assignment
+#endif
 
+    libdap::Structure::operator=(rhs);
+    m_duplicate(rhs);
 
     return *this;
 }
@@ -151,7 +153,6 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     H5T_class_t         memb_cls = H5T_NO_CLASS;
     int                 nmembs = 0;
     size_t              memb_offset = 0;
-    unsigned int        u = 0;
     char*               memb_name = nullptr;
 
     try {
@@ -159,7 +160,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
             throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
         }
 
-        for(u = 0; u < (unsigned)nmembs; u++) {
+        for(unsigned int u = 0; u < (unsigned)nmembs; u++) {
 
             if((memb_id = H5Tget_member_type(memtype, u)) < 0) 
                 throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
@@ -204,7 +205,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                     void *src = (void*)(&values[0] + values_offset +memb_offset);
                     char val_int8;
                     memcpy(&val_int8,src,1);
-                    short val_short=(short)val_int8;
+                    auto val_short=(short)val_int8;
                     var(memb_name)->val2buf(&val_short);
                 }
                 else {
