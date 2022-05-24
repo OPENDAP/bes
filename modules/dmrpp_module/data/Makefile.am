@@ -13,11 +13,11 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 # configure's value for the parameter when running the distcheck target.
 #
 # Not used. jhrg  4/1/20
-%.conf : %.conf.in
-	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
+# %.conf : %.conf.in
+#	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+#	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+#		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
+#		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
 
 # Build the get_dmrpp script so that the value substituted for
 # bes_modules_dir is the path to the instll bes modules. Note that
@@ -35,19 +35,21 @@ get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile # $(builddir)/get
 		        -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > get_dmrpp
 
-EXTRA_PROGRAMS = 
+# EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in  README README.md dmrpp mds_for_tests s3 s3_data fill_value
+EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data fill_value
 # get_dmrpp_mkcheck.conf.in removed because get_dmrpp.in contains same stuff. ndp 3/30/22
 
 # Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
 # jhrg 4/1/20
 
-CLEANFILES = *~
+CLEANFILES = get_dmrpp mds_for_tests_ledger.txt bes.log *~
 
-DISTCLEANFILES = get_dmrpp # get_dmrpp_mkcheck.conf
+# DISTCLEANFILES = get_dmrpp
+
+# get_dmrpp_mkcheck.conf
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp
