@@ -89,8 +89,9 @@ public:
         unsigned long long int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
 
+        // This call instantiates the curlHandlePool. jhrg 5/24/22
+        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
     }
 
     // Called after each test
