@@ -531,7 +531,7 @@ function make_bes_conf() {
 
 ########################################################################################################################
 # getDap()
-# Gets the passed $dap response (dmr, ddx, etc) for the file $data_path and places the reponse in a temp file.
+# Gets the passed $dap response (dmr, ddx, etc) for the file $data_path and places the response in a temp file.
 #
 function mkDapRequest() {
   data_path="${1}"

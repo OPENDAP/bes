@@ -112,7 +112,7 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp)
 
     // How was build_dmrpp invoked?
     auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
-    invoke->add_value(cmdln(argc,argv));
+    invoke->add_value(cmdln(argc, argv));
     version->attributes()->add_attribute_nocopy(invoke);
 
     // Inject version and configuration attributes into DMR here.
