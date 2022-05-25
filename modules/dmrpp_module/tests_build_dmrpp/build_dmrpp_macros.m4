@@ -220,7 +220,6 @@ BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 echo $1 | grep "s3://"
 if $? -ne 0 ; then  input_file=${DATA_DIR}/$1; else input_file=$1; fi
-#input_file="${DATA_DIR}/$1"
 
 baseline="${BASELINES_DIR}/$2"
 params="$3"
