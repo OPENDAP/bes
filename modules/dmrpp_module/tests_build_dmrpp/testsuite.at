@@ -25,22 +25,25 @@ AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.whe
 AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf], [a.out])
 #
 # -o Send output to a specific file
-AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [a.out])
+#AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [a.out])
 
 # -I Run inventory test, requires output_file
-AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I], [${abs_srcdir}/a.out])
+#AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I], [${abs_builddir}/a.out])
 
 # -e Use pre-existing dmrpp file for input to inventory test, requires output_file
-AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I -e ${DATA_DIR}/chunked_oneD.h5.dmrpp], [${abs_srcdir}/a.out])
+#AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I -e ${DATA_DIR}/chunked_oneD.h5.dmrpp], [a.out])
 
 # -F Run Hyrax probe test on the output_file
-AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [${abs_srcdir}/a.out])
+#AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
 
-# -M Generate missing variables sidecar file
-AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M], [a.out])
+# -M Generate missing variables sidecar file, requires use_cf_conf "site.conf" file
+#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M], [${abs_builddir}/a.out])
 
-# -p Inject missing variable's dmrpp:chunk/@dmrpp:href attribute
-AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
+# -p Inject missing variables dmrpp:chunk/@dmrpp:href attribute, requires use_cf_conf "site.conf" file
+#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
+
+# -r Provide missing variables sidecar file, requires use_cf_conf "site.conf" file
+AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
