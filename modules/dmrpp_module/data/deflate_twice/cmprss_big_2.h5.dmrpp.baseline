@@ -1,0 +1,34 @@
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="cmprss_big_2.h5">
+    <Int32 name="Compressed_Data">
+        <Dim size="1000"/>
+        <Dim size="200"/>
+        <dmrpp:chunks compressionType="shuffle deflate deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>200 200</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="143" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4159" nBytes="143" chunkPositionInArray="[200,0]"/>
+            <dmrpp:chunk offset="4302" nBytes="143" chunkPositionInArray="[400,0]"/>
+            <dmrpp:chunk offset="4445" nBytes="143" chunkPositionInArray="[600,0]"/>
+            <dmrpp:chunk offset="4588" nBytes="143" chunkPositionInArray="[800,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value> </Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

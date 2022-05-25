@@ -155,17 +155,12 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         for (int filter = 0; filter < numfilt; filter++) {
             size_t nelmts = 0;
             unsigned int flags, filter_info;
-            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, nullptr, 0, nullptr, &filter_info);
+            H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts,
+                                                      nullptr, 0, nullptr, &filter_info);
             VERBOSE(cerr << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
-                    // For HYRAX-733. Sometimes deflate shows up twice in the filters for a variable.
-                    // The DMR++ ignores the second time deflate is listed, but other users of the DMR++
-                    // might not be savvy and try to decompress the chunk/buffer/variable two times,
-                    // which will fail.
-                    // Here, we only add 'deflate' if it is not already in the filters info. jhrg 5/24/22
-                    if (filters.find("deflate") == string::npos)
-                        filters.append("deflate ");
+                    filters.append("deflate ");
                     break;
                 case H5Z_FILTER_SHUFFLE:
                     filters.append("shuffle ");

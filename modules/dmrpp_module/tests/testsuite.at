@@ -252,3 +252,19 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int8.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint8.dap])
+
+# Test fill values plus compression. jhrg 5/25/22
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_compressed.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_compressed.dap])
+
+# Test chunked data where chunks are compressed twice (and thus must be
+# inflated twice). The first file uses deflate once, the second uses it
+# twice. jhrg 5/25/22
+
+AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dmr])
+# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
+
+AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dmr])
+# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.ce.dap])
