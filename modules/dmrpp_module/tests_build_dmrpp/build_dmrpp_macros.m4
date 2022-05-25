@@ -217,7 +217,11 @@ ls -l "${GET_DMRPP}"
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
-input_file="${DATA_DIR}/$1"
+
+echo $1 | grep "s3://"
+if $? -ne 0 ; then  input_file=${DATA_DIR}/$1; else input_file=$1; fi
+#input_file="${DATA_DIR}/$1"
+
 baseline="${BASELINES_DIR}/$2"
 params="$3"
 output_file="$4"
