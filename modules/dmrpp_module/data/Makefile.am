@@ -39,7 +39,7 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in  README README.md dmrpp mds_for_tests s3 s3_data fill_value
+EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data fill_value deflate_twice
 # get_dmrpp_mkcheck.conf.in removed because get_dmrpp.in contains same stuff. ndp 3/30/22
 
 # Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
