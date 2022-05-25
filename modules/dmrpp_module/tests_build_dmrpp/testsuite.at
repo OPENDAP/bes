@@ -46,7 +46,7 @@ AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_b
 AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
 
 # -U Use input file located in AWS S3
-AT_GET_DMRPP_3_20([s3://opendap.test/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.s3.baseline], [-U], [a.out])
+AT_GET_DMRPP_3_20([s3://opendap.test/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.baseline], [-U], [a.out])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
