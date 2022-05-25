@@ -5,10 +5,14 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/bug/ATL03_20200331235733_00830708_003_01.h5.dmrpp</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/data/deflate_twice/cmprss_big_1.h5.dmrpp</bes:setContainer>
   
   <bes:define name="d1" space="default">
-    <bes:container name="c"/>
+    <bes:container name="c">
+      <bes:dap4constraint>
+
+      </bes:dap4constraint>
+    </bes:container>
   </bes:define>
   
   <bes:get type="dmr" definition="d1" />

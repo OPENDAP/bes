@@ -130,7 +130,9 @@ void usage() {
        Builds the DMR using the HDF5 handler as configured using the options in the <bes.conf>.
 
     build_dmrpp build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
-       read from the given file (so it does not run the HDF5 handler code.
+       read from the given file (so it does not run the HDF5 handler code and does not require the
+       Metadata Store - MDS - be configured). Note that the get_dmrpp command appears to use this
+       option and thus, the configuration options listed in the built DMR++ files lack the MDS setup.
 
     Other options:
         -v: Verbose
@@ -233,7 +235,7 @@ int main(int argc, char *argv[]) {
             // Use the values from the bes.conf file... jhrg 5/21/18
             bes::DmrppMetadataStore *mds = bes::DmrppMetadataStore::get_instance();
             if (!mds) {
-                cerr << "The Metadata Store (MDS) must be configured for this command to work." << endl;
+                cerr << "The Metadata Store (MDS) must be configured for this command to work (but see the -r option)." << endl;
                 return EXIT_FAILURE;
             }
 

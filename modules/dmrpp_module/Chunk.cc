@@ -248,7 +248,7 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
         if (Z_OK != status) {
             stringstream err_msg;
             err_msg << "Failed to inflate data chunk.";
-            char *err_msg_cstr = z_strm.msg;
+            char const *err_msg_cstr = z_strm.msg;
             if(err_msg_cstr)
                 err_msg << " zlib message: " << err_msg_cstr;
             (void) inflateEnd(&z_strm);
@@ -615,7 +615,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
         string filter = *i;
 
-        if (filter == "deflate"){
+        if (filter == "deflate") {
             char *dest = new char[chunk_size];
             try {
                 inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
