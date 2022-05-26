@@ -951,8 +951,8 @@ function dap4_array_test() {
   var_count=$(dap4_array_counter ${dmr_file} ${type})
   if test -n "${verbose}"; then echo "Found ${var_count} variables of type ${type} in DMR: ${dmr_file}" >&2; fi
   if [ ${var_count} -lt 1 ]; then
-    echo "ERROR! No variables found in DMR!" >&2
-    return 1
+    echo "ERROR! No variables of type ${type} found in DMR!" >&2
+    return 0
   fi
 
   pick_var=$(echo "${var_count}*${RANDOM}/32767+1" | bc)
