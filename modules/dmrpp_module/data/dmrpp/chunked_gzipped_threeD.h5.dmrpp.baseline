@@ -10,7 +10,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/d_8_gzipped_chunks</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>50 50 50</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4208" nBytes="131549" chunkPositionInArray="[0,0,0]"/>
             <dmrpp:chunk offset="135757" nBytes="133648" chunkPositionInArray="[0,0,50]"/>

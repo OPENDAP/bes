@@ -423,10 +423,9 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     const hid_t file_id = f->getFileID();
 
     // Read Variable info.
-    vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
-    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+    for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dds(dds,*it_v,file_id,filename);
     }
@@ -527,16 +526,16 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
         break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt16);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFInt16)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -592,9 +591,9 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
@@ -642,9 +641,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 dds.add_var(ar);
@@ -660,7 +659,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDFEOS5CFMissNonLLCVArray *ar = nullptr;
                 try {
@@ -678,9 +677,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
                 delete bt;
@@ -698,7 +697,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
                 HDFEOS5CFSpecialCVArray *ar = nullptr;
 
                 try {
@@ -720,9 +719,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d){
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
                 dds.add_var(ar);
                 delete bt;
@@ -755,9 +754,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-    vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
-    vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     // Handling the file attributes(attributes under the root group)
@@ -773,15 +770,16 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     }
 
     if (false == grps.empty()) {
-        for (it_g = grps.begin();
-             it_g != grps.end(); ++it_g) {
+        for (auto it_g = grps.begin(); it_g != grps.end(); ++it_g) {
             AttrTable *at = das.get_table((*it_g)->getNewName());
             if (nullptr == at)
                 at = das.add_table((*it_g)->getNewName(), new AttrTable);
 
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
+#if 0
                 //gen_dap_oneobj_das(at,*it_ra,nullptr);
+#endif
                 // TODO: ADDING a BES KEY
                 if((*it_ra)->getNewName()=="Conventions" &&((*it_g)->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
                         && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
@@ -796,8 +794,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
         }
     }
 
-    for (it_v = vars.begin();
-         it_v != vars.end(); ++it_v) {
+    for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
         if (false == ((*it_v)->getAttributes().empty())) {
 
             // TODO: Need to handle 64-bit int support for DAP4 CF.
@@ -1017,7 +1014,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
             bool has_unlimited_dim = false;
 #endif
             // Check unlimited dimension names.
-            for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+            for (auto ird = (*it_cv)->getDimensions().begin();
                  ird != (*it_cv)->getDimensions().end(); ++ird) {
 
                 // Currently we only check one unlimited dimension, which is the most
@@ -1967,8 +1964,10 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // Old comments, leave them for the time being:
         // We need to use the CV units to distinguish lat/lon from th 3rd CV when
         // memory cache is turned on.
+#if 0
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
         //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
+#endif
 
         // Handle unsupported datatypes including the attributes
         f->Handle_Unsupported_Dtype(true);
@@ -2004,8 +2003,10 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // The units of CV will be used to distinguish whether this CV is 
         // latitude/longitude or a third-dimension CV. 
         // isLatLon() will use the units value.
+#if 0
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
         //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr))
+#endif
         f->Adjust_Attr_Info();
 
         // May need to adjust the object names for special objects. Currently no operations
@@ -2037,7 +2038,9 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
         // Handle coordinate attributes
         f->Handle_Coor_Attr();
+#if 0
         //f->Handle_SpVar_Attr();
+#endif
     }
     catch (HDF5CF::Exception &e){
         if(f != nullptr)
@@ -2070,7 +2073,6 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-    vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     if (false == root_attrs.empty()) {
@@ -2080,9 +2082,8 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
     // We use the container since we claim to have no hierarchy.
     if (false == grps.empty()) {
-        for (it_g = grps.begin();
-             it_g != grps.end(); ++it_g) {
-            D4Attribute *tmp_grp = new D4Attribute;
+        for (auto it_g = grps.begin(); it_g != grps.end(); ++it_g) {
+            auto tmp_grp = new D4Attribute;
             tmp_grp->set_name((*it_g)->getNewName());
             tmp_grp->set_type(attr_container_c);
 
@@ -2140,15 +2141,16 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
         // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
         if(d4_root->attributes() != nullptr) {
+#if 0
         //if((d4_root->attributes()->find(dods_extra))==nullptr) {
-
+#endif
             string unlimited_dim_names ="";
 
             for (it_cv = cvars.begin();
                 it_cv != cvars.end(); it_cv++) {
     
                 // Check unlimited dimension names.
-                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                for (auto ird = (*it_cv)->getDimensions().begin();
                      ird != (*it_cv)->getDimensions().end(); ++ird) {
     
                     // Currently we only check one unlimited dimension, which is the most
@@ -2168,12 +2170,11 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
             }
 
             if(unlimited_dim_names != "") {
-                D4Attribute *dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
-                D4Attribute *unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
+                auto dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
+                auto unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
                 unlimited_dim_attr->add_value(unlimited_dim_names);
                 dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
                 d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
-                
             }
             else 
                 throw InternalErr(__FILE__, __LINE__, "Unlimited dimension should exist.");  
@@ -2206,18 +2207,18 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
         break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt8);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5INT64, HDF5CFInt64);
-        HANDLE_CASE(H5UINT64, HDF5CFUInt64);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFInt8)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5INT64, HDF5CFInt64)
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -2266,9 +2267,9 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2320,9 +2321,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2343,7 +2344,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                int nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 HDFEOS5CFMissNonLLCVArray *ar = nullptr;
                 try {
@@ -2361,9 +2362,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2386,7 +2387,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (cvar->getDimensions()[0])->getSize();
+                int nelem = (int)((cvar->getDimensions()[0])->getSize());
                 HDFEOS5CFSpecialCVArray *ar = nullptr;
 
                 try {
@@ -2408,9 +2409,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d){
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((*it_d)->getSize());
+                        ar->append_dim((int)((*it_d)->getSize()));
                     else 
-                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2446,16 +2447,15 @@ void  gen_dap_eos5cf_gm_dmr(libdap::D4Group* d4_root,HDF5CF::EOS5File*f) {
 
 //(1) Add grid mapping projection vars if we have any
 //(2) Add grid_mapping attributes for all non-cv vars
-void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
+void gen_gm_proj_var_info(libdap::D4Group* d4_root,const HDF5CF::EOS5File* f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function   "<<endl);
     const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
     // For multiple grids, multiple grid mapping variables are needed.
     // We use EOS5 coordinate variables to track this.
     unsigned short cv_lat_miss_index = 1;
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
                 gen_gm_oneproj_var(d4_root,*it_cv,cv_lat_miss_index,f);
@@ -2469,7 +2469,7 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
 // grid_mapping attributes for all the non-cv variables.
 void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
                          const HDF5CF::EOS5CVar* cvar,
-                         const unsigned short g_suffix, HDF5CF::EOS5File* f) {
+                         const unsigned short g_suffix, const HDF5CF::EOS5File* f) {
 
     BESDEBUG("h5","Coming to gen_gm_oneproj_var()  "<<endl);
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
@@ -2526,13 +2526,12 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
 }
 
 //Generate DMR of special dimension variables.
-void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f){
+void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,const HDF5CF::EOS5File* f){
 
     BESDEBUG("h5","Coming to HDF-EOS5 products grid mapping variable generation function   "<<endl);
     const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
             if((*it_cv)->getProjCode() != HE5_GCTP_GEO) 
                 gen_gm_oneproj_spvar(d4_root,*it_cv);

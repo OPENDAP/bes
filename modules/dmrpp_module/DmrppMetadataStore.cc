@@ -170,11 +170,6 @@ void DmrppMetadataStore::StreamDMRpp::operator()(ostream &os)
         XMLWriter xml;
         dmrpp->print_dap4(xml);
 
-#if 0
-        string href = "";
-        static_cast<dmrpp::DMRpp*>(d_dmr)->print_dmrpp(xml, href);
-#endif
-
         os << xml.get_doc();
     }
     else {

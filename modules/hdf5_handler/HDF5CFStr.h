@@ -42,9 +42,9 @@
 class HDF5CFStr:public libdap::Str {
   public:
     HDF5CFStr(const std::string &n, const std::string &d,const std::string &varname);
-    virtual ~ HDF5CFStr();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDF5CFStr()override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
   private:
    std::string varname;
 };

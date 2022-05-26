@@ -176,7 +176,7 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
 
     BESDEBUG(MODULE, prolog << "temp_file_prefix: " << temp_file_prefix << endl);
     string tmplt("XXXXXX");
-    if(BESUtil::endsWith(temp_file_prefix,"_")){
+    if(!BESUtil::endsWith(temp_file_prefix,"_")){
         tmplt = "_" + tmplt;
     }
     string file_template = temp_file_prefix + tmplt;

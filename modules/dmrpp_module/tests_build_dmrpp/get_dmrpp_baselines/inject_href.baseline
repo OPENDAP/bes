@@ -2,7 +2,7 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_oneD.h5" dmrpp:href="http://some.where.over.the.rainbow.oz" removed dmrpp:version>
     <Float32 name="d_4_chunks">
         <Dim size="40000"/>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>10000</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3496" nBytes="40000" chunkPositionInArray="[0]"/>
             <dmrpp:chunk offset="43496" nBytes="40000" chunkPositionInArray="[10000]"/>

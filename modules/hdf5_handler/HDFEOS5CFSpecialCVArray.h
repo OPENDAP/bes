@@ -43,7 +43,7 @@
 
 class HDFEOS5CFSpecialCVArray:public HDF5BaseArray {
     public:
-        HDFEOS5CFSpecialCVArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, int h5_num_elm, const std::string &varfullpath, const std::string & n="",  libdap::BaseType * v = 0):
+        HDFEOS5CFSpecialCVArray(int h5_rank, const std::string & h5_filename, const hid_t h5_fileid, H5DataType h5_dtype, int h5_num_elm, const std::string &varfullpath, const std::string & n="",  libdap::BaseType * v = nullptr):
         HDF5BaseArray(n,v),
         rank(h5_rank),
         filename(h5_filename),
@@ -53,11 +53,11 @@ class HDFEOS5CFSpecialCVArray:public HDF5BaseArray {
         varname(varfullpath) {
     }
 
-    virtual ~ HDFEOS5CFSpecialCVArray() {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    ~ HDFEOS5CFSpecialCVArray() override = default;
+    
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
 
     private:
         int rank;

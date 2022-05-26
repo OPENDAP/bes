@@ -46,9 +46,6 @@ HDF5CFFloat32::HDF5CFFloat32(const string & n, const string &d) : Float32(n, d)
 HDF5CFFloat32::HDF5CFFloat32(const string &n, const string &d,const string &d_f) : Float32(n, d),filename(d_f)
 {
 }
-HDF5CFFloat32::~HDF5CFFloat32()
-{
-}
 BaseType *HDF5CFFloat32::ptr_duplicate()
 {
     return new HDF5CFFloat32(*this);

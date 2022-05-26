@@ -66,7 +66,7 @@ bool HDF5GMCFMissLLArray::read()
         string cache_key;
 
         // Check if this file is included in the non-cache directory                                
-        if ((cur_lrd_non_cache_dir_list.size() == 0)
+        if ((cur_lrd_non_cache_dir_list.empty())
             || ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list, filename, '/'))) {
             short cache_flag = 2;
             vector<string> cur_cache_dlist;
@@ -153,7 +153,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset, int* step, int nelm
         }
 
         // The first number of the latitude is at the north west corner
-        LL_first_point = (float)(Lat_SWP + (Num_lines - 1) * Lat_step);
+        LL_first_point = Lat_SWP + (Num_lines - 1) * Lat_step;
         LL_step = (float)(Lat_step * (-1.0));
         LL_total_num = Num_lines;
     }
@@ -592,12 +592,16 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
         }
         else if(ret_o2>0) {
             if(attr_na.name) {
+#if 0
                 //printf("attr_name second is %s\n",attr_na.name);
+#endif
                 free(attr_na.name);
             }
             if(attr_na.value) {
+#if 0
                 //printf("attr_value second is %s\n",attr_na.value);
                 //grid_info_value2(attr_na.value,attr_na.value+strlen(attr_na.value));
+#endif
                 grid_info_value2.resize(strlen(attr_na.value));
                 memcpy(&grid_info_value2[0],attr_na.value,strlen(attr_na.value));
 #if 0
@@ -681,7 +685,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_dat
 
     // Attribute name is GridHeader
     if(strstr(name,GPM_ATTR2_NAME)!=nullptr)  {
-        hid_t attr, atype;  
+        hid_t attr;
+        hid_t atype;  
         attr = H5Aopen(loc_id, name, H5P_DEFAULT);
         if(attr<0) 
             return -1;
@@ -787,7 +792,10 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
    } attr_info_t;
 
 
+#if 0
     //lvisit_ud_t *op_data = (lvisit_ud_t *)_op_data;
+#endif
+
     attr_info_t *op_data = (attr_info_t *)_op_data;
     herr_t ret = 0;
 
@@ -859,8 +867,11 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
         }
     }
     else if (CV_LON_MISS == cvartype) {
+
+#if 0
 //cerr<<"nelms is "<<nelms <<endl;
 //cerr<<"lonsize is "<<lonsize <<endl;
+#endif
         if (nelms > lonsize) {
             throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Longitude");
         }

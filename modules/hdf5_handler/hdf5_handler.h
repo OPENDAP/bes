@@ -78,7 +78,9 @@ typedef struct DS {
     /// HDF5 data type id
     hid_t type;
     /// HDF5 data space id
+#if 0
     //hid_t dataspace;
+#endif
     /// Number of dimensions
     int ndims;
     /// Size of each dimension
@@ -95,7 +97,7 @@ typedef struct DSattr {
     /// Name of HDF5 group or dataset
     char name[DODS_NAMELEN];
     /// Memory type
-    int type;
+    hid_t type;
     /// Number of dimensions
     int ndims;
     /// Size of each dimension
@@ -151,9 +153,5 @@ static const char URL[] = "Url";
 #include "h5get.h"              
 #include "HDF5PathFinder.h"
 
-/// Adding CF options
 
-//#include "h5cfdds.h"
-
-//using namespace libdap;
 #endif

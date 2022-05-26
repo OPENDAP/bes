@@ -7,7 +7,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/scalar_big_string</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="unsupported-string" byteOrder="LE">
             <dmrpp:chunk offset="2144" nBytes="16"/>
         </dmrpp:chunks>
     </String>

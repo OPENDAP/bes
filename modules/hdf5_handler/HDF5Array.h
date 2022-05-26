@@ -47,20 +47,24 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 class HDF5Array:public libdap::Array {
+
   private:
-    int d_num_dim;
-    int d_num_elm;
+
+    int d_num_dim = 0;
+    int d_num_elm = 0;
     
-    hsize_t d_memneed;
+    hsize_t d_memneed = 0;
     string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
     int format_constraint(int *cor, int *step, int *edg);
 
+#if 0
     hid_t mkstr(int size, H5T_str_t pad);
+#endif
 
-    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
+    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,const int* offset,const int*count,const int*step);
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
@@ -90,20 +94,17 @@ class HDF5Array:public libdap::Array {
 
     /// Constructor
     HDF5Array(const std::string & n, const std::string &d, libdap::BaseType * v);
-    virtual ~ HDF5Array();
+    ~ HDF5Array() override = default;
 
     /// Clone this instance.
     /// 
     /// Allocate a new instance and copy *this into it. This method must 
     /// perform a deep copy.
     /// \return A newly allocated copy of this class
-    virtual libdap::BaseType *ptr_duplicate();
+    libdap::BaseType *ptr_duplicate() override;
 
     /// Reads HDF5 array data into local buffer
-    virtual bool read();
-
-    /// See return_type function defined in h5dds.cc.
-    friend std::string return_type(hid_t datatype);
+    bool read() override;
 
     /// remembers memory size needed.    
     void set_memneed(size_t need);
@@ -114,7 +115,7 @@ class HDF5Array:public libdap::Array {
     /// remembers number of elements in this array.  
     void set_numelm(int nelms);
 
-    void set_varpath(const std::string vpath) { var_path = vpath;}
+    void set_varpath(const std::string& vpath) { var_path = vpath;}
     libdap::BaseType *h5dims_transform_to_dap4(libdap::D4Group *root,const std::vector<std::string> &dimpath);
 };
 

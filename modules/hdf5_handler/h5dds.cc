@@ -114,7 +114,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
         // Query the length of object name.
         oname_size =
- 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+ 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
         if (oname_size <= 0) {
             string msg = "h5_dds handler: Error getting the size of the hdf5 object from the group: ";
@@ -211,7 +211,9 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                 // Obtain the hdf5 dataset handle stored in the structure dt_inst. 
                 // All the metadata information in the handler is stored in dt_inst.
                 // Don't consider the dim. scale support for DAP2 now.
+#if 0
                 //get_dataset(pid, full_path_name, &dt_inst,false);
+#endif
                 get_dataset(pid, full_path_name, &dt_inst);
 
                 // Put the hdf5 dataset structure into DODS dds.
@@ -276,13 +278,13 @@ read_objects_base_type(DDS & dds_table, const string & varname,
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
         dds_table.add_var(bt);
-        delete bt; bt = 0;
+        delete bt; bt = nullptr;
     }
     else {
 
         // Next, deal with Array data. This 'else clause' runs to
         // the end of the method. jhrg
-        HDF5Array *ar = new HDF5Array(varname, filename, bt);
+        auto ar = new HDF5Array(varname, filename, bt);
         delete bt; bt = 0;
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
@@ -290,7 +292,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
 	    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar->append_dim(dt_inst.size[dim_index]); 
         dds_table.add_var(ar);
-        delete ar; ar = 0;
+        delete ar; ar = nullptr;
     }
 
     BESDEBUG("h5", "<read_objects_base_type(dds)" << endl);
@@ -325,8 +327,8 @@ read_objects_structure(DDS & dds_table, const string & varname,
                 dt_inst.nelmts << endl);
             BESDEBUG("h5", "=read_objects_structure(): memory needed = " <<
                 dt_inst.need << endl);
-            HDF5Array *ar = new HDF5Array(varname, filename, structure);
-            delete structure; structure = 0;
+            auto ar = new HDF5Array(varname, filename, structure);
+            delete structure; structure = nullptr;
             try {
                 ar->set_memneed(dt_inst.need);
                 ar->set_numdim(dt_inst.ndims);
@@ -340,7 +342,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
                 }
 
                 dds_table.add_var(ar);
-                delete ar; ar = 0;
+                delete ar; ar = nullptr;
             } // try Array *ar
             catch (...) {
                 delete ar;
@@ -350,7 +352,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
         else {// A scalar structure
 
             dds_table.add_var(structure);
-            delete structure; structure = 0;
+            delete structure; structure = nullptr;
         }
 
     } // try     Structure *structure is  Get_structure(...)

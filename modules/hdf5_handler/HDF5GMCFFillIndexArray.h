@@ -43,17 +43,15 @@
 
 class HDF5GMCFFillIndexArray: public HDF5BaseArray {
 public:
-    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, bool h5_is_dap4, const string & n = "", libdap::BaseType * v = 0) :
+    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, bool h5_is_dap4, const string & n = "", libdap::BaseType * v = nullptr) :
         HDF5BaseArray(n, v), rank(h5_rank), dtype(h5_dtype),is_dap4(h5_is_dap4)
     {
     }
 
-    virtual ~ HDF5GMCFFillIndexArray()
-    {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual void read_data_NOT_from_mem_cache(bool add_cache, void* /*buf FIXME Not used ever? jhrg 7/5/17*/);
+    ~ HDF5GMCFFillIndexArray() override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    void read_data_NOT_from_mem_cache(bool add_cache, void* /*buf FIXME Not used ever? jhrg 7/5/17*/) override;
 
 private:
     int rank;

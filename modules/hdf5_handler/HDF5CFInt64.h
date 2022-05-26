@@ -45,9 +45,9 @@ class HDF5CFInt64:public libdap::Int64 {
     public:
         HDF5CFInt64(const std::string &n, const std::string &d);
         HDF5CFInt64(const std::string &n, const std::string &d,const std::string &d_f);
-        virtual ~ HDF5CFInt64();
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
+        ~ HDF5CFInt64() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
 };
 
 #endif                          // _HDF5CFINT64_H

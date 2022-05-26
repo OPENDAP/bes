@@ -127,7 +127,7 @@ H5.EnableDropLongString=true
 
 # EnableFillValueCheck: Check if the _FillValue is within the correct datatype and data range.
 
-# We find that occassionally that the datatype of attribute _FillValue is different 
+# We find that occasionally that the datatype of attribute _FillValue is different
 # than the datatype of the corresponding variable for some NASA HDF5 products. 
 # This violates the CF conventions. So the handler
 # corrects the FillValue datatype to be the corresponding variable datatype. However, the

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_uint64.h5" dmrpp:href="data/fill_value/FValue_uint64.h5" dmrpp:version="3.20.10">
+    <UInt64 name="chunks_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </UInt64>
+    <UInt64 name="chunks_fill_not_write">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </UInt64>
+    <UInt64 name="chunks_fill_notdefined">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4480" nBytes="32" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4544" nBytes="32" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="4576" nBytes="32" chunkPositionInArray="[2,0]"/>
+            <dmrpp:chunk offset="4512" nBytes="32" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </UInt64>
+    <UInt64 name="chunks_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4288" nBytes="32" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4320" nBytes="32" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </UInt64>
+    <UInt64 name="compact_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999"/>
+        <dmrpp:compact>DycAAAAAAAAPJwAAAAAAAA8nAAAAAAAADycAAAAAAAAPJwAAAAAAAA8nAAAAAAAADycAAAAAAAAPJwAAAAAAAA8nAAAAAAAADycAAAAAAAAPJwAAAAAAAA8nAAAAAAAADycAAAAAAAAPJwAAAAAAAA8nAAAAAAAADycAAAAAAAA=</dmrpp:compact>
+    </UInt64>
+    <UInt64 name="cont_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999"/>
+    </UInt64>
+    <UInt64 name="cont_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks fillValue="9999" byteOrder="LE">
+            <dmrpp:chunk offset="4352" nBytes="128"/>
+        </dmrpp:chunks>
+    </UInt64>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.10</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.10</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.9</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Container.Persistence=strict
+BES.Data.RootDirectory=/dev/null
+BES.DefaultResponseMethod=POST
+BES.FollowSymLinks=Yes
+BES.Group=group_name
+BES.Info.Buffered=no
+BES.Info.Type=xml
+BES.LogName=./bes.log
+BES.LogVerbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.ProcessManagerMethod=multiple
+BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.Uncompress.NumTries=10
+BES.Uncompress.Retry=2000
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.User=user_name
+BES.module.cmd=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libdap_xml_module.so
+BES.module.dap=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libdap_module.so
+BES.module.dmrpp=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libdmrpp_module.so
+BES.module.fonc=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libfonc_module.so
+BES.module.h5=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libhdf5_module.so
+BES.module.nc=/Users/jimg/src/opendap/hyrax_git/build/lib/bes/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+H5.CheckIgnoreObj=false
+H5.DefaultHandleDimension=true
+H5.DisableStructMetaAttr=true
+H5.DiskCacheComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheSize=10000
+H5.DiskMetaDataCachePath=/tmp
+H5.EnableAddPathAttrs=true
+H5.EnableCF=false
+H5.EnableCFDMR=true
+H5.EnableCheckNameClashing=true
+H5.EnableDiskDDSCache=false
+H5.EnableDiskDataCache=false
+H5.EnableDiskMetaDataCache=false
+H5.EnableDropLongString=true
+H5.EnableEOSGeoCacheFile=false
+H5.EnableFillValueCheck=true
+H5.KeepVarLeadingUnderscore=false
+H5.LargeDataMemCacheEntries=0
+H5.MetaDataMemCacheEntries=300
+H5.SmallDataMemCacheEntries=0
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -c /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gn/T/conf_XXXX.RuyLmsx7 -f ./FValue_uint64.h5 -r /var/folders/y_/8hk218l08xl6tr006s6j7zkh0000gn/T/dmr_XXXX.OPBGDyjJ -u data/FValue_uint64.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

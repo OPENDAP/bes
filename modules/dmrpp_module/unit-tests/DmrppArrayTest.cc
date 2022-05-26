@@ -63,18 +63,11 @@ class DmrppArrayTest: public CppUnit::TestFixture {
 private:
 
 public:
-    // Called once before everything gets tested
-    DmrppArrayTest()
-    {
-    }
-
-    // Called at the end of the test
-    ~DmrppArrayTest()
-    {
-    }
+    DmrppArrayTest() = default;
+    ~DmrppArrayTest() = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         DBG(cerr << endl);
         // Contains BES Log parameters but not cache names
@@ -89,12 +82,14 @@ public:
         unsigned long long int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
         dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
-        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
 
+        // Various things will gripe about this not being used... This is how the
+        // CurlHandlePool gets instantiated. jhrg 4/22/22
+        auto foo = new dmrpp::DmrppRequestHandler("Chaos");
     }
 
     // Called after each test
-    void tearDown()
+    void tearDown() override
     {
     }
 
@@ -108,11 +103,11 @@ public:
         tiat.append_dim(target_file_size,"test_dim");
         tiat.set_filter("");
 
-        vector<size_t> chunk_dim_sizes = {1};
+        vector<unsigned long long> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
         vector<unsigned long long> position_in_array;
         position_in_array.push_back(0);
-        tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
+        tiat.add_chunk(data_url,"LE",target_file_size,0, position_in_array);
 
         try {
             tiat.read_contiguous();
@@ -127,24 +122,12 @@ public:
             CPPUNIT_FAIL(string("Caught libdap::Error. Message: ").append(e.what()));
         }
         catch(...){
-            CPPUNIT_FAIL("Caught unkown exception.");
+            CPPUNIT_FAIL("Caught unknown exception.");
         }
-
-        char expected[] = {'T', 'h', 'i', 's', 'I', 's', 'A', 'T', 'e','s','t'};
-        unsigned int expected_size = 11;
-        unsigned long long num_bytes = tiat.width();
-        char *result = tiat.get_buf();
-
-        /*
-        unsigned long long  expected_index=0;
-        for(unsigned long long index=0; index <num_bytes; index++){
-            CPPUNIT_ASSERT(result[index] == expected[expected_index++ % 11]);
-        }
-*/
-
 
         DBG(cerr << prolog << "END" << endl);
     }
+
     void read_contiguous_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
@@ -155,11 +138,11 @@ public:
         tiat.append_dim(target_file_size,"test_dim");
         tiat.set_filter("");
 
-        vector<size_t> chunk_dim_sizes = {1};
+        vector<unsigned long long> chunk_dim_sizes {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
-        vector<unsigned long long> position_in_array;
-        position_in_array.push_back(0);
-        tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
+        vector<unsigned long long> pia {0};
+        //pia.push_back(0);
+        tiat.add_chunk(data_url,"LE",target_file_size,0, pia);
 
         try {
             tiat.read_contiguous();
@@ -177,23 +160,11 @@ public:
             CPPUNIT_FAIL("Caught unkown exception.");
         }
 
-        char expected[] = {'T', 'h', 'i', 's', 'I', 's', 'A', 'T', 'e','s','t'};
-        unsigned int expected_size = 11;
-        unsigned long long num_bytes = tiat.width();
-        char *result = tiat.get_buf();
-
-        /*
-        unsigned long long  expected_index=0;
-        for(unsigned long long index=0; index <num_bytes; index++){
-            CPPUNIT_ASSERT(result[index] == expected[expected_index++ % 11]);
-        }
-*/
-
-
         DBG(cerr << prolog << "END" << endl);
     }
 
     CPPUNIT_TEST_SUITE( DmrppArrayTest );
+
         CPPUNIT_TEST(read_contiguous_sc_test);
         CPPUNIT_TEST(read_contiguous_test);
 

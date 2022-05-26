@@ -47,9 +47,6 @@ HDF5CFUInt64::HDF5CFUInt64(const string &n, const string &d) : UInt64(n, d)
 HDF5CFUInt64::HDF5CFUInt64(const string &n, const string &d,const string &d_f) : UInt64(n, d),filename(d_f)
 {
 }
-HDF5CFUInt64::~HDF5CFUInt64()
-{
-}
 BaseType *HDF5CFUInt64::ptr_duplicate()
 {
     return new HDF5CFUInt64(*this);

@@ -86,14 +86,14 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
@@ -114,12 +114,12 @@ m4_define([REMOVE_PATH_COMPONENTS], [dnl
     mv $1.sed $1
 ])
 
-dnl Normalize binary name. Sometime the build_dmrpp program is named 'build_dmrpp,'
-dnl other times it is named 'lt-build_dmrpp.' This ensure it always has the same name
-dnl in the baselines and test output.
+dnl Normalize binary name. Sometimes the build_dmrpp program is named 'build_dmrpp,'
+dnl other times it is named 'lt-build_dmrpp.' This macro ensures it always has the 
+dnl same name in the baselines and test output.
 dml jhrg 11/22/21
-dnl Usage: NORMAILZE_EXEC_NAME(file_name)
-m4_define([NORMAILZE_EXEC_NAME], [dnl
+dnl Usage: NORMALIZE_EXEC_NAME(file_name)
+m4_define([NORMALIZE_EXEC_NAME], [dnl
     sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*build_dmrpp @build_dmrpp @g' < $1 > $1.sed
     mv $1.sed $1
 ])
@@ -266,7 +266,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([${output_file}])
+    NORMALIZE_EXEC_NAME([${output_file}])
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
@@ -276,7 +276,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([${output_file}])
+    NORMALIZE_EXEC_NAME([${output_file}])
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
@@ -320,16 +320,3 @@ m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR], [dnl
          < $1 > $1.sed
     mv $1.sed $1
 ])
-
-#
-# This one is too greedy, needit matches to the last </Attribute> closer not the next.
-# -e 's@<Attribute name="invocation" type="String">.*</Attribute>@<AttributeRemoved name="invocation" \/>@'
-#
-#
-#
-
-# 0,/Apple/{s/Apple/Banana/}
-
-
-# N; /\b(\w+)\s+\1\b/{=;p} ; D
-

@@ -45,9 +45,9 @@ class HDF5CFUInt16:public libdap::UInt16 {
     public:
         HDF5CFUInt16(const std::string &n, const std::string &d);
         HDF5CFUInt16(const std::string &n, const std::string &d,const std::string &d_f);
-        virtual ~ HDF5CFUInt16();
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
+        ~ HDF5CFUInt16() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
 };
 
 #endif                          // _HDF5CFUINT16_H

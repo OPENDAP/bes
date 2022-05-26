@@ -19,7 +19,7 @@
 
 using namespace std;
 
-HDF5DiskCache *HDF5DiskCache::d_instance = 0;
+HDF5DiskCache *HDF5DiskCache::d_instance = nullptr;
 const string HDF5DiskCache::PATH_KEY = "H5.DiskCacheDataPath";
 const string HDF5DiskCache::PREFIX_KEY = "H5.DiskCacheFilePrefix";
 const string HDF5DiskCache::SIZE_KEY = "H5.DiskCacheSize";
@@ -98,7 +98,7 @@ HDF5DiskCache::HDF5DiskCache(const unsigned long long _cache_size, const string 
 HDF5DiskCache *
 HDF5DiskCache::get_instance(const long _cache_size, const string &_cache_dir, const string &_cache_prefix)
 {
-    if (d_instance == 0) {
+    if (d_instance == nullptr) {
         struct stat buf;
         string cache_dir = getCacheDirFromConfig(_cache_dir);
         if ((stat(cache_dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR)) {

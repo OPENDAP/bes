@@ -5,6 +5,7 @@
 #define TEST_BUILD_DIR "@abs_builddir@"
 
 #define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp"
+#define TEST_DATA_ROOT_DIR "@abs_top_srcdir@/modules/dmrpp_module/data/"
 #define TEST_DMRPP_CATALOG "@abs_top_srcdir@/modules/dmrpp_module"
 
 const std::string test_data_dir = "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp";
