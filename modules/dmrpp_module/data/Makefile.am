@@ -1,9 +1,6 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-# AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
-# AM_CXXFLAGS =
-
 lib_besdir=$(libdir)/bes
 
 dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket

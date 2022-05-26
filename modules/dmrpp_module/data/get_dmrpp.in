@@ -13,8 +13,6 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-#jhrg BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
-#jhrg BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 EOF
     )
@@ -34,23 +32,14 @@ function mk_default_bes_conf() {
 # and HDF5 handler modules are the 'installed' ones (not the modules
 # found in the build tree). jhrg 5/11/18
 
-#jhrg BES.ServerAdministrator=admin.email.address@your.domain.name
-
-#jhrg BES.User=user_name
-#jhrg BES.Group=group_name
-
 BES.LogName=./bes.log
-#jhrg BES.LogVerbose=no
 
-#jhrg BES.modules=dap,cmd,h5,dmrpp,nc,fonc
 BES.modules=dap,cmd,h5,dmrpp
 
 BES.module.dap=@bes_modules_dir@/libdap_module.so
 BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
 BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
-#jhrg BES.module.nc=@bes_modules_dir@/libnc_module.so
-#jhrg BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
 # BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
@@ -65,61 +54,13 @@ BES.Data.RootDirectory=/dev/null
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
 BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
 
-#jhrg BES.Catalog.catalog.Include=;
-#jhrg BES.Catalog.catalog.Exclude=^\..*;
-
-#jhrg BES.FollowSymLinks=Yes
 BES.Catalog.catalog.FollowSymLinks=Yes
-
-#jhrg BES.Info.Buffered=no
-#jhrg BES.Info.Type=xml
 
 BES.UncompressCache.dir=/tmp/hyrax_ux
 BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
-#jhrg BES.Uncompress.Retry=2000
-#jhrg BES.Uncompress.NumTries=10
 
-#jhrg BES.Container.Persistence=strict
-
-#jhrg BES.Memory.GlobalArea.EmergencyPoolSize=1
-#jhrg BES.Memory.GlobalArea.MaximumHeapSize=20
-#jhrg BES.Memory.GlobalArea.Verbose=no
-#jhrg BES.Memory.GlobalArea.ControlHeap=no
-
-#jhrg BES.ProcessManagerMethod=multiple
-
-#jhrg BES.DefaultResponseMethod=POST
-
-# Control the Metadata Response Store. Here, DAP metadata responses
-# are stored/cached so that they can be returned by the server w/o
-# having to touch the data files/objects. Setting the 'path' to null
-# disables uses of the MDS. Setting 'size' to zero makes the MDS
-# hold objects forever; setting a positive non-zero size makes the
-# MDS behave like a cache, purging responses when the size is exceeded.
-
-# FIXME This will need to be modified for the DMR++ responses when
-# when enable Arch #2 since regenerating the DMR++ will be more
-# expensive than regenerating other responses from files
-
-#DAP.GlobalMetadataStore.path = @datadir@/modules/dmrpp_module/data/mds
-#DAP.GlobalMetadataStore.prefix = mds
-#DAP.GlobalMetadataStore.size = 0
-
-# The MDS writes a ledger of additions and removals. By default the
-# ledger is kept in 'mds_ledger.txt' in the directory used to start
-# the BES.
-
-#DAP.GlobalMetadataStore.ledger = @datadir@/modules/dmrpp_module/data/mds_ledger.txt
-
-#-----------------------------------------------------------------------#
-# FONc handler specific parameters:
-#-----------------------------------------------------------------------#
-#Make sure this follows the netCDF-4 enhanced model
-#jhrg FONc.ClassicModel=false
-#Don't generate global attributes since we only
-#care about the variable value information.
-#jhrg FONc.NoGlobalAttrs=true
+AllowedHosts+=^https?:\/\/
 
 #-----------------------------------------------------------------------#
 # HDF5 handler specific parameters:
@@ -130,42 +71,6 @@ BES.UncompressCache.size=500
 # HDF5 handler keys that are not the compiled-in defaults. jhrg 5/24/22
 H5.EnableCheckNameClashing=true
 H5.EnableCF=false
-
-# These are all the default values for the keys - based on the C++ code
-# and the default values see in HDF5RequestHandler.cc. jhrg 5/24/22
-#jhrg H5.EnableCFDMR=true
-#jhrg H5.DefaultHandleDimension=true
-#jhrg H5.KeepVarLeadingUnderscore=false
-#jhrg H5.EnableAddPathAttrs=true
-#jhrg H5.EnableDropLongString=true
-#jhrg H5.DisableStructMetaAttr=true
-#jhrg H5.EnableFillValueCheck=true
-#jhrg H5.CheckIgnoreObj=false
-
-
-#jhrg H5.LargeDataMemCacheEntries=0
-#jhrg H5.SmallDataMemCacheEntries=0
-#jhrg H5.CachePurgeLevel=0.2
-
-#jhrg H5.EnableDiskMetaDataCache=false
-#jhrg H5.EnableDiskDDSCache=false
-#jhrg H5.DiskMetaDataCachePath=/tmp
-
-#jhrg H5.EnableEOSGeoCacheFile=false
-#jhrg H5.Cache.latlon.path=/tmp/latlon
-#jhrg H5.Cache.latlon.prefix=l
-#jhrg H5.Cache.latlon.size=20000
-
-#jhrg H5.EnableDiskDataCache=false
-#jhrg H5.DiskCacheDataPath=/tmp
-#jhrg H5.DiskCacheFilePrefix=c
-#jhrg H5.DiskCacheSize=10000
-#jhrg H5.DiskCacheComp=true
-#jhrg H5.DiskCacheFloatOnlyComp=true
-#jhrg H5.DiskCacheCompThreshold=2.0
-#jhrg H5.DiskCacheCompVarSize=10000
-
-AllowedHosts+=^https?:\/\/
 
 EOF
   )
