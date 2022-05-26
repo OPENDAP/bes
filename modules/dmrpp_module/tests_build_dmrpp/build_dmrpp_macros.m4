@@ -235,6 +235,8 @@ export PATH=${abs_top_builddir}/standalone:$PATH
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
 
+at_verbose=""
+
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
     echo "#   abs_top_srcdir: ${abs_top_srcdir}"
