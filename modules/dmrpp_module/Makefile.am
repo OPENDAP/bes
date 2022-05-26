@@ -61,7 +61,10 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIB
 $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
-noinst_PROGRAMS = retriever superchunky
+
+# Building these will recompile the code they use. I will move them to 'unused.'
+# jhrg 5/24/22
+# noinst_PROGRAMS = retriever superchunky
 
 STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
 
@@ -89,25 +92,7 @@ reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
 reduce_mdf_SOURCES = reduce_mdf.cc
 reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 
-# retriever config
-retriever_CPPFLAGS = $(AM_CPPFLAGS)
-retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h retriever.cc
-retriever_LDFLAGS = $(STATIC_DAP_MODULE)
-retriever_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
-$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
-
-# superchunky config
-superchunky_CPPFLAGS = $(AM_CPPFLAGS)
-superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h SuperChunky.cc
-superchunky_LDFLAGS = $(STATIC_DAP_MODULE)
-superchunky_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
-$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
-
-# $(BES_DAP_LIB)
-
-EXTRA_PROGRAMS = 
+EXTRA_PROGRAMS =
 
 EXTRA_DIST = dmrpp.conf.in
 
