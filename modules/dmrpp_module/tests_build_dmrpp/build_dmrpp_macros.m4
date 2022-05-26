@@ -218,9 +218,13 @@ DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
-which grep
 echo $1 | grep "s3://"
-if $? -ne 0 ; then  input_file=${DATA_DIR}/$1; else input_file=$1; fi
+if test $? -ne 0
+then
+    input_file="${DATA_DIR}/$1"
+else
+    input_file="$1"
+fi
 
 baseline="${BASELINES_DIR}/$2"
 params="$3"
