@@ -44,6 +44,7 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - gcovr
+    - grep
 
 git:
   depth: false
