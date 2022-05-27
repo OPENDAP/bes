@@ -57,13 +57,8 @@ BaseType *HDF5Array::ptr_duplicate() {
 
 HDF5Array::HDF5Array(const string & n, const string &d, BaseType * v) :
     Array(n, d, v) {
-    d_num_dim = 0;
-    d_num_elm = 0;
-    d_memneed = 0;
 }
 
-HDF5Array::~HDF5Array() {
-}
 
 int HDF5Array::format_constraint(int *offset, int *step, int *count) {
 
@@ -71,7 +66,6 @@ int HDF5Array::format_constraint(int *offset, int *step, int *count) {
     if(length() == 0)
         return 0;
 
-    //long nels = 1;
     int nels = 1;
     int id = 0;
 
@@ -323,7 +317,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 }
 
 bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_values,int values_offset,
-                                   int nelms,int* offset,int* count, int* step) {
+                                   int nelms,const int* offset,const int* count, const int* step) {
 
     BESDEBUG("h5", "=read() Array of Structure length=" << length() << endl);
 
@@ -691,7 +685,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			vector<hsize_t> start(ndim);
 			vector<hsize_t> end(ndim);
                         vector<hsize_t>stride(ndim);
-                        vector<hsize_t>count(ndim);
+                        vector<hsize_t>s_count(ndim);
                         vector<hsize_t>block(ndim);
 
 			BESDEBUG("h5", "=read() Slabs selected." << endl);
@@ -703,7 +697,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
 			}
 #else
-			if (H5Sget_regular_hyperslab(space_id, &start[0], &stride[0], &count[0], &block[0]) < 0) {
+			if (H5Sget_regular_hyperslab(space_id, &start[0], &stride[0], &s_count[0], &block[0]) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
 			}
 #endif
@@ -712,12 +706,12 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			    ostringstream oss;
 			    BESDEBUG("h5", "start " << start[j]
                                      << "stride "<<stride[j] 
-                                     << "count "<< count[j]
+                                     << "count "<< s_count[j]
                                      << "block "<< block[j] 
                                      <<endl);
 
                             // Map from HDF5's start,stride,count,block to DAP's start,stride,end.
-                            end[j] = start[j] + stride[j]*(count[j]-1)+(block[j]-1);
+                            end[j] = start[j] + stride[j]*(s_count[j]-1)+(block[j]-1);
 			    BESDEBUG("h5", "=read() start is " << start[j]
 				    << "=read() end is " << end[j] << endl);
 			    oss << "[" << start[j] << ":" << stride[j] << ":" << end[j] << "]";
@@ -957,14 +951,14 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			vector<hsize_t> start(ndim);
 			vector<hsize_t> end(ndim);
                         vector<hsize_t>stride(ndim);
-                        vector<hsize_t>count(ndim);
+                        vector<hsize_t>s_count(ndim);
                         vector<hsize_t>block(ndim);
 
 			BESDEBUG("h5", "=read() Slabs selected." << endl);
 			BESDEBUG("h5", "=read() nblock is " <<
 				H5Sget_select_hyper_nblocks(region_space_id) << endl);
 
-			if (H5Sget_regular_hyperslab(region_space_id, &start[0], &stride[0], &count[0], &block[0]) < 0) {
+			if (H5Sget_regular_hyperslab(region_space_id, &start[0], &stride[0], &s_count[0], &block[0]) < 0) {
 	                    H5Sclose(region_space_id);
                             H5Oclose(obj_id);
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
@@ -975,12 +969,12 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			    ostringstream oss;
 			    BESDEBUG("h5", "start " << start[j]
                                      << "stride "<<stride[j] 
-                                     << "count "<< count[j]
+                                     << "count "<< s_count[j]
                                      << "block "<< block[j] 
                                      <<endl);
 
                             // Map from HDF5's start,stride,count,block to DAP's start,stride,end.
-                            end[j] = start[j] + stride[j]*(count[j]-1)+(block[j]-1);
+                            end[j] = start[j] + stride[j]*(s_count[j]-1)+(block[j]-1);
 			    BESDEBUG("h5", "=read() start is " << start[j]
 				    << "=read() end is " << end[j] << endl);
 			    oss << "[" << start[j] << ":" << stride[j] << ":" << end[j] << "]";
@@ -1078,7 +1072,7 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 		<< " d_num_elm=" << d_num_elm << endl);
 
 	for (int strindex = 0; strindex < d_num_elm; strindex++) {
-	    get_strdata(strindex, &convbuf[0], &strbuf[0], elesize);
+	    get_strdata(strindex, &convbuf[0], &strbuf[0], (int)elesize);
 	    BESDEBUG("h5", "=read()<get_strdata() strbuf=" << &strbuf[0] << endl);
 	    v_str[strindex] = &strbuf[0];
 	}
@@ -1160,7 +1154,6 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             H5T_class_t         child_memb_cls;
             int                 child_nmembs;
             size_t              child_memb_offset;
-            unsigned            child_u;
 
             if((child_nmembs = H5Tget_nmembers(at_base_type)) < 0) {
                 H5Tclose(at_base_type);
@@ -1168,7 +1161,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
             }
 
-            for(child_u = 0; child_u < (unsigned)child_nmembs; child_u++) {
+            for(unsigned child_u = 0; child_u < (unsigned)child_nmembs; child_u++) {
 
                 // Get member type ID 
                 if((child_memb_id = H5Tget_member_type(at_base_type, child_u)) < 0) {
@@ -1276,8 +1269,10 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                         string final_str;
                         char*temp_bp =(char*)src;
                         get_vlen_str_data(temp_bp,final_str);
-                        field->val2buf(&final_str[0]); //field->set_value(final_str); 
-
+                        field->val2buf(&final_str[0]); 
+#if 0
+                        field->set_value(final_str);                       
+#endif
                     } 
                     else {// Obtain string
                         void *src = (void*)(&values[0]+(string_index *at_base_type_size)+values_offset+child_memb_offset);
@@ -1387,7 +1382,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                set_value((dods_byte*)&final_val[0],at_nelms);
+                set_value(&final_val[0],at_nelms);
 
 
             }
@@ -1742,6 +1737,8 @@ void HDF5Array::set_numelm(int nelms) {
     d_num_elm = nelms;
 }
 
+// TODO: This routine is not used anymore. May delete it in the future.
+#if 0
 hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
 {
 
@@ -1756,6 +1753,7 @@ hid_t HDF5Array::mkstr(int size, H5T_str_t pad)
 
     return str_type;
 }
+#endif
 
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
 BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> &dimpath) {
@@ -1814,7 +1812,9 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                 }
                 // If the dimension name is not on the ancestral path, this
                 // dimension must be on another path, mark it.
+#if 0
                 //else if( ancestor_grp == false && is_dim_nonc4_grp == false) {
+#endif
                 else if( ancestor_grp == false) {
                     is_dim_nonc4_grp = true;
                     break;
@@ -1825,7 +1825,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                 if(temp_grp->get_parent()) 
                     temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
                 else 
-                    temp_grp = 0;
+                    temp_grp = nullptr;
 
             }
 

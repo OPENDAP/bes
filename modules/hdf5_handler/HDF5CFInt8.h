@@ -46,9 +46,9 @@ class HDF5CFInt8:public libdap::Int8 {
     public:
         HDF5CFInt8(const std::string &n, const std::string &d);
         HDF5CFInt8(const std::string &n, const std::string &d,const std::string &d_f);
-        virtual ~ HDF5CFInt8();
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
+        ~ HDF5CFInt8() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
 };
 
 #endif                          // _HDF5CFINT8_H

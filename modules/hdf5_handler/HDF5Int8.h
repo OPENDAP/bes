@@ -52,19 +52,16 @@ class HDF5Int8:public libdap::Int8 {
   public:
     /// Constructor
     HDF5Int8(const std::string &n, const std::string &vpath, const std::string &d);
-    virtual ~ HDF5Int8() { }
+    ~ HDF5Int8() override = default;
 
     /// Clone this instance.
     ///
     /// Allocate a new instance and copy *this into it. This method must perform a deep copy.
     /// \return A newly allocated copy of this class  
-    virtual libdap::BaseType *ptr_duplicate();
+    libdap::BaseType *ptr_duplicate() override;
 
     /// Reads HDF5 int8 data into local buffer
-    virtual bool read();
-
-    /// See return_type function defined in h5dds.cc.
-    friend std::string return_type(hid_t datatype);
+    bool read() override;
 
 
 };

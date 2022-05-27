@@ -13,8 +13,6 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
-BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 EOF
     )
@@ -34,25 +32,17 @@ function mk_default_bes_conf() {
 # and HDF5 handler modules are the 'installed' ones (not the modules
 # found in the build tree). jhrg 5/11/18
 
-BES.ServerAdministrator=admin.email.address@your.domain.name
-
-BES.User=user_name
-BES.Group=group_name
-
 BES.LogName=./bes.log
-BES.LogVerbose=no
 
-BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+BES.modules=dap,cmd,h5,dmrpp
 
 BES.module.dap=@bes_modules_dir@/libdap_module.so
 BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
 BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
-BES.module.nc=@bes_modules_dir@/libnc_module.so
-BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
-#BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
+# BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
 BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
 BES.Data.RootDirectory=/dev/null
 
@@ -64,61 +54,13 @@ BES.Data.RootDirectory=/dev/null
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
 BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
 
-BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
-
-BES.FollowSymLinks=Yes
 BES.Catalog.catalog.FollowSymLinks=Yes
-
-BES.Info.Buffered=no
-BES.Info.Type=xml
 
 BES.UncompressCache.dir=/tmp/hyrax_ux
 BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
-BES.Uncompress.Retry=2000
-BES.Uncompress.NumTries=10
 
-BES.Container.Persistence=strict
-
-BES.Memory.GlobalArea.EmergencyPoolSize=1
-BES.Memory.GlobalArea.MaximumHeapSize=20
-BES.Memory.GlobalArea.Verbose=no
-BES.Memory.GlobalArea.ControlHeap=no
-
-BES.ProcessManagerMethod=multiple
-
-BES.DefaultResponseMethod=POST
-
-# Control the Metadata Response Store. Here, DAP metadata responses
-# are stored/cached so that they can be returned by the server w/o
-# having to touch the data files/objects. Setting the 'path' to null
-# disables uses of the MDS. Setting 'size' to zero makes the MDS
-# hold objects forever; setting a positive non-zero size makes the
-# MDS behave like a cache, purging responses when the size is exceeded.
-
-# FIXME This will need to be modified for the DMR++ responses when
-# when enable Arch #2 since regenerating the DMR++ will be more
-# expensive than regenerating other responses from files
-
-#DAP.GlobalMetadataStore.path = @datadir@/modules/dmrpp_module/data/mds
-#DAP.GlobalMetadataStore.prefix = mds
-#DAP.GlobalMetadataStore.size = 0
-
-# The MDS writes a ledger of additions and removals. By default the
-# ledger is kept in 'mds_ledger.txt' in the directory used to start
-# the BES.
-
-#DAP.GlobalMetadataStore.ledger = @datadir@/modules/dmrpp_module/data/mds_ledger.txt
-
-#-----------------------------------------------------------------------#
-# FONc handler specific parameters:
-#-----------------------------------------------------------------------#
-#Make sure this follows the netCDF-4 enhanced model
-FONc.ClassicModel=false
-#Don't generate global attributes since we only
-#care about the variable value information.
-FONc.NoGlobalAttrs=true
+AllowedHosts+=^https?:\/\/
 
 #-----------------------------------------------------------------------#
 # HDF5 handler specific parameters:
@@ -126,41 +68,9 @@ FONc.NoGlobalAttrs=true
 # EnableCF: Groom the HDF5 data to follow the CF conventions
 #   (true,yes|false,no, defaults to false)
 #
-H5.EnableCF=false
-H5.EnableCFDMR=true
-
-H5.DefaultHandleDimension=true
-H5.KeepVarLeadingUnderscore=false
+# HDF5 handler keys that are not the compiled-in defaults. jhrg 5/24/22
 H5.EnableCheckNameClashing=true
-H5.EnableAddPathAttrs=true
-H5.EnableDropLongString=true
-H5.DisableStructMetaAttr=true
-H5.EnableFillValueCheck=true
-H5.CheckIgnoreObj=false
-H5.MetaDataMemCacheEntries=300
-H5.LargeDataMemCacheEntries=0
-H5.SmallDataMemCacheEntries=0
-#H5.CachePurgeLevel=0.2
-
-H5.EnableDiskMetaDataCache=false
-H5.EnableDiskDDSCache=false
-H5.DiskMetaDataCachePath=/tmp
-
-H5.EnableEOSGeoCacheFile=false
-H5.Cache.latlon.path=/tmp/latlon
-H5.Cache.latlon.prefix=l
-H5.Cache.latlon.size=20000
-
-H5.EnableDiskDataCache=false
-H5.DiskCacheDataPath=/tmp
-H5.DiskCacheFilePrefix=c
-H5.DiskCacheSize=10000
-H5.DiskCacheComp=true
-H5.DiskCacheFloatOnlyComp=true
-H5.DiskCacheCompThreshold=2.0
-H5.DiskCacheCompVarSize=10000
-
-AllowedHosts+=^https?:\/\/
+H5.EnableCF=false
 
 EOF
   )
@@ -526,7 +436,7 @@ function make_bes_conf() {
 
 ########################################################################################################################
 # getDap()
-# Gets the passed $dap response (dmr, ddx, etc) for the file $data_path and places the reponse in a temp file.
+# Gets the passed $dap response (dmr, ddx, etc) for the file $data_path and places the response in a temp file.
 #
 function mkDapRequest() {
   data_path="${1}"
@@ -951,8 +861,8 @@ function dap4_array_test() {
   var_count=$(dap4_array_counter ${dmr_file} ${type})
   if test -n "${verbose}"; then echo "Found ${var_count} variables of type ${type} in DMR: ${dmr_file}" >&2; fi
   if [ ${var_count} -lt 1 ]; then
-    echo "ERROR! No variables found in DMR!" >&2
-    return 1
+    echo "ERROR! No variables of type ${type} found in DMR!" >&2
+    return 0
   fi
 
   pick_var=$(echo "${var_count}*${RANDOM}/32767+1" | bc)

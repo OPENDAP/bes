@@ -24,20 +24,17 @@
 #ifndef HYRAX_GIT_SUPERCHUNK_H
 #define HYRAX_GIT_SUPERCHUNK_H
 
-
 #include <vector>
 #include <memory>
 #include <thread>
 #include <queue>
 #include <sstream>
 
-
 #include "Chunk.h"
-
 
 namespace dmrpp {
 
-// Forward Declaration;
+// Forward Declaration
 class DmrppArray;
 
 /**
@@ -55,12 +52,15 @@ private:
     bool d_is_read;
     char *d_read_buffer;
 
+    bool d_uses_fill_value{false};
+
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
     void read_aggregate_bytes();
+    void read_fill_value_chunk();
 
 public:
-
+    // TODO Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
     explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
     d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
@@ -68,20 +68,21 @@ public:
         delete[] d_read_buffer;
     }
 
-    virtual std::string id(){ return d_id; }
+    virtual std::string id() const { return d_id; }
 
     virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
-    std::shared_ptr<http::url> get_data_url(){ return d_data_url; }
-    virtual unsigned long long get_size(){ return d_size; }
-    virtual unsigned long long get_offset(){ return d_offset; }
+    std::shared_ptr<http::url> get_data_url() { return d_data_url; }
+    virtual unsigned long long get_size() const { return d_size; }
+    virtual unsigned long long get_offset() const { return d_offset; }
 
-    virtual void read(){
-        retrieve_data();
+    virtual void read() {
+        retrieve_data(); // TODO process_child_chunks() also calls retrieve_data(). jhrg 5/9/22
         process_child_chunks();
     }
-    virtual void read_unconstrained(){
-        retrieve_data();
+
+    virtual void read_unconstrained() {
+        retrieve_data();    // TODO process_child_chunks_unconstrained() also calls retrieve_data(). jhrg 5/9/22
         process_child_chunks_unconstrained();
     }
 
@@ -89,10 +90,9 @@ public:
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
 
-
     virtual bool empty(){ return d_chunks.empty(); }
 
-    std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
+    std::vector<std::shared_ptr<Chunk>> get_chunks() { return d_chunks; }
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
@@ -145,9 +145,6 @@ void process_chunks_unconstrained_concurrent(
         DmrppArray *array,
         const std::vector<unsigned long long> &array_shape);
 
+} // namespace dmrpp
 
-
-}// namespace dmrpp
-
-
-#endif //HYRAX_GIT_SUPERCHUNK_H
+#endif // HYRAX_GIT_SUPERCHUNK_H

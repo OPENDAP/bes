@@ -11,7 +11,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/d_16_shuffled_chunks</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="shuffle" byteOrder="LE">
+        <dmrpp:chunks compressionType="shuffle" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>10 10 10 10</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4728" nBytes="40000" chunkPositionInArray="[0,0,0,0]"/>
             <dmrpp:chunk offset="44728" nBytes="40000" chunkPositionInArray="[0,0,0,10]"/>

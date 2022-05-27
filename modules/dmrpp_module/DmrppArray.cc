@@ -946,26 +946,26 @@ void DmrppArray::read_chunks_unconstrained()
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
-    for(const auto& chunk: get_immutable_chunks()){
+    for(const auto& chunk: get_immutable_chunks()) {
         bool added = current_super_chunk->add_chunk(chunk);
-        if(!added){
+        if (!added) {
             sc_id.str(std::string());
             sc_id << name() << "-" << sc_count++;
             current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
             super_chunks.push(current_super_chunk);
-            if(!current_super_chunk->add_chunk(chunk)){
+            if (!current_super_chunk->add_chunk(chunk)) {
                 stringstream msg ;
                 msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
         }
     }
+
     reserve_value_capacity(get_size());
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
-
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
@@ -979,9 +979,7 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-            // FIXME Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
-            //  jhrg 11/19/21
-            super_chunk->read();
+            super_chunk->read_unconstrained();
         }
     }
     else {      // Parallel transfers
@@ -1237,7 +1235,7 @@ void DmrppArray::read_chunks()
 
     // TODO We know that non-contiguous chunks may be forward or backward in the file from
     //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
-    //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
+    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     bool found_needed_chunks = false;
@@ -1501,9 +1499,9 @@ void DmrppArray::read_contiguous_string()
 bool DmrppArray::read()
 {
     // If the chunks are not loaded, load them now. NB: load_chunks()
-    // reads data for HDF5 COMPACT storage, so read_p() will be true.
-    // Thus, call load_chunks() before testing read_p() to cover that
-    // case. jhrg 11/15/21
+    // reads data for HDF5 COMPACT storage, so read_p() will be true
+    // (but it does not read any other data). Thus, call load_chunks()
+    // before testing read_p() to cover that case. jhrg 11/15/21
     // String Arrays that use COMPACT storage appear to work. jhrg 3/3/22
     if (!get_chunks_loaded())
         load_chunks(this);
@@ -1515,7 +1513,7 @@ bool DmrppArray::read()
     //  files. In addition, the way libdap stores string data means that we need
     //  to build c++ string objects from the raw data we read from the source
     //  data file. Thus, the code for strings (and URLs) is a special case.
-    //  Currently we can process only arrays with one element. jhrg 3/3/22
+    //  Currently, we can process only arrays with one element. jhrg 3/3/22
 
     if ((var()->type() == dods_str_c || var()->type() == dods_url_c)) {
         // FIXME Add support for both of these things once the DMR++ has the needed
@@ -1737,7 +1735,9 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
+    // Update: print the <chunks> element even if the chinks_size value is zero since this
+    // might be a variable with all fill values. jhrg 4/24/22
+    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for

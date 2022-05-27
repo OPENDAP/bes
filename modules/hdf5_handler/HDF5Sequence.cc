@@ -54,8 +54,4 @@ HDF5Sequence::HDF5Sequence(const string & n, const string &d) : Sequence(n, d)
 {
 }
 
-HDF5Sequence::~HDF5Sequence()
-{
-}
-
 

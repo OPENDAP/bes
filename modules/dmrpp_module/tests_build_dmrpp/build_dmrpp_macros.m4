@@ -28,6 +28,11 @@ AT_ARG_OPTION_ARG([conf],
     [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
     [bes_conf=bes.conf])
 
+AT_ARG_OPTION_ARG([s3tests],
+    [--s3tests=yes|no   Run the tests that read/write to the opendap.tests S3 bucket (creds required)],
+    [echo "s3tests set to $at_arg_s3tests"; s3tests=$at_arg_s3tests],
+    [s3tests=no])
+
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
 # @brief Run the given bes command file
@@ -82,18 +87,17 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
 
-
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
@@ -114,12 +118,12 @@ m4_define([REMOVE_PATH_COMPONENTS], [dnl
     mv $1.sed $1
 ])
 
-dnl Normalize binary name. Sometime the build_dmrpp program is named 'build_dmrpp,'
-dnl other times it is named 'lt-build_dmrpp.' This ensure it always has the same name
-dnl in the baselines and test output.
+dnl Normalize binary name. Sometimes the build_dmrpp program is named 'build_dmrpp,'
+dnl other times it is named 'lt-build_dmrpp.' This macro ensures it always has the 
+dnl same name in the baselines and test output.
 dml jhrg 11/22/21
-dnl Usage: NORMAILZE_EXEC_NAME(file_name)
-m4_define([NORMAILZE_EXEC_NAME], [dnl
+dnl Usage: NORMALIZE_EXEC_NAME(file_name)
+m4_define([NORMALIZE_EXEC_NAME], [dnl
     sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*build_dmrpp @build_dmrpp @g' < $1 > $1.sed
     mv $1.sed $1
 ])
@@ -218,14 +222,31 @@ DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
+echo $1 | grep "s3://"
+if test $? -ne 0
+then
+    input_file="${DATA_DIR}/$1"
+else
+    input_file="$1"
+    # Only run the S3 tests if specifically instructed to do so.
+    AT_SKIP_IF([test x$s3tests = xno])
+fi
 
-input_file="${DATA_DIR}/$1"
 baseline="${BASELINES_DIR}/$2"
 params="$3"
+output_file="$4"
+if test -n "${output_file}"
+then
+    params="${params} -o ${output_file}"
+else
+    output_file=stdout
+fi
 
 export PATH=${abs_top_builddir}/standalone:$PATH
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
+
+# at_verbose=""
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
@@ -250,6 +271,7 @@ AS_IF([test -z "$at_verbose"], [
     echo "#       input_file: ${input_file}"
     echo "#         baseline: ${baseline}"
     echo "#           params: ${params}"
+    echo "#      output_file: ${output_file}"
     echo "#         TEST_CMD: ${TEST_CMD}"
 ])
 
@@ -257,31 +279,31 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([stdout])
-    REMOVE_PATH_COMPONENTS([stdout])
-    REMOVE_VERSIONS([stdout])
-    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
-    AT_CHECK([mv stdout ${baseline}.tmp])
+    AT_CHECK([mv ${output_file} ${baseline}.tmp])
 ],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([stdout])
-    REMOVE_PATH_COMPONENTS([stdout])
-    REMOVE_VERSIONS([stdout])
-    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-        echo "# get_dmrpp: Filtered stdout BEGIN"
+        echo "# get_dmrpp: Filtered ${output_file} BEGIN"
         echo "#"
-        cat stdout;
+        cat ${output_file};
         echo "#"
-        echo "# get_dmrpp: Filtered stdout END"
+        echo "# get_dmrpp: Filtered ${output_file} END"
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
     ])
-    AT_CHECK([diff -b -B ${baseline} stdout])
+    AT_CHECK([diff -b -B ${baseline} ${output_file}])
     AT_XFAIL_IF([test z$4 = zxfail])
 ])
 
@@ -311,16 +333,3 @@ m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR], [dnl
          < $1 > $1.sed
     mv $1.sed $1
 ])
-
-#
-# This one is too greedy, needit matches to the last </Attribute> closer not the next.
-# -e 's@<Attribute name="invocation" type="String">.*</Attribute>@<AttributeRemoved name="invocation" \/>@'
-#
-#
-#
-
-# 0,/Apple/{s/Apple/Banana/}
-
-
-# N; /\b(\w+)\s+\1\b/{=;p} ; D
-

@@ -103,15 +103,6 @@ int main (int argc, char** argv)
         return -1;
     }
 
-#if 0
-for(size_t i = 0; i<var_type.size(); i++)
-cout<<"var_type["<<i<<"]= "<<var_type[i]<<endl;
-for(size_t i = 0; i<var_name.size(); i++) {
-cout<<"var_name["<<i<<"]= "<<var_name[i]<<endl;
-cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
-}
-#endif
-
     bool has_missing_info = false;
     size_t last_missing_chunk_index = 0;
 
@@ -129,18 +120,6 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
             i--;
         }
     }
-
-#if 0
-    size_t j = 0;
-    for (size_t i =0;i<var_type.size();i++) {
-        if(false == chunk_exist[i]){
-            j++;
-            if(j == 1) 
-                cout<<"The following variables don't have data value information(datatype + data name): "<<endl;
-            cout<< var_type[i] <<" "<<var_name[i] <<endl;
-        }
-    }
-#endif
 
     // Report the final output.
     if(true == has_missing_info) {

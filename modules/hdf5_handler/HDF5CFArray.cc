@@ -108,7 +108,7 @@ bool HDF5CFArray::read()
                     HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);
 
                     // Check if this file is included in the non-cache directory
-                    if( (cur_lrd_non_cache_dir_list.size() == 0) ||
+                    if( (cur_lrd_non_cache_dir_list.empty()) ||
                         ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {
 
                         // Only data with the numeric datatype DAP2 and CF support are cached.   
@@ -120,7 +120,7 @@ bool HDF5CFArray::read()
                 // The file path that includes the variables can also included.
                 vector<string> cur_lrd_var_cache_file_list;
                 HDF5RequestHandler::get_lrd_var_cache_file_list(cur_lrd_var_cache_file_list);
-                if(cur_lrd_var_cache_file_list.size() >0){
+                if(cur_lrd_var_cache_file_list.empty() == false){
 #if 0
 ///for(int i =0; i<cur_lrd_var_cache_file_list.size();i++)
 //cerr<<"lrd var cache is "<<cur_lrd_var_cache_file_list[i]<<endl;
@@ -491,7 +491,11 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                     H5Dclose(dsetid);
                     HDF5CFUtil::close_fileid(fileid,pass_fileid);
                     ostringstream eherr;
-                    eherr << "write data to cache failed.";
+                    eherr << "Write data to cache failed." 
+                          << "It is very possible the error is caused by the server failure"
+                          << " such as filled disk partition at the server rather than Hyrax. Please contact "
+                          << " the corresponding data center first. If the issue is not due to "
+                          << " the server,"; 
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
 
                 }
@@ -682,7 +686,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             }
 
             string total_string(strval.begin(),strval.end());
-            strval.clear();//save some memory;
+            strval.clear(); // May not be necessary
             vector <string> finstrval;
             finstrval.resize(nelms);
             for (int i = 0; i<nelms; i++) 
@@ -1706,7 +1710,7 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
                 if(temp_grp->get_parent()) 
                     temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
                 else 
-                    temp_grp = 0;
+                    temp_grp = nullptr;
 
             }
 

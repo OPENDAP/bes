@@ -10,7 +10,7 @@ CLEANFILES =
 EXTRA_DIST = get_dmrpp_baselines $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
-DISTCLEANFILES = atconfig test_bes.conf
+DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5
 
 ############## Autotest follows #####################
 
@@ -20,7 +20,8 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal  $(TESTSUITE_DMRPP) $(builddir)/test_bes.conf
-	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
+	if ./chkForAWS.sh; then export tsflags="$(TESTSUITEFLAGS) --s3tests=yes"; else export tsflags="$(TESTSUITEFLAGS)"; fi && \
+	$(SHELL) '$(TESTSUITE_DMRPP)' $${tsflags} && echo "bindir: $(bindir)"
 
 clean-local:
 	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean

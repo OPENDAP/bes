@@ -264,8 +264,9 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     (*attr_inst_ptr).need = need;
     strncpy((*attr_inst_ptr).name, &attr_name[0], name_size+1);
 
+    // The handler assumes the size of an attribute is limited to 32-bit int
     for (int j = 0; j < ndims; j++) {
-        (*attr_inst_ptr).size[j] = size[j];
+        (*attr_inst_ptr).size[j] = (int)(size[j]);
     }
    
     if(H5Sclose(aspace_id)<0) {
@@ -573,7 +574,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
     (*dt_inst_ptr).name[dname.length()] = '\0';
     for (int j = 0; j < ndims; j++) 
-        (*dt_inst_ptr).size[j] = size[j];
+        (*dt_inst_ptr).size[j] = (int)(size[j]);
 
     if(H5Tclose(dtype)<0) {
         H5Sclose(dspace);
@@ -731,7 +732,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
     strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
     (*dt_inst_ptr).name[dname.length()] = '\0';
     for (int j = 0; j < ndims; j++) 
-        (*dt_inst_ptr).size[j] = size[j];
+        (*dt_inst_ptr).size[j] = (int)(size[j]);
 
     // For DAP4 when dimension scales are used.
     if(true == use_dimscale) {
@@ -757,10 +758,12 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
 
             if(true == has_ds_attr) {
 
+#if 0
             //int count = 0;
             //vector<bool>dim_attr_mark;
             //dim_attr_mark.resize(4);
             //bool dim_attr_mark[4];
+#endif
                 int dim_attr_mark[3];
                 for(int i = 0;i<3;i++)
                     dim_attr_mark[i] = 0;
@@ -786,31 +789,35 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
             // However, it is an orphage dimension scale created by the netCDF-4 APIs, we think
             // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
             //
-            if (((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2])) 
+            if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2]) 
                 is_dimscale =true;
             else if(dim_attr_mark[1])
                 is_pure_dim = true;
             }
         }
  
-         if(true == is_dimscale) {
+        if (true == is_dimscale) {
             BESDEBUG("h5", "<h5get.cc: dname is " << dname << endl);
             BESDEBUG("h5", "<h5get.cc: get_dataset() this is  dim scale." << endl);
             BESDEBUG("h5", "<h5get.cc: dataset storage size is: " <<H5Dget_storage_size(dset)<< endl);
+#if 0
             //if(H5Dget_storage_size(dset)!=0) { 
+#endif
             // Save the dimension names.We Only need to provide the dimension name(not the full path).
             // We still need the dimension name fullpath for distinguishing the different dimension that
             // has the same dimension name but in the different path
             // TODO; pure dimension doesn't work for all cases. See https://jira.hdfgroup.org/browse/HFVHANDLER-340
             (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
             (*dt_inst_ptr).dimnames_path.push_back(dname);
+#if 0
            //}
            //else 
             //is_pure_dim = true;
+#endif
             is_pure_dim = false;
-         }
+        }
 
-         else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
+        else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
             obtain_dimnames(file_id,dset,ndims,dt_inst_ptr,hdf5_hls);
     }
     
@@ -969,8 +976,9 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 // Some space may be wasted. But it is okay.
                 gp.tfp = (float *) sm_buf;
                 int ll = snprintf(gps, 30, "%.10g", *(gp.tfp + loc));
+#if 0
                 //int ll = strlen(gps);
-
+#endif
                 // Add the dot to assure this is a floating number
                 if (!strchr(gps, '.') && !strchr(gps, 'e') && !strchr(gps,'E')
                    && (true == is_a_fin)){
@@ -1003,7 +1011,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
         }
 
         case H5T_STRING: {
-            int str_size = H5Tget_size(type);
+            size_t str_size = H5Tget_size(type);
             if(H5Tis_variable_str(type)>0) {
                 throw InternalErr(__FILE__, __LINE__, 
                       "print_attr function doesn't handle variable length string, variable length string should be handled separately.");

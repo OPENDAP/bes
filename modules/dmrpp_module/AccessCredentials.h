@@ -12,18 +12,11 @@ class AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
-#if 0
-    static const  std::string ID_KEY;
-    static const std::string KEY_KEY;
-    static const std::string REGION_KEY;
-    //static const std::string BUCKET_KEY;
-    static const std::string URL_KEY;
-#else
     static const char *ID_KEY;
     static const char *KEY_KEY;
     static const char *REGION_KEY;
     static const char *URL_KEY;
-#endif
+
 private:
     std::map<std::string, std::string> kvp;
     std::string d_config_name;

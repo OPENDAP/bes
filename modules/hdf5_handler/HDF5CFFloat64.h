@@ -44,9 +44,9 @@ class HDF5CFFloat64:public libdap::Float64 {
     public:
         HDF5CFFloat64(const std::string &n, const std::string &d);
         HDF5CFFloat64(const std::string &n, const std::string &d,const std::string &d_f);
-        virtual ~ HDF5CFFloat64();
-        virtual libdap::BaseType *ptr_duplicate();
-        virtual bool read();
+        ~ HDF5CFFloat64() override = default;
+        libdap::BaseType *ptr_duplicate() override;
+        bool read() override;
 };
 
 #endif                          // _HDF5CFFLOAT64_H

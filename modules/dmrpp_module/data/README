@@ -22,5 +22,5 @@ using the mkChunkNewTypes.py script. jhrg
 - Removed  bes.hdf5.cf.conf from git as it will now be built.
 
 - Created "check-local" and "clean-local" targets that cause the 
-bes.hdf5.cf.conf gile to be built correctly for use with get_dmrpp.sh
+bes.hdf5.cf.conf file to be built correctly for use with get_dmrpp.sh
 This all happens when running "make check"

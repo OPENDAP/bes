@@ -1,30 +1,15 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(DAP_CFLAGS) $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
-AM_CXXFLAGS = 
-
 lib_besdir=$(libdir)/bes
 
 dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 
-# Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using 
-# configure's value for the parameter when running the distcheck target.
-#
-# Not used. jhrg  4/1/20
-%.conf : %.conf.in
-	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
-
 # Build the get_dmrpp script so that the value substituted for
 # bes_modules_dir is the path to the instll bes modules. Note that
 # when get_dmrpp is used for tests, we use a separate configuration
-# file that references local modules. See get_dmrpp_mkcheck.conf.in and
-# the rule above. jhrg 3/25/22
-get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile # $(builddir)/get_dmrpp_mkcheck.conf removed by ndp 3/30/22
+# file that references local modules.
+get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
@@ -35,19 +20,11 @@ get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile # $(builddir)/get
 		        -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > get_dmrpp
 
-EXTRA_PROGRAMS = 
-
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in  README README.md dmrpp mds_for_tests s3 s3_data
-# get_dmrpp_mkcheck.conf.in removed because get_dmrpp.in contains same stuff. ndp 3/30/22
+EXTRA_DIST = get_dmrpp.in README README.md dmrpp mds_for_tests s3 s3_data fill_value deflate_twice
 
-# Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
-# jhrg 4/1/20
-
-CLEANFILES = *~
-
-DISTCLEANFILES = get_dmrpp # get_dmrpp_mkcheck.conf
+CLEANFILES = get_dmrpp mds_for_tests_ledger.txt mds_ledger.txt bes.log *~
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp

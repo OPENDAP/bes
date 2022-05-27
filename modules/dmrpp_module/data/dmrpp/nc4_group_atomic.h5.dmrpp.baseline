@@ -11,7 +11,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/g1/d2</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
             <dmrpp:chunk offset="6220" nBytes="24"/>
         </dmrpp:chunks>
     </Float32>
@@ -23,7 +23,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/d1</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
             <dmrpp:chunk offset="6200" nBytes="8"/>
         </dmrpp:chunks>
     </Float32>
@@ -35,7 +35,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/dim1</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
             <dmrpp:chunk offset="6192" nBytes="8"/>
         </dmrpp:chunks>
     </Int32>
@@ -47,7 +47,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/g1/dim2</Value>
         </Attribute>
-        <dmrpp:chunks byteOrder="LE">
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
             <dmrpp:chunk offset="6208" nBytes="12"/>
         </dmrpp:chunks>
     </Int32>

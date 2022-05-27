@@ -49,9 +49,6 @@ HDF5CFInt8::HDF5CFInt8(const string &n, const string &d,const string &d_f) : Int
 {
 }
 
-HDF5CFInt8::~HDF5CFInt8()
-{
-}
 BaseType *HDF5CFInt8::ptr_duplicate()
 {
     return new HDF5CFInt8(*this);

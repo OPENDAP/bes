@@ -48,10 +48,6 @@ HDF5CFFloat64::HDF5CFFloat64(const string &n, const string &d,const string &d_f)
 {
 }
 
-
-HDF5CFFloat64::~HDF5CFFloat64()
-{
-}
 BaseType *HDF5CFFloat64::ptr_duplicate()
 {
     return new HDF5CFFloat64(*this);

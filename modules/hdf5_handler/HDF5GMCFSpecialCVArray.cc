@@ -91,7 +91,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int nelms, vector<int>&offset, 
 // section 8.1. Number of layers at the fixed heights of 0.0-0.5km,0.5-1.0 km,.....
 // Like obtain_gpm_l3_layer1, we use the top height value 0.5 km, 1.0 km,2km,.....,18 km.
 // See also section 4.1.1 and 3.1.1 of http://www.eorc.jaxa.jp/GPM/doc/product/format/en/06.%20GPM_Combined%20Product%20Format_E.pdf
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int nelms, vector<int>&offset, vector<int>&step, vector<int>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int nelms, vector<int>&offset, vector<int>&step, const vector<int>&/*count*/)
 {
 
     vector<float> total_val;
@@ -119,7 +119,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int nelms, vector<int>&offset,
     }
 }
 
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int nelms, vector<int>&offset, vector<int>&step, vector<int>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int nelms, vector<int>&offset, vector<int>&step, const vector<int>&/*count*/)
 {
 
     vector<float> total_val;
@@ -147,7 +147,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int nelms, vector<int>&offset, ve
     }
 }
 
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int nelms, vector<int>&offset, vector<int>&step, vector<int>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int nelms, vector<int>&offset, vector<int>&step, const vector<int>&/*count*/)
 {
     vector<float> total_val;
     total_val.resize(5);

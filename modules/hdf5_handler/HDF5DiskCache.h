@@ -17,7 +17,7 @@ class HDF5DiskCache: public BESFileLockingCache
 {
 private: 
     static HDF5DiskCache *d_instance;
-    static void delete_instance() { delete d_instance; d_instance = 0; }
+    static void delete_instance() { delete d_instance; d_instance = nullptr; }
 
     HDF5DiskCache(const unsigned long long,const std::string&, const std::string&);
 

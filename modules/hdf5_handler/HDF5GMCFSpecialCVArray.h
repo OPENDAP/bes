@@ -43,35 +43,32 @@
 class HDF5GMCFSpecialCVArray: public HDF5BaseArray {
 public:
     HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const std::string &varfullpath, H5GCFProduct h5_product_type,
-        const std::string & n = "", libdap::BaseType * v = 0) :
-        HDF5BaseArray(n, v), dtype(h5_dtype), tnumelm(h5_tnumelm), varname(varfullpath), product_type(h5_product_type), cvartype(
-            CV_UNSUPPORTED)
+        const std::string & n = "", libdap::BaseType * v = nullptr) :
+        HDF5BaseArray(n, v), dtype(h5_dtype), tnumelm(h5_tnumelm), varname(varfullpath), product_type(h5_product_type)
     {
     }
 
-    virtual ~ HDF5GMCFSpecialCVArray()
-    {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDF5GMCFSpecialCVArray() override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 
 private:
     H5DataType dtype;
     int tnumelm;
     std::string varname;
     H5GCFProduct product_type;
-    CVType cvartype;
+    CVType cvartype = CV_UNSUPPORTED;
 
     // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
     void obtain_gpm_l3_layer(int, std::vector<int>&, std::vector<int>&, std::vector<int>& );
 
     // GPM version 4.0 nlayer values are from the document
     // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
-    void obtain_gpm_l3_layer2(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
+    void obtain_gpm_l3_layer2(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
 
-    void obtain_gpm_l3_hgt(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
-    void obtain_gpm_l3_nalt(int, std::vector<int>&, std::vector<int>&, std::vector<int>&);
-    virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf);
+    void obtain_gpm_l3_hgt(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
+    void obtain_gpm_l3_nalt(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
+    void read_data_NOT_from_mem_cache(bool add_cache, void*buf) override;
 
 };
 

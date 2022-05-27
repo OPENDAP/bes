@@ -148,7 +148,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int attr_num_elm = H5Sget_simple_extent_npoints(attr_space);
+    auto attr_num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
     if (0 == attr_num_elm ) {
         string msg = "cannot get the number for the attribute ";
         msg += cv_attr_name;
@@ -236,7 +236,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     // add_value = first_value*1.1 -  0.1*second_value;
     // KY 2012-2-20
    
-    total_val[0] = 1.1*orig_val[0] - 0.1*orig_val[1];
+    total_val[0] = 1.1F*orig_val[0] - 0.1F*orig_val[1];
     for (int i = 1; i < total_num_elm; i++)
         total_val[i] = orig_val[i-1];
 

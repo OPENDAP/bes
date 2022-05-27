@@ -37,17 +37,8 @@
 
 using namespace std;
 
-HDF5PathFinder::HDF5PathFinder()
-{
-}
 
-HDF5PathFinder::~HDF5PathFinder()
-{
-
-}
-
-
-bool HDF5PathFinder::add(string id, const string name)
+bool HDF5PathFinder::add(const string & id, const string & name)
 {
     BESDEBUG("h5", ">add(): id is:" << id << "   name is:" << name << endl);
     if (!visited(id)) {
@@ -61,7 +52,7 @@ bool HDF5PathFinder::add(string id, const string name)
 }
 
 
-bool HDF5PathFinder::visited(string id)
+bool HDF5PathFinder::visited(const string & id)
 {
     string str = id_to_name_map[id];
     if (!str.empty()) {
@@ -71,7 +62,7 @@ bool HDF5PathFinder::visited(string id)
     }
 }
 
-string HDF5PathFinder::get_name(string id)
+string HDF5PathFinder::get_name(const string & id)
 {
     return id_to_name_map[id];
 }

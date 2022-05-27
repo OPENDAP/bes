@@ -58,16 +58,6 @@
 
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
-#if 0
-// Shutdown this block of unsed variables. ndp - 3/1/21
-//static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
-//static const unsigned int retry_limit = 10; // Amazon's suggestion
-//static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
-//namespace dmrpp {
-//const bool have_curl_multi_api = false;
-//}
-#endif
-
 using namespace dmrpp;
 using namespace std;
 
@@ -109,18 +99,6 @@ string pthread_error(unsigned int err){
     }
 
     return error_msg;
-}
-
-Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
-    int status = pthread_mutex_lock(&m_mutex);
-    if (status != 0)
-        throw BESInternalError(prolog + "Failed to acquire mutex lock. msg: " + pthread_error(status), __FILE__, __LINE__);
-}
-
-Lock::~Lock() {
-    int status = pthread_mutex_unlock(&m_mutex);
-    if (status != 0)
-        ERROR_LOG(prolog + "Failed to release mutex lock. msg: " + pthread_error(status));
 }
 
 /**
@@ -312,67 +290,11 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
-#if 0
-// This implmentation of the default constructor should have:
-// a) Utilized the other constructor:
-//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_transfer_threads); }
-//    rather than duplicating the logic.
-// b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
-//    which is already owns DmrppRequestHandler::d_max_transfer_threads and can pass it in.
-//
-//
-// Old default constructor. Duplicates logic.
-//
-CurlHandlePool::CurlHandlePool() {
-    d_max_easy_handles = DmrppRequestHandler::d_max_transfer_threads;
-
-    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
-        d_easy_handles.push_back(new dmrpp_easy_handle());
-    }
-    unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
-    if (status != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
-}
-//
-// One alternate would be to do this for the default constructor:
-CurlHandlePool::CurlHandlePool() {
-    CurlHandlePool(8);
-}
-//
-// - ndp 12/02/20
-#endif
-
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
     }
-
-    unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
-    if (status != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
-
-/**
- * @brief Add the given header & value to the curl slist.
- *
- * The call must free the slist after the curl_easy_perform() is called, not after
- * the headers are added to the curl handle.
- *
- * @param slist The list; initially pass nullptr to create a new list
- * @param header The header
- * @param value The value
- * @return The modified slist pointer or nullptr if an error occurred.
- */
-#if 0
-static struct curl_slist *append_http_header(curl_slist *slist, const string &header, const string &value) {
-    string full_header = header;
-    full_header.append(" ").append(value);
-
-    struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
-    return temp;
-}
-#endif
-
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
@@ -390,16 +312,17 @@ static struct curl_slist *append_http_header(curl_slist *slist, const string &he
  */
 dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk) {
-    // Here we check to make sure that the we are only going to
+    // Here we check to make sure that we are only going to
     // access an approved location with this easy_handle
+    // TODO I don't think this belongs here. jhrg 5/13/22
     string reason = "The requested resource does not match any of the AllowedHost rules.";
-;    if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(),reason)) {
+    if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(),reason)) {
         stringstream ss;
         ss << "ERROR! The chunk url "<< chunk->get_data_url()->str() << " was rejected because: " << reason;
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
-    Lock lock(d_get_easy_handle_mutex); // RAII
+    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
     dmrpp_easy_handle *handle = 0;
     for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
@@ -470,8 +393,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
-        //VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
-        //<< ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->is_s3_cred()) {
@@ -495,37 +416,6 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
-#if 0
-
-            // passing nullptr for the first call allocates the curl_slist
-            // The following code builds the slist that holds the headers. This slist is freed
-            // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
-            handle->d_request_headers = append_http_header(0, "Authorization:", auth_header);
-            if (!handle->d_request_headers)
-                throw BESInternalError(
-                        string("CURL Error setting Authorization header: ").append(
-                                curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
-
-            // We pre-compute the sha256 hash of a null message body
-            curl_slist *temp = append_http_header(handle->d_request_headers, "x-amz-content-sha256:",
-                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-            if (!temp)
-                throw BESInternalError(
-                        string("CURL Error setting x-amz-content-sha256: ").append(
-                                curl::error_message(res, handle->d_errbuf)),
-                        __FILE__, __LINE__);
-            handle->d_request_headers = temp;
-
-            temp = append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
-            if (!temp)
-                throw BESInternalError(
-                        string("CURL Error setting x-amz-date header: ").append(
-                                curl::error_message(res, handle->d_errbuf)),
-                        __FILE__, __LINE__);
-            handle->d_request_headers = temp;
-#endif
-
-            // handle->d_request_headers = curl::add_edl_auth_headers(handle->d_request_headers);
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
@@ -549,7 +439,7 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // free to reorder statements so long as they don't alter the function's behavior).
     // Timing tests indicate this lock does not cost anything that can be measured.
     // jhrg 8/21/18
-    Lock lock(d_get_easy_handle_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_get_easy_handle_mutex);
 
     // TODO Add a call to curl reset() here. jhrg 9/23/20
 

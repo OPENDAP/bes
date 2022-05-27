@@ -41,8 +41,8 @@
 class HE5Checker {
  public:
 
-    HE5Checker() {}
-    ~ HE5Checker(){}
+    HE5Checker() = default;
+    ~ HE5Checker() = default;
 
     // Check if it has multiple grids that have different dimension sizes
     // of coordinate variables.

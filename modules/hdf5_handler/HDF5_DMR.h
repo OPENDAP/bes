@@ -19,6 +19,7 @@
 
 
 /**
+ * Keep the old comments from GDAL handler. Need to clean up this later. KY 2022-05-16
  * This specialization of DMR is used to manage the 'resource' of the open
  * HDF4 dataset handle so that the BES will close that handle once the
  * framework is done working with the file. This provides a way for the
@@ -44,7 +45,7 @@ private:
 
 public:
     explicit HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr) {}
-    HDF5DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),fileid(-1) {}
+    HDF5DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name) {}
 
     HDF5DMR(const HDF5DMR &rhs) : libdap::DMR(rhs) {
         m_duplicate(rhs);

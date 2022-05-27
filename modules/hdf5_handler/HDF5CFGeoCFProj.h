@@ -11,9 +11,9 @@
 class HDF5CFGeoCFProj:public libdap::Byte {
   public:
     HDF5CFGeoCFProj(const std::string & varname, const std::string &datasetname);
-    virtual ~ HDF5CFGeoCFProj();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDF5CFGeoCFProj() override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDF5CFGeoCFPROJ_H

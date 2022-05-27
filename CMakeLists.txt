@@ -653,7 +653,9 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/DmrppParserTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
-    modules/dmrpp_module/build_dmrpp.cc
+	modules/dmrpp_module/build_dmrpp.cc
+	modules/dmrpp_module/build_dmrpp_util.cc
+	modules/dmrpp_module/build_dmrpp_util.h
 	modules/dmrpp_module/awsv4.cc
 	modules/dmrpp_module/awsv4.h
     modules/dmrpp_module/Chunk.cc
@@ -1615,7 +1617,6 @@ add_executable(bes
 	modules/ngap_module/NgapRequestHandler.cc
     modules/ngap_module/NgapRequestHandler.h
     modules/ngap_module/unit-tests/NgapApiTest.cc
-    # modules/ngap_module/unit-tests/NgapContainerTest.cc
 
     modules/ugrid_functions/unit-tests/BindTest.cc
     modules/ugrid_functions/unit-tests/GFTests.cc

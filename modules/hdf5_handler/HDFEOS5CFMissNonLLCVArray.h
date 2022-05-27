@@ -45,17 +45,16 @@ class HDFEOS5CFMissNonLLCVArray:public HDF5BaseArray {
 
     public:
         HDFEOS5CFMissNonLLCVArray(int rank, 
-                              int tnumelm, const string & n="",  libdap::BaseType * v = 0):
+                              int tnumelm, const string & n="",  libdap::BaseType * v = nullptr):
         HDF5BaseArray(n,v),
         rank(rank),
         tnumelm(tnumelm) {
     }
         
-    virtual ~ HDFEOS5CFMissNonLLCVArray() {
-    }
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual void read_data_NOT_from_mem_cache(bool add_cache,void*buf);
+    ~ HDFEOS5CFMissNonLLCVArray() override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
 
     private:
         int rank;

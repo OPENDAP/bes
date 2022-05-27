@@ -22,10 +22,31 @@ AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baselin
 AT_GET_DMRPP_3_20([chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
 #
 # -c Inject complete BES configuration
-AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf])
+AT_GET_DMRPP_3_20([nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf], [a.out])
 #
 # -o Send output to a specific file
-# AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-o ${abs_builddir}/foo.dmrpp])
+AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [a.out])
+
+# -I Run inventory test, requires output_file
+#AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I], [${abs_builddir}/a.out])
+
+# -e Use pre-existing dmrpp file for input to inventory test, requires output_file
+#AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I -e ${DATA_DIR}/chunked_oneD.h5.dmrpp], [${abs_builddir}/a.out])
+
+# -F Run Hyrax probe test on the output_file
+#AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
+
+# -M Generate missing variables sidecar file, requires use_cf_conf "site.conf" file
+#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M], [${abs_builddir}/a.out])
+
+# -p Inject missing variables dmrpp:chunk/@dmrpp:href attribute, requires use_cf_conf "site.conf" file
+#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
+
+# -r Provide missing variables sidecar file, requires use_cf_conf "site.conf" file
+#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
+
+# -U Use input file located in AWS S3
+AT_GET_DMRPP_3_20([s3://opendap.travis.tests/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.baseline], [-U -b ${abs_builddir}], [${abs_builddir}/a.out])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
@@ -60,9 +81,24 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/d_int.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_1_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/grid_2_2d.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/nc4_group_atomic.h5])
-AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5])
+#
+# ntypes.h5 has a bunch of really odd variables and default fill values
+# for them all. Not sure where to go with this. Kent suggested that we
+# punt on implementing String fill values, e.g., so maybe this file should
+# be modified or dropped from the tests? jhrg 4/22/22
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/ntypes.h5], xfail)
+
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_float.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_int_scalar.h5])
+
+# Test data files with various fill value schemes. These won't work until
+# more work is done on fill value support. jhrg 4/22/22
+# Works now. jhrg 5/25/22
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_chunk.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_c_b.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_1.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_2.h5])
 
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])

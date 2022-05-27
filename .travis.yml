@@ -44,6 +44,7 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - gcovr
+    - grep
 
 git:
   depth: false
@@ -151,7 +152,7 @@ jobs:
       # and that means having the build-rpm.sh use the spec files on a branch.
 
     - stage: build-and-package
-      name: "CentOS-7 RPMs"
+      name: "Enterprise Linux 7 RPMs (via CentOS-7)"
       script:
         - export BES_BUILD=centos7
         - mkdir -p $prefix/rpmbuild
@@ -166,7 +167,7 @@ jobs:
           opendap/centos7_hyrax_builder:1.7 /root/travis/travis/build-rpm.sh
 
     - stage: build-and-package
-      name: "CentOS-Stream8 RPMs"
+      name: "Enterprise Linux 8 RPMs (via CentOS-Stream8)"
       script:
         - export BES_BUILD=centos-stream8
         - mkdir -p $prefix/rpmbuild
@@ -225,7 +226,7 @@ jobs:
             make check -j16 2>&1 | grep -e "Making check in" -e "FAILED"
             make coverage
           fi
-        - sonar-scanner -X -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     - stage: scan

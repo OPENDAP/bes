@@ -109,8 +109,10 @@ char* obtain_str(char*temp_ptr,string & str);
 // 2. The main function to obtain DAS info from the cache.
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at);
 
+#if 0
 // Check if the BES key is set.
 //bool check_and_set_beskeys(const string);
+#endif
 
 // Obtain the BES key as an integer
 static unsigned int get_uint_key(const string &key,unsigned int def_val);
@@ -122,7 +124,10 @@ static float get_float_key(const string &key, float def_val);
 // Obtain the BES key as a string.
 static string get_beskeys(const string&);
 
+#if 0
 //static bool is_beskeys_set_true(const string &);
+#endif
+
 bool obtain_beskeys_info(const string &, bool &);
 
 // For the CF option
@@ -136,16 +141,16 @@ extern void read_cfdmr(DMR *dmr, const string & filename,hid_t fileid);
 unsigned int HDF5RequestHandler::_mdcache_entries = 500;
 unsigned int HDF5RequestHandler::_lrdcache_entries = 0;
 unsigned int HDF5RequestHandler::_srdcache_entries = 0;
-float HDF5RequestHandler::_cache_purge_level = 0.2;
+float HDF5RequestHandler::_cache_purge_level = 0.2F;
 
 // Metadata object cache at DAS,DDS and DMR.
-ObjMemCache *HDF5RequestHandler::das_cache = 0;
-ObjMemCache *HDF5RequestHandler::dds_cache = 0;
-ObjMemCache *HDF5RequestHandler::datadds_cache = 0;
-ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
+ObjMemCache *HDF5RequestHandler::das_cache = nullptr;
+ObjMemCache *HDF5RequestHandler::dds_cache = nullptr;
+ObjMemCache *HDF5RequestHandler::datadds_cache = nullptr;
+ObjMemCache *HDF5RequestHandler::dmr_cache = nullptr;
 
-ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = 0;
-ObjMemCache *HDF5RequestHandler::srdata_mem_cache = 0;
+ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = nullptr;
+ObjMemCache *HDF5RequestHandler::srdata_mem_cache = nullptr;
 
 // Set default values of all BES keys according to h5.conf.in.
 // This will help the generation of DMRPP. No need to
@@ -196,7 +201,7 @@ string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
 // H5.EscapeUTF8Attr jhrg 3/9/22
 bool HDF5RequestHandler::_escape_utf8_attr = true;
 
-DMR* HDF5RequestHandler::dmr_int64 = 0;
+DMR* HDF5RequestHandler::dmr_int64 = nullptr;
 
 
 #if 0
@@ -262,7 +267,7 @@ void HDF5RequestHandler::load_config()
     HDF5RequestHandler::_mdcache_entries   = get_uint_key("H5.MetaDataMemCacheEntries", 0);
     HDF5RequestHandler::_lrdcache_entries  = get_uint_key("H5.LargeDataMemCacheEntries", 0);
     HDF5RequestHandler::_srdcache_entries  = get_uint_key("H5.SmallDataMemCacheEntries", 0);
-    HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2);
+    HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2F);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
@@ -287,100 +292,87 @@ void HDF5RequestHandler::load_config()
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCF: " << (_usecf?"true":"false") << endl);
 
     // The DefaultHandleDimension is effective only when EnableCF=false 
-    //_default_handle_dimension   = check_and_set_beskeys("H5.DefaultHandleDimension");
     key_value = obtain_beskeys_info("H5.DefaultHandleDimension",has_key);
     if(has_key) 
         _default_handle_dimension  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DefaultHandleDimension: " << (_default_handle_dimension?"true":"false") << endl);
 
     // The following keys are only effective when EnableCF is true or unset(EnableCF is true if users don't set the key).
-    //_pass_fileid                 = obtain_beskeys_info("H5.EnablePassFileID",has_key);
     key_value = obtain_beskeys_info("H5.EnablePassFileID",has_key);
     if(has_key) 
         _pass_fileid                   = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnablePassFileID: " << (_pass_fileid?"true":"false") << endl);
 
-    //_disable_structmeta          = check_and_set_beskeys("H5.DisableStructMetaAttr");
     key_value = obtain_beskeys_info("H5.DisableStructMetaAttr",has_key);
     if(has_key) 
         _disable_structmeta                   = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DisableStructMetaAttr: " << (_disable_structmeta?"true":"false") << endl);
 
-    //_disable_ecsmeta             = check_and_set_beskeys("H5.DisableECSMetaAttr");
     key_value = obtain_beskeys_info("H5.DisableECSMetaAttr",has_key);
     if(has_key) 
         _disable_ecsmeta                   = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DisableECSMetaAttr: " << (_disable_ecsmeta?"true":"false") << endl);
 
-    //_keep_var_leading_underscore = check_and_set_beskeys("H5.KeepVarLeadingUnderscore");
     key_value = obtain_beskeys_info("H5.KeepVarLeadingUnderscore",has_key);
     if(has_key) 
         _keep_var_leading_underscore  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.KeepVarLeadingUnderscore: " << (_keep_var_leading_underscore?"true":"false") << endl);
 
+#if 0
     //_check_name_clashing         = check_and_set_beskeys("H5.EnableCheckNameClashing");
+#endif
     key_value = obtain_beskeys_info("H5.EnableCheckNameClashing",has_key);
     if(has_key) 
         _check_name_clashing  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCheckNameClashing: " << (_check_name_clashing?"true":"false") << endl);
 
-    //_add_path_attrs              = check_and_set_beskeys("H5.EnableAddPathAttrs");
     key_value = obtain_beskeys_info("H5.EnableAddPathAttrs",has_key);
     if(has_key) 
         _add_path_attrs  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableAddPathAttrs: " << (_add_path_attrs?"true":"false") << endl);
 
-    //_drop_long_string            = check_and_set_beskeys("H5.EnableDropLongString");
     key_value = obtain_beskeys_info("H5.EnableDropLongString",has_key);
     if(has_key) 
         _drop_long_string  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDropLongString: " << (_drop_long_string?"true":"false") << endl);
 
-    //_fillvalue_check             = check_and_set_beskeys("H5.EnableFillValueCheck");
     key_value = obtain_beskeys_info("H5.EnableFillValueCheck",has_key);
     if(has_key) 
         _fillvalue_check  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableFillValueCheck: " << (_fillvalue_check?"true":"false") << endl);
 
 
-    //_check_ignore_obj            = check_and_set_beskeys("H5.CheckIgnoreObj");
     key_value = obtain_beskeys_info("H5.CheckIgnoreObj",has_key);
     if(has_key) 
         _check_ignore_obj  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.CheckIgnoreObj: " << (_check_ignore_obj?"true":"false") << endl);
 
-    //_flatten_coor_attr           = check_and_set_beskeys("H5.ForceFlattenNDCoorAttr");
     key_value = obtain_beskeys_info("H5.ForceFlattenNDCoorAttr",has_key);
     if(has_key) 
         _flatten_coor_attr  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.ForceFlattenNDCoorAttr: " << (_flatten_coor_attr?"true":"false") << endl);
 
 
-    //_eos5_rm_convention_attr_path= check_and_set_beskeys("H5.RmConventionAttrPath");
     key_value = obtain_beskeys_info("H5.RmConventionAttrPath",has_key);
     if(has_key) 
         _eos5_rm_convention_attr_path  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.RmConventionAttrPath: " << (_eos5_rm_convention_attr_path?"true":"false") << endl);
    
-    //_dmr_long_int                = check_and_set_beskeys("H5.EnableDMR64bitInt");
     key_value = obtain_beskeys_info("H5.EnableDMR64bitInt",has_key);
     if(has_key) 
         _dmr_long_int  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDMR64bitInt: " << (_dmr_long_int?"true":"false") << endl);
  
-    //_no_zero_size_fullnameattr   = check_and_set_beskeys("H5.NoZeroSizeFullnameAttr");
     key_value = obtain_beskeys_info("H5.NoZeroSizeFullnameAttr",has_key);
     if(has_key) 
         _no_zero_size_fullnameattr  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.NoZeroSizeFullnameAttr: " << (_no_zero_size_fullnameattr?"true":"false") << endl);
  
-    //_enable_coord_attr_add_path  = check_and_set_beskeys("H5.EnableCoorattrAddPath");
     key_value = obtain_beskeys_info("H5.EnableCoorattrAddPath",has_key);
     if(has_key) 
         _enable_coord_attr_add_path  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCoorattrAddPath: " << (_enable_coord_attr_add_path?"true":"false") << endl);
  
-    //_usecfdmr                    = check_and_set_beskeys("H5.EnableCFDMR");
     key_value = obtain_beskeys_info("H5.EnableCFDMR",has_key);
     if(has_key) 
         _usecfdmr  = key_value;
@@ -391,7 +383,6 @@ void HDF5RequestHandler::load_config()
         _add_dap4_coverage  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDAP4Coverage: " << (_add_dap4_coverage?"true":"false") << endl);
  
-    //_use_disk_cache              = check_and_set_beskeys("H5.EnableDiskDataCache");
     key_value = obtain_beskeys_info("H5.EnableDiskDataCache",has_key);
     if(has_key) 
         _use_disk_cache  = key_value;
@@ -400,13 +391,11 @@ void HDF5RequestHandler::load_config()
     _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
     _disk_cache_size             = get_ulong_key("H5.DiskCacheSize",0);
 
-    //_disk_cache_comp_data        = check_and_set_beskeys("H5.DiskCacheComp");
     key_value = obtain_beskeys_info("H5.DiskCacheComp",has_key);
     if(has_key) 
         _disk_cache_comp_data  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DiskCacheComp: " << (_disk_cache_comp_data?"true":"false") << endl);
  
-    //_disk_cache_float_only_comp_data = check_and_set_beskeys("H5.DiskCacheFloatOnlyComp");
     key_value = obtain_beskeys_info("H5.DiskCacheFloatOnlyComp",has_key);
     if(has_key) 
         _disk_cache_float_only_comp_data  = key_value;
@@ -414,20 +403,17 @@ void HDF5RequestHandler::load_config()
     _disk_cache_comp_threshold   = get_float_key("H5.DiskCacheCompThreshold",1.0);
     _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
 
-    //_use_disk_meta_cache         = check_and_set_beskeys("H5.EnableDiskMetaDataCache");
     key_value = obtain_beskeys_info("H5.EnableDiskMetaDataCache",has_key);
     if(has_key) 
         _use_disk_meta_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskMetaDataCache: " << (_use_disk_meta_cache?"true":"false") << endl);
    
-    //_use_disk_dds_cache          = check_and_set_beskeys("H5.EnableDiskDDSCache");
     key_value = obtain_beskeys_info("H5.EnableDiskDDSCache",has_key);
     if(has_key) 
         _use_disk_dds_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDDSCache: " << (_use_disk_dds_cache?"true":"false") << endl);
     _disk_meta_cache_path        = get_beskeys("H5.DiskMetaDataCachePath");
 
-    //_use_latlon_disk_cache       = check_and_set_beskeys("H5.EnableEOSGeoCacheFile");
     key_value = obtain_beskeys_info("H5.EnableEOSGeoCacheFile",has_key);
     if(has_key) 
         _use_latlon_disk_cache  = key_value;
@@ -518,7 +504,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         DAS *das = bdas->get_das();
 
         // Look inside the memory cache to see if it's initialized
-        DAS *cached_das_ptr = 0;
+        DAS *cached_das_ptr = nullptr;
         bool use_das_cache = false;
         if (das_cache) 
             cached_das_ptr = static_cast<DAS*>(das_cache->get(filename));
@@ -682,7 +668,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
     try {
 
         // Look in memory cache to see if it's initialized
-        DDS* cached_dds_ptr = 0;
+        DDS* cached_dds_ptr = nullptr;
         bool use_dds_cache = false;
         if (dds_cache) 
             cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename));
@@ -818,7 +804,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
     try {
 
         // Look in memory cache to see if it's initialized
-        DDS* cached_dds_ptr = 0;
+        DDS* cached_dds_ptr = nullptr;
         bool use_datadds_cache = false;
         if (datadds_cache) 
             cached_dds_ptr = static_cast<DDS*>(datadds_cache->get(filename));
@@ -1345,7 +1331,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         bdds->set_container( dhi.container->get_symbolic_name() ) ;
 
-        HDF5DDS *hdds = new HDF5DDS(bdds->get_dds());
+        auto hdds = new HDF5DDS(bdds->get_dds());
         delete bdds->get_dds();
 
         bdds->set_dds(hdds);
@@ -1425,7 +1411,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
  
     try {
 
-        DMR* cached_dmr_ptr = 0;
+        DMR* cached_dmr_ptr = nullptr;
         if (dmr_cache){
             BESDEBUG(HDF5_NAME, prolog << "Checking DMR cache for : " << filename << endl);
             cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
@@ -1459,7 +1445,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     H5Fclose(cf_fileid);
                     bes_dmr_response.set_dap4_constraint(dhi);
                     bes_dmr_response.set_dap4_function(dhi);
-                    dmr->set_factory(0);
+                    dmr->set_factory(nullptr);
 
                     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
 
@@ -1613,7 +1599,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
+#if 0
     //dmr->print(cout);
+#endif
 
     // Instead of fiddling with the internal storage of the DHI object,
     // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
@@ -1622,7 +1610,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     // CE.
     bes_dmr_response.set_dap4_constraint(dhi);
     bes_dmr_response.set_dap4_function(dhi);
-    dmr->set_factory(0);
+    dmr->set_factory(nullptr);
 
     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
@@ -1678,9 +1666,11 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 
         dds.transfer_attributes(&das);
 
-        ////Don't close the file ID,it will be closed by derived class.
+        ////Don't close the file ID,it will be closed by the derived class.
+#if 0
         //if(cf_fileid !=-1)
          //   H5Fclose(cf_fileid);
+#endif
 
     }
     catch(BESError & e) {
@@ -1729,7 +1719,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     dmr->set_factory(&MyD4TypeFactory);
     dmr->build_using_dds(dds);
 
-    HDF5DMR *hdf5_dmr = new HDF5DMR(dmr);
+    auto hdf5_dmr = new HDF5DMR(dmr);
     hdf5_dmr->setHDF5Dataset(cf_fileid);
     delete dmr;     // The call below will make 'dmr' unreachable; delete it now to avoid a leak.
     bes_dmr.set_dmr(hdf5_dmr); // BESDMRResponse will delete hdf5_dmr
@@ -1741,7 +1731,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     // CE.
     bes_dmr.set_dap4_constraint(dhi);
     bes_dmr.set_dap4_function(dhi);
-    hdf5_dmr->set_factory(0);
+    hdf5_dmr->set_factory(nullptr);
 
     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
@@ -1761,7 +1751,7 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
     attrs["version"] = MODULE_VERSION ;
     list<string> services ;
     BESServiceRegistry::TheRegistry()->services_handled( HDF5_NAME, services );
-    if( services.size() > 0 )
+    if( services.empty()==false )
         {
             string handles = BESUtil::implode( services, ',' ) ;
             attrs["handles"] = handles ;
@@ -1807,7 +1797,9 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     // The full path of the configure file
     string mcache_config_fname = lrd_config_fpath+"/"+lrd_config_fname;
     
+#if 0
     //ifstream mcache_config_file("example.txt");
+#endif
     // Open the configure file
     ifstream mcache_config_file(mcache_config_fname.c_str());
 
@@ -1830,13 +1822,17 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
             // Include directories to store common latitude and longitude values
             if(temp_line.at(0)=='1') {
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+#if 0
                 //lrd_cache_dir_list +=temp_name_list;
+#endif
                 lrd_cache_dir_list.insert(lrd_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
             // Include directories not to store common latitude and longitude values
             else if(temp_line.at(0)=='0'){
                 HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
+#if 0
                 //lrd_non_cache_dir_list +=temp_name_list;
+#endif
                 lrd_non_cache_dir_list.insert(lrd_non_cache_dir_list.end(),temp_name_list.begin(),temp_name_list.end());
             }
             // Include variable names that the server would like to store in the memory cache
@@ -1853,7 +1849,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                     else if(subline[i]=='\'')
                         sq_pos.push_back(i);
                 }
-                if(dq_pos.size()==0 && sq_pos.size()==0)
+                if(dq_pos.empty() && sq_pos.empty())
                     HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
                 else if((dq_pos.size()!=0) &&(dq_pos.size()%2==0)&& sq_pos.size()==0) {
                     unsigned int dq_index= 0;
@@ -1894,7 +1890,7 @@ cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
 
 
     mcache_config_file.close();
-    if(lrd_cache_dir_list.size()==0 && lrd_non_cache_dir_list.size()==0 && lrd_var_cache_file_list.size()==0)
+    if(lrd_cache_dir_list.empty() && lrd_non_cache_dir_list.empty() && lrd_var_cache_file_list.empty())
         return false;
     else 
         return true;
@@ -1936,7 +1932,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             }
                 
        
-            size_t bytes_expected_read=(size_t)sb.st_size;
+            auto bytes_expected_read=(size_t)sb.st_size;
             BESDEBUG(HDF5_NAME, prolog << "DAS Disk cache file size is " << bytes_expected_read << endl);
 
             vector<char> buf;
@@ -2108,12 +2104,14 @@ void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
                 BESDEBUG(HDF5_NAME, prolog << "DAS to the disk cache, attr type is: "
                                        << temp_table->get_type(top_it) << endl);
                 // For the debugging purpose
+#if 0
                 //unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
                 //cerr<<"Attribute values are "<<endl;
                 //for (int i = 0; i <num_attrs;i++) 
                 //    cerr<<(*(temp_table->get_attr_vector(temp_table->get_name(top_it))))[i]<<" ";
                 //cerr<<endl;
                 //write_das_attr_info(temp_table,top_it,das_file);
+#endif
                 // Write DAS attribute info to the file
                 write_das_attr_info(temp_table,temp_table->get_name(top_it),temp_table->get_type(top_it),das_file);
             }
@@ -2228,7 +2226,7 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
 
      FILE *dds_file = fopen(dds_cache_fname.c_str(),"r");
      tdds.parse(dds_file);
-     DDS* cache_dds = new DDS(tdds);
+     auto cache_dds = new DDS(tdds);
 #if 0
 cerr<<"before dds "<<endl;
 dds->dump(cerr);
@@ -2247,7 +2245,8 @@ cerr<<"after tdds "<<endl;
         data_bdds->set_dds(cache_dds);
      else 
         bdds->set_dds(cache_dds);
-     fclose(dds_file);
+     if(dds_file !=nullptr)
+        fclose(dds_file);
 
     if (dds_cache) {
         // add a copy
@@ -2264,7 +2263,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
     BESDEBUG(HDF5_NAME, prolog << "BEGIN"  << endl);
 
     // Check DAS memory cache
-    DAS *das = 0 ;
+    DAS *das = nullptr ;
     bool use_das_cache = false;
     if (das_cache) 
         das = static_cast<DAS*>(das_cache->get(filename));
@@ -2279,6 +2278,12 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
     else {
 
         das = new DAS ;
+
+        // The following block is commented out because the attribute containers in DDX disappear
+	// when the container_name of DAS is added.  Without adding the container_name of DAS,
+        // the attribute containers show up in DDX. This information is re-discovered while working on
+        // https://bugs.earthdata.nasa.gov/browse/HYRAX-714 although the following code was commented
+        // out long time ago. KY 2022-05-27
 #if 0
         if (!container_name.empty())
             das->container_name(container_name);
@@ -2567,7 +2572,7 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     DDS *dds = bdds->get_dds();
     string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
     string filename = dhi.container->access();
-    DAS* das = 0;
+    DAS* das = nullptr;
     bool das_from_mcache = false;
     if(das_cache) {
         das = static_cast<DAS*>(das_cache->get(filename));
