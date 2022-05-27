@@ -28,6 +28,11 @@ AT_ARG_OPTION_ARG([conf],
     [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
     [bes_conf=bes.conf])
 
+AT_ARG_OPTION_ARG([s3tests],
+    [--s3tests=yes|no   Run the tests that read/write to the opendap.tests S3 bucket (creds required)],
+    [echo "s3tests set to $at_arg_s3tests"; s3tests=$at_arg_s3tests],
+    [s3tests=no])
+
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
 # @brief Run the given bes command file
@@ -81,7 +86,6 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     build_dmrpp_cmd="${build_dmrpp_app} -M -f ${input} -r ${dmr}"
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
-
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
@@ -224,6 +228,8 @@ then
     input_file="${DATA_DIR}/$1"
 else
     input_file="$1"
+    # Only run the S3 tests if specifically instructed to do so.
+    AT_SKIP_IF([test x$s3tests = xno])
 fi
 
 baseline="${BASELINES_DIR}/$2"
@@ -240,7 +246,7 @@ export PATH=${abs_top_builddir}/standalone:$PATH
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
 
-at_verbose=""
+# at_verbose=""
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
