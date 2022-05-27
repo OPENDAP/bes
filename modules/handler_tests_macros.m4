@@ -40,10 +40,8 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
-    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
-    # expanded. jhrg 3.20.20
-    pass=$2
+    # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -58,7 +56,6 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -75,15 +72,11 @@ m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
-
     # Here the bes_conf var is set using parameter number 2. This shadows the
     # value that can be set using the optional -c (--conf) argument (see the top
     # of this file). We might improve on this! jhrg 3/11/22
     bes_conf=$abs_builddir/$2
-    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
-    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
-    # expanded. jhrg 3.20.20
-    pass=$3
+    AT_XFAIL_IF([test z$3 = zxfail])
     repeat=$4
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -98,7 +91,6 @@ m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
         [
         AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -119,6 +111,7 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -135,7 +128,6 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
         
     AT_CLEANUP
@@ -152,6 +144,7 @@ m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -166,7 +159,6 @@ m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [0], [stdout])
         AT_CHECK([grep -f $baseline stdout], [0], [ignore])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -179,6 +171,7 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -197,7 +190,6 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
         REMOVE_ERROR_FILE([stdout])
         REMOVE_ERROR_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -216,8 +208,8 @@ m4_define([AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST], [dnl
 
     bes_conf=$2
     baseline=$abs_srcdir/$1.$2.baseline
-
-    repeat=$3
+    AT_XFAIL_IF([test z$3 = zxfail])
+    repeat=$4
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -235,7 +227,6 @@ m4_define([AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST], [dnl
         REMOVE_ERROR_FILE([stdout])
         REMOVE_ERROR_LINE([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -248,6 +239,7 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -262,7 +254,6 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -280,6 +271,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -300,7 +292,6 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         REMOVE_DAP4_CHECKSUM([stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -319,6 +310,7 @@ m4_define([AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST],  [dnl
     input=$abs_top_srcdir/$1
     dmr=$abs_top_srcdir/$1.dmr
     baseline=$abs_top_srcdir/$1.dmrpp.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -f $input -r $dmr"])
@@ -331,7 +323,6 @@ m4_define([AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST],  [dnl
         [
         AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -349,6 +340,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -379,8 +371,6 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],  [dnl
         AT_CHECK([ncdump test.nc > tmp])
         REMOVE_DATE_TIME([tmp])
         AT_CHECK([diff -b -B $baseline.data tmp])
-
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -393,6 +383,7 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
@@ -411,7 +402,6 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP])
@@ -438,7 +428,7 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.$2
-    expected=$3
+    AT_XFAIL_IF([test z$3 = zxfail])
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
 
@@ -452,7 +442,6 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
         GET_GDAL_INFO([tmp])
         AT_CHECK([diff -b $baseline tmp], [ignore], )
-        AT_XFAIL_IF([test expected = xfail])
         ])
 
     AT_CLEANUP
