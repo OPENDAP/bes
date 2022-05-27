@@ -2279,7 +2279,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
         das = new DAS ;
 
-        // The following block is commented out is because the attribute containers in DDX disappear
+        // The following block is commented out because the attribute containers in DDX disappear
 	// when the container_name of DAS is added.  Without adding the container_name of DAS,
         // the attribute containers show up in DDX. This information is re-discovered while working on
         // https://bugs.earthdata.nasa.gov/browse/HYRAX-714 although the following code was commented
