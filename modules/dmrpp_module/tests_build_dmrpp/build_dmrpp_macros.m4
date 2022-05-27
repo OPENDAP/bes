@@ -211,7 +211,7 @@ m4_define([REMOVE_VERSIONS], [dnl
 #
 
 m4_define([AT_GET_DMRPP_3_20],  [dnl
-        AT_SETUP([$1])
+        AT_SETUP([get_dmrpp $1])
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
 GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
@@ -222,19 +222,21 @@ DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
-echo $1 | grep "s3://"
+test_name="$1"
+echo $2 | grep "s3://"
 if test $? -ne 0
 then
-    input_file="${DATA_DIR}/$1"
+    input_file="${DATA_DIR}/$2"
 else
-    input_file="$1"
+    input_file="$2"
     # Only run the S3 tests if specifically instructed to do so.
     AT_SKIP_IF([test x$s3tests = xno])
 fi
 
-baseline="${BASELINES_DIR}/$2"
-params="$3"
-output_file="$4"
+baseline="${BASELINES_DIR}/$3"
+xfail_param=$4
+params="$5"
+output_file="$6"
 if test -n "${output_file}"
 then
     params="${params} -o ${output_file}"
@@ -264,12 +266,16 @@ AS_IF([test -z "$at_verbose"], [
     echo "#    BASELINES_DIR: ${BASELINES_DIR}"
     echo "#"
     echo "# AT_GET_DMRPP_3_20() arguments: "
-    echo "#           arg #1: $1"
-    echo "#           arg #2: $2"
-    echo "#           arg #3: $3"
-    echo "#           arg #4: $4"
+    echo "#           arg #1: "$1
+    echo "#           arg #2: "$2
+    echo "#           arg #3: "$3
+    echo "#           arg #4: "$4
+    echo "#           arg #5: "$5
+    echo "#           arg #6: "$6
+    echo "#       test_name: ${test_name}"
     echo "#       input_file: ${input_file}"
     echo "#         baseline: ${baseline}"
+    echo "#      xfail_param: ${xfail_param}"
     echo "#           params: ${params}"
     echo "#      output_file: ${output_file}"
     echo "#         TEST_CMD: ${TEST_CMD}"
