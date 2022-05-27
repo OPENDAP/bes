@@ -5,47 +5,6 @@ see the INSTALL. For comprehensive information about the HDF5 handler, check
 https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
 and https://hdfeos.org/software/hdf5_handler.php
 
-
-What is the HDF5 handler?
----------------------
-
-  Hierarchical Data Format Version 5 (HDF5) is a general-purpose library and 
-file format for storing, managing, archiving, and exchanging scientific data. 
-The HDF5 data model includes two primary types of objects, a number of 
-supporting object types, and metadata describing how HDF5 files and objects 
-are to be organized and accessed. The HDF5 file format is self-describing in 
-the sense that the structures of HDF5 objects are described within the file.
-
- The HDF5 handler is a Hyrax Back-end Server(BES) module that maps HDF5 
-objects to DAP4 and DAP2 data models. This allows users to access the data 
-in remote  HDF5 files using the OPeNDAP clients. There can be many ways to 
-serve HDF5 data but this handler differentiates itself by putting the goal of 
-following CF conventions to support NASA HDF5/HDF-EOS5/netCDF-4 products first. 
-The HDF5 handler team tries to achieve what is called "CF-compliant" status of 
-all NASA HDF5 data products. This means that OPeNDAP visualization client 
-users should feel easy in accessing and visualizing the remote NASA 
-HDF5/HDF-EOS5/netCDF-4 data products if NASA data centers provide the Hyrax 
-OPeNDAP services.
-
- For some NASA HDF5/HDF-EOS5 products either do not follow or only partially 
-follow CF conventions, the handler developers tried to make them be 
-CF-compliant  so that OPeNDAP client tools can visualize these products.
-This can be realized by the developers' knowledge and experiences as well
-as intensive discussions with developers of the corresponding NASA data 
-centers. The output of this handler has been checked carefully with OPeNDAP 
-client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
- Many new NASA HDF5 products are generated via the netCDF-4 APIs. These products
-are normally called netCDF-4 products. These products generally follow the
-netCDF data model and CF conventions. The HDF5 handler can still follow the CF
-conventions to map these products to either DAP2 or DAP4. Moreover, because
-DAP4 supports the group hierarchy, the HDF5 handler can also use the generic
-mapping to map netCDF-4 like products to DAP4 with the support of group hierarchy.
-
-For more information about the HDF5 handler, check the HDF5 handler user's guide at
-https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
-
- A comprehensive list of the improvements can be found below.
-
 What's new for Hyrax 1.16.5
  - Now based on HDF5-1.12.1
  - Updated libdap headers references.
