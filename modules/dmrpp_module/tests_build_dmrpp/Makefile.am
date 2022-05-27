@@ -20,7 +20,8 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal  $(TESTSUITE_DMRPP) $(builddir)/test_bes.conf
-	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
+	if ./chkForAWS.sh; then export tsflags="$(TESTSUITEFLAGS) --s3tests=yes"; else export tsflags="$(TESTSUITEFLAGS)"; fi && \
+	$(SHELL) '$(TESTSUITE_DMRPP)' $${tsflags} && echo "bindir: $(bindir)"
 
 clean-local:
 	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean
