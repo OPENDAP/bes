@@ -1,7 +1,9 @@
 
 This file describes the HDF5 handler developed by The HDF Group and OPeNDAP, 
 Inc. under a grant from NASA. For information about building the HDF5 handler,
-see the INSTALL.
+see the INSTALL. For comprehensive information about the HDF5 handler, check 
+https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
+and https://hdfeos.org/software/hdf5_handler.php
 
 
 What is the HDF5 handler?
