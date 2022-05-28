@@ -46,10 +46,12 @@ m4_define([AT_BUILD_DMRPP],  [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([build_dmrpp dmrpp data dap4 DAP4])
 
-    input=$abs_top_srcdir/$1
-    dmr=$abs_top_srcdir/$1.dmr
-    baseline=$abs_top_srcdir/$1.dmrpp.baseline
+    input="${abs_top_srcdir}/$1"
+    AT_XFAIL_IF([test z$2 = zxfail])
     repeat=$3
+
+    dmr="${input}.dmr"
+    baseline="${input}.dmrpp.baseline"
 
     build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
     build_dmrpp_cmd="${build_dmrpp_app} -f ${input} -r ${dmr}"
@@ -67,7 +69,6 @@ m4_define([AT_BUILD_DMRPP],  [dnl
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -78,9 +79,11 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([build_dmrpp dmrpp data dap4 DAP4])
 
-    input=$abs_top_srcdir/$1
-    dmr=$abs_top_srcdir/$1.dmr
-    baseline=$abs_top_srcdir/$1.dmrpp.M.baseline
+    input="${abs_top_srcdir}/$1"
+    AT_XFAIL_IF([test z$2 = zxfail])
+
+    dmr="${input}.dmr"
+    baseline="${input}.dmrpp.M.baseline"
 
     build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
     build_dmrpp_cmd="${build_dmrpp_app} -M -f ${input} -r ${dmr}"
@@ -101,7 +104,6 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
-        AT_XFAIL_IF([test z$2 = zxfail])
         ])
 
     AT_CLEANUP
@@ -210,33 +212,39 @@ m4_define([REMOVE_VERSIONS], [dnl
 # * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT, or as an S3 URL (s3://...)
 #
 
+
 m4_define([AT_GET_DMRPP_3_20],  [dnl
-        AT_SETUP([get_dmrpp $1])
+
+AT_SETUP([get_dmrpp $1])
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
 GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
-
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
+
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 test_name="$1"
-echo $2 | grep "s3://"
-if test $? -ne 0
+input_file="$2"
+baseline="${BASELINES_DIR}/$3"
+params="$4"
+output_file="$5"
+AT_XFAIL_IF([test z$6 = zxfail]) # This is always run FIRST
+
+echo "${input_file}" | grep "s3://"
+if test $? -eq 0
 then
-    input_file="${DATA_DIR}/$2"
-else
-    input_file="$2"
+    # We're here because it's an S3 Test
     # Only run the S3 tests if specifically instructed to do so.
     AT_SKIP_IF([test x$s3tests = xno])
+else
+    # It's a file test so we need to amend the input_file
+    # name to reference the correct thing.
+    input_file="${DATA_DIR}/${input_file}"
 fi
 
-baseline="${BASELINES_DIR}/$3"
-xfail_param=$4
-params="$5"
-output_file="$6"
 if test -n "${output_file}"
 then
     params="${params} -o ${output_file}"
@@ -244,6 +252,7 @@ else
     output_file=stdout
 fi
 
+# Amend the PATH to pick up besstandalone
 export PATH=${abs_top_builddir}/standalone:$PATH
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
@@ -310,7 +319,6 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
     ])
     AT_CHECK([diff -b -B ${baseline} ${output_file}])
-    AT_XFAIL_IF([test z$4 = zxfail])
 ])
 
 AT_CLEANUP

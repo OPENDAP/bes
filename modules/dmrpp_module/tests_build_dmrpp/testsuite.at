@@ -5,6 +5,9 @@ AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 
 m4_include([build_dmrpp_macros.m4])
 
+
+AT_CHECK_EGREP([foo bar],[boo],[bar],[])
+
 ################################################################################
 # Test get_dmrpp using command line options
 #
@@ -13,19 +16,19 @@ AT_GET_DMRPP_3_20([simple test 1], [chunked_oneD.h5], [chunked_oneD.h5.baseline]
 AT_GET_DMRPP_3_20([simple test 2], [nc4_group_atomic.h5], [nc4_group_atomic.h5.baseline])
 #
 # -s Inject a "site.conf"
-AT_GET_DMRPP_3_20([-s test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
+AT_GET_DMRPP_3_20([-s test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
 #
 # -D Produce only a DMR
-AT_GET_DMRPP_3_20([-D test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
+AT_GET_DMRPP_3_20([-D test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
 #
 # -u Inject dmrpp:href URL
-AT_GET_DMRPP_3_20([-u test], [chunked_oneD.h5], [inject_href.baseline], [], [-u http://some.where.over.the.rainbow.oz])
+AT_GET_DMRPP_3_20([-u test], [chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
 #
 # -c Inject complete BES configuration
-AT_GET_DMRPP_3_20([-c test], [nc4_group_atomic.h5], [inject_bes_conf.baseline], [], [-c ${abs_builddir}/test_bes.conf], [a.out])
+AT_GET_DMRPP_3_20([-c test], [nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf], [a.out])
 #
 # -o Send output to a specific file
-AT_GET_DMRPP_3_20([-o test], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [], [a.out])
+AT_GET_DMRPP_3_20([-o test], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [a.out])
 
 # -I Run inventory test, requires output_file
 #AT_GET_DMRPP_3_20([chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I], [${abs_builddir}/a.out])
@@ -46,7 +49,7 @@ AT_GET_DMRPP_3_20([-o test], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [], 
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
 
 # -U Use input file located in AWS S3
-AT_GET_DMRPP_3_20(["AWS S3 Test"], [s3://opendap.travis.tests/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [-U -b ${abs_builddir}], [${abs_builddir}/a.out])
+AT_GET_DMRPP_3_20(["AWS S3 Test"], [s3://opendap.travis.tests/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.baseline], [-U -b ${abs_builddir}], [${abs_builddir}/a.out])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
