@@ -183,13 +183,42 @@ H5.EnableDAP4Coverage=true
 # resolve the name clashing by generating unique names for the clashed ones.
 # For NASA HDF5 and HDF-EOS5 products, we don't see any name clashings for variables and attributes. 
 # In fact, unlike HDF4, it is very rare to have name clashing for HDF5. 
-# So to reduce performance overhead, we set this key to __false__ by default. 
-# Users can set this key to __true__ if it becomes necessary.
-
+# So to reduce performance overhead, we set this key to false by default. 
+# Users can set this key to true if it becomes necessary.
+#
 # The default value is set to false.
 
 H5.EnableCheckNameClashing=false
- 
+
+# BES Key: H5.NoZeroSizeFullnameAttr
+# When this key is set to true, the fullnamepath attribute will NOT be added 
+# if the HDF5 variable data storage size is 0. This is necessary to generate correct HDF5 dmr++ files.
+# 
+# The default value is set to false.
+
+H5.NoZeroSizeFullnameAttr=false
+
+# BES Key: H5.EscapeUTF8Attr
+# When this key is set to true, the attribute values that use UTF-8 character
+# encoding are escaped in the same way as values that use the ASCII encoding. To
+# enable UTF-8 in attribute values, set this key to false.
+
+# The default value is set to true.
+
+H5.EscapeUTF8Attr = true
+
+# BES Key: H5.EnableDiskMetaDataCache
+# If this key is set to true, the DAS will be cached into a file.
+# The handler will read DAS from the cached file instead of using the HDF5 library 
+# to build since the second time. Note this key only takes effect for DAP2 responses.
+# Since Hyrax 1.15, MetaData Store(MDS) has the similar feature as this key can achieve. 
+# By default, this key is set to false. Users are encouraged to check if turning this key on 
+# can improve performance before setting this key true.
+
+# The default value is set to false.
+
+H5.EnableDiskMetaDataCache=false
+
 # EnablePassFileID
 # When this key is set to true, HDF5 file ID is passed from metadata to data
 # services. This may improve performance. However, it may cause NcML module
@@ -203,11 +232,6 @@ H5.DisableStructMetaAttr=true
 
 # DisableECSMetaAttr: Turn off HDF-EOS5 metadata such as coremetadata, archivemetada.
 H5.DisableECSMetaAttr=false
-
-# EscapeUTF8Attr: When true (the default) attribute values that use UTF-8 character
-# encoding are escaped in the same way as values that use the ASCII encoding. To
-# enable UTF-8 in attribute values, set this to false.
-H5.EscapeUTF8Attr = true
 
 # KeepVarLeadingUnderscore: Keep the underscore(_) in the variable path.
 
@@ -249,11 +273,6 @@ H5.RmConventionAttrPath=true
 # with the DDS and DAS. Turning the key to true will enable
 # the 64-bit integer support in the DMR output.
 H5.EnableDMR64bitInt=false
-
-# When this key is turned on, the fullnamepath attribute will
-# NOT be added if the HDF5 data storage size is 0. This is
-# necessary to generate correct HDF5 DMRRPP files.
-H5.NoZeroSizeFullnameAttr=false
 
 # When this key is turned on, the group path of the "coordinates" attribute values for some 
 # general HDF5 products(ICESAT-2 ATL03 etc.) will be added and flattened. This is to make
