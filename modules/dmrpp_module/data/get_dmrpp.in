@@ -552,29 +552,27 @@ function mk_dmrpp() {
 }
 
 #######################################################################################################################
-# check_dmrpp()
+# chk_dmrpp_for_missing_vars()
 # Uses check_dmrpp application to identify missing variables in the requested dmr++ file.
 #
-function ck_dmrpp() {
+function chk_dmrpp_for_missing_vars() {
+    local dmrpp_file="${1}"
+    local mvars_file="${2}"
 
-  missing_vars_file=$(mktemp -t missvars_XXXX)
+    if test -n "${VERY_VERBOSE}"; then
+        echo "     dmrpp_file: ${dmrpp_file}"
+        echo "     mvars_file: ${mvars_file}"
+    fi
 
-  if test -n "${VERY_VERBOSE}"; then
-    echo "     dmrpp_file: ${output_file}"
-    echo "     mvars_file: ${missing_vars_file}"
-  fi
-
-  ck_prms="${ck_prms} ${output_file} "
-  ck_prms="${ck_prms} ${missing_vars_file} "
-  if test -n "${VERBOSE}"; then echo "   build_params: ${ck_prms}"; fi
-  if test -n "$missing_vars_file"; then
-    check_dmrpp ${ck_prms}
-  else
-    echo "The missing_vars file wasn't specified, skipping missing variable construction."
-  fi
-
-  # TODO Use trap to ensure these are really removed
-  # rm $DMR_CMD $SOURCE_DMR $TMP_CONF
+    ck_prms="${dmrpp_file} ${mvars_file}"
+    if test -n "${VERBOSE}"; then echo "   check_dmrpp parameters: ${ck_prms}"; fi
+    if test -n "${mvars_file}"; then
+        check_dmrpp ${ck_prms}
+        return $?
+    else
+        echo "The missing_vars file wasn't specified, skipping missing variable construction."
+        return 1
+    fi
 }
 ########################################################################################################################
 
@@ -1081,11 +1079,12 @@ function merge_missing() {
     if test -n "${MERGE_MISSING_VARS}"; then
 
       # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${output_file}; -o option]
-      ck_dmrpp
+      missing_vars_file=$(mktemp -t missing_vars_XXXX)
+      chk_dmrpp_for_missing_vars "${output_file}" "${missing_vars_file}"
       retval=$(echo "${retval} + ${?}" | bc)
       #echo "retval: ${retval}";
 
-      # check-dmrpp will create missing_vars_file if there are any missing variables.
+      # check-dmrpp will write to the missing_vars_file if there are any missing variables.
       if test -s ${missing_vars_file}; then
         MISSING_VARS=$(cat ${missing_vars_file})
         if test -n "${VERY_VERBOSE}"; then echo "The missing vars: ${MISSING_VARS}" >&2; fi
@@ -1173,14 +1172,16 @@ function merge_missing() {
 # This function conditionally runs the dmr++ sanity checking tests
 #
 function run_tests(){
+    local o_filename="${1}"
+
     if test -n "${RUN_INVENTORY_TESTS}"; then
-        dmrpp_inventory_test "${output_file}"
+        dmrpp_inventory_test "${o_filename}"
         retval=$(echo "${retval} + ${?}" | bc)
         #echo "dmrpp_inventory_test: retval: ${retval}"
     fi
 
     if test -n "${RUN_VALUE_TESTS}"; then
-        dmrpp_value_test "${output_file}"
+        dmrpp_value_test "${o_filename}"
         retval=$(echo "${retval} + ${?}" | bc)
         #echo "retval: ${retval}";
     fi
@@ -1241,8 +1242,8 @@ BES_CONF=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")
 SOURCE_DMR=$(mkDapRequest "${INPUT_DATA_FILE}" dmr)
 
 # If 'JUST_DMR' is set redirect SOURCE_DMR to either <stdout> or $output_file
-if [ -n "${JUST_DMR}" ]; then
-  if [ -z "${output_file}" ]; then
+if test -n "${JUST_DMR}" ; then
+  if test -z "${output_file}" ; then
     cat ${SOURCE_DMR} >&2
   else
     cat ${SOURCE_DMR} >${output_file};
@@ -1268,9 +1269,9 @@ fi
 merge_missing
 
 # Run the dmr++ tests (conditional)
-run_tests
+run_tests "${output_file}"
 
-# Push the dmr++ to S3 traget (conditional)
+# Push the dmr++ to S3 target (conditional)
 if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"
 then
     if test -z "${output_file}"
