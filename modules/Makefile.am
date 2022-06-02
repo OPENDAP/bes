@@ -10,14 +10,10 @@ EXTRA_DIST = data/README read_test_baseline.cc read_test_baseline.h handler_test
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
-
-SUBDIRS = csv_handler usage asciival freeform_handler
-
-# www-interface Removed jhrg 3/21/22
-
+SUBDIRS = csv_handler freeform_handler functions usage asciival
 
 if WITH_CMR
-SUBDIRS += cmr_module 
+SUBDIRS += cmr_module
 endif
 
 if BES_DEVELOPER
@@ -46,10 +42,11 @@ endif
 # Why are these here? Because they have tests that depend on
 # netcdf.
 # FIXME Rewrite the tests to use the dapread handler. jhrg 12/12/14
+# I think this is a broken idea - maybe fixed by the new configured_features.txt file? jhrg 6/1/22
 SUBDIRS +=  httpd_catalog_module ngap_module fileout_json w10n_handler gateway_module xml_data_handler
 
 if BUILD_GDAL
-SUBDIRS += functions fileout_gdal gdal_handler
+SUBDIRS += fileout_gdal gdal_handler
 endif
 
 if BUILD_FITS

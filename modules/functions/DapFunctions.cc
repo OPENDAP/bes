@@ -26,8 +26,6 @@
 
 #include <iostream>
 
-#include <gdal.h>   // needed for scale_{grid,array}
-
 #include <libdap/ServerFunctionsList.h>
 
 #include <BESRequestHandlerList.h>
@@ -50,16 +48,18 @@
 #include "DilateArrayFunction.h"
 #include "RangeFunction.h"
 #include "BBoxCombFunction.h"
-#include "ScaleGrid.h"
 #include "TestFunction.h"
 #include "IdentityFunction.h"
+#include "DapFunctionsRequestHandler.h"
+#include "DapFunctions.h"
 
 #if HAVE_STARE
 #include "stare/StareFunctions.h"
 #endif
 
-#include "DapFunctionsRequestHandler.h"
-#include "DapFunctions.h"
+#if HAVE_GDAL
+#include "ScaleGrid.h"
+#endif
 
 using std::endl;
 using std::ostream;
@@ -98,13 +98,20 @@ void DapFunctions::initialize(const string &modname)
 
     libdap::ServerFunctionsList::TheList()->add_function(new RangeFunction());
 
+    libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new IdentityFunction());
+
+
+#if HAVE_GDAL
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
+    GDALAllRegister();
+    OGRRegisterAll();
 
-    libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
-
-    libdap::ServerFunctionsList::TheList()->add_function(new IdentityFunction());
+    // What to do with the orig error handler? Pitch it. jhrg 10/17/16
+    (void) CPLSetErrorHandler(CPLQuietErrorHandler);
+#endif
 
 #if HAVE_STARE
     libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
@@ -118,12 +125,6 @@ void DapFunctions::initialize(const string &modname)
     stare_storage_path = TheBESKeys::TheKeys()->read_string_key(STARE_STORAGE_PATH_KEY, stare_storage_path);
     stare_sidecar_suffix = TheBESKeys::TheKeys()->read_string_key(STARE_SIDECAR_SUFFIX_KEY, stare_sidecar_suffix);
 #endif
-
-    GDALAllRegister();
-    OGRRegisterAll();
-
-    // What to do with the orig error handler? Pitch it. jhrg 10/17/16
-    /*CPLErrorHandler orig_err_handler =*/ (void) CPLSetErrorHandler(CPLQuietErrorHandler);
 
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }

@@ -6,8 +6,10 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS) $(NC_CPPFLAGS) 
-LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS) $(NC_LDFLAGS) $(NC_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# $(NC_CPPFLAGS)  $(GDAL_CFLAGS)
+LIBADD = $(DAP_LIBS)
+# $(NC_LDFLAGS) $(NC_LIBS) $(GDAL_LDFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -18,7 +20,8 @@ LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS) $(NC_LDFLAGS) $(NC_LIBS)
 # Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
-AM_CXXFLAGS = -Wno-c++14-extensions
+AM_CXXFLAGS =
+# Removed jhrg 5/31/22 -Wno-c++14-extensions
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -41,10 +44,8 @@ LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) 
 endif
 
 if BUILD_GDAL
-# FIXME Support DAP4 in geo-functions 
-# Even if GDAL is found when building the BES, hold off on this code
-# until it has tests and supports DAP4
-# SUBDIRS +=  geo-functions 
+AM_CPPFLAGS +=  $(GDAL_CFLAGS)
+LIBADD +=  $(GDAL_LDFLAGS)
 endif
 
 lib_besdir=$(libdir)/bes
@@ -59,8 +60,8 @@ VersionFunction.cc MakeArrayFunction.cc MakeMaskFunction.cc		\
 DilateArrayFunction.cc BindNameFunction.cc BindShapeFunction.cc		\
 TabularFunction.cc TabularSequence.cc BBoxFunction.cc RoiFunction.cc	\
 roi_util.cc BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc	\
-RangeFunction.cc functions_util.cc scale_util.cc ScaleGrid.cc		\
-DapFunctionsRequestHandler.cc BBoxCombFunction.cc IdentityFunction.cc
+RangeFunction.cc functions_util.cc BBoxCombFunction.cc IdentityFunction.cc	\
+DapFunctionsRequestHandler.cc
 
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h			\
 GridGeoConstraint.h gse.tab.hh gse_parser.h GSEClause.h			\
@@ -70,17 +71,20 @@ DilateArrayFunction.h BindNameFunction.h BindShapeFunction.h		\
 TabularFunction.h TabularSequence.h BBoxFunction.h RoiFunction.h	\
 roi_util.h BBoxUnionFunction.h Odometer.h MaskArrayFunction.h		\
 RangeFunction.h functions_util.h DapFunctionsRequestHandler.h		\
-ScaleGrid.h BBoxCombFunction.h TestFunction.h IdentityFunction.h
+BBoxCombFunction.h TestFunction.h IdentityFunction.h
 
 if BUILD_STARE
 SRCS += stare/StareFunctions.cc stare/GeoFile.cc
 HDRS += stare/StareFunctions.h stare/GeoFile.h
 endif
 
+if BUILD_GDAL
+SRCS += scale_util.cc ScaleGrid.cc
+HDRS += ScaleGrid.h
+endif
+
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
-# libfunctions_module_la_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-libfunctions_module_la_LDFLAGS = -avoid-version -module 
-# libfunctions_module_la_LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+libfunctions_module_la_LDFLAGS = -avoid-version -module
 libfunctions_module_la_LIBADD = $(LIBADD)
 
 # Don't install the headers for this kind of module.
@@ -93,8 +97,6 @@ lex.gse.cc: gse.lex gse.tab.cc gse.tab.hh
 
 gse.tab.cc gse.tab.hh: gse.yy
 	$(YACC) $(YFLAGS) $<
-
-EXTRA_PROGRAMS = 
 
 EXTRA_DIST = functions.conf.in gse.yy gse.lex
 
