@@ -23,6 +23,7 @@ server in the following ways:
 
 References
 [1] https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
+    https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html#_hyrax_handlers
 [2] https://hdfeos.org/software/hdf5_handler.php
 [3] https://hdfeos.org/examples/ncml.php
 [4] https://hdfeos.org/zoo/hdf5_handler/ncml_opendap.php
