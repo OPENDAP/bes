@@ -4,88 +4,6 @@ set -e
 
 GET_DMRPP_VERSION="get_dmrpp-@get_dmrpp_version@";
 
-function mk_automake_conf() {
-    local config_doc=$(
-    cat <<EOF
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# These are the buildir libraries used for running make check/distcheck
-BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
-BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
-BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
-BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-EOF
-)
-    if test -n "${VERBOSE}"; then echo "${config_doc}" >&2 ; fi
-    echo "${config_doc}"
-}
-
-
-###############################################################################
-#
-# Default BES Configuration.
-#
-function mk_default_bes_conf() {
-    BES_CONF_DOC=$(
-    cat <<EOF
-# produce DMR documents for use with build_dmrpp. The DAP, XML Command
-# and HDF5 handler modules are the 'installed' ones (not the modules
-# found in the build tree). jhrg 5/11/18
-
-BES.LogName=./bes.log
-
-BES.modules=dap,cmd,h5,dmrpp
-
-BES.module.dap=@bes_modules_dir@/libdap_module.so
-BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
-BES.module.h5=@bes_modules_dir@/libhdf5_module.so
-BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
-
-# The value "@hdf5_root_directory@" is replaced at run time.
-# BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
-BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
-BES.Data.RootDirectory=/dev/null
-
-# The order is crucial here. The dmr++ files must be associated
-# with the dmrpp_module while everything else is being
-# gobbled up by the greedy regex for the hdf5_handler.
-# If the dmrpp.TypeMatch doesn't come first then the
-# hdf5_handler will claim the dmr++ files too.
-BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
-BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
-
-BES.Catalog.catalog.FollowSymLinks=Yes
-
-BES.UncompressCache.dir=/tmp/hyrax_ux
-BES.UncompressCache.prefix=ux_
-BES.UncompressCache.size=500
-
-AllowedHosts+=^https?:\/\/
-
-#-----------------------------------------------------------------------#
-# HDF5 handler specific parameters:
-#-----------------------------------------------------------------------#
-# EnableCF: Groom the HDF5 data to follow the CF conventions
-#   (true,yes|false,no, defaults to false)
-#
-# HDF5 handler keys that are not the compiled-in defaults. jhrg 5/24/22
-H5.EnableCheckNameClashing=true
-H5.EnableCF=false
-
-EOF
-)
-
-    if test -n "${USE_AUTOMAKE_LIBS}"; then
-        local automake_libs=$(mk_automake_conf)
-        if test -n "${VERBOSE}"; then
-            echo "mk_default_bes_conf() - Using automake_libs: " >&2
-            echo "${automake_libs}" >&2
-        fi
-        export BES_CONF_DOC=$(echo "${BES_CONF_DOC}"; echo "${automake_libs}");
-    fi
-
-}
-###############################################################################
 
 ###############################################################################
 #
@@ -176,8 +94,10 @@ BES_DATA_ROOT="/tmp"
 EXISTING_DMRPP=
 S3_UPLOAD=
 USE_AUTOMAKE_LIBS=
+CLEANUP_TEMP_FILES="true"
+export TEMP_FILE_LIST=""
 
-while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUA" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
     case "$opt" in
     h | \?)
         show_usage >&2
@@ -245,6 +165,9 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUA" opt; do
     U)
         S3_UPLOAD="yes"
         ;;
+    X)
+        CLEANUP_TEMP_FILES=
+        ;;
     esac
 done
 
@@ -296,6 +219,145 @@ if [ -n "${MERGE_MISSING_VARS}" ]; then
         exit 1
     fi
 fi
+
+###############################################################################
+#
+# cleanup_temp_files()
+#
+# Conditionally cleans up the list of temporary files created during the
+# execution of this script.
+#
+function cleanup_temp_files(){
+    if test -n "${CLEANUP_TEMP_FILES}"
+    then
+        echo "Cleaning up temporary files: ${TEMP_FILE_LIST}" >&2;
+        rm -vf ${TEMP_FILE_LIST} >&2
+        echo "Temporary files have been removed." >&2;
+    fi
+}
+
+###############################################################################
+#
+# make_temp_file()
+#
+#
+function make_temp_file(){
+    local file_prefix="${1}"
+
+    if test -n "${VERBOSE}"; then echo "make_temp_file() - file_prefix: ${file_prefix}" >&2; fi
+    local tmp_file=$(mktemp "/tmp/${file_prefix}_XXXXXX")
+    local retval=$?
+    if test $? -ne 0
+    then
+        echo "make_temp_file() - ERROR: Failed to create temporary file. prefix: ${file_prefix}" >&2
+        return $retval;
+    fi
+    if test -n "${VERBOSE}"; then echo "make_temp_file() - tmp_file: ${tmp_file}" >&2; fi
+
+    export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${tmp_file}"
+    if test -n "${VERBOSE}"; then echo "make_temp_file() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
+
+    echo "${tmp_file}"
+    export TEMP_FILE="${tmp_file}"
+    return 0
+}
+
+
+
+###############################################################################
+#
+# mk_automake_conf()
+#
+# Returns the module libraries used by besstandalone when invoked by automake
+# tasks like "make check" and "make distcheck". These are not the nominally
+# installed libraries but rather the libs compiled by make check in the BES
+# builddir.
+#
+function mk_automake_conf() {
+    local config_doc=$(
+    cat <<EOF
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# These are the buildir libraries used for running make check/distcheck
+BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+EOF
+)
+    if test -n "${VERBOSE}"; then echo "${config_doc}" >&2 ; fi
+    echo "${config_doc}"
+}
+
+
+###############################################################################
+#
+# mk_default_bes_conf()
+#
+# Default BES Configuration.
+#
+function mk_default_bes_conf() {
+    BES_CONF_DOC=$(
+    cat <<EOF
+# produce DMR documents for use with build_dmrpp. The DAP, XML Command
+# and HDF5 handler modules are the 'installed' ones (not the modules
+# found in the build tree). jhrg 5/11/18
+
+BES.LogName=./bes.log
+
+BES.modules=dap,cmd,h5,dmrpp
+
+BES.module.dap=@bes_modules_dir@/libdap_module.so
+BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
+BES.module.h5=@bes_modules_dir@/libhdf5_module.so
+BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
+
+# The value "@hdf5_root_directory@" is replaced at run time.
+# BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
+BES.Catalog.catalog.RootDirectory=${BES_DATA_ROOT}
+BES.Data.RootDirectory=/dev/null
+
+# The order is crucial here. The dmr++ files must be associated
+# with the dmrpp_module while everything else is being
+# gobbled up by the greedy regex for the hdf5_handler.
+# If the dmrpp.TypeMatch doesn't come first then the
+# hdf5_handler will claim the dmr++ files too.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+
+BES.Catalog.catalog.FollowSymLinks=Yes
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+
+AllowedHosts+=^https?:\/\/
+
+#-----------------------------------------------------------------------#
+# HDF5 handler specific parameters:
+#-----------------------------------------------------------------------#
+# EnableCF: Groom the HDF5 data to follow the CF conventions
+#   (true,yes|false,no, defaults to false)
+#
+# HDF5 handler keys that are not the compiled-in defaults. jhrg 5/24/22
+H5.EnableCheckNameClashing=true
+H5.EnableCF=false
+
+EOF
+)
+
+    if test -n "${USE_AUTOMAKE_LIBS}"; then
+        local automake_libs=$(mk_automake_conf)
+        if test -n "${VERBOSE}"; then
+            echo "mk_default_bes_conf() - Using automake_libs: " >&2
+            echo "${automake_libs}" >&2
+        fi
+        export BES_CONF_DOC=$(echo "${BES_CONF_DOC}"; echo "${automake_libs}");
+    fi
+
+}
+###############################################################################
+
 
 dap4ConstraintContainerElement=$(
 cat <<EOF
@@ -1202,6 +1264,7 @@ function run_tests(){
 #
 #
 #
+trap cleanup_temp_files EXIT
 
 # Here we test to see if the input file name is actually an S3 URL
 # and if it is we adjust the INPUT_DATA_FILE and go out and get the
@@ -1264,6 +1327,7 @@ fi
 mk_dmrpp "${INPUT_DATA_FILE}" "${OUTPUT_FILE}"
 retval=$?
 #echo "retval: ${retval}";
+if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
 
 
 if test -z "${VERBOSE}"; then
