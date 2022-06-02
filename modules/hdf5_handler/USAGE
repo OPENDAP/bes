@@ -1,14 +1,6 @@
-
-  This supplementary document explains how to use HDF5 handler to serve NASA 
-HDF5/HDF-EOS5 products in a manner that follows the CF conventions.
-
-1. Please refer to h5.conf.in for the descriptions of different BES keys for 
-   the CF option. Especially check the descriptions for the H5.CheckIgnoreObj
-   key to how to use this key to check if there are any ignored objects mapping
-   from HDF5 to DAP2.
-
-2. Using the NcML handler to modify attributes that do not follow the CF 
-conventions 
+  This supplementary document is mainly about how one can use another Hyrax module
+NcML handler to work with the HDF5 handler to serve NASA HDF5/netCDF-4/HDF-EOS5 products.
+For comprehensive information about the HDF5 handler, check [1] and [2].
 
   Although the HDF5 handler tries to make attributes follow the CF conventions 
  automatically, to reduce the long-term maintenance effort, the handler may not
@@ -27,8 +19,11 @@ server in the following ways:
   "joinNew", or "joinExisting" aggregations.
 
  Writing an NcML file is as easy as writing an HTML file. Please refer to 
- the NcML example page [1] at the HDF-EOS Tools and Information Center website.
+ the NcML example page [3] and [4] at the HDF-EOS Tools and Information Center website.
 
 References
-
-[1] http://hdfeos.org/examples/ncml.php
+[1] https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
+    https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html#_hyrax_handlers
+[2] https://hdfeos.org/software/hdf5_handler.php
+[3] https://hdfeos.org/examples/ncml.php
+[4] https://hdfeos.org/zoo/hdf5_handler/ncml_opendap.php
