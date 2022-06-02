@@ -1,4 +1,3 @@
-
   This supplementary document is mainly about how one can use another Hyrax module
 NcML handler to work with the HDF5 handler to serve NASA HDF5/netCDF-4/HDF-EOS5 products.
 For comprehensive information about the HDF5 handler, check [1] and [2].
@@ -25,5 +24,5 @@ server in the following ways:
 References
 [1] https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
 [2] https://hdfeos.org/software/hdf5_handler.php
-[3] http://hdfeos.org/examples/ncml.php
+[3] https://hdfeos.org/examples/ncml.php
 [4] https://hdfeos.org/zoo/hdf5_handler/ncml_opendap.php
