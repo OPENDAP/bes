@@ -1,14 +1,19 @@
 m4_include([package.m4])
 
+AT_INIT([ncml autotest testsuite (bes/modules/ncml_module/tests)])
+
+AT_ARG_OPTION_ARG([conf c],
+    [--conf=<file>   Use <file> for the bes.conf file],
+    [echo "BES configuration file set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [bes_conf=bes.conf])
+
 # The template file used to create the input files for besstandalone
 m4_define([bescmd_template],[$abs_srcdir/template.bescmd.in])
-m4_define([bes_conf_path],[$abs_builddir/bes.conf])
+m4_define([bes_conf_path],[$abs_builddir/$bes_conf])
 m4_define([alt_bes_conf_path],[$abs_builddir/bes_no_nc_global.conf])
 m4_define([datadir], [/data/ncml])
 m4_define([baselines_path],[${abs_srcdir}/baselines])
 m4_define([full_data_path],[${abs_srcdir}/../data/ncml])
-
-AT_INIT([ncml autotest testsuite (bes/modules/ncml_module/tests)])
 
 dnl $1 == ncml_filename
 dnl $2 == {das | dds | dods | ddx }

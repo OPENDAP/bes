@@ -1,15 +1,14 @@
 #
-# template: bes.conf.modules.in
+# template: bes.conf.in
 #
-#
-
-BES.ServerAdministrator=admin.email.address@your.domain.name
-
-BES.User=user_name
-BES.Group=group_name
 
 BES.LogName=./bes.log
-BES.LogVerbose=no
+BES.Data.RootDirectory=/dev/null
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
+BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.size=500
 
 BES.modules = dap,cmd,nc,h4,h5,gateway,ncml,fonc,ascii,json,dmrpp
 # BES.modules += gdal
@@ -29,7 +28,6 @@ BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module
 # BES.module.gdal=@abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ncml_module
-BES.Data.RootDirectory=/dev/null
 
 BES.Catalog.catalog.TypeMatch=nc:.*.nc(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=h4:.*.(hdf|HDF|eos)(.bz2|.gz|.Z)?$;
@@ -39,30 +37,6 @@ BES.Catalog.catalog.TypeMatch+=h5:.*.h5(.bz2|.gz|.Z)?$;
 # BES.Catalog.catalog.TypeMatch+=gdal:.*.tif(.bz2|.gz|.Z)?$;
 
 BES.Catalog.catalog.TypeMatch += dmrpp:.*.dmrpp$;
-
-BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
-
-BES.FollowSymLinks=No
-BES.Catalog.catalog.FollowSymLinks=Yes
-
-BES.Info.Buffered=no
-BES.Info.Type=xml
-
-BES.UncompressCache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
-BES.UncompressCache.prefix=uncompress_cache
-BES.UncompressCache.size=500
-
-BES.Container.Persistence=strict
-
-BES.Memory.GlobalArea.EmergencyPoolSize=1
-BES.Memory.GlobalArea.MaximumHeapSize=20
-BES.Memory.GlobalArea.Verbose=no
-BES.Memory.GlobalArea.ControlHeap=no
-
-BES.ProcessManagerMethod=multiple
-
-BES.DefaultResponseMethod=POST
 
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
@@ -87,6 +61,7 @@ Http.Cache.expires.time=3600
 #-----------------------------------------------------------------------#
 
 H5.EnableCF=false
+
 NCML.TempDirectory=@abs_top_builddir@/modules/ncml_module/tests/cache
 NCML.GlobalAttributesContainerName=NC_GLOBAL
 

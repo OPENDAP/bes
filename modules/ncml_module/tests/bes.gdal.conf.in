@@ -1,0 +1,9 @@
+#
+# template: bes_gdal.conf.in
+#
+
+BES.Include = bes.conf
+
+BES.modules += gdal
+BES.module.gdal = @abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
+BES.Catalog.catalog.TypeMatch += gdal:.*.tif(.bz2|.gz|.Z)?$;
