@@ -41,10 +41,12 @@ dnl $2 == ncml_filename
 dnl $3 == {das | dds | dods | ddx }
 dnl $4 == baseline_filename (with path prefix but not response suffix!)
 dnl $5 == (optional) constraint_expression
+dnl $6 == [<feature>] (optional feature that must be present; skip the test if not)
 m4_define([AT_RUN_BES_AND_CONDITIONAL_COMPARE],
 [
 AT_SETUP([Comparing $3 response for $2 to baseline baselines_path/$4 ])
 AT_KEYWORDS([$3])
+AS_IF([test -n "6"], [AT_SKIP_IF([test -z "$(grep $6 $top_srcdir/modules/configured_features.txt)"])])
 AT_MAKE_BESCMD_FILE([$2], [$3], [$5])
 AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
 AT_CHECK([diff -w -b -B baselines_path/$4.$3 stdout], [], [ignore], [], [])
@@ -88,9 +90,10 @@ dnl ncml_filename is expected to be the basename as the datadir is added.
 dnl $1 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
 dnl $2 == ncml_filename
 dnl $3 == {das | dds | dods | ddx }
+dnl $4 == [<feature>] (optional feature that must be present; skip the test if not)
 m4_define([AT_RUN_BES_AND_COMPARE_BASELINE],
 [
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([$1], [$2], [$3], [$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$1], [$2], [$3], [$2], [], [$4])
 ])
 
 m4_define([AT_RUN_BES_AND_COMPARE_BASELINE_ALT_CONF],
