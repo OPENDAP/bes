@@ -84,8 +84,8 @@ dnl AT_CHECK_DATADDS_GETDAP([agg/aggExistingRenaming.ncml], [xfail])
 
 dnl Aggregation with renaming three tiff files - Grids, renaming
 dnl and a JoinNew aggregation
-AT_CHECK_ALL_DAP_RESPONSES([gdal/h02v10_3Files_tif.ncml])
-AT_CHECK_DATADDS_GETDAP([gdal/h02v10_3Files_tif.ncml])
+AT_CHECK_ALL_DAP_RESPONSES([gdal/h02v10_3Files_tif.ncml], [gdal])
+AT_CHECK_DATADDS_GETDAP([gdal/h02v10_3Files_tif.ncml], [gdal])
 
 dnl =======================================================
 dnl Test constraints on the virtual dataset aggs
