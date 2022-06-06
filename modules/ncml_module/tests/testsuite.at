@@ -199,12 +199,13 @@ dnl $1 == datafile
 dnl $2 == constraint_expr
 dnl $3 == baseline_prefix
 dnl $4 == pass/xfail
+dnl $5 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT],
 [AT_BANNER([Testing DAP responses for: $1 with constraint="$2" against baseline prefix=$3 ($4)])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[das],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[dds],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[ddx],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([$4],[$1],[dods],[$3],[$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[das],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[dds],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[ddx],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$4],[$1],[dods],[$3],[$2],[$5])
 ])
 
 dnl tests that the response is a parse error when asking for DDX.
