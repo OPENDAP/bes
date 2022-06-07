@@ -24,7 +24,7 @@ AT_GET_DMRPP_3_20([-o, output file test], [chunked_oneD.h5], [chunked_oneD.h5.ba
 #AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
 
 # -M Generate missing variables sidecar file, requires use_cf_conf "site.conf" file
-#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M], [${abs_builddir}/a.out])
+AT_GET_DMRPP_3_20([-M, make missing data file], [grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [${abs_builddir}/a.out])
 
 # -p Inject missing variables dmrpp:chunk/@dmrpp:href attribute, requires use_cf_conf "site.conf" file
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
