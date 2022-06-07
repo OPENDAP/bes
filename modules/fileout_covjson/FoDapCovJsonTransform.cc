@@ -1121,7 +1121,21 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
 //cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
         }
     }
-    
+
+    // bound for  x-axis
+    std::vector<std::string> x_bnd_val;
+    if(axisVar_x_bnd_val.size() >0) {
+        x_bnd_val.resize(axisVar_x_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_x_bnd_val.size();i++) {
+           //x_bnd_val[i] =  to_string(axisVar_x_bnd_val[i]);
+           ostringstream temp_strm;
+           temp_strm<<axisVar_x_bnd_val[i];
+           x_bnd_val[i] = temp_strm.str();
+cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
+        }
+    }
+
+   
     
     // FOR TESTING AND DEBUGGING PURPOSES
     // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
@@ -1137,6 +1151,7 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
@@ -1145,11 +1160,12 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 else if((i == 2) && (axes[j]->name.compare("z") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    //print_bound(strm, t_bnd_val,child_indent2);
                 }
                 else if((i == 3) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
-                    print_bound(strm, t_bnd_val,child_indent2);
+                    print_bound(strm, t_bnd_val,child_indent2,true);
                 }
             }
             // If just x, y, and t exist (x, y, t)
@@ -1165,7 +1181,7 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 else if((i == 2) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
-                    print_bound(strm, t_bnd_val,child_indent2);
+                    print_bound(strm, t_bnd_val,child_indent2,true);
                 }
             }
             // If just x and y exist (x, y)
@@ -1606,7 +1622,7 @@ cerr<<it->second <<endl;
             else if(axisVar_t.name == it->first)
                 axisVar_t.bound_name = it->second;
         }
-#if 0
+//#if 0
 cerr<<"axisVar_x.name is "<<axisVar_x.name <<endl;
 cerr<<"axisVar_x.dim_name is "<<axisVar_x.dim_name <<endl;
 cerr<<"axisVar_x.dim_size is "<<axisVar_x.dim_size <<endl;
@@ -1626,7 +1642,7 @@ cerr<<"axisVar_t.name is "<<axisVar_t.name <<endl;
 cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
-#endif
+//#endif
 
 
         is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
@@ -1873,7 +1889,7 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
     libdap::DDS::Vars_iter ve = dds->var_end();
  
     for(; vi != ve; vi++) {
-//cerr<<"coming to the loop  " <<endl;
+cerr<<"coming to the loop  " <<endl;
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1882,7 +1898,7 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
-//cerr<<"d_ndims is "<< d_ndims <<endl;
+cerr<<"d_ndims is "<< d_ndims <<endl;
                 if(d_ndims == 1) {
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
@@ -1891,7 +1907,7 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
-//cerr<<"attr_name is "<<attr_name <<endl;
+cerr<<"attr_name is "<<attr_name <<endl;
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -1920,12 +1936,12 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
 
 void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val, std::string& bnd_dim_name, bool sendData) {
 
-//cerr<<"coming to the obtain_bound_values "<<endl;
+cerr<<"coming to the obtain_bound_values "<<endl;
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if (d_a) {// float, now we just handle this way 
      // SSTOP FILL IN
-//cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
-//cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
+cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
@@ -1937,10 +1953,10 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
                     av_bnd_val[i] =(float)temp_val[i];
  
-#if 0
+//#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
-#endif
+//#endif
             }
         }
         else if(d_a->var()->type_name() == "Float32") {
@@ -1948,10 +1964,10 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
                 d_a->value(&av_bnd_val[0]);
-#if 0
+//#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
-#endif
+//#endif
             }
         }
 
@@ -2380,7 +2396,7 @@ cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
     return covjson_time;
 } 
 
-void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent) {
+void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent, bool is_t_axis) {
 
     if(axisVar_t.bound_name !="") {
         std::string print_values;
@@ -2388,11 +2404,19 @@ void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::st
             print_values = "\"bounds\": [";
             for(unsigned i = 0; i <t_bnd_val.size(); i++) {   
                 string tmpString = t_bnd_val[i];
+                
+                if (is_t_axis) {
                 print_values +="\"";  
                 print_values +=focovjson::escape_for_covjson(tmpString);
                 print_values +="\"";  
+                }
+                else 
+                    print_values +=tmpString;
+
                 if(i !=(t_bnd_val.size()-1))
                     print_values +=", ";
+                
+ 
             }
             print_values += "]";
         }
