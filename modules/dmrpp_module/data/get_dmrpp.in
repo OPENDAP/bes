@@ -294,8 +294,8 @@ BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 EOF
 )
@@ -326,14 +326,14 @@ function mk_default_bes_conf() {
 
 BES.LogName=./bes.log
 
-BES.modules=dap,cmd,h5,dmrpp,fonc,nc
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
 
 BES.module.dap=@bes_modules_dir@/libdap_module.so
 BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
 BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
-BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 BES.module.nc=@bes_modules_dir@/libnc_module
+BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
 # BES.Catalog.catalog.RootDirectory=@hdf5_root_directory@
@@ -819,10 +819,10 @@ EOF
 ###############################################################################
 
 #######################################################################################################################
-# merge_dmrpp()
+# merge_dmrpp_missing()
 # Uses merge_dmrpp application to identify missing variables in the requested dmr++ file.
 #
-function mg_dmrpp() {
+function merge_dmrpp_missing() {
     local missing_vars_dmrpp_file="${1}"
     local master_dmrpp_file="${2}"
     local missing_data_url="${3}"
@@ -842,7 +842,7 @@ function mg_dmrpp() {
     mg_prms="${mg_prms} ${master_dmrpp_file} "
     mg_prms="${mg_prms} ${missing_data_url}"
     mg_prms="${mg_prms} ${missing_vars_file} "
-    if test -n "${VERBOSE}"; then echo "   build_params: ${mg_prms}"  >&2; fi
+    if test -n "${VERBOSE}"; then echo "#   build_params: ${mg_prms}"  >&2; fi
     if test -n "$missing_vars_file"; then
         merge_dmrpp ${mg_prms}
         return $?
@@ -1085,8 +1085,8 @@ function dap4_array_test() {
 
     bes_cmd_file=$(mkDAP2BesCmd "${INPUT_DATA_FILE}" "dods" "${query_string}")
     #if test -n "${VERBOSE}"; then echo "bes_cmd_file: ${bes_cmd_file}" >&2; fi
-    dap2_source_response=$(mktemp -t d4_array_test_XXXX)
-    besstandalone -c ${BES_CONF} -i ${bes_cmd_file} >${dap2_source_response}
+    dap2_source_response=$(mktemp -t dap2_array_test_source_response_XXXX)
+    besstandalone -c ${BES_CONF} -i ${bes_cmd_file} > ${dap2_source_response}
     if test -n "${VERBOSE}"; then echo "dap2_source_response: ${dap2_source_response}" >&2; fi
     if test -n "${VERBOSE}"; then getdap -D -M ${dap2_source_response} >&2; fi
 
@@ -1097,8 +1097,8 @@ function dap4_array_test() {
 
     bes_cmd_file=$(mkDAP2BesCmd "${target_file}" "dods" "${query_string}")
     #if test -n "${VERBOSE}"; then echo "bes_cmd_file: ${bes_cmd_file}" >&2; fi
-    dap2_dmrpp_response=$(mktemp -t d4_array_test_XXXX)
-    besstandalone -c ${BES_CONF} -i ${bes_cmd_file} >${dap2_dmrpp_response}
+    dap2_dmrpp_response=$(mktemp -t dap2_array_test_dmrpp_response_XXXX)
+    besstandalone -c ${BES_CONF} -i ${bes_cmd_file} > ${dap2_dmrpp_response}
     if test -n "${VERBOSE}"; then echo "dap2_dmrpp_response: ${dap2_dmrpp_response}" >&2; fi
     if test -n "${VERBOSE}"; then getdap -D -M ${dap2_dmrpp_response} >&2; fi
 
@@ -1133,19 +1133,19 @@ function compare_files() {
         echo "compare_files()    second_file: ${second_file}" >&2
     fi
 
-    first_result=$(mktemp -t dmr_XXXX)
+    first_result=$(mktemp -t ${check_function}_result_1_XXXX)
     if test -n "${VERY_VERBOSE}"; then
         echo "compare_files()   first_result: ${first_result}" >&2
     fi
     f_stuff=$(${check_function} ${first_file})
-    echo "${f_stuff}" >${first_result}
+    echo "${f_stuff}" > ${first_result}
 
-    second_result=$(mktemp -t dmr_XXXX)
+    second_result=$(mktemp -t ${check_function}_result_2_XXXX)
     if test -n "${VERY_VERBOSE}"; then
         echo "compare_files()  second_result: ${second_result}" >&2
     fi
     s_stuff=$(${check_function} ${second_file})
-    echo "${s_stuff}" >${second_result}
+    echo "${s_stuff}" > ${second_result}
 
     retval=0
     diff --ignore-space-change --brief ${first_result} ${second_result}
@@ -1275,7 +1275,7 @@ function check_aws_config() {
 #
 function merge_missing() {
 
-    local status=0
+local status=0
 
 if test -n "${MERGE_MISSING_VARS}"; then
     if test -n "${VERBOSE}"; then
@@ -1312,14 +1312,16 @@ if test -n "${MERGE_MISSING_VARS}"; then
         if test -n "${VERBOSE}"; then echo "#  Missing variables data file: ${sidecar_missing_file}" >&2; fi
 
         # use besstandalone to generate sidecar_missing_file
-        mkDapRequest ${mk_missing_conf_file} ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file}
+        full_output_file=""
+        full_output_file=$(mkDapRequest ${mk_missing_conf_file} ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file})
         status=$?
         if test -n "${VERBOSE}" ; then echo "# mkDapRequest status: ${status}"; fi
         if test ${status} -ne 0; then
             echo "ERROR: mkDapRequest ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file} FAILED! status: $status" >&2
             return $status
         fi
-        echo "# "$(ls -l ${sidecar_missing_file})
+        if test -n "${VERBOSE}" ; then echo "# "$(ls -l ${sidecar_missing_file}); fi
+
 
 
         local bes_conf_file=""
@@ -1328,7 +1330,7 @@ if test -n "${MERGE_MISSING_VARS}"; then
         local missing_vars_dmr_file=""
         missing_vars_dmr_file=$(mkDapRequest ${bes_conf_file} ${sidecar_missing_file} dmr) # use besstandalone to generate dmr for sidecar_missing_file
         status=$?
-        echo "# mkDapRequest status: ${status}";
+        if test -n "${VERBOSE}" ; then echo "# mkDapRequest status: ${status}"; fi
         if test ${status} -ne 0; then
             echo "ERROR: mkDapRequest() ${bes_conf_file} ${sidecar_missing_file} dmr  FAILED! status: $status" >&2
             return $status
@@ -1349,7 +1351,7 @@ if test -n "${MERGE_MISSING_VARS}"; then
 
         mk_dmrpp "${bes_conf_file}" "${sidecar_missing_file}" "${missing_vars_dmr_file}" "${missing_dmrpp_file}" # use $PATH/build_dmrpp to generate dmrpp for sidecar_missing_file
         status=$?
-        echo "# mk_dmrpp status: ${status}";
+        if test -n "${VERBOSE}" ; then echo "# mk_dmrpp status: ${status}"; fi
         if test $status -ne 0; then
             echo "ERROR: mk_dmrpp  ${bes_conf_file} ${sidecar_missing_file} ${missing_vars_dmr_file} ${missing_dmrpp_file} FAILED! status: $status" >&2
             return $status
@@ -1396,11 +1398,11 @@ if test -n "${MERGE_MISSING_VARS}"; then
             missing_data_url_path="${MISSING_DATA_HREF}"
         fi
         # use $PATH/merge_dmrpp to merge sidecar_missing_file dmrpp with master_dmrpp_file
-        mg_dmrpp  "${missing_dmrpp_file}" "${master_dmrpp_file}" "${missing_data_url_path}" "${missing_vars_file}"
+        merge_dmrpp_missing  "${missing_dmrpp_file}" "${master_dmrpp_file}" "${missing_data_url_path}" "${missing_vars_file}"
         status=$?
-        echo "# mg_dmrpp status: ${status}";
+        if test -n "${VERBOSE}" ; then echo "# merge_dmrpp_missing status: ${status}"; fi
         if test $status -ne 0; then
-            echo "ERROR: mg_dmrpp ${missing_dmrpp_file} ${master_dmrpp_file} ${missing_data_url_path} ${missing_vars_file} FAILED! status: $status" >&2
+            echo "ERROR: merge_dmrpp_missing ${missing_dmrpp_file} ${master_dmrpp_file} ${missing_data_url_path} ${missing_vars_file} FAILED! status: $status" >&2
             return $status
         fi
 
@@ -1443,43 +1445,42 @@ function run_tests(){
 #
 
 function main(){
-  trap cleanup_temp_files EXIT
-  # Here we test to see if the input file name is actually an S3 URL
-  # and if it is we adjust the INPUT_DATA_FILE and go out and get the
-  # object from S3.
-  s3_granule=
-  if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
-    s3_granule="${INPUT_DATA_FILE}"
-    echo "Detected S3 URL as data input: ${s3_granule}" >&2
+    trap cleanup_temp_files EXIT
+    # Here we test to see if the input file name is actually an S3 URL
+    # and if it is we adjust the INPUT_DATA_FILE and go out and get the
+    # object from S3.
+    s3_granule=
+    if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
+        s3_granule="${INPUT_DATA_FILE}"
+       echo "Detected S3 URL as data input: ${s3_granule}" >&2
 
-    set +e
-    check_aws_config
-    ret=$?
-    if test $ret != 0; then
-      echo "ERROR - The AWS CLI is not configured. Exiting." >&2
-      exit 1
+        set +e
+        check_aws_config
+        ret=$?
+        if test $ret != 0; then
+          echo "ERROR - The AWS CLI is not configured. Exiting." >&2
+          exit 1
+        fi
+
+        INPUT_DATA_FILE=$(basename "${s3_granule}")
+        echo "INPUT_DATA_FILE: ${INPUT_DATA_FILE}" >&2
+
+        local_file=""
+        if test "${BES_DATA_ROOT}" = "/"; then # TODO - This should test for ends_with("/")
+          local_file="/${INPUT_DATA_FILE}"
+        else
+          local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
+        fi
+        echo "Copying S3 object to: ${local_file}" >&2
+
+        aws s3 cp ${s3_granule} ${local_file}
+        result=$?
+        if test $result != 0; then
+          echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
+          exit $result
+        fi
+        set -e
     fi
-
-    INPUT_DATA_FILE=$(basename "${s3_granule}")
-    echo "INPUT_DATA_FILE: ${INPUT_DATA_FILE}" >&2
-
-    local_file=""
-    if test "${BES_DATA_ROOT}" = "/"; then # TODO - This should test for ends_with("/")
-      local_file="/${INPUT_DATA_FILE}"
-    else
-      local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
-    fi
-    echo "Copying S3 object to: ${local_file}" >&2
-
-    aws s3 cp ${s3_granule} ${local_file}
-    result=$?
-    if test $result != 0; then
-      echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
-      exit $result
-    fi
-
-    set -e
-  fi
 
     local bes_conf_file=""
     bes_conf_file=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")
@@ -1504,16 +1505,11 @@ function main(){
   mk_dmrpp "${bes_conf_file}" "${INPUT_DATA_FILE}" "${dmr_file}" "${OUTPUT_FILE}"
   status=$?
   if test $status -ne 0; then
-    echo "ERROR: mk_dmrpp() "${bes_conf_file}" "${INPUT_DATA_FILE}" "${dmr_file}" "${OUTPUT_FILE}" Failed!. status: $status" >&2
+    echo "ERROR: mk_dmrpp() ${bes_conf_file} ${INPUT_DATA_FILE} ${dmr_file} ${OUTPUT_FILE} Failed!. status: $status" >&2
     exit $status
   fi
 
   # if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
-
-  #if test -z "${VERBOSE}"; then
-    #if test -f "${BES_CONF}" ; then rm -f "${BES_CONF}"; fi
-  #  if test -f "${DAP_CMD}"; then rm -f "${DAP_CMD}"; fi
-  #fi
 
   # Merge the missing variable data (conditional)
   merge_missing
@@ -1553,14 +1549,13 @@ function main(){
   # Cleanup the mess, or not (conditional)
   if test -z "${VERBOSE}"; then
     if test -n "${MERGE_MISSING_VARS}"; then
-      echo "    main:MISSING_VARS_FILE: ${missing_vars_file}"
-      echo " main:SIDECAR_MISSING_FILE: ${temp_sidecar_file}"
-      echo "main:SIDECAR_MISSING_DMRPP: ${temp_sidecar_dmrpp}"
-      echo "       main:TEMPSTORE_FILE: ${tempstore_file}"
-      rm -f ${missing_vars_file} ${temp_sidecar_file} ${temp_sidecar_dmrpp} ${tempstore_file}
+      echo "#     main:MISSING_VARS_FILE: ${missing_vars_file}"
+      echo "#  main:SIDECAR_MISSING_FILE: ${temp_sidecar_file}"
+      echo "# main:SIDECAR_MISSING_DMRPP: ${temp_sidecar_dmrpp}"
+      echo "#        main:TEMPSTORE_FILE: ${tempstore_file}"
+      export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${missing_vars_file} ${temp_sidecar_file} ${temp_sidecar_dmrpp} ${tempstore_file}"
     fi
     #echo " main:SOURCE_DMR: ${SOURCE_DMR}"
-    rm -f ${SOURCE_DMR} ${BES_CONF}
   fi
 
   #echo "retval: ${retval}";
