@@ -1312,17 +1312,14 @@ if test -n "${MERGE_MISSING_VARS}"; then
         if test -n "${VERBOSE}"; then echo "#  Missing variables data file: ${sidecar_missing_file}" >&2; fi
 
         # use besstandalone to generate sidecar_missing_file
-        full_output_file=""
-        full_output_file=$(mkDapRequest ${mk_missing_conf_file} ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file})
+        mkDapRequest ${mk_missing_conf_file} ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file} > /dev/null
         status=$?
         if test -n "${VERBOSE}" ; then echo "# mkDapRequest status: ${status}"; fi
         if test ${status} -ne 0; then
-            echo "ERROR: mkDapRequest ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file} FAILED! status: $status" >&2
+            echo "ERROR: mkDapRequest ${mk_missing_conf_file}  ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 ${sidecar_missing_file} FAILED! status: $status" >&2
             return $status
         fi
         if test -n "${VERBOSE}" ; then echo "# "$(ls -l ${sidecar_missing_file}); fi
-
-
 
         local bes_conf_file=""
         bes_conf_file=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")  # reset BES_CONF_FILE; removing additional H5 parameters
