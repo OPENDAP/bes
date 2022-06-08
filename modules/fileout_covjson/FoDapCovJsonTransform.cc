@@ -1135,7 +1135,31 @@ cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
         }
     }
 
-   
+    // bound for  y-axis
+    std::vector<std::string> y_bnd_val;
+    if(axisVar_y_bnd_val.size() >0) {
+        y_bnd_val.resize(axisVar_y_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_y_bnd_val.size();i++) {
+           //y_bnd_val[i] =  to_string(axisVar_y_bnd_val[i]);
+           ostringstream temp_strm;
+           temp_strm<<axisVar_y_bnd_val[i];
+           y_bnd_val[i] = temp_strm.str();
+cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
+        }
+    }
+
+    // bound for  z-axis
+    std::vector<std::string> z_bnd_val;
+    if(axisVar_z_bnd_val.size() >0) {
+        z_bnd_val.resize(axisVar_z_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_z_bnd_val.size();i++) {
+           //z_bnd_val[i] =  to_string(axisVar_z_bnd_val[i]);
+           ostringstream temp_strm;
+           temp_strm<<axisVar_z_bnd_val[i];
+           z_bnd_val[i] = temp_strm.str();
+cerr<<"Z bound value is "<<z_bnd_val[i] <<endl;
+        }
+    }  
     
     // FOR TESTING AND DEBUGGING PURPOSES
     // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
@@ -1156,11 +1180,12 @@ cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
                 else if((i == 2) && (axes[j]->name.compare("z") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
-                    //print_bound(strm, t_bnd_val,child_indent2);
+                    print_bound(strm, z_bnd_val,child_indent2,false);
                 }
                 else if((i == 3) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
@@ -1173,10 +1198,12 @@ cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
                 else if((i == 2) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
@@ -1189,10 +1216,12 @@ cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
             }
         }
@@ -2065,7 +2094,7 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
 
 bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count ) {
 
-//cerr<<"coming to obtain_valid_vars "<<endl;
+cerr<<"coming to obtain_valid_vars "<<endl;
     bool ret_value = true;
     std::vector<std::string> temp_x_y_vars;
     std::vector<std::string> temp_x_y_z_vars;
@@ -2147,20 +2176,35 @@ bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z
 
     if (ret_value == true) {
     if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
-//cerr<<"coming to ignore mode "<<endl;
+cerr<<"coming to ignore mode "<<endl;
+cerr<<"axis_var_z_count: "<<axis_var_z_count <<endl;
+cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
 
     // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
     // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
     if(axis_var_z_count <=1 && axis_var_t_count <=1) {
-        //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
+
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
             par_vars.push_back(temp_x_y_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_vars[i]);
         for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
             par_vars.push_back(temp_x_y_t_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_t_vars[i]);
+ 
+        if (temp_x_y_vars.empty())  {
+            for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_vars[i]);
+            for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_t_vars[i]);
+            
+        }
+        else {
+            // Ignore the (x,y,z) and (x,y,z,t) when (x,y) exists.
+            // We also need to ignore the z-axis TODO,we may need to support multiple verical coordinates. !
+            if (axis_var_z_count == 1) {
+                axisVar_z.name="";
+                axisVar_z.dim_name = "";
+                axisVar_z.bound_name = "";
+            }
+        }
     }
     else if (axis_var_z_count >1 && axis_var_t_count <=1) {
         //Cover all variables that have (x,y) or (x,y,t) 
