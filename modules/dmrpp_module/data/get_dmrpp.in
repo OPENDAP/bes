@@ -112,14 +112,14 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
         ;;
     v)
         VERBOSE="yes"
-        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-        echo "${0} - BEGIN (VERBOSE)"
+        echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "# ${0} - BEGIN (VERBOSE)" >&2
         ;;
     V)
         VERY_VERBOSE="-v"
         VERBOSE="yes"
-        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-        echo "${0} - BEGIN (VERY_VERBOSE)"
+        echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "# ${0} - BEGIN (VERY_VERBOSE)" >&2
         ;;
     c)
         BES_CONF_FILE="$OPTARG"
@@ -181,19 +181,19 @@ fi
 INPUT_DATA_FILE="${1}"
 
 if test -n "${VERBOSE}"; then
-    echo "    OUTPUT_FILE: ${OUTPUT_FILE}"
-    echo -n "       JUST_DMR: "
+    echo "#    OUTPUT_FILE: ${OUTPUT_FILE}" >&2
+    echo -n "#       JUST_DMR: " >&2
     if test -n "${JUST_DMR}"; then
-        echo "true"
+        echo "true" >&2
     else
-        echo "false"
+        echo "false" >&2
     fi
-    echo "      DMRPP_URL: ${DMRPP_URL}"
+    echo "#      DMRPP_URL: ${DMRPP_URL}" >&2
 fi
 
 if test -z "${DMRPP_URL}"; then
     DMRPP_URL="OPeNDAP_DMRpp_DATA_ACCESS_URL"
-    echo "Using Template Data Access URL String: '${DMRPP_URL}'" >&2
+    echo "# Using Template Data Access URL String: '${DMRPP_URL}'" >&2
 fi
 
 # If we are running tests then we need to have the output filename for the dmr++ content.
@@ -231,9 +231,12 @@ fi
 function cleanup_temp_files(){
     if test -n "${CLEANUP_TEMP_FILES}"
     then
-        echo "Cleaning up temporary files: ${TEMP_FILE_LIST}" >&2;
+        echo "########################################################################" >&2
+        echo "# cleanup_temp_files()" >&2
+        echo "#" >&2
+        echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2;
         rm -vf ${TEMP_FILE_LIST} >&2
-        echo "Temporary files have been removed." >&2;
+        echo "# Temporary files have been removed." >&2;
     fi
 }
 
@@ -246,18 +249,24 @@ function cleanup_temp_files(){
 function make_temp_file(){
     local file_prefix="${1}"
 
-    if test -n "${VERBOSE}"; then echo "make_temp_file() - file_prefix: ${file_prefix}" >&2; fi
-    local tmp_file=$(mktemp "/tmp/${file_prefix}_XXXXXX")
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# make_temp_file()" >&2
+        echo "#     file_prefix: ${file_prefix}" >&2;
+    fi
+
+    local tmp_file=""
+    tmp_file=$(mktemp "/tmp/${file_prefix}_XXXXXX")
     local retval=$?
     if test $? -ne 0
     then
-        echo "make_temp_file() - ERROR: Failed to create temporary file. prefix: ${file_prefix}" >&2
+        echo "ERROR: Failed to create temporary file. prefix: ${file_prefix}" >&2
         return $retval;
     fi
-    if test -n "${VERBOSE}"; then echo "make_temp_file() - tmp_file: ${tmp_file}" >&2; fi
+    if test -n "${VERBOSE}"; then echo "# tmp_file: ${tmp_file}" >&2; fi
 
     export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${tmp_file}"
-    if test -n "${VERBOSE}"; then echo "make_temp_file() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
+    if test -n "${VERBOSE}"; then echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
 
     echo "${tmp_file}"
     export TEMP_FILE="${tmp_file}"
@@ -290,7 +299,7 @@ BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 EOF
 )
-    if test -n "${VERBOSE}"; then echo "${config_doc}" >&2 ; fi
+    if test -n "${VERY_VERBOSE}"; then echo "${config_doc}" >&2 ; fi
     echo "${config_doc}"
 }
 
@@ -303,7 +312,13 @@ EOF
 # Default BES Configuration.
 #
 function mk_default_bes_conf() {
-    BES_CONF_DOC=$(
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# mk_default_bes_conf()" >&2
+        echo "# " >&2
+    fi
+
+    local default_bes_conf_doc=$(
     cat <<EOF
 # produce DMR documents for use with build_dmrpp. The DAP, XML Command
 # and HDF5 handler modules are the 'installed' ones (not the modules
@@ -366,11 +381,17 @@ EOF
     if test -n "${USE_AUTOMAKE_LIBS}"; then
         local automake_libs=$(mk_automake_conf)
         if test -n "${VERBOSE}"; then
-            echo "mk_default_bes_conf() - Using automake_libs: " >&2
-            echo "${automake_libs}" >&2
+            echo "# Using automake_libs" >&2
+            if test -n "${VERY_VERBOSE}"; then
+                echo "${automake_libs}" >&2
+            fi
         fi
-        export BES_CONF_DOC=$(echo "${BES_CONF_DOC}"; echo "${automake_libs}");
+        default_bes_conf_doc=$(echo "${default_bes_conf_doc}"; echo "${automake_libs}");
     fi
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+    fi
+    echo "${default_bes_conf_doc}"
 
 }
 ###############################################################################
@@ -399,9 +420,18 @@ EOF
 
 function mkDAP2BesCmd() {
     local source_data_path="${1}"
-    local dap=${2}
+    local dap_type=${2}
     local dap2_ce="${3}"
-    local target_file="${4}"
+    local returnAs="${4}"
+
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# mkDAP2BesCmd()" >&2
+        echo "# source_data_path: ${source_data_path}" >&2
+        echo "#         dap_type: ${dap_type} " >&2
+        echo "#          dap2_ce: '${dap2_ce}'" >&2
+        echo "#         returnAs: '${returnAs}'" >&2
+    fi
 
     local noConstraintContainerElement="<bes:container name=\"c\" />"
 
@@ -417,15 +447,13 @@ EOF
     else
         container_element="${noConstraintContainerElement}"
     fi
-    #echo "Container Element: " >&2
-    #echo "${container_element}" >&2
 
-    if test -n "${target_file}"; then
-        #echo "Generate MISSING_FILE: ${target_file}"
+    local besGET_ELEMENT=""
+    if test -n "${returnAs}"; then
         besGET_ELEMENT=$(
         cat <<EOF
 </bes:define>
-<bes:get type="${dap}" definition="d" returnAs="netcdf-4" />
+<bes:get type="${dap_type}" definition="d" returnAs="${returnAs}" />
 </bes:request>
 EOF
 )
@@ -433,13 +461,13 @@ EOF
         besGET_ELEMENT=$(
         cat <<EOF
 </bes:define>
-<bes:get type="${dap}" definition="d" />
+<bes:get type="${dap_type}" definition="d" />
 </bes:request>
 EOF
 )
     fi
 
-    d4BESCmd=$(
+    local bes_command=$(
     cat <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="get_dmrpp.sh">
@@ -455,19 +483,22 @@ ${besGET_ELEMENT}
 
 EOF
 )
-    TEMP_FILE=$(mktemp -t dmr_XXXX)
-    echo "${d4BESCmd}" >${TEMP_FILE}
-    echo "${TEMP_FILE}"
+    local bes_cmd_file="";
+    bes_cmd_file=$(mktemp -t bes_cmd_XXXXXX)
+    echo "${bes_command}" > ${bes_cmd_file}
 
     if test -n "${VERBOSE}"; then
-        echo "      data_path: ${source_data_path}" >&2
-        echo "        dap2_ce: '${dap2_ce}'" >&2
-        echo "    ${dap}_request: ${TEMP_FILE} " >&2
-        #echo " " >&2
+        echo "#     bes_cmd_file: ${bes_cmd_file} " >&2
     fi
 
-    # ls -l ${TEMP_FILE}
-    # cat ${TEMP_FILE}
+    if test -n "${VERY_VERBOSE}"; then
+        echo "#    BES Command: " >&2
+        cat  "${bes_cmd_file}" >&2
+    fi
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+    fi
+    echo "${bes_cmd_file}"
 }
 ########################################################################################################################
 
@@ -478,43 +509,54 @@ EOF
 # Returns the bes conf file name on stdout.
 #
 function make_bes_conf() {
+    local user_supplied_conf_file="${1}"
+    local site_conf_file="${2}"
 
-    if test -n "${1}"; then
-        export BES_CONF_DOC=$(cat ${1})
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# mkDAP2BesCmd()" >&2
+        echo "# " >&2
+        echo "# user_supplied_conf_file: ${user_supplied_conf_file}" >&2
+        echo "#          site_conf_file: ${site_conf_file}" >&2
+        echo "#" >&2
+    fi
+    local bes_conf_doc=""
+
+    if test -n "${user_supplied_conf_file}"; then
+        bes_conf_doc=$(cat ${user_supplied_conf_file})
     else
-        mk_default_bes_conf
+        bes_conf_doc=$(mk_default_bes_conf)
     fi
 
-    if test -n "${2}"; then
+    if test -n "${site_conf_file}"; then
         if test -n "${VERBOSE}"; then
-            echo "Adding additional BES configuration from: ${2}" >&2
+            echo "# Adding additional BES configuration from file: ${2}" >&2
         fi
-        export BES_CONF_DOC=$(echo "${BES_CONF_DOC}"; cat "${2}");
+        bes_conf_doc=$(echo "${bes_conf_doc}"; cat "${site_conf_file}");
     fi
     #    echo "Using BES Configuration: " >&2
     #    echo "${BES_CONF_DOC}" >&2
 
-    if test -n "${VERBOSE}"; then
-        echo "Using BES Configuration: " >&2
-        echo "${BES_CONF_DOC}" >&2
+    if test -n "${VERY_VERBOSE}"; then
+        echo "# Using BES Configuration: " >&2
+        echo "${bes_conf_doc}" >&2
     fi
 
-    local tmp_conf_file=$(mktemp -t conf_XXXX)
-    echo "${BES_CONF_DOC}" > ${tmp_conf_file}
+    local tmp_conf_file=""
+    tmp_conf_file=$(mktemp -t bes_conf_XXXX)
+    echo "${bes_conf_doc}" > ${tmp_conf_file}
 
 
-    if test -n "${VERY_VERBOSE}"; then
-        echo "tmp_conf_file: ${tmp_conf_file}" >&2
-        ls -l ${tmp_conf_file} >&2
+
+    if test -n "${VERBOSE}"; then
+        echo "# bes_conf_file: ${tmp_conf_file}" >&2
+        echo "# "$(ls -l ${tmp_conf_file}) >&2
+    fi
+        if test -n "${VERY_VERBOSE}"; then
         cat ${tmp_conf_file} >&2
     fi
 
-    if test -n "${VERBOSE}"; then
-        echo "       bes_conf: ${tmp_conf_file}" >&2
-        if test -n "${2}"; then
-            echo "      site_conf: ${2}" >&2
-        fi
-    fi
+
 
     echo "${tmp_conf_file}"
 }
@@ -525,51 +567,71 @@ function make_bes_conf() {
 # Gets the passed $dap response (dmr, ddx, etc) for the file $data_path and places the response in a temp file.
 #
 function mkDapRequest() {
-    local data_path="${1}"
-    local dap="${2}"
-    local dap_ce="${3}"
-    local target_file="${4}"
+    local bes_conf_file="${1}"
+    local data_path="${2}"
+    local dap_type="${3}"
+    local dap_ce="${4}"
+    local return_as="${5}"
+    local output_file="${6}"
 
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# mkDapRequest()" >&2
+        echo "# " >&2
+        echo "#  bes_conf_file: ${bes_conf_file}" >&2
+        echo "#      data_path: ${data_path}" >&2
+        echo "#       dap_type: ${dap_type}" >&2
+        echo "#         dap_ce: ${dap_ce}" >&2
+        echo "#      return_as: ${return_as}" >&2
+        echo "#    output_file: ${output_file}" >&2
+        echo "#" >&2
+    fi
+
+
+    local bes_command_file=""
     if test -n "${dap_ce}"; then
-        DAP_CMD=$(mkDAP2BesCmd ${data_path} ${dap} ${dap_ce} ${target_file})
+        bes_command_file=$(mkDAP2BesCmd ${data_path} ${dap_type} ${dap_ce} ${return_as})
     else
-        DAP_CMD=$(mkDAP2BesCmd ${data_path} ${dap})
+        bes_command_file=$(mkDAP2BesCmd ${data_path} ${dap_type})
     fi
-    if test -n "${VERBOSE}"; then echo "        DAP_CMD: ${DAP_CMD}" >&2; fi
+    if test -n "${VERBOSE}"; then 
+        echo "#  bes_command_file: ${bes_command_file}" >&2
+    fi
+    if test -n "${VERY_VERBOSE}"; then 
+        cat "${bes_command_file}" >&2  
+    fi
 
-    if test -n "${target_file}"; then
-        DAP_RESPONSE=$(echo "${BES_DATA_ROOT}"/"${target_file}")
+    local target_dap_file=""
+    if test -n "${output_file}"; then
+        target_dap_file=$(echo "${BES_DATA_ROOT}"/"${output_file}")
     else
-        DAP_RESPONSE=$(mktemp -t ${dap}_XXXX)
+        target_dap_file=$(mktemp -t ${dap_type}_${return_as}_XXXXXX)
     fi
-    if test -n "${VERBOSE}"; then echo "   DAP_RESPONSE: ${DAP_RESPONSE}" >&2; fi
+    if test -n "${VERBOSE}"; then echo "#   target_dap_file: ${target_dap_file}" >&2; fi
 
-    besstandalone -c ${BES_CONF} -i ${DAP_CMD} >${DAP_RESPONSE}
+    local BESCMD="besstandalone -c ${bes_conf_file} -i ${bes_command_file} -f ${target_dap_file} "
+    if test -n "${VERBOSE}"; then echo "#   BESCMD: ${BESCMD}" >&2; fi
+    ${BESCMD}
     status=$?
-    if [ ${status} -ne 0 ]; then
-        echo ""
-        echo ""
-        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!"
-        echo "ERROR! The besstandalone program failed to build a ${dap} file!."
-        echo "       The configuration is here: ${BES_CONF}"
-        echo "             The command is here: ${DAP_CMD}"
-        echo "The besstandalone output is here: ${DAP_RESPONSE}"
-        exit 2
+    if test $status -ne 0 ; then
+        echo "" >&2
+        echo "" >&2
+        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
+        echo "ERROR! The besstandalone program failed to build a ${dap_type} file!." >&2
+        echo "       The configuration is here: ${bes_conf_file}" >&2
+        echo "             The command is here: ${bes_command_file}" >&2
+        echo "The besstandalone output is here: ${target_dap_file}" >&2
+        echo "       besstandalone exit status: $status" >&2
+        return $status
     fi
 
     if test -n "${VERY_VERBOSE}"; then
-        echo "${dap}_response: ${DAP_RESPONSE} data_path: ${data_path}" >&2
-    fi
-
-    if test -n "${VERY_VERBOSE}"; then
-        echo "DAP_RESPONSE: " >&2
-        if test -z "${target_file}"; then
-            cat ${DAP_RESPONSE} >&2
-        fi
+        echo "# target_dap_file: " >&2
+        cat "${target_dap_file}" >&2
     fi
 
     # This is the return value of the function!
-    echo "${DAP_RESPONSE}"
+    echo "${target_dap_file}"
 
     #----------------------------------------------------------
     # I commented this out because it was screwing things up
@@ -593,33 +655,44 @@ function mkDapRequest() {
 # Uses build_dmrpp application to build the requested dmr++ file.
 #
 function mk_dmrpp() {
-    local datafile="${1}"
-    local o_filename="${2}"
+    local bes_conf_file="${1}"
+    local datafile="${2}"
+    local source_dmr_file="${3}"
+    local output_filename="${4}"
 
-    full_data_path="${BES_DATA_ROOT}/${datafile}"
+    local full_data_path="${BES_DATA_ROOT}/${datafile}"
 
     if test -n "${VERBOSE}"; then
-        echo "  BES_DATA_ROOT: ${BES_DATA_ROOT}"
-        echo "       BES_CONF: ${BES_CONF} "
-        echo "     SOURCE_DMR: ${SOURCE_DMR}"
-        echo "      DMRPP_URL: ${DMRPP_URL}"
-        echo "       datafile: ${datafile}"
-        echo "o_filename: ${o_filename}"
-        echo " full_data_path: ${full_data_path}"
+        echo "########################################################################" >&2
+        echo "# mk_dmrpp()" >&2
+        echo "#" >&2
+        echo "#   BES_DATA_ROOT: ${BES_DATA_ROOT}" >&2
+        echo "#       DMRPP_URL: ${DMRPP_URL}" >&2
+        echo "#   bes_conf_file: ${bes_conf_file} " >&2
+        echo "#        datafile: ${datafile}" >&2
+        echo "# source_dmr_file: ${source_dmr_file}" >&2
+        echo "# output_filename: ${output_filename}" >&2
+        echo "#  full_data_path: ${full_data_path}" >&2
     fi
 
     if test -z "${JUST_DMR}"; then
         prms="${VERY_VERBOSE}"
-        prms="${prms} -c ${BES_CONF} "
+        prms="${prms} -c ${bes_conf_file} "
         prms="${prms} -f ${full_data_path} "
-        prms="${prms} -r ${SOURCE_DMR} "
+        prms="${prms} -r ${source_dmr_file} "
         prms="${prms} -u ${DMRPP_URL} "
         prms="${prms} -M " # Adds the production metadata (version numbers and configuration) to the dmr++ result.
-        if test -n "${VERBOSE}"; then echo "   build_params: ${prms}" >&2; fi
-        if test -n "${o_filename}"; then
-            build_dmrpp ${prms} > "${o_filename}"
+        if test -n "${VERBOSE}"; then echo "#    build_params: ${prms}" >&2; fi
+        if test -n "${output_filename}"; then
+            build_dmrpp ${prms} > "${output_filename}"
+            status=$?
         else
             build_dmrpp ${prms}
+            status=$?
+        fi
+        if test $status -ne 0; then
+            echo "ERROR: build_dmrpp ${prms} FAILED! status: $status"
+            return $status
         fi
     else
         echo "The JUST_DMR flag is set, skipping dmr++ construction."
@@ -643,18 +716,21 @@ function chk_dmrpp_for_missing_vars() {
     local dmrpp_file="${1}"
     local mvars_file="${2}"
 
-    if test -n "${VERY_VERBOSE}"; then
-        echo "     dmrpp_file: ${dmrpp_file}"
-        echo "     mvars_file: ${mvars_file}"
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# chk_dmrpp_for_missing_vars()" >&2
+        echo "#" >&2
+        echo "#     dmrpp_file: ${dmrpp_file}" >&2
+        echo "#     mvars_file: ${mvars_file}" >&2
     fi
 
     ck_prms="${dmrpp_file} ${mvars_file}"
-    if test -n "${VERBOSE}"; then echo "   check_dmrpp parameters: ${ck_prms}"; fi
+    if test -n "${VERBOSE}"; then echo "#   check_dmrpp parameters: ${ck_prms}"  >&2; fi
     if test -n "${mvars_file}"; then
         check_dmrpp ${ck_prms}
         return $?
     else
-        echo "The missing_vars file wasn't specified, skipping missing variable construction."
+        echo "The missing_vars file wasn't specified, skipping missing variable construction." >&2
         return 1
     fi
 }
@@ -666,6 +742,20 @@ function chk_dmrpp_for_missing_vars() {
 #
 
 function make_missing_conf() {
+    local user_supplied_conf_file="${1}"
+    local site_conf_file="${2}"
+
+
+    if test -n "${VERBOSE}"; then
+        echo "########################################################################" >&2
+        echo "# make_missing_conf()" >&2
+        echo "#" >&2
+        echo "# user_supplied_conf_file: ${user_supplied_conf_file}" >&2
+        echo "#          site_conf_file: ${site_conf_file}" >&2
+    fi
+
+
+
     local missing_conf_elements=$(
     cat <<EOF
 # Make sure this follows the netCDF-4 enhanced model
@@ -692,25 +782,35 @@ H5.NoZeroSizeFullnameAttr=true
 EOF
 )
 
-    if test -n "${1}"; then
+    local bes_conf_doc=""
+    if test -n "${user_supplied_conf_file}"; then
         if test -n "${VERBOSE}"; then
-            echo "Using Missing variable BES Configuration: \"${1}\""
+            echo "# Using: \"${user_supplied_conf_file}\""  >&2
         fi
-        missing_conf_elements=$(cat ${1})
+        bes_conf_doc=$(cat ${user_supplied_conf_file})
     else
-        mk_default_bes_conf
+        bes_conf_doc=$(mk_default_bes_conf)
     fi
 
-    export BES_CONF_DOC=$(echo "${BES_CONF_DOC}"; echo "${missing_conf_elements}");
+    bes_conf_doc=$(echo "${bes_conf_doc}"; echo "${missing_conf_elements}");
 
-    local missing_bes_conf_file=$(mktemp -t conf_XXXX)
+    if test -n "${site_conf_file}"; then
+        if test -n "${VERBOSE}"; then
+            echo "# Adding additional BES configuration from file: ${2}" >&2
+        fi
+        bes_conf_doc=$(echo "${bes_conf_doc}"; cat "${site_conf_file}");
+    fi
 
-    echo "${BES_CONF_DOC}" >${missing_bes_conf_file}
+    local missing_bes_conf_file=$(mktemp -t missing_vars_bes_conf_XXXX)
+
+    echo "${bes_conf_doc}" > ${missing_bes_conf_file}
 
     if test -n "${VERY_VERBOSE}"; then
-        echo "missing_bes_conf_file: ${missing_bes_conf_file}" >&2
-        ls -l ${missing_bes_conf_file} >&2
-        cat ${missing_bes_conf_file} >&2
+        echo "# missing_bes_conf_file: ${missing_bes_conf_file}" >&2
+        echo "# "$(ls -l ${missing_bes_conf_file}) >&2
+        if test -n "${VERY_VERBOSE}"; then
+            cat ${missing_bes_conf_file} >&2
+        fi
     fi
 
     echo "${missing_bes_conf_file}"
@@ -729,22 +829,25 @@ function mg_dmrpp() {
     local missing_vars_file="${4}"
 
     if test -n "${VERBOSE}"; then
-        echo " missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}"
-        echo "       master_dmrpp_file: ${master_dmrpp_file}"
-        echo "        missing_data_url: ${missing_data_url}"
-        echo "       missing_vars_file: ${missing_vars_file}"
+        echo "########################################################################" >&2
+        echo "# mg_dmrpp()" >&2
+        echo "#" >&2
+        echo "# missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}" >&2
+        echo "#       master_dmrpp_file: ${master_dmrpp_file}" >&2
+        echo "#        missing_data_url: ${missing_data_url}" >&2
+        echo "#       missing_vars_file: ${missing_vars_file}" >&2
     fi
 
     mg_prms="${mg_prms} ${missing_vars_dmrpp_file} "
     mg_prms="${mg_prms} ${master_dmrpp_file} "
     mg_prms="${mg_prms} ${missing_data_url}"
     mg_prms="${mg_prms} ${missing_vars_file} "
-    if test -n "${VERBOSE}"; then echo "   build_params: ${mg_prms}"; fi
+    if test -n "${VERBOSE}"; then echo "   build_params: ${mg_prms}"  >&2; fi
     if test -n "$missing_vars_file"; then
         merge_dmrpp ${mg_prms}
         return $?
     else
-        echo "The missing_vars file doesn't exist, there are no missing variables to merge."
+        echo "The missing_vars file doesn't exist, there are no missing variables to merge." >&2
         return 1
     fi
 }
@@ -763,25 +866,29 @@ function reduce_dmrpp() {
     local mvdf_full_path="${BES_DATA_ROOT}/${missing_vars_data_file}"
 
     if test -n "${VERBOSE}"; then
-        echo "  missing_vars_data_file: ${missing_vars_data_file}"
-        echo " missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}"
-        echo "          mvdf_full_path: ${mvdf_full_path}"
-        echo "           master_sha256: ${master_sha256}"
-        echo "  temporary_storage_file: ${temporary_storage_file}"
+        echo "#####################################################################################" >&2
+        echo "# reduce_dmrpp()" >&2
+        echo "#" >&2
+        echo "#  missing_vars_data_file: ${missing_vars_data_file}" >&2
+        echo "# missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}" >&2
+        echo "#          mvdf_full_path: ${mvdf_full_path}" >&2
+        echo "#           master_sha256: ${master_sha256}" >&2
+        echo "#  temporary_storage_file: ${temporary_storage_file}" >&2
+        echo "#" >&2
     fi
 
     rd_prms="${rd_prms} ${missing_vars_dmrpp_file} "
     rd_prms="${rd_prms} ${mvdf_full_path} "
     rd_prms="${rd_prms} ${master_sha256}"
     rd_prms="${rd_prms} ${temporary_storage_file} "
-    if test -n "${VERBOSE}"; then echo "   build_params: ${rd_prms}"; fi
+    if test -n "${VERBOSE}"; then echo "   build_params: ${rd_prms}"  >&2; fi
     if test -n "${missing_vars_dmrpp_file}"; then
         reduce_mdf ${rd_prms}
         return $?
 
     else
-        echo "The missing_vars_dmrpp_file was not set exist, there are no missing variables to merge."
-        return -1
+        echo "The missing_vars_dmrpp_file was not set exist, there are no missing variables to merge." >&2
+        return 1
     fi
 
 }
@@ -1142,19 +1249,19 @@ function check_aws_config() {
     aws configure list | grep "access_key" | grep -v "<not set>" > /dev/null
     ret=$?
     if test $ret != 0 ; then
-        echo "ERROR - The AWS_ACCESS_KEY_ID is not set."
+        echo "ERROR - The AWS_ACCESS_KEY_ID is not set." >&2
         return $ret;
     fi
     aws configure list | grep "secret_key" | grep -v "<not set>" > /dev/null
     ret=$?
     if test $ret != 0 ; then
-        echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set."
+        echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set." >&2
         return $ret;
     fi
     aws configure list | grep "region" | grep -v "<not set>" > /dev/null
     ret=$?
     if test $ret != 0 ; then
-        echo "WARNING - The AWS_DEFAULT_REGION is not set."
+        echo "WARNING - The AWS_DEFAULT_REGION is not set." >&2
         return 0;
     fi
 }
@@ -1167,93 +1274,141 @@ function check_aws_config() {
 # the global MERGE_MISSING_VARS env var.)
 #
 function merge_missing() {
-    if test -n "${MERGE_MISSING_VARS}"; then
 
-        # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${OUTPUT_FILE}; -o option]
-        missing_vars_file=$(mktemp -t missing_vars_XXXX)
-        chk_dmrpp_for_missing_vars "${OUTPUT_FILE}" "${missing_vars_file}"
-        retval=$(echo "${retval} + ${?}" | bc)
-        #echo "retval: ${retval}";
+    local status=0
 
-        # check-dmrpp will write to the missing_vars_file if there are any missing variables.
-        if test -s ${missing_vars_file}; then
-            MISSING_VARS=$(cat ${missing_vars_file})
-            if test -n "${VERY_VERBOSE}"; then echo "The missing vars: ${MISSING_VARS}" >&2; fi
-
-            # augment BES_CONF_FILE with additional H5 parameters necessary to synthesize missing_variables from INPUT_DATA_FILE.
-            BES_CONF=$(make_missing_conf "${BES_CONF_FILE}")
-
-            # insert '_missing' into INPUT_DATA_FILE name and use for sidecar_missing_file name
-            sidecar_missing_file="${INPUT_DATA_FILE}.missing"
-            if test -n "${VERY_VERBOSE}"; then echo "  MISSING_FILE: ${sidecar_missing_file}" >&2; fi
-
-            # use besstandalone to generate sidecar_missing_file
-            MISSING_FILE_BESCMD=$(mkDapRequest "${INPUT_DATA_FILE}" dods "${MISSING_VARS}" "${sidecar_missing_file}")
-            source_data_path="${sidecar_missing_file}"
-
-            BES_CONF=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")  # reset BES_CONF_FILE; removing additional H5 parameters
-
-            SOURCE_DMR=$(mkDapRequest "${sidecar_missing_file}" dmr)  # use besstandalone to generate dmr for sidecar_missing_file
-            master_dmrpp_file="${OUTPUT_FILE}"  # save original dmrpp filename
-
-            local missing_dmrpp_file=""
-            if test -n "${REDUCE_MISSING_FILES}"; then
-                if test ! -s ${MASTER_SHA256}; then
-                    missing_dmrpp_file="${BES_DATA_ROOT}/${sidecar_missing_file}.dmrpp"
-                else
-                    missing_dmrpp_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
-                fi
-            else
-                missing_dmrpp_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
-            fi
-
-            mk_dmrpp "${sidecar_missing_file}" "${missing_dmrpp_file}" # use $PATH/build_dmrpp to generate dmrpp for sidecar_missing_file
-            retval=$?
-            #echo "retval: ${retval}";
-
-            if test -n "${REDUCE_MISSING_FILES}"; then
-                local tempstore_file=$(mktemp -t tmpstore_XXXX) # generate temporary filename for tempstore to hold missing_dmrpp info
-                if test -n "${VERY_VERBOSE}"; then
-                    echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
-                    echo " missing_vars_file: ${sidecar_missing_file}" >&2;
-                    echo "     master_sha256: ${MASTER_SHA256}" >&2;
-                    echo "         tempstore: ${tempstore_file}" >&2;
-                fi
-
-                # use $PATH/reduce_mdf to merge sidecar_missing_file dmrpp with master_dmrpp_file
-                reduce_dmrpp "${sidecar_missing_file}" "${missing_dmrpp_file}" "${MASTER_SHA256}" "${tempstore_file}"
-                retval=$?
-                #echo "reduce_dmrpp: ${retval}"
-
-                if test -s ${tempstore_file}; then # if tempstore_file is not empty then there will be temp that need to be removed.
-                    temp_sidecar_dmrpp=${missing_dmrpp_file}
-                    temp_sidecar_file="${BES_DATA_ROOT}/${sidecar_missing_file}"
-                    missing_dmrpp_file=$(echo `awk -F'[ ]' '{print $2}' "${tempstore_file}"`)
-                fi
-
-            fi
-
-            if test -n "${VERY_VERBOSE}"; then
-                echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
-                echo " master_dmrpp_file: ${master_dmrpp_file}" >&2;
-                echo "       target_path: ${target_path}" >&2;
-                echo " missing_vars_file: ${missing_vars_file}" >&2;
-            fi
-
-            # set 'href' content to use when merging chunks from sidecar_missing_file dmrpp into master_dmrpp_file
-            local missing_data_url_path="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
-            if test -n "${MISSING_DATA_HREF}"; then
-                missing_data_url_path="${MISSING_DATA_HREF}"
-            fi
-            # use $PATH/merge_dmrpp to merge sidecar_missing_file dmrpp with master_dmrpp_file
-            mg_dmrpp  "${missing_dmrpp_file}" "${master_dmrpp_file}" "${missing_data_url_path}" "${missing_vars_file}"
-            retval=$(echo "${retval} + ${?}" | bc)
-            #echo "retval: ${retval}"
-
-        else
-            echo " There are no missing variables to merge."
-        fi
+if test -n "${MERGE_MISSING_VARS}"; then
+    if test -n "${VERBOSE}"; then
+        echo "#####################################################################################" >&2
+        echo "# merge_missing()" >&2
+        echo "#" >&2
     fi
+
+
+    # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${OUTPUT_FILE}; -o option]
+    missing_vars_file=$(mktemp -t missing_vars_XXXX)
+    chk_dmrpp_for_missing_vars ${OUTPUT_FILE} ${missing_vars_file}
+    status=$?
+    if test -n "${VERBOSE}" ; then echo "# chk_dmrpp_for_missing_vars status: ${status}"; fi
+    if test $status -ne 0; then
+        echo "ERROR: chk_dmrpp_for_missing_vars ${OUTPUT_FILE} ${missing_vars_file} FAILED! status: ${status}" >&2;
+        return $status
+    fi
+
+
+    # check-dmrpp will write to the missing_vars_file if there are any missing variables.
+    if test -s ${missing_vars_file}; then
+        if test -n "${VERBOSE}"; then echo "# The missing variables file: ${missing_vars_file} contains bytes." >&2; fi
+        local missing_variables=""
+        missing_variables=$(cat ${missing_vars_file})
+        if test -n "${VERBOSE}"; then echo "# Identified the missing variables: ${missing_variables}" >&2; fi
+
+        # augment BES_CONF_FILE with additional H5 parameters necessary to synthesize missing_variables from INPUT_DATA_FILE.
+        local mk_missing_conf_file=""
+        mk_missing_conf_file=$(make_missing_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")
+
+        # insert '_missing' into INPUT_DATA_FILE name and use for sidecar_missing_file name
+        local sidecar_missing_file="${INPUT_DATA_FILE}.missing"
+        if test -n "${VERBOSE}"; then echo "#  Missing variables data file: ${sidecar_missing_file}" >&2; fi
+
+        # use besstandalone to generate sidecar_missing_file
+        mkDapRequest ${mk_missing_conf_file} ${INPUT_DATA_FILE} dap ${missing_variables} netcdf-4 ${sidecar_missing_file}
+        status=$?
+        if test -n "${VERBOSE}" ; then echo "# mkDapRequest status: ${status}"; fi
+        if test ${status} -ne 0; then
+            echo "ERROR: mkDapRequest ${INPUT_DATA_FILE} dap ${missing_variables} netcdf-4 ${sidecar_missing_file} FAILED! status: $status" >&2
+            return $status
+        fi
+        echo "# "$(ls -l ${sidecar_missing_file})
+
+
+        local bes_conf_file=""
+        bes_conf_file=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")  # reset BES_CONF_FILE; removing additional H5 parameters
+
+        local missing_vars_dmr_file=""
+        missing_vars_dmr_file=$(mkDapRequest ${bes_conf_file} ${sidecar_missing_file} dmr) # use besstandalone to generate dmr for sidecar_missing_file
+        status=$?
+        echo "# mkDapRequest status: ${status}";
+        if test ${status} -ne 0; then
+            echo "ERROR: mkDapRequest() ${bes_conf_file} ${sidecar_missing_file} dmr  FAILED! status: $status" >&2
+            return $status
+        fi
+
+        master_dmrpp_file="${OUTPUT_FILE}"  # save original dmrpp filename
+
+        local missing_dmrpp_file=""
+        if test -n "${REDUCE_MISSING_FILES}"; then
+            if test ! -s ${MASTER_SHA256}; then
+                missing_dmrpp_file="${BES_DATA_ROOT}/${sidecar_missing_file}.dmrpp"
+            else
+                missing_dmrpp_file=$(mktemp -t missing_vars_dmrpp_XXXXXX) # generate temporary dmrpp filename for sidecar_missing_file
+            fi
+        else
+            missing_dmrpp_file=$(mktemp -t missing_vars_dmrpp_XXXXXX) # generate temporary dmrpp filename for sidecar_missing_file
+        fi
+
+        mk_dmrpp "${bes_conf_file}" "${sidecar_missing_file}" "${missing_vars_dmr_file}" "${missing_dmrpp_file}" # use $PATH/build_dmrpp to generate dmrpp for sidecar_missing_file
+        status=$?
+        echo "# mk_dmrpp status: ${status}";
+        if test $status -ne 0; then
+            echo "ERROR: mk_dmrpp  ${bes_conf_file} ${sidecar_missing_file} ${missing_vars_dmr_file} ${missing_dmrpp_file} FAILED! status: $status" >&2
+            return $status
+        fi
+
+        if test -n "${REDUCE_MISSING_FILES}"; then
+            local tempstore_file=""
+            tempstore_file=$(mktemp -t tmpstore_XXXX) # generate temporary filename for tempstore to hold missing_dmrpp info
+            if test -n "${VERBOSE}"; then
+                echo "#        MASTER_SHA256: ${MASTER_SHA256}" >&2;
+                echo "#   missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
+                echo "# sidecar_missing_file: ${sidecar_missing_file}" >&2;
+                echo "#       tempstore_file: ${tempstore_file}" >&2;
+            fi
+
+            # use $PATH/reduce_mdf to merge sidecar_missing_file dmrpp with master_dmrpp_file
+            reduce_dmrpp "${sidecar_missing_file}" "${missing_dmrpp_file}" "${MASTER_SHA256}" "${tempstore_file}"
+            status=$?
+            echo "# reduce_dmrpp status: ${status}";
+            if test $status -ne 0; then
+                echo "ERROR: reduce_dmrpp ${sidecar_missing_file} ${missing_dmrpp_file} ${MASTER_SHA256} ${tempstore_file}  FAILED! status: $status" >&2
+                return $status
+            fi
+            #echo "reduce_dmrpp: ${retval}"
+
+            if test -s ${tempstore_file}; then # if tempstore_file is not empty then there will be temp that need to be removed.
+                temp_sidecar_dmrpp=${missing_dmrpp_file}
+                temp_sidecar_file="${BES_DATA_ROOT}/${sidecar_missing_file}"
+                missing_dmrpp_file=$(awk -F'[ ]' '{print $2}' "${tempstore_file}")
+            fi
+
+        fi
+
+        if test -n "${VERBOSE}"; then
+            echo "#   missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
+            echo "#    master_dmrpp_file: ${master_dmrpp_file}" >&2;
+            echo "# sidecar_missing_file: ${sidecar_missing_file}" >&2;
+            echo "#    missing_vars_file: ${missing_vars_file}" >&2;
+        fi
+
+        # set 'href' content to use when merging chunks from sidecar_missing_file dmrpp into master_dmrpp_file
+        local missing_data_url_path="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
+        if test -n "${MISSING_DATA_HREF}"; then
+            missing_data_url_path="${MISSING_DATA_HREF}"
+        fi
+        # use $PATH/merge_dmrpp to merge sidecar_missing_file dmrpp with master_dmrpp_file
+        mg_dmrpp  "${missing_dmrpp_file}" "${master_dmrpp_file}" "${missing_data_url_path}" "${missing_vars_file}"
+        status=$?
+        echo "# mg_dmrpp status: ${status}";
+        if test $status -ne 0; then
+            echo "ERROR: mg_dmrpp ${missing_dmrpp_file} ${master_dmrpp_file} ${missing_data_url_path} ${missing_vars_file} FAILED! status: $status" >&2
+            return $status
+        fi
+
+    else
+        echo " There are no missing variables to merge."
+    fi
+fi
+    return 0
 }
 
 ########################################################################################################################
@@ -1286,24 +1441,23 @@ function run_tests(){
 #
 #
 #
-trap cleanup_temp_files EXIT
 
-# Here we test to see if the input file name is actually an S3 URL
-# and if it is we adjust the INPUT_DATA_FILE and go out and get the
-# object from S3.
-s3_granule=
-if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]
-then
+function main(){
+  trap cleanup_temp_files EXIT
+  # Here we test to see if the input file name is actually an S3 URL
+  # and if it is we adjust the INPUT_DATA_FILE and go out and get the
+  # object from S3.
+  s3_granule=
+  if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
     s3_granule="${INPUT_DATA_FILE}"
     echo "Detected S3 URL as data input: ${s3_granule}" >&2
 
     set +e
     check_aws_config
     ret=$?
-    if test $ret != 0
-    then
-        echo "ERROR - The AWS CLI is not configured. Exiting." >&2
-        exit 1
+    if test $ret != 0; then
+      echo "ERROR - The AWS CLI is not configured. Exiting." >&2
+      exit 1
     fi
 
     INPUT_DATA_FILE=$(basename "${s3_granule}")
@@ -1311,102 +1465,112 @@ then
 
     local_file=""
     if test "${BES_DATA_ROOT}" = "/"; then # TODO - This should test for ends_with("/")
-        local_file="/${INPUT_DATA_FILE}"
+      local_file="/${INPUT_DATA_FILE}"
     else
-        local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
+      local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
     fi
     echo "Copying S3 object to: ${local_file}" >&2
 
     aws s3 cp ${s3_granule} ${local_file}
     result=$?
-    if test $result != 0
-    then
-        echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
-        exit $result
+    if test $result != 0; then
+      echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
+      exit $result
     fi
 
     set -e
-fi
+  fi
 
+    local bes_conf_file=""
+    bes_conf_file=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")
 
-BES_CONF=$(make_bes_conf "${BES_CONF_FILE}" "${SITE_CONF_FILE}")
-SOURCE_DMR=$(mkDapRequest "${INPUT_DATA_FILE}" dmr)
+    local dmr_file=""
+    dmr_file=$(mkDapRequest "${bes_conf_file}" "${INPUT_DATA_FILE}" dmr)
 
-# If 'JUST_DMR' is set redirect SOURCE_DMR to either <stdout> or $OUTPUT_FILE
-if test -n "${JUST_DMR}" ; then
-    if test -z "${OUTPUT_FILE}" ; then
-        cat ${SOURCE_DMR} >&2
-    else
-        cat ${SOURCE_DMR} >${OUTPUT_FILE};
-    fi
-    if test -z "${VERBOSE}"; then
-        rm -f ${SOURCE_DMR}
-    fi
+  # If 'JUST_DMR' is set redirect SOURCE_DMR to either <stdout> or $OUTPUT_FILE
+    if test -n "${JUST_DMR}"; then
+        if test -z "${OUTPUT_FILE}"; then
+            cat ${dmr_file} >&2
+        else
+            cat ${dmr_file} > ${OUTPUT_FILE}
+            if test -z "${VERBOSE}"; then
+                rm -f ${dmr_file}
+            fi
+        fi
     exit 0
-fi
+    fi
 
 
-mk_dmrpp "${INPUT_DATA_FILE}" "${OUTPUT_FILE}"
-retval=$?
-#echo "retval: ${retval}";
-if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
+  mk_dmrpp "${bes_conf_file}" "${INPUT_DATA_FILE}" "${dmr_file}" "${OUTPUT_FILE}"
+  status=$?
+  if test $status -ne 0; then
+    echo "ERROR: mk_dmrpp() "${bes_conf_file}" "${INPUT_DATA_FILE}" "${dmr_file}" "${OUTPUT_FILE}" Failed!. status: $status" >&2
+    exit $status
+  fi
 
+  # if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
 
-if test -z "${VERBOSE}"; then
+  #if test -z "${VERBOSE}"; then
     #if test -f "${BES_CONF}" ; then rm -f "${BES_CONF}"; fi
-    if test -f "${DAP_CMD}" ; then rm -f "${DAP_CMD}"; fi
-fi
+  #  if test -f "${DAP_CMD}"; then rm -f "${DAP_CMD}"; fi
+  #fi
 
-# Merge the missing variable data (conditional)
-merge_missing
+  # Merge the missing variable data (conditional)
+  merge_missing
+  status=$?
+  if test $status -ne 0; then
+    echo "ERROR: merge_missing() FAILED!. status: $status" >&2
+    exit $status
+  fi
 
-# Run the dmr++ tests (conditional)
-run_tests "${OUTPUT_FILE}"
 
-# Push the dmr++ to S3 target (conditional)
-if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"
-then
-    if test -z "${OUTPUT_FILE}"
-    then
-        echo "#---------------------------------------------------------------------" >&2
-        echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
-        echo "        Use the -o parameter. To set the output file name" >&2
-        echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
-        show_usage >&2
-        echo "#---------------------------------------------------------------------" >&2
-        exit 1
+  # Run the dmr++ tests (conditional)
+  run_tests "${OUTPUT_FILE}"
+
+  # Push the dmr++ to S3 target (conditional)
+  if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"; then
+    if test -z "${OUTPUT_FILE}"; then
+      echo "#---------------------------------------------------------------------" >&2
+      echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
+      echo "        Use the -o parameter. To set the output file name" >&2
+      echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
+      show_usage >&2
+      echo "#---------------------------------------------------------------------" >&2
+      exit 1
     fi
     s3_dmrpp="${s3_granule}.dmrpp"
     echo "Uploading dmr++ file (${OUTPUT_FILE}) to: ${s3_dmrpp}" >&2
     set +e
     aws s3 cp "${OUTPUT_FILE}" "${s3_dmrpp}"
     result=$?
-    if test $result != 0
-    then
-        echo "ERROR - Failed to upload S3 object. Exiting..." >&2
-        exit 1
+    if test $result != 0; then
+      echo "ERROR - Failed to upload S3 object. Exiting..." >&2
+      exit 1
     fi
     set -e
-fi
+  fi
 
-
-# Cleanup the mess, or not (conditional)
-if test -z "${VERBOSE}"; then
+  # Cleanup the mess, or not (conditional)
+  if test -z "${VERBOSE}"; then
     if test -n "${MERGE_MISSING_VARS}"; then
-        echo "    main:MISSING_VARS_FILE: ${missing_vars_file}"
-        echo " main:SIDECAR_MISSING_FILE: ${temp_sidecar_file}"
-        echo "main:SIDECAR_MISSING_DMRPP: ${temp_sidecar_dmrpp}"
-        echo "       main:TEMPSTORE_FILE: ${tempstore_file}"
-        rm -f ${missing_vars_file} ${temp_sidecar_file} ${temp_sidecar_dmrpp} ${tempstore_file}
+      echo "    main:MISSING_VARS_FILE: ${missing_vars_file}"
+      echo " main:SIDECAR_MISSING_FILE: ${temp_sidecar_file}"
+      echo "main:SIDECAR_MISSING_DMRPP: ${temp_sidecar_dmrpp}"
+      echo "       main:TEMPSTORE_FILE: ${tempstore_file}"
+      rm -f ${missing_vars_file} ${temp_sidecar_file} ${temp_sidecar_dmrpp} ${tempstore_file}
     fi
     #echo " main:SOURCE_DMR: ${SOURCE_DMR}"
     rm -f ${SOURCE_DMR} ${BES_CONF}
-fi
+  fi
 
-#echo "retval: ${retval}";
-exit $retval
+  #echo "retval: ${retval}";
+  exit $retval
 
-# rm -f ${SOURCE_DMR} ${SOURCE_DDX} ${TARGET_DDX} ${TARGET_DMR} ${DDX_CMD} ${DMR_CMD} ${BES_CONF}
+  # rm -f ${SOURCE_DMR} ${SOURCE_DDX} ${TARGET_DDX} ${TARGET_DMR} ${DDX_CMD} ${DMR_CMD} ${BES_CONF}
 
-#./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" -o airs.h5.dmrpp -T -v  airs.h5
-#./get_dmrpp -u "http://test.opendap.org/data/dmrpp/SMAP_L3_SM_P_20150406_R14010_001.h5" -o smap.h5.dmrpp -T -v  smap.h5
+  #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" -o airs.h5.dmrpp -T -v  airs.h5
+  #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/SMAP_L3_SM_P_20150406_R14010_001.h5" -o smap.h5.dmrpp -T -v  smap.h5
+}
+
+main
+exit $?
