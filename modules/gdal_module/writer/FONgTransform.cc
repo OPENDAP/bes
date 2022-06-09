@@ -41,12 +41,11 @@
 #include <libdap/util.h>
 #include <libdap/Error.h>
 
-#include <BESDebug.h>
-#include <BESInternalError.h>
+#include <dispatch/BESDebug.h>
+#include <dispatch/BESInternalError.h>
+#include <dispatch/TheBESKeys.h>
 
-#include "FONgRequestHandler.h"
 #include "FONgTransform.h"
-
 #include "FONgGrid.h"
 
 using namespace std;
@@ -343,7 +342,7 @@ void FONgTransform::transform_to_geotiff()
     // See FONgRequestHandler.cc and FONgRequestHandler::d_use_byte_for_geotiff_bands.
     // FIXME This is a hack. But maybe it's good enough?
     // jhrg 3/20/19
-    if (FONgRequestHandler::get_use_byte_for_geotiff_bands())
+    if (TheBESKeys::TheKeys()->read_bool_key("FONg.GeoTiff.band.type.byte", true))
         d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Byte, 0/*options*/);
     else
         d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Float32, 0/*options*/);

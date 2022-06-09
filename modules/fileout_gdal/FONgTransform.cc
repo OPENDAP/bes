@@ -341,9 +341,8 @@ void FONgTransform::transform_to_geotiff()
 
     // Make this type depend on the value of a bes.conf parameter.
     // See FONgRequestHandler.cc and FONgRequestHandler::d_use_byte_for_geotiff_bands.
-    // FIXME This is a hack. But maybe it's good enough?
     // jhrg 3/20/19
-    if (FONgRequestHandler::get_use_byte_for_geotiff_bands())
+    if (TheBESKeys::TheKeys()->read_bool_key("FONg.GeoTiff.band.type.byte", true))
         d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Byte, 0/*options*/);
     else
         d_dest = Driver->Create("in_memory_dataset", width(), height(), num_bands(), GDT_Float32, 0/*options*/);

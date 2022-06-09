@@ -26,7 +26,7 @@ include $(top_srcdir)/coverage.mk
 
 noinst_LTLIBRARIES = libgdal_reader.la
 
-libgdal_reader_la_SOURCES = $(GDAL_SRCS)
+libgdal_reader_la_SOURCES = $(GDAL_SRCS) $(GDAL_HDRS)
 libgdal_reader_la_LIBADD = $(LIBADD)
 libgdal_reader_la_LDFLAGS = $(AM_LDFLAGS)
 libgdal_reader_la_LDFLAGS += -no-undefined

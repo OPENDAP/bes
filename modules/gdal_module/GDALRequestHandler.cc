@@ -41,19 +41,21 @@
 
 #include <dispatch/BESResponseHandler.h>
 #include <dispatch/BESServiceRegistry.h>
-
 #include <dispatch/BESResponseNames.h>
+#include <dispatch/BESVersionInfo.h>
+#include <dispatch/BESUtil.h>
+#include <dispatch/TheBESKeys.h>
+
 #include <dap/BESDapNames.h>
 
 #include <dap/BESDASResponse.h>
 #include <dap/BESDDSResponse.h>
 #include <dap/BESDataDDSResponse.h>
 #include <dap/BESDMRResponse.h>
-#include <dispatch/BESVersionInfo.h>
 
 #include <dap/BESDapError.h>
 #include <dispatch/BESInternalFatalError.h>
-#include <dispatch/BESUtil.h>
+
 
 #include <BESDebug.h>
 
@@ -78,6 +80,7 @@ GDALRequestHandler::GDALRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, GDALRequestHandler::gdal_build_version);
 
     GDALAllRegister();
+    CPLSetErrorHandler(CPLQuietErrorHandler);
 }
 
 GDALRequestHandler::~GDALRequestHandler()

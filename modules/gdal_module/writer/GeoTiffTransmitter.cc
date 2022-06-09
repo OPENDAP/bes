@@ -39,31 +39,30 @@
 #include <libdap/BaseType.h>
 #include <libdap/escaping.h>
 
-using namespace libdap;
+#include <dispatch/BESUtil.h>
+#include <dispatch/BESInternalError.h>
+#include <dispatch/BESContextManager.h>
+#include <dispatch/BESDataNames.h>
+#include <dispatch/BESDebug.h>
+#include <dispatch/RequestServiceTimer.h>
+#include <dispatch/TheBESKeys.h>
 
-#define MODULE "fong"
-#define prolog string("FONgTransmitter::").append(__func__).append("() - ")
+#include <dap/BESDapError.h>
+#include <dap/BESDataDDSResponse.h>
+#include <dap/BESDapNames.h>
+#include <dap/DapFunctionUtils.h>
+#include <dap/TempFile.h>
 
 #include "GeoTiffTransmitter.h"
 #include "FONgTransform.h"
 
-#include <BESUtil.h>
-#include <BESInternalError.h>
-#include <BESDapError.h>
-#include <BESContextManager.h>
-#include <BESDataDDSResponse.h>
-#include <BESDapNames.h>
-#include <BESDataNames.h>
-#include <BESDebug.h>
-#include <TempFile.h>
-#include <DapFunctionUtils.h>
-
-#include <TheBESKeys.h>
-
-#include "RequestServiceTimer.h"
-
 #define FONG_TEMP_DIR "/tmp"
 #define FONG_GCS "WGS84"
+#define MODULE "gdal"
+#define prolog string("GeoTiffTransmitter::").append(__func__).append("() - ")
+
+using namespace libdap;
+using namespace std;
 
 string GeoTiffTransmitter::temp_dir;
 string GeoTiffTransmitter::default_gcs;
@@ -143,14 +142,14 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     if (!strm)
         throw BESInternalError("Output stream is not set, cannot return as", __FILE__, __LINE__);
 
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - parsing the constraint" << endl);
+    BESDEBUG(MODULE, "GeoTiffTransmitter::send_data - parsing the constraint" << endl);
 
     // ticket 1248 jhrg 2/23/09
     string ce = www2id(dhi.data[POST_CONSTRAINT], "%", "%20%26");
     try {
         bdds->get_ce().parse_constraint(ce, *dds);
     }
-    catch (Error &e) {
+    catch (const Error &e) {
         throw BESDapError("Failed to parse the constraint expression: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (...) {
@@ -158,12 +157,12 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     }
 
     // now we need to read the data
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - reading data into DataDDS" << endl);
+    BESDEBUG(MODULE, "GeoTiffTransmitter::send_data - reading data into DataDDS" << endl);
 
     try {
         // Handle *functional* constraint expressions specially
         if (bdds->get_ce().function_clauses()) {
-            BESDEBUG("fong2", "processing a functional constraint clause(s)." << endl);
+            BESDEBUG(MODULE, "processing a functional constraint clause(s)." << endl);
             DDS *tmp_dds = bdds->get_ce().eval_function_clauses(*dds);
             delete dds;
             dds = tmp_dds;
@@ -191,10 +190,10 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
             }
         }
     }
-    catch (Error &e) {
+    catch (const Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
-    catch (BESError &e) {
+    catch (const BESError &e) {
         throw;
     }
     catch (...) {
@@ -204,27 +203,9 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     // This closes the file when it goes out of scope. jhrg 8/25/17
     bes::TempFile temp_file;
     string temp_file_name = temp_file.create(GeoTiffTransmitter::temp_dir, "geotiff_");
-#if 0
-    // Huh? Put the template for the temp file name in a char array. Use vector<char>
-    // to avoid using new/delete.
-    string temp_file_name = GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX";
-    vector<char> temp_file(temp_file_name.length() + 1);
-    string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
-    temp_file[len] = '\0';
 
-    // cover the case where older versions of mkstemp() create the file using
-    // a mode of 666.
-    mode_t original_mode = umask(077);
-
-    // Make and open (an atomic operation) the temporary file. Then reset the umask
-    int fd = mkstemp(&temp_file[0]);
-    umask(original_mode);
-
-    if (fd == -1)
-        throw BESInternalError("Failed to open the temporary file: " + temp_file_name, __FILE__, __LINE__);
-#endif
     // transform the OPeNDAP DataDDS to the geotiff file
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transforming into temporary file " << temp_file_name << endl);
+    BESDEBUG(MODULE, "GeoTiffTransmitter::send_data - transforming into temporary file " << temp_file_name << endl);
 
     try {
         FONgTransform ft(dds, bdds->get_ce(), temp_file_name);
@@ -236,38 +217,21 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
         // transform() opens the temporary file, dumps data to it and closes it.
         ft.transform_to_geotiff();
 
-        BESDEBUG("fong2", "GeoTiffTransmitter::send_data - transmitting temp file " << temp_file_name << endl );
+        BESDEBUG(MODULE, "GeoTiffTransmitter::send_data - transmitting temp file " << temp_file_name << endl );
 
         GeoTiffTransmitter::return_temp_stream(temp_file_name, strm);
     }
-    catch (Error &e) {
-#if 0
-        close(fd);
-        (void) unlink(&temp_file[0]);
-#endif
+    catch (const Error &e) {
         throw BESDapError("Failed to transform data to GeoTiff: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
-    catch (BESError &e) {
-#if 0
-        close(fd);
-        (void) unlink(&temp_file[0]);
-#endif
+    catch (const BESError &e) {
         throw;
     }
     catch (...) {
-#if 0
-        close(fd);
-        (void) unlink(&temp_file[0]);
-#endif
         throw BESInternalError("Fileout GeoTiff, was not able to transform to geotiff, unknown error", __FILE__, __LINE__);
     }
 
-#if 0
-        close(fd);
-        (void) unlink(&temp_file[0]);
-#endif
-
-    BESDEBUG("fong2", "GeoTiffTransmitter::send_data - done transmitting to geotiff" << endl);
+    BESDEBUG(MODULE, "GeoTiffTransmitter::send_data - done transmitting to geotiff" << endl);
 }
 
 /** @brief stream the temporary file back to the requester

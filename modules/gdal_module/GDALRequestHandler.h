@@ -30,7 +30,6 @@
 #include <dispatch/BESRequestHandler.h>
 
 class GDALRequestHandler: public BESRequestHandler {
-private:
 public:
     GDALRequestHandler(const std::string &name);
     virtual ~GDALRequestHandler(void);

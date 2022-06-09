@@ -1093,7 +1093,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/gateway_module/tests/atlocal 
 
     modules/gdal_module/Makefile
-     modules/gdal_module/reader/Makefile
+    modules/gdal_module/reader/Makefile
+    modules/gdal_module/writer/Makefile
     modules/gdal_module/tests/Makefile
     modules/gdal_module/tests/atlocal
 

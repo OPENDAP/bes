@@ -33,14 +33,23 @@
 #include <dispatch/BESFileContainerStorage.h>
 #include <dispatch/BESCatalogDirectory.h>
 #include <dispatch/BESCatalogList.h>
+#include <dispatch/BESReturnManager.h>
+#include <dispatch/BESServiceRegistry.h>
 #include <dispatch/BESDebug.h>
 
+#include <dap/BESDapNames.h>
 #include <dap/BESDapService.h>
 
 #include "GDALModule.h"
 #include "GDALRequestHandler.h"
+#include "writer/GeoTiffTransmitter.h"
+#include "writer/JPEG2000Transmitter.h"
 
 #define GDAL_CATALOG "catalog"
+#define RETURNAS_GEOTIFF "geotiff"
+#define RETURNAS_JPEG2000 "jpeg2000"
+
+#define JP2 1
 
 using namespace std;
 
@@ -50,6 +59,8 @@ void GDALModule::initialize(const string & modname)
 
     BESRequestHandler *handler = new GDALRequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
+
+    // This part if the module responds to requests for DMR, DAP, etc., responses.
 
     BESDapService::handle_dap_service(modname);
 
@@ -62,6 +73,15 @@ void GDALModule::initialize(const string & modname)
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
+    // This part of the handler sets up transmitters that return geotiff and jp2000 responses
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_GEOTIFF, new GeoTiffTransmitter());
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, RETURNAS_GEOTIFF);
+
+#if JP2
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_JPEG2000, new JPEG2000Transmitter());
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, RETURNAS_JPEG2000);
+#endif
+
     BESDebug::Register("gdal");
 
     BESDEBUG("gdal", "Done Initializing GDAL module " << modname << endl);
@@ -71,11 +91,16 @@ void GDALModule::terminate(const string & modname)
 {
     BESDEBUG("gdal", "Cleaning GDAL module " << modname << endl);
 
-    delete BESRequestHandlerList::TheList()->remove_handler(modname);
-
     BESContainerStorageList::TheList()->deref_persistence(GDAL_CATALOG);
 
     BESCatalogList::TheCatalogList()->deref_catalog(GDAL_CATALOG);
+
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_GEOTIFF);
+#if JP2
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_JPEG2000);
+#endif
+
+    delete BESRequestHandlerList::TheList()->remove_handler(modname);
 
     BESDEBUG("gdal", "Done Cleaning GDAL module " << modname << endl);
 }

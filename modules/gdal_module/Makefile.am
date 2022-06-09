@@ -6,19 +6,18 @@
 
 AUTOMAKE_OPTIONS = foreign check-news 
 
-SUBDIRS = reader . tests
+SUBDIRS = reader writer . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_module
 M_VER=1.0.0
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
-AM_LDFLAGS = -L$(builddir)/reader
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lgdal_reader
+AM_CXXFLAGS =
+AM_LDFLAGS = -L$(builddir)/reader -L$(builddir)/writer
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lgdal_reader -lgdal_writer
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
-
-AM_CXXFLAGS = 
 
 if COMPILER_IS_GCC
 AM_CXXFLAGS += -Wall -W -Wcast-align

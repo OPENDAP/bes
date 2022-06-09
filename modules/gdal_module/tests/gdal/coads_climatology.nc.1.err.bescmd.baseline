@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>1</Type>
+            <Message>Failed to transform data to GeoTiff: GeoTiff responses can consist of two-dimensional variables only; use constraints to reduce the size of Grids as needed.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                removed file
+                removed line
+            </Location>
+        </BESError>
+    </getDODS>
+</response>
