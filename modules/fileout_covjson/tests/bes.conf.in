@@ -82,5 +82,5 @@ HDF4.Cache.latlon.path=/tmp/latlon
 HDF4.Cache.latlon.prefix=l
 H4.DisableSwathDimMap=false
 H5.DisableStructMetaAttr=true
-#FoCovJson.MAY_IGNORE_Z_AXIS=true
-#FoCovJson.SIMPLE_GEO=true
+FoCovJson.MAY_IGNORE_Z_AXIS=true
+FoCovJson.SIMPLE_GEO=true

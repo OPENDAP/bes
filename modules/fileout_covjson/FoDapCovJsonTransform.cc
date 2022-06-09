@@ -1131,7 +1131,7 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
            ostringstream temp_strm;
            temp_strm<<axisVar_x_bnd_val[i];
            x_bnd_val[i] = temp_strm.str();
-cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
+//cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
         }
     }
 
@@ -1144,7 +1144,7 @@ cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
            ostringstream temp_strm;
            temp_strm<<axisVar_y_bnd_val[i];
            y_bnd_val[i] = temp_strm.str();
-cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
+//cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
         }
     }
 
@@ -1157,7 +1157,7 @@ cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
            ostringstream temp_strm;
            temp_strm<<axisVar_z_bnd_val[i];
            z_bnd_val[i] = temp_strm.str();
-cerr<<"Z bound value is "<<z_bnd_val[i] <<endl;
+//cerr<<"Z bound value is "<<z_bnd_val[i] <<endl;
         }
     }  
     
@@ -1651,7 +1651,7 @@ cerr<<it->second <<endl;
             else if(axisVar_t.name == it->first)
                 axisVar_t.bound_name = it->second;
         }
-//#if 0
+#if 0
 cerr<<"axisVar_x.name is "<<axisVar_x.name <<endl;
 cerr<<"axisVar_x.dim_name is "<<axisVar_x.dim_name <<endl;
 cerr<<"axisVar_x.dim_size is "<<axisVar_x.dim_size <<endl;
@@ -1671,7 +1671,7 @@ cerr<<"axisVar_t.name is "<<axisVar_t.name <<endl;
 cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
-//#endif
+#endif
 
 
         is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
@@ -1918,7 +1918,7 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
     libdap::DDS::Vars_iter ve = dds->var_end();
  
     for(; vi != ve; vi++) {
-cerr<<"coming to the loop  " <<endl;
+//cerr<<"coming to the loop  " <<endl;
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1927,7 +1927,7 @@ cerr<<"coming to the loop  " <<endl;
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
-cerr<<"d_ndims is "<< d_ndims <<endl;
+//cerr<<"d_ndims is "<< d_ndims <<endl;
                 if(d_ndims == 1) {
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
@@ -1936,7 +1936,7 @@ cerr<<"d_ndims is "<< d_ndims <<endl;
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
-cerr<<"attr_name is "<<attr_name <<endl;
+//cerr<<"attr_name is "<<attr_name <<endl;
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -1965,12 +1965,11 @@ cerr<<"attr_name is "<<attr_name <<endl;
 
 void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val, std::string& bnd_dim_name, bool sendData) {
 
-cerr<<"coming to the obtain_bound_values "<<endl;
+//cerr<<"coming to the obtain_bound_values "<<endl;
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if (d_a) {// float, now we just handle this way 
-     // SSTOP FILL IN
-cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
-cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+//cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
+//cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
@@ -1993,10 +1992,10 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
                 d_a->value(&av_bnd_val[0]);
-//#if 0
+#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
-//#endif
+#endif
             }
         }
 
@@ -2094,7 +2093,7 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
 
 bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count ) {
 
-cerr<<"coming to obtain_valid_vars "<<endl;
+//cerr<<"coming to obtain_valid_vars "<<endl;
     bool ret_value = true;
     std::vector<std::string> temp_x_y_vars;
     std::vector<std::string> temp_x_y_z_vars;
@@ -2176,9 +2175,12 @@ cerr<<"coming to obtain_valid_vars "<<endl;
 
     if (ret_value == true) {
     if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
+
+#if 0
 cerr<<"coming to ignore mode "<<endl;
 cerr<<"axis_var_z_count: "<<axis_var_z_count <<endl;
 cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
+#endif
 
     // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
     // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.

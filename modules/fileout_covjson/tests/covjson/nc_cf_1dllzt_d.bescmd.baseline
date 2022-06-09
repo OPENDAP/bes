@@ -1,0 +1,70 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": [-180, -120, -60, 0, 60, 120]
+        "bounds": [-210, -150, -150, -90, -90, -30, -30, 30, 30, 90, 90, 150]
+      },
+      "y": {
+        "values": [-90, -30, 30]
+        "bounds": [-120, -60, -60, 0, 0, 60]
+      },
+      "z": {
+        "values": [5, 7]
+        "bounds": [4, 6, 6, 8]
+      },
+      "t": {
+        "values": ["2021-01-01T00:16:40Z", "2022-01-02T00:16:40Z"]
+        "bounds": ["2020-01-01T00:16:40Z", "2021-01-01T01:16:40Z", "2021-01-01T01:16:40Z", "2022-01-02T01:16:40Z"]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y", "z"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "temp": {
+      "type": "Parameter",
+      "description": {
+        "en": "temperature of observation"
+      },
+      "unit": {
+        "label": {
+          "en": "Kelvin"
+        },
+        "symbol": {
+          "value": "Kelvin",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/temperature/",
+        "label": {
+          "en": "temperature of observation"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "temp": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "z", "y", "x"],
+      "shape": [2, 2, 3, 6],
+      "values": [305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 305, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 295, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 304, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294, 294]
+    }
+  }
+}
