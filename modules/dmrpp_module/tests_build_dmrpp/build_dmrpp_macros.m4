@@ -324,6 +324,123 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
 AT_CLEANUP
 ])
 
+##########################################################################################
+# AT_GET_DMRPP_3_20_MAKE_MISSING()
+#
+#
+m4_define([AT_GET_DMRPP_3_20_MAKE_MISSING],  [dnl
+
+AT_SETUP([get_dmrpp $1])
+AT_KEYWORDS([get_dmrpp data dap4 DAP4])
+
+GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+chmod +x "${GET_DMRPP}"
+ls -l "${GET_DMRPP}"
+
+DATA_DIR="modules/dmrpp_module/data/dmrpp"
+BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
+BES_DATA_ROOT=$(readlink -f "${abs_builddir}")
+
+test_name="$1"
+input_file="$2"
+dmrpp_baseline="${BASELINES_DIR}/$3"
+missing_baseline="${BASELINES_DIR}/$4"
+params="$5"
+output_file="$6"
+AT_XFAIL_IF([test z$7 = zxfail]) # This is always run FIRST
+
+echo "${input_file}" | grep "s3://"
+if test $? -eq 0
+then
+    # We're here because it's an S3 Test
+    # Only run the S3 tests if specifically instructed to do so.
+    AT_SKIP_IF([test x$s3tests = xno])
+fi
+
+if test -n "${output_file}"
+then
+    params="${params} -o ${output_file}"
+else
+    output_file=stdout
+fi
+
+# Amend the PATH to pick up besstandalone
+export PATH=${abs_top_builddir}/standalone:$PATH
+
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -M ${params} ${input_file}"
+
+# at_verbose=""
+
+AS_IF([test -z "$at_verbose"], [
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    echo "#   abs_top_srcdir: ${abs_top_srcdir}"
+    echo "#       abs_srcdir: ${abs_srcdir}"
+    echo "#       top_srcdir: ${top_srcdir}"
+    echo "#         builddir: ${builddir}"
+    echo "#     abs_builddir: ${abs_builddir}"
+    echo "#     top_builddir: ${top_builddir}"
+    echo "# top_build_prefix: ${top_build_prefix}"
+    echo "# abs_top_builddir: ${abs_top_builddir}"
+    echo "#        GET_DMRPP: ${GET_DMRPP}"
+    echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
+    echo "#         DATA_DIR: ${DATA_DIR}"
+    echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+    echo "#"
+    echo "# AT_GET_DMRPP_3_20() arguments: "
+    echo "#           arg #1: "$1
+    echo "#           arg #2: "$2
+    echo "#           arg #3: "$3
+    echo "#           arg #4: "$4
+    echo "#           arg #5: "$5
+    echo "#           arg #6: "$6
+    echo "#           arg #7: "$7
+    echo "#        test_name: ${test_name}"
+    echo "#       input_file: ${input_file}"
+    echo "#   dmrpp_baseline: ${dmrpp_baseline}"
+    echo "# missing_baseline: ${missing_baseline}"
+    echo "#           params: ${params}"
+    echo "#      output_file: ${output_file}"
+    echo "#      xfail_param: ${xfail_param}"
+    echo "#         TEST_CMD: ${TEST_CMD}"
+])
+
+AS_IF([test -n "$baselines" -a x$baselines = xyes],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
+    AT_CHECK([mv ${output_file} ${baseline}.tmp])
+],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMALIZE_EXEC_NAME([${output_file}])
+    REMOVE_PATH_COMPONENTS([${output_file}])
+    REMOVE_VERSIONS([${output_file}])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
+    AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: Filtered ${output_file} BEGIN"
+        echo "#"
+        cat ${output_file};
+        echo "#"
+        echo "# get_dmrpp: Filtered ${output_file} END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
+    AT_CHECK([diff -b -B ${dmrpp_baseline} ${output_file}])
+
+    AT_CHECK([ncdump ${abs_builddir}/${input_file}.missing > tmp])
+    AT_CHECK([diff -b -B ${missing_baseline} tmp])
+])
+
+AT_CLEANUP
+])
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 # Remove the build_dmrpp invocation attribute value
 # ndp 03/23/22
