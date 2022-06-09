@@ -28,22 +28,21 @@
 
 #include <iostream>
 
-using std::endl;
-using std::ostream;
-using std::string;
+#include <dispatch/BESRequestHandlerList.h>
+#include <dispatch/BESContainerStorageList.h>
+#include <dispatch/BESFileContainerStorage.h>
+#include <dispatch/BESCatalogDirectory.h>
+#include <dispatch/BESCatalogList.h>
+#include <dispatch/BESDebug.h>
+
+#include <dap/BESDapService.h>
 
 #include "GDALModule.h"
-
-#include <BESRequestHandlerList.h>
 #include "GDALRequestHandler.h"
-#include <BESDapService.h>
-#include <BESContainerStorageList.h>
-#include <BESFileContainerStorage.h>
-#include <BESCatalogDirectory.h>
-#include <BESCatalogList.h>
-#include <BESDebug.h>
 
 #define GDAL_CATALOG "catalog"
+
+using namespace std;
 
 void GDALModule::initialize(const string & modname)
 {

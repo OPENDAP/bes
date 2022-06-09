@@ -24,12 +24,10 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-// CDFRequestHandler.h
-
 #ifndef I_GDALRequestHandler_H
 #define I_GDALRequestHandler_H 1
 
-#include <BESRequestHandler.h>
+#include <dispatch/BESRequestHandler.h>
 
 class GDALRequestHandler: public BESRequestHandler {
 private:

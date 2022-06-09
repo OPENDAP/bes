@@ -39,21 +39,21 @@
 #include <libdap/InternalErr.h>
 #include <libdap/Ancillary.h>
 
-#include <BESResponseHandler.h>
-#include <BESServiceRegistry.h>
+#include <dispatch/BESResponseHandler.h>
+#include <dispatch/BESServiceRegistry.h>
 
-#include <BESResponseNames.h>
-#include <BESDapNames.h>
+#include <dispatch/BESResponseNames.h>
+#include <dap/BESDapNames.h>
 
-#include <BESDASResponse.h>
-#include <BESDDSResponse.h>
-#include <BESDataDDSResponse.h>
-#include <BESDMRResponse.h>
-#include <BESVersionInfo.h>
+#include <dap/BESDASResponse.h>
+#include <dap/BESDDSResponse.h>
+#include <dap/BESDataDDSResponse.h>
+#include <dap/BESDMRResponse.h>
+#include <dispatch/BESVersionInfo.h>
 
-#include <BESDapError.h>
-#include <BESInternalFatalError.h>
-#include <BESUtil.h>
+#include <dap/BESDapError.h>
+#include <dispatch/BESInternalFatalError.h>
+#include <dispatch/BESUtil.h>
 
 #include <BESDebug.h>
 

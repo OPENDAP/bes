@@ -27,7 +27,7 @@
 #ifndef A_GDALModule_H
 #define A_GDALModule_H 1
 
-#include <BESAbstractModule.h>
+#include <dispatch/BESAbstractModule.h>
 
 class GDALModule: public BESAbstractModule {
 public:
