@@ -40,23 +40,22 @@ using std::ostream;
 using std::string;
 using std::map;
 
-bool FoCovJsonRequestHandler::_may_ignore_z_axis   = false;
-bool FoCovJsonRequestHandler::_simple_geo   = false;
+bool FoCovJsonRequestHandler::_may_ignore_z_axis   = true;
+bool FoCovJsonRequestHandler::_simple_geo   = true;
 
-bool FoCovJsonRequestHandler::check_beskeys(const string & key) {
+// Borrow from the HDF5 handler
+bool FoCovJsonRequestHandler::obtain_beskeys_info(const string & key, bool &has_key) {
 
-    bool found = false;
+    bool ret_value = false;
     string doset ="";
-    const string dosettrue ="true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            return true;
+    TheBESKeys::TheKeys()->get_value( key, doset, has_key ) ;
+    if(has_key) {
+        const string dosettrue ="true";
+        const string dosetyes = "yes";
+        doset = BESUtil::lowercase(doset) ;
+        ret_value = (dosettrue == doset  || dosetyes == doset);
     }
-    return false;
+    return ret_value;
 
 }
 
@@ -73,8 +72,13 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
 {
     add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
-    _may_ignore_z_axis = check_beskeys("FoCovJson.MAY_IGNORE_Z_AXIS");   
-    _simple_geo = check_beskeys("FoCovJson.SIMPLE_GEO");   
+    bool has_key = false;
+    bool key_value = obtain_beskeys_info("FoCovJson.MAY_IGNORE_Z_AXIS",has_key);
+    if (has_key) 
+        _may_ignore_z_axis = key_value;   
+    key_value = obtain_beskeys_info("FoCovJson.SIMPLE_GEO",has_key);
+    if (has_key) 
+        _simple_geo = key_value;  
 
 #if 0
 if(_may_ignore_z_axis == true) 

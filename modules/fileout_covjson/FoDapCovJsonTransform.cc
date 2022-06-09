@@ -2369,7 +2369,8 @@ cerr<<"cf_s_i " <<cf_s_i <<endl;
     // This should be sufficient for the data we serve now. 
     ycf_1.tm_hour = cf_h_i;   ycf_1.tm_min = cf_m_i; ycf_1.tm_sec = cf_s_i;
     ycf_1.tm_year = cf_y_i-1900; ycf_1.tm_mon = cf_mo_i; ycf_1.tm_mday = cf_d_i;
-    time_t t_ycf_1 = mktime(&ycf_1);
+    //time_t t_ycf_1 = mktime(&ycf_1);
+    time_t t_ycf_1 = timegm(&ycf_1);
 
 #if 0
 cerr<<"t_ycf_1 is "<<t_ycf_1 <<endl;
@@ -2398,7 +2399,8 @@ cerr<<"time_val is "<<time_val <<endl;
   // So the value actually represents the GMT time. 
   // Note: we didn't consider the use of local time in the CF. 
   // Our currently supported product uses GMT. Will consider the other cases later.
-  t_new_ycf = localtime(&t_ycf_2);
+  //t_new_ycf = localtime(&t_ycf_2);
+  t_new_ycf = gmtime(&t_ycf_2);
 
 #if 0
 cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
