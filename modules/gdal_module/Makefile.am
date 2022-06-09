@@ -6,14 +6,15 @@
 
 AUTOMAKE_OPTIONS = foreign check-news 
 
-SUBDIRS = reader .
+SUBDIRS = reader . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_module
 M_VER=1.0.0
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_LDFLAGS = -L$(builddir)/reader
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lgdal_reader
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -29,7 +30,6 @@ endif
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0 -Wall -W -Wcast-align 
 
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 CLEANFILES = *~ gdal.conf
@@ -42,7 +42,7 @@ GDAL_SRCS = GDALModule.cc GDALRequestHandler.cc
 GDAL_HDRS = GDALModule.h GDALRequestHandler.h
 
 libgdal_module_la_SOURCES = $(GDAL_SRCS) $(GDAL_HDRS)
-libgdal_module_la_LDFLAGS = -avoid-version -module $(GDAL_LDFLAGS)
+libgdal_module_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version -module $(GDAL_LDFLAGS)
 libgdal_module_la_LIBADD = $(LIBADD)
 
 moduledir = $(sysconfdir)/bes/modules

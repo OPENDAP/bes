@@ -1094,8 +1094,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     modules/gdal_module/Makefile
      modules/gdal_module/reader/Makefile
-    modules/gdal_module/reader/tests/Makefile
-    modules/gdal_module/reader/tests/atlocal
+    modules/gdal_module/tests/Makefile
+    modules/gdal_module/tests/atlocal
 
     modules/fileout_gdal/Makefile
     modules/fileout_gdal/tests/Makefile 
@@ -1172,7 +1172,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gdal_module/reader/tests, [besstandalone])
+    AC_CONFIG_TESTDIR(modules/gdal_module/tests, [besstandalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])

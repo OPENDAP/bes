@@ -39,7 +39,7 @@ BUILT_SOURCES = test_config.h
 noinst_HEADERS = test_config.h
 
 # This way of building the header ensures it's in the build dir and that there
-# are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
+# are no '../' sequences in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
@@ -49,7 +49,6 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
-
 
 BES_CONF_IN = bes.conf.in
 

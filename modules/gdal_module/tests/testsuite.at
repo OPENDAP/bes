@@ -1,6 +1,9 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+AT_INIT([bes/modules/gdal_module/tests testsuite])
+
+m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
+# m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_PATTERN_TEST([gdal/cea.tif.0.bescmd], [pass])
 AT_BESCMD_RESPONSE_TEST([gdal/cea.tif.1.bescmd], [pass])

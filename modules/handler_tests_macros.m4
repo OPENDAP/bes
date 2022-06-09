@@ -97,7 +97,7 @@ m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
 ])
 
 m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
-[AT_BESCMD_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])])
+[AT_BESCMD_RESPONSE_TEST([$1], [$2], [repeat])])
 
 # @brief Run the given bes command file
 #

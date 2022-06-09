@@ -58,7 +58,7 @@
 #include <BESDebug.h>
 
 #include "GDALRequestHandler.h"
-#include "gdal_utils.h"
+#include "reader/gdal_utils.h"
 
 #define GDAL_NAME "gdal"
 
