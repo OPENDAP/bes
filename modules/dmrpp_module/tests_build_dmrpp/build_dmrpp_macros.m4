@@ -412,8 +412,10 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([${output_file}])
     REMOVE_VERSIONS([${output_file}])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([${output_file}])
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
-    AT_CHECK([mv ${output_file} ${baseline}.tmp])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data dmrpp result to ${dmrpp_baseline}.tmp"])
+    AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
+    AT_CHECK([ncdump ${abs_builddir}/${input_file}.missing > ${missing_baseline}.missing.tmp])
 ],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
@@ -435,6 +437,16 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     AT_CHECK([diff -b -B ${dmrpp_baseline} ${output_file}])
 
     AT_CHECK([ncdump ${abs_builddir}/${input_file}.missing > tmp])
+    AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: missing data file BEGIN"
+        echo "#"
+        cat tmp;
+        echo "#"
+        echo "# get_dmrpp: missing data file END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
     AT_CHECK([diff -b -B ${missing_baseline} tmp])
 ])
 
