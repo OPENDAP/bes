@@ -22,39 +22,15 @@ endif
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0 -Wall -W -Wcast-align 
 
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
-
-lib_besdir=$(libdir)/bes
-lib_bes_LTLIBRARIES = libgdal_module.la
-
-SUBDIRS = . tests
-
-GDAL_SRCS = GDALArray.cc GDALGrid.cc gdal_utils.cc
-
-GDAL_HDRS = GDALTypes.h gdal_utils.h
 
 noinst_LTLIBRARIES = libgdal_reader.la
 
 libgdal_reader_la_SOURCES = $(GDAL_SRCS)
 libgdal_reader_la_LIBADD = $(LIBADD)
- # libgdal_reader_la_DEPENDENCIES = $(gl_LTLIBOBJS)
-EXTRA_libgdal_reader_la_SOURCES =
 libgdal_reader_la_LDFLAGS = $(AM_LDFLAGS)
 libgdal_reader_la_LDFLAGS += -no-undefined
 
-EXTRA_DIST = data
+GDAL_SRCS = GDALArray.cc GDALGrid.cc gdal_utils.cc
 
-# Sample data primaries for install
-sample_datadir = $(datadir)/hyrax/data/gdal
-sample_data_DATA = data/README \
-    data/Atlantic.wind.grb.bz2 \
-    data/Caribbean.wind.grb.bz2 \
-    data/EastAtlantic.wind.grb.bz2 \
-    data/CentralAtlantic.wind.grb.bz2 \
-    data/cea.tif \
-    data/cea.txt \
-    data/DIGEST_Example_2.20120926112517.tif \
-    data/SP27GTIF.TIF \
-    data/SP27GTIF.lgo \
-    data/DIGEST_Example_2.20120926112501.jp2
+GDAL_HDRS = GDALTypes.h gdal_utils.h

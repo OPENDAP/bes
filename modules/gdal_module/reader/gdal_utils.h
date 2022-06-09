@@ -22,9 +22,18 @@
 #ifndef MODULES_GDAL_HANDLER_GDAL_UTILS_H_
 #define MODULES_GDAL_HANDLER_GDAL_UTILS_H_
 
-class GDALArray;
+#include <string>
+#include <gdal.h>
 
-void gdal_read_dataset_variables(libdap::DDS *dds, const GDALDatasetH &hDS, const string &filename,bool include_attrs);
+class GDALArray;
+namespace libdap {
+class DDS;
+class DAS;
+class DMR;
+class Array;
+}
+
+void gdal_read_dataset_variables(libdap::DDS *dds, const GDALDatasetH &hDS, const std::string &filename, bool include_attrs);
 void gdal_read_dataset_attributes(libdap::DAS &das, const GDALDatasetH &hDS);
 
 void gdal_read_dataset_variables(libdap::DMR *dmr, const GDALDatasetH &hDS, const std::string &filename);

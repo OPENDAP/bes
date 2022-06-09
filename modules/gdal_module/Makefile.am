@@ -50,3 +50,19 @@ module_DATA = gdal.conf
 
 gdal.conf: gdal.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gdal.conf
+
+EXTRA_DIST = data
+
+# Sample data primaries for install
+sample_datadir = $(datadir)/hyrax/data/gdal
+sample_data_DATA = data/README \
+    data/Atlantic.wind.grb.bz2 \
+    data/Caribbean.wind.grb.bz2 \
+    data/EastAtlantic.wind.grb.bz2 \
+    data/CentralAtlantic.wind.grb.bz2 \
+    data/cea.tif \
+    data/cea.txt \
+    data/DIGEST_Example_2.20120926112517.tif \
+    data/SP27GTIF.TIF \
+    data/SP27GTIF.lgo \
+    data/DIGEST_Example_2.20120926112501.jp2

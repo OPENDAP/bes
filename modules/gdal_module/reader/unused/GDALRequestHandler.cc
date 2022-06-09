@@ -58,14 +58,13 @@
 #include <dispatch/BESDebug.h>
 
 #include "GDALRequestHandler.h"
-#include "gdal_utils.h"
+#include "reader/gdal_utils.h"
 
 #define GDAL_NAME "gdal"
 
 using namespace libdap;
 
-GDALRequestHandler::GDALRequestHandler(const string &name) :
-    BESRequestHandler(name)
+GDALRequestHandler::GDALRequestHandler(const string &name) : BESRequestHandler(name)
 {
     add_method(DAS_RESPONSE, GDALRequestHandler::gdal_build_das);
     add_method(DDS_RESPONSE, GDALRequestHandler::gdal_build_dds);
