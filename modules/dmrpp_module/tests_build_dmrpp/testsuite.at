@@ -8,13 +8,13 @@ m4_include([build_dmrpp_macros.m4])
 ################################################################################
 # Test get_dmrpp using command line options
 #
-AT_GET_DMRPP_3_20([simple test 1], [chunked_oneD.h5], [chunked_oneD.h5.baseline])
-AT_GET_DMRPP_3_20([simple test 2], [nc4_group_atomic.h5], [nc4_group_atomic.h5.baseline])
-AT_GET_DMRPP_3_20([-s, modify configuration test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
-AT_GET_DMRPP_3_20([-D, only create DMR test], [nc4_group_atomic.h5], [nc4_group_atomic.h5.use_cf.dmr.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
+AT_GET_DMRPP_3_20([simple test 1], [chunked_oneD.h5], [simple_test_1.baseline])
+AT_GET_DMRPP_3_20([simple test 2], [nc4_group_atomic.h5], [simple_test_2.baseline])
+AT_GET_DMRPP_3_20([-s, modify configuration test], [nc4_group_atomic.h5], [modify_configuration_test.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf])
+AT_GET_DMRPP_3_20([-D, only create DMR test], [nc4_group_atomic.h5], [only_dmr_test.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf -D])
 AT_GET_DMRPP_3_20([-u, inject dmrpp:href url test], [chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
 AT_GET_DMRPP_3_20([-c, inject configuration test], [nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf], [a.out])
-AT_GET_DMRPP_3_20([-o, output file test], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [], [a.out])
+AT_GET_DMRPP_3_20([-o, output file test], [chunked_oneD.h5], [output_file_test.baseline], [], [a.out])
 # AT_GET_DMRPP_3_20([-I, Inventory Test], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I], [a.out])
 
 # -e Use pre-existing dmrpp file for input to inventory test, requires output_file
@@ -24,7 +24,7 @@ AT_GET_DMRPP_3_20([-o, output file test], [chunked_oneD.h5], [chunked_oneD.h5.ba
 #AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
 
 # -M Generate missing variables sidecar file, requires use_cf_conf "site.conf" file
-AT_GET_DMRPP_3_20([-M, make missing data file], [grid_1_2d.h5], [grid_1_2d.h5.baseline], [-M -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [${abs_builddir}/a.out])
+AT_GET_DMRPP_3_20([-M, make missing data file], [grid_1_2d.h5], [grid_1_2d.h5.baseline], [-b ${abs_builddir} -M -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 
 # -p Inject missing variables dmrpp:chunk/@dmrpp:href attribute, requires use_cf_conf "site.conf" file
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
