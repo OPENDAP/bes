@@ -69,7 +69,7 @@ namespace HDFEOS2
         public:
             /// Constructor
             explicit Exception (const std::string & msg)
-                : message (msg), isHDFEOS2 (true)
+                : message (msg)
             {
             }
 
@@ -105,7 +105,7 @@ namespace HDFEOS2
 
         private:
             std::string message;
-            bool isHDFEOS2;
+            bool isHDFEOS2 = true;
     };
 
     /// This class is similar to a standard vector class but with only limited
@@ -118,9 +118,7 @@ namespace HDFEOS2
     /// subclasses use this class to hold elements in the field.
     template < typename T > class LightVector {
         public:
-            LightVector ()
-                : data (0), length (0), capacity (0) {
-            }
+            LightVector () = default;
 
             LightVector (const LightVector < T > &that)
             {
@@ -217,9 +215,9 @@ namespace HDFEOS2
             }
 
         private:
-            T * data;
-            unsigned int length;
-            unsigned int capacity;
+            T * data = nullptr;
+            unsigned int length = 0;
+            unsigned int capacity = 0;
     };
 
     class SwathDimensionAdjustment;
@@ -500,7 +498,7 @@ namespace HDFEOS2
             // 3 means this field is other dimension variable.
             // 4 means this field is added other dimension variable with nature number.
             // 5 means time, but currently the units is not correct.
-            int fieldtype;
+            int fieldtype = 0;
 
             //  Latitude and longitude retrieved by HDF-EOS2 are always
             //  2-D arrays(XDim * YDim). However, for some projections
@@ -510,17 +508,17 @@ namespace HDFEOS2
             //  the disk storage and can greatly improve the performance for 
             //  the visualization tool to access the latitude and longitde.
             //  condenseddim is the flag internally used by the handler to track this.
-            bool condenseddim;
+            bool condenseddim = false;
 
             //   This flag is to mark if the data should follow COARDS.
-            bool iscoard;
+            bool iscoard = false;
 
             //   This flag is to check if the field is YDim major(temp(YDim,XDim). This
             //   flag is necessary when calling GDij2ll to retrieve latitude and longitude.
-            bool ydimmajor;
+            bool ydimmajor = true;
 
             // SOme special longitude is from 0 to 360.We need to check this case with this flag.
-            bool speciallon;
+            bool speciallon = false;
 
             // This flag specifies the special latitude/longitude coordinate format
             // The latiude and longitude should represent as DDDMMMSSS format
@@ -530,7 +528,7 @@ namespace HDFEOS2
             // 0 means normal 
             // 1 means the coordinate is -180 to 180
             // 2 means the coordinate is default(0)
-            int specialformat;
+            int specialformat = 0;
 
             // CF units attribute(mostly to add latitude and longitude CF units).
             std::string units;
@@ -538,16 +536,16 @@ namespace HDFEOS2
             // Some data products have fillvalue(-9999.0) but don't specify the fillvalue.
             // We add the fillvalue to ensure the netCDF client can successfully display the data.
             // haveaddedfv and addedfv are to check if having added fillvalues.
-            bool haveaddedfv;
+            bool haveaddedfv = false;
             int ll_dim0_offset;
             int ll_dim0_inc;
             int ll_dim1_offset;
             int ll_dim1_inc;
              
-            float addedfv;
+            float addedfv = -9999.0;
 
             // Check if this swath uses the dimension map. 
-            bool dmap;
+            bool dmap = false;
 
         friend class Dataset;
         friend class SwathDimensionAdjustment;
