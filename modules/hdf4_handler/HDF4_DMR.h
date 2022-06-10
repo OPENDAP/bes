@@ -63,7 +63,10 @@ public:
         if (this == &rhs)
             return *this;
 
+#if 0
         dynamic_cast<libdap::DMR &>(*this) = rhs;
+#endif
+        libdap::DMR::operator=(rhs);
         m_duplicate(rhs);
 
         return *this;

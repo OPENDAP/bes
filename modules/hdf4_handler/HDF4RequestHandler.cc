@@ -262,7 +262,8 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
             // Obtain HDF4 file IDs
             //SDstart
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            //sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
