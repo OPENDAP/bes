@@ -239,12 +239,18 @@ fi
 #
 function cleanup_temp_files() {
     if test -n "${CLEANUP_TEMP_FILES}"; then
-        echo "# BEGIN cleanup_temp_files() + + + + + + + + + + + + + + + + + + + + + +" >&2
-        echo "#" >&2
-        echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2
-        rm -vf ${TEMP_FILE_LIST} >&2
-        echo "# Temporary files have been removed." >&2
-        echo "# END cleanup_temp_files() - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        local minus_vee=""
+        if test -n "${VERBOSE}"; then
+            minus_vee="-v"
+            echo "# BEGIN cleanup_temp_files() + + + + + + + + + + + + + + + + + + + + + +" >&2
+            echo "#" >&2
+            echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2
+        fi
+        rm "${minus_vee}" -f ${TEMP_FILE_LIST} >&2
+        if test -n "${VERBOSE}"; then
+            echo "# Temporary files have been removed." >&2
+            echo "# END cleanup_temp_files() - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        fi
     fi
 }
 
@@ -609,7 +615,7 @@ function mkDapRequest() {
     ${BESCMD}
     status=$?
     if test -n "${CLEANUP_TEMP_FILES}"; then
-        echo "## Cleaning up bes_command_file: ${bes_command_file}" >&2
+        if test -n "${VERBOSE}"; then echo "## Cleaning up bes_command_file: ${bes_command_file}" >&2;  fi
         rm -f "${bes_command_file}"
     fi
     if test $status -ne 0; then
