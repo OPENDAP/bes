@@ -120,13 +120,15 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
     v)
         VERBOSE="yes"
         echo "#######################################################################################" >&2
-        echo "# ${0} - BEGIN (VERBOSE)" >&2
+        echo "# ${0}" >&2
+        echo "# BEGIN (VERBOSE)" >&2
         ;;
     V)
         VERY_VERBOSE="-v"
         VERBOSE="yes"
         echo "#######################################################################################" >&2
-        echo "# ${0} - BEGIN (VERY_VERBOSE)" >&2
+        echo "# ${0}" >&2
+        echo "# BEGIN (VERY_VERBOSE)" >&2
         ;;
     c)
         BES_CONF_FILE="$OPTARG"
@@ -1360,7 +1362,7 @@ function merge_missing() {
         export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${missing_vars_file}"
         chk_dmrpp_for_missing_vars "${OUTPUT_FILE}" "${missing_vars_file}"
         status=$?
-        if test -n "${VERBOSE}"; then echo "# chk_dmrpp_for_missing_vars status: ${status}"; fi
+        if test -n "${VERBOSE}"; then echo "# chk_dmrpp_for_missing_vars status: ${status}" >&2; fi
         if test $status -ne 0; then
             echo "ERROR: chk_dmrpp_for_missing_vars ${OUTPUT_FILE} ${missing_vars_file} FAILED! status: ${status}" >&2
             return $status
@@ -1385,7 +1387,7 @@ function merge_missing() {
             local sidecar_missing_temp_file=""
             sidecar_missing_temp_file=$(mkDapRequest "${mk_missing_conf_file}" "${INPUT_DATA_FILE}" dods "${missing_variables}" netcdf-4)
             status=$?
-            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}"; fi
+            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
             if test ${status} -ne 0; then
                 echo "ERROR: mkDapRequest ${mk_missing_conf_file}  ${INPUT_DATA_FILE} dods ${missing_variables} netcdf-4 FAILED! status: $status" >&2
                 return $status
@@ -1402,7 +1404,7 @@ function merge_missing() {
             local missing_vars_dmr_file=""
             missing_vars_dmr_file=$(mkDapRequest ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr) # use besstandalone to generate dmr for SIDECAR_MISSING_FILE
             status=$?
-            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}"; fi
+            if test -n "${VERBOSE}"; then echo "# mkDapRequest status: ${status}" >&2; fi
             if test ${status} -ne 0; then
                 echo "ERROR: mkDapRequest() ${bes_conf_file} ${SIDECAR_MISSING_FILE} dmr  FAILED! status: $status" >&2
                 return $status
@@ -1425,7 +1427,7 @@ function merge_missing() {
 
             mk_dmrpp "${bes_conf_file}" "${SIDECAR_MISSING_FILE}" "${missing_vars_dmr_file}" "${missing_dmrpp_file}" # use $PATH/build_dmrpp to generate dmrpp for SIDECAR_MISSING_FILE
             status=$?
-            if test -n "${VERBOSE}"; then echo "# mk_dmrpp status: ${status}"; fi
+            if test -n "${VERBOSE}"; then echo "# mk_dmrpp status: ${status}" >&2; fi
             if test $status -ne 0; then
                 echo "ERROR: mk_dmrpp  ${bes_conf_file} ${SIDECAR_MISSING_FILE} ${missing_vars_dmr_file} ${missing_dmrpp_file} FAILED! status: $status" >&2
                 return $status
@@ -1445,7 +1447,7 @@ function merge_missing() {
                 # use $PATH/reduce_mdf to merge SIDECAR_MISSING_FILE dmrpp with master_dmrpp_file
                 reduce_dmrpp "${SIDECAR_MISSING_FILE}" "${missing_dmrpp_file}" "${MASTER_SHA256}" "${tempstore_file}"
                 status=$?
-                echo "# reduce_dmrpp status: ${status}"
+                if test -n "${VERBOSE}"; then echo "# reduce_dmrpp status: ${status}" >&2; fi
                 if test $status -ne 0; then
                     echo "ERROR: reduce_dmrpp ${SIDECAR_MISSING_FILE} ${missing_dmrpp_file} ${MASTER_SHA256} ${tempstore_file}  FAILED! status: $status" >&2
                     return $status
@@ -1475,7 +1477,7 @@ function merge_missing() {
             # use $PATH/merge_dmrpp to merge SIDECAR_MISSING_FILE dmrpp with master_dmrpp_file
             merge_dmrpp_missing "${missing_dmrpp_file}" "${master_dmrpp_file}" "${missing_data_url_path}" "${missing_vars_file}"
             status=$?
-            if test -n "${VERBOSE}"; then echo "# merge_dmrpp_missing status: ${status}"; fi
+            if test -n "${VERBOSE}"; then echo "# merge_dmrpp_missing status: ${status}" >&2; fi
             if test $status -ne 0; then
                 echo "ERROR: merge_dmrpp_missing ${missing_dmrpp_file} ${master_dmrpp_file} ${missing_data_url_path} ${missing_vars_file} FAILED! status: $status" >&2
                 return $status
@@ -1548,6 +1550,12 @@ function run_tests() {
 
 function main() {
     trap cleanup_temp_files EXIT
+
+    if test -n "${VERBOSE}"; then
+        echo "#######################################################################################" >&2
+        echo "# BEGIN main()" >&2
+        echo "#" >&2
+    fi
     local status=0
     # Here we test to see if the input file name is actually an S3 URL
     # and if it is we adjust the INPUT_DATA_FILE and go out and get the
@@ -1590,6 +1598,8 @@ function main() {
     fi
     if test -n "${VERBOSE}";then
         echo "#######################################################################################" >&2
+        echo "# BUILDING INITIAL DMR" >&2
+        echo "#" >&2
     fi
 
     local bes_conf_file=""
@@ -1613,6 +1623,8 @@ function main() {
 
     if test -n "${VERBOSE}";then
         echo "#######################################################################################" >&2
+        echo "# BUILDING DMR++ (build_dmrpp)" >&2
+        echo "#" >&2
     fi
 
     mk_dmrpp "${bes_conf_file}" "${INPUT_DATA_FILE}" "${dmr_file}" "${OUTPUT_FILE}"
@@ -1626,6 +1638,8 @@ function main() {
 
     if test -n "${VERBOSE}";then
         echo "#######################################################################################" >&2
+        echo "# MERGE MISSING DATA (CONDITIONAL)" >&2
+        echo "#" >&2
     fi
     # Merge the missing variable data (conditional)
     merge_missing "${bes_conf_file}"
@@ -1637,6 +1651,8 @@ function main() {
 
     if test -n "${VERBOSE}";then
         echo "#######################################################################################" >&2
+        echo "# RUNNING INVENTORY TESTS (CONDITIONAL)" >&2
+        echo "#" >&2
     fi
     # Run the dmr++ testmodify_configuration_test.baselines (conditional)
     run_tests "${bes_conf_file}" "${dmr_file}" "${OUTPUT_FILE}"
@@ -1646,11 +1662,13 @@ function main() {
         return $status
     fi
 
-    if test -n "${VERBOSE}";then
-        echo "#######################################################################################" >&2
-    fi
     # Push the dmr++ to S3 target (conditional)
     if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"; then
+        if test -n "${VERBOSE}";then
+            echo "#######################################################################################" >&2
+            echo "# TRANSMITTING RESULTS TO S3" >&2
+            echo "#" >&2
+        fi
         if test -z "${OUTPUT_FILE}"; then
             echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
             echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
@@ -1685,10 +1703,14 @@ function main() {
         fi
         set -e
     fi
-    if test -z "${VERBOSE}"; then
+    if test -n "${VERBOSE}"; then
+        echo "#######################################################################################" >&2
         if test -n "${MERGE_MISSING_VARS}"; then
-            echo "#  main:SIDECAR_MISSING_FILE: ${SIDECAR_MISSING_FILE}"
+            echo "#  SIDECAR_MISSING_FILE: ${SIDECAR_MISSING_FILE}" >&2
         fi
+        echo "#" >&2
+        echo "# END main()" >&2
+        echo "#######################################################################################" >&2
     fi
     return 0
 }
