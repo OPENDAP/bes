@@ -419,6 +419,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
     AT_CHECK([ncdump ${abs_builddir}/${missing_data_file} > ${missing_baseline}.missing.tmp])
+    rm -f ${abs_builddir}/${missing_data_file}
 ],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
@@ -451,6 +452,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
     ])
     AT_CHECK([diff -b -B ${missing_baseline} tmp])
+    rm -f ${abs_builddir}/${missing_data_file}
 ])
 
 AT_CLEANUP
