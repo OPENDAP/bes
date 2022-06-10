@@ -239,12 +239,17 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+
     AT_XFAIL_IF([test z$2 = zxfail])
-    repeat=$3
+    feature=$3
 
-    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+    dnl Hack - if 'feature' is not present in the configured_features.txt file, skip
+    dnl this test. jhrg 6/2/22
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+    AS_IF([test -n "$feature"],
+        [AT_SKIP_IF([test -z "$(grep $feature $top_srcdir/modules/configured_features.txt)"])])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone -c $bes_conf -i $1; skip if not $repeat"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
@@ -262,7 +267,7 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 dnl Old name for the above macro
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
-[AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([$1], [$2])])
+[AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([$1], [$2], [$3])])
 
 m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 

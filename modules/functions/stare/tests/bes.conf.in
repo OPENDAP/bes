@@ -1,9 +1,15 @@
 
-BES.User=user_name
-BES.Group=group_name
+# These six keys are needed to start besstandalone (along with the keys
+# that follow that have values specific to the handler and tests that are
+# run here). jhrg 6/1/22
 
 BES.LogName=./bes.log
-BES.LogVerbose=no
+BES.Data.RootDirectory=/dev/null
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
 
 # FIXME hdf5 should not be here. jhrg 12/31/19
 BES.modules=dap,cmd,dapreader,functions,h5,h4,fonc
@@ -22,19 +28,7 @@ BES.module.h4 = @abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
 BES.Catalog.catalog.TypeMatch += h4:.*\.hdf$;
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules
-BES.Data.RootDirectory=/dev/null
-
 BES.Catalog.catalog.TypeMatch += dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
-
-BES.Catalog.catalog.Include=;
-BES.Catalog.catalog.Exclude=^\..*;
-
-BES.Info.Buffered=no
-BES.Info.Type=xml
-
-BES.UncompressCache.dir=/tmp/hyrax_ux
-BES.UncompressCache.prefix=ux_
-BES.UncompressCache.size=500
 
 #-----------------------------------------------------------------------#
 #                                                                       #

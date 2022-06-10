@@ -6,15 +6,15 @@ TESTS_ENVIRONMENT=valgrind --trace-children=yes --error-exitcode=1 --dsymutil=ye
 --leak-check=yes  --max-stackframe=3000000  --quiet
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir)
-AM_CXXFLAGS =
+#AM_CPPFLAGS = -I$(top_srcdir)
+#AM_CXXFLAGS =
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+#CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
+#TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf
 
@@ -23,7 +23,8 @@ CLEANFILES = bes.conf
 EXTRA_DIST = data bescmd functions $(TESTSUITE).at $(TESTSUITE) \
 $(srcdir)/package.m4 atlocal.in bes.conf.in
 
-DISTCLEANFILES = atconfig generate_data_baselines.sh generate_metadata_baselines.sh
+DISTCLEANFILES = atconfig
+# generate_data_baselines.sh generate_metadata_baselines.sh
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
@@ -42,12 +43,6 @@ data/build_responses.conf: data/build_responses.conf.in $(top_srcdir)/configure.
 # cleanup.sh: cleanup.sh.in ../../config.status
 #	sed -e "s%[@]srcdir[@]%${srcdir}%" $< > cleanup.sh
 #	chmod +x cleanup.sh
-
-if BUILD_STARE
-RUN_STARE_TESTS = yes
-else
-RUN_STARE_TESTS = no
-endif
 
 ############## Autotest follows #####################
 

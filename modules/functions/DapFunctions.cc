@@ -26,8 +26,6 @@
 
 #include <iostream>
 
-#include <gdal.h>   // needed for scale_{grid,array}
-
 #include <libdap/ServerFunctionsList.h>
 
 #include <BESRequestHandlerList.h>
@@ -50,16 +48,18 @@
 #include "DilateArrayFunction.h"
 #include "RangeFunction.h"
 #include "BBoxCombFunction.h"
-#include "ScaleGrid.h"
 #include "TestFunction.h"
 #include "IdentityFunction.h"
+#include "DapFunctionsRequestHandler.h"
+#include "DapFunctions.h"
 
 #if HAVE_STARE
 #include "stare/StareFunctions.h"
 #endif
 
-#include "DapFunctionsRequestHandler.h"
-#include "DapFunctions.h"
+#if HAVE_GDAL
+#include "ScaleGrid.h"
+#endif
 
 // Until we sort out the GDAL linking issue, do not include the gdal functions
 #define INC_GDAL 0
@@ -102,7 +102,6 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new RangeFunction());
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
-
     libdap::ServerFunctionsList::TheList()->add_function(new IdentityFunction());
 
 #if HAVE_STARE
@@ -126,9 +125,9 @@ void DapFunctions::initialize(const string &modname)
     OGRRegisterAll();
 
     // What to do with the orig error handler? Pitch it. jhrg 10/17/16
-    /*CPLErrorHandler orig_err_handler =*/ (void) CPLSetErrorHandler(CPLQuietErrorHandler);
+    (void) CPLSetErrorHandler(CPLQuietErrorHandler);
 #endif
-    
+
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
 

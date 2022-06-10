@@ -6,10 +6,10 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(NC_CPPFLAGS)
-# Removed jhrg 6/9/22 $(GDAL_CFLAGS)
-LIBADD = $(DAP_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
-# Removed jhrg $(GDAL_LDFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+# Removed jhrg 6/9/22 $(NC_CPPFLAGS)  $(GDAL_CFLAGS)
+LIBADD = $(DAP_LIBS)
+# Removed jhrg 6/9/22 $(NC_LDFLAGS) $(NC_LIBS) $(GDAL_LDFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -20,7 +20,8 @@ LIBADD = $(DAP_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 # Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
-AM_CXXFLAGS = -Wno-c++14-extensions
+AM_CXXFLAGS =
+# Removed jhrg 5/31/22 -Wno-c++14-extensions
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -43,9 +44,8 @@ LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) 
 endif
 
 if BUILD_GDAL
-# Even if GDAL is found when building the BES, hold off on this code
-# until it has tests and supports DAP4
-# SUBDIRS +=  geo-functions 
+AM_CPPFLAGS +=  $(GDAL_CFLAGS)
+LIBADD +=  $(GDAL_LDFLAGS)
 endif
 
 lib_besdir=$(libdir)/bes
@@ -60,8 +60,8 @@ VersionFunction.cc MakeArrayFunction.cc MakeMaskFunction.cc		\
 DilateArrayFunction.cc BindNameFunction.cc BindShapeFunction.cc		\
 TabularFunction.cc TabularSequence.cc BBoxFunction.cc RoiFunction.cc	\
 roi_util.cc BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc	\
-RangeFunction.cc functions_util.cc 		\
-DapFunctionsRequestHandler.cc BBoxCombFunction.cc IdentityFunction.cc
+RangeFunction.cc functions_util.cc BBoxCombFunction.cc IdentityFunction.cc	\
+DapFunctionsRequestHandler.cc
 
 # Removed jhrg 6/9/22 scale_util.cc ScaleGrid.cc
 
@@ -82,6 +82,11 @@ SRCS += stare/StareFunctions.cc stare/GeoFile.cc
 HDRS += stare/StareFunctions.h stare/GeoFile.h
 endif
 
+if BUILD_GDAL
+SRCS += scale_util.cc ScaleGrid.cc
+HDRS += ScaleGrid.h
+endif
+
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_LDFLAGS = -avoid-version -module
 libfunctions_module_la_LIBADD = $(LIBADD)
@@ -96,8 +101,6 @@ lex.gse.cc: gse.lex gse.tab.cc gse.tab.hh
 
 gse.tab.cc gse.tab.hh: gse.yy
 	$(YACC) $(YFLAGS) $<
-
-EXTRA_PROGRAMS = 
 
 EXTRA_DIST = functions.conf.in gse.yy gse.lex
 
