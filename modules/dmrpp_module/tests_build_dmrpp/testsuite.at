@@ -23,11 +23,8 @@ AT_GET_DMRPP_3_20([-I, Inventory Test], [chunked_oneD.h5], [inventory_test.basel
 # -F Run Hyrax probe test on the output_file
 #AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
 
-# -M Generate missing variables sidecar file, requires use_cf_conf "site.conf" file
 AT_GET_DMRPP_3_20_MAKE_MISSING([-M, make missing data file], [grid_1_2d.h5], [missing_dmrpp.baseline], [missing_data.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
-
-# -p Inject missing variables dmrpp:chunk/@dmrpp:href attribute, requires use_cf_conf "site.conf" file
-#AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.missing_href.baseline], [-M -p http://some.where.over.the.rainbow.oz], [a.out])
+AT_GET_DMRPP_3_20_MAKE_MISSING([-M -p, make missing data file with missing data url], [grid_1_2d.h5], [missing_data_url_dmrpp.baseline], [missing_data.baseline], [-M -p http://some.where.over.the.rainbow.oz -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 
 # -r Provide missing variables sidecar file, requires use_cf_conf "site.conf" file
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
