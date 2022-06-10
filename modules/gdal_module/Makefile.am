@@ -1,10 +1,11 @@
 
-# Automake file for the gdal_handler
+# Automake file for the gdal_module
 #
+# Updated to include the gdal-based file responses. jhrg 6/10/22
 # 1/11/12 jhrg
 #
 
-AUTOMAKE_OPTIONS = foreign check-news 
+AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = reader writer . tests
 
@@ -50,7 +51,7 @@ module_DATA = gdal.conf
 gdal.conf: gdal.conf.in $(top_builddir)/config.status
 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > gdal.conf
 
-EXTRA_DIST = data
+EXTRA_DIST = data gdal.conf.in README
 
 # Sample data primaries for install
 sample_datadir = $(datadir)/hyrax/data/gdal

@@ -435,7 +435,7 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
     baseline=$abs_srcdir/$1.$2
     AT_XFAIL_IF([test z$3 = zxfail])
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
