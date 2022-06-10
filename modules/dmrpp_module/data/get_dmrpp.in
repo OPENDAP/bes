@@ -111,13 +111,13 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMUAX" opt; do
         ;;
     v)
         VERBOSE="yes"
-        echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "#######################################################################################" >&2
         echo "# ${0} - BEGIN (VERBOSE)" >&2
         ;;
     V)
         VERY_VERBOSE="-v"
         VERBOSE="yes"
-        echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "#######################################################################################" >&2
         echo "# ${0} - BEGIN (VERY_VERBOSE)" >&2
         ;;
     c)
@@ -187,14 +187,17 @@ if test -n "${VERBOSE}"; then
     else
         echo "false" >&2
     fi
-    echo "#      DMRPP_URL: ${DMRPP_URL}" >&2
 fi
 
 if test -z "${DMRPP_URL}"; then
     DMRPP_URL="OPeNDAP_DMRpp_DATA_ACCESS_URL"
-    echo "# Using Template Data Access URL String: '${DMRPP_URL}'" >&2
+    if test -n "${VERBOSE}"; then
+        echo "# (Using Template Data Access URL String)" >&2
+    fi
 fi
-
+if test -n "${VERBOSE}"; then
+    echo "#      DMRPP_URL: ${DMRPP_URL}" >&2
+fi
 # If we are running tests then we need to have the output filename for the dmr++ content.
 if [ -n "${RUN_INVENTORY_TESTS}" ] || [ -n "${RUN_VALUE_TESTS}" ]; then
     if [ -z "${OUTPUT_FILE}" ] && [ -z "${EXISTING_DMRPP}" ]; then
@@ -205,6 +208,10 @@ if [ -n "${RUN_INVENTORY_TESTS}" ] || [ -n "${RUN_VALUE_TESTS}" ]; then
         echo "" >&2
         exit 1
     fi
+fi
+if test -n "${VERBOSE}"; then
+    echo "#" >&2
+    echo "#" >&2
 fi
 
 # If we are merging missing variables then we need to have the output filename for the dmr++ content.
@@ -229,12 +236,12 @@ fi
 #
 function cleanup_temp_files() {
     if test -n "${CLEANUP_TEMP_FILES}"; then
-        echo "########################################################################" >&2
-        echo "# cleanup_temp_files()" >&2
+        echo "# BEGIN cleanup_temp_files() + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2
         rm -vf ${TEMP_FILE_LIST} >&2
         echo "# Temporary files have been removed." >&2
+        echo "# END cleanup_temp_files() - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
 }
 
@@ -248,8 +255,7 @@ function make_temp_file() {
     local file_prefix="${1}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# make_temp_file()" >&2
+        echo "# BEGIN make_temp_file() + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#     file_prefix: ${file_prefix}" >&2
     fi
 
@@ -267,6 +273,9 @@ function make_temp_file() {
 
     echo "${tmp_file}"
     export TEMP_FILE="${tmp_file}"
+    if test -n "${VERBOSE}"; then
+        echo "# END make_temp_file() - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
     return 0
 }
 
@@ -307,9 +316,7 @@ EOF
 #
 function mk_default_bes_conf() {
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mk_default_bes_conf()" >&2
-        echo "# " >&2
+        echo "# BEGIN mk_default_bes_conf() + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
     fi
 
     local default_bes_conf_doc=$(
@@ -386,7 +393,7 @@ EOF
         )
     fi
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
+        echo "# END mk_default_bes_conf() - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
     echo "${default_bes_conf_doc}"
 
@@ -421,8 +428,7 @@ function mkDAP2BesCmd() {
     local returnAs="${4}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mkDAP2BesCmd()" >&2
+        echo "# BEGIN mkDAP2BesCmd() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "# source_data_path: ${source_data_path}" >&2
         echo "#         dap_type: ${dap_type} " >&2
         echo "#          dap2_ce: '${dap2_ce}'" >&2
@@ -492,7 +498,7 @@ EOF
         cat "${bes_cmd_file}" >&2
     fi
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
+        echo "# END mkDAP2BesCmd() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
     echo "${bes_cmd_file}"
 }
@@ -509,12 +515,9 @@ function make_bes_conf() {
     local site_conf_file="${2}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mkDAP2BesCmd()" >&2
-        echo "# " >&2
+        echo "# BEGIN make_bes_conf() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "# user_supplied_conf_file: ${user_supplied_conf_file}" >&2
         echo "#          site_conf_file: ${site_conf_file}" >&2
-        echo "#" >&2
     fi
     local bes_conf_doc=""
 
@@ -532,6 +535,7 @@ function make_bes_conf() {
             echo "${bes_conf_doc}"
             cat "${site_conf_file}"
         )
+        # TODO - Fix this so the failure of "cat" is handled
     fi
 
     if test -n "${VERY_VERBOSE}"; then
@@ -551,6 +555,10 @@ function make_bes_conf() {
         cat ${tmp_conf_file} >&2
     fi
 
+    if test -n "${VERBOSE}"; then
+        echo "# END make_bes_conf() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+
     echo "${tmp_conf_file}"
 }
 ########################################################################################################################
@@ -568,8 +576,7 @@ function mkDapRequest() {
     local output_file="${6}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mkDapRequest()" >&2
+        echo "# BEGIN mkDapRequest() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "# " >&2
         echo "#  bes_conf_file: ${bes_conf_file}" >&2
         echo "#      data_path: ${data_path}" >&2
@@ -607,13 +614,14 @@ function mkDapRequest() {
     status=$?
     if test $status -ne 0; then
         echo "" >&2
-        echo "" >&2
         echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
         echo "ERROR! The besstandalone program failed to build a ${dap_type} file!." >&2
         echo "       The configuration is here: ${bes_conf_file}" >&2
         echo "             The command is here: ${bes_command_file}" >&2
         echo "The besstandalone output is here: ${target_dap_file}" >&2
-        echo "       besstandalone exit status: $status" >&2
+        echo "     besstandalone return status: $status" >&2
+        echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
+        echo "" >&2
         return $status
     fi
 
@@ -621,7 +629,9 @@ function mkDapRequest() {
         echo "# target_dap_file: " >&2
         cat "${target_dap_file}" >&2
     fi
-
+    if test -n "${VERBOSE}"; then
+        echo "# END mkDapRequest() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
     # This is the return value of the function!
     echo "${target_dap_file}"
 
@@ -641,8 +651,7 @@ function mk_dmrpp() {
     local full_data_path="${BES_DATA_ROOT}/${datafile}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mk_dmrpp()" >&2
+        echo "# BEGIN mk_dmrpp() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "#   BES_DATA_ROOT: ${BES_DATA_ROOT}" >&2
         echo "#       DMRPP_URL: ${DMRPP_URL}" >&2
@@ -676,6 +685,11 @@ function mk_dmrpp() {
         echo "The JUST_DMR flag is set, skipping dmr++ construction."
     fi
 
+    if test -n "${VERBOSE}"; then
+       echo "# END mk_dmrpp() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+
+    return 0
 }
 
 #######################################################################################################################
@@ -687,24 +701,30 @@ function chk_dmrpp_for_missing_vars() {
     local mvars_file="${2}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# chk_dmrpp_for_missing_vars()" >&2
+        echo "# BEGIN chk_dmrpp_for_missing_vars() + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "#     dmrpp_file: ${dmrpp_file}" >&2
         echo "#     mvars_file: ${mvars_file}" >&2
     fi
 
+    local retval=""
+
     ck_prms="${dmrpp_file} ${mvars_file}"
     if test -n "${VERBOSE}"; then echo "#   check_dmrpp parameters: ${ck_prms}" >&2; fi
     if test -n "${mvars_file}"; then
         check_dmrpp ${ck_prms}
-        return $?
+        retval=$?
     else
         echo "The missing_vars file wasn't specified, skipping missing variable construction." >&2
-        return 1
+        retval=1
     fi
+    if test -n "${VERBOSE}"; then
+        echo "# END chk_dmrpp_for_missing_vars() - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
+
 }
-########################################################################################################################
+###############################################################################
 
 ###############################################################################
 #
@@ -716,8 +736,7 @@ function make_missing_conf() {
     local site_conf_file="${2}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# make_missing_conf()" >&2
+        echo "# BEGIN make_missing_conf() + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "# user_supplied_conf_file: ${user_supplied_conf_file}" >&2
         echo "#          site_conf_file: ${site_conf_file}" >&2
@@ -786,6 +805,9 @@ EOF
         fi
     fi
 
+    if test -n "${VERBOSE}"; then
+        echo "# END make_missing_conf() - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
     echo "${missing_bes_conf_file}"
 
 }
@@ -802,8 +824,7 @@ function merge_dmrpp_missing() {
     local missing_vars_file="${4}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# mg_dmrpp()" >&2
+        echo "# BEGIN merge_dmrpp_missing() + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "# missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}" >&2
         echo "#       master_dmrpp_file: ${master_dmrpp_file}" >&2
@@ -816,13 +837,19 @@ function merge_dmrpp_missing() {
     mg_prms="${mg_prms} ${missing_data_url}"
     mg_prms="${mg_prms} ${missing_vars_file} "
     if test -n "${VERBOSE}"; then echo "#   build_params: ${mg_prms}" >&2; fi
+    local retval=""
     if test -n "$missing_vars_file"; then
         merge_dmrpp ${mg_prms}
-        return $?
+        retval=$?
     else
         echo "The missing_vars file doesn't exist, there are no missing variables to merge." >&2
-        return 1
+        retval=1
     fi
+
+    if test -n "${VERBOSE}"; then
+        echo "# END merge_dmrpp_missing() - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
 }
 ########################################################################################################################
 
@@ -839,8 +866,7 @@ function reduce_dmrpp() {
     local mvdf_full_path="${BES_DATA_ROOT}/${missing_vars_data_file}"
 
     if test -n "${VERBOSE}"; then
-        echo "#####################################################################################" >&2
-        echo "# reduce_dmrpp()" >&2
+        echo "# BEGIN reduce_dmrpp() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "#" >&2
         echo "#  missing_vars_data_file: ${missing_vars_data_file}" >&2
         echo "# missing_vars_dmrpp_file: ${missing_vars_dmrpp_file}" >&2
@@ -854,15 +880,20 @@ function reduce_dmrpp() {
     rd_prms="${rd_prms} ${mvdf_full_path} "
     rd_prms="${rd_prms} ${master_sha256}"
     rd_prms="${rd_prms} ${temporary_storage_file} "
-    if test -n "${VERBOSE}"; then echo "   build_params: ${rd_prms}" >&2; fi
+    if test -n "${VERBOSE}"; then echo "#   build_params: ${rd_prms}" >&2; fi
+
+    local retval=""
     if test -n "${missing_vars_dmrpp_file}"; then
         reduce_mdf ${rd_prms}
-        return $?
-
+        retval=$?
     else
         echo "The missing_vars_dmrpp_file was not set exist, there are no missing variables to merge." >&2
-        return 1
+        retval=1
     fi
+    if test -n "${VERBOSE}"; then
+        echo "# END reduce_dmrpp() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
 
 }
 ########################################################################################################################
@@ -1028,13 +1059,18 @@ function dap4_array_test() {
     local dmr_file="${2}"
     local target_file="${3}"
     local type="${4}"
-    #echo "# bes_conf_file: ${bes_conf_file}" >&2;
-    #echo "#      dmr_file: ${dmr_file}" >&2;
-    #echo "#   target_file: ${target_file}" >&2;
-    #echo "#     DAP4 type: ${type}" >&2;
-
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN dap4_array_test() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "#" >&2
+        echo "# bes_conf_file: ${bes_conf_file}" >&2;
+        echo "#      dmr_file: ${dmr_file}" >&2;
+        echo "#   target_file: ${target_file}" >&2;
+        echo "#     DAP4 type: ${type}" >&2;
+        echo "#" >&2
+    fi
+    local var_count=""
     var_count=$(dap4_array_counter ${dmr_file} ${type})
-    if test -n "${VERBOSE}"; then echo "Found ${var_count} variables of type ${type} in DMR: ${dmr_file}" >&2; fi
+    if test -n "${VERBOSE}"; then echo "# Found ${var_count} variables of type ${type} in DMR: ${dmr_file}" >&2; fi
     if [ ${var_count} -lt 1 ]; then
         echo "ERROR! No variables of type ${type} found in DMR!" >&2
         return 0
@@ -1089,15 +1125,23 @@ function dap4_array_test() {
     besstandalone -c "${bes_conf_file}" -i "${bes_cmd_file}" > ${dap2_dmrpp_response}
     if test -n "${VERY_VERBOSE}"; then getdap -D -M ${dap2_dmrpp_response} >&2; fi
 
+    local retval=""
+    local status=""
+
     if test -n "${VERBOSE}"; then echo "# Comparing binary responses..." >&2; fi
     cmp "${dap2_source_response}" "${dap2_dmrpp_response}" >&2
-    if [ $? -eq 0 ]; then
+    status=$?
+    if test $status -eq 0 ; then
         if test -n "${VERBOSE}"; then echo "# Responses are the same. w00t" >&2; fi
-        return 0
+        retval $status
     else
         if test -n "${VERBOSE}"; then echo "# ERROR! Responses differ." >&2; fi
-        return 100
+        retval=100
     fi
+    if test -n "${VERBOSE}"; then
+        echo "# END dap4_array_test() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
 
 }
 
@@ -1109,32 +1153,36 @@ function dap4_array_test() {
 # check_function using diff.
 #
 function compare_files() {
-    check_function=${1}
-    first_file=${2}
-    second_file=${3}
-    success="${4}"
-    failure="${5}"
+    local check_function=${1}
+    local first_file=${2}
+    local second_file=${3}
+    local success="${4}"
+    local failure="${5}"
+
     if test -n "${VERY_VERBOSE}"; then
-        echo "compare_files() check_function: ${check_function}" >&2
-        echo "compare_files()     first_file: ${first_file}" >&2
-        echo "compare_files()    second_file: ${second_file}" >&2
+        echo "# BEGIN compare_files() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "# check_function: ${check_function}" >&2
+        echo "#     first_file: ${first_file}" >&2
+        echo "#    second_file: ${second_file}" >&2
+        echo "#        success: ${success}" >&2
+        echo "#        failure: ${failure}" >&2
     fi
 
     first_result=$(mktemp -t ${check_function}_result_1_XXXX)
     if test -n "${VERY_VERBOSE}"; then
-        echo "compare_files()   first_result: ${first_result}" >&2
+        echo "#   first_result: ${first_result}" >&2
     fi
     f_stuff=$(${check_function} ${first_file})
     echo "${f_stuff}" > ${first_result}
 
     second_result=$(mktemp -t ${check_function}_result_2_XXXX)
     if test -n "${VERY_VERBOSE}"; then
-        echo "compare_files()  second_result: ${second_result}" >&2
+        echo "#  second_result: ${second_result}" >&2
     fi
     s_stuff=$(${check_function} ${second_file})
     echo "${s_stuff}" > ${second_result}
 
-    retval=0
+    local retval=0
     diff --ignore-space-change --brief ${first_result} ${second_result}
     if [ $? -eq 0 ]; then
         if test -n "${VERBOSE}"; then
@@ -1143,6 +1191,9 @@ function compare_files() {
     else
         echo "${failure}" >&2
         retval=1
+    fi
+    if test -n "${VERY_VERBOSE}"; then
+        echo "# END compare_files() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
     return ${retval}
 }
@@ -1157,8 +1208,7 @@ function dmrpp_inventory_test() {
     local output_filename="${3}"
 
     if test -n "${VERBOSE}"; then
-        echo "########################################################################" >&2
-        echo "# dmrpp_inventory_test()" >&2
+        echo "# BEGIN dmrpp_inventory_test() + + + + + + + + + + + + + + + + + + + + +" >&2
         echo "# " >&2
         echo "#   bes_conf_file: ${bes_conf_file}" >&2
         echo "# source_dmr_file: ${source_dmr_file}" >&2
@@ -1221,9 +1271,6 @@ function dmrpp_inventory_test() {
         return $status
     fi
 
-    #retval=0
-    # echo "dmrpp_inventory_test: retval: ${retval}"
-
     compare_files dap4_vars "${source_dmr_file}" "${target_dmr}" " DAP4 variables: Matched." "ERROR! DAP4 variables mismatch!"
     status=$?
     if test -n "${VERBOSE}"; then echo "# compare_files dap4_vars, status: ${status}"; fi
@@ -1244,7 +1291,11 @@ function dmrpp_inventory_test() {
     if test -n "${VERBOSE}"; then echo "# compare_files dap2_attributes, status: ${status}"; fi
     retval=$(echo "${retval} + ${status}" | bc)
 
-    return ${retval}
+    if test -n "${VERBOSE}"; then
+        echo "# retval: ${retval}"
+        echo "# END dmrpp_inventory_test() - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
 }
 
 ########################################################################################################################
@@ -1262,15 +1313,24 @@ function dmrpp_value_test() {
     fi
 
     if test -n "${VERY_VERBOSE}"; then
-        echo "dvt SOURCE_DATAFILE: ${INPUT_DATA_FILE}" >&2
-        echo "dvt   bes_conf_file: ${bes_conf_file}" >&2
-        echo "dvt     target_file: ${target_file}" >&2
-        echo "dvt source_dmr_file: ${source_dmr_file}" >&2
+        echo "# BEGIN dmrpp_value_test() + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "# INPUT_DATA_FILE: ${INPUT_DATA_FILE}" >&2
+        echo "#   bes_conf_file: ${bes_conf_file}" >&2
+        echo "#     target_file: ${target_file}" >&2
+        echo "# source_dmr_file: ${source_dmr_file}" >&2
     fi
+    local retval=0
+    local status=""
+
     for datatype in Int8 UInt8 Int16 UInt16 Int32 UInt32 Float32 Float64; do
         dap4_array_test "${bes_conf_file}" "${source_dmr_file}" "${target_file}" "${datatype}"
+        status=$?
+        retval=$(echo "${retval} + ${status}" | bc)
     done
-    return $?
+    if test -n "${VERY_VERBOSE}"; then
+        echo "# END dmrpp_value_test() - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
 }
 
 ########################################################################################################################
@@ -1280,24 +1340,33 @@ function dmrpp_value_test() {
 # Returns non-zero if the AWS CLI is not configured
 #
 function check_aws_config() {
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN check_aws_config() + + + + + + + + + + + + + + + + + + + + + + +" >&2
+    fi
+    local retval=0
     aws configure list | grep "access_key" | grep -v "<not set>" > /dev/null
-    ret=$?
-    if test $ret != 0; then
+    retval=$?
+    if test $retval -ne 0; then
         echo "ERROR - The AWS_ACCESS_KEY_ID is not set." >&2
-        return $ret
+    else
+        aws configure list | grep "secret_key" | grep -v "<not set>" > /dev/null
+        retval=$?
+        if test $retval -ne 0; then
+            echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set." >&2
+        else
+            aws configure list | grep "region" | grep -v "<not set>" > /dev/null
+            retval=$?
+            if test $retval -ne 0; then
+                echo "WARNING - The AWS_DEFAULT_REGION is not set." >&2
+                retval=0
+            fi
+        fi
     fi
-    aws configure list | grep "secret_key" | grep -v "<not set>" > /dev/null
-    ret=$?
-    if test $ret != 0; then
-        echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set." >&2
-        return $ret
+    if test -n "${VERBOSE}"; then
+        echo "# END check_aws_config() - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
-    aws configure list | grep "region" | grep -v "<not set>" > /dev/null
-    ret=$?
-    if test $ret != 0; then
-        echo "WARNING - The AWS_DEFAULT_REGION is not set." >&2
-        return 0
-    fi
+    return $retval
+
 }
 
 ########################################################################################################################
@@ -1309,13 +1378,14 @@ function check_aws_config() {
 function merge_missing() {
     local bes_conf_file="${1}"
 
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN merge_missing() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "#     bes_conf_file: ${bes_conf_file}" >&2
+        echo "#" >&2
+    fi
+
     local status=0
     if test -n "${MERGE_MISSING_VARS}"; then
-        if test -n "${VERBOSE}"; then
-            echo "#####################################################################################" >&2
-            echo "# merge_missing()" >&2
-            echo "#" >&2
-        fi
 
         # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${OUTPUT_FILE}; -o option]
         local missing_vars_file=""
@@ -1442,7 +1512,15 @@ function merge_missing() {
         else
             echo " There are no missing variables to merge."
         fi
+    else
+        if test -n "${VERBOSE}"; then
+            echo "# merge_missing() is DISABLED" >&2
+        fi
+   fi
+    if test -n "${VERBOSE}"; then
+        echo "# END merge_missing() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
+
     return 0
 }
 
@@ -1456,6 +1534,15 @@ function run_tests() {
     local source_dmr_file="${2}"
     local output_filename="${3}"
 
+    if test -n "${VERBOSE}"; then
+        echo "# BEGIN run_tests() + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +" >&2
+        echo "#     bes_conf_file: ${bes_conf_file}" >&2
+        echo "#   source_dmr_file: ${source_dmr_file}" >&2
+        echo "#   output_filename: ${output_filename}" >&2
+    fi
+
+    local retval=0
+
     if test -n "${RUN_INVENTORY_TESTS}"; then
         dmrpp_inventory_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
         retval=$(echo "${retval} + ${?}" | bc)
@@ -1467,6 +1554,11 @@ function run_tests() {
         retval=$(echo "${retval} + ${?}" | bc)
         #echo "retval: ${retval}";
     fi
+    if test -n "${VERBOSE}"; then
+        echo "# END run_tests() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+    fi
+    return $retval
+
 }
 
 ########################################################################################################################
@@ -1481,20 +1573,21 @@ function run_tests() {
 
 function main() {
     trap cleanup_temp_files EXIT
+    local status=0
     # Here we test to see if the input file name is actually an S3 URL
     # and if it is we adjust the INPUT_DATA_FILE and go out and get the
     # object from S3.
-    s3_granule=
+    local s3_granule=
     if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
         s3_granule="${INPUT_DATA_FILE}"
         echo "Detected S3 URL as data input: ${s3_granule}" >&2
 
         set +e
         check_aws_config
-        ret=$?
-        if test $ret != 0; then
+        status=$?
+        if test $status -ne 0; then
             echo "ERROR - The AWS CLI is not configured. Exiting." >&2
-            exit 1
+            return $status
         fi
 
         INPUT_DATA_FILE=$(basename "${s3_granule}")
@@ -1509,10 +1602,10 @@ function main() {
         echo "Copying S3 object to: ${local_file}" >&2
 
         aws s3 cp ${s3_granule} ${local_file}
-        result=$?
-        if test $result != 0; then
-            echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
-            exit $result
+        status=$?
+        if test $status -ne 0; then
+            echo "ERROR - Failed to acquire S3 object. (status: $status) Exiting..." >&2
+            return $status
         fi
         set -e
     fi
@@ -1531,7 +1624,7 @@ function main() {
         else
             cat "${dmr_file}" > "${OUTPUT_FILE}"
         fi
-        exit 0
+        return 0
     else
         export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${dmr_file}"
     fi
@@ -1540,7 +1633,7 @@ function main() {
     status=$?
     if test $status -ne 0; then
         echo "ERROR: mk_dmrpp() ${bes_conf_file} ${INPUT_DATA_FILE} ${dmr_file} ${OUTPUT_FILE} Failed!. status: $status" >&2
-        exit $status
+        return $status
     fi
 
     # if test -n "${VERBOSE}"; then echo "main() - TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2; fi
@@ -1550,11 +1643,16 @@ function main() {
     status=$?
     if test $status -ne 0; then
         echo "ERROR: merge_missing() FAILED!. status: $status" >&2
-        exit $status
+        return $status
     fi
 
     # Run the dmr++ testmodify_configuration_test.baselines (conditional)
     run_tests "${bes_conf_file}" "${dmr_file}" "${OUTPUT_FILE}"
+    status=$?
+    if test $status -ne 0; then
+        echo "ERROR: run_tests() FAILED!. status: $status" >&2
+        return $status
+    fi
 
     # Push the dmr++ to S3 target (conditional)
     if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"; then
@@ -1565,25 +1663,25 @@ function main() {
             echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
             show_usage >&2
             echo "#---------------------------------------------------------------------" >&2
-            exit 1
+            return 1
         fi
         s3_dmrpp="${s3_granule}.dmrpp"
         echo "Uploading dmr++ file (${OUTPUT_FILE}) to: ${s3_dmrpp}" >&2
         set +e
         aws s3 cp "${OUTPUT_FILE}" "${s3_dmrpp}"
-        result=$?
-        if test $result != 0; then
+        status=$?
+        if test $status -ne 0; then
             echo "ERROR - Failed to upload ${s3_dmrpp} to S3. Exiting..." >&2
-            exit $result
+            return $status
         fi
         if test -n "${SIDECAR_MISSING_FILE}" && test -s "${SIDECAR_MISSING_FILE}"; then
             s3_missing_file="${s3_granule}.missing"
             echo "Uploading missing data file (${SIDECAR_MISSING_FILE}) to: ${s3_missing_file}" >&2
             aws s3 cp "${SIDECAR_MISSING_FILE}" "${s3_missing_file}"
-            result=$?
-            if test $result != 0; then
+            status=$?
+            if test $status != 0; then
                 echo "ERROR - Failed to upload ${s3_missing_file} to S3. Exiting..." >&2
-                exit $result
+                return $status
             fi
         fi
         set -e
@@ -1601,8 +1699,7 @@ function main() {
         #echo " main:SOURCE_DMR: ${SOURCE_DMR}"
     fi
 
-    #echo "retval: ${retval}";
-    exit $retval
+    return 0
 
     #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" -o airs.h5.dmrpp -T -v  airs.h5
     #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/SMAP_L3_SM_P_20150406_R14010_001.h5" -o smap.h5.dmrpp -T -v  smap.h5

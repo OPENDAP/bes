@@ -10,7 +10,7 @@ CLEANFILES =
 EXTRA_DIST = get_dmrpp_baselines $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
-DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5
+DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5 grid_1_2d.h5 grid_1_2d.h5.missing
 
 noinst_DATA = $(abs_builddir)/grid_1_2d.h5
 
