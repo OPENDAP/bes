@@ -95,6 +95,14 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
         domainType = "Grid";   
         return true;
     }
+    else 
+        return false;
+    
+    // The following code is commented out for the time being. 
+    // We currently only support the simple CF geographic projection for the time being.  
+    // We will enhance this module to support the other cases in the new tickets.
+    // KY 2022-06-10
+#if 0
     if(xExists && yExists && zExists && tExists) {
 
         if (shapeVals.size() < 4)
@@ -200,6 +208,8 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
 //cerr<<"Coming to the last step."<<endl;
 
     return false; // This source DDS is not valid as CovJSON
+
+#endif
 }
 
 template<typename T>
