@@ -11,7 +11,6 @@ BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
 BES.modules = dap,cmd,nc,h4,h5,gateway,ncml,fonc,ascii,json,dmrpp
-# BES.modules += gdal
 
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
@@ -25,7 +24,6 @@ BES.module.ascii=@abs_top_builddir@/modules/asciival/.libs/libascii_module.so
 BES.module.json=@abs_top_builddir@/modules/fileout_json/.libs/libfojson_module.so
 BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 
-# BES.module.gdal=@abs_top_builddir@/modules/gdal_handler/.libs/libgdal_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ncml_module
 
@@ -34,7 +32,6 @@ BES.Catalog.catalog.TypeMatch+=h4:.*.(hdf|HDF|eos)(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=csv:.*.csv(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=ncml:.*.ncml(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=h5:.*.h5(.bz2|.gz|.Z)?$;
-# BES.Catalog.catalog.TypeMatch+=gdal:.*.tif(.bz2|.gz|.Z)?$;
 
 BES.Catalog.catalog.TypeMatch += dmrpp:.*.dmrpp$;
 
