@@ -1128,46 +1128,51 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
         t_bnd_val.resize(axisVar_t_bnd_val.size());
         for (unsigned i = 0; i < axisVar_t_bnd_val.size();i++) {
            t_bnd_val[i] = cf_time_to_greg((long long)(axisVar_t_bnd_val[i]));
+#if 0
 //cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
+#endif
         }
     }
 
     // bound for  x-axis
     std::vector<std::string> x_bnd_val;
-    if(axisVar_x_bnd_val.size() >0) {
+    if(axisVar_x_bnd_val.empty() == false) {
         x_bnd_val.resize(axisVar_x_bnd_val.size());
         for (unsigned i = 0; i < axisVar_x_bnd_val.size();i++) {
-           //x_bnd_val[i] =  to_string(axisVar_x_bnd_val[i]);
            ostringstream temp_strm;
            temp_strm<<axisVar_x_bnd_val[i];
            x_bnd_val[i] = temp_strm.str();
+#if 0
 //cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
+#endif
         }
     }
 
     // bound for  y-axis
     std::vector<std::string> y_bnd_val;
-    if(axisVar_y_bnd_val.size() >0) {
+    if(axisVar_y_bnd_val.empty() == false) {
         y_bnd_val.resize(axisVar_y_bnd_val.size());
         for (unsigned i = 0; i < axisVar_y_bnd_val.size();i++) {
-           //y_bnd_val[i] =  to_string(axisVar_y_bnd_val[i]);
            ostringstream temp_strm;
            temp_strm<<axisVar_y_bnd_val[i];
            y_bnd_val[i] = temp_strm.str();
+#if 0
 //cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
+#endif
         }
     }
 
     // bound for  z-axis
     std::vector<std::string> z_bnd_val;
-    if(axisVar_z_bnd_val.size() >0) {
+    if(axisVar_z_bnd_val.empty() == false) {
         z_bnd_val.resize(axisVar_z_bnd_val.size());
         for (unsigned i = 0; i < axisVar_z_bnd_val.size();i++) {
-           //z_bnd_val[i] =  to_string(axisVar_z_bnd_val[i]);
            ostringstream temp_strm;
            temp_strm<<axisVar_z_bnd_val[i];
            z_bnd_val[i] = temp_strm.str();
+#if 0
 //cerr<<"Z bound value is "<<z_bnd_val[i] <<endl;
+#endif
         }
     }  
     
@@ -1978,8 +1983,10 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
 //cerr<<"coming to the obtain_bound_values "<<endl;
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if (d_a) {// float, now we just handle this way 
+#if 0
 //cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
 //cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+#endif
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
@@ -1991,10 +1998,10 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
                     av_bnd_val[i] =(float)temp_val[i];
  
-//#if 0
+#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
-//#endif
+#endif
             }
         }
         else if(d_a->var()->type_name() == "Float32") {
@@ -2379,7 +2386,9 @@ cerr<<"cf_s_i " <<cf_s_i <<endl;
     // This should be sufficient for the data we serve now. 
     ycf_1.tm_hour = cf_h_i;   ycf_1.tm_min = cf_m_i; ycf_1.tm_sec = cf_s_i;
     ycf_1.tm_year = cf_y_i-1900; ycf_1.tm_mon = cf_mo_i; ycf_1.tm_mday = cf_d_i;
+#if 0
     //time_t t_ycf_1 = mktime(&ycf_1);
+#endif
     time_t t_ycf_1 = timegm(&ycf_1);
 
 #if 0
@@ -2405,12 +2414,16 @@ cerr<<"time_val is "<<time_val <<endl;
   //time_t t_ycf_2 = t_ycf_1 + 86340;
 //cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
   struct tm *t_new_ycf;
+  struct tm temp_new_ycf;
   // The use of localtime() is to calcuate the time based on the CF time unit.
   // So the value actually represents the GMT time. 
   // Note: we didn't consider the use of local time in the CF. 
   // Our currently supported product uses GMT. Will consider the other cases later.
+#if 0
   //t_new_ycf = localtime(&t_ycf_2);
-  t_new_ycf = gmtime(&t_ycf_2);
+  //t_new_ycf = gmtime(&t_ycf_2);
+#endif
+  t_new_ycf = gmtime_r(&t_ycf_2,&temp_new_ycf);
 
 #if 0
 cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
@@ -2454,7 +2467,7 @@ cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
     return covjson_time;
 } 
 
-void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent, bool is_t_axis) {
+void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent, bool is_t_axis) const {
 
     if(axisVar_t.bound_name !="") {
         std::string print_values;

@@ -128,7 +128,7 @@ private:
     // Current only support the double precision for time.
     //std::string cf_time_to_greg(double time);
     std::string cf_time_to_greg(long long time);
-    void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis);
+    void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis) const;
     
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
