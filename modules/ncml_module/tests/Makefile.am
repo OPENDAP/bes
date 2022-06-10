@@ -13,11 +13,7 @@ EXTRA_DIST = $(TESTSUITE).at $(TEST_FILES) $(srcdir)/package.m4 \
 $(TESTSUITE) atlocal.in template.bescmd.in bes.conf.in bes.gdal.conf.in \
 baselines cache
 
-if BUILD_GDAL
-BES_CONF = bes.gdal.conf
-else
 BES_CONF = bes.conf
-endif
 
 noinst_DATA = $(BES_CONF)
 
@@ -34,7 +30,7 @@ DISTCLEANFILES = atconfig cache/* mds_ledger.txt
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) $(BES_CONF)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=$(BES_CONF)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 # Technically, we don't need this target now, but it might be useful
 # to add it later to be complete.  It would only need to run
