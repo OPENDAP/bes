@@ -368,7 +368,7 @@ AT_CHECK([test -n "${output_file}"])
 params="${params} -o ${output_file}"
 
 local gdv=""
-if test -z "$at_verbose"; then gdv="-v"; fi
+if test -z "$at_verbose"; then gdv="-v -X"; fi
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -M ${params} ${gdv} ${input_file}"
 
