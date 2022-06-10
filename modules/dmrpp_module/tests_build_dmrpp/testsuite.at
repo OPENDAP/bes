@@ -33,7 +33,7 @@ AT_GET_DMRPP_3_20_MAKE_MISSING([-M, make missing data file], [grid_1_2d.h5], [mi
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
 
 # -U Use input file located in AWS S3
-AT_GET_DMRPP_3_20([-U, AWS S3 pull and push test], [s3://opendap.travis.tests/data/dmrpp/chunked_oneD.h5], [chunked_oneD.h5.baseline], [-U -b ${abs_builddir}], [${abs_builddir}/a.out])
+AT_GET_DMRPP_3_20([-U, AWS S3 pull and push test], [s3://opendap.travis.tests/data/dmrpp/chunked_oneD.h5], [s3_pull_push_test.baseline], [-U -b ${abs_builddir}], [${abs_builddir}/a.out])
 
 ################################################################################
 # Test build_dmrpp using pre-built DMRs
