@@ -1,0 +1,52 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": [-180, -120, -60, 0, 60, 120]
+      },
+      "y": {
+        "values": [-90, -30, 30]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "temp": {
+      "type": "Parameter",
+      "description": {
+        "en": "temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "kelvin"
+        },
+        "symbol": {
+          "value": "kelvin",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "temperature"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "temp": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [3, 6],
+      "values": [305, 304, 303, 302, 301, 300, 305, 304, 303, 302, 301, 300, 305, 304, 303, 302, 301, 300]
+    }
+  }
+}

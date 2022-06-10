@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">data/AIRS.2020.01.01.L3.RetStd_IR031.v7.0.4.0.G20336214947.hdf</setContainer>
+    <define name="d">
+	<container name="c" />
+    </define>
+    <get type="dods" definition="d"  returnAs="covjson" />
+</request>
