@@ -349,12 +349,15 @@ params="$5"
 output_file="$6"
 AT_XFAIL_IF([test z$7 = zxfail]) # This is always run FIRST
 
+missing_data_file="${input_file}.missing"
+
 echo "${input_file}" | grep "s3://"
 if test $? -eq 0
 then
     # We're here because it's an S3 Test
     # Only run the S3 tests if specifically instructed to do so.
     AT_SKIP_IF([test x$s3tests = xno])
+    missing_data_file=$(basename "${input_file}").missing
 fi
 
 if test -n "${output_file}"
@@ -415,7 +418,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data dmrpp result to ${dmrpp_baseline}.tmp"])
     AT_CHECK([mv ${output_file} ${dmrpp_baseline}.tmp])
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying missing data result to ${missing_baseline}.missing.tmp"])
-    AT_CHECK([ncdump ${abs_builddir}/${input_file}.missing > ${missing_baseline}.missing.tmp])
+    AT_CHECK([ncdump ${abs_builddir}/${missing_data_file} > ${missing_baseline}.missing.tmp])
 ],
 [
     AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
@@ -436,7 +439,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     ])
     AT_CHECK([diff -b -B ${dmrpp_baseline} ${output_file}])
 
-    AT_CHECK([ncdump ${abs_builddir}/${input_file}.missing > tmp])
+    AT_CHECK([ncdump ${abs_builddir}/${missing_data_file} > tmp])
     AS_IF([test -z "$at_verbose"], [
         echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"

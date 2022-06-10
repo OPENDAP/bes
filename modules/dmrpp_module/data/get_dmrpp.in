@@ -1542,19 +1542,22 @@ function run_tests() {
     fi
 
     local retval=0
-
+    local tests_run=0
     if test -n "${RUN_INVENTORY_TESTS}"; then
         dmrpp_inventory_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
         retval=$(echo "${retval} + ${?}" | bc)
         #echo "dmrpp_inventory_test: retval: ${retval}"
+        ((tests_run++))
     fi
 
     if test -n "${RUN_VALUE_TESTS}"; then
         dmrpp_value_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
         retval=$(echo "${retval} + ${?}" | bc)
         #echo "retval: ${retval}";
+        ((tests_run++))
     fi
     if test -n "${VERBOSE}"; then
+        echo "# Ran ${tests_run} tests." >&2
         echo "# END run_tests() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
     return $retval
@@ -1580,7 +1583,7 @@ function main() {
     local s3_granule=
     if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
         s3_granule="${INPUT_DATA_FILE}"
-        echo "Detected S3 URL as data input: ${s3_granule}" >&2
+        echo "# Detected S3 URL as data input: ${s3_granule}" >&2
 
         set +e
         check_aws_config
@@ -1591,22 +1594,25 @@ function main() {
         fi
 
         INPUT_DATA_FILE=$(basename "${s3_granule}")
-        echo "INPUT_DATA_FILE: ${INPUT_DATA_FILE}" >&2
+        echo "# INPUT_DATA_FILE: ${INPUT_DATA_FILE}" >&2
 
-        local_file=""
-        if test "${BES_DATA_ROOT}" = "/"; then # TODO - This should test for ends_with("/")
-            local_file="/${INPUT_DATA_FILE}"
+        local s3_local_file=""
+        if [[ "${BES_DATA_ROOT}" == */ ]]; then # Ends with /
+            s3_local_file="${BES_DATA_ROOT}${INPUT_DATA_FILE}"
         else
-            local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
+            s3_local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
         fi
-        echo "Copying S3 object to: ${local_file}" >&2
+        echo "# Copying S3 object to: ${s3_local_file}" >&2
 
-        aws s3 cp ${s3_granule} ${local_file}
+        aws s3 cp ${s3_granule} ${s3_local_file}
         status=$?
         if test $status -ne 0; then
             echo "ERROR - Failed to acquire S3 object. (status: $status) Exiting..." >&2
             return $status
         fi
+
+        local s3_local_side_car_missing_file="${s3_local_file}.missing"
+        echo "# Missing file (if needed): ${s3_local_side_car_missing_file}" >&2
         set -e
     fi
 
@@ -1657,16 +1663,16 @@ function main() {
     # Push the dmr++ to S3 target (conditional)
     if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"; then
         if test -z "${OUTPUT_FILE}"; then
-            echo "#---------------------------------------------------------------------" >&2
+            echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
             echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
             echo "        Use the -o parameter. To set the output file name" >&2
             echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
             show_usage >&2
-            echo "#---------------------------------------------------------------------" >&2
+            echo "!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!" >&2
             return 1
         fi
         s3_dmrpp="${s3_granule}.dmrpp"
-        echo "Uploading dmr++ file (${OUTPUT_FILE}) to: ${s3_dmrpp}" >&2
+        echo "# Uploading dmr++ file (${OUTPUT_FILE}) to: ${s3_dmrpp}" >&2
         set +e
         aws s3 cp "${OUTPUT_FILE}" "${s3_dmrpp}"
         status=$?
@@ -1674,35 +1680,28 @@ function main() {
             echo "ERROR - Failed to upload ${s3_dmrpp} to S3. Exiting..." >&2
             return $status
         fi
-        if test -n "${SIDECAR_MISSING_FILE}" && test -s "${SIDECAR_MISSING_FILE}"; then
-            s3_missing_file="${s3_granule}.missing"
-            echo "Uploading missing data file (${SIDECAR_MISSING_FILE}) to: ${s3_missing_file}" >&2
-            aws s3 cp "${SIDECAR_MISSING_FILE}" "${s3_missing_file}"
+        echo "# Checking missing data file: ${s3_local_side_car_missing_file}" >&2
+        if test -n "${s3_local_side_car_missing_file}" && test -s "${s3_local_side_car_missing_file}"; then
+            local s3_missing_file="${s3_granule}.missing"
+            echo "# Uploading missing data file (${s3_local_side_car_missing_file}) to: ${s3_missing_file}" >&2
+            aws s3 cp "${s3_local_side_car_missing_file}" "${s3_missing_file}"
             status=$?
             if test $status != 0; then
                 echo "ERROR - Failed to upload ${s3_missing_file} to S3. Exiting..." >&2
                 return $status
             fi
+        else
+            echo "# No usable missing data file: ${s3_local_side_car_missing_file}" >&2
+            echo "# "$(ls -l "${s3_local_side_car_missing_file}") >&2
         fi
         set -e
     fi
-
-    # Cleanup the mess, or not (conditional)
     if test -z "${VERBOSE}"; then
         if test -n "${MERGE_MISSING_VARS}"; then
-            #echo "#     main:MISSING_VARS_FILE: ${missing_vars_file}"
             echo "#  main:SIDECAR_MISSING_FILE: ${SIDECAR_MISSING_FILE}"
-            echo "# main:SIDECAR_MISSING_DMRPP: ${temp_sidecar_dmrpp}"
-            #echo "#        main:TEMPSTORE_FILE: ${tempstore_file}"
-            #export TEMP_FILE_LIST="${TEMP_FILE_LIST} ${missing_vars_file} ${temp_sidecar_dmrpp} ${tempstore_file}"
         fi
-        #echo " main:SOURCE_DMR: ${SOURCE_DMR}"
     fi
-
     return 0
-
-    #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/AIRS.2015.01.01.L3.RetStd_IR001.v6.0.11.0.G15013155825.nc.h5" -o airs.h5.dmrpp -T -v  airs.h5
-    #./get_dmrpp -u "http://test.opendap.org/data/dmrpp/SMAP_L3_SM_P_20150406_R14010_001.h5" -o smap.h5.dmrpp -T -v  smap.h5
 }
 
 main
