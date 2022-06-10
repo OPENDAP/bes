@@ -337,7 +337,6 @@ GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 
-DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp_baselines"
 BES_DATA_ROOT=$(readlink -f "${abs_builddir}")
 
@@ -349,6 +348,9 @@ params="$5"
 output_file="$6"
 AT_XFAIL_IF([test z$7 = zxfail]) # This is always run FIRST
 
+# Amend the PATH to pick up besstandalone
+export PATH=${abs_top_builddir}/standalone:$PATH
+
 missing_data_file="${input_file}.missing"
 
 echo "${input_file}" | grep "s3://"
@@ -357,18 +359,13 @@ then
     # We're here because it's an S3 Test
     # Only run the S3 tests if specifically instructed to do so.
     AT_SKIP_IF([test x$s3tests = xno])
+    # We reset the missing data file name because we know that
+    # the $input_file is an S3 URL
     missing_data_file=$(basename "${input_file}").missing
 fi
 
-if test -n "${output_file}"
-then
-    params="${params} -o ${output_file}"
-else
-    output_file=stdout
-fi
-
-# Amend the PATH to pick up besstandalone
-export PATH=${abs_top_builddir}/standalone:$PATH
+AT_CHECK([test -n "${output_file}"])
+params="${params} -o ${output_file}"
 
 TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -M ${params} ${input_file}"
 
@@ -386,25 +383,25 @@ AS_IF([test -z "$at_verbose"], [
     echo "# abs_top_builddir: ${abs_top_builddir}"
     echo "#        GET_DMRPP: ${GET_DMRPP}"
     echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
-    echo "#         DATA_DIR: ${DATA_DIR}"
     echo "#    BASELINES_DIR: ${BASELINES_DIR}"
     echo "#"
     echo "# AT_GET_DMRPP_3_20() arguments: "
-    echo "#           arg #1: "$1
-    echo "#           arg #2: "$2
-    echo "#           arg #3: "$3
-    echo "#           arg #4: "$4
-    echo "#           arg #5: "$5
-    echo "#           arg #6: "$6
-    echo "#           arg #7: "$7
-    echo "#        test_name: ${test_name}"
-    echo "#       input_file: ${input_file}"
-    echo "#   dmrpp_baseline: ${dmrpp_baseline}"
-    echo "# missing_baseline: ${missing_baseline}"
-    echo "#           params: ${params}"
-    echo "#      output_file: ${output_file}"
-    echo "#      xfail_param: ${xfail_param}"
-    echo "#         TEST_CMD: ${TEST_CMD}"
+    echo "#            arg #1: "$1
+    echo "#            arg #2: "$2
+    echo "#            arg #3: "$3
+    echo "#            arg #4: "$4
+    echo "#            arg #5: "$5
+    echo "#            arg #6: "$6
+    echo "#            arg #7: "$7
+    echo "#          test_name: ${test_name}"
+    echo "#        input_file: ${input_file}"
+    echo "#    dmrpp_baseline: ${dmrpp_baseline}"
+    echo "#  missing_baseline: ${missing_baseline}"
+    echo "#            params: ${params}"
+    echo "#       output_file: ${output_file}"
+    echo "#       xfail_param: ${xfail_param}"
+    echo "# missing_data_file: ${missing_data_file}"
+    echo "#          TEST_CMD: ${TEST_CMD}"
 ])
 
 AS_IF([test -n "$baselines" -a x$baselines = xyes],
