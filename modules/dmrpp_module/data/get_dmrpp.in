@@ -246,7 +246,7 @@ function cleanup_temp_files() {
             echo "#" >&2
             echo "# TEMP_FILE_LIST: ${TEMP_FILE_LIST}" >&2
         fi
-        rm "${minus_vee}" -f ${TEMP_FILE_LIST} >&2
+        rm ${minus_vee} -f ${TEMP_FILE_LIST} >&2
         if test -n "${VERBOSE}"; then
             echo "# Temporary files have been removed." >&2
             echo "# END cleanup_temp_files() - - - - - - - - - - - - - - - - - - - - - - -" >&2
@@ -1391,7 +1391,7 @@ function merge_missing() {
                 return $status
             fi
             # Because we move the temp file there is no need to add it to TEMP_FILE_LIST
-            mv "${sidecar_missing_temp_file}" "${SIDECAR_MISSING_FILE}"
+            mv "${sidecar_missing_temp_file}" "${BES_DATA_ROOT}/${SIDECAR_MISSING_FILE}"
 
             if test -n "${VERBOSE}"; then echo "# "$(ls -l ${SIDECAR_MISSING_FILE}); fi
 
@@ -1574,6 +1574,7 @@ function main() {
         else
             s3_local_file="${BES_DATA_ROOT}/${INPUT_DATA_FILE}"
         fi
+
         echo "# Copying S3 object to: ${s3_local_file}" >&2
 
         aws s3 cp ${s3_granule} ${s3_local_file}
