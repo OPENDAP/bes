@@ -1125,17 +1125,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/gdal_module/tests/Makefile
     modules/gdal_module/tests/atlocal
 
-    modules/fileout_gdal/Makefile
-    modules/fileout_gdal/tests/Makefile 
-    modules/fileout_gdal/tests/atlocal 
-
     modules/fits_handler/Makefile
     modules/fits_handler/tests/atlocal
     modules/fits_handler/tests/Makefile
-    
-    modules/gdal_handler/Makefile
-    modules/gdal_handler/tests/Makefile
-    modules/gdal_handler/tests/atlocal
     
     modules/hdf4_handler/Makefile
     modules/hdf4_handler/hdfclass/Makefile
@@ -1197,10 +1189,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gdal_module/tests, [besstandalone])
+    AC_CONFIG_TESTDIR(modules/gdal_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
@@ -1216,5 +1206,5 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 AC_OUTPUT
 
 AC_MSG_NOTICE([***])
-AC_MSG_NOTICE([Optional featrues: $OPTIONAL_FEATURES])
+AC_MSG_NOTICE([Optional features: $OPTIONAL_FEATURES])
 AC_MSG_NOTICE([***])
