@@ -1261,7 +1261,7 @@ function dmrpp_inventory_test() {
     retval=$(echo "${retval} + ${status}" | bc)
 
     if test -n "${VERBOSE}"; then
-        echo "# END dmrpp_inventory_test() - - - - - - - - - - - - - - - retval: $retval - -" >&2
+        echo "# END dmrpp_inventory_test() retval: $retval - - - - - - - - - - - - - - - - - - -" >&2
     fi
     return $retval
 }
@@ -1518,20 +1518,22 @@ function run_tests() {
     local tests_run=0
     if test -n "${RUN_INVENTORY_TESTS}"; then
         dmrpp_inventory_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
-        retval=$(echo "${retval} + ${?}" | bc)
+        status=$?
+        retval=$(echo "${retval} + ${status}" | bc)
         #echo "dmrpp_inventory_test: retval: ${retval}"
         ((tests_run++))
     fi
 
     if test -n "${RUN_VALUE_TESTS}"; then
         dmrpp_value_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
-        retval=$(echo "${retval} + ${?}" | bc)
+        status=$?
+        retval=$(echo "${retval} + ${status}" | bc)
         #echo "retval: ${retval}";
         ((tests_run++))
     fi
     if test -n "${VERBOSE}"; then
         echo "# Ran ${tests_run} tests." >&2
-        echo "# END run_tests() - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "# END run_tests() retval: $retval - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
     fi
     return $retval
 
@@ -1653,7 +1655,7 @@ function main() {
         echo "# RUNNING INVENTORY TESTS (CONDITIONAL)" >&2
         echo "#" >&2
     fi
-    # Run the dmr++ testmodify_configuration_test.baselines (conditional)
+    # Run the dmr++ tests (conditional)
     run_tests "${bes_conf_file}" "${dmr_file}" "${OUTPUT_FILE}"
     status=$?
     if test $status -ne 0; then
@@ -1715,4 +1717,8 @@ function main() {
 }
 
 main
-exit $?
+status=$?
+if test -n "${VERBOSE}"; then
+    echo "# Exiting with status; $status " >&2
+fi
+exit $status
