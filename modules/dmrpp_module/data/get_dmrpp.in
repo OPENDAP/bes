@@ -1251,18 +1251,17 @@ function dmrpp_inventory_test() {
     local retval=0
 
     if test -n "${VERBOSE}"; then
-        echo "# Comparing DMR responses for:"
+        echo "# Comparing DMR responses for:" >&2
         echo "# "$(ls -l "${source_dmr_file}") >&2
         echo "# "$(ls -l "${target_file}") >&2
     fi
     compare_files dap4_vars "${source_dmr_file}" "${target_file}" "#  DAP4 variables: Matched." "ERROR! DAP4 variables mismatch!"
     status=$?
-    if test -n "${VERBOSE}"; then echo "# compare_files dap4_vars, status: ${status}"; fi
+    if test -n "${VERBOSE}"; then echo "# compare_files dap4_vars, status: ${status}" >&2 ; fi
     retval=$(echo "${retval} + ${status}" | bc)
 
     if test -n "${VERBOSE}"; then
-        echo "# retval: ${retval}"
-        echo "# END dmrpp_inventory_test() - - - - - - - - - - - - - - - - - - - - - -" >&2
+        echo "# END dmrpp_inventory_test() - - - - - - - - - - - - - - - retval: $retval - -" >&2
     fi
     return $retval
 }
