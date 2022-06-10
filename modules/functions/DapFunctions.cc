@@ -124,11 +124,11 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
     GDALAllRegister();
     OGRRegisterAll();
-#endif
 
     // What to do with the orig error handler? Pitch it. jhrg 10/17/16
     /*CPLErrorHandler orig_err_handler =*/ (void) CPLSetErrorHandler(CPLQuietErrorHandler);
-
+#endif
+    
     BESDEBUG( "dap_functions", "Done initializing DAP Functions" << endl );
 }
 
