@@ -255,7 +255,10 @@ fi
 # Amend the PATH to pick up besstandalone
 export PATH=${abs_top_builddir}/standalone:$PATH
 
-TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
+gd_verbose=""
+AS_IF([test -z "$at_verbose"], [ gd_verbose="-v -X" ])
+
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${gd_verbose} ${input_file}"
 
 # at_verbose=""
 
@@ -287,6 +290,7 @@ AS_IF([test -z "$at_verbose"], [
     echo "#      xfail_param: ${xfail_param}"
     echo "#           params: ${params}"
     echo "#      output_file: ${output_file}"
+    echo "#       gd_verbose: ${gd_verbose}"
     echo "#         TEST_CMD: ${TEST_CMD}"
 ])
 
@@ -367,10 +371,10 @@ fi
 AT_CHECK([test -n "${output_file}"])
 params="${params} -o ${output_file}"
 
-local gdv=""
-if test -z "$at_verbose"; then gdv="-v -X"; fi
+gd_verbose=""
+AS_IF([test -z "$at_verbose"], [ gd_verbose="-v -X" ])
 
-TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -M ${params} ${gdv} ${input_file}"
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} -M ${params} ${gd_verbose} ${input_file}"
 
 # at_verbose=""
 
@@ -404,6 +408,7 @@ AS_IF([test -z "$at_verbose"], [
     echo "#       output_file: ${output_file}"
     echo "#       xfail_param: ${xfail_param}"
     echo "# missing_data_file: ${missing_data_file}"
+    echo "#       gd_verbose: ${gd_verbose}"
     echo "#          TEST_CMD: ${TEST_CMD}"
 ])
 
