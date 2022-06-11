@@ -8,8 +8,9 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 # Removed jhrg 6/9/22 $(NC_CPPFLAGS)  $(GDAL_CFLAGS)
-LIBADD = $(DAP_LIBS)
-# Removed jhrg 6/9/22 $(NC_LDFLAGS) $(NC_LIBS) $(GDAL_LDFLAGS)
+LIBADD = $(DAP_LIBS) $(NC_LDFLAGS) $(NC_LIBS) $(GDAL_LDFLAGS)
+# 
+# Removed jhrg 6/9/22
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
