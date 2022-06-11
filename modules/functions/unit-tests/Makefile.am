@@ -9,11 +9,8 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/modules/functions \
-$(DAP_CFLAGS)
-# $(GDAL_CFLAGS)
-AM_LDADD =  $(DAP_SERVER_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la \
-$(top_builddir)/modules/functions/.libs/libfunctions_module.a
-# $(GF_LIBS)
+$(DAP_CFLAGS) $(GDAL_CFLAGS)
+AM_LDADD =  $(DAP_SERVER_LIBS) $(GF_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -48,6 +45,8 @@ CLEANFILES = testout .dodsrc *.gcda *.gcno
 # that seems to leave *.Po files here that distclean complains about.
 DISTCLEANFILES = test_config.h *.strm *.file *.Po tmp.txt
 
+# TODO Check if this sed command to filter out the ../ from the value of 
+# ${abs_srcdir} is really needed for the distcheck target. jhrg 5/16/13
 test_config.h: test_config.h.in Makefile
 	@my_topdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > test_config.h
@@ -60,13 +59,8 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest RangeFunctionTest \
-BBoxCombFunctionTest
-
-# See note about GDAL linking issues in ../Makefile.am. jhrg 6/11/22
-# if BUILD_GDAL
-# UNIT_TESTS += ScaleUtilTest ScaleUtilTest3D
-# endif
+OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest \
+ScaleUtilTest3D RangeFunctionTest BBoxCombFunctionTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -87,51 +81,67 @@ endif
 # These are used to read in baselines from files
 TEST_SRC = test_utils.cc test_utils.h 
 
+# Many of the tests use these - build once
+# FIXME Use static libs
+TEST_OBJ = ../roi_util.o ../functions_util.o
+
+# Listing the objects here keeps from having to link with the module - not a portable
+# solution - and listing these as source breaks distcheck jhrg 9/24/15
 CEFunctionsTest_SOURCES = CEFunctionsTest.cc  $(TEST_SRC)
-CEFunctionsTest_LDADD = -ltest-types $(AM_LDADD)
+CEFunctionsTest_OBJ = ../GridFunction.o ../BindNameFunction.o ../BindShapeFunction.o \
+../LinearScaleFunction.o ../MakeArrayFunction.o ../gse.tab.o ../lex.gse.o ../grid_utils.o \
+../GSEClause.o ../GeoConstraint.o ../GridGeoConstraint.o
+CEFunctionsTest_LDADD = $(CEFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 Dap4_CEFunctionsTest_SOURCES = Dap4_CEFunctionsTest.cc
-Dap4_CEFunctionsTest_LDADD = -ltest-types $(AM_LDADD)
+Dap4_CEFunctionsTest_OBJ = ../BindNameFunction.o ../BindShapeFunction.o ../LinearScaleFunction.o \
+../MakeArrayFunction.o ../functions_util.o
+Dap4_CEFunctionsTest_LDADD = $(Dap4_CEFunctionsTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 GridGeoConstraintTest_SOURCES = GridGeoConstraintTest.cc 
-GridGeoConstraintTest_LDADD = -ltest-types $(AM_LDADD)
+GridGeoConstraintTest_OBJ = ../GeoConstraint.o ../GridGeoConstraint.o
+GridGeoConstraintTest_LDADD = $(GridGeoConstraintTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
 TabularFunctionTest_SOURCES = TabularFunctionTest.cc 
-TabularFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+TabularFunctionTest_OBJ = ../TabularFunction.o  ../TabularSequence.o
+TabularFunctionTest_LDADD = $(TabularFunctionTest_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+BBoxFunctionTest_OBJ = ../BBoxFunction.o
 BBoxFunctionTest_SOURCES = BBoxFunctionTest.cc $(TEST_SRC)
-BBoxFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+BBoxFunctionTest_LDADD = $(BBoxFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+BBoxUnionFunctionTest_OBJ = ../BBoxUnionFunction.o
 BBoxUnionFunctionTest_SOURCES = BBoxUnionFunctionTest.cc $(TEST_SRC)
-BBoxUnionFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+BBoxUnionFunctionTest_LDADD = $(BBoxUnionFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+BBoxCombFunctionTest_OBJ = ../BBoxCombFunction.o
 BBoxCombFunctionTest_SOURCES = BBoxCombFunctionTest.cc $(TEST_SRC)
-BBoxCombFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+BBoxCombFunctionTest_LDADD = $(BBoxCombFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+RoiFunctionTest_OBJ = ../RoiFunction.o
 RoiFunctionTest_SOURCES = RoiFunctionTest.cc $(TEST_SRC)
-RoiFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+RoiFunctionTest_LDADD = $(RoiFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+OdometerTest_OBJ = ../Odometer.o
 OdometerTest_SOURCES = OdometerTest.cc $(TEST_SRC)
-OdometerTest_LDADD = $(AM_LDADD) $(DAP_LIBS)
+OdometerTest_LDADD = $(OdometerTest_OBJ) $(TEST_OBJ) $(AM_LDADD) $(DAP_LIBS)
 
+MaskArrayFunctionTest_OBJ = ../MaskArrayFunction.o
 MaskArrayFunctionTest_SOURCES = MaskArrayFunctionTest.cc $(TEST_SRC)
-MaskArrayFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+MaskArrayFunctionTest_LDADD = $(MaskArrayFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
+MakeMaskFunctionTest_OBJ = ../MakeMaskFunction.o
 MakeMaskFunctionTest_SOURCES = MakeMaskFunctionTest.cc $(TEST_SRC)
-MakeMaskFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
-RangeFunctionTest_SOURCES = RangeFunctionTest.cc $(TEST_SRC)
+ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+
+ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc ../scale_util.cc $(TEST_SRC)
+ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
+ScaleUtilTest3D_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+
+RangeFunctionTest_SOURCES = RangeFunctionTest.cc ../RangeFunction.cc $(TEST_SRC)
 RangeFunctionTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
 RangeFunctionTest_LDADD = -ltest-types $(AM_LDADD)
-
-# if BUILD_GDAL
-#
-# ScaleUtilTest_SOURCES = ScaleUtilTest.cc $(TEST_SRC)
-# ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
-# ScaleUtilTest_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-#
-# ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc $(TEST_SRC)
-# ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
-# ScaleUtilTest3D_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-#
-# endif
