@@ -57,12 +57,12 @@
 #include "stare/StareFunctions.h"
 #endif
 
-#if HAVE_GDAL
-#include "ScaleGrid.h"
-#endif
-
 // Until we sort out the GDAL linking issue, do not include the gdal functions
 #define INC_GDAL 0
+
+#if INC_GDAL
+#include "ScaleGrid.h"
+#endif
 
 using std::endl;
 using std::ostream;
