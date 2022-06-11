@@ -1515,24 +1515,25 @@ function run_tests() {
     fi
 
     local retval=0
+    local status=0
     local tests_run=0
     if test -n "${RUN_INVENTORY_TESTS}"; then
         dmrpp_inventory_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
         status=$?
         echo "# Computing retval from status: $status" >&2
-        retval=$(echo "${retval} + ${status}" | bc)
+        let retval+=status
         echo "# retval $retval" >&2
         #echo "dmrpp_inventory_test: retval: ${retval}"
-        ((tests_run++))
+        let tests_run+=1
         echo "# tests_run $tests_run" >&2
     fi
 
     if test -n "${RUN_VALUE_TESTS}"; then
         dmrpp_value_test "${bes_conf_file}" "${source_dmr_file}" "${output_filename}"
         status=$?
-        retval=$(echo "${retval} + ${status}" | bc)
+        let retval+=status
         #echo "retval: ${retval}";
-        ((tests_run++))
+        let tests_run+=1
     fi
     if test -n "${VERBOSE}"; then
         echo "# Ran ${tests_run} tests." >&2
