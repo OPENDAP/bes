@@ -1220,7 +1220,6 @@ function dmrpp_inventory_test() {
 
     if test -n "${VERBOSE}"; then
         echo "# BEGIN dmrpp_inventory_test() + + + + + + + + + + + + + + + + + + + + +" >&2
-        echo "# " >&2
         echo "#   bes_conf_file: ${bes_conf_file}" >&2
         echo "# source_dmr_file: ${source_dmr_file}" >&2
         echo "# output_filename: ${output_filename}" >&2
