@@ -1,0 +1,70 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+        "bounds": []
+      },
+      "y": {
+        "values": []
+        "bounds": []
+      },
+      "z": {
+        "values": []
+        "bounds": []
+      },
+      "t": {
+        "values": []
+        "bounds": []
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y", "z"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "temp": {
+      "type": "Parameter",
+      "description": {
+        "en": "temperature of observation"
+      },
+      "unit": {
+        "label": {
+          "en": "Kelvin"
+        },
+        "symbol": {
+          "value": "Kelvin",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/temperature/",
+        "label": {
+          "en": "temperature of observation"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "temp": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "z", "y", "x"],
+      "shape": [2, 2, 3, 6],
+      "values": []
+    }
+  }
+}

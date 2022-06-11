@@ -1,0 +1,5749 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+      },
+      "y": {
+        "values": []
+      }
+    },
+    "referencing": [{
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "TotalCounts_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_A"
+        }
+      }
+    },
+    "SurfPres_Forecast_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_A"
+        }
+      }
+    },
+    "SurfPres_Forecast_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_A_ct"
+        }
+      }
+    },
+    "SurfPres_Forecast_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_A_sdev"
+        }
+      }
+    },
+    "SurfSkinTemp_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_A"
+        }
+      }
+    },
+    "SurfSkinTemp_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_A_ct"
+        }
+      }
+    },
+    "SurfSkinTemp_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_A_sdev"
+        }
+      }
+    },
+    "SurfAirTemp_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_A"
+        }
+      }
+    },
+    "SurfAirTemp_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_A_ct"
+        }
+      }
+    },
+    "SurfAirTemp_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_A_sdev"
+        }
+      }
+    },
+    "TropPres_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_A"
+        }
+      }
+    },
+    "TropPres_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_A_ct"
+        }
+      }
+    },
+    "TropPres_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_A_sdev"
+        }
+      }
+    },
+    "TropTemp_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_A"
+        }
+      }
+    },
+    "TropTemp_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_A_ct"
+        }
+      }
+    },
+    "TropTemp_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_A_sdev"
+        }
+      }
+    },
+    "TotH2OVap_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_A"
+        }
+      }
+    },
+    "TotH2OVap_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_A_ct"
+        }
+      }
+    },
+    "TotH2OVap_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_A_sdev"
+        }
+      }
+    },
+    "H2O_MMR_Surf_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_A"
+        }
+      }
+    },
+    "H2O_MMR_Surf_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_A_ct"
+        }
+      }
+    },
+    "H2O_MMR_Surf_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_A_sdev"
+        }
+      }
+    },
+    "RelHumSurf_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_A"
+        }
+      }
+    },
+    "RelHumSurf_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_A_ct"
+        }
+      }
+    },
+    "RelHumSurf_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_A_sdev"
+        }
+      }
+    },
+    "RelHumSurf_liquid_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_A"
+        }
+      }
+    },
+    "RelHumSurf_liquid_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_A_ct"
+        }
+      }
+    },
+    "RelHumSurf_liquid_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_A_sdev"
+        }
+      }
+    },
+    "TropHeight_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_A"
+        }
+      }
+    },
+    "TropHeight_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_A_ct"
+        }
+      }
+    },
+    "TropHeight_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_A_sdev"
+        }
+      }
+    },
+    "CloudFrc_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_A"
+        }
+      }
+    },
+    "CloudFrc_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_A_ct"
+        }
+      }
+    },
+    "CloudFrc_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_A_sdev"
+        }
+      }
+    },
+    "CloudTopPres_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_A"
+        }
+      }
+    },
+    "CloudTopPres_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_A_ct"
+        }
+      }
+    },
+    "CloudTopPres_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_A_sdev"
+        }
+      }
+    },
+    "CloudTopTemp_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_A"
+        }
+      }
+    },
+    "CloudTopTemp_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_A_ct"
+        }
+      }
+    },
+    "CloudTopTemp_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_A_sdev"
+        }
+      }
+    },
+    "TotO3_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_A"
+        }
+      }
+    },
+    "TotO3_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_A_ct"
+        }
+      }
+    },
+    "TotO3_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_A_sdev"
+        }
+      }
+    },
+    "OLR_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_A"
+        }
+      }
+    },
+    "OLR_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_A_ct"
+        }
+      }
+    },
+    "OLR_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_A_sdev"
+        }
+      }
+    },
+    "ClrOLR_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_A"
+        }
+      }
+    },
+    "ClrOLR_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_A_ct"
+        }
+      }
+    },
+    "ClrOLR_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_A_sdev"
+        }
+      }
+    },
+    "TotalCounts_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_D"
+        }
+      }
+    },
+    "SurfPres_Forecast_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_D"
+        }
+      }
+    },
+    "SurfPres_Forecast_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_D_ct"
+        }
+      }
+    },
+    "SurfPres_Forecast_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_D_sdev"
+        }
+      }
+    },
+    "SurfSkinTemp_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_D"
+        }
+      }
+    },
+    "SurfSkinTemp_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_D_ct"
+        }
+      }
+    },
+    "SurfSkinTemp_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_D_sdev"
+        }
+      }
+    },
+    "SurfAirTemp_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_D"
+        }
+      }
+    },
+    "SurfAirTemp_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_D_ct"
+        }
+      }
+    },
+    "SurfAirTemp_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_D_sdev"
+        }
+      }
+    },
+    "TropPres_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_D"
+        }
+      }
+    },
+    "TropPres_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_D_ct"
+        }
+      }
+    },
+    "TropPres_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_D_sdev"
+        }
+      }
+    },
+    "TropTemp_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_D"
+        }
+      }
+    },
+    "TropTemp_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_D_ct"
+        }
+      }
+    },
+    "TropTemp_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_D_sdev"
+        }
+      }
+    },
+    "TotH2OVap_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_D"
+        }
+      }
+    },
+    "TotH2OVap_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_D_ct"
+        }
+      }
+    },
+    "TotH2OVap_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_D_sdev"
+        }
+      }
+    },
+    "H2O_MMR_Surf_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_D"
+        }
+      }
+    },
+    "H2O_MMR_Surf_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_D_ct"
+        }
+      }
+    },
+    "H2O_MMR_Surf_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_D_sdev"
+        }
+      }
+    },
+    "RelHumSurf_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_D"
+        }
+      }
+    },
+    "RelHumSurf_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_D_ct"
+        }
+      }
+    },
+    "RelHumSurf_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_D_sdev"
+        }
+      }
+    },
+    "RelHumSurf_liquid_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_D"
+        }
+      }
+    },
+    "RelHumSurf_liquid_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_D_ct"
+        }
+      }
+    },
+    "RelHumSurf_liquid_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_D_sdev"
+        }
+      }
+    },
+    "TropHeight_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_D"
+        }
+      }
+    },
+    "TropHeight_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_D_ct"
+        }
+      }
+    },
+    "TropHeight_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_D_sdev"
+        }
+      }
+    },
+    "CloudFrc_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_D"
+        }
+      }
+    },
+    "CloudFrc_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_D_ct"
+        }
+      }
+    },
+    "CloudFrc_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_D_sdev"
+        }
+      }
+    },
+    "CloudTopPres_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_D"
+        }
+      }
+    },
+    "CloudTopPres_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_D_ct"
+        }
+      }
+    },
+    "CloudTopPres_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_D_sdev"
+        }
+      }
+    },
+    "CloudTopTemp_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_D"
+        }
+      }
+    },
+    "CloudTopTemp_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_D_ct"
+        }
+      }
+    },
+    "CloudTopTemp_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_D_sdev"
+        }
+      }
+    },
+    "TotO3_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_D"
+        }
+      }
+    },
+    "TotO3_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_D_ct"
+        }
+      }
+    },
+    "TotO3_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_D_sdev"
+        }
+      }
+    },
+    "OLR_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_D"
+        }
+      }
+    },
+    "OLR_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_D_ct"
+        }
+      }
+    },
+    "OLR_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_D_sdev"
+        }
+      }
+    },
+    "ClrOLR_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_D"
+        }
+      }
+    },
+    "ClrOLR_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_D_ct"
+        }
+      }
+    },
+    "ClrOLR_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_D_sdev"
+        }
+      }
+    },
+    "TotalCounts_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_TqJ_A"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_A"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_A_ct"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_A_sdev"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_A"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_A_ct"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_A_sdev"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_A"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_A_ct"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_A_sdev"
+        }
+      }
+    },
+    "TropPres_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_A"
+        }
+      }
+    },
+    "TropPres_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_A_ct"
+        }
+      }
+    },
+    "TropPres_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_A_sdev"
+        }
+      }
+    },
+    "TropTemp_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_A"
+        }
+      }
+    },
+    "TropTemp_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_A_ct"
+        }
+      }
+    },
+    "TropTemp_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_A_sdev"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_A"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_A_ct"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_A_sdev"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_A"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_A_ct"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_A_sdev"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_A"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_A_ct"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_A_sdev"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_A"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_A_ct"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_A_sdev"
+        }
+      }
+    },
+    "TropHeight_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_A"
+        }
+      }
+    },
+    "TropHeight_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_A_ct"
+        }
+      }
+    },
+    "TropHeight_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_A_sdev"
+        }
+      }
+    },
+    "CloudFrc_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_A"
+        }
+      }
+    },
+    "CloudFrc_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_A_ct"
+        }
+      }
+    },
+    "CloudFrc_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_A_sdev"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_A"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_A_ct"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_A_sdev"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_A"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_A_ct"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_A_sdev"
+        }
+      }
+    },
+    "TotO3_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_A"
+        }
+      }
+    },
+    "TotO3_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_A_ct"
+        }
+      }
+    },
+    "TotO3_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_A_sdev"
+        }
+      }
+    },
+    "OLR_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_A"
+        }
+      }
+    },
+    "OLR_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_A_ct"
+        }
+      }
+    },
+    "OLR_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_A_sdev"
+        }
+      }
+    },
+    "ClrOLR_TqJ_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_A"
+        }
+      }
+    },
+    "ClrOLR_TqJ_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_A_ct"
+        }
+      }
+    },
+    "ClrOLR_TqJ_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_A_sdev"
+        }
+      }
+    },
+    "TotalCounts_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_TqJ_D"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_D"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_D_ct"
+        }
+      }
+    },
+    "SurfPres_Forecast_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfPres_Forecast_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfPres_Forecast_TqJ_D_sdev"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_D"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_D_ct"
+        }
+      }
+    },
+    "SurfSkinTemp_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfSkinTemp_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfSkinTemp_TqJ_D_sdev"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_D"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_D_ct"
+        }
+      }
+    },
+    "SurfAirTemp_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "SurfAirTemp_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "SurfAirTemp_TqJ_D_sdev"
+        }
+      }
+    },
+    "TropPres_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_D"
+        }
+      }
+    },
+    "TropPres_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_D_ct"
+        }
+      }
+    },
+    "TropPres_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropPres_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropPres_TqJ_D_sdev"
+        }
+      }
+    },
+    "TropTemp_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_D"
+        }
+      }
+    },
+    "TropTemp_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_D_ct"
+        }
+      }
+    },
+    "TropTemp_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropTemp_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropTemp_TqJ_D_sdev"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_D"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_D_ct"
+        }
+      }
+    },
+    "TotH2OVap_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_TqJ_D_sdev"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_D"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_D_ct"
+        }
+      }
+    },
+    "H2O_MMR_Surf_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "H2O_MMR_Surf_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "H2O_MMR_Surf_TqJ_D_sdev"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_D"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_D_ct"
+        }
+      }
+    },
+    "RelHumSurf_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_TqJ_D_sdev"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_D"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_D_ct"
+        }
+      }
+    },
+    "RelHumSurf_liquid_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "RelHumSurf_liquid_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "RelHumSurf_liquid_TqJ_D_sdev"
+        }
+      }
+    },
+    "TropHeight_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_D"
+        }
+      }
+    },
+    "TropHeight_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_D_ct"
+        }
+      }
+    },
+    "TropHeight_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TropHeight_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TropHeight_TqJ_D_sdev"
+        }
+      }
+    },
+    "CloudFrc_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_D"
+        }
+      }
+    },
+    "CloudFrc_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_D_ct"
+        }
+      }
+    },
+    "CloudFrc_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudFrc_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudFrc_TqJ_D_sdev"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_D"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_D_ct"
+        }
+      }
+    },
+    "CloudTopPres_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopPres_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopPres_TqJ_D_sdev"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_D"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_D_ct"
+        }
+      }
+    },
+    "CloudTopTemp_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "CloudTopTemp_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "CloudTopTemp_TqJ_D_sdev"
+        }
+      }
+    },
+    "TotO3_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_D"
+        }
+      }
+    },
+    "TotO3_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_D_ct"
+        }
+      }
+    },
+    "TotO3_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotO3_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotO3_TqJ_D_sdev"
+        }
+      }
+    },
+    "OLR_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_D"
+        }
+      }
+    },
+    "OLR_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_D_ct"
+        }
+      }
+    },
+    "OLR_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "OLR_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "OLR_TqJ_D_sdev"
+        }
+      }
+    },
+    "ClrOLR_TqJ_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_D"
+        }
+      }
+    },
+    "ClrOLR_TqJ_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_D_ct"
+        }
+      }
+    },
+    "ClrOLR_TqJ_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "ClrOLR_TqJ_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "ClrOLR_TqJ_D_sdev"
+        }
+      }
+    },
+    "TotalCounts_MW_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_MW_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_MW_A"
+        }
+      }
+    },
+    "TotH2OVap_MW_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_A"
+        }
+      }
+    },
+    "TotH2OVap_MW_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_A_ct"
+        }
+      }
+    },
+    "TotH2OVap_MW_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_A_sdev"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_A": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_A"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_A"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_A_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_A_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_A_ct"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_A_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_A_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_A_sdev"
+        }
+      }
+    },
+    "TotalCounts_MW_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotalCounts_MW_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotalCounts_MW_D"
+        }
+      }
+    },
+    "TotH2OVap_MW_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_D"
+        }
+      }
+    },
+    "TotH2OVap_MW_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_D_ct"
+        }
+      }
+    },
+    "TotH2OVap_MW_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotH2OVap_MW_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotH2OVap_MW_D_sdev"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_D": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_D"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_D"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_D_ct": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_D_ct"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_D_ct"
+        }
+      }
+    },
+    "TotCldLiqH2O_MW_D_sdev": {
+      "type": "Parameter",
+      "description": {
+        "en": "TotCldLiqH2O_MW_D_sdev"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "TotCldLiqH2O_MW_D_sdev"
+        }
+      }
+    },
+    "LandSeaMask": {
+      "type": "Parameter",
+      "description": {
+        "en": "LandSeaMask"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "LandSeaMask"
+        }
+      }
+    },
+    "Topography": {
+      "type": "Parameter",
+      "description": {
+        "en": "Topography"
+      },
+      "unit": {
+        "label": {
+          "en": ""
+        },
+        "symbol": {
+          "value": "",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "label": {
+          "en": "Topography"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "TotalCounts_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotalCounts_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotalCounts_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotalCounts_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfPres_Forecast_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfSkinTemp_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "SurfAirTemp_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropPres_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropTemp_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "H2O_MMR_Surf_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "RelHumSurf_liquid_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TropHeight_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudFrc_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopPres_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "CloudTopTemp_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotO3_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "OLR_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "ClrOLR_TqJ_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotalCounts_MW_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_A": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_A_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_A_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotalCounts_MW_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotH2OVap_MW_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_D": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_D_ct": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "TotCldLiqH2O_MW_D_sdev": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "LandSeaMask": {
+      "type": "NdArray",
+      "dataType": "integer", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    },
+    "Topography": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["y", "x"],
+      "shape": [180, 360],
+      "values": []
+    }
+  }
+}
