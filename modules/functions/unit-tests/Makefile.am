@@ -14,6 +14,7 @@ $(DAP_CFLAGS)
 AM_LDADD =  $(DAP_SERVER_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la \
 $(top_builddir)/modules/functions/.libs/libfunctions_module.a
 # $(GF_LIBS)
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 AM_LDADD += $(CPPUNIT_LIBS)
@@ -62,9 +63,10 @@ TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
 OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest RangeFunctionTest \
 BBoxCombFunctionTest
 
-if BUILD_GDAL
-UNIT_TESTS += ScaleUtilTest ScaleUtilTest3D
-endif
+# See note about GDAL linking issues in ../Makefile.am. jhrg 6/11/22
+# if BUILD_GDAL
+# UNIT_TESTS += ScaleUtilTest ScaleUtilTest3D
+# endif
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -122,14 +124,14 @@ RangeFunctionTest_SOURCES = RangeFunctionTest.cc $(TEST_SRC)
 RangeFunctionTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
 RangeFunctionTest_LDADD = -ltest-types $(AM_LDADD)
 
-if BUILD_GDAL
-
-ScaleUtilTest_SOURCES = ScaleUtilTest.cc $(TEST_SRC)
-ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
-ScaleUtilTest_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-
-ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc $(TEST_SRC)
-ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
-ScaleUtilTest3D_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-
-endif
+# if BUILD_GDAL
+#
+# ScaleUtilTest_SOURCES = ScaleUtilTest.cc $(TEST_SRC)
+# ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
+# ScaleUtilTest_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+#
+# ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc $(TEST_SRC)
+# ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
+# ScaleUtilTest3D_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+#
+# endif

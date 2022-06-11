@@ -43,10 +43,12 @@ SUBDIRS += stare
 LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 endif
 
-if BUILD_GDAL
-AM_CPPFLAGS +=  $(GDAL_CFLAGS)
-LIBADD +=  $(GDAL_LDFLAGS)
-endif
+# For now, do not include GDAL. Once the GDAL linking issues on RHEL8 are understood/solved
+# add this back into the code. See also DapFunctions.cc. jhrg 6/11/22
+# if BUILD_GDAL
+# AM_CPPFLAGS +=  $(GDAL_CFLAGS)
+# LIBADD +=  $(GDAL_LDFLAGS)
+# endif
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfunctions_module.la
@@ -63,8 +65,6 @@ roi_util.cc BBoxUnionFunction.cc Odometer.cc MaskArrayFunction.cc	\
 RangeFunction.cc functions_util.cc BBoxCombFunction.cc IdentityFunction.cc	\
 DapFunctionsRequestHandler.cc
 
-# Removed jhrg 6/9/22 scale_util.cc ScaleGrid.cc
-
 HDRS = grid_utils.h DapFunctions.h GeoConstraint.h			\
 GridGeoConstraint.h gse.tab.hh gse_parser.h GSEClause.h			\
 GeoGridFunction.h GridFunction.h LinearScaleFunction.h			\
@@ -75,17 +75,16 @@ roi_util.h BBoxUnionFunction.h Odometer.h MaskArrayFunction.h		\
 RangeFunction.h functions_util.h DapFunctionsRequestHandler.h		\
 BBoxCombFunction.h TestFunction.h IdentityFunction.h
 
-# Remvoed jhrg ScaleGrid.h
-
 if BUILD_STARE
 SRCS += stare/StareFunctions.cc stare/GeoFile.cc
 HDRS += stare/StareFunctions.h stare/GeoFile.h
 endif
 
-if BUILD_GDAL
-SRCS += scale_util.cc ScaleGrid.cc
-HDRS += ScaleGrid.h
-endif
+# See above. jhrg 6/11/22
+# if BUILD_GDAL
+# SRCS += scale_util.cc ScaleGrid.cc
+# HDRS += ScaleGrid.h
+# endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_LDFLAGS = -avoid-version -module
