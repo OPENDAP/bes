@@ -15,7 +15,8 @@ AT_GET_DMRPP_3_20([-D, only create DMR test], [nc4_group_atomic.h5], [only_dmr_t
 AT_GET_DMRPP_3_20([-u, inject dmrpp:href url test], [chunked_oneD.h5], [inject_href.baseline], [-u http://some.where.over.the.rainbow.oz])
 AT_GET_DMRPP_3_20([-c, inject configuration test], [nc4_group_atomic.h5], [inject_bes_conf.baseline], [-c ${abs_builddir}/test_bes.conf], [a.out])
 AT_GET_DMRPP_3_20([-o, output file test], [chunked_oneD.h5], [output_file_test.baseline], [], [a.out])
-AT_GET_DMRPP_3_20([-I, Inventory Test], [chunked_oneD.h5], [inventory_test.baseline], [-I -v -b ${abs_builddir}], [a.out])
+
+AT_GET_DMRPP_3_20_TESTS([-I, Inventory Test], [chunked_oneD.h5], [inventory_test.baseline], [-I -v], [a.out])
 
 # -e Use pre-existing dmrpp file for input to inventory test, requires output_file
 #AT_GET_DMRPP_3_20([-I -e, Inventory using existing dmr++ file], [chunked_oneD.h5], [chunked_oneD.h5.baseline], [-I -e ${DATA_DIR}/chunked_oneD.h5.dmrpp], [${abs_builddir}/a.out])
