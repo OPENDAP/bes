@@ -961,7 +961,12 @@ function dap4_attributes() {
 ########################################################################################################################
 # dap4_vars()
 # Prints a list of DAP4 DMR variable declarations found in the file $1
-# The leading and trailing whitespace is trimmed from each line, and the result is sorted.
+# The sed command:
+# - removes leading and trailing whitespace from each line
+# - removes both /> and > from each line because making the dmr++ may add chunks (a kind of metadata) to
+#   variables that had no metedata (Attributes) previously, thus their termination may legitimately change
+#   from /> to >
+# The output of the sed command is sorted to normalize changes in order caused by the creation of the dmr++.
 #
 function dap4_vars() {
     grep \
