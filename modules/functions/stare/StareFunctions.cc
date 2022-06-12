@@ -29,7 +29,6 @@
 #include <STARE.h>
 #include <SpatialRange.h>
 
-//#include <hdf5.h>
 #include <netcdf.h>
 
 #include <libdap/BaseType.h>
@@ -232,77 +231,6 @@ stare_subset_helper(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
     }
 
     return subset;
-}
-
-/**
- * @brief Build the result data as masked values from src_data
- *
- * The result_data vector is modified. The result_data vector should be
- * passed to this function filled with NaN or the equivalent. This function
- * will transfer only the values from src_data to result_data that have
- * STARE indices which overlap a target index.
- *
- * @tparam T The array element datatype (e.g., Byte, Int32, ...)
- * @param result_data A vector<T> initialized to all mask values
- * @param src_data  The source data. Values are transferred as apropriate to result_data.
- * @param target_indices The STARE indices that define a region of interest.
- * @param dataset_indices The STARE indices that describe the coverage of the data.
- */
-template <class T>
-void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data,
-        const vector<STARE_ArrayIndexSpatialValue> &target_indices,
-        const vector<STARE_ArrayIndexSpatialValue> &dataset_indices)
-{
-    assert(dataset_indices.size() == src_data.size());
-    assert(dataset_indices.size() == result_data.size());
-
-    auto r = result_data.begin();
-    auto s = src_data.begin();
-    for (const auto &i : dataset_indices) {
-        for (const auto &j : target_indices) {
-            if (cmpSpatial(i, j) != 0) {        // != 0 --> i is in j OR j is in i
-                *r = *s;
-                break;
-            }
-        }
-        ++r; ++s;
-    }
-}
-
-/**
- * @brief Mask the data in dependent_var using the target_s_indices
- *
- * Copy values from dependent_var to result that lie at the intersection
- * of the target and dataset stare indices. The libdap::Array 'result' is
- * modified.
- *
- * @tparam T The element type of the dependent_var and result Arrays
- *
- * @param dependent_var The dataset values to subset/mask
- * @param dep_var_stare_indices The stare indices that define the spatial
- * extent of these data
- * @param target_s_indices The stare indices that define the spatial extent
- * of the region of interest
- * @param result A value-result parameter. The masked dependent_var data is
- * returned using this libdap::Array
- *
- * @todo FIXME jhrg 6/17/21
- */
-template <class T>
-void StareSubsetArrayFunction::build_masked_data(Array *dependent_var,
-                                                 const vector<STARE_ArrayIndexSpatialValue> &dep_var_stare_indices,
-                                                 const vector<STARE_ArrayIndexSpatialValue> &target_s_indices, T mask_value,
-                                                 unique_ptr<Array> &result) {
-    vector<T> src_data(dependent_var->length());
-    dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
-    dependent_var->value(&src_data[0]);
-
-    //T mask_value = 0;  // TODO This should use the value in mask_val_var. jhrg 6/16/20
-    vector<T> result_data(dependent_var->length(), mask_value);
-
-    stare_subset_array_helper(result_data, src_data, target_s_indices, dep_var_stare_indices);
-
-    result->set_value(result_data, result_data.size());
 }
 
 void
