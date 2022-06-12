@@ -27,7 +27,6 @@
 #include <cassert>
 
 #include <STARE.h>
-// #include <SpatialRange.h>
 
 #include <netcdf.h>
 
@@ -235,7 +234,7 @@ void
 read_stare_indices_from_function_argument(BaseType *raw_stare_indices,
                                           vector<STARE_ArrayIndexSpatialValue> &s_indices) {
 
-    Array *stare_indices = dynamic_cast<Array *>(raw_stare_indices);
+    auto stare_indices = dynamic_cast<Array *>(raw_stare_indices);
     if (stare_indices == nullptr)
         throw BESSyntaxUserError(
                 "Expected an Array but found a " + raw_stare_indices->type_name(), __FILE__, __LINE__);
@@ -269,7 +268,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    const BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
@@ -323,7 +322,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    const BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
@@ -336,10 +335,10 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     vector<STARE_ArrayIndexSpatialValue> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
-    int num = count(target_s_indices, dep_var_stare_indices, false);
+    unsigned int num = count(target_s_indices, dep_var_stare_indices, false);
 
     unique_ptr<Int32> result(new Int32("result"));
-    result->set_value(num);
+    result->set_value(static_cast<int>(num));
     return result.release();
 }
 
@@ -394,6 +393,9 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<Structure> result(new Structure("result"));
 
     unique_ptr<Array> stare(new Array("stare", new UInt64("stare")));
+    // Various static analysis tools say the cast from STARE_SpatialIntervals to
+    // dods_uint64 is not needed. FAIL. It is needed on various newer versions of
+    // g++. jhrg 6/11/22
     stare->set_value((dods_uint64*)&(subset->stare_indices[0]), static_cast<int>(subset->stare_indices.size()));
     stare->append_dim(static_cast<int>(subset->stare_indices.size()));
     result->add_var_nocopy(stare.release());
@@ -449,7 +451,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    Array *dependent_var = dynamic_cast<Array*>(args->get_rvalue(0)->value(dmr));
+    auto dependent_var = dynamic_cast<Array*>(args->get_rvalue(0)->value(dmr));
     if (!dependent_var)
         throw BESSyntaxUserError("Expected an Array as teh first argument to stare_subset_array()", __FILE__, __LINE__);
 
