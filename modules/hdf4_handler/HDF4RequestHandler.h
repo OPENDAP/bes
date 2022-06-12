@@ -87,7 +87,7 @@ class HDF4RequestHandler:public BESRequestHandler {
    
   public:
     explicit HDF4RequestHandler(const std::string & name);
-    virtual ~ HDF4RequestHandler(void);
+    ~HDF4RequestHandler(void) override = default;
 
     static bool hdf4_build_das(BESDataHandlerInterface & dhi);
     static bool hdf4_build_dds(BESDataHandlerInterface & dhi);
