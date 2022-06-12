@@ -54,13 +54,6 @@ bool target_in_dataset(const std::vector<STARE_ArrayIndexSpatialValue> &target_i
 unsigned int count(const std::vector<STARE_ArrayIndexSpatialValue> &target_indices,
                    const std::vector<STARE_ArrayIndexSpatialValue> &dataset_indices, bool all_target_matches = false);
 
-#if 0
-template<class T>
-void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data,
-                               const vector<STARE_ArrayIndexSpatialValue> &target_indices,
-                               const vector<STARE_ArrayIndexSpatialValue> &dataset_indices);
-#endif
-
 /**
  * @brief Build the result data as masked values from src_data
  *
@@ -168,7 +161,6 @@ public:
 
     friend class StareFunctionsTest;
 
-public:
     StareIntersectionFunction() {
         setName("stare_intersection");
         setDescriptionString(
@@ -190,7 +182,6 @@ public:
 
     friend class StareFunctionsTest;
 
-public:
     StareCountFunction() {
         setName("stare_count");
         setDescriptionString(
@@ -212,7 +203,6 @@ public:
 
     friend class StareFunctionsTest;
 
-public:
     StareSubsetFunction() {
         setName("stare_subset");
         setDescriptionString(
@@ -233,7 +223,6 @@ public:
 
     friend class StareFunctionsTest;
 
-public:
     StareSubsetArrayFunction() {
         setName("stare_subset_array");
         setDescriptionString(
@@ -246,14 +235,6 @@ public:
     }
 
     ~StareSubsetArrayFunction() override = default;
-
-#if 0
-    template<class T>
-    static void build_masked_data(libdap::Array *dependent_var,
-                                  const std::vector<STARE_ArrayIndexSpatialValue> &dep_var_stare_indices,
-                                  const std::vector<STARE_ArrayIndexSpatialValue> &target_s_indices, T mask_value,
-                                  unique_ptr<libdap::Array> &result);
-#endif
 };
 
 /**
@@ -275,7 +256,6 @@ public:
 
     friend class StareFunctionsTest;
 
-public:
     StareBoxFunction() {
         setName("stare_box");
         setDescriptionString(

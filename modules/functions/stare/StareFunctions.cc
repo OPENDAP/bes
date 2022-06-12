@@ -27,7 +27,7 @@
 #include <cassert>
 
 #include <STARE.h>
-#include <SpatialRange.h>
+// #include <SpatialRange.h>
 
 #include <netcdf.h>
 
@@ -51,14 +51,13 @@
 #include <libdap/Int64.h>
 
 #include "BESDebug.h"
-#include "BESUtil.h"
+// #include "BESUtil.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 
 #include "StareFunctions.h"
 #include "GeoFile.h"
 
-// Used with BESDEBUG
 #define STARE_FUNC "stare"
 
 using namespace libdap;
@@ -70,7 +69,7 @@ namespace functions {
 // See StareFunctions.h jhrg 5/21/20
 // If stare_storage_path is empty, expect the sidecar file in the same
 // place as the data file. jhrg 5/26/20
-string stare_storage_path = "";
+string stare_storage_path;
 
 // TODO Remove this once change-over is complete. jhrg 6/17/21
 string stare_sidecar_suffix = "_stare.nc";
@@ -125,8 +124,8 @@ extract_stare_index_array(Array *var, vector<STARE_ArrayIndexSpatialValue> &valu
  *  -1 if a is in b
  *   0 otherwise.
  *
+ * cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_)
  */
-//int cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_);
 
 /**
  * @brief Do any of the targetIndices STARE indices overlap the dataset's STARE indices?
@@ -215,7 +214,6 @@ stare_subset_helper(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
                     const vector<STARE_ArrayIndexSpatialValue> &dataset_indices,
                     size_t dataset_rows, size_t dataset_cols)
 {
-    //auto subset = new stare_matches;
     unique_ptr<stare_matches> subset(new stare_matches());
 
    auto sid_iter = dataset_indices.begin();
@@ -368,7 +366,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    const BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
@@ -386,7 +384,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
                                                             gf->get_variable_cols(dependent_var->name()));
 
     // When no subset is found (none of the target indices match those in the dataset)
-    if (subset->stare_indices.size() == 0) {
+    if (subset->stare_indices.empty()) {
         subset->stare_indices.push_back(0);
         subset->target_indices.push_back(0);
         subset->row_indices.push_back(-1);
@@ -396,23 +394,23 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<Structure> result(new Structure("result"));
 
     unique_ptr<Array> stare(new Array("stare", new UInt64("stare")));
-    stare->set_value((dods_uint64*)&(subset->stare_indices[0]), subset->stare_indices.size());
-    stare->append_dim(subset->stare_indices.size());
+    stare->set_value(/*(dods_uint64*)*/&(subset->stare_indices[0]), static_cast<int>(subset->stare_indices.size()));
+    stare->append_dim(static_cast<int>(subset->stare_indices.size()));
     result->add_var_nocopy(stare.release());
 
     unique_ptr<Array> target(new Array("target", new UInt64("target")));
-    target->set_value((dods_uint64*)&(subset->target_indices[0]), subset->target_indices.size());
-    target->append_dim(subset->target_indices.size());
+    target->set_value(/*(dods_uint64*)*/ &(subset->target_indices[0]), static_cast<int>(subset->target_indices.size()));
+    target->append_dim(static_cast<int>(subset->target_indices.size()));
     result->add_var_nocopy(target.release());
 
     unique_ptr<Array> x(new Array("row", new Int32("row")));
-    x->set_value(subset->row_indices, subset->row_indices.size());
-    x->append_dim(subset->row_indices.size());
+    x->set_value(subset->row_indices, static_cast<int>(subset->row_indices.size()));
+    x->append_dim(static_cast<int>(subset->row_indices.size()));
     result->add_var_nocopy(x.release());
 
     unique_ptr<Array> y(new Array("col", new Int32("col")));
-    y->set_value(subset->col_indices, subset->col_indices.size());
-    y->append_dim(subset->col_indices.size());
+    y->set_value(subset->col_indices, static_cast<int>(subset->col_indices.size()));
+    y->append_dim(static_cast<int>(subset->col_indices.size()));
     result->add_var_nocopy(y.release());
 
     return result.release();
@@ -432,9 +430,9 @@ double get_double_value(BaseType *btp)
         case libdap::dods_float64_c:
             return dynamic_cast<Float64*>(btp)->value();
         case libdap::dods_int64_c:
-            return dynamic_cast<Int64*>(btp)->value();
+            return static_cast<double>(dynamic_cast<Int64*>(btp)->value());
         case libdap::dods_uint64_c:
-            return dynamic_cast<UInt64*>(btp)->value();
+            return static_cast<double>(dynamic_cast<UInt64*>(btp)->value());
         default: {
             throw BESSyntaxUserError(string("Expected a constant value, but got ").append(btp->type_name())
                                             .append(" instead."), __FILE__, __LINE__);
@@ -476,11 +474,13 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     // FIXME Add more types. jhrg 6/17/20
     switch(dependent_var->var()->type()) {
         case dods_int16_c: {
-            build_masked_data<dods_int16>(dependent_var, dep_var_stare_indices, target_s_indices, mask_value, result);
+            build_masked_data<dods_int16>(dependent_var, dep_var_stare_indices, target_s_indices,
+                                          static_cast<short>(mask_value), result);
             break;
         }
         case dods_float32_c: {
-            build_masked_data<dods_float32>(dependent_var, dep_var_stare_indices, target_s_indices, mask_value, result);
+            build_masked_data<dods_float32>(dependent_var, dep_var_stare_indices, target_s_indices,
+                                            static_cast<float>(mask_value), result);
             break;
         }
 
@@ -547,7 +547,6 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
 
         sivs = stare_box_helper(point(tl_lat, tl_lon), point(br_lat, br_lon));
     }
-#if 1
     else if (args->size() >= 6 && (args->size() % 2) == 0) {
         // build cover from list of three or more points (lat, lon)
         bool flip_flop = false;
@@ -567,7 +566,6 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
 
         sivs = stare_box_helper(points);
     }
-#endif
     else {
         ostringstream oss;
         oss << "stare_box(): Expected four corner lat/lon values or a list of three or more points, but got "
@@ -576,8 +574,8 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
     }
 
     unique_ptr<Array> cover(new Array("cover", new UInt64("cover")));
-    cover->set_value((dods_uint64*)(&sivs[0]), sivs.size());
-    cover->append_dim(sivs.size());
+    cover->set_value((dods_uint64*)(&sivs[0]), static_cast<int>(sivs.size()));
+    cover->append_dim(static_cast<int>(sivs.size()));
 
     return cover.release();
 }
