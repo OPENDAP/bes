@@ -394,12 +394,12 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<Structure> result(new Structure("result"));
 
     unique_ptr<Array> stare(new Array("stare", new UInt64("stare")));
-    stare->set_value(/*(dods_uint64*)*/&(subset->stare_indices[0]), static_cast<int>(subset->stare_indices.size()));
+    stare->set_value((dods_uint64*)&(subset->stare_indices[0]), static_cast<int>(subset->stare_indices.size()));
     stare->append_dim(static_cast<int>(subset->stare_indices.size()));
     result->add_var_nocopy(stare.release());
 
     unique_ptr<Array> target(new Array("target", new UInt64("target")));
-    target->set_value(/*(dods_uint64*)*/ &(subset->target_indices[0]), static_cast<int>(subset->target_indices.size()));
+    target->set_value((dods_uint64*) &(subset->target_indices[0]), static_cast<int>(subset->target_indices.size()));
     target->append_dim(static_cast<int>(subset->target_indices.size()));
     result->add_var_nocopy(target.release());
 
