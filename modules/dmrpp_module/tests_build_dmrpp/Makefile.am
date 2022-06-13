@@ -10,7 +10,9 @@ CLEANFILES =
 EXTRA_DIST = get_dmrpp_baselines $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4 test_bes.conf.in
 
-DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5
+DISTCLEANFILES = atconfig test_bes.conf a.out chunked_oneD.h5 grid_1_2d.h5 grid_1_2d.h5.missing
+
+noinst_DATA = $(abs_builddir)/grid_1_2d.h5
 
 ############## Autotest follows #####################
 
@@ -20,7 +22,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal  $(TESTSUITE_DMRPP) $(builddir)/test_bes.conf
-	if ./chkForAWS.sh; then export tsflags="$(TESTSUITEFLAGS) --s3tests=yes"; else export tsflags="$(TESTSUITEFLAGS)"; fi && \
+	if ./chkForAWS.sh; then export tsflags="$(TESTSUITEFLAGS) -j1 --s3tests=yes"; else export tsflags="$(TESTSUITEFLAGS) -j1"; fi && \
 	$(SHELL) '$(TESTSUITE_DMRPP)' $${tsflags} && echo "bindir: $(bindir)"
 
 clean-local:
@@ -50,3 +52,14 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
 		-e "s%[@]modulesdir[@]%${modulesdir}%" $< > $@
+
+$(abs_builddir)/grid_1_2d.h5:
+	@echo "# abs_top_srcdir: $(abs_top_srcdir)"
+	@echo "# top_srcdir: $(top_srcdir)"
+	@echo "# srcdir: $(srcdir)"
+	@echo "# abs_top_builddir: $(abs_top_builddir)"
+	@echo "# abs_builddir: $(abs_builddir)"
+	@echo "# builddir: $(builddir)"
+	@echo "# Coping grid_1_2d.h5 from: '$(top_srcdir)/modules/dmrpp_module/data/dmrpp/grid_1_2d.h5' to '$(abs_builddir)/grid_1_2d.h5'"
+	cp $(top_srcdir)/modules/dmrpp_module/data/dmrpp/grid_1_2d.h5 $(abs_builddir)/grid_1_2d.h5
+	chmod -R ug+rw $(abs_builddir)/grid_1_2d.h5
