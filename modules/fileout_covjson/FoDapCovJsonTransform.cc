@@ -95,6 +95,14 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
         domainType = "Grid";   
         return true;
     }
+    else 
+        return false;
+    
+    // The following code is commented out for the time being. 
+    // We currently only support the simple CF geographic projection for the time being.  
+    // We will enhance this module to support the other cases in the new tickets.
+    // KY 2022-06-10
+#if 0
     if(xExists && yExists && zExists && tExists) {
 
         if (shapeVals.size() < 4)
@@ -200,6 +208,8 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
 //cerr<<"Coming to the last step."<<endl;
 
     return false; // This source DDS is not valid as CovJSON
+
+#endif
 }
 
 template<typename T>
@@ -1118,10 +1128,53 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
         t_bnd_val.resize(axisVar_t_bnd_val.size());
         for (unsigned i = 0; i < axisVar_t_bnd_val.size();i++) {
            t_bnd_val[i] = cf_time_to_greg((long long)(axisVar_t_bnd_val[i]));
+#if 0
 //cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
+#endif
         }
     }
-    
+
+    // bound for  x-axis
+    std::vector<std::string> x_bnd_val;
+    if(axisVar_x_bnd_val.empty() == false) {
+        x_bnd_val.resize(axisVar_x_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_x_bnd_val.size();i++) {
+           ostringstream temp_strm;
+           temp_strm<<axisVar_x_bnd_val[i];
+           x_bnd_val[i] = temp_strm.str();
+#if 0
+//cerr<<"X bound value is "<<x_bnd_val[i] <<endl;
+#endif
+        }
+    }
+
+    // bound for  y-axis
+    std::vector<std::string> y_bnd_val;
+    if(axisVar_y_bnd_val.empty() == false) {
+        y_bnd_val.resize(axisVar_y_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_y_bnd_val.size();i++) {
+           ostringstream temp_strm;
+           temp_strm<<axisVar_y_bnd_val[i];
+           y_bnd_val[i] = temp_strm.str();
+#if 0
+//cerr<<"Y bound value is "<<y_bnd_val[i] <<endl;
+#endif
+        }
+    }
+
+    // bound for  z-axis
+    std::vector<std::string> z_bnd_val;
+    if(axisVar_z_bnd_val.empty() == false) {
+        z_bnd_val.resize(axisVar_z_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_z_bnd_val.size();i++) {
+           ostringstream temp_strm;
+           temp_strm<<axisVar_z_bnd_val[i];
+           z_bnd_val[i] = temp_strm.str();
+#if 0
+//cerr<<"Z bound value is "<<z_bnd_val[i] <<endl;
+#endif
+        }
+    }  
     
     // FOR TESTING AND DEBUGGING PURPOSES
     // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
@@ -1137,19 +1190,22 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
                 else if((i == 2) && (axes[j]->name.compare("z") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, z_bnd_val,child_indent2,false);
                 }
                 else if((i == 3) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
-                    print_bound(strm, t_bnd_val,child_indent2);
+                    print_bound(strm, t_bnd_val,child_indent2,true);
                 }
             }
             // If just x, y, and t exist (x, y, t)
@@ -1157,15 +1213,17 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
                 else if((i == 2) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
-                    print_bound(strm, t_bnd_val,child_indent2);
+                    print_bound(strm, t_bnd_val,child_indent2,true);
                 }
             }
             // If just x and y exist (x, y)
@@ -1173,10 +1231,12 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
                 if((i == 0) && (axes[j]->name.compare("x") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, x_bnd_val,child_indent2,false);
                 }
                 else if((i == 1) && (axes[j]->name.compare("y") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, y_bnd_val,child_indent2,false);
                 }
             }
         }
@@ -1923,9 +1983,10 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
 //cerr<<"coming to the obtain_bound_values "<<endl;
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if (d_a) {// float, now we just handle this way 
-     // SSTOP FILL IN
+#if 0
 //cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
 //cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+#endif
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
@@ -2131,20 +2192,38 @@ bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z
 
     if (ret_value == true) {
     if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
-//cerr<<"coming to ignore mode "<<endl;
+
+#if 0
+cerr<<"coming to ignore mode "<<endl;
+cerr<<"axis_var_z_count: "<<axis_var_z_count <<endl;
+cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
+#endif
 
     // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
     // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
     if(axis_var_z_count <=1 && axis_var_t_count <=1) {
-        //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
+
         for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
             par_vars.push_back(temp_x_y_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_vars[i]);
         for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
             par_vars.push_back(temp_x_y_t_vars[i]);
-        for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
-            par_vars.push_back(temp_x_y_z_t_vars[i]);
+ 
+        if (temp_x_y_vars.empty())  {
+            for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_vars[i]);
+            for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_t_vars[i]);
+            
+        }
+        else {
+            // Ignore the (x,y,z) and (x,y,z,t) when (x,y) exists.
+            // We also need to ignore the z-axis TODO,we may need to support multiple verical coordinates. !
+            if (axis_var_z_count == 1) {
+                axisVar_z.name="";
+                axisVar_z.dim_name = "";
+                axisVar_z.bound_name = "";
+            }
+        }
     }
     else if (axis_var_z_count >1 && axis_var_t_count <=1) {
         //Cover all variables that have (x,y) or (x,y,t) 
@@ -2307,7 +2386,10 @@ cerr<<"cf_s_i " <<cf_s_i <<endl;
     // This should be sufficient for the data we serve now. 
     ycf_1.tm_hour = cf_h_i;   ycf_1.tm_min = cf_m_i; ycf_1.tm_sec = cf_s_i;
     ycf_1.tm_year = cf_y_i-1900; ycf_1.tm_mon = cf_mo_i; ycf_1.tm_mday = cf_d_i;
-    time_t t_ycf_1 = mktime(&ycf_1);
+#if 0
+    //time_t t_ycf_1 = mktime(&ycf_1);
+#endif
+    time_t t_ycf_1 = timegm(&ycf_1);
 
 #if 0
 cerr<<"t_ycf_1 is "<<t_ycf_1 <<endl;
@@ -2332,11 +2414,16 @@ cerr<<"time_val is "<<time_val <<endl;
   //time_t t_ycf_2 = t_ycf_1 + 86340;
 //cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
   struct tm *t_new_ycf;
+  struct tm temp_new_ycf;
   // The use of localtime() is to calcuate the time based on the CF time unit.
   // So the value actually represents the GMT time. 
   // Note: we didn't consider the use of local time in the CF. 
   // Our currently supported product uses GMT. Will consider the other cases later.
-  t_new_ycf = localtime(&t_ycf_2);
+#if 0
+  //t_new_ycf = localtime(&t_ycf_2);
+  //t_new_ycf = gmtime(&t_ycf_2);
+#endif
+  t_new_ycf = gmtime_r(&t_ycf_2,&temp_new_ycf);
 
 #if 0
 cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
@@ -2380,7 +2467,7 @@ cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
     return covjson_time;
 } 
 
-void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent) {
+void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent, bool is_t_axis) const {
 
     if(axisVar_t.bound_name !="") {
         std::string print_values;
@@ -2388,11 +2475,19 @@ void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::st
             print_values = "\"bounds\": [";
             for(unsigned i = 0; i <t_bnd_val.size(); i++) {   
                 string tmpString = t_bnd_val[i];
+                
+                if (is_t_axis) {
                 print_values +="\"";  
                 print_values +=focovjson::escape_for_covjson(tmpString);
                 print_values +="\"";  
+                }
+                else 
+                    print_values +=tmpString;
+
                 if(i !=(t_bnd_val.size()-1))
                     print_values +=", ";
+                
+ 
             }
             print_values += "]";
         }

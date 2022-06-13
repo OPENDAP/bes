@@ -1,0 +1,1046 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "Grid",
+    "axes": {
+      "x": {
+        "values": []
+        "bounds": []
+      },
+      "y": {
+        "values": []
+        "bounds": []
+      },
+      "t": {
+        "values": []
+        "bounds": []
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    }]
+  },
+  "parameters": {
+    "Tair_f_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/air_temperature/",
+        "label": {
+          "en": "Temperature"
+        }
+      }
+    },
+    "Albedo_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Albedo"
+      },
+      "unit": {
+        "label": {
+          "en": "%"
+        },
+        "symbol": {
+          "value": "%",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_albedo/",
+        "label": {
+          "en": "Albedo"
+        }
+      }
+    },
+    "SoilMoi0_10cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil moisture"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_moisture_content/",
+        "label": {
+          "en": "Soil moisture"
+        }
+      }
+    },
+    "SoilMoi10_40cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil moisture"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_moisture_content/",
+        "label": {
+          "en": "Soil moisture"
+        }
+      }
+    },
+    "Tveg_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Transpiration"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/transpiration_flux_from_veg/",
+        "label": {
+          "en": "Transpiration"
+        }
+      }
+    },
+    "SWE_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Snow depth water equivalent"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_snow_amount/",
+        "label": {
+          "en": "Snow depth water equivalent"
+        }
+      }
+    },
+    "Qh_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Sensible heat net flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_upward_sensible_heat_flux/",
+        "label": {
+          "en": "Sensible heat net flux"
+        }
+      }
+    },
+    "ECanop_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Canopy water evaporation"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/evaporation_flux_from_canopy/",
+        "label": {
+          "en": "Canopy water evaporation"
+        }
+      }
+    },
+    "SoilTMP10_40cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_temperature/",
+        "label": {
+          "en": "Soil temperature"
+        }
+      }
+    },
+    "Lwnet_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Net long-wave radiation flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_net_downward_longwave_flux/",
+        "label": {
+          "en": "Net long-wave radiation flux"
+        }
+      }
+    },
+    "Snowf_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Snow precipitation rate"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2 s-1"
+        },
+        "symbol": {
+          "value": "kg m-2 s-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/snowfall_flux/",
+        "label": {
+          "en": "Snow precipitation rate"
+        }
+      }
+    },
+    "SoilMoi40_100cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil moisture"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_moisture_content/",
+        "label": {
+          "en": "Soil moisture"
+        }
+      }
+    },
+    "Qair_f_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Specific humidity"
+      },
+      "unit": {
+        "label": {
+          "en": "kg kg-1"
+        },
+        "symbol": {
+          "value": "kg kg-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/specific_humidity/",
+        "label": {
+          "en": "Specific humidity"
+        }
+      }
+    },
+    "Wind_f_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Wind speed"
+      },
+      "unit": {
+        "label": {
+          "en": "m s-1"
+        },
+        "symbol": {
+          "value": "m s-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/wind_speed/",
+        "label": {
+          "en": "Wind speed"
+        }
+      }
+    },
+    "Swnet_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Net short wave radiation flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_net_downward_shortwave_flux/",
+        "label": {
+          "en": "Net short wave radiation flux"
+        }
+      }
+    },
+    "SWdown_f_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Downward short-wave radiation flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_downwelling_shortwave_flux_in_air/",
+        "label": {
+          "en": "Downward short-wave radiation flux"
+        }
+      }
+    },
+    "Qs_acc": {
+      "type": "Parameter",
+      "description": {
+        "en": "Storm surface runoff"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_runoff_amount/",
+        "label": {
+          "en": "Storm surface runoff"
+        }
+      }
+    },
+    "RootMoist_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Root zone soil moisture"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/root_zone_soil_moisture/",
+        "label": {
+          "en": "Root zone soil moisture"
+        }
+      }
+    },
+    "SoilTMP100_200cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_temperature/",
+        "label": {
+          "en": "Soil temperature"
+        }
+      }
+    },
+    "SnowDepth_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Snow depth"
+      },
+      "unit": {
+        "label": {
+          "en": "m"
+        },
+        "symbol": {
+          "value": "m",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_snow_thickness/",
+        "label": {
+          "en": "Snow depth"
+        }
+      }
+    },
+    "SoilTMP0_10cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_temperature/",
+        "label": {
+          "en": "Soil temperature"
+        }
+      }
+    },
+    "Rainf_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Rain precipitation rate"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2 s-1"
+        },
+        "symbol": {
+          "value": "kg m-2 s-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/rainfall_flux/",
+        "label": {
+          "en": "Rain precipitation rate"
+        }
+      }
+    },
+    "Psurf_f_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Pressure"
+      },
+      "unit": {
+        "label": {
+          "en": "Pa"
+        },
+        "symbol": {
+          "value": "Pa",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_air_pressure/",
+        "label": {
+          "en": "Pressure"
+        }
+      }
+    },
+    "Evap_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Evapotranspiration"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2 s-1"
+        },
+        "symbol": {
+          "value": "kg m-2 s-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/water_evaporation_flux/",
+        "label": {
+          "en": "Evapotranspiration"
+        }
+      }
+    },
+    "AvgSurfT_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Average Surface Skin temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_temperature/",
+        "label": {
+          "en": "Average Surface Skin temperature"
+        }
+      }
+    },
+    "LWdown_f_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Downward long-wave radiation flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_downwelling_longwave_flux_in_air/",
+        "label": {
+          "en": "Downward long-wave radiation flux"
+        }
+      }
+    },
+    "Qle_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Latent heat net flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_upward_latent_heat_flux/",
+        "label": {
+          "en": "Latent heat net flux"
+        }
+      }
+    },
+    "Rainf_f_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Total precipitation rate"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2 s-1"
+        },
+        "symbol": {
+          "value": "kg m-2 s-1",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/precipitation_flux/",
+        "label": {
+          "en": "Total precipitation rate"
+        }
+      }
+    },
+    "Qg_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Heat flux"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/downward_heat_flux_in_soil/",
+        "label": {
+          "en": "Heat flux"
+        }
+      }
+    },
+    "SoilMoi100_200cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil moisture"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_moisture_content/",
+        "label": {
+          "en": "Soil moisture"
+        }
+      }
+    },
+    "Qsm_acc": {
+      "type": "Parameter",
+      "description": {
+        "en": "Snow melt"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/surface_snow_melt_amount/",
+        "label": {
+          "en": "Snow melt"
+        }
+      }
+    },
+    "PotEvap_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Potential evaporation rate"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/potential_evaporation_flux/",
+        "label": {
+          "en": "Potential evaporation rate"
+        }
+      }
+    },
+    "Qsb_acc": {
+      "type": "Parameter",
+      "description": {
+        "en": "Baseflow-groundwater runoff"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/subsurface_runoff_amount/",
+        "label": {
+          "en": "Baseflow-groundwater runoff"
+        }
+      }
+    },
+    "SoilTMP40_100cm_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Soil temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "K"
+        },
+        "symbol": {
+          "value": "K",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/soil_temperature/",
+        "label": {
+          "en": "Soil temperature"
+        }
+      }
+    },
+    "CanopInt_inst": {
+      "type": "Parameter",
+      "description": {
+        "en": "Plant canopy surface water"
+      },
+      "unit": {
+        "label": {
+          "en": "kg m-2"
+        },
+        "symbol": {
+          "value": "kg m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/canopy_water_amount/",
+        "label": {
+          "en": "Plant canopy surface water"
+        }
+      }
+    },
+    "ESoil_tavg": {
+      "type": "Parameter",
+      "description": {
+        "en": "Direct Evaporation from Bare Soil"
+      },
+      "unit": {
+        "label": {
+          "en": "W m-2"
+        },
+        "symbol": {
+          "value": "W m-2",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/evaporation_flux_from_soil/",
+        "label": {
+          "en": "Direct Evaporation from Bare Soil"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "Tair_f_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Albedo_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilMoi0_10cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilMoi10_40cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Tveg_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SWE_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qh_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "ECanop_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilTMP10_40cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Lwnet_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Snowf_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilMoi40_100cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qair_f_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Wind_f_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Swnet_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SWdown_f_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qs_acc": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "RootMoist_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilTMP100_200cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SnowDepth_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilTMP0_10cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Rainf_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Psurf_f_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Evap_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "AvgSurfT_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "LWdown_f_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qle_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Rainf_f_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qg_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilMoi100_200cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qsm_acc": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "PotEvap_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "Qsb_acc": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "SoilTMP40_100cm_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "CanopInt_inst": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    },
+    "ESoil_tavg": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["t", "y", "x"],
+      "shape": [1, 600, 1440],
+      "values": []
+    }
+  }
+}
