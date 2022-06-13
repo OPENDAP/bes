@@ -344,7 +344,7 @@ BES.module.dap=@bes_modules_dir@/libdap_module.so
 BES.module.cmd=@bes_modules_dir@/libdap_xml_module.so
 BES.module.h5=@bes_modules_dir@/libhdf5_module.so
 BES.module.dmrpp=@bes_modules_dir@/libdmrpp_module.so
-BES.module.nc=@bes_modules_dir@/libnc_module
+BES.module.nc=@bes_modules_dir@/libnc_module.so
 BES.module.fonc=@bes_modules_dir@/libfonc_module.so
 
 # The value "@hdf5_root_directory@" is replaced at run time.
