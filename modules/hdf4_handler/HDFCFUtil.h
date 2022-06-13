@@ -113,7 +113,7 @@ struct HDFCFUtil
 
 
     // Subsetting the 2-D fields
-    template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
+    template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, const int32 * offset, const int32 * count, const int32 * step);
 
     /// CF requires the _FillValue attribute datatype is the same as the corresponding field datatype. For some NASA files, this is not true.
     /// So we need to check if the _FillValue's datatype is the same as the attribute's. If not, we need to correct them.
@@ -185,7 +185,7 @@ struct HDFCFUtil
 
     // The following four functions is to handle 1-D CF CV variables required by CF projection conventions for grid. 
     // Obtains the latitude and longitude dimension info. of an HDF-EOS2 grid.
-    static void obtain_grid_latlon_dim_info(HDFEOS2::GridDataset*,string &,int32 &,string &,int32 &);
+    static void obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset*,string &,int32 &,string &,int32 &);
 
     // Adds the 1-D cf grid projection mapping attribute to data variables
     // It is called by the function add_cf_grid_attrs. 
