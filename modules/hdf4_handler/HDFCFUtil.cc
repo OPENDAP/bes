@@ -1637,7 +1637,6 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset* gdset,
                                      int32& dim1size){
 
     const vector<HDFEOS2::Field*>gfields = gdset->getDataFields();
-    vector<HDFEOS2::Field*>::const_iterator it_gf;
     for (const auto &gf:gfields) {
 
         // Check the dimensions for Latitude
@@ -1705,30 +1704,28 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset* gdset,
 
 // This function adds the 1-D cf grid projection mapping attribute to data variables
 // it is called by the function add_cf_grid_attrs. 
-void HDFCFUtil::add_cf_grid_mapping_attr(DAS &das, HDFEOS2::GridDataset*gdset,const string& cf_projection,
+void HDFCFUtil::add_cf_grid_mapping_attr(DAS &das, const HDFEOS2::GridDataset*gdset,const string& cf_projection,
                                          const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size) {
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
     const vector<HDFEOS2::Field*>gfields = gdset->getDataFields();
-    vector<HDFEOS2::Field*>::const_iterator it_gf;
-    for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
 
-        if(0 == (*it_gf)->getFieldType() && (*it_gf)->getRank() >1) {
+    for (const auto &gf:gfields) {
+        if(0 == gf->getFieldType() && gf->getRank() >1) {
             bool has_dim0 = false;
             bool has_dim1 = false;
-            const vector<HDFEOS2::Dimension*>& dims= (*it_gf)->getCorrectedDimensions();
-            for (vector<HDFEOS2::Dimension *>::const_iterator j =
-                dims.begin(); j!= dims.end();++j){
-                if((*j)->getName()== dim0name && (*j)->getSize() == dim0size)
+            const vector<HDFEOS2::Dimension*>& dims= gf->getCorrectedDimensions();
+            for (const auto &dim:dims) {
+                if(dim->getName()== dim0name && dim->getSize() == dim0size)
                     has_dim0 = true;
-                else if((*j)->getName()== dim1name && (*j)->getSize() == dim1size)
+                else if(dim->getName()== dim1name && dim->getSize() == dim1size)
                     has_dim1 = true;
 
             }
             if(true == has_dim0 && true == has_dim1) {// Need to add the grid_mapping attribute
-                AttrTable *at = das.get_table((*it_gf)->getNewName());
+                AttrTable *at = das.get_table(gf->getNewName());
                 if (!at)
-                    at = das.add_table((*it_gf)->getNewName(), new AttrTable);
+                    at = das.add_table(gf->getNewName(), new AttrTable);
 
                 // The dummy projection name is the value of the grid_mapping attribute
                 at->append_attr("grid_mapping","String",cf_projection);
@@ -1744,8 +1741,11 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
     if(GCTP_SNSOID == gdset->getProjection().getCode()) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
-        string dim0name,dim1name;
-        int32  dim0size = -1,dim1size = -1;
+        string dim0name;
+        string dim1name;
+        int32 dim0size = -1;
+        int32 dim1size = -1;
+
         HDFCFUtil::obtain_grid_latlon_dim_info(gdset,dim0name,dim0size,dim1name,dim1size);
         
         //3. Add 1D CF attributes to the 1-D CV variables and the dummy projection variable
@@ -1803,8 +1803,10 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
     if(GCTP_SNSOID == gdset->getProjection().getCode()) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
-        string dim0name,dim1name;
-        int32  dim0size = -1,dim1size = -1;
+        string dim0name;
+        string dim1name;
+        int32  dim0size = -1;
+        int32 dim1size = -1;
         HDFCFUtil::obtain_grid_latlon_dim_info(gdset,dim0name,dim0size,dim1name,dim1size);
         
         //3. Add the 1-D CV variables and the dummy projection variable
@@ -1816,8 +1818,8 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
         HDFEOS2GeoCF1D * ar_dim0 = nullptr;
         HDFEOS2GeoCF1D * ar_dim1 = nullptr;
 
-        float64 *upleft = nullptr;
-        float64 *lowright = nullptr;
+        const float64 *upleft = nullptr;
+        const float64 *lowright = nullptr;
 
         try {
 
@@ -1825,8 +1827,9 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
             bt_dim1 = new(HDFFloat64)(dim1name,gdset->getName());
 
             // Obtain the upleft and lowright coordinates
-            upleft = const_cast<float64 *>(gdset->getInfo().getUpLeft());
-            lowright = const_cast<float64 *>(gdset->getInfo().getLowRight());
+            //upleft = const_cast<float64 *>(gdset->getInfo().getUpLeft());
+            upleft = gdset->getInfo().getUpLeft();
+            lowright = gdset->getInfo().getLowRight();
            
             // Note ar_dim0 is y, ar_dim1 is x.
             ar_dim0 = new HDFEOS2GeoCF1D(GCTP_SNSOID,

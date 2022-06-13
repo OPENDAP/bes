@@ -189,7 +189,7 @@ struct HDFCFUtil
 
     // Adds the 1-D cf grid projection mapping attribute to data variables
     // It is called by the function add_cf_grid_attrs. 
-    static void add_cf_grid_mapping_attr(libdap::DAS &das, HDFEOS2::GridDataset*gdset,const string& cf_projection,
+    static void add_cf_grid_mapping_attr(libdap::DAS &das, const HDFEOS2::GridDataset*gdset,const string& cf_projection,
                                          const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size);
 
     // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
