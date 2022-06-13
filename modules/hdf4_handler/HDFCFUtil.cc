@@ -66,7 +66,9 @@ HDFCFUtil::check_beskeys(const string& key) {
 static void
 split_helper(vector<string> &tokens, const string &text, const char sep)
 {
-    string::size_type start = 0, end = 0;
+    string::size_type start = 0;
+    string::size_type end = 0;
+
     while ((end = text.find(sep, start)) != string::npos) {
         tokens.push_back(text.substr(start, end - start));
         start = end + 1;
@@ -176,9 +178,9 @@ HDFCFUtil::get_CF_string(string s)
     if ('/' ==s[0])
         s.erase(0,1);
 
-    for(unsigned int i=0; i < s.length(); i++)
-        if((false == isalnum(s[i])) &&  (s[i]!='_'))
-            s[i]='_';
+    for(auto &si: s)
+        if((false == isalnum(si)) &&  (si!='_'))
+            si='_';
 
     return s;
 
@@ -228,10 +230,10 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
 
     vector<string>::const_iterator irv;
 
-    for (irv = newobjnamelist.begin(); irv != newobjnamelist.end(); ++irv) {
-        setret = objnameset.insert(*irv);
+    for (const auto &newobjname:newobjnamelist) {
+        setret = objnameset.insert(newobjname);
         if (false == setret.second ) {
-            clashnamelist.insert(clashnamelist.end(),(*irv));
+            clashnamelist.insert(clashnamelist.end(),newobjname);
             cl_to_ol[cl_index] = ol_index;
             cl_index++;
         }
@@ -240,11 +242,11 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
 
     // Now change the clashed elements to unique elements,
     // Generate the set which has the same size as the original vector.
-    for (ivs=clashnamelist.begin(); ivs!=clashnamelist.end(); ivs++) {
+    for (auto &clashname:clashnamelist) {
         int clash_index = 1;
-        string temp_clashname = *ivs +'_';
+        string temp_clashname = clashname +'_';
         HDFCFUtil::gen_unique_name(temp_clashname,objnameset,clash_index);
-        *ivs = temp_clashname;
+        clashname = temp_clashname;
     }
 
     // Now go back to the original vector, make it unique.
@@ -501,19 +503,21 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
                                 int majordim,
                                 int minordim,
                                 T * latlon,
-                                int32 * offset,
-                                int32 * count,
-                                int32 * step)
+                                const int32 * offset,
+                                const int32 * count,
+                                const int32 * step)
 {
 
-    //  float64 templatlon[majordim][minordim];
 #if 0
+    //  float64 templatlon[majordim][minordim];
     // --std=c++11 on OSX causes 'typeof' to fail. This is a GNU gcc-specific
     // keyword. jhrg 3/28/19
     T (*templatlonptr)[majordim][minordim] = (typeof templatlonptr) latlon;
 #endif
     T (*templatlonptr)[majordim][minordim] = (T *) latlon;
-    int i, j, k;
+    int i;
+    int j; 
+    int k;
 
     // do subsetting
     // Find the correct index
@@ -663,9 +667,9 @@ bool HDFCFUtil::is_special_value(int32 dtype, float fillvalue, float realvalue) 
 
     if (DFNT_UINT16 == dtype) {
 
-        int fillvalue_int = (int)fillvalue;
+        auto fillvalue_int = (int)fillvalue;
         if (MAX_NON_SCALE_SPECIAL_VALUE == fillvalue_int) {
-            int realvalue_int = (int)realvalue;
+            auto realvalue_int = (int)realvalue;
             if (realvalue_int <= MAX_NON_SCALE_SPECIAL_VALUE && realvalue_int >=MIN_NON_SCALE_SPECIAL_VALUE)
                 ret_value = true;
         }
@@ -740,7 +744,9 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
         string  radiance_offsets_value="";
         string  reflectance_scales_value=""; 
         string  reflectance_offsets_value="";
-        string  scale_factor_type, add_offset_type;
+        string  scale_factor_type;
+        string  add_offset_type;
+
         while (it!=at->attr_end())
         {
             if(at->get_name(it)=="radiance_scales")
@@ -793,17 +799,16 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
                                    string & modis_geofilename, bool& geofile_has_dimmap) {
 
 
-    HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
+    auto sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
     const vector<HDFEOS2::SwathDataset::DimensionMap*>& origdimmaps = sw->getDimensionMaps();
-    vector<HDFEOS2::SwathDataset::DimensionMap*>::const_iterator it_dmap;
     struct dimmap_entry tempdimmap;
 
     // if having dimension maps, we need to retrieve the dimension map info.
-    for(size_t i=0;i<origdimmaps.size();i++){
-        tempdimmap.geodim = origdimmaps[i]->getGeoDimension();
-        tempdimmap.datadim = origdimmaps[i]->getDataDimension();
-        tempdimmap.offset = origdimmaps[i]->getOffset();
-        tempdimmap.inc    = origdimmaps[i]->getIncrement();
+    for(const auto & origdimmap:origdimmaps){
+        tempdimmap.geodim = origdimmap->getGeoDimension();
+        tempdimmap.datadim = origdimmap->getDataDimension();
+        tempdimmap.offset = origdimmap->getOffset();
+        tempdimmap.inc    = origdimmap->getIncrement();
         dimmaps.push_back(tempdimmap);
     }
 
@@ -815,7 +820,7 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
 
     // Only when there is dimension map, we need to consider the additional MODIS geolocation files.
     // Will check if the check modis_geo_location file key is turned on.
-    if((origdimmaps.size() != 0) && (true == HDF4RequestHandler::get_enable_check_modis_geo_file()) ) {
+    if((origdimmaps.empty() != false) && (true == HDF4RequestHandler::get_enable_check_modis_geo_file()) ) {
 
         // Has to use C-style since basename and dirname are not C++ routines.
         char*tempcstr;
@@ -896,18 +901,18 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
     bool modis_dimmap_nonll_field = false;
     vector<string> modis_dimmap_nonll_fieldlist; 
 
-    modis_dimmap_nonll_fieldlist.push_back("Height");
-    modis_dimmap_nonll_fieldlist.push_back("SensorZenith");
-    modis_dimmap_nonll_fieldlist.push_back("SensorAzimuth");
-    modis_dimmap_nonll_fieldlist.push_back("Range");
-    modis_dimmap_nonll_fieldlist.push_back("SolarZenith");
-    modis_dimmap_nonll_fieldlist.push_back("SolarAzimuth");
-    modis_dimmap_nonll_fieldlist.push_back("Land/SeaMask");
-    modis_dimmap_nonll_fieldlist.push_back("gflags");
-    modis_dimmap_nonll_fieldlist.push_back("Solar_Zenith");
-    modis_dimmap_nonll_fieldlist.push_back("Solar_Azimuth");
-    modis_dimmap_nonll_fieldlist.push_back("Sensor_Azimuth");
-    modis_dimmap_nonll_fieldlist.push_back("Sensor_Zenith");
+    modis_dimmap_nonll_fieldlist.emplace_back("Height");
+    modis_dimmap_nonll_fieldlist.emplace_back("SensorZenith");
+    modis_dimmap_nonll_fieldlist.emplace_back("SensorAzimuth");
+    modis_dimmap_nonll_fieldlist.emplace_back("Range");
+    modis_dimmap_nonll_fieldlist.emplace_back("SolarZenith");
+    modis_dimmap_nonll_fieldlist.emplace_back("SolarAzimuth");
+    modis_dimmap_nonll_fieldlist.emplace_back("Land/SeaMask");
+    modis_dimmap_nonll_fieldlist.emplace_back("gflags");
+    modis_dimmap_nonll_fieldlist.emplace_back("Solar_Zenith");
+    modis_dimmap_nonll_fieldlist.emplace_back("Solar_Azimuth");
+    modis_dimmap_nonll_fieldlist.emplace_back("Sensor_Azimuth");
+    modis_dimmap_nonll_fieldlist.emplace_back("Sensor_Zenith");
 
     map<string,string>modis_field_to_geofile_field;
     map<string,string>::iterator itmap;
@@ -916,9 +921,9 @@ bool HDFCFUtil::is_modis_dimmap_nonll_field(string & fieldname) {
     modis_field_to_geofile_field["Sensor_Zenith"] = "SensorZenith";
     modis_field_to_geofile_field["Solar_Azimuth"] = "SolarAzimuth";
 
-    for (unsigned int i = 0; i <modis_dimmap_nonll_fieldlist.size(); i++) {
+    for (const auto & modis_dimmap_nonll_f:modis_dimmap_nonll_fieldlist) {
 
-        if (fieldname == modis_dimmap_nonll_fieldlist[i]) {
+        if (fieldname == modis_dimmap_nonll_f) {
             itmap = modis_field_to_geofile_field.find(fieldname);
             if (itmap !=modis_field_to_geofile_field.end())
                 fieldname = itmap->second;
@@ -991,10 +996,10 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
     // Scale and offset values
     string scale_factor_value=""; 
     float  orig_scale_value_float = 1;
-    float  orig_scale_value_double = 1;
+    double  orig_scale_value_double = 1;
     string add_offset_value="0"; 
     float  orig_offset_value_float = 0;
-    float  orig_offset_value_double = 0;
+    double  orig_offset_value_double = 0;
     bool add_offset_found = false;
 
 
@@ -1010,7 +1015,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
             if(scale_factor_type =="Float64")
                 orig_scale_value_double=atof(scale_factor_value.c_str());
             else 
-                orig_scale_value_float = atof(scale_factor_value.c_str());
+                orig_scale_value_float = (float)(atof(scale_factor_value.c_str()));
         }
 
         if(at->get_name(it)=="add_offset")
@@ -1021,7 +1026,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
             if(add_offset_type == "Float64") 
                 orig_offset_value_double = atof(add_offset_value.c_str());
             else 
-                orig_offset_value_float = atof(add_offset_value.c_str());
+                orig_offset_value_float = (float)(atof(add_offset_value.c_str()));
             add_offset_found = true;
         }
 
@@ -1192,14 +1197,14 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
         if(at->get_name(it)=="scale_factor")
         {
             scale_factor_value = (*at->get_attr_vector(it)->begin());
-            orig_scale_value = atof(scale_factor_value.c_str());
+            orig_scale_value = (float)(atof(scale_factor_value.c_str()));
             scale_factor_type = at->get_type(it);
         }
 
         if(at->get_name(it)=="add_offset")
         {
             add_offset_value = (*at->get_attr_vector(it)->begin());
-            orig_offset_value = atof(add_offset_value.c_str());
+            orig_offset_value = (float)(atof(add_offset_value.c_str()));
             add_offset_type = at->get_type(it);
             add_offset_found = true;
         }
@@ -1213,7 +1218,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
         if(at->get_name(it)=="valid_range")
         {
             vector<string> *avalue = at->get_attr_vector(it);
-            vector<string>::iterator ait = avalue->begin();
+            auto ait = avalue->begin();
             while(ait!=avalue->end())
             {
                 valid_range_value += *ait;
@@ -1313,6 +1318,11 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                         vector<string> *avalue = at->get_attr_vector(it);
                         for (vector<string>::const_iterator ait = avalue->begin();ait !=avalue->end();++ait) {
                             temp_var_val = (float)(atof((*ait).c_str())); 
+#if 0
+                        // Check if this works in the future.
+                        for (const auto &avalue_ele:*avalue) {
+                            temp_var_val = (float)(atof((avalue_ele).c_str())); 
+#endif
                             if (temp_var_val > scale_max) 
                                 scale_max = temp_var_val;
                             if (temp_var_val < scale_min)
@@ -1544,12 +1554,12 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     //istringstream(valid_range_value.substr(found+1))>>orig_valid_max;
 #endif
 
-    vip_orig_valid_min = atoi((valid_range_value.substr(0,found)).c_str());
-    vip_orig_valid_max = atoi((valid_range_value.substr(found+1)).c_str());
+    vip_orig_valid_min = (short) (atoi((valid_range_value.substr(0,found)).c_str()));
+    vip_orig_valid_max = (short) (atoi((valid_range_value.substr(found+1)).c_str()));
 
     int16 scale_factor_number = 1;
 
-    scale_factor_number = atoi(scale_factor_value.c_str());
+    scale_factor_number = (short)(atoi(scale_factor_value.c_str()));
 
     if(scale_factor_number !=0) {
         valid_min = (float)(vip_orig_valid_min/scale_factor_number);
@@ -1564,8 +1574,13 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
 void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 
     AttrTable::Attr_iter it = at->attr_begin();
-    string scale_factor_value="", add_offset_value="0";
-    string scale_factor_type, add_offset_type;
+
+    string scale_factor_value="";
+    string  add_offset_value="0";
+
+    string scale_factor_type;
+    string  add_offset_type;
+
     bool OFFSET_found = false;
     bool Scale_found = false;
     bool SCALE_FACTOR_found = false;
@@ -1615,7 +1630,7 @@ void HDFCFUtil::handle_amsr_attrs(AttrTable *at) {
 //This function obtains the latitude and longitude dimension info. of an
 //HDF-EOS2 grid after the handler translates the HDF-EOS to CF.
 // Dimension info. includes dimension name and dimension size.
-void HDFCFUtil::obtain_grid_latlon_dim_info(HDFEOS2::GridDataset* gdset, 
+void HDFCFUtil::obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset* gdset, 
                                      string & dim0name, 
                                      int32 & dim0size,
                                      string & dim1name, 
@@ -1623,17 +1638,17 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(HDFEOS2::GridDataset* gdset,
 
     const vector<HDFEOS2::Field*>gfields = gdset->getDataFields();
     vector<HDFEOS2::Field*>::const_iterator it_gf;
-    for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
+    for (const auto &gf:gfields) {
 
         // Check the dimensions for Latitude
-        if(1 == (*it_gf)->getFieldType()) {
-            const vector<HDFEOS2::Dimension*>& dims= (*it_gf)->getCorrectedDimensions();
+        if(1 == gf->getFieldType()) {
+            const vector<HDFEOS2::Dimension*>& dims= gf->getCorrectedDimensions();
 
             //2-D latitude
             if(2 == dims.size()) {
                 // Most time, it is YDim Major. We will see if we have a real case to
                 // check if the handling is right for the XDim Major case.
-                if(true == (*it_gf)->getYDimMajor()) {
+                if(true == gf->getYDimMajor()) {
                     dim0name = dims[0]->getName();
                     dim0size = dims[0]->getSize();
                     dim1name = dims[1]->getName();
@@ -1656,13 +1671,13 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(HDFEOS2::GridDataset* gdset,
         }
 
         // Longitude, if longitude is checked first, it goes here.
-        if(2 == (*it_gf)->getFieldType()) {
-            const vector<HDFEOS2::Dimension*>& dims= (*it_gf)->getCorrectedDimensions();
+        if(2 == gf->getFieldType()) {
+            const vector<HDFEOS2::Dimension*>& dims= gf->getCorrectedDimensions();
             if(2 == dims.size()) {
 
                 // Most time, it is YDim Major. We will see if we have a real case to
                 // check if the handling is right for the XDim Major case.
-                if(true == (*it_gf)->getYDimMajor()) {
+                if(true == gf->getYDimMajor()) {
                     dim0name = dims[0]->getName();
                     dim0size = dims[0]->getSize();
                     dim1name = dims[1]->getName();

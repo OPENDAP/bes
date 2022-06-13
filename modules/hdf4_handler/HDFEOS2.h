@@ -258,8 +258,6 @@ namespace HDFEOS2
     {
         public:
             Field ()
-                :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)/*, field_cache(0)*/
-
             {
                 name ="";
                 rank =-1;

@@ -1169,7 +1169,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 #endif
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            bool ecs_metadata = _disable_ecsmetadata_all;
+            bool ecs_metadata = !_disable_ecsmetadata_all;
                
             read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
             Ancillary::read_ancillary_das(*das, accessed);
