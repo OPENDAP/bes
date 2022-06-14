@@ -1888,7 +1888,7 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
 
     HDFSP::SD* spsd = f->getSD();
 
-    for(vector<HDFSP::Attribute *>::const_iterator i=spsd->getAttributes().begin();i!=spsd->getAttributes().end();i++) {
+    for (const auto &attr:spsd->getAttributes()) {
        
         //We want to add two new attributes, "scale_factor" and "add_offset" to data fields if the scaling equation is linear. 
         // OBPG products use "Slope" instead of "scale_factor", "intercept" instead of "add_offset". "Scaling" describes if the equation is linear.
@@ -1897,55 +1897,59 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
         // for the final data. KY 2012-09-06
 	if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)
         {
-            if((*i)->getName()=="Scaling")
+            if(attr->getName()=="Scaling")
             {
-                string tmpstring((*i)->getValue().begin(), (*i)->getValue().end());
+                string tmpstring(attr->getValue().begin(), attr->getValue().end());
                 scaling = tmpstring;
             }
-            if((*i)->getName()=="Slope" || (*i)->getName()=="slope")
+            if(attr->getName()=="Slope" || attr->getName()=="slope")
             {
                 global_slope_flag = true;
 			
-                switch((*i)->getType())
+                switch(attr->getType())
                 {
 #define GET_SLOPE(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
-        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        CAST tmpvalue = *(CAST*)&(attr->getValue()[0]); \
         slope = (float)tmpvalue; \
     } \
     break;
-                    GET_SLOPE(INT16,   int16);
-                    GET_SLOPE(INT32,   int32);
-                    GET_SLOPE(FLOAT32, float);
-                    GET_SLOPE(FLOAT64, double);
+                    GET_SLOPE(INT16,   int16)
+                    GET_SLOPE(INT32,   int32)
+                    GET_SLOPE(FLOAT32, float)
+                    GET_SLOPE(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef GET_SLOPE
-                } ;
+                } 
+#if 0
                 //slope = *(float*)&((*i)->getValue()[0]);
+#endif
             }
-            if((*i)->getName()=="Intercept" || (*i)->getName()=="intercept")
+            if(attr->getName()=="Intercept" || attr->getName()=="intercept")
             {	
                 global_intercept_flag = true;
-                switch((*i)->getType())
+                switch(attr->getType())
                 {
 #define GET_INTERCEPT(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
-        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        CAST tmpvalue = *(CAST*)&(attr->getValue()[0]); \
         intercept = (float)tmpvalue; \
     } \
     break;
-                    GET_INTERCEPT(INT16,   int16);
-                    GET_INTERCEPT(INT32,   int32);
-                    GET_INTERCEPT(FLOAT32, float);
-                    GET_INTERCEPT(FLOAT64, double);
+                    GET_INTERCEPT(INT16,   int16)
+                    GET_INTERCEPT(INT32,   int32)
+                    GET_INTERCEPT(FLOAT32, float)
+                    GET_INTERCEPT(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef GET_INTERCEPT
-                } ;
+                } 
+#if 0
                 //intercept = *(float*)&((*i)->getValue()[0]);
+#endif
             }
         }
     }
@@ -1954,12 +1958,12 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
 // For some OBPG files that only provide slope and intercept at the file level, 
 // global slope and intercept are needed to add to all fields and their names are needed to be changed to scale_factor and add_offset.
 // For OBPG files that provide slope and intercept at the field level,  slope and intercept are needed to rename to scale_factor and add_offset.
-void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
-                                       HDFSP::SDField *onespsds, 
-                                       string& scaling, float& slope, 
-                                       bool& global_slope_flag, 
+void HDFCFUtil::add_obpg_special_attrs(const HDFSP::File*f,DAS &das,
+                                       const HDFSP::SDField *onespsds, 
+                                       const string& scaling, float& slope, 
+                                       const bool& global_slope_flag, 
                                        float& intercept,
-                                       bool & global_intercept_flag) {
+                                       const bool & global_intercept_flag) {
 
     AttrTable *at = das.get_table(onespsds->getNewName());
     if (!at)
@@ -1973,66 +1977,74 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
     bool intercept_flag = false;
 
     if(f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) {// Begin OPBG CF attribute handling(Checking "slope" and "intercept") 
+#if 0
         for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();
                                                        i!=onespsds->getAttributes().end();i++) {
-            if(global_slope_flag != true && ((*i)->getName()=="Slope" || (*i)->getName()=="slope"))
+#endif
+        for (const auto &attr:onespsds->getAttributes()) {
+
+            if(global_slope_flag != true && (attr->getName()=="Slope" || attr->getName()=="slope"))
             {
                 slope_flag = true;
 			
-                switch((*i)->getType())
+                switch(attr->getType())
                 {
 #define GET_SLOPE(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
-        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        CAST tmpvalue = *(CAST*)&(attr->getValue()[0]); \
         slope = (float)tmpvalue; \
     } \
     break;
 
-                GET_SLOPE(INT16,   int16);
-                GET_SLOPE(INT32,   int32);
-                GET_SLOPE(FLOAT32, float);
-                GET_SLOPE(FLOAT64, double);
+                GET_SLOPE(INT16,   int16)
+                GET_SLOPE(INT32,   int32)
+                GET_SLOPE(FLOAT32, float)
+                GET_SLOPE(FLOAT64, double)
                 default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
 #undef GET_SLOPE
-                } ;
+                } 
+#if 0
                     //slope = *(float*)&((*i)->getValue()[0]);
+#endif
             }
-            if(global_intercept_flag != true && ((*i)->getName()=="Intercept" || (*i)->getName()=="intercept"))
+            if(global_intercept_flag != true && (attr->getName()=="Intercept" || attr->getName()=="intercept"))
             {	
                 intercept_flag = true;
-                switch((*i)->getType())
+                switch(attr->getType())
                 {
 #define GET_INTERCEPT(TYPE, CAST) \
     case DFNT_##TYPE: \
     { \
-        CAST tmpvalue = *(CAST*)&((*i)->getValue()[0]); \
+        CAST tmpvalue = *(CAST*)&(attr->getValue()[0]); \
         intercept = (float)tmpvalue; \
     } \
     break;
-                GET_INTERCEPT(INT16,   int16);
-                GET_INTERCEPT(INT32,   int32);
-                GET_INTERCEPT(FLOAT32, float);
-                GET_INTERCEPT(FLOAT64, double);
+                GET_INTERCEPT(INT16,   int16)
+                GET_INTERCEPT(INT32,   int32)
+                GET_INTERCEPT(FLOAT32, float)
+                GET_INTERCEPT(FLOAT64, double)
                 default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
 #undef GET_INTERCEPT
-                } ;
+                } 
+#if 0
                     //intercept = *(float*)&((*i)->getValue()[0]);
+#endif
             }
         }
     } // End of checking "slope" and "intercept"
 
     // Checking if OBPG has "scale_factor" ,"add_offset", generally checking for "long_name" attributes.
-    for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {       
+    for (const auto& attr:onespsds->getAttributes()) {       
 
-        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && (*i)->getName()=="scale_factor")
+        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2)  && attr->getName()=="scale_factor")
             scale_factor_flag = true;		
 
-        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && (*i)->getName()=="add_offset")
+        if((f->getSPType()==OBPGL3 || f->getSPType() == OBPGL2) && attr->getName()=="add_offset")
             add_offset_flag = true;
     }
         
@@ -2045,20 +2057,20 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
 
             if(false == scale_factor_flag && (true == slope_flag || true == global_slope_flag))
             {
-                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(slope));
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&slope);
                 at->append_attr("scale_factor", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
             }
 
             if(false == add_offset_flag && (true == intercept_flag || true == global_intercept_flag))
             {
-                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&(intercept));
+                string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32, 0, (void*)&intercept);
                 at->append_attr("add_offset", HDFCFUtil::print_type(DFNT_FLOAT32), print_rep);
             }
         }
 
         bool has_fill_value = false;
-        for(vector<HDFSP::Attribute *>::const_iterator i=onespsds->getAttributes().begin();i!=onespsds->getAttributes().end();i++) {
-            if ("_FillValue" == (*i)->getNewName()){
+        for(const auto &attr:onespsds->getAttributes()) {
+            if ("_FillValue" == attr->getNewName()){
                 has_fill_value = true; 
                 break;
             }
@@ -2069,13 +2081,13 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
         // This is based on the evaluation of the example files. KY 2012-09-06
         if ((false == has_fill_value) &&(DFNT_INT16 == onespsds->getType())) {
             short fill_value = -32767;
-            string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&(fill_value));
+            string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)&fill_value);
             at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
         }
 
         if ((false == has_fill_value) &&(DFNT_UINT16 == onespsds->getType())) {
             unsigned short fill_value = 65535;
-            string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&(fill_value));
+            string print_rep = HDFCFUtil::print_attr(DFNT_UINT16,0,(void*)&fill_value);
             at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_UINT16),print_rep);
         }
 
@@ -2085,7 +2097,7 @@ void HDFCFUtil::add_obpg_special_attrs(HDFSP::File*f,DAS &das,
 
 // Handle HDF4 OTHERHDF products that follow SDS dimension scale model. 
 // The special handling of AVHRR data is also included.
-void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
+void HDFCFUtil::handle_otherhdf_special_attrs(const HDFSP::File*f,DAS &das) {
 
     // For some HDF4 files that follow HDF4 dimension scales, P.O. DAAC's AVHRR files.
     // The "otherHDF" category can almost make AVHRR files work, except
@@ -2094,7 +2106,6 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
     // the latitude and longitude values since latitude and longitude values for some files(LISO files)   
     // are not in the standard range(0-360 for lon and 0-180 for lat). KY 2011-3-3
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
-    vector<HDFSP::SDField *>::const_iterator it_g;
 
     if(f->getSPType() == OTHERHDF) {
 
@@ -2114,26 +2125,26 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
         // adding a new attribute called units and the value should be "degrees_north".
         // doing the same thing for longitude.
 
-        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+        for (const auto &fd:spsds){
 
             // Ignore ALL coordinate variables if this is "OTHERHDF" case and some dimensions 
             // don't have dimension scale data.
-            if ( true == f->Has_Dim_NoScale_Field() && ((*it_g)->getFieldType() !=0) && ((*it_g)->IsDimScale() == false))
+            if ( true == f->Has_Dim_NoScale_Field() && (fd->getFieldType() !=0) && (fd->IsDimScale() == false))
                 continue;
 
             // Ignore the empty(no data) dimension variable.
-            if (OTHERHDF == f->getSPType() && true == (*it_g)->IsDimNoScale())
+            if (OTHERHDF == f->getSPType() && true == fd->IsDimNoScale())
                 continue;
 
-            AttrTable *at = das.get_table((*it_g)->getNewName());
+            AttrTable *at = das.get_table(fd->getNewName());
             if (!at)
-                at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                at = das.add_table(fd->getNewName(), new AttrTable);
 
-            for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-                if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+            for (const auto& attr:fd->getAttributes()) {
+                if(attr->getType()==DFNT_UCHAR || attr->getType() == DFNT_CHAR){
 
-                    if((*i)->getName() == "long_name") {
-                        string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                    if(attr->getName() == "long_name") {
+                        string tempstring2(attr->getValue().begin(),attr->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());// This may remove some garbage characters
                         if(tempfinalstr=="latitude" || tempfinalstr == "Latitude") // Find long_name latitude
                             latflag = true;
@@ -2144,15 +2155,15 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
             }
 
             if(latflag) {
-                for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-                    if((*i)->getName() == "units") 
+                for (const auto& attr:fd->getAttributes()) {
+                    if (attr->getName() == "units") 
                         latunitsflag = true;
                 }
             }
 
             if(lonflag) {
-                for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
-                    if((*i)->getName() == "units") 
+                for(const auto& attr:fd->getAttributes()) {
+                    if(attr->getName() == "units") 
                         lonunitsflag = true;
                 }
             }
@@ -2179,36 +2190,33 @@ void HDFCFUtil::handle_otherhdf_special_attrs(HDFSP::File*f,DAS &das) {
 
 // Add  missing CF attributes for non-CV varibles
 void
-HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
-
+HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
 
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
-    vector<HDFSP::SDField *>::const_iterator it_g;
-
 
     // TRMM level 3 grid
     if(TRMML3A_V6== f->getSPType() || TRMML3C_V6==f->getSPType() || TRMML3S_V7 == f->getSPType() || TRMML3M_V7 == f->getSPType()) {
 
-        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-            if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
+        for(const auto &fd:spsds){
+            if(fd->getFieldType() == 0 && fd->getType()==DFNT_FLOAT32) {
 
-                AttrTable *at = das.get_table((*it_g)->getNewName());
+                AttrTable *at = das.get_table(fd->getNewName());
                 if (!at)
-                    at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    at = das.add_table(fd->getNewName(), new AttrTable);
                 string print_rep = "-9999.9";
                 at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_FLOAT32),print_rep);
 
             }
         }
 
-        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-            if((*it_g)->getFieldType() == 0 && (((*it_g)->getType()==DFNT_INT32) || ((*it_g)->getType()==DFNT_INT16))) {
+        for(const auto &fd:spsds){
+            if(fd->getFieldType() == 0 && ((fd->getType()==DFNT_INT32) || (fd->getType()==DFNT_INT16))) {
 
-                AttrTable *at = das.get_table((*it_g)->getNewName());
+                AttrTable *at = das.get_table(fd->getNewName());
                 if (!at)
-                    at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                    at = das.add_table(fd->getNewName(), new AttrTable);
                 string print_rep = "-9999";
-                if((*it_g)->getType()==DFNT_INT32)
+                if(fd->getType()==DFNT_INT32)
                     at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT32),print_rep);
                 else 
                     at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT16),print_rep);
@@ -2218,49 +2226,49 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
         // nlayer for TRMM single grid version 7, the units should be "km"
         if(TRMML3S_V7 == f->getSPType()) {
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-                if((*it_g)->getFieldType() == 6 && (*it_g)->getNewName()=="nlayer") {
+            for(const auto &fd:spsds){
+                if(fd->getFieldType() == 6 && fd->getNewName()=="nlayer") {
 
-                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    AttrTable *at = das.get_table(fd->getNewName());
                     if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at = das.add_table(fd->getNewName(), new AttrTable);
                     at->append_attr("units","String","km");
 
                 }
-                else if((*it_g)->getFieldType() == 4) {
+                else if(fd->getFieldType() == 4) {
 
-                    if ((*it_g)->getNewName()=="nh3" ||
-                        (*it_g)->getNewName()=="ncat3" ||
-                        (*it_g)->getNewName()=="nthrshZO" ||
-                        (*it_g)->getNewName()=="nthrshHB" ||
-                        (*it_g)->getNewName()=="nthrshSRT")
+                    if (fd->getNewName()=="nh3" ||
+                        fd->getNewName()=="ncat3" ||
+                        fd->getNewName()=="nthrshZO" ||
+                        fd->getNewName()=="nthrshHB" ||
+                        fd->getNewName()=="nthrshSRT")
                      {
 
                         string references =
                            "http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
                         string comment;
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
  
-                        if((*it_g)->getNewName()=="nh3") {
+                        if(fd->getNewName()=="nh3") {
                             comment="Index number to represent the fixed heights above the earth ellipsoid,";
                             comment= comment + " at 2, 4, 6 km plus one for path-average.";
                         }
 
-                        else if((*it_g)->getNewName()=="ncat3") {
+                        else if(fd->getNewName()=="ncat3") {
                             comment="Index number to represent catgories for probability distribution functions.";
                             comment=comment + "Check more information from the references.";
-                         }
+                        }
 
-                         else if((*it_g)->getNewName()=="nthrshZO") 
+                        else if(fd->getNewName()=="nthrshZO") 
                             comment="Q-thresholds for Zero order used for probability distribution functions.";
 
-                         else if((*it_g)->getNewName()=="nthrshHB") 
+                        else if(fd->getNewName()=="nthrshHB") 
                             comment="Q-thresholds for HB used for probability distribution functions.";
 
-                         else if((*it_g)->getNewName()=="nthrshSRT") 
+                        else if(fd->getNewName()=="nthrshSRT") 
                             comment="Q-thresholds for SRT used for probability distribution functions.";
                     
                         at->append_attr("comment","String",comment);
@@ -2271,7 +2279,6 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                 }
                 
             }
-
 
             // 3A26 use special values such as -666, -777,-999 in their fields. 
             // Although the document doesn't provide range for some fields, the meaning of those fields should be greater than 0.
@@ -2286,12 +2293,12 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
  
             if(true == t3a26_flag) {
             
-                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                for(const auto &fd:spsds){
 
-                    if((*it_g)->getFieldType() == 0 && ((*it_g)->getType()==DFNT_FLOAT32)) {
-                         AttrTable *at = das.get_table((*it_g)->getNewName());
+                    if(fd->getFieldType() == 0 && (fd->getType()==DFNT_FLOAT32)) {
+                         AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                         at->del_attr("_FillValue");
                         at->append_attr("_FillValue","Float32","-999");
                         at->append_attr("valid_min","Float32","0");
@@ -2304,16 +2311,16 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
         // nlayer for TRMM single grid version 7, the units should be "km"
         if(TRMML3M_V7 == f->getSPType()) {
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+            for(const auto &fd:spsds){
 
-                if((*it_g)->getFieldType() == 4 ) {
+                if(fd->getFieldType() == 4 ) {
 
                     string references ="http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
-                    if ((*it_g)->getNewName()=="nh1") {
+                    if (fd->getNewName()=="nh1") {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                 
                         string comment="Number of fixed heights above the earth ellipsoid,";
                                comment= comment + " at 2, 4, 6, 10, and 15 km plus one for path-average.";
@@ -2322,11 +2329,11 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                         at->append_attr("references","String",references);
 
                     }
-                    if ((*it_g)->getNewName()=="nh3") {
+                    if (fd->getNewName()=="nh3") {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                 
                         string comment="Number of fixed heights above the earth ellipsoid,";
                                comment= comment + " at 2, 4, 6 km plus one for path-average.";
@@ -2336,11 +2343,11 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
                     }
 
-                    if ((*it_g)->getNewName()=="nang") {
+                    if (fd->getNewName()=="nang") {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                 
                         string comment="Number of fixed incidence angles, at 0, 5, 10 and 15 degree and all angles.";
                         references = "http://pps.gsfc.nasa.gov/Documents/ICSVol4.pdf";
@@ -2350,11 +2357,11 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
                     }
 
-                    if ((*it_g)->getNewName()=="ncat2") {
+                    if (fd->getNewName()=="ncat2") {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                 
                         string comment="Second number of categories for histograms (30). "; 
                         comment=comment + "Check more information from the references.";
@@ -2384,7 +2391,9 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
         bool t2a21_flag = ((base_filename.find("2A21")!=string::npos)?true:false);
         bool t2a12_flag = ((base_filename.find("2A12")!=string::npos)?true:false);
         // 2A23 is temporarily not supported perhaps due to special fill values
+#if 0
         //bool t2a23_flag = ((base_filename.find("2A23")!=string::npos)?true:false);
+#endif
         bool t2a25_flag = ((base_filename.find("2A25")!=string::npos)?true:false);
         bool t1c21_flag = ((base_filename.find("1C21")!=string::npos)?true:false);
         bool t1b21_flag = ((base_filename.find("1B21")!=string::npos)?true:false);
@@ -2399,14 +2408,13 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
             // special for 2B31 
             if(t2b31_flag) {
 
-                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                for (const auto &fd:spsds){
 
-         
-                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+                    if(fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
 
                         AttrTable::Attr_iter it = at->attr_begin();
                         while (it!=at->attr_end()) {
@@ -2428,7 +2436,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                 }
                                
                                 if(scale_factor_type == "Float32") {
-                                    float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
+                                    float new_scale = 1.0f/strtof(scale_factor_value.c_str(),nullptr);
                                     at->del_attr("scale_factor");
                                     string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                                     at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -2444,25 +2452,25 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
             }
 
             // Special for 2A12
-            if(t2a12_flag==true) {
+            if (t2a12_flag==true) {
 
-                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                for (const auto &fd:spsds){
 
-                    if((*it_g)->getFieldType() == 6 && (*it_g)->getNewName()=="nlayer") {
+                    if (fd->getFieldType() == 6 && fd->getNewName()=="nlayer") {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                         at->append_attr("units","String","km");
 
                     }
 
                     // signed char maps to int32, so use int32 for the fillvalue.
-                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT8) {
+                    if (fd->getFieldType() == 0 && fd->getType()==DFNT_INT8) {
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                         at->append_attr("_FillValue","Int32","-99");
 
                     }
@@ -2473,26 +2481,26 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
  
             // for all 2A12,2A21 and 2B31
             // Add fillvalues for float32 and int32.
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
-                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
+            for (const auto & fd:spsds){
+                if (fd->getFieldType() == 0 && fd->getType()==DFNT_FLOAT32) {
 
-                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    AttrTable *at = das.get_table(fd->getNewName());
                     if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at = das.add_table(fd->getNewName(), new AttrTable);
                     string print_rep = "-9999.9";
                     at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_FLOAT32),print_rep);
 
                 }
             }
 
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+            for (const auto &fd:spsds){
 
          
-                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+                if(fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
 
-                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    AttrTable *at = das.get_table(fd->getNewName());
                     if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at = das.add_table(fd->getNewName(), new AttrTable);
 
                     string print_rep = "-9999";
                     at->append_attr("_FillValue",HDFCFUtil::print_type(DFNT_INT32),print_rep);
@@ -2506,80 +2514,81 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
         else if(t2a21_flag == true || t2a25_flag == true) {
 
             // 2A25: handle reflectivity and rain rate scales
-            if(t2a25_flag == true) {
+            if (t2a25_flag == true) {
 
                 unsigned char handle_scale = 0;
-                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
 
-                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
-                               bool has_dBZ = false;
-                    bool has_rainrate = false;
-                    bool has_scale = false;
-                    string scale_factor_value;
-                    string scale_factor_type;
+                for (const auto &fd:spsds){
 
-                    AttrTable *at = das.get_table((*it_g)->getNewName());
-                    if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
-                    AttrTable::Attr_iter it = at->attr_begin();
-                    while (it!=at->attr_end()) {
-                        if(at->get_name(it)=="units"){
-                            string units_value = *at->get_attr_vector(it)->begin();
-                            if("dBZ" == units_value) { 
-                                has_dBZ = true;
+                    if (fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
+                        bool has_dBZ = false;
+                        bool has_rainrate = false;
+                        bool has_scale = false;
+                        string scale_factor_value;
+                        string scale_factor_type;
+
+                        AttrTable *at = das.get_table(fd->getNewName());
+                        if (!at)
+                            at = das.add_table(fd->getNewName(), new AttrTable);
+                        AttrTable::Attr_iter it = at->attr_begin();
+                        while (it!=at->attr_end()) {
+                            if(at->get_name(it)=="units"){
+                                string units_value = *at->get_attr_vector(it)->begin();
+                                if("dBZ" == units_value) { 
+                                    has_dBZ = true;
+                                }
+
+                                else if("mm/hr" == units_value){
+                                    has_rainrate = true;
+                                }
                             }
-
-                            else if("mm/hr" == units_value){
-                                has_rainrate = true;
-                            }
-                        }
                             if(at->get_name(it)=="scale_factor")
-                        {
-                            scale_factor_value = *at->get_attr_vector(it)->begin();
-                            scale_factor_type = at->get_type(it);
+                            {
+                                scale_factor_value = *at->get_attr_vector(it)->begin();
+                                scale_factor_type = at->get_type(it);
                                 has_scale = true;
-                        }
-                        ++it;
+                            }
+                            ++it;
  
-                    }
+                        }
                         
-                    if((true == has_rainrate || true == has_dBZ) && true == has_scale) {
-
-                        handle_scale++;
-                        short valid_min = 0; 
-                        short valid_max = 0;
-                                 
-                        // Here just use 32-bit floating-point for the scale_factor, should be okay.
-                        if(true == has_rainrate) 
-                            valid_max = (short)(300*strtof(scale_factor_value.c_str(),nullptr));
-                        else if(true == has_dBZ) 
-                            valid_max = (short)(80*strtof(scale_factor_value.c_str(),nullptr));
-
-                        string print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
-                        at->append_attr("valid_min","Int16",print_rep1);
-                        print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
-                        at->append_attr("valid_max","Int16",print_rep1);
-
-                        at->del_attr("scale_factor");
-                        if(scale_factor_type == "Float64") {
-                            double new_scale = 1.0/strtod(scale_factor_value.c_str(),nullptr);
-                            string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
-                            at->append_attr("scale_factor", scale_factor_type,print_rep2);
-
+                        if((true == has_rainrate || true == has_dBZ) && true == has_scale) {
+    
+                            handle_scale++;
+                            short valid_min = 0; 
+                            short valid_max = 0;
+                                     
+                            // Here just use 32-bit floating-point for the scale_factor, should be okay.
+                            if(true == has_rainrate) 
+                                valid_max = (short)(300*strtof(scale_factor_value.c_str(),nullptr));
+                            else if(true == has_dBZ) 
+                                valid_max = (short)(80*strtof(scale_factor_value.c_str(),nullptr));
+    
+                            string print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
+                            at->append_attr("valid_min","Int16",print_rep1);
+                            print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
+                            at->append_attr("valid_max","Int16",print_rep1);
+    
+                            at->del_attr("scale_factor");
+                            if(scale_factor_type == "Float64") {
+                                double new_scale = 1.0/strtod(scale_factor_value.c_str(),nullptr);
+                                string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
+                                at->append_attr("scale_factor", scale_factor_type,print_rep2);
+    
+                            }
+                                   
+                            if(scale_factor_type == "Float32") {
+                                float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
+                                string print_rep3 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
+                                at->append_attr("scale_factor", scale_factor_type,print_rep3);
+    
+                            }
+    
+    
                         }
-                               
-                        if(scale_factor_type == "Float32") {
-                            float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
-                            string print_rep3 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
-                            at->append_attr("scale_factor", scale_factor_type,print_rep3);
 
-                        }
-
-
-                    }
-
-                    if(2 == handle_scale)
-                        break;
+                        if(2 == handle_scale)
+                            break;
 
                     }
                 }
@@ -2587,21 +2596,21 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
         }
 
         // 1B21,1C21 and 1B11
-        else if(t1b21_flag || t1c21_flag || t1b11_flag) {
+        else if (t1b21_flag || t1c21_flag || t1b11_flag) {
 
             // 1B21,1C21 scale_factor to CF and valid_range for dBm and dBZ.
-            if(t1b21_flag || t1c21_flag) {
+            if (t1b21_flag || t1c21_flag) {
 
-                for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+                for (const auto &fd:spsds){
 
-                    if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+                    if(fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
 
                         bool has_dBm = false;
                         bool has_dBZ = false;
 
-                        AttrTable *at = das.get_table((*it_g)->getNewName());
+                        AttrTable *at = das.get_table(fd->getNewName());
                         if (!at)
-                            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                            at = das.add_table(fd->getNewName(), new AttrTable);
                         AttrTable::Attr_iter it = at->attr_begin();
 
                         while (it!=at->attr_end()) {
@@ -2662,13 +2671,13 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
             // For all 1B21,1C21 and 1B11 int16-bit products,change scale to follow CF
             // I find that one 1B21 variable binStormHeight has fillvalue -9999,
             // so add _FillValue -9999 for int16-bit variables.
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+            for(const auto &fd:spsds){
 
-                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_INT16) {
+                if(fd->getFieldType() == 0 && fd->getType()==DFNT_INT16) {
 
-                    AttrTable *at = das.get_table((*it_g)->getNewName());
+                    AttrTable *at = das.get_table(fd->getNewName());
                     if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at = das.add_table(fd->getNewName(), new AttrTable);
                     AttrTable::Attr_iter it = at->attr_begin();
 
 
@@ -2692,7 +2701,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                             }
                                
                             if(scale_factor_type == "Float32") {
-                                float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
+                                float new_scale = 1.0f/strtof(scale_factor_value.c_str(),nullptr);
                                 at->del_attr("scale_factor");
                                 string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                                 at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -2713,19 +2722,19 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
         }
 
         // For 1B01 product, just add the fillvalue.
-        else if(t1b01_flag == true) {
-            for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+        else if (t1b01_flag == true) {
 
-                if((*it_g)->getFieldType() == 0 && (*it_g)->getType()==DFNT_FLOAT32) {
-                                           AttrTable *at = das.get_table((*it_g)->getNewName());
+            for (const auto &fd:spsds){
+
+                if(fd->getFieldType() == 0 && fd->getType()==DFNT_FLOAT32) {
+
+                    AttrTable *at = das.get_table(fd->getNewName());
                     if (!at)
-                        at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                        at = das.add_table(fd->getNewName(), new AttrTable);
 
                     at->append_attr("_FillValue","Float32","-9999.9");
-
                 }
             }
-
         }
 
         AttrTable *at = das.get_table("HDF_GLOBAL");
@@ -2742,8 +2751,6 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
 }
                 
-
-
 //
 // Many CERES products compose of multiple groups
 // There are many fields in CERES data(a few hundred) and the full name(with the additional path)
@@ -2754,7 +2761,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 // We still preserve the full path as an attribute in case users need to check them. 
 // Kent 2012-6-29
  
-void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,const string& filename) {
+void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(const HDFSP::File *f, DAS &das,const string& filename) {
 
     string base_filename = filename.substr(filename.find_last_of("/")+1);
 
@@ -2768,13 +2775,16 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
     bool merra_is_eos2 = false;
     if(0== (base_filename.compare(0,5,"MERRA"))) {
 
+#if 0
          for (vector < HDFSP::Attribute * >::const_iterator i = 
             f->getSD()->getAttributes ().begin ();
             i != f->getSD()->getAttributes ().end (); ++i) {
+#endif
+        for (const auto & fd:f->getSD()->getAttributes()) {
 
-            // CHeck if this MERRA file is an HDF-EOS2 or not.
-            if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
-                ((*i)->getName().compare(0, 14, "structmetadata" )== 0)) {
+            // Check if this MERRA file is an HDF-EOS2 or not.
+            if((fd->getName().compare(0, 14, "StructMetadata" )== 0) ||
+                (fd->getName().compare(0, 14, "structmetadata" )== 0)) {
                 merra_is_eos2 = true;
                 break;
             }
@@ -2788,14 +2798,13 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
         || CER_AVG == f->getSPType() || (true == merra_is_eos2))) {
 
         const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
-        vector<HDFSP::SDField *>::const_iterator it_g;
-        for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+        for (const auto & fd:spsds){
 
-            AttrTable *at = das.get_table((*it_g)->getNewName());
+            AttrTable *at = das.get_table(fd->getNewName());
             if (!at)
-                at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                at = das.add_table(fd->getNewName(), new AttrTable);
 
-            at->append_attr("fullpath","String",(*it_g)->getSpecFullPath());
+            at->append_attr("fullpath","String",fd->getSpecFullPath());
 
         }
 
@@ -2805,7 +2814,7 @@ void HDFCFUtil::handle_merra_ceres_attrs_with_bes_keys(HDFSP::File *f, DAS &das,
 
 
 // Handle the attributes when the BES key EnableVdataDescAttr is enabled..
-void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das) {
+void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS &das) {
 
     // Check the EnableVdataDescAttr key. If this key is turned on, the handler-added attribute VDdescname and
     // the attributes of vdata and vdata fields will be outputed to DAS. Otherwise, these attributes will
@@ -2841,21 +2850,22 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
     if (true == output_vdata_flag) {
 
-        for(vector<HDFSP::VDATA *>::const_iterator i=f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
+        for (const auto &vd:f->getVDATAs()) {
 
-            AttrTable *at = das.get_table((*i)->getNewName());
+            AttrTable *at = das.get_table(vd->getNewName());
             if(!at)
-                at = das.add_table((*i)->getNewName(),new AttrTable);
+                at = das.add_table(vd->getNewName(),new AttrTable);
  
             if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
                 // Add special vdata attributes
                 bool emptyvddasflag = true;
-                if(!((*i)->getAttributes().empty())) emptyvddasflag = false;
-                if((*i)->getTreatAsAttrFlag())
+                if (!(vd->getAttributes().empty())) 
+                    emptyvddasflag = false;
+                if (vd->getTreatAsAttrFlag())
                     emptyvddasflag = false;
                 else {
-                    for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
-                        if(!((*j)->getAttributes().empty())) {
+                    for (const auto &vfd:vd->getFields()) {
+                        if(!(vfd->getAttributes().empty())) {
                             emptyvddasflag = false;
                             break;
                         }
@@ -2866,53 +2876,52 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
                     continue;
                 at->append_attr(VDdescname, "String" , VDdescvalue);
 
-                for(vector<HDFSP::Attribute *>::const_iterator it_va = (*i)->getAttributes().begin();it_va!=(*i)->getAttributes().end();it_va++) {
+                for(const auto &va:vd->getAttributes()) {
 
-                    if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                    if(va->getType()==DFNT_UCHAR || va->getType() == DFNT_CHAR){
 
-                        string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                        string tempstring2(va->getValue().begin(),va->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());
-                        at->append_attr(VDattrprefix+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+                        at->append_attr(VDattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                     }
                     else {
-                        for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                            string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                            at->append_attr(VDattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                        for (int loc=0; loc < va->getCount() ; loc++) {
+                            string print_rep = HDFCFUtil::print_attr(va->getType(), loc, (void*) &(va->getValue()[0]));
+                            at->append_attr(VDattrprefix+va->getNewName(), HDFCFUtil::print_type(va->getType()), print_rep);
                         }
                     }
-
                 }
             }
 
-            if(false == ((*i)->getTreatAsAttrFlag())){ 
+            if(false == (vd->getTreatAsAttrFlag())){ 
 
                 if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
 
                     //NOTE: for vdata field, we assume that no special characters are found. We need to escape the special characters when the data type is char. 
                     // We need to create a DAS container for each field so that the attributes can be put inside.
-                    for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                    for (const auto &vdf:vd->getFields()) {
 
                         // This vdata field will NOT be treated as attributes, only save the field attribute as the attribute
                         // First check if the field has attributes, if it doesn't have attributes, no need to create a container.
                         
-                        if((*j)->getAttributes().size() !=0) {
+                        if (vdf->getAttributes().empty() ==false) {
 
-                            AttrTable *at_v = das.get_table((*j)->getNewName());                           
+                            AttrTable *at_v = das.get_table(vdf->getNewName());                           
                             if(!at_v) 
-                                at_v = das.add_table((*j)->getNewName(),new AttrTable);
+                                at_v = das.add_table(vdf->getNewName(),new AttrTable);
 
-                            for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+                            for (const auto &va:vdf->getAttributes()) {
 
-                                if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                                if(va->getType()==DFNT_UCHAR || va->getType() == DFNT_CHAR){
 
-                                    string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                    string tempstring2(va->getValue().begin(),va->getValue().end());
                                     string tempfinalstr= string(tempstring2.c_str());
-                                    at_v->append_attr((*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+                                    at_v->append_attr(va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                                 }
                                 else {
-                                    for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                                        string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                                        at_v->append_attr((*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                    for (int loc=0; loc < va->getCount() ; loc++) {
+                                        string print_rep = HDFCFUtil::print_attr(va->getType(), loc, (void*) &(va->getValue()[0]));
+                                        at_v->append_attr(va->getNewName(), HDFCFUtil::print_type(va->getType()), print_rep);
                                     }
                                 }
 
@@ -2925,64 +2934,64 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
             else {
 
-                for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+                for(const auto & vdf:vd->getFields()) {
  
-                    if((*j)->getFieldOrder() == 1) {
-                        if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                    if(vdf->getFieldOrder() == 1) {
+                        if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
                             string tempfinalstr;
-                            tempfinalstr.resize((*j)->getValue().size());
-                            copy((*j)->getValue().begin(),(*j)->getValue().end(),tempfinalstr.begin());
-                            at->append_attr(VDfieldprefix+(*j)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+                            tempfinalstr.resize(vdf->getValue().size());
+                            copy(vdf->getValue().begin(),vdf->getValue().end(),tempfinalstr.begin());
+                            at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                         }
                         else {
-                            for ( int loc=0; loc < (*j)->getNumRec(); loc++) {
-                                string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                                at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                            for ( int loc=0; loc < vdf->getNumRec(); loc++) {
+                                string print_rep = HDFCFUtil::print_attr(vdf->getType(), loc, (void*) &(vdf->getValue()[0]));
+                                at->append_attr(VDfieldprefix+vdf->getNewName(), HDFCFUtil::print_type(vdf->getType()), print_rep);
                             }
                         }
                     }
                     else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
 
-                        if((*j)->getValue().size() != (unsigned int)(DFKNTsize((*j)->getType())*((*j)->getFieldOrder())*((*j)->getNumRec()))){
+                        if (vdf->getValue().size() != (unsigned int)(DFKNTsize(vdf->getType())*(vdf->getFieldOrder())*(vdf->getNumRec()))){
                             throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
                         }
 
-                        if((*j)->getNumRec()==1){
-                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
-                                string tempstring2((*j)->getValue().begin(),(*j)->getValue().end());
+                        if(vdf->getNumRec()==1){
+                            if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
+                                string tempstring2(vdf->getValue().begin(),vdf->getValue().end());
                                 string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
+                                at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
                             }
                             else {
-                                for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                                    string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[0]));
-                                    at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                for (int loc=0; loc < vdf->getFieldOrder(); loc++) {
+                                    string print_rep = HDFCFUtil::print_attr(vdf->getType(), loc, (void*) &(vdf->getValue()[0]));
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(), HDFCFUtil::print_type(vdf->getType()), print_rep);
                                 }
                             }
 
                         }
 
                         else {
-                            if((*j)->getType()==DFNT_UCHAR || (*j)->getType() == DFNT_CHAR){
+                            if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
 
-                                for(int tempcount = 0; tempcount < (*j)->getNumRec()*DFKNTsize((*j)->getType());tempcount ++) {
+                                for(int tempcount = 0; tempcount < vdf->getNumRec()*DFKNTsize(vdf->getType());tempcount ++) {
                                     vector<char>::const_iterator tempit;
-                                    tempit = (*j)->getValue().begin()+tempcount*((*j)->getFieldOrder());
-                                    string tempstring2(tempit,tempit+(*j)->getFieldOrder());
+                                    tempit = vdf->getValue().begin()+tempcount*(vdf->getFieldOrder());
+                                    string tempstring2(tempit,tempit+vdf->getFieldOrder());
                                     string tempfinalstr= string(tempstring2.c_str());
                                     string tempoutstring = "'"+tempfinalstr+"'";
-                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
                                 }
                             }
 
                             else {
-                                for(int tempcount = 0; tempcount < (*j)->getNumRec();tempcount ++) {
-                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
-                                    for (int loc=0; loc < (*j)->getFieldOrder(); loc++) {
-                                        string print_rep = HDFCFUtil::print_attr((*j)->getType(), loc, (void*) &((*j)->getValue()[tempcount*((*j)->getFieldOrder())]));
-                                        at->append_attr(VDfieldprefix+(*j)->getNewName(), HDFCFUtil::print_type((*j)->getType()), print_rep);
+                                for(int tempcount = 0; tempcount < vdf->getNumRec();tempcount ++) {
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(),HDFCFUtil::print_type(vdf->getType()),"'");
+                                    for (int loc=0; loc < vdf->getFieldOrder(); loc++) {
+                                        string print_rep = HDFCFUtil::print_attr(vdf->getType(), loc, (void*) &(vdf->getValue()[tempcount*(vdf->getFieldOrder())]));
+                                        at->append_attr(VDfieldprefix+vdf->getNewName(), HDFCFUtil::print_type(vdf->getType()), print_rep);
                                     }
-                                    at->append_attr(VDfieldprefix+(*j)->getNewName(),HDFCFUtil::print_type((*j)->getType()),"'");
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(),HDFCFUtil::print_type(vdf->getType()),"'");
                                 }
                             }
                         }
@@ -2990,18 +2999,18 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das)
 
          
                     if (true == HDF4RequestHandler::get_enable_vdata_desc_attr()) {
-                        for(vector<HDFSP::Attribute *>::const_iterator it_va = (*j)->getAttributes().begin();it_va!=(*j)->getAttributes().end();it_va++) {
+                        for(const auto &va:vdf->getAttributes()) {
 
-                            if((*it_va)->getType()==DFNT_UCHAR || (*it_va)->getType() == DFNT_CHAR){
+                            if(va->getType()==DFNT_UCHAR || va->getType() == DFNT_CHAR){
 
-                                string tempstring2((*it_va)->getValue().begin(),(*it_va)->getValue().end());
+                                string tempstring2(va->getValue().begin(),va->getValue().end());
                                 string tempfinalstr= string(tempstring2.c_str());
-                                at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+                                at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
                             }
                             else {
-                                for (int loc=0; loc < (*it_va)->getCount() ; loc++) {
-                                    string print_rep = HDFCFUtil::print_attr((*it_va)->getType(), loc, (void*) &((*it_va)->getValue()[0]));
-                                    at->append_attr(VDfieldattrprefix+(*it_va)->getNewName(), HDFCFUtil::print_type((*it_va)->getType()), print_rep);
+                                for (int loc=0; loc < va->getCount() ; loc++) {
+                                    string print_rep = HDFCFUtil::print_attr(va->getType(), loc, (void*) &(va->getValue()[0]));
+                                    at->append_attr(VDfieldattrprefix+va->getNewName(), HDFCFUtil::print_type(va->getType()), print_rep);
                                 }
                             }
                         }
@@ -3020,7 +3029,6 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
     int32  status_32 = -1;  
     int32  file_id = -1;
     int32  vgroup_id = -1;
-    int32  lone_vg_number = -1;     
     int32  num_of_lones = 0;    
     uint16 name_len = 0;
 
@@ -3057,7 +3065,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
         num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
 
         // Loop the name and class of each lone vgroup.
-        for (lone_vg_number = 0; lone_vg_number < num_of_lones; 
+        for (int lone_vg_number = 0; lone_vg_number < num_of_lones; 
                                                             lone_vg_number++)
         {
          
@@ -3141,15 +3149,14 @@ cleanFail:
 
 void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
 
-    //char attr_name[H4_MAX_NC_NAME]; //unused variable. SBL 2/7/20
-
     int32 num_gobjects = Vntagrefs (vgroup_id);
     if(num_gobjects < 0) 
         throw InternalErr(__FILE__,__LINE__,"Cannot obtain the number of objects under a vgroup.");
     
     for(int i = 0; i<num_gobjects;i++) {
 
-        int32 obj_tag, obj_ref;
+        int32 obj_tag;
+        int32 obj_ref;
         if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) 
             throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
 
@@ -3249,7 +3256,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                     throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field size.");
                 }
 
-                char* fieldname = VFfieldname(vdata_id,0);
+                const char* fieldname = VFfieldname(vdata_id,0);
                 if(fieldname == nullptr) {
                     VSdetach(vdata_id);
                     throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field name.");
@@ -3276,7 +3283,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                 if(fieldtype == DFNT_UCHAR || fieldtype == DFNT_CHAR){
                     string tempstring(vdata_value.begin(),vdata_value.end());
                     // Remove the nullptr term
-                    string tempstring2 = string(tempstring.c_str());
+                    auto tempstring2 = string(tempstring.c_str());
                     at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
                 }
                 else {
@@ -3503,7 +3510,7 @@ void HDFCFUtil::rev_str(char *str, int len)
 {
     int i=0;
     int j=len-1;
-    int temp = 0;
+    char temp = 0;
     while (i<j)
     {
         temp = str[i];
@@ -3540,7 +3547,7 @@ int HDFCFUtil::int_to_str(int x, char str[], int d)
 void HDFCFUtil::dtoa(double n, char *res, int afterpoint)
 {
     // Extract integer part
-    int ipart = (int)n;
+    auto ipart = (int)n;
  
     // Extract the double part
     double fpart = n - (double)ipart;
@@ -3560,7 +3567,7 @@ void HDFCFUtil::dtoa(double n, char *res, int afterpoint)
  
         // A round-error of 1 is found when casting to the integer for some numbers.
         // We need to correct it.
-        int final_fpart = (int)fpart;
+        auto final_fpart = (int)fpart;
         if(fpart -(int)fpart >0.5)
             final_fpart = (int)fpart +1;
         int_to_str(final_fpart, res + i + 1, afterpoint);
@@ -3604,11 +3611,11 @@ string HDFCFUtil::get_int_str(int x) {
 
    string str;
    if(x > 0 && x <10)   
-      str.push_back(x+'0');
+      str.push_back((char)x+'0');
    
    else if (x >10 && x<100) {
-      str.push_back(x/10+'0');
-      str.push_back(x%10+'0');
+      str.push_back((char)(x/10)+'0');
+      str.push_back((char)(x%10)+'0');
    }
    else {
       int num_digit = 0;
@@ -3628,52 +3635,11 @@ string HDFCFUtil::get_int_str(int x) {
 
 }
  
-#if 0
-template<typename T>
-size_t HDFCFUtil::write_vector_to_file(const string & fname, const vector<T> &val, size_t dtypesize) {
-#endif
-#if 0
-size_t HDFCFUtil::write_vector_to_file(const string & fname, const vector<double> &val, size_t dtypesize) {
-
-    size_t ret_val;
-    FILE* pFile;
-cerr<<"Open a file with the name "<<fname<<endl;
-    pFile = fopen(fname.c_str(),"wb");
-    ret_val = fwrite(&val[0],dtypesize,val.size(),pFile);
-cerr<<"ret_val for write is "<<ret_val <<endl;
-//for (int i=0;i<val.size();i++)
-//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
-    fclose(pFile);
-    return ret_val;
-}
-ssize_t HDFCFUtil::write_vector_to_file2(const string & fname, const vector<double> &val, size_t dtypesize) {
-
-    ssize_t ret_val;
-    //int fd = open(fname.c_str(),O_RDWR|O_CREAT|O_TRUNC,0666);
-    int fd = open(fname.c_str(),O_RDWR|O_CREAT|O_EXCL,0666);
-cerr<<"The first val is "<<val[0] <<endl;
-    ret_val = write(fd,&val[0],dtypesize*val.size());
-    close(fd);
-cerr<<"ret_val for write is "<<ret_val <<endl;
-//for (int i=0;i<val.size();i++)
-//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
-    return ret_val;
-}
-#endif
 ssize_t HDFCFUtil::read_vector_from_file(int fd, vector<double> &val, size_t dtypesize) {
 
     ssize_t ret_val;
     ret_val = read(fd,&val[0],val.size()*dtypesize);
     
-#if 0
-cerr<<"Open a file with the name "<<fname<<endl;
-    pFile = fopen(fname.c_str(),"wb");
-    ret_val = fwrite(&val[0],dtypesize,val.size(),pFile);
-cerr<<"ret_val for write is "<<ret_val <<endl;
-//for (int i=0;i<val.size();i++)
-//cerr<<"val["<<i<<"] is "<<val[i]<<endl;
-    fclose(pFile);
-#endif
     return ret_val;
 }
 // Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
@@ -3723,32 +3689,30 @@ string HDFCFUtil::obtain_cache_fname(const string & fprefix, const string &fname
 
 // The current DDS cache is only for some products of which object information
 // can be retrieved via HDF4 SDS APIs. Currently only AIRS version 6 products are supported.
-size_t HDFCFUtil::obtain_dds_cache_size(HDFSP::File*spf) {
+size_t HDFCFUtil::obtain_dds_cache_size(const HDFSP::File*spf) {
 
     size_t total_bytes_written = 0;
     const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
-    vector<HDFSP::SDField *>::const_iterator it_g;
-    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+    //vector<HDFSP::SDField *>::const_iterator it_g;
+    for (const auto &fd:spsds){
 
         // We will not handle when the SDS datatype is DFNT_CHAR now.
-        if(DFNT_CHAR == (*it_g)->getType()) {
+        if(DFNT_CHAR == fd->getType()) {
             total_bytes_written = 0;
             break;
         }
         else {
             // We need to store dimension names and variable names.
-            int temp_rank = (*it_g)->getRank(); 
-            const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
-            vector<HDFSP::Dimension*>::const_iterator it_d;
-            for(it_d = dims.begin(); it_d != dims.end(); ++it_d) 
-                total_bytes_written += ((*it_d)->getName()).size()+1;
+            int temp_rank = fd->getRank(); 
+            for (const auto & dim:fd->getDimensions())
+                total_bytes_written += (dim->getName()).size()+1;
 
-            total_bytes_written +=((*it_g)->getName()).size()+1;
+            total_bytes_written +=(fd->getName()).size()+1;
 
             // Many a time variable new name is the same as variable name,
             // so we may just save one byte('\0') for such as a case.
-            if(((*it_g)->getName()) != ((*it_g)->getNewName()))
-                total_bytes_written +=((*it_g)->getNewName()).size()+1;
+            if((fd->getName()) != (fd->getNewName()))
+                total_bytes_written +=(fd->getNewName()).size()+1;
             else
                 total_bytes_written +=1;
 
@@ -3765,7 +3729,7 @@ size_t HDFCFUtil::obtain_dds_cache_size(HDFSP::File*spf) {
 }
 
 // Write the DDS of the special SDS-only HDF to a cache. 
-void HDFCFUtil::write_sp_sds_dds_cache(HDFSP::File* spf,FILE*dds_file,size_t total_bytes_dds_cache,const string &dds_filename) {
+void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size_t total_bytes_dds_cache,const string &dds_filename) {
 
     BESDEBUG("h4"," Coming to write SDS DDS to a cache" << endl);
     char delimiter = '\0';
@@ -3780,20 +3744,19 @@ void HDFCFUtil::write_sp_sds_dds_cache(HDFSP::File* spf,FILE*dds_file,size_t tot
     const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
 
     //Read SDS 
-    vector<HDFSP::SDField *>::const_iterator it_g;
-    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+    for(const auto &fd:spsds){
 
         // First, rank, fieldtype, SDS reference number, variable datatype, dimsize(rank)
-        int sds_rank = (*it_g)->getRank();
-        int sds_ref = (*it_g)->getFieldRef();
-        int sds_dtype = (*it_g)->getType();
-        int sds_ftype = (*it_g)->getFieldType();
+        int sds_rank = fd->getRank();
+        int sds_ref = fd->getFieldRef();
+        int sds_dtype = fd->getType();
+        int sds_ftype = fd->getFieldType();
 
         vector<int32>dimsizes;
         dimsizes.resize(sds_rank);
   
         // Size for each dimension
-        const vector<HDFSP::Dimension*>& dims= (*it_g)->getDimensions();
+        const vector<HDFSP::Dimension*>& dims= fd->getDimensions();
         for(int i = 0; i < sds_rank; i++) 
             dimsizes[i] = dims[i]->getSize();
 
@@ -3814,7 +3777,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(HDFSP::File* spf,FILE*dds_file,size_t tot
 
         // Second, variable name,variable new name  and SDS dim name(rank)
         // we need to a delimiter to distinguish each name.
-        string temp_varname = (*it_g)->getName();
+        string temp_varname = fd->getName();
         vector<char>temp_val1(temp_varname.begin(),temp_varname.end());
         memcpy((void*)temp_pointer,(void*)&temp_val1[0],temp_varname.size());
         temp_pointer +=temp_varname.size();
@@ -3827,13 +3790,13 @@ void HDFCFUtil::write_sp_sds_dds_cache(HDFSP::File* spf,FILE*dds_file,size_t tot
         // we only save variable cf name when the variable cf name is not the
         // same as the variable name. When they are the same, a delimiter is saved for
         // variable cf name. 
-        if((*it_g)->getName() == (*it_g)->getNewName()){
+        if(fd->getName() == fd->getNewName()){
             memcpy((void*)temp_pointer,&delimiter,1);
             temp_pointer +=1;
             total_written_bytes_count +=1;
         }
         else {
-            string temp_varnewname = (*it_g)->getNewName();
+            string temp_varnewname = fd->getNewName();
             vector<char>temp_val2(temp_varnewname.begin(),temp_varnewname.end());
             memcpy((void*)temp_pointer,(void*)&temp_val2[0],temp_varnewname.size());
             temp_pointer +=temp_varnewname.size();
@@ -3895,7 +3858,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         throw InternalErr(__FILE__,__LINE__,err_mesg);
     }
 
-    size_t bytes_expected_read = (size_t)sb.st_size;
+    auto bytes_expected_read = (size_t)sb.st_size;
 
     // Allocate the buffer size based on the file size.
     vector<char> temp_buf;
@@ -3945,7 +3908,8 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 
         vector<string>dimnames;
         dimnames.resize(sds_rank);
-        string varname,varnewname;
+        string varname;
+        string varnewname;
         for (int i = 0; i <sds_rank+2;i++) {
             vector<char> temp_vchar;
             char temp_char = *temp_pointer;
@@ -3981,20 +3945,20 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
     case tid: \
         bt = new (type)(varnewname,hdf4_filename); \
         break; 
-        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32); 
-        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64); 
-        HANDLE_CASE(DFNT_CHAR, HDFStr); 
+        HANDLE_CASE(DFNT_FLOAT32, HDFFloat32)
+        HANDLE_CASE(DFNT_FLOAT64, HDFFloat64) 
+        HANDLE_CASE(DFNT_CHAR, HDFStr)
 #ifndef SIGNED_BYTE_TO_INT32 
-        HANDLE_CASE(DFNT_INT8, HDFByte); 
+        HANDLE_CASE(DFNT_INT8, HDFByte) 
 #else 
-        HANDLE_CASE(DFNT_INT8,HDFInt32); 
+        HANDLE_CASE(DFNT_INT8,HDFInt32) 
 #endif 
-        HANDLE_CASE(DFNT_UINT8, HDFByte); 
-        HANDLE_CASE(DFNT_INT16, HDFInt16); 
-        HANDLE_CASE(DFNT_UINT16, HDFUInt16); 
-        HANDLE_CASE(DFNT_INT32, HDFInt32); 
-        HANDLE_CASE(DFNT_UINT32, HDFUInt32); 
-        HANDLE_CASE(DFNT_UCHAR8, HDFByte); 
+        HANDLE_CASE(DFNT_UINT8, HDFByte) 
+        HANDLE_CASE(DFNT_INT16, HDFInt16) 
+        HANDLE_CASE(DFNT_UINT16, HDFUInt16) 
+        HANDLE_CASE(DFNT_INT32, HDFInt32) 
+        HANDLE_CASE(DFNT_UINT32, HDFUInt32) 
+        HANDLE_CASE(DFNT_UCHAR8, HDFByte) 
         default: 
             throw InternalErr(__FILE__,__LINE__,"unsupported data type."); 
 #undef HANDLE_CASE 

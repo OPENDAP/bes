@@ -203,7 +203,10 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fil
 bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fileid,HDFSP::File**h4filepptr);
 
 // Functions to read special 1-d HDF-EOS2 grid. This grid can be built up quickly.
+#if 0
 //bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename,int32 sdfd, int32 fileid);
+#endif
+
 bool read_dds_special_1d_grid(DDS &dds, HDFSP::File *spf, const string & filename,int32 sdfd,bool can_cache);
 bool read_das_special_eos2(DAS &das,const string & filename,int32 sdid, int32 fileid,bool ecs_metadata,HDFSP::File**h4filepptr);
 bool read_das_special_eos2_core(DAS &das, HDFSP::File *spf, const string & filename,bool ecs_metadata);
@@ -230,7 +233,10 @@ int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd,int3
 void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata); 
 
 // read_dds for HDF-EOS2
+#if 0
 /// bool read_dds_hdfeos2(DDS & dds, const string & filename);
+#endif
+
 // We find some special HDF-EOS2(MOD08_M3) products that provides coordinate variables
 // without using the dimension scales. We will handle this in a special way.
 // So change the return value of read_dds_hdfeos2 to represent different cases
@@ -253,7 +259,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
 // read_dds for one grid or swath
 void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype,bool multi_dmap,
-                                 int32 sdfd, int32 /*fileid //unused SBL 2/7/20 */, int32 gridfd,int32 swathfd)
+                                 int32 sdfd, int32 gridfd,int32 swathfd)
 {
 
     BESDEBUG("h4","Coming to read_dds_hdfeos2_grid_swath "<<endl);
@@ -272,18 +278,18 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
     
     // 1. Obtain dimension map info and stores the info. to dimmaps. 
     // 2. Check if MODIS swath geo-location HDF-EOS2 file exists for the dimension map case of MODIS Swath
-    if(grid_or_swath == 1) 
+    if (grid_or_swath == 1) 
         HDFCFUtil::obtain_dimmap_info(filename,dataset,dimmaps,modis_geofilename,geofile_has_dimmap);
     /// End of section I.
 
 
     /// Section II. Add swath geo-location fields to the data fields for Swath.
-    const vector<HDFEOS2::Field*>& fields = (dataset)->getDataFields(); 
+    const vector<HDFEOS2::Field*>& fields = dataset->getDataFields(); 
     vector<HDFEOS2::Field*> all_fields = fields;
     vector<HDFEOS2::Field*>::const_iterator it_f;
  
     if(1 == grid_or_swath) {
-        HDFEOS2::SwathDataset *sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
+        auto sw = static_cast<HDFEOS2::SwathDataset *>(dataset);
         const vector<HDFEOS2::Field*>geofields = sw->getGeoFields();
         for (it_f = geofields.begin(); it_f != geofields.end(); it_f++) 
             all_fields.push_back(*it_f);
@@ -303,8 +309,8 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
         // Check if the datatype needs to be changed.This is for MODIS data that needs to apply scale and offset.
         // ctype_field_namelist is assigned in the function read_das_hdfeos2. 
         bool changedtype = false;
-        for (vector<string>::const_iterator i = ctype_field_namelist.begin(); i != ctype_field_namelist.end(); ++i){
-            if ((*i) == (*it_f)->getNewName()){
+        for (auto const &cf:ctype_field_namelist){
+            if (cf == (*it_f)->getNewName()){
                 changedtype = true;
                 break;
             } 
@@ -325,20 +331,20 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
     case tid: \
         bt = new (type)((*it_f)->getNewName(), (dataset)->getName()); \
         break;
-            HANDLE_CASE(DFNT_FLOAT32, HDFFloat32);
-            HANDLE_CASE(DFNT_FLOAT64, HDFFloat64);
-            HANDLE_CASE(DFNT_CHAR8,HDFStr);
+            HANDLE_CASE(DFNT_FLOAT32, HDFFloat32)
+            HANDLE_CASE(DFNT_FLOAT64, HDFFloat64)
+            HANDLE_CASE(DFNT_CHAR8,HDFStr)
 #ifndef SIGNED_BYTE_TO_INT32
-            HANDLE_CASE2(DFNT_INT8, HDFByte);
+            HANDLE_CASE2(DFNT_INT8, HDFByte)
 #else
-            HANDLE_CASE2(DFNT_INT8,HDFInt32);
+            HANDLE_CASE2(DFNT_INT8,HDFInt32)
 #endif
-            HANDLE_CASE2(DFNT_UINT8, HDFByte);
-            HANDLE_CASE2(DFNT_INT16, HDFInt16);
-            HANDLE_CASE2(DFNT_UINT16,HDFUInt16);
-            HANDLE_CASE2(DFNT_INT32, HDFInt32);
-            HANDLE_CASE2(DFNT_UINT32, HDFUInt32);
-            HANDLE_CASE2(DFNT_UCHAR8, HDFByte);
+            HANDLE_CASE2(DFNT_UINT8, HDFByte)
+            HANDLE_CASE2(DFNT_INT16, HDFInt16)
+            HANDLE_CASE2(DFNT_UINT16,HDFUInt16)
+            HANDLE_CASE2(DFNT_INT32, HDFInt32)
+            HANDLE_CASE2(DFNT_UINT32, HDFUInt32)
+            HANDLE_CASE2(DFNT_UCHAR8, HDFByte)
             default:
                 throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -363,7 +369,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                    (*it_f)->getRank() -1,
                                                    (grid_or_swath ==0)?gridfd:swathfd,
                                                    filename,
-                                                   (dataset)->getName(),
+                                                   dataset->getName(),
                                                    (*it_f)->getName(),
                                                    grid_or_swath,
                                                    (*it_f)->getNewName(),
@@ -391,7 +397,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                         sca_str = new HDFEOS2CFStr(
                                                    (grid_or_swath ==0)?gridfd:swathfd,
                                                    filename,
-                                                   (dataset)->getName(),
+                                                   dataset->getName(),
                                                    (*it_f)->getName(),
                                                    (*it_f)->getNewName(),
                                                    grid_or_swath);
@@ -416,7 +422,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     ar = new HDFEOS2Array_RealField(
                         (*it_f)->getRank(),
                         filename,false,sdfd,gridfd,
-                        (dataset)->getName(), "", (*it_f)->getName(),
+                        dataset->getName(), "", (*it_f)->getName(),
                         sotype,
                         (*it_f)->getNewName(), bt);
                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
@@ -510,7 +516,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                                           sdfd,
                                                                           swathfd,
                                                                           "",
-                                                                          (dataset)->getName(),
+                                                                          dataset->getName(),
                                                                           tempfieldname,
                                                                           dimmaps,
                                                                           sotype,
@@ -534,7 +540,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                                   sdfd,
                                                                   swathfd,
                                                                   "", 
-                                                                  (dataset)->getName(), 
+                                                                  dataset->getName(), 
                                                                   tempfieldname, 
                                                                   dimmaps,
                                                                   sotype,
@@ -557,7 +563,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                         sdfd,
                                                         swathfd,
                                                         "", 
-                                                        (dataset)->getName(), 
+                                                        dataset->getName(), 
                                                         tempfieldname,
                                                         sotype,
                                                         (*it_f)->getNewName(), 
@@ -599,7 +605,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                      /*fieldcache,*/
                                                      filename,
                                                      gridfd,
-                                                     (dataset)->getName(),
+                                                     dataset->getName(),
                                                      (*it_f)->getName(),
                                                      (*it_f)->getNewName(), 
                                                      bt);
@@ -650,7 +656,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
                                                         (*it_f)->getRank(),
                                                         filename,
                                                         swathfd,
-                                                        (dataset)->getName(),
+                                                        dataset->getName(),
                                                         fieldname, 
                                                         dim0size,
                                                         dim0offset,
@@ -730,7 +736,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
                                                                       sdfd,
                                                                       swathfd,
                                                                       "", 
-                                                                      (dataset)->getName(), 
+                                                                      dataset->getName(), 
                                                                       (*it_f)->getName(), 
                                                                       dimmaps,
                                                                       sotype,
@@ -751,7 +757,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
                                                            (*it_f)->getRank(),
                                                            filename,
                                                            swathfd,
-                                                           (dataset)->getName(), 
+                                                           dataset->getName(), 
                                                            (*it_f)->getName(),
                                                            (*it_f)->getNewName(), 
                                                            bt);
@@ -822,7 +828,6 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
     // Find MERRA data, return 5, then just use HDF4 SDS code.
     if((basename(filename).size() >=5) && ((basename(filename)).compare(0,5,"MERRA")==0)) 
         return 5; 
-        //return false; 
 
 #if 0
     string check_enable_spec_eos_key="H4.EnableSpecialEOS";
@@ -830,7 +835,6 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
     turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
 #endif
 
-    //if(true == turn_on_enable_spec_eos_key) {
     if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
@@ -849,10 +853,8 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
 
             try {
                 read_dds_special_1d_grid(dds,spf,filename,sdfd,false);
-                //read_dds_special_1d_grid(dds,spf,filename,sdfd,fileid);
             } catch (...)
             {   
-                //delete spf;
                 throw;
             }   
                 return ret_val;
@@ -876,23 +878,21 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
     SOType sotype = DEFAULT_CF_EQU;
 
     // Iterate all the grids of this file and map them to DAP DDS.
-    vector<HDFEOS2::GridDataset *>::const_iterator it_g;
-    for(it_g = grids.begin(); it_g != grids.end(); it_g++){
+    for (const auto &gd:grids){
 
         // Check if this grid provides its own lat/lon.
-        ownll = onelatlon?onelatlon:(*it_g)->getLatLonFlag();
+        ownll = onelatlon?onelatlon:gd->getLatLonFlag();
 
         // Obtain Scale and offset type. This is for MODIS products who use non-CF scale/offset rules.
-        sotype = (*it_g)->getScaleType();
+        sotype = gd->getScaleType();
         try {
             read_dds_hdfeos2_grid_swath(
-                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype,false,sdfd,fileid,gridfd,swathfd);
+                dds, filename, static_cast<HDFEOS2::Dataset*>(gd), 0,ownll,sotype,false,sdfd,gridfd,swathfd);
             // Add 1-D CF grid projection required coordinate variables. 
             // Currently only supports sinusoidal projection.
-            HDFCFUtil::add_cf_grid_cvs(dds,*it_g);
+            HDFCFUtil::add_cf_grid_cvs(dds,gd);
         }
         catch(...) {
-           // delete f;
             throw;
         }
     }
@@ -903,18 +903,16 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
 
     // Iterate all the swaths of this file and map them to DAP DDS.
     const vector<HDFEOS2::SwathDataset *>& swaths= f->getSwaths();
-    vector<HDFEOS2::SwathDataset *>::const_iterator it_s;
-    for(it_s = swaths.begin(); it_s != swaths.end(); it_s++) {
+    for (const auto &swath:swaths) {
 
         // Obtain Scale and offset type. This is for MODIS products who use non-CF scale/offset rules.
-        sotype = (*it_s)->getScaleType();
+        sotype = swath->getScaleType();
         try {
             //No global lat/lon for multiple swaths
             read_dds_hdfeos2_grid_swath(
-                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype,multi_dmap,sdfd,fileid,gridfd,swathfd);
+                dds, filename, static_cast<HDFEOS2::Dataset*>(swath), 1,false,sotype,multi_dmap,sdfd,gridfd,swathfd);
         }
         catch(...) {
-            //delete f;
             throw;
         }
     }
