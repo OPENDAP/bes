@@ -199,7 +199,7 @@ bool read_dds_hdfsp(DDS & dds, const string & filename,int32 sdfd, int32 fileid,
 bool read_das_hdfsp(DAS & das, const string & filename,int32 sdfd, int32 fileid,HDFSP::File**h4filepptr);
 
 // read_dds for special NASA HDF-EOS2 hybrid(non-EOS2) objects
-bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,HDFSP::File*h4file);
+bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,const HDFSP::File*h4file);
 bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fileid,HDFSP::File**h4filepptr);
 
 // Functions to read special 1-d HDF-EOS2 grid. This grid can be built up quickly.
@@ -929,7 +929,7 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
 
 // The wrapper of building DDS of non-EOS fields and attributes in a hybrid HDF-EOS2 file.
 //bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,int32 gridfd,int32 swathfd)
-bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,HDFSP::File*f)
+bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fileid,const HDFSP::File*f)
 
 {
 
@@ -942,10 +942,9 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fil
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
 
     // Read SDS 
-    vector<HDFSP::SDField *>::const_iterator it_g;
-    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+    for(const auto &sdfield:spsds){
         try {
-            read_dds_spfields(dds,filename,sdfd,(*it_g),f->getSPType());
+            read_dds_spfields(dds,filename,sdfd,sdfield,f->getSPType());
         }
         catch(...) {
             throw;
@@ -959,19 +958,13 @@ bool read_dds_hdfhybrid(DDS & dds, const string & filename,int32 sdfd, int32 fil
     // each vdata field to a DAP array. However, this may cause the generation of many DAP fields. So
     // we use the BES keys for users to turn on/off as they choose. By default, the key is turned on. KY 2012-6-26
     
-#if 0
-    string check_hybrid_vdata_key="H4.EnableHybridVdata";
-    bool turn_on_hybrid_vdata_key = false;
-    turn_on_hybrid_vdata_key = HDFCFUtil::check_beskeys(check_hybrid_vdata_key);
-#endif
-
-    //if( true == turn_on_hybrid_vdata_key) {
     if( true == HDF4RequestHandler::get_enable_hybrid_vdata()) {
-        for(vector<HDFSP::VDATA *>::const_iterator i = f->getVDATAs().begin(); i!=f->getVDATAs().end();i++) {
-            if(false == (*i)->getTreatAsAttrFlag()){
-                for(vector<HDFSP::VDField *>::const_iterator j=(*i)->getFields().begin();j!=(*i)->getFields().end();j++) {
+
+        for(const auto &vd:f->getVDATAs()) {
+            if(false == vd->getTreatAsAttrFlag()){
+                for(const auto &vdf:vd->getFields()) {
                     try {
-                        read_dds_spvdfields(dds,filename,fileid, (*i)->getObjRef(),(*j)->getNumRec(),(*j)); 
+                        read_dds_spvdfields(dds,filename,fileid, vd->getObjRef(),vdf->getNumRec(),vdf); 
                     }
                     catch(...) {
                         throw;
@@ -1006,55 +999,49 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fil
     // Remember the file pointer 
     *fpptr = f;
 
-#if 0
-    string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
-    bool turn_on_enable_check_scale_offset_key= false;
-    turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
-#endif
-    
     // First Added non-HDFEOS2 SDS attributes.
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
-    vector<HDFSP::SDField *>::const_iterator it_g;
-    for(it_g = spsds.begin(); it_g != spsds.end(); it_g++){
+
+    for (const auto &spfield:spsds) {
         
         // Use CF field name as the DAS table name.
-        AttrTable *at = das.get_table((*it_g)->getNewName());
+        AttrTable *at = das.get_table(spfield->getNewName());
         if (!at)
-            at = das.add_table((*it_g)->getNewName(), new AttrTable);
+            at = das.add_table(spfield->getNewName(), new AttrTable);
 
         // Some fields have "long_name" attributes,so we have to use this attribute rather than creating our own "long_name"
         bool long_name_flag = false;
 
-        for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {       
+        for (const auto &attr:spfield->getAttributes()) {       
 
-            if((*i)->getName() == "long_name") {
+            if(attr->getName() == "long_name") {
                 long_name_flag = true;
                 break;
             }
         }
         
         if(false == long_name_flag) 
-            at->append_attr("long_name", "String", (*it_g)->getName());
+            at->append_attr("long_name", "String", spfield->getName());
         
         // Map all attributes to DAP DAS.
-        for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
+        for (const auto& attr:spfield->getAttributes()) {
 
             // Handle string first.
-            if((*i)->getType()==DFNT_UCHAR || (*i)->getType() == DFNT_CHAR){
+            if(attr->getType()==DFNT_UCHAR || attr->getType() == DFNT_CHAR){
 
                 // Questionable use of string. KY 2014-02-12
-                string tempstring2((*i)->getValue().begin(),(*i)->getValue().end());
+                string tempstring2(attr->getValue().begin(),attr->getValue().end());
                 string tempfinalstr= string(tempstring2.c_str());
 
                 // We want to escape the possible special characters except the fullpath attribute. 
                 // The fullpath is only added for some CERES and MERRA data. People use fullpath to keep their
                 // original names even their original name includes special characters.  KY 2014-02-12
-                at->append_attr((*i)->getNewName(), "String" , ((*i)->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
+                at->append_attr(attr->getNewName(), "String" , (attr->getNewName()=="fullpath")?tempfinalstr:HDFCFUtil::escattr(tempfinalstr));
             }
             else {
-                for (int loc=0; loc < (*i)->getCount() ; loc++) {
-                    string print_rep = HDFCFUtil::print_attr((*i)->getType(), loc, (void*) &((*i)->getValue()[0]));
-                    at->append_attr((*i)->getNewName(), HDFCFUtil::print_type((*i)->getType()), print_rep);
+                for (int loc=0; loc < attr->getCount() ; loc++) {
+                    string print_rep = HDFCFUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
+                    at->append_attr(attr->getNewName(), HDFCFUtil::print_type(attr->getType()), print_rep);
                 }
             }
         }
@@ -1062,12 +1049,11 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fil
         // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
         // with the variable datatype. Correct the fillvalue datatype if necessary. 
         if(at != nullptr) {
-            int32 var_type = (*it_g)->getType();
+            int32 var_type = spfield->getType();
             try {
                 HDFCFUtil::correct_fvalue_type(at,var_type);
             }
             catch(...) {
-                //delete f;
                 throw;
             }
         }
@@ -1077,7 +1063,6 @@ bool read_das_hdfhybrid(DAS & das, const string & filename,int32 sdfd, int32 fil
         //       if yes, check if scale_factor and add_offset attribute types are the same; 
         //          if no, make add_offset's datatype be the same as the datatype of scale_factor. 
         // (CF requires the type of scale_factor and add_offset the same). 
-        //if (true == turn_on_enable_check_scale_offset_key && at !=nullptr)  
         if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at !=nullptr)  
             HDFCFUtil::correct_scale_offset_type(at); 
 
@@ -1229,7 +1214,10 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
     if (arg.status() == false) {
         (*BESLog::TheLog())<<  "HDF-EOS parse error while processing a "
                            << metadata  << " HDFEOS attribute. (2) " << endl;
-        //                 << arg.error()->get_error_message() << endl;
+#if 0
+// for debugging
+                           << arg.error()->get_error_message() << endl;
+#endif
     }
 
     hdfeos_delete_buffer(buf);
@@ -1311,7 +1299,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                     spf->Handle_AIRS_L23();
                     read_das_special_eos2_core(das,spf,filename,ecs_metadata);
                 }
-                //delete spf;
 
             } 
             catch (...)
@@ -1342,7 +1329,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
         // If this file is not an HDF-EOS2 file, return 0.
         if (!e.getFileType()){
-            //return false;
             return 0;
         }
         else
@@ -1384,13 +1370,11 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     bool tempstrflag = false;
 
     // Product name(AMSR_E) that needs to change attribute from "SCALE FACTOR" to scale_factor etc. to follow the CF conventions
-    //bool filename_change_scale = false; //unused variable. SBL 2/7/20
-    if (f->getSwaths().size() > 0) {
+    if (f->getSwaths().empty() == false) {
         string temp_fname = basename(filename);
         string temp_prod_prefix = "AMSR_E";
         if ((temp_fname.size() > temp_prod_prefix.size()) && 
             (0 == (temp_fname.compare(0,temp_prod_prefix.size(),temp_prod_prefix)))) {
-        	//filename_change_scale = true; //don't see accessed again in code
         }
 
     }
@@ -1408,23 +1392,13 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
     // Since this is a swath product, we check swath only. 
     for (int i = 0; i<(int) f->getSwaths().size(); i++) {
-        HDFEOS2::SwathDataset* swath = f->getSwaths()[i];
+        const HDFEOS2::SwathDataset* swath = f->getSwaths()[i];
         string sname = swath->getName();
         if("MODIS_SWATH_Type_L1B" == sname){
             is_modis_l1b = true;
             break;
         }
     }
-
-#if 0
-    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
-    bool turn_on_disable_scale_comp_key= false;
-    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
-
-    string check_scale_offset_type_key = "H4.EnableCheckScaleOffsetType";
-    bool turn_on_enable_check_scale_offset_key= false;
-    turn_on_enable_check_scale_offset_key = HDFCFUtil::check_beskeys(check_scale_offset_type_key);
-#endif
 
     try {
 
@@ -1436,39 +1410,38 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
             sotype = grid->getScaleType();
       
             const vector<HDFEOS2::Field*>gfields = grid->getDataFields();
-            vector<HDFEOS2::Field*>::const_iterator it_gf;
 
-            for (it_gf = gfields.begin();it_gf != gfields.end();++it_gf) {
+            for (const auto &gf:gfields) {
 
                 bool change_fvtype = false;
 
                 // original field name
-                string fname = (*it_gf)->getName();
+                string fname = gf->getName();
 
                 //  new field name that follows CF
-                string newfname = (*it_gf)->getNewName();
+                string newfname = gf->getNewName();
 
                 BESDEBUG("h4","Original field name: " <<  fname << endl);
                 BESDEBUG("h4","Corrected field name: " <<  newfname << endl);
 
                 // whether coordinate variable or data variables
-                int fieldtype = (*it_gf)->getFieldType(); 
+                int fieldtype = gf->getFieldType(); 
 
                 // 0 means that the data field is NOT a coordinate variable.
                 if (fieldtype == 0){
 
                     // If you don't find any _FillValue through generic API.
-                    if((*it_gf)->haveAddedFillValue()) {
+                    if(gf->haveAddedFillValue()) {
                         BESDEBUG("h4","Has an added fill value." << endl);
                         float addedfillvalue = 
-                            (*it_gf)->getAddedFillValue();
+                            gf->getAddedFillValue();
                         int type = 
-                            (*it_gf)->getType();
+                            gf->getType();
                         BESDEBUG("h4","Added fill value = "<<addedfillvalue);
                         cf.write_attribute_FillValue(newfname, 
                                                      type, addedfillvalue);
                     }
-                    string coordinate = (*it_gf)->getCoordinate();
+                    string coordinate = gf->getCoordinate();
                     BESDEBUG("h4","Coordinate attribute: " << coordinate <<endl);
                     if (coordinate != "") 
                         cf.write_attribute_coordinates(newfname, coordinate);
@@ -1476,7 +1449,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
                 // This will override _FillValue if it's defined on the field.
                 cf.write_attribute(gname, fname, newfname, 
-                                   f->getGrids().size(), fieldtype);  
+                                   (int)(f->getGrids().size()), fieldtype);  
 
                 // For fieldtype values:
                 // 0 is general fields
@@ -1485,16 +1458,16 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 // 3 is the existing 3rd-dimension coordinate variable
                 // 4 is the dimension that misses the coordinate variable,use natural number
                 // 5 is time
-                if(fieldtype > 0){
+                if (fieldtype > 0){
 
                     // MOD13C2 is treated specially. 
-                    if(fieldtype == 1 && ((*it_gf)->getSpecialLLFormat())==3)
+                    if(fieldtype == 1 && (gf->getSpecialLLFormat())==3)
                         tempstrflag = true;
 
                     // Don't change the units if the 3-rd dimension field exists.(fieldtype =3)
                     // KY 2013-02-15
                     if (fieldtype !=3) {
-                        string tempunits = (*it_gf)->getUnits();
+                        string tempunits = gf->getUnits();
                         BESDEBUG("h4",
                                  "fieldtype " << fieldtype 
                                  << " units" << tempunits 
@@ -1521,7 +1494,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                         it++;
                     }
 
-                    //if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && (true == turn_on_disable_scale_comp_key)) 
                     if((false == is_modis_l1b) && (false == gridname_change_valid_range)&&(false == has_Key_attr) && 
                         (true == HDF4RequestHandler::get_disable_scaleoffset_comp())) 
                         HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(at,basename(filename), true, newfname,sotype);
@@ -1545,7 +1517,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 // Check if having _FillValue. If having _FillValue, compare the datatype of _FillValue
                 // with the variable datatype. Correct the fillvalue datatype if necessary. 
                 if((false == change_fvtype) && at != nullptr) {
-                    int32 var_type = (*it_gf)->getType();
+                    int32 var_type = gf->getType();
                     HDFCFUtil::correct_fvalue_type(at,var_type);
                 }
 
@@ -1554,7 +1526,6 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 //       if yes, check if scale_factor and add_offset attribute types are the same;
                 //          if no, make add_offset's datatype be the same as the datatype of scale_factor.
                 // (cf requires the type of scale_factor and add_offset the same).
-                //if (true == turn_on_enable_check_scale_offset_key && at!=nullptr) 
                 if (true == HDF4RequestHandler::get_enable_check_scale_offset_type() && at!=nullptr) 
                     HDFCFUtil::correct_scale_offset_type(at);
 
@@ -1575,7 +1546,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         // MAP Swath attributes to DAS.
         for (int i = 0; i < (int) f->getSwaths().size(); i++) {
 
-            HDFEOS2::SwathDataset*  swath = f->getSwaths()[i];
+            const HDFEOS2::SwathDataset*  swath = f->getSwaths()[i];
 
             // Swath includes two parts: "Geolocation Fields" and "Data Fields".
             // The all_fields vector includes both.
@@ -1587,7 +1558,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
             for (it_f = datafields.begin(); it_f != datafields.end(); it_f++)
                 all_fields.push_back(*it_f);
 
-            int total_geofields = geofields.size();
+            auto total_geofields = (int)(geofields.size());
 
             string gname = swath->getName();
             BESDEBUG("h4","Swath name: " << gname << endl);
