@@ -194,10 +194,10 @@ struct HDFCFUtil
                                          const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size);
 
     // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
-    static void add_cf_grid_cvs(libdap::DDS & dds, HDFEOS2::GridDataset *gdset);
+    static void add_cf_grid_cvs(libdap::DDS & dds, const HDFEOS2::GridDataset *gdset);
 
     //Adds 1D grid mapping CF attributes to CV and data variables.
-    static void add_cf_grid_cv_attrs(libdap::DAS &das, HDFEOS2::GridDataset *gdset);
+    static void add_cf_grid_cv_attrs(libdap::DAS &das, const HDFEOS2::GridDataset *gdset);
 
 #endif 
 

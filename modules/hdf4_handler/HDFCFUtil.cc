@@ -221,14 +221,12 @@ HDFCFUtil::Handle_NameClashing(vector<string>&newobjnamelist,set<string>&objname
     set<string>::iterator iss;
 
     vector<string> clashnamelist;
-    vector<string>::iterator ivs;
 
     // clash index to original index mapping
     map<int,int> cl_to_ol;
     int ol_index = 0;
     int cl_index = 0;
 
-    vector<string>::const_iterator irv;
 
     for (const auto &newobjname:newobjnamelist) {
         setret = objnameset.insert(newobjname);
@@ -1735,7 +1733,7 @@ void HDFCFUtil::add_cf_grid_mapping_attr(DAS &das, const HDFEOS2::GridDataset*gd
 }
 
 //This function adds 1D grid mapping CF attributes to CV and data variables.
-void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
+void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, const HDFEOS2::GridDataset *gdset) {
 
     //1. Check the projection information, now, we only handle sinusoidal now
     if(GCTP_SNSOID == gdset->getProjection().getCode()) {
@@ -1797,7 +1795,7 @@ void HDFCFUtil::add_cf_grid_cv_attrs(DAS & das, HDFEOS2::GridDataset *gdset) {
 //Note: Since we don't add these artifical CF variables to our main engineering at HDFEOS2.cc, the information
 // to handle DAS won't pass to DDS by the file pointer, we need to re-call the routines to check projection
 // and dimension. The time to retrieve these information is trivial compared with the whole translation.
-void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
+void HDFCFUtil::add_cf_grid_cvs(DDS & dds, const HDFEOS2::GridDataset *gdset) {
 
     //1. Check the projection information, now, we only handle sinusoidal now
     if(GCTP_SNSOID == gdset->getProjection().getCode()) {
@@ -1827,7 +1825,6 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
             bt_dim1 = new(HDFFloat64)(dim1name,gdset->getName());
 
             // Obtain the upleft and lowright coordinates
-            //upleft = const_cast<float64 *>(gdset->getInfo().getUpLeft());
             upleft = gdset->getInfo().getUpLeft();
             lowright = gdset->getInfo().getLowRight();
            
@@ -3693,7 +3690,6 @@ size_t HDFCFUtil::obtain_dds_cache_size(const HDFSP::File*spf) {
 
     size_t total_bytes_written = 0;
     const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
-    //vector<HDFSP::SDField *>::const_iterator it_g;
     for (const auto &fd:spsds){
 
         // We will not handle when the SDS datatype is DFNT_CHAR now.

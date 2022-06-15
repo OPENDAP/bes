@@ -459,7 +459,7 @@ namespace HDFEOS2
                 return this->field_cache;
             }
 #endif
-        protected:
+        private:
             // field name
             std::string name;
 
