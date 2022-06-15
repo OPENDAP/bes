@@ -223,7 +223,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
 void read_dds_spvdfields(DDS &dds,const string& filename, const int fileid,int32 vdref, int32 numrec,HDFSP::VDField *spvd); 
 
 // Check if this is a special HDF-EOS2 file that can be handled by HDF4 directly. Using HDF4 only can improve performance.
-int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd,int32 fileid);
+int check_special_eosfile(const string&filename,string&grid_name,int32 sdfd);
 
 
 // The following blocks only handle HDF-EOS2 objects based on HDF-EOS2 libraries.
@@ -838,7 +838,7 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
     if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
-        int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
+        int ret_val = check_special_eosfile(filename,grid_name,sdfd); 
 
         // These are AIRS-like products that use HDF4 SDS dimension scale perfectly.
         // We originally thought that the AIRS version 6 products fall into this category, so we added this case.
@@ -1253,7 +1253,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
         string grid_name;
-        int ret_val = check_special_eosfile(filename,grid_name,sdfd,fileid); 
+        int ret_val = check_special_eosfile(filename,grid_name,sdfd); 
 
         // Expected AIRS level 2 or 3
         if(4== ret_val) 
