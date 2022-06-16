@@ -28,8 +28,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-//#define DODS_DEBUG
-
 #include <unistd.h>
 #include <libdap/BaseType.h>
 #include <libdap/Int32.h>
@@ -57,7 +55,6 @@
 #include "BindShapeFunction.h"
 #include "BindNameFunction.h"
 
-//#include "ce_functions.h"
 #include "test_config.h"
 
 #include "test/TestTypeFactory.h"
@@ -524,7 +521,7 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
         try {
 
             long int num_dims = 3;
-            unsigned long dims[3] = { 5, 2, 3 };
+            long dims[3] = { 5, 2, 3 };
             string shape = "";
 
             Array & array = dynamic_cast<Array &>(*two_arrays_dmr->root()->var("a"));
@@ -578,9 +575,6 @@ CPPUNIT_TEST_SUITE( Dap4_CEFunctionsTest );
 
                 D4Dimension *d4_dim = resultArray->dimension_D4dim(p);
                 CPPUNIT_ASSERT(d4_dim);
-                //DBG(cerr << "bind_shape_test() - d4_dim->name(): "<< d4_dim->name() << endl);
-                //DBG(cerr << "bind_shape_test() - d4_dim->size(): "<< long_to_string(d4_dim->size()) << endl);
-                //DBG(cerr << "bind_shape_test() - dims["<< long_to_string(i)<< "]: " <<  long_to_string(dims[i]) << endl);
 
                 CPPUNIT_ASSERT(d4_dim->size() == dims[i]);
                 DBG(cerr << "[" << long_to_string(d4_dim->size()) << "]");

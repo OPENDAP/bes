@@ -1,0 +1,85 @@
+
+Version 1.0.0, June 9, 2022
+
+This module now combines the reader and writer functions of the older
+gdal_handler and fileout_gdal. These were merged so we could keep the
+capabilities of each while only linking the gdal library to one shared
+object library. Linking to more than one so library caused a segmentation
+fault on RHEL 8 (and other *8 flavors of Linux).
+
+* Notes from the 'reader' code
+
+Updated for version 1.1.0 on 1 June 2017
+
+I modified this handler so that it builds a DDS object that includes
+global attributes and attributes for each variable. This means that 
+it does not use the DDS::transfer_attributes() hack. The changes to 
+do this were fairly small. I modified the code that builds the DAS so
+that it includes two new functions, one to build global attributes and
+one to build a given variable's attributes. These functions are used
+by both the build-a-DAS and build-a-DDS functions and the DAS only code
+is mostly only these functions.
+
+The one thing that the handler not longer does is merge in ancillary 
+attributes when building the DDS. I'm not sure how to support that 
+without going back to the older scheme, mixing the current code and
+code that loads the ancillary attrs and uses transfer_attributes() 
+or new code that reads the attrs and adds them directly.
+
+jhrg 6/1/17
+
+Updated for version 0.9.0 on 25 Sept. 2012
+
+This is the initial release of a handler to read GeoTIFF,
+GRiB and JPEG2000 files.
+
+* Notes from the 'writer' code
+
+Updated for version 0.9.4
+
+This handler builds a GeoTiff, JPEG2000, and GMLJP2 responses from
+a DAP data response, with some
+caveats. The handler is limited to a single Grid variable and that
+Grid must be either a two-dimensional grid or be constrained so that
+only two dimensions remain once the constraint is applied.
+
+The handler tests the Grid for a number of properties in addition to
+the limitation that it be a 2D grid:
+
+1. It must be a lat/lon grid, that follows CF (or be reasonably close
+to following the CF specification).
+
+2. Only two datums are supported: Spherical Earth (EPSG:4047) and
+WGS84, although the default can be set from the module's conf file
+using the parameter FONg.default_gcs. Any datum that GDAL supports
+using a 'well known text' can be given, including EPSG:<num>. See
+GDAL for more info.
+
+3. All the GeoTiffs are returned using doubles regardless of the
+datatype used for the original grid.
+
+4. Because many datasets use 'missing' or 'no data' values that are
+often very small (e.g., -1e-34) and GDAL allocates colors/gray values
+so they evenly span the range of values, those missing data values are changed
+so that they are closer to (but never overlap) the actual data values.
+
+5. To find the missing data value, the 'missing_value' or '_FillValue'
+attribute is used. If neither of those attributes are defined for the
+DAP variable, then the scaling is not performed.
+
+6. In the resulting GoeTiff, black is the no data value.
+
+The handler can be extended in a number of ways.
+
+* The handler can be extended to support more bands if the logic for
+  RGB or RGBA responses can be sorted out.
+
+* The process used to determine the Geographic coordinate system could
+  be extended to more GCSs and also to include map projections.
+
+* Support for Arrays could be added.
+
+* The handler can be used to return other file types like JPEG2000 and
+  GMLJP2. To do this, add a new FONgTransmitter class, register it with
+  FONgModule and have that class call a new FONgTransformer::transform()
+  method.
