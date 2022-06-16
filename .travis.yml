@@ -120,6 +120,7 @@ before_script:
 # the master branch or for a *-test-deploy branch. So, the conditionals for the
 # stages can be simplified. jhrg 3/2/22
 
+
 stages:
   - name: build-and-package
   - name: scan
