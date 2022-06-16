@@ -251,7 +251,7 @@ void parse_ecs_metadata(DAS &das,const string & metaname, const string &metadata
 // HDF-EOS2 but no need to use HDF-EOS2 lib: Have dimension scales for all dimensions
 // 5. MERRA 
 // Special handling for MERRA file 
-int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd,HDFSP::File*h4file,HDFEOS2::File*eosfile);
+int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd, int32 gridfd, int32 swathfd,const HDFSP::File*h4file,HDFEOS2::File*eosfile);
 
 // reas das for HDF-EOS2
 int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd,bool ecs_metadata,HDFSP::File**h4filepptr,HDFEOS2::File**eosfilepptr);
@@ -812,7 +812,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
 
 // Build DDS for HDF-EOS2 only.
 //bool read_dds_hdfeos2(DDS & dds, const string & filename) 
-int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid, int32 gridfd, int32 swathfd,HDFSP::File*spf,HDFEOS2::File*f) 
+int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd, int32 gridfd, int32 swathfd,const HDFSP::File*spf,HDFEOS2::File*f) 
 {
 
     BESDEBUG("h4","Coming to read_dds_hdfeos2 "<<endl);
@@ -828,12 +828,6 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
     // Find MERRA data, return 5, then just use HDF4 SDS code.
     if((basename(filename).size() >=5) && ((basename(filename)).compare(0,5,"MERRA")==0)) 
         return 5; 
-
-#if 0
-    string check_enable_spec_eos_key="H4.EnableSpecialEOS";
-    bool turn_on_enable_spec_eos_key= false;
-    turn_on_enable_spec_eos_key = HDFCFUtil::check_beskeys(check_enable_spec_eos_key);
-#endif
 
     if(true == HDF4RequestHandler::get_enable_special_eos()) {
 
@@ -1087,7 +1081,7 @@ void read_dds_use_eos2lib(DDS & dds, const string & filename,int32 sdfd,int32 fi
 
     BESDEBUG("h4","Coming to read_dds_use_eos2lib" <<endl);
 
-    int ret_value = read_dds_hdfeos2(dds,filename,sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+    int ret_value = read_dds_hdfeos2(dds,filename,sdfd,gridfd,swathfd,h4file,eosfile);
 
     BESDEBUG("h4","ret_value of read_dds_hdfeos2 is "<<ret_value<<endl);
 
@@ -1369,6 +1363,8 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     // So we want to turn it off. KY 2010-8-10
     bool tempstrflag = false;
 
+#if 0
+    // AMSR_E may stop using "SCALE_FACTOR", so the following "if block" is empty. Still leave it here for future reference. KY 2022-06-16
     // Product name(AMSR_E) that needs to change attribute from "SCALE FACTOR" to scale_factor etc. to follow the CF conventions
     if (f->getSwaths().empty() == false) {
         string temp_fname = basename(filename);
@@ -1378,6 +1374,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
         }
 
     }
+#endif
 
     // Obtain information to identify MEaSURES VIP. This product needs to be handled properly.
     bool gridname_change_valid_range = false;
@@ -1552,11 +1549,10 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
             // The all_fields vector includes both.
             const vector<HDFEOS2::Field*> geofields = swath->getGeoFields();
             vector<HDFEOS2::Field*> all_fields = geofields;
-            vector<HDFEOS2::Field*>::const_iterator it_f;
 
             const vector<HDFEOS2::Field*> datafields = swath->getDataFields();
-            for (it_f = datafields.begin(); it_f != datafields.end(); it_f++)
-                all_fields.push_back(*it_f);
+            for (const auto &df:datafields)
+                all_fields.push_back(df);
 
             auto total_geofields = (int)(geofields.size());
 
@@ -2680,7 +2676,6 @@ void change_das_mod08_scale_offset(DAS &das, const HDFSP::File *f) {
     // Check HDFCFUtil::handle_modis_special_attrs_disable_scale_comp
 
     const vector<HDFSP::SDField *>& spsds = f->getSD()->getFields();
-    vector<HDFSP::SDField *>::const_iterator it_g;
     for (const auto &sdf:spsds) {
         if(sdf->getFieldType() == 0){
             AttrTable *at = das.get_table(sdf->getNewName());
@@ -2775,7 +2770,6 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
     const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
 
     // Read SDS 
-    vector<HDFSP::SDField *>::const_iterator it_g;
     for (const auto &spsdsf:spsds) {
 
         BaseType *bt=nullptr;

@@ -149,9 +149,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     }
 
     try {
-        for (vector<string>::const_iterator i = gridlist.begin();
-             i != gridlist.end(); ++i) 
-            file->grids.push_back(GridDataset::Read(file->gridfd, *i));
+        for (const auto &grid: gridlist)
+            file->grids.push_back(GridDataset::Read(file->gridfd, grid));
     }
     catch(...) {
         delete file;
@@ -174,9 +173,8 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
     }
 
     try {
-        for (vector<string>::const_iterator i = swathlist.begin();
-            i != swathlist.end(); ++i)
-            file->swaths.push_back(SwathDataset::Read(file->swathfd, *i));
+        for (const auto &swath:swathlist)
+            file->swaths.push_back(SwathDataset::Read(file->swathfd, swath));
     }
     catch(...) {
         delete file;
@@ -193,13 +191,12 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
         throw1("Point ReadNamelist failed.");
     }
     //See if I can make coverity happy because it doesn't understand throw macro.
-    for (vector<string>::const_iterator i = pointlist.begin();
-         i != pointlist.end(); ++i)
-        file->points.push_back(PointDataset::Read(-1, *i));
+    for (const auto&point: pointlist)
+        file->points.push_back(PointDataset::Read(-1, point));
 
     // If this is not an HDF-EOS2 file, returns exception as false.
-    if(file->grids.size() == 0 && file->swaths.size() == 0 
-       && file->points.size() == 0) {
+    if (file->grids.empty() && file->swaths.empty()
+                            && file->points.empty()) {
         Exception e("Not an HDF-EOS2 file");
         e.setFileType(false);
         delete file;
@@ -281,9 +278,9 @@ void File::_find_geodim_names()
     for(size_t i = 0; i<sizeof(_geodim_y_names) / sizeof(const char *); i++)
         geodim_y_name_set.insert(_geodim_y_names[i]);
 
+#if 0
     // The following code is only used for grid. It also causes the coverity unhappy
     // for the code block for(size_t i=0; ;i++), so simplify it after this code block.
-#if 0
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
     for(size_t i=0; ;i++)
@@ -314,12 +311,11 @@ void File::_find_geodim_names()
     // For performance, we're checking this for the first grid 
     if(gs >0)
     {
-        Dataset *dataset=nullptr;
+        const Dataset *dataset=nullptr;
         dataset = static_cast<Dataset*>(grids[0]);
 
         const vector<Dimension *>& dims = dataset->getDimensions();
-        for(vector<Dimension*>::const_iterator it = dims.begin();
-            it != dims.end(); ++it)
+        for (const auto &dim:dims)  
         {
             // Essentially this code will grab any dimension names that is
             // NOT predefined "XDim","LonDim","nlon" for geodim_x_name;
@@ -327,10 +323,10 @@ void File::_find_geodim_names()
             // for geodim_y_name. This is in theory not right. Given the
             // fact that this works with the current HDF-EOS2 products and there
             // will be no more HDF-EOS2 products. We will leave the code this way.
-            if(geodim_x_name_set.find((*it)->getName()) != geodim_x_name_set.end())
-                _geodim_x_name = (*it)->getName();
-            else if(geodim_y_name_set.find((*it)->getName()) != geodim_y_name_set.end())
-                _geodim_y_name = (*it)->getName();
+            if(geodim_x_name_set.find(dim->getName()) != geodim_x_name_set.end())
+                _geodim_x_name = dim->getName();
+            else if(geodim_y_name_set.find(dim->getName()) != geodim_y_name_set.end())
+                _geodim_y_name = dim->getName();
         }
     }
    if(_geodim_x_name.empty())
@@ -358,10 +354,12 @@ void File::_find_latlonfield_names()
     const size_t ss = swaths.size();
     // KY: converity structurally dead code i++ is never reached
     // i++ is unreachable,so comment out this one
+#if 0
     //for(size_t i=0; ;i++)
+#endif
     for(size_t i=0;i<1 ;i++)
     {
-        Dataset *dataset = nullptr;
+        const Dataset *dataset = nullptr;
         SwathDataset *sw = nullptr;
         if(i<gs)
             dataset = static_cast<Dataset*>(grids[i]);
@@ -374,25 +372,23 @@ void File::_find_latlonfield_names()
             break;
 
         const vector<Field *>& fields = dataset->getDataFields();
-        for(vector<Field*>::const_iterator it = fields.begin();
-            it != fields.end(); ++it)
+        for (const auto &field:fields)
         {
-            if(latfield_name_set.find((*it)->getName()) != latfield_name_set.end())
-                _latfield_name = (*it)->getName();
-            else if(lonfield_name_set.find((*it)->getName()) != lonfield_name_set.end())
-                _lonfield_name = (*it)->getName();
+            if(latfield_name_set.find(field->getName()) != latfield_name_set.end())
+                _latfield_name = field->getName();
+            else if(lonfield_name_set.find(field->getName()) != lonfield_name_set.end())
+                _lonfield_name = field->getName();
         }
 
         if(sw)
         {
             const vector<Field *>& geofields = dataset->getDataFields();
-            for(vector<Field*>::const_iterator it = geofields.begin();
-                it != geofields.end(); ++it)
+            for(const auto &gfield:geofields)  
             {
-                if(latfield_name_set.find((*it)->getName()) != latfield_name_set.end())
-                    _latfield_name = (*it)->getName();
-                else if(lonfield_name_set.find((*it)->getName()) != lonfield_name_set.end())
-                    _lonfield_name = (*it)->getName();
+                if(latfield_name_set.find(gfield->getName()) != latfield_name_set.end())
+                    _latfield_name = gfield->getName();
+                else if(lonfield_name_set.find(gfield->getName()) != lonfield_name_set.end())
+                    _lonfield_name = gfield->getName();
             }
         }
         // For performance, we're checking this for the first grid or swath
@@ -420,7 +416,7 @@ void File::_find_geogrid_name()
     const size_t ss = swaths.size();
     for(size_t i=0; ;i++)
     {
-        Dataset *dataset;
+        const Dataset *dataset = nullptr;
         if(i<gs)
             dataset = static_cast<Dataset*>(grids[i]);
         else if(i < gs + ss)
@@ -452,28 +448,25 @@ void File::check_onelatlon_grids() {
     int morellcount = 0; 
 
     // Loop through all grids
-    for(vector<GridDataset *>::const_iterator i = this->grids.begin();
-        i != this->grids.end(); ++i){
+    for (const auto &grid:grids){
 
         // Loop through all fields
-        for(vector<Field *>::const_iterator j =
-            (*i)->getDataFields().begin();
-            j != (*i)->getDataFields().end(); ++j) {
-            if((*i)->getName()==GEOGRIDNAME){
-                if((*j)->getName()==LATFIELDNAME){
+        for (const auto &field:grid->getDataFields()) {
+            if(grid->getName()==GEOGRIDNAME){
+                if(field->getName()==LATFIELDNAME){
                     onellcount++;
-                    (*i)->latfield = *j;
+                    grid->latfield = field;
                 }
-                if((*j)->getName()==LONFIELDNAME){ 
+                if(field->getName()==LONFIELDNAME){ 
                     onellcount++;
-                    (*i)->lonfield = *j;
+                    grid->lonfield = field;
                 }
                 if(onellcount == 2) 
                     break;//Finish this grid
             }
             else {// Here we assume that lat and lon are always in pairs.
-                if(((*j)->getName()==LATFIELDNAME)||((*j)->getName()==LONFIELDNAME)){ 
-                    (*i)->ownllflag = true;
+                if((field->getName()==LATFIELDNAME)||(field->getName()==LONFIELDNAME)){ 
+                    grid->ownllflag = true;
                     morellcount++;
                     break;
                 }
@@ -493,7 +486,7 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     string DIMYNAME = this->get_geodim_y_name();   
 
     bool missingfield_unlim_flag = false;
-    Field *missingfield_unlim = nullptr;
+    const Field *missingfield_unlim = nullptr;
 
     // This is a big assumption, it may be wrong since not every 1-D field 
     // with the third dimension(name and size) is a coordinate
@@ -503,29 +496,27 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     set<string> tempdimlist; 
     pair<set<string>::iterator,bool> tempdimret;
 
-    for (vector<Field *>::const_iterator j =
-        gdset->getDataFields().begin();
-        j != gdset->getDataFields().end(); ++j) {
-
+    for (const auto &field:gdset->getDataFields()) { 
         //We only need to search those 1-D fields
-        if ((*j)->getRank()==1){
+
+        if (field->getRank()==1){
 
             // DIMXNAME and DIMYNAME correspond to latitude and longitude.
             // They should NOT be treated as dimension names missing fields. It will be handled differently.
-            if(((*j)->getDimensions())[0]->getName()!=DIMXNAME && ((*j)->getDimensions())[0]->getName()!=DIMYNAME){
+            if((field->getDimensions())[0]->getName()!=DIMXNAME && (field->getDimensions())[0]->getName()!=DIMYNAME){
 
-                tempdimret = tempdimlist.insert(((*j)->getDimensions())[0]->getName());
+                tempdimret = tempdimlist.insert((field->getDimensions())[0]->getName());
 
                 // Kent: The following implementation may not be always right. This essentially is the flaw of the 
                 // data product if a file encounters this case. Only unique 1-D third-dimension field should be provided.
                 // Only pick up the first 1-D field that the third-dimension 
                 if(tempdimret.second == true) {
 
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, ((*j)->getDimensions())[0]->getName(),
-                                          (*j)->getName());
-                    (*j)->fieldtype = 3;
-                    if((*j)->getName() == "Time") 
-                        (*j)->fieldtype = 5;// IDV can handle 4-D fields when the 4th dim is Time.
+                    HDFCFUtil::insert_map(gdset->dimcvarlist, (field->getDimensions())[0]->getName(),
+                                          field->getName());
+                    field->fieldtype = 3;
+                    if(field->getName() == "Time") 
+                        field->fieldtype = 5;// IDV can handle 4-D fields when the 4th dim is Time.
                 }
             }
         }
@@ -540,42 +531,44 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     // The above handling is also based on  a big assumption. This is the best the 
     // handler can do without having the extra information outside the HDF-EOS2 file. KY 2012-6-12
     // Loop through all dimensions of this grid.
-    for (vector<Dimension *>::const_iterator j =
-        gdset->getDimensions().begin(); j!= gdset->getDimensions().end();++j){
+    for (const auto &gdim:gdset->getDimensions()) { 
 
         // Don't handle DIMXNAME and DIMYNAME yet.
-        if((*j)->getName()!=DIMXNAME && (*j)->getName()!=DIMYNAME){
+        if(gdim->getName()!=DIMXNAME && gdim->getName()!=DIMYNAME){
 
             // This dimension needs a field
-            if((tempdimlist.find((*j)->getName())) == tempdimlist.end()){
+            if((tempdimlist.find(gdim->getName())) == tempdimlist.end()){
                       
                 // Need to create a new data field vector element with the name and dimension as above.
-                Field *missingfield = new Field();
-                missingfield->name = (*j)->getName();
+                auto missingfield = new Field();
+                missingfield->name = gdim->getName();
                 missingfield->rank = 1;
                 
                 //This is an HDF constant.the data type is always integer.
                 missingfield->type = DFNT_INT32;
 
                 // Dimension of the missing field
-                Dimension *dim = new Dimension((*j)->getName(),(*j)->getSize());
+                auto dim = new Dimension(gdim->getName(),gdim->getSize());
 
                 // only 1 dimension
                 missingfield->dims.push_back(dim);
 
-                // Provide information for the missing data, since we need to calculate the data, so
-                // the information is different than a normal field.
-                //int missingdatarank =1;
-                //int missingdatatypesize = 4;
-
-                //int missingdimsize[1]; //unused variable. SBL 2/7/20
-                //missingdimsize[0]= (*j)->getSize(); //no purpose
-
-                if(0 == (*j)->getSize()) {
+                if (0 == gdim->getSize()) {
                     missingfield_unlim_flag = true;
                     missingfield_unlim = missingfield;
                 }
                 
+                // Provide information for the missing data, since we need to calculate the data, so
+                // the information is different than a normal field.
+#if 0 
+                // The following code is for debugging purpose. 
+                //int missingdatarank =1;
+                //int missingdatatypesize = 4;
+
+                //int missingdimsize[1]; //unused variable. SBL 2/7/20
+                //missingdimsize[0]= gdim->getSize(); //no purpose
+#endif
+
 
                 // added Z-dimension coordinate variable with nature number
                 missingfield->fieldtype = 4; 
@@ -599,19 +592,16 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     //Correct the unlimited dimension size.
     bool temp_missingfield_unlim_flag = missingfield_unlim_flag;
     if(true == temp_missingfield_unlim_flag) {
-        for (vector<Field *>::const_iterator i =
-             gdset->getDataFields().begin();
-             i != gdset->getDataFields().end(); ++i) {
+        for (unsigned int i =0; i<gdset->getDataFields().size(); i++) {
 
-            for (vector<Dimension *>::const_iterator j =
-                gdset->getDimensions().begin(); j!= gdset->getDimensions().end();++j){
+            for (const auto &gdim:gdset->getDimensions()) {
                 
-                if((*j)->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
-                    if((*j)->getSize()!= 0) {
+                if(gdim->getName() == (missingfield_unlim->getDimensions())[0]->getName()) {
+                    if(gdim->getSize()!= 0) {
                         Dimension *dim = missingfield_unlim->getDimensions()[0];
 
                         // The unlimited dimension size is updated.
-                        dim->dimsize = (*j)->getSize();
+                        dim->dimsize = gdim->getSize();
                         missingfield_unlim_flag = false;
                         break;
                     }
@@ -641,30 +631,28 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
     if(gdset->ownllflag) {
 
         // Searching the lat/lon field from the grid. 
-        for (vector<Field *>::const_iterator j =
-            gdset->getDataFields().begin();
-            j != gdset->getDataFields().end(); ++j) {
+        for (const auto &field:gdset->getDataFields()) {
  
-            if((*j)->getName() == LATFIELDNAME) {
+            if(field->getName() == LATFIELDNAME) {
 
                 // set the flag to tell if this is lat or lon. 
                 // The unit will be different for lat and lon.
-                (*j)->fieldtype = 1;
+                field->fieldtype = 1;
 
                 // Latitude rank should not be greater than 2.
                 // Here I don't check if the rank of latitude is the same as the longitude. 
                 // Hopefully it never happens for HDF-EOS2 cases.
                 // We are still investigating if Java clients work 
                 // when the rank of latitude and longitude is greater than 2.
-                if((*j)->getRank() > 2) 
+                if(field->getRank() > 2) 
                     throw3("The rank of latitude is greater than 2",
-                            gdset->getName(),(*j)->getName());
+                            gdset->getName(),field->getName());
 
-                if((*j)->getRank() != 1) {
+                if(field->getRank() != 1) {
 
                     // Obtain the major dim. For most cases, it is YDim Major. 
                     // But still need to watch out the rare cases.
-                    (*j)->ydimmajor = gdset->getCalculated().isYDimMajor();
+                    field->ydimmajor = gdset->getCalculated().isYDimMajor();
 
                     // If the 2-D lat/lon can be condensed to 1-D.
                     // For current HDF-EOS2 files, only GEO and CEA can be condensed. 
@@ -672,7 +660,7 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                     // we don't check the real latitude values.
                     int32 projectioncode = gdset->getProjection().getCode();
                     if(projectioncode == GCTP_GEO || projectioncode ==GCTP_CEA) {
-                        (*j)->condenseddim = true;
+                        field->condenseddim = true;
                     }
 
                     // Now we want to handle the dim and the var lists.
@@ -680,16 +668,25 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                     // COARD convention needs to be followed.
                     // Since COARD requires that the dimension name of lat/lon is the same as the field name of lat/lon,
                     // we still need to handle this case in the later step(in function handle_grid_coards).
-
+                    // Regardless of dimension  major, always lat->YDim, lon->XDim;
+                    // We don't need to adjust the dimension rank.
+                    for (const auto &dim:field->getDimensions()) {
+                        if (dim->getName() == DIMYNAME) 
+                            HDFCFUtil::insert_map(gdset->dimcvarlist, dim->getName(), field->getName());
+                    }
+ 
+#if 0
+                    // Don't know why this if/else block is necessary. It runs exactly the same code. 
+                    // Perhaps it tries to fix something and forgets to clean up. Comment out for a while.  KY 2022-06-16
                     // If the 2-D array can be condensed to a 1-D array.
-                    if((*j)->condenseddim) {
+                    if(field->condenseddim) {
 
                         // Regardless of dimension  major, always lat->YDim, lon->XDim;
                         // We don't need to adjust the dimension rank.
                         for (vector<Dimension *>::const_iterator k =
-                            (*j)->getDimensions().begin(); k!= (*j)->getDimensions().end();++k){
+                            field->getDimensions().begin(); k!= field->getDimensions().end();++k){
                             if((*k)->getName() == DIMYNAME) {
-                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), (*j)->getName());
+                                HDFCFUtil::insert_map(gdset->dimcvarlist, dim->getName(), field->getName());
                             }
                         }
                     }
@@ -697,75 +694,86 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                     // 2-D lat/lon case. Since dimension order doesn't matter, so we always assume lon->XDim, lat->YDim.
                     else {
                         for (vector<Dimension *>::const_iterator k =
-                            (*j)->getDimensions().begin(); k!= (*j)->getDimensions().end();++k){
+                            field->getDimensions().begin(); k!= field->getDimensions().end();++k){
                             if((*k)->getName() == DIMYNAME) {
-                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), (*j)->getName());
+                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), field->getName());
                             }
                         }
                     }
+#endif
                 }
                 // This is the 1-D case, just inserting  the dimension, field pair.
                 else { 
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (((*j)->getDimensions())[0])->getName(), 
-                                           (*j)->getName());
+                    HDFCFUtil::insert_map(gdset->dimcvarlist, ((field->getDimensions())[0])->getName(), 
+                                           field->getName());
                 }
             } 
-            else if ((*j)->getName() == LONFIELDNAME) {
+            else if (field->getName() == LONFIELDNAME) {
 
                 // set the flag to tell if this is lat or lon. The unit will be different for lat and lon.
-                (*j)->fieldtype = 2;
+                field->fieldtype = 2;
 
                 // longitude rank should not be greater than 2.
                 // Here I don't check if the rank of latitude and longitude is the same. 
                 // Hopefully it never happens for HDF-EOS2 cases.
                 // We are still investigating if Java clients work when the rank of latitude and longitude is greater than 2.
-                if((*j)->getRank() >2) 
-                    throw3("The rank of Longitude is greater than 2",gdset->getName(),(*j)->getName());
+                if(field->getRank() >2) 
+                    throw3("The rank of Longitude is greater than 2",gdset->getName(),field->getName());
 
-                if((*j)->getRank() != 1) {
+                if(field->getRank() != 1) {
 
                     // Obtain the major dim. For most cases, it is YDim Major. But still need to check for rare cases.
-                    (*j)->ydimmajor = gdset->getCalculated().isYDimMajor();
+                    field->ydimmajor = gdset->getCalculated().isYDimMajor();
 
                     // If the 2-D lat/lon can be condensed to 1-D.
                     //For current HDF-EOS2 files, only GEO and CEA can be condensed. To gain performance,
                     // we don't check with real values.
                     int32 projectioncode = gdset->getProjection().getCode();
                     if(projectioncode == GCTP_GEO || projectioncode ==GCTP_CEA) {
-                        (*j)->condenseddim = true;
+                        field->condenseddim = true;
                     }
 
                     // Now we want to handle the dim and the var lists.
                     // If the lat/lon can be condensed to 1-D array, COARD convention needs to be followed.
                     // Since COARD requires that the dimension name of lat/lon is the same as the field name of lat/lon,
                     // we still need to handle this case at last.
-
+                    // When the field can be condensed, regardless of dimension major, the EOS convention is always lat->YDim, lon->XDim;
+                    // We don't need to adjust the dimension rank.
+                    // For 2-D lat/lon case: since dimension order doesn't matter, so we always assume lon->XDim, lat->YDim.
+                    for (const auto &dim:field->getDimensions()) {
+                        if(dim->getName() == DIMXNAME) 
+                            HDFCFUtil::insert_map(gdset->dimcvarlist, dim->getName(), field->getName());
+                    }
+                    
+#if 0
+                    // Leave this block commented out for a while, may delete it in the future. KY 2022-06-16
                     // Can be condensed to 1-D array.
-                    if((*j)->condenseddim) {
+                    if(field->condenseddim) {
 
                         //  Regardless of dimension major, the EOS convention is always lat->YDim, lon->XDim;
                         // We don't need to adjust the dimension rank.
                         for (vector<Dimension *>::const_iterator k =
-                            (*j)->getDimensions().begin(); k!= (*j)->getDimensions().end();++k){
+                            field->getDimensions().begin(); k!= field->getDimensions().end();++k){
                             if((*k)->getName() == DIMXNAME) {
-                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), (*j)->getName());
+                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), field->getName());
                             }
                         }
                     }
                     // 2-D lat/lon case. Since dimension order doesn't matter, so we always assume lon->XDim, lat->YDim.
                     else {
                         for (vector<Dimension *>::const_iterator k =
-                            (*j)->getDimensions().begin(); k!= (*j)->getDimensions().end();++k){
+                            field->getDimensions().begin(); k!= field->getDimensions().end();++k){
                             if((*k)->getName() == DIMXNAME) {
-                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), (*j)->getName());
+                                HDFCFUtil::insert_map(gdset->dimcvarlist, (*k)->getName(), field->getName());
                             }
                         }
                     }
+#endif
                 }
                 // This is the 1-D case, just inserting  the dimension, field pair.
                 else { 
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (((*j)->getDimensions())[0])->getName(), 
-                                          (*j)->getName());
+                    HDFCFUtil::insert_map(gdset->dimcvarlist, ((field->getDimensions())[0])->getName(), 
+                                          field->getName());
                 }
             }
         } 
@@ -773,8 +781,8 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
     else { // this grid's lat/lon has to be calculated.
 
         // Latitude and Longitude 
-        Field *latfield = new Field();
-        Field *lonfield = new Field();
+        auto latfield = new Field();
+        auto lonfield = new Field();
 
         latfield->name = LATFIELDNAME;
         lonfield->name = LONFIELDNAME;
@@ -809,31 +817,36 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
                                                                   : latfield->ydimmajor;
 
         if(dmajor) { 
-            Dimension *dimlaty = new Dimension(DIMYNAME,ydimsize);
+            auto dimlaty = new Dimension(DIMYNAME,ydimsize);
             latfield->dims.push_back(dimlaty);
-            Dimension *dimlony = new Dimension(DIMYNAME,ydimsize);
+            auto dimlony = new Dimension(DIMYNAME,ydimsize);
             lonfield->dims.push_back(dimlony);
-            Dimension *dimlatx = new Dimension(DIMXNAME,xdimsize);
+            auto dimlatx = new Dimension(DIMXNAME,xdimsize);
             latfield->dims.push_back(dimlatx);
-            Dimension *dimlonx = new Dimension(DIMXNAME,xdimsize);
+            auto dimlonx = new Dimension(DIMXNAME,xdimsize);
             lonfield->dims.push_back(dimlonx);
         }
         else {
-            Dimension *dimlatx = new Dimension(DIMXNAME,xdimsize);
+            auto dimlatx = new Dimension(DIMXNAME,xdimsize);
             latfield->dims.push_back(dimlatx);
-            Dimension *dimlonx = new Dimension(DIMXNAME,xdimsize);
+            auto dimlonx = new Dimension(DIMXNAME,xdimsize);
             lonfield->dims.push_back(dimlonx);
-            Dimension *dimlaty = new Dimension(DIMYNAME,ydimsize);
+            auto dimlaty = new Dimension(DIMYNAME,ydimsize);
             latfield->dims.push_back(dimlaty);
-            Dimension *dimlony = new Dimension(DIMYNAME,ydimsize);
+            auto dimlony = new Dimension(DIMYNAME,ydimsize);
             lonfield->dims.push_back(dimlony);
         }
 
         // Obtain info upleft and lower right for special longitude.
+#if 0
         float64* upleft;
         float64* lowright;
         upleft = const_cast<float64 *>(gdset->getInfo().getUpLeft());
         lowright = const_cast<float64 *>(gdset->getInfo().getLowRight());
+#endif
+
+        const float64* upleft = gdset->getInfo().getUpLeft();
+        const float64* lowright = gdset->getInfo().getLowRight();
 
         // SOme special longitude is from 0 to 360.We need to check this case.
         int32 projectioncode = gdset->getProjection().getCode();
@@ -912,96 +925,6 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
             latfield->condenseddim = true;
         }
 
-#if 0
-        // Cache
-        // Check if a BES key H4.EnableEOSGeoCacheFile is true, if yes, we will check 
-        // if a lat/lon cache file exists for this lat/lon.
-        string check_eos_geo_cache_key = "H4.EnableEOSGeoCacheFile";
-        bool enable_eos_geo_cache_key = false;
-        enable_eos_geo_cache_key = HDFCFUtil::check_beskeys(check_eos_geo_cache_key);
-        if(true == enable_eos_geo_cache_key) {
-            // Build the cache file name based on the projection parameters.
-            string cache_fname;
-            
-            // Projection code, zone,sphere,pix,origin
-            cache_fname =HDFCFUtil::get_int_str(gdset->getProjection().getCode());          
-            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getZone());          
-            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getSphere());          
-            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getPix());          
-            cache_fname +=HDFCFUtil::get_int_str(gdset->getProjection().getOrigin());          
-            
-  
-            // Xdim size, ydim size
-            if(dmajor) {
-                cache_fname +=HDFCFUtil::get_int_str(ydimsize);
-                cache_fname +=HDFCFUtil::get_int_str(xdimsize);
-            }
-            else {
-                cache_fname +=HDFCFUtil::get_int_str(xdimsize);
-                cache_fname +=HDFCFUtil::get_int_str(ydimsize);
-            }
-
-            
-            // upleft,lowright
-            cache_fname +=HDFCFUtil::get_double_str(upleft[0],17,6);
-            cache_fname +=HDFCFUtil::get_double_str(upleft[1],17,6);
-            cache_fname +=HDFCFUtil::get_double_str(lowright[0],17,6);
-            cache_fname +=HDFCFUtil::get_double_str(lowright[1],17,6);
-
-
-            // obtain param
-            float64* params;
-            params = const_cast<float64 *>(gdset->getProjection().getParam());
-            // According to HDF-EOS2 document, only 13 parameters are used.
-            //for(int ipar = 0; ipar<16;ipar++)
-            for(int ipar = 0; ipar<13;ipar++)
-                cache_fname+=HDFCFUtil::get_double_str(params[ipar],17,6);
-//cerr<<"cache_fname is "<<cache_fname <<endl;
-            
-            // Check if this cache file exists and the file size, then set the flag. 
-            // 0: The file doesn't exist. 1: The file size is not the same as the lat/lon size.
-            // 2: The file size is the same as the lat/lon size.
-
-            // Check the status of the file
-            struct stat st;
-            string cache_fpath = "/tmp/"+cache_fname;
-            int result = stat(cache_fpath.c_str(), &st);
-            if(result == 0){
-                int actual_file_size = st.st_size;
-cerr<<"HDF-EOS2 actual_file_size is "<<actual_file_size <<endl;
-                int expected_file_size = 0;
-                if(gdset->getProjection().getCode() == GCTP_SOM) 
-                    expected_file_size = xdimsize*ydimsize*2*sizeof(double)*NBLOCK;
-                else if(gdset->getProjection().getCode() == GCTP_CEA ||
-                        gdset->getProjection().getCode() == GCTP_GEO)
-                    expected_file_size = (xdimsize+ydimsize)*sizeof(double);
-                else
-                    expected_file_size = xdimsize*ydimsize*2*sizeof(double);
-
-cerr<<"HDF-EOS2 expected_file_size is "<<expected_file_size <<endl;
-                if(actual_file_size != expected_file_size){
-cerr<<"field_cache is 1 "<<endl;
-                    lonfield->field_cache = 1;
-                    latfield->field_cache = 1;
-                }
-                else {
-cerr<<"field cache is 2 "<<endl;
-                    lonfield->field_cache = 2;
-                    latfield->field_cache = 2;
-                }
-            }
- 
-
-            //FILE* pFile;
-            //pFile = fopen(cache_fname.c_str(),"rb");
-            // struct stat st;
-            // int result = stat(filename, &st);
- 
-
-        }
-#endif
-        
-
         // Add latitude and longitude fields to the field list.
         gdset->datafields.push_back(latfield);
         gdset->datafields.push_back(lonfield);
@@ -1011,35 +934,16 @@ cerr<<"field cache is 2 "<<endl;
         // Since COARD requires that the dimension name of lat/lon is the same as the field name of lat/lon,
         // we still need to handle this case later(function handle_grid_coards).
 
-        // Can be condensed to 1-D array.
-        if(lonfield->condenseddim) {
+        // There are two cases, 
+        // 1) lat/lon can be condensed to 1-D array. lat to YDim, Lon to XDim, we don't need to adjust the rank.
+        // 2) 2-D lat./lon. The dimension order doesn't matter. So always assume lon to XDim, lat to YDim.
+        // So we can handle them with one loop.
+        for (const auto &dim:lonfield->getDimensions()) {
+            if(dim->getName() == DIMXNAME) 
+                HDFCFUtil::insert_map(gdset->dimcvarlist, dim->getName(), lonfield->getName());
 
-            //  lat->YDim, lon->XDim;
-            // We don't need to adjust the dimension rank.
-            for (vector<Dimension *>::const_iterator j =
-                lonfield->getDimensions().begin(); j!= lonfield->getDimensions().end();++j){
-
-                if((*j)->getName() == DIMXNAME) {
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (*j)->getName(), lonfield->getName());
-                }
-
-                if((*j)->getName() == DIMYNAME) {
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (*j)->getName(), latfield->getName());
-                }
-            }
-        }
-        else {// 2-D lat/lon case. Since dimension order doesn't matter, so we always assume lon->XDim, lat->YDim.
-            for (vector<Dimension *>::const_iterator j =
-                lonfield->getDimensions().begin(); j!= lonfield->getDimensions().end();++j){
-
-                if((*j)->getName() == DIMXNAME){ 
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (*j)->getName(), lonfield->getName());
-                }
-
-                if((*j)->getName() == DIMYNAME){
-                    HDFCFUtil::insert_map(gdset->dimcvarlist, (*j)->getName(), latfield->getName());
-                }
-            }
+            if(dim->getName() == DIMYNAME) 
+                HDFCFUtil::insert_map(gdset->dimcvarlist, dim->getName(), latfield->getName());
         }
     }
 
@@ -1055,7 +959,7 @@ void File::handle_onelatlon_grids() throw(Exception) {
     string LATFIELDNAME = this->get_latfield_name();       
     string LONFIELDNAME = this->get_lonfield_name();       
 
-    // Now only there is only one geo grid name "location", so don't call it know.
+    // Now only there is only one geo grid name "location", so don't call it now.
     // string GEOGRIDNAME = this->get_geogrid_name();
     string GEOGRIDNAME = "location";
 
@@ -1063,92 +967,73 @@ void File::handle_onelatlon_grids() throw(Exception) {
     map<string,string>temponelatlondimcvarlist;
 
     // First we need to obtain dimcvarlist for the grid that contains lat/lon.
-    for (vector<GridDataset *>::const_iterator i = this->grids.begin();
-        i != this->grids.end(); ++i){
+    for (const auto &grid:this->grids) {
 
         // Set the horizontal dimension name "dimxname" and "dimyname"
         // This will be used to detect the dimension major order.
-        (*i)->setDimxName(DIMXNAME);
-        (*i)->setDimyName(DIMYNAME);
+        grid->setDimxName(DIMXNAME);
+        grid->setDimyName(DIMYNAME);
 
         // Handle lat/lon. Note that other grids need to point to this lat/lon.
-        if((*i)->getName()==GEOGRIDNAME) {
+        if(grid->getName()==GEOGRIDNAME) {
 
             // Figure out dimension order,2D or 1D for lat/lon
             // if lat/lon field's pointed value is changed, the value of the lat/lon field is also changed.
             // set the flag to tell if this is lat or lon. The unit will be different for lat and lon.
-            (*i)->lonfield->fieldtype = 2;
-            (*i)->latfield->fieldtype = 1;
+            grid->lonfield->fieldtype = 2;
+            grid->latfield->fieldtype = 1;
 
             // latitude and longitude rank must be equal and should not be greater than 2.
-            if((*i)->lonfield->rank >2 || (*i)->latfield->rank >2) 
-                throw2("Either the rank of lat or the lon is greater than 2",(*i)->getName());
-            if((*i)->lonfield->rank !=(*i)->latfield->rank) 
-                throw2("The rank of the latitude is not the same as the rank of the longitude",(*i)->getName());
+            if(grid->lonfield->rank >2 || grid->latfield->rank >2) 
+                throw2("Either the rank of lat or the lon is greater than 2",grid->getName());
+            if(grid->lonfield->rank !=grid->latfield->rank) 
+                throw2("The rank of the latitude is not the same as the rank of the longitude",grid->getName());
 
             // For 2-D lat/lon arrays
-            if((*i)->lonfield->rank != 1) {
+            if(grid->lonfield->rank != 1) {
 
                 // Obtain the major dim. For most cases, it is YDim Major. 
                 //But for some cases it is not. So still need to check.
-                (*i)->lonfield->ydimmajor = (*i)->getCalculated().isYDimMajor();
-                (*i)->latfield->ydimmajor = (*i)->lonfield->ydimmajor;
+                grid->lonfield->ydimmajor = grid->getCalculated().isYDimMajor();
+                grid->latfield->ydimmajor = grid->lonfield->ydimmajor;
 
                 // Check if the 2-D lat/lon can be condensed to 1-D. 
                 //For current HDF-EOS2 files, only GEO and CEA can be condensed. To gain performance,
                 // we just check the projection code, don't check the real values.
-                int32 projectioncode = (*i)->getProjection().getCode();
+                int32 projectioncode = grid->getProjection().getCode();
                 if(projectioncode == GCTP_GEO || projectioncode ==GCTP_CEA) {
-                    (*i)->lonfield->condenseddim = true;
-                    (*i)->latfield->condenseddim = true;
+                    grid->lonfield->condenseddim = true;
+                    grid->latfield->condenseddim = true;
                 }
 
                 // Now we want to handle the dim and the var lists.  
                 // If the lat/lon can be condensed to 1-D array, COARD convention needs to be followed. 
                 // Since COARD requires that the dimension name of lat/lon is the same as the field name of lat/lon,
                 // we still need to handle this case later(function handle_grid_coards). Now we do the first step.  
-                if((*i)->lonfield->condenseddim) {
-
-                    // can be condensed to 1-D array.
-                    //regardless of YDim major or XDim major,,always lat->YDim, lon->XDim; 
-                    // We still need to remember the dimension major when we calculate the data.
-                    // We don't need to adjust the dimension rank.
-                    for (vector<Dimension *>::const_iterator j =
-                        (*i)->lonfield->getDimensions().begin(); j!= (*i)->lonfield->getDimensions().end();++j){
-                        if((*j)->getName() == DIMXNAME) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, (*j)->getName(), 
-                                                  (*i)->lonfield->getName());
-                        }
-                        if((*j)->getName() == DIMYNAME) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, (*j)->getName(), 
-                                                  (*i)->latfield->getName());
-                        }
+                
+                // There are two cases, 
+                // 1) lat/lon can be condensed to 1-D array. lat to YDim, Lon to XDim, we don't need to adjust the rank.
+                // 2) 2-D lat./lon. The dimension order doesn't matter. So always assume lon to XDim, lat to YDim.
+                // So we can handle them with one loop.
+ 
+                for (const auto &dim:grid->lonfield->getDimensions()) {
+                    if(dim->getName() == DIMXNAME) {
+                        HDFCFUtil::insert_map(grid->dimcvarlist, dim->getName(), 
+                                              grid->lonfield->getName());
+                    }
+                    if(dim->getName() == DIMYNAME) {
+                        HDFCFUtil::insert_map(grid->dimcvarlist, dim->getName(), 
+                                              grid->latfield->getName());
                     }
                 }
-
-                // 2-D lat/lon case. Since dimension order doesn't matter, so we always assume lon->XDim, lat->YDim.
-                else {
-                    for (vector<Dimension *>::const_iterator j =
-                        (*i)->lonfield->getDimensions().begin(); j!= (*i)->lonfield->getDimensions().end();++j){
-                        if((*j)->getName() == DIMXNAME) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, (*j)->getName(), 
-                                                  (*i)->lonfield->getName());
-                        }
-                        if((*j)->getName() == DIMYNAME) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, (*j)->getName(), 
-                                                  (*i)->latfield->getName());
-                        }
-                    }
-                }
-              
             }
             else { // This is the 1-D case, just inserting the dimension, field pair.
-                HDFCFUtil::insert_map((*i)->dimcvarlist, ((*i)->lonfield->getDimensions())[0]->getName(),
-                                   (*i)->lonfield->getName());
-                HDFCFUtil::insert_map((*i)->dimcvarlist, ((*i)->latfield->getDimensions())[0]->getName(),
-                                   (*i)->latfield->getName());
+                HDFCFUtil::insert_map(grid->dimcvarlist, (grid->lonfield->getDimensions())[0]->getName(),
+                                   grid->lonfield->getName());
+                HDFCFUtil::insert_map(grid->dimcvarlist, (grid->latfield->getDimensions())[0]->getName(),
+                                   grid->latfield->getName());
             }              
-            temponelatlondimcvarlist = (*i)->dimcvarlist;
+            temponelatlondimcvarlist = grid->dimcvarlist;
             break;
 
         }
@@ -1156,13 +1041,12 @@ void File::handle_onelatlon_grids() throw(Exception) {
     }
 
     // Now we need to assign the dim->cvar relation for lat/lon(xdim->lon,ydim->lat) to grids that don't contain lat/lon
-    for(vector<GridDataset *>::const_iterator i = this->grids.begin();
-            i != this->grids.end(); ++i){
+    for (const auto &grid:this->grids) {
 
         string templatlonname1;
         string templatlonname2;
 
-        if((*i)->getName() != GEOGRIDNAME) {
+        if(grid->getName() != GEOGRIDNAME) {
 
             map<string,string>::iterator tempmapit;
 
@@ -1171,17 +1055,17 @@ void File::handle_onelatlon_grids() throw(Exception) {
             if(tempmapit != temponelatlondimcvarlist.end()) 
                 templatlonname1= tempmapit->second;
             else 
-                throw2("cannot find the dimension field of XDim", (*i)->getName());
+                throw2("cannot find the dimension field of XDim", grid->getName());
 
-            HDFCFUtil::insert_map((*i)->dimcvarlist, DIMXNAME, templatlonname1);
+            HDFCFUtil::insert_map(grid->dimcvarlist, DIMXNAME, templatlonname1);
 
             // Find DIMYNAME field
             tempmapit = temponelatlondimcvarlist.find(DIMYNAME);
             if(tempmapit != temponelatlondimcvarlist.end()) 
                 templatlonname2= tempmapit->second;
             else
-                throw2("cannot find the dimension field of YDim", (*i)->getName());
-            HDFCFUtil::insert_map((*i)->dimcvarlist, DIMYNAME, templatlonname2);
+                throw2("cannot find the dimension field of YDim", grid->getName());
+            HDFCFUtil::insert_map(grid->dimcvarlist, DIMYNAME, templatlonname2);
         }
     }
 
@@ -1217,12 +1101,9 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
     // (AIRS, AMSR-E, some MODIS, MISR) can all be distinguished regardless of grid/swath names. However,
     // this needs to be carefully watched out. KY 2013-07-08
     vector <string> tempfieldnamelist;
-    for (vector<GridDataset *>::const_iterator i = this->grids.begin();
-        i != this->grids.end(); ++i) {
-        for (vector<Field *>::const_iterator j = (*i)->getDataFields().begin();
-            j!= (*i)->getDataFields().end(); ++j) { 
-            tempfieldnamelist.push_back(HDFCFUtil::get_CF_string((*j)->name));
-        }
+    for (const auto &grid:this->grids) {
+        for (const auto &field:grid->getDataFields())
+            tempfieldnamelist.push_back(HDFCFUtil::get_CF_string(field->name));
     }
     HDFCFUtil::Handle_NameClashing(tempfieldnamelist);
 
@@ -1235,35 +1116,32 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
       
     int total_fcounter = 0;
 
-    for (vector<GridDataset *>::const_iterator i = this->grids.begin();
-        i != this->grids.end(); ++i){
+    for (const auto &grid:this->grids) {
 
         // Here we can't use getDataFields call since for no lat/lon fields 
         // are created for one global lat/lon case. We have to use the dimcvarnamelist 
         // map we just created.
-        for (vector<Field *>::const_iterator j = 
-            (*i)->getDataFields().begin();
-            j != (*i)->getDataFields().end(); ++j) 
+        for (const auto &field:grid->getDataFields()) 
         {
-            (*j)->newname = tempfieldnamelist[total_fcounter];
+            field->newname = tempfieldnamelist[total_fcounter];
             total_fcounter++;  
                
             // If this field is a dimension field, save the name/new name pair. 
-            if((*j)->fieldtype!=0) {
+            if(field->fieldtype!=0) {
 
-                tempncvarnamelist.insert(make_pair((*j)->getName(), (*j)->newname));
+                tempncvarnamelist.insert(make_pair(field->getName(), field->newname));
 
                 // For one latlon case, remember the corrected latitude and longitude field names.
-                if((this->onelatlon)&&(((*i)->getName())==GEOGRIDNAME)) {
-                    if((*j)->getName()==LATFIELDNAME) 
-                        tempcorrectedlatname = (*j)->newname;
-                    if((*j)->getName()==LONFIELDNAME) 
-                        tempcorrectedlonname = (*j)->newname;
+                if((this->onelatlon)&&((grid->getName())==GEOGRIDNAME)) {
+                    if(field->getName()==LATFIELDNAME) 
+                        tempcorrectedlatname = field->newname;
+                    if(field->getName()==LONFIELDNAME) 
+                        tempcorrectedlonname = field->newname;
                 }
             }
         }
 
-        (*i)->ncvarnamelist = tempncvarnamelist;
+        grid->ncvarnamelist = tempncvarnamelist;
         tempncvarnamelist.clear();
     }
 
@@ -1271,12 +1149,11 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
     // We know the original lat and lon names. So just retrieve the corrected lat/lon names from
     // the geo grid(GEOGRIDNAME).
     if(this->onelatlon) {
-        for(vector<GridDataset *>::const_iterator i = this->grids.begin();
-            i != this->grids.end(); ++i){
+        for(const auto &grid:this->grids) {
             // Lat/lon names must be in this group.
-            if((*i)->getName()!=GEOGRIDNAME){
-                HDFCFUtil::insert_map((*i)->ncvarnamelist, LATFIELDNAME, tempcorrectedlatname);
-                HDFCFUtil::insert_map((*i)->ncvarnamelist, LONFIELDNAME, tempcorrectedlonname);
+            if(grid->getName()!=GEOGRIDNAME){
+                HDFCFUtil::insert_map(grid->ncvarnamelist, LATFIELDNAME, tempcorrectedlatname);
+                HDFCFUtil::insert_map(grid->ncvarnamelist, LONFIELDNAME, tempcorrectedlonname);
             }
         }
     }
@@ -1286,11 +1163,11 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
 
     //// ***** Handling the dimension name clashing ******************
     vector <string>tempalldimnamelist;
-    for (vector<GridDataset *>::const_iterator i = this->grids.begin();
-        i != this->grids.end(); ++i)
+    for (const auto &grid:this->grids) {
         for (map<string,string>::const_iterator j =
-            (*i)->dimcvarlist.begin(); j!= (*i)->dimcvarlist.end();++j)
+            grid->dimcvarlist.begin(); j!= grid->dimcvarlist.end();++j)
             tempalldimnamelist.push_back(HDFCFUtil::get_CF_string((*j).first));
+    }
 
     HDFCFUtil::Handle_NameClashing(tempalldimnamelist);
       
