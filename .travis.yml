@@ -25,7 +25,6 @@ compiler: gcc
 branches:
   only:
   - master
-  - new-gdal
   - /^(.*-test-deploy)$/
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
@@ -120,7 +119,6 @@ before_script:
 # Change: We filter branches (see line 25 above) so this script is only run for
 # the master branch or for a *-test-deploy branch. So, the conditionals for the
 # stages can be simplified. jhrg 3/2/22
-
 
 stages:
   - name: build-and-package
