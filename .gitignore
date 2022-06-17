@@ -13,6 +13,7 @@ cookies
 gcovr_report.txt
 make_files.txt
 merged.txt
+**/unused
 
 ## files
 *~

@@ -1,0 +1,52 @@
+#-----------------------------------------------------------------------#
+# OPeNDAP GDAL Data Handler BES Module Configuration file               #
+#-----------------------------------------------------------------------#
+
+#-----------------------------------------------------------------------#
+# Require dap configuration to be loaded first                          #
+#-----------------------------------------------------------------------#
+BES.Include=dap.conf
+
+#-----------------------------------------------------------------------#
+# modules to load, includes data modules and command modules            #
+#-----------------------------------------------------------------------#
+
+BES.modules+=gdal
+BES.module.gdal=@bes_modules_dir@/libgdal_module.so
+
+#-----------------------------------------------------------------------#
+# Setting the data information
+#-----------------------------------------------------------------------#
+
+# The TypeMatch parameter is a list of handler/module names and a regular
+# expression separated by a colon. If the regular expression matches an item,
+# then the BES uses the associated handler/module. Each <handler>:<regular
+# expression> pair is followed by a semicolon. This is used when creating
+# containers in the BES (the 'set container' command). The example regular
+# expression says to use the 'h4' handler for any file with an extension of
+# 'hdf', 'HDF' or 'eos' which may also end in '.gz' or '.bz2'. In the latter
+# case the file will be treated as a compressed file.
+
+# Read GeoTiff files, GRiB files and JPEG2000 files.
+
+BES.Catalog.catalog.TypeMatch+=gdal:.*\.(tif|TIF)$|.*\.grb\.(bz2|gz|Z)?$|.*\.jp2$|.*/gdal/.*\.jpg$;
+
+# File Out GDAL module specific parameters. This module knows how to build
+# geotiff and jp2000 responses from DODS data response objects.
+
+# Directory to store temporary files during transformation
+FONg.Tempdir = /tmp/hyrax_fong
+
+# URL to the FONg Reference Page at docs.opendap.org"
+FONg.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL
+
+# Use this Geographic coordinate system as a fallback when the metadata
+# provides no guidance.
+FONg.default_gcs = WGS84
+
+# Set this to true to get GeoTiff files with 8-bit bands. The resulting files
+# can be displayed by the OS/X Preview program, et c., but might not be
+# desired for other uses. True by default. This is a change from the previous
+# behavior, where the default was 32-bit float bands. Setting this to false
+# will get the old behavior.
+FONg.GeoTiff.band.type.byte = true

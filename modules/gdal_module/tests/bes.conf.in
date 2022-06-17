@@ -1,0 +1,38 @@
+
+BES.LogName = ./bes.log
+
+BES.modules = dap,cmd,ascii,gdal,nc,functions
+BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.ascii = @abs_top_builddir@/modules/asciival/.libs/libascii_module.so
+BES.module.gdal = @abs_top_builddir@/modules/gdal_module/.libs/libgdal_module.so
+BES.module.nc = @abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
+BES.module.functions = @abs_top_builddir@/modules/functions/.libs/libfunctions_module.so
+
+BES.Catalog.catalog.RootDirectory = @abs_top_srcdir@/modules/gdal_module
+BES.Data.RootDirectory = /dev/null
+
+BES.Catalog.catalog.TypeMatch = nc:.*.nc(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch += gdal:.*.(tif|TIF|grb|jp2|jpg)(.bz2|.gz|.Z)?$;
+
+BES.Info.Type = xml
+
+BES.UncompressCache.dir = /tmp
+BES.UncompressCache.prefix = uncompress_cache
+BES.UncompressCache.size = 500
+
+BES.Container.Persistence = strict
+
+BES.ProcessManagerMethod = multiple
+
+BES.DefaultResponseMethod = POST
+
+#-----------------------------------------------------------------------#
+#                                                                       #
+# Data Handler Specific key/value parameters                            #
+#                                                                       #
+#-----------------------------------------------------------------------#
+
+FONg.TempDirectory  =  @abs_top_srcdir@/tests
+FONg.GeoTiff.band.type.byte  =  true
+

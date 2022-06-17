@@ -1,14 +1,19 @@
 m4_include([package.m4])
 
+AT_INIT([ncml autotest testsuite (bes/modules/ncml_module/tests)])
+
+AT_ARG_OPTION_ARG([conf c],
+    [--conf=<file>   Use <file> for the bes.conf file],
+    [echo "BES configuration file set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [bes_conf=bes.conf])
+
 # The template file used to create the input files for besstandalone
 m4_define([bescmd_template],[$abs_srcdir/template.bescmd.in])
-m4_define([bes_conf_path],[$abs_builddir/bes.conf])
-m4_define([alt_bes_conf_path],[$abs_builddir/bes_no_nc_global.conf])
+m4_define([bes_conf_path],[$abs_builddir/$bes_conf])
+# m4_define([alt_bes_conf_path],[$abs_builddir/bes_no_nc_global.conf])
 m4_define([datadir], [/data/ncml])
 m4_define([baselines_path],[${abs_srcdir}/baselines])
 m4_define([full_data_path],[${abs_srcdir}/../data/ncml])
-
-AT_INIT([ncml autotest testsuite (bes/modules/ncml_module/tests)])
 
 dnl $1 == ncml_filename
 dnl $2 == {das | dds | dods | ddx }
@@ -41,10 +46,12 @@ dnl $2 == ncml_filename
 dnl $3 == {das | dds | dods | ddx }
 dnl $4 == baseline_filename (with path prefix but not response suffix!)
 dnl $5 == (optional) constraint_expression
+dnl $6 == [<feature>] (optional feature that must be present; skip the test if not)
 m4_define([AT_RUN_BES_AND_CONDITIONAL_COMPARE],
 [
 AT_SETUP([Comparing $3 response for $2 to baseline baselines_path/$4 ])
 AT_KEYWORDS([$3])
+AS_IF([test -n "$6"], [AT_SKIP_IF([test -z "$(grep $6 $top_srcdir/modules/configured_features.txt)"])])
 AT_MAKE_BESCMD_FILE([$2], [$3], [$5])
 AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
 AT_CHECK([diff -w -b -B baselines_path/$4.$3 stdout], [], [ignore], [], [])
@@ -88,9 +95,10 @@ dnl ncml_filename is expected to be the basename as the datadir is added.
 dnl $1 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
 dnl $2 == ncml_filename
 dnl $3 == {das | dds | dods | ddx }
+dnl $4 == [<feature>] (optional feature that must be present; skip the test if not)
 m4_define([AT_RUN_BES_AND_COMPARE_BASELINE],
 [
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([$1], [$2], [$3], [$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$1], [$2], [$3], [$2], [], [$4])
 ])
 
 m4_define([AT_RUN_BES_AND_COMPARE_BASELINE_ALT_CONF],
@@ -105,10 +113,12 @@ dnl The baseline will have ".dods.getdap" appended to it for ascii comparison!  
 dnl $1 == ncml_filename
 dnl $2 == baseline_filename (with path prefix but not response suffix!)
 dnl $3 == (optional) constraint_expression
+dnl $4 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_RUN_BES_AND_COMPARE_DODS_GETDAP],
 [
 AT_SETUP([Comparing dods response for $1 to getdap (ascii) baseline baselines_path/$2])
 AT_KEYWORDS([dods])
+AS_IF([test -n "$4"], [AT_SKIP_IF([test -z "$(grep $4 $top_srcdir/modules/configured_features.txt)"])])
 AT_MAKE_BESCMD_FILE([$1], [dods], [$3])
 AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [], [stdout], [ignore])
 AT_CHECK([getdap stdout > stdout.getdap], [], [ignore], [ignore])
@@ -138,20 +148,23 @@ dnl Syntactic sugar for each response
 
 dnl $1 == ncml_input_basename
 dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+dnl $3 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_DAS],
-[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [das])
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [das], [$3])
 ])
 
 dnl $1 == ncml_input_basename
 dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+dnl $3 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_DDS],
-[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dds])
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dds], [$3])
 ])
 
 dnl $1 == ncml_input_basename
 dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+dnl $3 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_DDX],
-[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [ddx])
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [ddx], [$3])
 ])
 
 m4_define([AT_CHECK_DDX_ALT_CONF],
@@ -160,8 +173,9 @@ m4_define([AT_CHECK_DDX_ALT_CONF],
 
 dnl $1 == ncml_input_basename
 dnl $2 == [xfail] (Optional fail flag, 'xfail' if it is expected to fail)
+dnl $3 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_DATADDS],
-[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dods])
+[AT_RUN_BES_AND_COMPARE_BASELINE([$2], [$1], [dods], [$3])
 ])
 
 dnl Run AT_RUN_BES_AND_COMPARE_DODS_GETDAP on the input and compare
@@ -169,19 +183,20 @@ dnl to baselines/$1.dods.getdap ascii version of the $1.dods baseline
 dnl piped through getdap.  Good for checking by hand as well as the
 dnl standard binary .dods test.
 dnl $1 == ncml_input_basename
+dnl $2 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_DATADDS_GETDAP],
 [
-AT_RUN_BES_AND_COMPARE_DODS_GETDAP([$1], [$1], [])
+AT_RUN_BES_AND_COMPARE_DODS_GETDAP([$1], [$1], [], [$2])
 ])
 
 
 dnl $1 == ncml_input_basename
 m4_define([AT_CHECK_ALL_DAP_RESPONSES],
-[AT_BANNER([Testing DAP responses for: $1])
-AT_CHECK_DAS($1)
-AT_CHECK_DDS($1)
-AT_CHECK_DDX($1)
-AT_CHECK_DATADDS($1)
+[AT_BANNER([Testing DAP responses for: $1, tests ignored if $2 feature not built])
+AT_CHECK_DAS($1, [xpass], $2)
+AT_CHECK_DDS($1, [xpass], $2)
+AT_CHECK_DDX($1, [xpass], $2)
+AT_CHECK_DATADDS($1, [xpass], $2)
 ])
 
 dnl Syntactic sugar for constraints
@@ -189,12 +204,13 @@ dnl $1 == datafile
 dnl $2 == constraint_expr
 dnl $3 == baseline_prefix
 dnl $4 == pass/xfail
+dnl $5 == [<feature>] (optional; Skip the test if feature is not present)
 m4_define([AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT],
 [AT_BANNER([Testing DAP responses for: $1 with constraint="$2" against baseline prefix=$3 ($4)])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[das],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[dds],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[ddx],[$3],[$2])
-AT_RUN_BES_AND_CONDITIONAL_COMPARE([$4],[$1],[dods],[$3],[$2])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[das],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[dds],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([pass],[$1],[ddx],[$3],[$2],[$5])
+AT_RUN_BES_AND_CONDITIONAL_COMPARE([$4],[$1],[dods],[$3],[$2],[$5])
 ])
 
 dnl tests that the response is a parse error when asking for DDX.

@@ -59,8 +59,13 @@ test_config.h: test_config.h.in Makefile
 if CPPUNIT
 UNIT_TESTS = CEFunctionsTest GridGeoConstraintTest Dap4_CEFunctionsTest \
 TabularFunctionTest BBoxFunctionTest RoiFunctionTest BBoxUnionFunctionTest \
-OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest ScaleUtilTest \
-ScaleUtilTest3D RangeFunctionTest BBoxCombFunctionTest
+OdometerTest MaskArrayFunctionTest MakeMaskFunctionTest RangeFunctionTest \
+BBoxCombFunctionTest
+
+# See note about GDAL linking issues in ../Makefile.am. jhrg 6/11/22
+# if BUILD_GDAL
+# UNIT_TESTS += ScaleUtilTest ScaleUtilTest3D
+# endif
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
@@ -134,14 +139,19 @@ MakeMaskFunctionTest_OBJ = ../MakeMaskFunction.o
 MakeMaskFunctionTest_SOURCES = MakeMaskFunctionTest.cc $(TEST_SRC)
 MakeMaskFunctionTest_LDADD = $(MakeMaskFunctionTest_OBJ) $(TEST_OBJ) $(AM_LDADD) -ltest-types $(DAP_LIBS)
 
-ScaleUtilTest_SOURCES = ScaleUtilTest.cc ../scale_util.cc $(TEST_SRC)
-ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-ScaleUtilTest_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-
-ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc ../scale_util.cc $(TEST_SRC)
-ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
-ScaleUtilTest3D_LDADD = $(TEST_OBJ) -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
-
 RangeFunctionTest_SOURCES = RangeFunctionTest.cc ../RangeFunction.cc $(TEST_SRC)
 RangeFunctionTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS)
 RangeFunctionTest_LDADD = -ltest-types $(AM_LDADD)
+
+# if BUILD_GDAL
+#
+# ScaleUtilTest_SOURCES = ScaleUtilTest.cc $(TEST_SRC)
+# ScaleUtilTest_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
+# ScaleUtilTest_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+#
+# ScaleUtilTest3D_SOURCES = ScaleUtilTest3D.cc $(TEST_SRC)
+# ScaleUtilTest3D_CPPFLAGS = $(AM_CPPFLAGS) $(CPPUNIT_CFLAGS) $(GDAL_CFLAGS)
+# ScaleUtilTest3D_LDADD = -ltest-types $(AM_LDADD) $(GDAL_LDFLAGS)
+#
+# endif
+

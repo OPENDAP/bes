@@ -35,11 +35,6 @@
 #include <functional>
 
 #include <cmath>
-#if 0
-#include <gdal.h>
-#include <gdal_priv.h>
-#include <gdal_utils.h>
-#endif
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>

@@ -1,9 +1,0 @@
-Dataset {
-    Grid {
-      Array:
-        Byte band_1[northing = 515][easting = 514];
-      Maps:
-        Float64 northing[northing = 515];
-        Float64 easting[easting = 514];
-    } band_1;
-} cea.tif;

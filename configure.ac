@@ -588,7 +588,7 @@ AM_CONDITIONAL([NETCDF4_TESTS], [test "x$NETCDF_MAJOR_VERSION" = "x4"])
 dnl fileout_gdal tests
 
 # Which copy of GDAL should be used for the build?
-GDAL_FOUND=
+GDAL_FOUND=0
 
 AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this location]),
             with_gdal_prefix="$withval", with_gdal_prefix="")
@@ -596,26 +596,34 @@ AC_ARG_WITH(gdal, AS_HELP_STRING([--with-gdal], [Use the copy of GDAL at this lo
 AS_IF([test -z "$with_gdal_prefix" -a -n "$ac_bes_dependencies_prefix"],
 	[with_gdal_prefix=$ac_bes_dependencies_prefix])
  
-AS_IF([test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config],
+AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
+    dnl then
+    [AC_MSG_NOTICE([Not building GDAL-dependent modules.])],
+
+    dnl else if
+    [test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config],
     dnl then
     [AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
     GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
-    GDAL_FOUND="yes"
+    GDAL_FOUND=1
+    AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])
     AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])],
     
-    dnl if
+    dnl else if
     [test -n "$with_gdal_prefix"],
     dnl then
     [AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
-    AC_MSG_NOTICE([but gdal-config is not there. Not building GDAL-dependent modules.])],
+    AC_MSG_ERROR([but gdal-config is not there. Not building GDAL-dependent modules.])],
     
     dnl else
     [AC_MSG_NOTICE([Looking for GDAL.])
     AX_LIB_GDAL([1.10.0])
-    AS_IF([test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"], [GDAL_FOUND=yes])])
+    AS_IF([test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"],
+        [GDAL_FOUND=1
+        AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])])])
 
-AM_CONDITIONAL([BUILD_GDAL], [test x$GDAL_FOUND = xyes])
+AM_CONDITIONAL([BUILD_GDAL], [test $GDAL_FOUND -eq 1])
 
 dnl Only look for the openjpeg2000 library if GDAL was found
 
@@ -891,24 +899,42 @@ dnl End handler specific tests
 
 ],[ # else AM_COND_IF([DAP_BUILTIN_MODULES]
 
-dnl These are needed because the symbols are used in each modules Makefile.am
+dnl These are needed because the symbols are used in each modules' Makefile.am
 dnl files. It might be that if the generation of those Makefiles was also conditional,
 dnl then we could remove this block of code. jhrg 11/30/14
 AM_CONDITIONAL([OPENJPEG_FOUND], [false])
 AM_CONDITIONAL([BUILD_GDAL], [false])
 AM_CONDITIONAL([NETCDF4_TESTS], [false])
 AM_CONDITIONAL([BUILD_NETCDF], [false])
-AM_CONDITIONAL([BUILD_FITS],[false])
-AM_CONDITIONAL([BUILD_HDF4],[false])
+AM_CONDITIONAL([BUILD_FITS], [false])
+AM_CONDITIONAL([BUILD_HDF4], [false])
 AM_CONDITIONAL([HDFEOS2], [false])
-AM_CONDITIONAL([BUILD_HDF5],[false])
-AM_CONDITIONAL([BUILD_NCML],[false])
-AM_CONDITIONAL([USING_GRIDFIELDS],[false])
-AM_CONDITIONAL([BUILD_STARE],[false])
+AM_CONDITIONAL([BUILD_HDF5], [false])
+AM_CONDITIONAL([BUILD_NCML], [false])
+AM_CONDITIONAL([USING_GRIDFIELDS], [false])
+AM_CONDITIONAL([BUILD_STARE], [false])
 
 AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
 
 ])	# AM_COND_IF([DAP_BUILTIN_MODULES]
+
+OPTIONAL_FEATURES=
+
+AM_COND_IF([OPENJPEG_FOUND], [OPTIONAL_FEATURES="openjpeg"])
+AM_COND_IF([BUILD_GDAL], [OPTIONAL_FEATURES="gdal $OPTIONAL_FEATURES"])
+dnl NETCDF4_TESTS are not considered an 'optional feature' since netcdf is netCDF4
+AM_COND_IF([BUILD_NETCDF], [OPTIONAL_FEATURES="netcdf $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_FITS], [OPTIONAL_FEATURES="fits $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_HDF4], [OPTIONAL_FEATURES="hdf4 $OPTIONAL_FEATURES"])
+AM_COND_IF([HDFEOS2], [OPTIONAL_FEATURES="hdfeos2 $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_HDF5], [OPTIONAL_FEATURES="hdf5 $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
+AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
+
+AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
+
+AC_SUBST([OPTIONAL_FEATURES])
 
 dnl autoheader macros; tack some text at the top and bottom of config.h.in
 AH_TOP([#ifndef _config_h
@@ -1010,6 +1036,7 @@ dnl Output files if building the modules too
 AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
+    modules/configured_features.txt
     modules/csv_handler/Makefile
     modules/csv_handler/tests/Makefile
     modules/csv_handler/tests/atlocal
@@ -1092,17 +1119,15 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/gateway_module/tests/Makefile 
     modules/gateway_module/tests/atlocal 
 
-    modules/fileout_gdal/Makefile
-    modules/fileout_gdal/tests/Makefile 
-    modules/fileout_gdal/tests/atlocal 
+    modules/gdal_module/Makefile
+    modules/gdal_module/reader/Makefile
+    modules/gdal_module/writer/Makefile
+    modules/gdal_module/tests/Makefile
+    modules/gdal_module/tests/atlocal
 
     modules/fits_handler/Makefile
     modules/fits_handler/tests/atlocal
     modules/fits_handler/tests/Makefile
-    
-    modules/gdal_handler/Makefile
-    modules/gdal_handler/tests/Makefile
-    modules/gdal_handler/tests/atlocal
     
     modules/hdf4_handler/Makefile
     modules/hdf4_handler/hdfclass/Makefile
@@ -1164,9 +1189,8 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_netcdf/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/gateway_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/fileout_gdal/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fits_handler/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/gdal_handler/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/gdal_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
@@ -1181,3 +1205,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
 AC_OUTPUT
 
+AC_MSG_NOTICE([***])
+AC_MSG_NOTICE([Optional features: $OPTIONAL_FEATURES])
+AC_MSG_NOTICE([***])
