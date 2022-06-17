@@ -697,7 +697,7 @@ namespace HDFEOS2
             /// MODIS_EQ_SCALE: raw_data = scale*data + offset
             /// MODIS_MUL_SCALE: raw_data = scale*(data -offset)
             /// MODIS_DIV_SCALE: raw_data = (data-offset)/scale
-            void SetScaleType(const std::string EOS2ObjName) throw(Exception);
+            void SetScaleType(const std::string & EOS2ObjName) throw(Exception);
 
             int obtain_dimsize_with_dimname(const std::string& dimname);
         protected:
@@ -1373,7 +1373,7 @@ namespace HDFEOS2
                 // Special handling SOM(Space Oblique Mercator) projection files
                 void handle_grid_SOM_projection() throw(Exception);
 
-                bool find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name);
+                bool find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name) const;
 
                 // Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
                 // The input parameter is the number of swath.
