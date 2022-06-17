@@ -175,9 +175,9 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             if (!has_values) {
                 values.resize(nels * size);
                 if (has_stride)
-                    errstat = nc_get_vars(ncid, varid, cor, edg, step, &values[0]);
+                    errstat = nc_get_vars(ncid, varid, cor, edg, step, values.data());
                 else
-                    errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
+                    errstat = nc_get_vara(ncid, varid, cor, edg, values.data());
                 if (errstat != NC_NOERR){
                 	ostringstream oss;
                 	oss << prolog << "Could not get the value for Array variable '" << name() << "'.";
@@ -190,7 +190,7 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
                 // read.
             }
 
-            val2buf(&values[0] + values_offset);
+            val2buf(values.data() + values_offset);
             set_read_p(true);
             break;
         }
@@ -199,9 +199,9 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             if (!has_values) {
                 values.resize(nels * size);
                 if (has_stride)
-                    errstat = nc_get_vars(ncid, varid, cor, edg, step, &values[0]);
+                    errstat = nc_get_vars(ncid, varid, cor, edg, step, values.data());
                 else
-                    errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
+                    errstat = nc_get_vara(ncid, varid, cor, edg, values.data());
                 if (errstat != NC_NOERR)
                     throw Error(errstat, prolog + "Could not get the value for variable '" + name() + string("' (NCArray::do_cardinal_array_read)"));
             }
@@ -218,14 +218,14 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
                 // Pointer into the byte data. These values might be part of a compound and
                 // thus might have been read by a previous call (has_values is true in that
                 // case).
-                char *raw_byte_data = &values[0] + values_offset;
+                char *raw_byte_data = values.data() + values_offset;
                 for (int i = 0; i < nels; ++i)
                     tmp[i] = *raw_byte_data++;
-                val2buf(&tmp[0]);
+                val2buf(tmp.data());
                 set_read_p(true);
             }
             else {
-                val2buf(&values[0] + values_offset);
+                val2buf(values.data() + values_offset);
                 set_read_p(true);
             }
             break;
@@ -257,9 +257,9 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             if (!has_values) {
                 values.resize(nels * nth_dim_size * size);
                 if (has_stride)
-                    errstat = nc_get_vars_text(ncid, varid, cor, edg, step, &values[0]);
+                    errstat = nc_get_vars_text(ncid, varid, cor, edg, step, values.data());
                 else
-                    errstat = nc_get_vara_text(ncid, varid, cor, edg, &values[0]);
+                    errstat = nc_get_vara_text(ncid, varid, cor, edg, values.data());
                 if (errstat != NC_NOERR)
                     throw Error(errstat, string("Could not read the variable '") + name() + string("'."));
             }
@@ -269,13 +269,13 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             vector<char> buf(nth_dim_size + 1);
             // put the char values in the string array
             for (int i = 0; i < nels; i++) {
-                strncpy(&buf[0], &values[0] + values_offset + (i * nth_dim_size), nth_dim_size);
+                strncpy(buf.data(), values.data() + values_offset + (i * nth_dim_size), nth_dim_size);
                 buf[nth_dim_size] = '\0';
-                strg[i] = &buf[0];
+                strg[i] = buf.data();
             }
 
             set_read_p(true);
-            val2buf(&strg[0]);
+            val2buf(strg.data());
             break;
         }
 #if NETCDF_VERSION >= 4
@@ -283,9 +283,9 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             if (!has_values) {
                 values.resize(nels * size);
                 if (has_stride)
-                    errstat = nc_get_vars_string(ncid, varid, cor, edg, step, (char**)(&values[0] + values_offset));
+                    errstat = nc_get_vars_string(ncid, varid, cor, edg, step, (char**)(values.data() + values_offset));
                 else
-                    errstat = nc_get_vara_string(ncid, varid, cor, edg, (char**)(&values[0] + values_offset));
+                    errstat = nc_get_vara_string(ncid, varid, cor, edg, (char**)(values.data() + values_offset));
                 if (errstat != NC_NOERR)
                     throw Error(errstat, string("Could not read the variable `") + name() + string("'."));
             }
@@ -295,12 +295,12 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
             for (int i = 0; i < nels; i++) {
                 // values_offset is in bytes; then cast to char** to find the
                 // ith element; then dereference to get the C-style string.
-                strg[i] = *((char**)(&values[0] + values_offset) + i);
+                strg[i] = *((char**)(values.data() + values_offset) + i);
             }
 
-            nc_free_string(nels, (char**)&values[0]);
+            nc_free_string(nels, (char**)values.data());
             set_read_p(true);
-            val2buf(&strg[0]);
+            val2buf(strg.data());
             break;
         }
 #endif
@@ -333,9 +333,9 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
                 if (!has_values) {
                     values.resize(size * nels);
                     if (has_stride)
-                        errstat = nc_get_vars(ncid, varid, cor, edg, step, &values[0]);
+                        errstat = nc_get_vars(ncid, varid, cor, edg, step, values.data());
                     else
-                        errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
+                        errstat = nc_get_vara(ncid, varid, cor, edg, values.data());
                     if (errstat != NC_NOERR)
                         throw Error(errstat, string("Could not get the value for variable '") + name() + string("'"));
                     has_values = true;
@@ -350,7 +350,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
                         // These are unused... should they be used?
                         // int field_ndims;
                         // int field_sizes[MAX_NC_DIMS];
-                        nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, 0, 0); //&field_ndims, &field_sizes[0]);
+                        nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, 0, 0); //&field_ndims, field_sizes.data());
                         BaseType *field = ncs->var(field_name);
                         if (field_typeid >= NC_FIRSTUSERTYPEID /*is_user_defined_type(ncid, field_typeid)*/) {
                             // Interior user defined types have names, but not field_names
@@ -372,7 +372,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
                                     nels, cor, edg, step, has_stride);
                         }
                         else if (field->is_simple_type()) {
-                            field->val2buf(&values[0] + (element * size) + field_offset);
+                            field->val2buf(values.data() + (element * size) + field_offset);
                         }
                         else {
                             throw InternalErr(__FILE__, __LINE__, "Expecting a netcdf user defined type or an array or a scalar.");
@@ -421,15 +421,15 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
                 if (!has_values) {
                      values.resize(size * nels);
                      if (has_stride)
-                         errstat = nc_get_vars(ncid, varid, cor, edg, step, &values[0]);
+                         errstat = nc_get_vars(ncid, varid, cor, edg, step, values.data());
                      else
-                         errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
+                         errstat = nc_get_vara(ncid, varid, cor, edg, values.data());
                      if (errstat != NC_NOERR)
                          throw Error(errstat, string("Could not get the value for variable '") + name() + string("' (NC_OPAQUE)"));
                      has_values = true; // This value may never be used. jhrg 1/9/12
                  }
 
-                 val2buf(&values[0] + values_offset);
+                 val2buf(values.data() + values_offset);
 
                 set_read_p(true);
                 break;
@@ -437,7 +437,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
 
             case NC_ENUM: {
                 nc_type base_nc_type;
-                errstat = nc_inq_enum(ncid, datatype, 0 /*&name[0]*/, &base_nc_type, 0/*&base_size*/, 0/*&num_members*/);
+                errstat = nc_inq_enum(ncid, datatype, nullptr /*name.data()*/, &base_nc_type, 0/*&base_size*/, 0/*&num_members*/);
                 if (errstat != NC_NOERR)
                     throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum(" + long_to_string(errstat) + ")."));
 
