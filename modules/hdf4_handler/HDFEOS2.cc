@@ -1615,7 +1615,7 @@ void File::handle_grid_SOM_projection() throw(Exception) {
 
             // Obtain SOM's dimension name.
             string som_dimname;
-            for (const auto dim:grid->getDimensions()) {
+            for (const auto &dim:grid->getDimensions()) {
 
                 // NBLOCK is from misrproj.h. It is the number of block that MISR team support for the SOM projection.
                 if(NBLOCK == dim->getSize()) {
@@ -3216,8 +3216,8 @@ void File::Prepare(const char *eosfile_path) throw(Exception)
     // specified. If the return value  is true, we will specify  
 
     // Obtain the number of swaths and the number of grids
-    int numgrid = (int)(this->grids.size());
-    int numswath = (int)(this->swaths.size()); 
+    auto numgrid = (int)(this->grids.size());
+    auto numswath = (int)(this->swaths.size()); 
     
     if(numgrid < 0) 
         throw2("the number of grid is less than 0", eosfile_path);
@@ -3343,8 +3343,8 @@ void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
 
 bool File::check_special_1d_grid() throw(Exception) {
 
-    int numgrid = (int)(this->grids.size());
-    int numswath = (int)(this->swaths.size());
+    auto numgrid = (int)(this->grids.size());
+    auto numswath = (int)(this->swaths.size());
     
     if (numgrid != 1 || numswath != 0) 
         return false;
