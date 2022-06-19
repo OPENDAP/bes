@@ -217,7 +217,7 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
                 // Pointer into the byte data. These values might be part of a compound and
                 // thus might have been read by a previous call (has_values is true in that
                 // case).
-                char *raw_byte_data = values.data() + values_offset;
+                const char *raw_byte_data = values.data() + values_offset;
                 for (int i = 0; i < nels; ++i)
                     tmp[i] = *raw_byte_data++;
                 val2buf(tmp.data());
@@ -342,14 +342,14 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
 
                 for (int element = 0; element < nels; ++element) {
                     NCStructure *ncs = dynamic_cast<NCStructure*> (var()->ptr_duplicate());
-                    for (size_t i = 0; i < nfields; ++i) {
+                    for (int i = 0; i < nfields; ++i) {
                         char field_name[NC_MAX_NAME+1];
                         nc_type field_typeid;
                         size_t field_offset;
                         // These are unused... should they be used?
                         // int field_ndims;
                         // int field_sizes[MAX_NC_DIMS];
-                        nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, 0, 0); //&field_ndims, field_sizes.data());
+                        nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, nullptr, nullptr); //&field_ndims, field_sizes.data());
                         BaseType *field = ncs->var(field_name);
                         if (field_typeid >= NC_FIRSTUSERTYPEID /*is_user_defined_type(ncid, field_typeid)*/) {
                             // Interior user defined types have names, but not field_names
@@ -436,7 +436,7 @@ void NCArray::do_array_read(int ncid, int varid, nc_type datatype,
 
             case NC_ENUM: {
                 nc_type base_nc_type;
-                errstat = nc_inq_enum(ncid, datatype, nullptr /*name.data()*/, &base_nc_type, 0/*&base_size*/, 0/*&num_members*/);
+                errstat = nc_inq_enum(ncid, datatype, nullptr /*name.data()*/, &base_nc_type, nullptr/*&base_size*/, nullptr/*&num_members*/);
                 if (errstat != NC_NOERR)
                     throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum(" + long_to_string(errstat) + ")."));
 
