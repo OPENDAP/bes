@@ -24,7 +24,7 @@ class HDFEOS2ArraySwathGeoMultiDimMapField:public libdap::Array
                                          const int dim0size,const int dim0offset,const int dim0inc,
                                          const int dim1size,const int dim1offset,const int dim1inc,
                                          const std::string & n = "", 
-                                         libdap::BaseType * v = 0):
+                                         libdap::BaseType * v = nullptr):
             libdap::Array (n, v),
             rank (rank),
             filename(filename),
@@ -38,20 +38,18 @@ class HDFEOS2ArraySwathGeoMultiDimMapField:public libdap::Array
             dim1offset(dim1offset),
             dim1inc(dim1inc){
         }
-        virtual ~ HDFEOS2ArraySwathGeoMultiDimMapField ()
-        {
-        }
+        ~ HDFEOS2ArraySwathGeoMultiDimMapField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathGeoMultiDimMapField (*this);
         }
 
         // Read the data 
-        virtual bool read ();
+        bool read () override;
 
     private:
 
@@ -79,10 +77,10 @@ class HDFEOS2ArraySwathGeoMultiDimMapField:public libdap::Array
         template < class T > int GetFieldValue (int32, const std::string &,const std::vector <int>&,const std::vector <int>&,const std::vector<int>&, std::vector < T > &, std::vector<int32>&); 
 
         // The internal routine to do the interpolation
-        template < class T > int _expand_dimmap_field (std::vector < T > *pvals, int32 rank, int32 dimsa[], int dimindex, int32 ddimsize, int32 offset, int32 inc);
+        template < class T > int _expand_dimmap_field (std::vector < T > *pvals, int32 rank, int32 dimsa[], int dimindex, int32 ddimsize, int32 offset, int32 inc) const;
 
         // subsetting routine to ensure the subsetted 2D field to be returned.
-        template < class T > bool Field2DSubset (T * outlatlon, const int majordim, const int minordim, T * latlon, int32 * offset, int32 * count, int32 * step);
+        template < class T > bool Field2DSubset (T * outlatlon, const int majordim, const int minordim, T * latlon, const int32 * offset, const int32 * count, const int32 * step) const;
  
 
 

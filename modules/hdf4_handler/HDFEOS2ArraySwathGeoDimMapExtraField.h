@@ -21,23 +21,21 @@
 class HDFEOS2ArraySwathGeoDimMapExtraField:public libdap::Array
 {
     public:
-    HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", libdap::BaseType * v = 0):
+    HDFEOS2ArraySwathGeoDimMapExtraField (int rank, const std::string & filename, const std::string & fieldname, const string & n = "", libdap::BaseType * v = nullptr):
         libdap::Array (n, v), rank (rank), filename (filename), fieldname (fieldname) {
         }
-        virtual ~ HDFEOS2ArraySwathGeoDimMapExtraField ()
-        {
-        }
+        ~ HDFEOS2ArraySwathGeoDimMapExtraField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathGeoDimMapExtraField (*this);
         }
 
         // Read the data
-        virtual bool read ();
+        bool read () override;
 
     private:
 

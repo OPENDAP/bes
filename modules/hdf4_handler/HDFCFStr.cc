@@ -51,9 +51,6 @@ HDFCFStr::HDFCFStr(const int this_h4fd, int32 sds_field_ref,const string &h4_fil
 {
 }
 
-HDFCFStr::~HDFCFStr()
-{
-}
 BaseType *HDFCFStr::ptr_duplicate()
 {
     return new HDFCFStr(*this);
@@ -63,11 +60,6 @@ bool HDFCFStr::read()
 {
 
     BESDEBUG("h4","Coming to HDFCFStr read "<<endl);
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // SDS
@@ -75,7 +67,7 @@ bool HDFCFStr::read()
 
         int32 sdid = -1;
         if(false == check_pass_fileid_key) {
-            sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
+            sdid = SDstart (filename.c_str (), DFACC_READ);
             if (sdid < 0) {
                 ostringstream eherr;
                 eherr << "File " << filename.c_str () << " cannot be open.";
@@ -105,7 +97,9 @@ bool HDFCFStr::read()
         }
 
         int32 dim_sizes[H4_MAX_VAR_DIMS];
-        int32 sds_rank, data_type, n_attrs;
+        int32 sds_rank;
+        int32 data_type;
+        int32 n_attrs;
         char  name[H4_MAX_NC_NAME];
 
         int32 r = 0;
@@ -256,7 +250,6 @@ bool HDFCFStr::read()
         }
 
          HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
-//#endif
     }
     return true;
 }

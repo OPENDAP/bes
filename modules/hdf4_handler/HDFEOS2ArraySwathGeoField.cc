@@ -203,7 +203,7 @@ HDFEOS2ArraySwathGeoField::read ()
             if (true == needadjust) {
                 vector<float32>newval;
                 newval.resize(nelms);
-                float scale_factor = 0.01;
+                float scale_factor = 0.01f;
 
                 for (int i = 0; i < nelms; i++)
                     newval[i] = scale_factor * (float32) val[i];
@@ -331,7 +331,7 @@ HDFEOS2ArraySwathGeoField::read ()
 int
 HDFEOS2ArraySwathGeoField::format_constraint (int *offset, int *step, int *count)
 {  
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -363,7 +363,7 @@ HDFEOS2ArraySwathGeoField::format_constraint (int *offset, int *step, int *count
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// end of while 
 
     return nels;
 }

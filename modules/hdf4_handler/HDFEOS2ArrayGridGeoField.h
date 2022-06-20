@@ -29,7 +29,7 @@
 class HDFEOS2ArrayGridGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, /*short field_cache,*/const std::string &filename, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", libdap::BaseType * v = 0):
+        HDFEOS2ArrayGridGeoField (int rank, int fieldtype, bool llflag, bool ydimmajor, bool condenseddim, bool speciallon, int specialformat, /*short field_cache,*/const std::string &filename, const int gridfd,  const std::string & gridname, const std::string & fieldname,const string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v),
             rank (rank),
             fieldtype (fieldtype),
@@ -45,17 +45,16 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
             fieldname (fieldname)
         {
         }
-        virtual ~ HDFEOS2ArrayGridGeoField ()
-        {
-        }
+        ~ HDFEOS2ArrayGridGeoField () override = default;
+
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArrayGridGeoField (*this);
         }
 
-        virtual bool read ();
+        virtual bool read () override;
 
     private:
 
@@ -114,8 +113,6 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
         // Products: MISR
         int  specialformat;
 
-        //short field_cache;
-
         // Temp here: HDF-EOS2 file name
         std::string filename;
         
@@ -136,29 +133,35 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
         // Since it doesn't provide the project code, we double check their information
         // and find that it covers the whole globe with 0.05 degree resolution.
         // Lat. is from 90 to -90 and Lon is from -180 to 180.
-        void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, int32 * offset, int32 * count, int32 * step);
+        void CalculateSpeLatLon (int32 gridid, int fieldtype, float64 * outlatlon, const int32 * offset, const int32 * count, const int32 * step) const;
 
         // Calculate Latitude and Longtiude for the Geo-projection for very large number of elements per dimension.
-        void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all, int *start, int *count, int *step, int nelms,bool write_latlon_cache);
+        void CalculateLargeGeoLatLon(int32 gridid,  int fieldtype, float64* latlon, float64* latlon_all, const int *start, const int *count, const int *step, int nelms,bool write_latlon_cache) const;
         // test for undefined values returned by longitude-latitude calculation
-        bool isundef_lat(double value)
+        bool isundef_lat(double value) const
         {
-            if (std::isinf(value)) return(true);
-            if (std::isnan(value)) return(true);
+            if (std::isinf(value)) 
+                return true;
+            if (std::isnan(value)) 
+                return true;
+
             // GCTP_AMAZ returns "1e+51" for values at the opposite poles
             if(value < -90.0 || value > 90.0) 
-                return(true);
+                return true;
             // This is ok. 
-            return(false);
+            return false;
         } // end bool isundef_lat(double value)
 
-        bool isundef_lon(double value)
+        bool isundef_lon(double value) const
         {
-            if (std::isinf(value)) return(true);
-            if (std::isnan(value)) return(true);
+            if (std::isinf(value)) 
+                return true;
+            if (std::isnan(value)) 
+                return true;
             // GCTP_LAMAZ returns "1e+51" for values at the opposite poles
-            if(value < -180.0 || value > 180.0) return(true);
-            return(false);
+            if (value < -180.0 || value > 180.0) 
+                return true;
+            return false;
         } // end bool isundef_lat(double value)
 
         // Given rol, col address in double array of dimension YDim x XDim
@@ -170,7 +173,7 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
             {
                 cerr << "nearestNeighborLatVal("<<row<<", "<<col<<", "<<YDim<<", "<<XDim;
                 cerr <<"): index out of range"<<endl;
-                return(0.0);
+                return 0.0;
             }
             // address (0,0)
             if(row < YDim/2 && col < XDim/2)
@@ -216,7 +219,7 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
             {
                 cerr << "nearestNeighborLonVal("<<row<<", "<<col<<", "<<YDim<<", "<<XDim;
                 cerr <<"): index out of range"<<endl;
-                return(0.0);
+                return 0.0;
             }
             // address (0,0)
             if(row < YDim/2 && col < XDim/2)
@@ -261,27 +264,27 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
         // Based on our current understanding, the third dimension size is always 180. 
         // This is according to the MISR Lat/lon calculation document 
         // at http://eosweb.larc.nasa.gov/PRODOCS/misr/DPS/DPS_v50_RevS.pdf
-        void CalculateSOMLatLon(int32, int*, int*, int*, int,const string &, bool);
+        void CalculateSOMLatLon(int32, const int*, const int*, const int*, int,const string &, bool);
 
         // Calculate Latitude and Longitude for LAMAZ Projection.
-        void CalculateLAMAZLatLon(int32, int, float64*, float64*,int*, int*, int*, bool);
+        void CalculateLAMAZLatLon(int32, int, float64*, float64*,const int*, const int*, const int*, bool);
 
         // Subsetting the latitude and longitude.
-        template <class T> void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
+        template <class T> void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, const int32 * offset, const int32 * count, const int32 * step) const;
 
         // Handle latitude and longitude when having fill value for geographic projection 
         //template <class T> void HandleFillLatLon(T* total_latlon, T* latlon,bool ydimmajor,
-        template <class T> void HandleFillLatLon(vector<T> total_latlon, T* latlon,bool ydimmajor, int fieldtype, int32 xdim , int32 ydim, int32* offset, int32* count, int32* step, int fv);
+        template <class T> void HandleFillLatLon(vector<T> total_latlon, T* latlon,bool ydimmajor, int fieldtype, int32 xdim , int32 ydim, const int32* offset, const int32* count, const int32* step, int fv);
 
         // Corrected Latitude and longitude when the lat/lon has fill value case.
         template < class T > bool CorLatLon (T * latlon, int fieldtype, int elms, int fv);
 
         // Converted longitude from 0-360 to -180-180.
-        template < class T > void CorSpeLon (T * lon, int xdim);
+        template < class T > void CorSpeLon (T * lon, int xdim) const;
 
         // Lat and Lon for GEO and CEA projections need to be condensed from 2-D to 1-D.
         // This function does this.
-        void getCorrectSubset (int *offset, int *count, int *step, int32 * offset32, int32 * count32, int32 * step32, bool condenseddim, bool ydimmajor, int fieldtype, int rank);
+        void getCorrectSubset (const int *offset, const int *count, const int *step, int32 * offset32, int32 * count32, int32 * step32, bool condenseddim, bool ydimmajor, int fieldtype, int rank) const;
 
         // Helper function to handle the case that lat. and lon. contain fill value.
         template < class T > int findfirstfv (T * array, int start, int end, int fillvalue);

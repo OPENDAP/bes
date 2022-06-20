@@ -336,7 +336,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 int
 HDFEOS2ArraySwathGeoDimMapExtraField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();

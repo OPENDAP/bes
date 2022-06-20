@@ -44,9 +44,9 @@
 class HDFCFStr:public libdap::Str {
   public:
     HDFCFStr(const int h4fd, int32 field_ref,const std::string &filename,const std::string &varname, const std::string &varnewname, bool is_vdata);
-    virtual ~ HDFCFStr();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFCFStr() override = default;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
   private:
     std::string filename;
     std::string varname;

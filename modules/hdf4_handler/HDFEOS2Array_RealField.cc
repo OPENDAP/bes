@@ -34,12 +34,6 @@ HDFEOS2Array_RealField::read ()
     if(length() == 0)        
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
@@ -121,13 +115,6 @@ HDFEOS2Array_RealField::read ()
         eherr << "Grid/Swath " << datasetname.c_str () << " cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
-
-#if 0
-    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
-    bool turn_on_disable_scale_comp_key= false;
-    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
-#endif
-    
 
     bool is_modis_l1b = false;
     if("MODIS_SWATH_Type_L1B" == swathname)
@@ -273,11 +260,6 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
              "coming to HDFEOS2Array_RealField write_dap_data_scale_comp "
              <<endl);
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Define function pointers to handle both grid and swath

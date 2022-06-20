@@ -101,18 +101,16 @@ namespace HDFSP
             }
 
             /// Destructor
-            virtual ~ Exception () throw ()
-            {
-            }
+            ~ Exception () throw () override = default;
 
             /// Return exception message 
-            virtual const char *what () const throw ()
+            const char *what () const throw () override
             {
                 return this->message.c_str ();
             }
 
             /// Set exception message.
-            virtual void setException (std::string exception_message)
+            virtual void setException (const std::string &exception_message)
             {
                 this->message = exception_message;
             }
@@ -236,10 +234,7 @@ namespace HDFSP
     class AttrContainer {
 
         public:
-            AttrContainer()
-            {
-                name="";
-            }
+            AttrContainer() = default;
             ~AttrContainer();
 
 
@@ -263,7 +258,6 @@ namespace HDFSP
             }
 
         private:
-            //  std:: string newname;
 
             // The name of this attribute container(an attribute container is a DAP DAS table)
             std:: string name;
@@ -280,11 +274,8 @@ namespace HDFSP
     class Field
     {
         public:
-            Field ():type (-1), rank (-1)
-            {
-                name="";
-                newname="";
-            }
+            Field () = default;
+            
             virtual ~ Field ();
 
             /// Get the name of this field
@@ -327,10 +318,10 @@ namespace HDFSP
             std::string name;
 
             /// The datatype of this field
-            int32 type;
+            int32 type = -1;
 
             /// The rank of this field
-            int32 rank;
+            int32 rank = -1;
 
             /// The attributes of this field
             std::vector < Attribute * >attrs;
@@ -345,15 +336,8 @@ namespace HDFSP
     class SDField:public Field
     {
          public:
-            SDField ()
-                :fieldtype (0), fieldref (-1), condenseddim (false),is_noscale_dim(false),is_dim_scale(false)
-            {
-                coordinates="";
-                units="";
-                special_product_fullpath="";
-                rootfieldname="";
-            }
-            ~SDField ();
+            SDField () = default;
+            ~SDField () override;
 
 
             /// Get the list of the corrected dimensions
@@ -369,31 +353,31 @@ namespace HDFSP
             }
 
             /// Set the list of the corrected dimensions
-            void setCorrectedDimensions (std::vector < Dimension * >cor_dims)
+            void setCorrectedDimensions (const std::vector < Dimension * > &cor_dims)
             {
                 correcteddims = cor_dims;
             }
 
             /// Get the "coordinates" attribute
-            const std::string getCoordinate () const
+            std::string getCoordinate () const
             {
                 return this->coordinates;
             }
 
             /// Set the coordinate attribute
-            void setCoordinates (std::string coor)
+            void setCoordinates (const std::string& coor)
             {
                 coordinates = coor;
             }
 
             /// Get the "units" attribute
-            const std::string getUnits () const
+            std::string getUnits () const
             {
                 return this->units;
             }
 
             // Set the "units" attribute
-            void setUnits (std::string uni)
+            void setUnits (const std::string &uni)
             {
                 units = uni;
             }
@@ -436,7 +420,7 @@ namespace HDFSP
             }
 
             /// This function returns the full path of some special products that have a very long path
-            const std::string getSpecFullPath() const 
+            std::string getSpecFullPath() const 
             {
                 return special_product_fullpath;
             }
@@ -461,7 +445,7 @@ namespace HDFSP
             /// 2 means this field is lon.
             /// 3 means this field is other dimension coordinate variable.
             /// 4 means this field is added other dimension coordinate variable with nature number.
-            int fieldtype;
+            int fieldtype = 0;
 
             /// The "units" attribute
             std::string units;
@@ -479,17 +463,19 @@ namespace HDFSP
             std::string special_product_fullpath;
 
             /// SDS reference number. This and the object tag are a key to identify a SDS object.
-            int32 fieldref;
+            int32 fieldref = -1;
 
+#if 0
             /// condenseddim is to condense 2-D lat/lon to 1-D lat/lon for geographic projections. This can greatly reduce the access time of visualization clients.
-            bool condenseddim;
+            bool condenseddim = false;
+#endif
 
             /// Some fields have dimensions but don't have dimension scales. In HDF4, such dimension appears as a field but no data. So this kind of field
             /// needs special treatments. This flag is to identify such a field.
-            bool is_noscale_dim;
+            bool is_noscale_dim = false;
 
             /// This is a SDS dimension scale.
-            bool is_dim_scale;
+            bool is_dim_scale = false;
 
             /// In some TRMM versions, latitude and longitude are combined into one field geolocation.
             /// This variable is to remember the root field for latitude and longitude.
@@ -503,10 +489,8 @@ namespace HDFSP
     class VDField:public Field
     {
         public:
-            VDField ():order (-1), numrec (-1), size (-1)
-            {
-            }
-            ~VDField ();
+            VDField () = default;
+            ~VDField () override = default;
 
             /// Get the order of this field
             int32 getFieldOrder ()const
@@ -538,13 +522,13 @@ namespace HDFSP
         private:
 
             /// Vdata field order
-            int32 order;
+            int32 order = -1;
 
             /// Number of record of the vdata field
-            int32 numrec;
+            int32 numrec = -1;
 
             /// Vdata field size
-            int32 size;
+            int32 size = -1;
 
             /// Vdata field value
             std::vector < char >value;
@@ -592,12 +576,15 @@ namespace HDFSP
             /// Destructor
             ~SD ();
 
-        protected:
+            SD() = default;
+#if 0
             SD (int32 sdfileid, int32 hfileid)
                 : sdfd (sdfileid), fileid (hfileid)
             {
             }
+#endif
 
+        private:
             /// SDS objects stored in vectors
             std::vector < SDField * >sdfields;
 
@@ -628,12 +615,14 @@ namespace HDFSP
             /// dimension name to coordinate variable name list: the key list to generate CF "coordinates" attributes.
             std::map < std::string, std::string > dimcvarlist;
 
+#if 0
         private:
 
             /// SD ID
             int32 sdfd;
             /// HDF4 file ID. We need to use this ID to retrieve the absolute path
             int32 fileid;
+#endif
         friend class File;
     };
 
@@ -688,13 +677,16 @@ namespace HDFSP
                 return vdref;
             }
 
-        protected:
+#if 0
             VDATA (int32 vdata_myid, int32 obj_ref)
-                :vdref(obj_ref),TreatAsAttrFlag (true),vdata_id (vdata_myid) {
-                newname ="";
-                name ="";
+                :vdref(obj_ref),vdata_id (vdata_myid) {
+            }
+#endif
+            VDATA (int32 obj_ref)
+                :vdref(obj_ref){
             }
 
+        private:
             /// New name with path and CF compliant(no special characters and name clashing).
             std::string newname;
 
@@ -711,12 +703,12 @@ namespace HDFSP
             int32 vdref;
 
             /// Flag to map vdata fields to DAP variables or DAP attributes.
-            bool TreatAsAttrFlag;
+            bool TreatAsAttrFlag = true;
 
-        private:
-
+#if 0
             /// Vdata ID
             int32 vdata_id;
+#endif
 
         friend class File;
     };
@@ -789,11 +781,12 @@ namespace HDFSP
 
         protected:
             explicit File (const char *hdf4file_path)
-                : path (hdf4file_path), sd(NULL),sdfd (-1), fileid (-1), sptype (OTHERHDF),OTHERHDF_Has_Dim_NoScale_Field(false),EOS2Swathflag(false)
+                : path (hdf4file_path)
             {
             }
 
 
+#if 0
             /// The absolute path of the file
             std::string path;
 
@@ -805,6 +798,7 @@ namespace HDFSP
 
             ///  Vgroup attribute information. See the description of the class AttrContainer.
             std::vector<AttrContainer *>vg_attrs;
+#endif
 
             /// Handle SDS fakedim names: make the dimensions with the same dimension size 
             /// share the same dimension name. In this way, we can reduce many fakedims.
@@ -909,21 +903,34 @@ namespace HDFSP
 
         private:
 
+            /// The absolute path of the file
+            std::string path;
+
+            /// Pointer to the SD instance. There is only one SD instance in an HDF4 file.
+            SD *sd = nullptr;
+
+            /// Vdata objects in this file
+            std::vector < VDATA * >vds;
+
+            ///  Vgroup attribute information. See the description of the class AttrContainer.
+            std::vector<AttrContainer *>vg_attrs;
+
+
             /// HDF4 SD interface ID
-            int32 sdfd;	
+            int32 sdfd = -1;	
 
             /// HDF4 H interfance ID 
-            int32 fileid;
+            int32 fileid = -1;
 
             /// Special NASA HDF4 file types supported by this package
-            SPType sptype;
+            SPType sptype = OTHERHDF;
 
             /// For the OTHERHDF files, this flag provides whether there is a non-dimension scale dimension field.
-            bool OTHERHDF_Has_Dim_NoScale_Field;
+            bool OTHERHDF_Has_Dim_NoScale_Field = false;
 
             /// For a hybrid file, under some cases, we need to distinguish between an EOS2 grid from an EOS2 swath only by
             /// HDF4 APIs. If this flag is true, this object is an EOS2 swath. Otherwise, this should be an EOS2 grid or others.
-            bool EOS2Swathflag;
+            bool EOS2Swathflag = false;
     };
 
 }

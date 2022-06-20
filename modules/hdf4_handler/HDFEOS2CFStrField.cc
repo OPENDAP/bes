@@ -35,12 +35,6 @@ HDFEOS2CFStrField::read ()
     if(length() == 0)                                                                               
         return true; 
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
     // Note that one dimensional character array is one string,
     // so the rank for character arrays should be rank from string+1 
@@ -192,7 +186,7 @@ HDFEOS2CFStrField::read ()
 int
 HDFEOS2CFStrField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
