@@ -90,11 +90,11 @@ private:
         vector<char> buffer(length + 1);
 
         // read data as a block:
-        is.read(&buffer[0], length);
+        is.read(buffer.data(), length);
         is.close();
         buffer[length] = '\0';
 
-        return string(&buffer[0]);
+        return string(buffer.data());
     }
 
 public:

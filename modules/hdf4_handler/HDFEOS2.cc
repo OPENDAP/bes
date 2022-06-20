@@ -3878,14 +3878,14 @@ void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
         dimsize.resize(numdims);
 
         // Inquiry dimension name lists and sizes for all dimensions
-        if (inq(this->datasetid, &namelist[0], &dimsize[0]) == -1)
+        if (inq(this->datasetid, namelist.data(), dimsize.data()) == -1)
             throw2("inquire dimension", this->name);
 
         vector<string> dimnames;
 
         // Make the "," separated name string to a string list without ",".
         // This split is for global dimension of a Swath or a Grid object.
-        HDFCFUtil::Split(&namelist[0], bufsize, ',', dimnames);
+        HDFCFUtil::Split(namelist.data(), bufsize, ',', dimnames);
         int count = 0;
         for (vector<string>::const_iterator i = dimnames.begin();
             i != dimnames.end(); ++i) {
@@ -3928,14 +3928,14 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         namelist.resize(bufsize + 1);
 
         // Inquiry fieldname list of the current object
-        if (inq(this->datasetid, &namelist[0], nullptr, nullptr) == -1)
+        if (inq(this->datasetid, namelist.data(), nullptr, nullptr) == -1)
             throw2("inquire field", this->name);
 
         vector<string> fieldnames;
 
         // Split the field namelist, make the "," separated name string to a
         // string list without ",".
-        HDFCFUtil::Split(&namelist[0], bufsize, ',', fieldnames);
+        HDFCFUtil::Split(namelist.data(), bufsize, ',', fieldnames);
         for (vector<string>::const_iterator i = fieldnames.begin();
             i != fieldnames.end(); ++i) {
 
@@ -4022,14 +4022,14 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
         namelist.resize(bufsize + 1);
 
         // inquiry namelist and buffer size
-        if (inq(this->datasetid, &namelist[0], &bufsize) == -1)
+        if (inq(this->datasetid, namelist.data(), &bufsize) == -1)
             throw2("inquire attribute", this->name);
 
         vector<string> attrnames;
 
         // Split the attribute namelist, make the "," separated name string to
         // a string list without ",".
-        HDFCFUtil::Split(&namelist[0], bufsize, ',', attrnames);
+        HDFCFUtil::Split(namelist.data(), bufsize, ',', attrnames);
         for (vector<string>::const_iterator i = attrnames.begin();
             i != attrnames.end(); ++i) {
             Attribute *attr = new Attribute();
@@ -4412,12 +4412,12 @@ int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
         namelist.resize(bufsize + 1);
         offset.resize(nummaps);
         increment.resize(nummaps);
-        if (SWinqmaps(this->datasetid, &namelist[0], &offset[0], &increment[0])
+        if (SWinqmaps(this->datasetid, namelist.data(), offset.data(), increment.data())
             == -1)
             throw2("inquire dimmap", this->name);
 
         vector<string> mapnames;
-        HDFCFUtil::Split(&namelist[0], bufsize, ',', mapnames);
+        HDFCFUtil::Split(namelist.data(), bufsize, ',', mapnames);
         int count = 0;
         for (vector<string>::const_iterator i = mapnames.begin();
             i != mapnames.end(); ++i) {
@@ -4451,11 +4451,11 @@ void SwathDataset::ReadIndexMaps(vector<IndexMap *> &swath_indexmaps)
         vector<char> namelist;
 
         namelist.resize(bufsize + 1);
-        if (SWinqidxmaps(this->datasetid, &namelist[0], nullptr) == -1)
+        if (SWinqidxmaps(this->datasetid, namelist.data(), nullptr) == -1)
             throw2("inquire indexmap", this->name);
 
         vector<string> mapnames;
-        HDFCFUtil::Split(&namelist[0], bufsize, ',', mapnames);
+        HDFCFUtil::Split(namelist.data(), bufsize, ',', mapnames);
         for (vector<string>::const_iterator i = mapnames.begin();
              i != mapnames.end(); ++i) {
             IndexMap *indexmap = new IndexMap();
@@ -4514,8 +4514,8 @@ bool Utility::ReadNamelist(const char *path,
     if (numobjs > 0) {
         vector<char> buffer;
         buffer.resize(bufsize + 1);
-        if (inq(fname, &buffer[0], &bufsize) == -1) return false;
-        HDFCFUtil::Split(&buffer[0], bufsize, ',', names);
+        if (inq(fname, buffer.data(), &bufsize) == -1) return false;
+        HDFCFUtil::Split(buffer.data(), bufsize, ',', names);
     }
     return true;
 }

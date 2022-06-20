@@ -387,7 +387,7 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
     string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
         + "?concept_id="+collection_name
         +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year;
+        +"temporal_facet.data()[year]="+r_year;
 
     rapidjson::Document doc;
     rju.getJsonDoc(url,doc);
@@ -449,8 +449,8 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
     string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
         + "?concept_id="+collection_name
         +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year
-        +"&temporal_facet[0][month]="+r_month;
+        +"temporal_facet.data()[year]="+r_year
+        +"temporal_facet.data()[month]="+r_month;
 
     rapidjson::Document cmr_doc;
     rju.getJsonDoc(url,cmr_doc);
@@ -514,13 +514,13 @@ CmrApi::granule_search(string collection_name, string r_year, string r_month, st
         + "&page_size=2000";
 
     if(!r_year.empty())
-        url += "&temporal_facet[0][year]="+r_year;
+        url += "temporal_facet.data()[year]="+r_year;
 
     if(!r_month.empty())
-        url += "&temporal_facet[0][month]="+r_month;
+        url += "temporal_facet.data()[month]="+r_month;
 
     if(!r_day.empty())
-        url += "&temporal_facet[0][day]="+r_day;
+        url += "temporal_facet.data()[day]="+r_day;
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << url << endl);
     rju.getJsonDoc(url,result_doc);

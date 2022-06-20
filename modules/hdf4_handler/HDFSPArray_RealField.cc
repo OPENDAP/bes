@@ -42,7 +42,7 @@ HDFSPArray_RealField::read ()
     step.resize(rank);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    int nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // Cache
     // Check if a BES key H4.EnableDataCacheFile is true, if yes, we will check
@@ -248,7 +248,7 @@ HDFSPArray_RealField::read ()
         {
             vector<char>buf;
             buf.resize(nelms);
-            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &buf[0]);
+            r = SDreaddata (sdsid, offset32.data(), step32.data(), count32.data(), buf.data());
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -258,7 +258,7 @@ HDFSPArray_RealField::read ()
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            val2buf(&buf[0]);
+            val2buf(buf.data());
             set_read_p(true);
 #else
             vector<int32>newval;
@@ -266,7 +266,7 @@ HDFSPArray_RealField::read ()
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (buf[counter]);
 
-            set_value ((dods_int32 *) &newval[0], nelms);
+            set_value ((dods_int32 *) newval.data(), nelms);
 #endif
              if(true == data_to_cache) {
                 try {
@@ -310,7 +310,7 @@ HDFSPArray_RealField::read ()
             vector<char>buf;
             buf.resize(nelms*dtype_size);
 
-            r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &buf[0]);
+            r = SDreaddata (sdsid, offset32.data(), step32.data(), count32.data(), buf.data());
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -319,7 +319,7 @@ HDFSPArray_RealField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            val2buf(&buf[0]);
+            val2buf(buf.data());
             set_read_p(true);
 
             // write data to cache if cache is set.
@@ -373,7 +373,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
     //char* buf;
     //buf = malloc(total_read);
     buf.resize(total_read);
-    ret_read_val = HDFCFUtil::read_buffer_from_file(fd,(void*)&buf[0],total_read);
+    ret_read_val = HDFCFUtil::read_buffer_from_file(fd,(void*)buf.data(),total_read);
     llcache->unlock_and_close(cache_fpath);
     if((-1 == ret_read_val) || (ret_read_val != (ssize_t)total_read)) {
         llcache->purge_file(cache_fpath);
@@ -386,7 +386,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
 
         if(nele_to_read == (total_read/dtype_size)) {
 //cerr<<"use the buffer" <<endl;
-            val2buf(&buf[0]);
+            val2buf(buf.data());
             set_read_p(true);
         }
         else { //  Need to re-assemble the buffer according to different datatype
@@ -404,11 +404,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
 #ifndef SIGNED_BYTE_TO_INT32
                      vector<int8>total_val;
                      total_val.resize(total_read/dtype_size);
-                     memcpy(&total_val[0],(void*)&buf[0],total_read);
+                     memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                      vector<int8>final_val;
                      subset<int8>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -419,16 +419,16 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                       0
                                      );
 
-                     set_value((dods_byte*)&final_val[0],nelms_to_send);
+                     set_value((dods_byte*)final_val.data(),nelms_to_send);
 
 #else
                      vector<int32>total_val2;
                      total_val2.resize(total_read/dtype_size);
-                     memcpy(&total_val2[0],(void*)&buf[0],total_read);
+                     memcpy(total_val2.data(),(void*)buf.data(),total_read);
 
                      vector<int32>final_val2;
                      subset<int32>(
-                                      &total_val2[0],
+                                      total_val2.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -439,7 +439,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                       0
                                      );
 
-                     set_value((dods_int32*)&final_val2[0],nelms_to_send);
+                     set_value((dods_int32*)final_val2.data(),nelms_to_send);
 
 #endif
                 }
@@ -450,11 +450,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<uint8>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<uint8>final_val;
                     subset<uint8>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -466,7 +466,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_byte *) &final_val[0], nelms_to_send);
+                    set_value ((dods_byte *) final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -474,11 +474,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<int16>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<int16>final_val;
                     subset<int16>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -490,7 +490,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_int16 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_int16 *) final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -498,11 +498,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<uint16>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<uint16>final_val;
                     subset<uint16>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -514,7 +514,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_uint16 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_uint16 *) final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -522,11 +522,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<int32>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<int32>final_val;
                     subset<int32>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -538,7 +538,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_int32 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_int32 *) final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -546,11 +546,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<uint32>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<uint32>final_val;
                     subset<uint32>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -562,7 +562,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_uint32 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_uint32 *) final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -570,11 +570,11 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 {
                     vector<float32>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<float32>final_val;
                     subset<float32>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -586,18 +586,18 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                      );
 
 
-                    set_value ((dods_float32 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_float32 *) final_val.data(), nelms_to_send);
                 }
                     break;
                 case DFNT_FLOAT64:
                 {
                     vector<float64>total_val;
                     total_val.resize(total_read/dtype_size);
-                    memcpy(&total_val[0],(void*)&buf[0],total_read);
+                    memcpy(total_val.data(),(void*)buf.data(),total_read);
 
                     vector<float64>final_val;
                     subset<float64>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       rank,
                                       dimsizes,
                                       cd_start,
@@ -608,7 +608,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                                       0
                                      );
 
-                    set_value ((dods_float64 *) &final_val[0], nelms_to_send);
+                    set_value ((dods_float64 *) final_val.data(), nelms_to_send);
                 }
                     break;
                 default:
@@ -638,12 +638,12 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
 
 #ifndef SIGNED_BYTE_TO_INT32
         if(total_nelem == nelms) 
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&buf[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)buf.data());
         else {
             val.resize(dtype_size*total_nelem);
-            if(SDreaddata (sdsid, &woffset32[0], &wstep32[0], &wcount32[0], &val[0])<0) 
+            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&val[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
         }
  
 #else 
@@ -652,29 +652,29 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
         if(total_nelem == nelms) {
             for (int i = 0; i < total_nelem;i++)
                 newval[i] = (int)buf[i];
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&newval[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)newval.data());
         }
         else {
             vector<char>val2;
             val2.resize(total_nelem);
-            if(SDreaddata (sdsid, &woffset32[0], &wstep32[0], &wcount32[0], &val2[0])<0)
+            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val2.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
             for (int i = 0; i < total_nelem;i++)
                 newval[i] = (int)val2[i];
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&newval[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)newval.data());
        }
 #endif
     }
     else {
         if(total_nelem == nelms) {
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&buf[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)buf.data());
         }
         else {
             val.resize(dtype_size*total_nelem);
-            if(SDreaddata (sdsid, &woffset32[0], &wstep32[0], &wcount32[0], &val[0])<0) 
+            if(SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
                 throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
 
-            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)&val[0]);
+            llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
         }
     }
 }

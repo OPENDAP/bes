@@ -340,7 +340,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
         vector<int32>ref_array;
         ref_array.resize(num_lone_vdata);
 
-        if (VSlone (file->fileid, &ref_array[0], num_lone_vdata) == FAIL) {
+        if (VSlone (file->fileid, ref_array.data(), num_lone_vdata) == FAIL) {
             throw2 ("cannot obtain lone vdata reference arrays", path);
         }
 
@@ -611,7 +611,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
         // Call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
+        num_of_lones = Vlone (file_id, ref_array.data(), num_of_lones);
         if (num_of_lones == FAIL) {
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", file_id);
@@ -2099,7 +2099,7 @@ throw (Exception)
 
         // and call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (fileid, &ref_array[0], num_of_lones);
+        num_of_lones = Vlone (fileid, ref_array.data(), num_of_lones);
         if (num_of_lones == FAIL) {
             if(sd != nullptr)
                 delete sd;
@@ -2826,7 +2826,7 @@ throw (Exception)
 
         // And call Vlone again to retrieve the reference numbers into
         // the buffer ref_array.
-        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
+        num_of_lones = Vlone (file_id, ref_array.data(), num_of_lones);
         if (num_of_lones == FAIL) {
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", file_id);

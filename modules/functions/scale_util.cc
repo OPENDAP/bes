@@ -222,7 +222,7 @@ vector<GDAL_GCP> get_gcp_data(Array *x, Array *y, int sample_x, int sample_y)
     unsigned long n_gcps = (size.x_size/sample_x) * (size.y_size/sample_y);
 
     vector<GDAL_GCP> gcp_list(n_gcps);
-    GDALInitGCPs(n_gcps, &gcp_list[0]); // allocates the 'list'; free with Deinit
+    GDALInitGCPs(n_gcps, gcp_list.data()); // allocates the 'list'; free with Deinit
 
     unsigned long count = 0;
     for (int i = 0; i < size.x_size; i += sample_x) {
@@ -295,7 +295,7 @@ static Array *transfer_values_helper(GDALRasterBand *band, const unsigned long x
 {
     // get the data
     vector<T> buf(x * y);
-    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, get_array_type(a), 0, 0);
+    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, buf.data(), x, y, get_array_type(a), 0, 0);
 
     if (error != CPLE_None){
         string msg = string("Could not extract data for array.") +  CPLGetLastErrorMsg();
@@ -321,7 +321,7 @@ static Vector *transfer_values_helper_vec(GDALRasterBand *band, const int x, con
 {
     // get the data
     vector<T> buf(x * y);
-    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, &buf[0], x, y, a->type(), 0, 0);
+    CPLErr error = band->RasterIO(GF_Read, 0, 0, x, y, buf.data(), x, y, a->type(), 0, 0);
 
     if (error != CPLE_None){
         string msg = string("Could not extract data for array.") +  CPLGetLastErrorMsg();
@@ -415,10 +415,10 @@ Array *build_array_from_gdal_dataset_3D(GDALDataset *source3D, const Array *dest
         if (!band)
             throw Error(string("Could not get the GDALRasterBand for the GDALDataset: ") + CPLGetLastErrorMsg());
         vector<double> gt(6);
-        source3D->GetGeoTransform(&gt[0]);
+        source3D->GetGeoTransform(gt.data());
         // Extract data from band
         vector<dods_float32> buf(x_size * y_size);
-        CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, &buf[0], x_size, y_size, get_array_type(dest),
+        CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, buf.data(), x_size, y_size, get_array_type(dest),
             0, 0);
         if (error != CPLE_None)
             throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
@@ -459,7 +459,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
 {
     // get the geo-transform data
     vector<double> gt(6);
-    dst->GetGeoTransform(&gt[0]);
+    dst->GetGeoTransform(gt.data());
 
     // Get the GDALDataset size
     GDALRasterBand *band = dst->GetRasterBand(1);
@@ -476,7 +476,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
 
     // for each value, use the geo-transform data to compute a value and store it.
     vector<dods_float32> x_map_vals(x);
-    dods_float32 *cur_x = &x_map_vals[0];
+    dods_float32 *cur_x = x_map_vals.data();
     dods_float32 *prev_x = cur_x;
     // x_map_vals[0] = gt[0];
     *cur_x++ = gt[0];
@@ -486,7 +486,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
         *cur_x++ = *prev_x++ + gt[1];
     }
 
-    x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+    x_map->set_value(x_map_vals.data(), x); // copies values to new storage
 
     // Build the Lat map
     unsigned long y = band->GetYSize();
@@ -500,7 +500,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
 
     // for each value, use the geo-transform data to compute a value and store it.
     vector<dods_float32> y_map_vals(y);
-    dods_float32 *cur_y = &y_map_vals[0];
+    dods_float32 *cur_y = y_map_vals.data();
     dods_float32 *prev_y = cur_y;
     // y_map_vals[0] = gt[3];
     *cur_y++ = gt[3];
@@ -510,7 +510,7 @@ void build_maps_from_gdal_dataset(GDALDataset *dst, Array *x_map, Array *y_map, 
         *cur_y++ = *prev_y++ + gt[5];
     }
 
-    y_map->set_value(&y_map_vals[0], y);
+    y_map->set_value(y_map_vals.data(), y);
 }
 
 /**
@@ -540,7 +540,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
 {
     // get the geo-transform data
     vector<double> gt(6);
-    dst->GetGeoTransform(&gt[0]);
+    dst->GetGeoTransform(gt.data());
 
     // Get the GDALDataset size
     GDALRasterBand *band = dst->GetRasterBand(1);
@@ -556,9 +556,9 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
     }
 
     vector<dods_float32> t_buf(t_size);
-    t->value(&t_buf[0]);
+    t->value(t_buf.data());
 
-    t_map->set_value(&t_buf[0], t_size);
+    t_map->set_value(t_buf.data(), t_size);
 
     // Build Lon map
     unsigned long x = band->GetXSize(); // x_map_vals
@@ -572,7 +572,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
 
     // for each value, use the geo-transform data to compute a value and store it.
     vector<dods_float32> x_map_vals(x);
-    dods_float32 *cur_x = &x_map_vals[0];
+    dods_float32 *cur_x = x_map_vals.data();
     dods_float32 *prev_x = cur_x;
     // x_map_vals[0] = gt[0];
     *cur_x++ = gt[0];
@@ -582,7 +582,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
         *cur_x++ = *prev_x++ + gt[1];
     }
 
-    x_map->set_value(&x_map_vals[0], x); // copies values to new storage
+    x_map->set_value(x_map_vals.data(), x); // copies values to new storage
 
     // Build the Lat map
     unsigned long y = band->GetYSize();
@@ -596,7 +596,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
 
     // for each value, use the geo-transform data to compute a value and store it.
     vector<dods_float32> y_map_vals(y);
-    dods_float32 *cur_y = &y_map_vals[0];
+    dods_float32 *cur_y = y_map_vals.data();
     dods_float32 *prev_y = cur_y;
     // y_map_vals[0] = gt[3];
     *cur_y++ = gt[3];
@@ -606,7 +606,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
         *cur_y++ = *prev_y++ + gt[5];
     }
 
-    y_map->set_value(&y_map_vals[0], y);
+    y_map->set_value(y_map_vals.data(), y);
 }
 
 /**
@@ -847,7 +847,7 @@ unique_ptr<GDALDataset> build_src_dataset(Array *data, Array *x, Array *y, const
 #endif
 
 	vector<double> geo_transform = get_geotransform_data(x, y);
-    ds->SetGeoTransform(&geo_transform[0]);
+    ds->SetGeoTransform(geo_transform.data());
 
     OGRSpatialReference native_srs;
     if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
@@ -1139,7 +1139,7 @@ unique_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Ar
 
     } // end band loop
     vector<double> geo_transform = get_geotransform_data(x, y);
-    ds->SetGeoTransform(&geo_transform[0]);
+    ds->SetGeoTransform(geo_transform.data());
 
     OGRSpatialReference native_srs;
     if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){

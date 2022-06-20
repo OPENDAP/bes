@@ -54,7 +54,7 @@ bool HDFSPArrayGeoField::read ()
 
     // Obtain offset, step and count from the client expression constraint
     int nelms = -1;
-    nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
@@ -79,26 +79,26 @@ bool HDFSPArrayGeoField::read ()
         // TRMM swath 
         case TRMML2_V6:
         {
-            readtrmml2_v6 (&offset32[0], &count32[0], &step32[0], nelms);
+            readtrmml2_v6 (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // TRMM grid
         case TRMML3A_V6:
         {
-            readtrmml3a_v6 (&offset32[0], &count32[0], &step32[0], nelms);
+            readtrmml3a_v6 (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         case TRMML3B_V6:
         {
-            readtrmml3b_v6 (&offset32[0], &count32[0], &step32[0], nelms);
+            readtrmml3b_v6 (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         case TRMML3C_V6:
         {
-            readtrmml3c_v6 (&offset32[0], &count32[0], &step32[0], nelms);
+            readtrmml3c_v6 (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
@@ -107,34 +107,34 @@ bool HDFSPArrayGeoField::read ()
         case TRMML3S_V7:
         case TRMML3M_V7:
         {
-            readtrmml3_v7 (&offset32[0],  &step32[0], nelms);
+            readtrmml3_v7 (offset32.data(),  step32.data(), nelms);
             break;
         }
         // CERES CER_AVG_Aqua-FM3-MODIS,CER_AVG_Terra-FM1-MODIS products
         case CER_AVG:
         {
-            readceravgsyn (&offset32[0], &count32[0], &step32[0], nelms);
+            readceravgsyn (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // CERES CER_ES4_??? products
         case CER_ES4:
         {
-            readceres4ig (&offset32[0], &count32[0], &step32[0], nelms);
+            readceres4ig (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // CERES CER_ISCCP-D2like-Day product
         case CER_CDAY:
         {
-            readcersavgid2 (&offset[0], &count[0], &step[0], nelms);
+            readcersavgid2 (offset.data(), count.data(), step.data(), nelms);
             break;
         }
 
         // CERES CER_ISCCP-D2like-GEO product
         case CER_CGEO:
         {
-            readceres4ig (&offset32[0], &count32[0], &step32[0], nelms);
+            readceres4ig (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
@@ -143,11 +143,11 @@ bool HDFSPArrayGeoField::read ()
         {
             // When longitude is fixed
             if (rank == 1) {
-                readcersavgid1 (&offset[0], &count[0], &step[0], nelms);
+                readcersavgid1 (offset.data(), count.data(), step.data(), nelms);
             }
             // When longitude is not fixed
             else if (rank == 2) {
-                readcersavgid2 (&offset[0], &count[0], &step[0], nelms);
+                readcersavgid2 (offset.data(), count.data(), step.data(), nelms);
             }
             break;
         }
@@ -155,28 +155,28 @@ bool HDFSPArrayGeoField::read ()
         // CERES SYN Aqua products
 	case CER_SYN:
         {
-            readceravgsyn (&offset32[0], &count32[0], &step32[0], nelms);
+            readceravgsyn (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // CERES Zonal Average products
         case CER_ZAVG:
         {
-            readcerzavg (&offset32[0], &count32[0], &step32[0], nelms);
+            readcerzavg (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // OBPG level 2 products
         case OBPGL2:
         {
-            readobpgl2 (&offset32[0], &count32[0], &step32[0], nelms);
+            readobpgl2 (offset32.data(), count32.data(), step32.data(), nelms);
             break;
         }
 
         // OBPG level 3 products
         case OBPGL3:
         {
-            readobpgl3 (&offset[0],  &step[0], nelms);
+            readobpgl3 (offset.data(),  step.data(), nelms);
             break;
         }
 
@@ -283,7 +283,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         {
             vector <int8> val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -293,14 +293,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) &val[0], nelms);
+            set_value ((dods_byte *) val.data(), nelms);
 #else
             vector<int32>newval;
             newval.resize(nelms);
 
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
-            set_value ((dods_int32 *) &newval[0], nelms);
+            set_value ((dods_int32 *) newval.data(), nelms);
 #endif
         }
 
@@ -310,7 +310,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         {
             vector<uint8> val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -319,7 +319,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_byte *) &val[0], nelms);
+            set_value ((dods_byte *) val.data(), nelms);
         }
             break;
 
@@ -327,7 +327,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         {
             vector<int16> val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -336,7 +336,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int16 *) &val[0], nelms);
+            set_value ((dods_int16 *) val.data(), nelms);
         }
             break;
 
@@ -344,7 +344,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
         {
             vector<uint16>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -353,14 +353,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint16 *) &val[0], nelms);
+            set_value ((dods_uint16 *) val.data(), nelms);
         }
 	    break;
         case DFNT_INT32:
         {
             vector<int32>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
 	        SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -369,14 +369,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int32 *) &val[0], nelms);
+            set_value ((dods_int32 *) val.data(), nelms);
         }
             break;
 	case DFNT_UINT32:
         {
             vector<uint32>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -384,14 +384,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 eherr << "SDreaddata failed";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_uint32 *) &val[0], nelms);
+            set_value ((dods_uint32 *) val.data(), nelms);
         }
             break;
         case DFNT_FLOAT32:
         {
             vector<float32>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -400,14 +400,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float32 *) &val[0], nelms);
+            set_value ((dods_float32 *) val.data(), nelms);
         }
             break;
         case DFNT_FLOAT64:
         {
             vector<float64>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, &geooffset32[0], &geostep32[0], &geocount32[0], (void*)(&val[0]));
+            r = SDreaddata (sdsid, geooffset32.data(), geostep32.data(), geocount32.data(), (void*)(val.data()));
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -416,7 +416,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
         }
             break;
         default:
@@ -469,7 +469,7 @@ HDFSPArrayGeoField::readtrmml3a_v6 (int32 * offset32, int32 * count32,
             icount++;
         }
     }
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
 }
 
 
@@ -505,7 +505,7 @@ HDFSPArrayGeoField::readtrmml3b_v6 (int32 * offset32, int32 * count32,
             icount++;
         }
     }
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
 }
 
 // Read TRMM level 3c(CSH) version 6 lat/lon. 
@@ -540,7 +540,7 @@ HDFSPArrayGeoField::readtrmml3c_v6 (int32 * offset32, int32 * count32,
             icount++;
         }
     }
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
 }
 // Read latlon of TRMM version 7 products.
 // Lat/lon parameters can be retrieved from attribute GridHeader.
@@ -610,7 +610,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32,
     vector<char> attr_value; 
     attr_value.resize(n_values * DFKNTsize(attr_dtype));
 
-    status = SDreadattr (sdid, attr_index, &attr_value[0]);
+    status = SDreadattr (sdid, attr_index, attr_value.data());
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
@@ -649,7 +649,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32,
             val[i] = lon_start+offset32[0]*lon_res+lon_res/2 + i*lon_res*step32[0];
     }
     
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
 
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 }
@@ -835,7 +835,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
             vector<float32> val;
             val.resize(nelms);
             if (compmapflag) {
-                r = SDreaddata (sdsid, offset32, step32, count32, &val[0]);
+                r = SDreaddata (sdsid, offset32, step32, count32, val.data());
                 if (r != 0) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -857,7 +857,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 all_edges[1] = num_point_data;
 
                 r = SDreaddata (sdsid, all_start, NULL, all_edges,
-                                &orival[0]);
+                                orival.data());
                 if (r != 0) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -916,7 +916,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
                 }
 
-                LatLon2DSubset(&val[0],num_scan_data,num_pixel_data,&interp_val[0],
+                LatLon2DSubset(val.data(),num_scan_data,num_pixel_data,interp_val.data(),
                                offset32,count32,step32);
 
             }
@@ -960,7 +960,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 			}
 #endif
 
-                set_value ((dods_float32 *) &val[0], nelms);
+                set_value ((dods_float32 *) val.data(), nelms);
             }
             break;
         default:
@@ -1207,7 +1207,7 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         for (int k = 0; k < nelms; k++)
             val[k] = allval[(int) (offset[0] + step[0] * k)];
 
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
 
     if (fieldtype == 2) {
@@ -1222,7 +1222,7 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         for (int k = 0; k < nelms; k++)
             val[k] = allval[(int) (offset[0] + step[0] * k)];
 
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
 
     }
 
@@ -1478,7 +1478,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         {
             vector<float32>val;
             val.resize(nelms);
-            r = SDreaddata (sdsid, offset32, step32, count32, &val[0]);
+            r = SDreaddata (sdsid, offset32, step32, count32, val.data());
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -1497,7 +1497,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                         val[i] = val[i] - 360.0;
             }
 
-            set_value ((dods_float32 *) &val[0], nelms);
+            set_value ((dods_float32 *) val.data(), nelms);
             break;
         }
         case DFNT_FLOAT64:
@@ -1505,7 +1505,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
             vector<float64>val;
             val.resize(nelms);
 
-            r = SDreaddata (sdsid, offset32, step32, count32, &val[0]);
+            r = SDreaddata (sdsid, offset32, step32, count32, val.data());
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -1523,7 +1523,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                     if (val[i] > 180.0)
                         val[i] = val[i] - 360.0;
             }
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
             break;
         }
         default:
@@ -1703,7 +1703,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
                 }
             }
 
-            r = SDreaddata (sdsid, &orioffset32[0], &oristep32[0], &oricount32[0], &val[0]);
+            r = SDreaddata (sdsid, orioffset32.data(), oristep32.data(), oricount32.data(), val.data());
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -1725,7 +1725,7 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
                         val[i] = val[i] - 360.0;
             }
 
-            set_value ((dods_float32 *) &val[0], nelms);
+            set_value ((dods_float32 *) val.data(), nelms);
             break;
         }
         default:
@@ -1760,7 +1760,7 @@ HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
             val[i] =
                      89.5 - ((int) (offset32[0]) +
                      ((int) (step32[0])) * i) * latstep;
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
 
     if (fieldtype == 2) {

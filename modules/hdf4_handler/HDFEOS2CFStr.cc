@@ -146,7 +146,7 @@ HDFEOS2CFStr::read ()
     val.resize(count32[0]);
 
     r = readfieldfunc(gsid,const_cast<char*>(varname.c_str()),
-                       &offset32[0], &step32[0], &count32[0], &val[0]);
+                       offset32.data(), step32.data(), count32.data(), val.data());
 
     if (r != 0) {
         detachfunc(gsid);

@@ -109,7 +109,7 @@ extract_stare_index_array(Array *var, vector<STARE_ArrayIndexSpatialValue> &valu
         + " is type: " + var->var()->type_name() + ").", __FILE__, __LINE__);
 
     values.resize(var->length());
-    var->value((dods_uint64*)&values[0]);    // Extract the values of 'var' to 'values'
+    var->value((dods_uint64*)values.data());    // Extract the values of 'var' to 'values'
 }
 
 /**
@@ -576,7 +576,7 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
     }
 
     unique_ptr<Array> cover(new Array("cover", new UInt64("cover")));
-    cover->set_value((dods_uint64*)(&sivs[0]), static_cast<int>(sivs.size()));
+    cover->set_value((dods_uint64*)(sivs.data()), static_cast<int>(sivs.size()));
     cover->append_dim(static_cast<int>(sivs.size()));
 
     return cover.release();

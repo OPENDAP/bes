@@ -172,8 +172,8 @@ static int read_hdu_image_data(int fits_type, fitsfile *fptr, const string &varn
 	int anynull, status = 0;
 	// the original code always read the whole array; I dropped passing in fpixel and replaced it with a '1'.
 	// jhrg 6/14/13
-	fits_read_img(fptr, fits_type, 1 /*first pixel*/, npixels, &nullval, &buffer[0], &anynull, &status);
-	arr->set_value(&buffer[0], npixels);
+	fits_read_img(fptr, fits_type, 1 /*first pixel*/, npixels, &nullval, buffer.data(), &anynull, &status);
+	arr->set_value(buffer.data(), npixels);
 	container->add_var(arr.get());
 
 	return status;
@@ -229,7 +229,7 @@ int fits_handler::process_hdu_image(fitsfile *fptr, DDS &dds, const string &hdu,
 
     vector<long> naxes(number_axes);
     int nfound;
-    if (fits_read_keys_lng(fptr, "NAXIS", 1, number_axes, &naxes[0], &nfound, &status))
+    if (fits_read_keys_lng(fptr, "NAXIS", 1, number_axes, naxes.data(), &nfound, &status))
         return status; // status is not 0, so something is wrong
 
     switch (bitpix) {

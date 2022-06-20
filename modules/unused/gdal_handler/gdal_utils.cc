@@ -649,11 +649,11 @@ void read_data_array(GDALArray *array, const GDALRasterBandH &hBand)
     /* -------------------------------------------------------------------- */
     /*      Read request into buffer.                                       */
     /* -------------------------------------------------------------------- */
-    CPLErr eErr = GDALRasterIO(hBand, GF_Read, nWinXOff, nWinYOff, nWinXSize, nWinYSize, &pData[0], nBufXSize,
+    CPLErr eErr = GDALRasterIO(hBand, GF_Read, nWinXOff, nWinYOff, nWinXSize, nWinYSize, pData.data(), nBufXSize,
         nBufYSize, array->get_gdal_buf_type(), 0, 0);
     if (eErr != CE_None) throw Error("Error reading: " + array->name());
 
-    array->val2buf(&pData[0]);
+    array->val2buf(pData.data());
 }
 
 /**
@@ -728,7 +728,7 @@ void read_map_array(Array *map, const GDALRasterBandH &hBand, const GDALDatasetH
     else
         throw Error("Expected a map named 'northing' or 'easting' but got: " + map->name());
 
-    map->val2buf((void *) &padfMap[0]);
+    map->val2buf((void *) padfMap.data());
 }
 
 // $Log: gdal_das.cc,v $

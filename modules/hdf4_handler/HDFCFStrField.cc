@@ -65,7 +65,7 @@ HDFCFStrField::read ()
         // Note that one dimensional character array is one string,
         // so the rank for character arrays should be rank from string+1 
         // Obtain offset,step and count from the client expression constraint
-        nelms = format_constraint (&offset[0], &step[0], &count[0]);
+        nelms = format_constraint (offset.data(), step.data(), count.data());
 
         // Assign the offset32,count32 and step32 up to the dimension rank-1.
         // Will assign the dimension rank later.
@@ -144,7 +144,7 @@ HDFCFStrField::read ()
         vector<char>val;
         val.resize(nelms*count32[rank]);
 
-        r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
+        r = SDreaddata (sdsid, offset32.data(), step32.data(), count32.data(), val.data());
         if (r != 0) {
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -162,11 +162,11 @@ HDFCFStrField::read ()
         // the value of each string is the subset of the whole last dimension
         // of the original array.
         for (int i = 0; i<nelms;i++) { 
-            strncpy(&temp_buf[0],&val[0]+last_dim_size*i,last_dim_size);
+            strncpy(temp_buf.data(),val.data()+last_dim_size*i,last_dim_size);
             temp_buf[last_dim_size]='\0';
-            final_val[i] = &temp_buf[0];
+            final_val[i] = temp_buf.data();
         }
-        set_value(&final_val[0],nelms);
+        set_value(final_val.data(),nelms);
         SDendaccess(sdsid);
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 
@@ -232,7 +232,7 @@ HDFCFStrField::read ()
         val.resize(vdfelms);
 
          // Read the data
-        r = VSread (vdata_id, (uint8 *) &val[0], 1+(count32[0] -1)* step32[0],
+        r = VSread (vdata_id, (uint8 *) val.data(), 1+(count32[0] -1)* step32[0],
                     FULL_INTERLACE);
 
         if (r == -1) {
@@ -250,11 +250,11 @@ HDFCFStrField::read ()
         vector<char> temp_buf;
         temp_buf.resize(fieldorder+1);
         for (int i = 0; i<nelms;i++) {
-            strncpy(&temp_buf[0],&val[0]+fieldorder*i*step32[0],fieldorder);
+            strncpy(temp_buf.data(),val.data()+fieldorder*i*step32[0],fieldorder);
             temp_buf[fieldorder]='\0';
-            final_val[i] = &temp_buf[0];
+            final_val[i] = temp_buf.data();
         }
-        set_value(&final_val[0],nelms);
+        set_value(final_val.data(),nelms);
         VSdetach(vdata_id);
         Vend(file_id);
         HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);

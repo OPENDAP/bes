@@ -169,8 +169,8 @@ template<typename T> void W10nJsonTransform::json_simple_type_array_sender(ostre
     long length = w10n::computeConstrainedShape(a, &shape);
 
     vector<T> src(length);
-    a->value(&src[0]);
-    unsigned int indx = json_simple_type_array_worker(strm, &src[0], 0, &shape, 0, found_w10n_flatten);
+    a->value(src.data());
+    unsigned int indx = json_simple_type_array_worker(strm, src.data(), 0, &shape, 0, found_w10n_flatten);
 
     if (length != indx)
         BESDEBUG(W10N_DEBUG_KEY,
@@ -197,7 +197,7 @@ void W10nJsonTransform::json_string_array_sender(ostream *strm, libdap::Array *a
     // The string type utilizes a specialized version of libdap:Array.value()
     vector<std::string> sourceValues;
     a->value(sourceValues);
-    unsigned int indx = json_simple_type_array_worker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0,
+    unsigned int indx = json_simple_type_array_worker(strm, (std::string *) (sourceValues.data()), 0, &shape, 0,
         found_w10n_flatten);
 
     if (length != indx)

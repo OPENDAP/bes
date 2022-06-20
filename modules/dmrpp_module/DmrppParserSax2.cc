@@ -475,7 +475,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 
         case dods_float32_c:
         case dods_float64_c:
-            target->val2buf(reinterpret_cast<void *>(&decoded[0]));
+            target->val2buf(reinterpret_cast<void *>(decoded.data()));
             target->set_read_p(true);
             break;
 

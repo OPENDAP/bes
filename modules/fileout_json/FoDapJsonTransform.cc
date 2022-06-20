@@ -135,7 +135,7 @@ void FoDapJsonTransform::json_simple_type_array(ostream *strm, libdap::Array *a,
         *strm << childindent << "\"data\": ";
         unsigned int indx = 0;
         vector<T> src(length);
-        a->value(&src[0]);
+        a->value(src.data());
 
         // I added this, and a corresponding block in FoInstance... because I fixed
         // an issue in libdap::Float64 where the precision was not properly reset
@@ -145,7 +145,7 @@ void FoDapJsonTransform::json_simple_type_array(ostream *strm, libdap::Array *a,
         if (typeid(T) == typeid(libdap::dods_float64)) {
             streamsize prec = strm->precision(int_64_precision);
             try {
-                indx = json_simple_type_array_worker(strm, &src[0], 0, &shape, 0);
+                indx = json_simple_type_array_worker(strm, src.data(), 0, &shape, 0);
                 strm->precision(prec);
             }
             catch(...) {
@@ -154,7 +154,7 @@ void FoDapJsonTransform::json_simple_type_array(ostream *strm, libdap::Array *a,
             }
         }
         else {
-            indx = json_simple_type_array_worker(strm, &src[0], 0, &shape, 0);
+            indx = json_simple_type_array_worker(strm, src.data(), 0, &shape, 0);
         }
 
         assert(length == indx);
@@ -201,7 +201,7 @@ void FoDapJsonTransform::json_string_array(std::ostream *strm, libdap::Array *a,
         // The string type utilizes a specialized version of libdap:Array.value()
         vector<std::string> sourceValues;
         a->value(sourceValues);
-        indx = json_simple_type_array_worker(strm, (std::string *) (&sourceValues[0]), 0, &shape, 0);
+        indx = json_simple_type_array_worker(strm, (std::string *) (sourceValues.data()), 0, &shape, 0);
 
         if (length != indx)
             BESDEBUG(FoDapJsonTransform_debug_key,

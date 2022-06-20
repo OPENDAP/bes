@@ -76,7 +76,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         count.resize(rank);
         step.resize(rank);
 
-        nelms = format_constraint (&offset[0], &step[0], &count[0]);
+        nelms = format_constraint (offset.data(), step.data(), count.data());
 
     }
 
@@ -210,7 +210,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     total_val.resize(total_num_elm);
 
 
-    if (H5Aread(cv_attr_id,attr_mem_type, (void*)&orig_val[0])<0){
+    if (H5Aread(cv_attr_id,attr_mem_type, (void*)orig_val.data())<0){
         string msg = "cannot retrieve the value of  the attribute ";
         msg += cv_attr_name;
         H5Tclose(attr_mem_type);
@@ -246,7 +246,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];
 
-    set_value((dods_float32*)&val[0], nelms);
+    set_value((dods_float32*)val.data(), nelms);
     H5Tclose(attr_type);
     H5Tclose(attr_mem_type);
     H5Aclose(cv_attr_id);

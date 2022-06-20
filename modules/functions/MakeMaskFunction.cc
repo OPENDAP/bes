@@ -162,7 +162,7 @@ void make_mask_helper(const vector<Array*> dims, Array *tuples, vector<dods_byte
 
     // Copy the 'tuple' data to a simple vector<T>
     vector<T> data(tuples->length());
-    tuples->value(&data[0]);
+    tuples->value(data.data());
 
     // Iterate over the tuples, searching the dimensions for their values
     int nDims = dims.size();

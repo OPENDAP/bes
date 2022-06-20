@@ -102,7 +102,7 @@ void function_dilate_dap2_array(int argc, BaseType * argv[], DDS &/*dds*/, BaseT
 
     // OK, we've got a valid 2D mask, now get the bytes into a vector.
     vector<dods_byte> mask_values(mask->length());
-    mask->value(&mask_values[0]);
+    mask->value(mask_values.data());
 
     // Now make a vector<> for the result; I'm not sure if we really need this... jhrg 5/26/15
     vector<dods_byte> dest_values(mask->length());

@@ -58,11 +58,11 @@ read_test_baseline(const string &fn)
     vector<char> buffer(length+1);
 
     // read data as a block:
-    is.read (&buffer[0], length);
+    is.read (buffer.data(), length);
     is.close();
     buffer[length] = '\0';
 
-    return string(&buffer[0]);
+    return string(buffer.data());
 }
 
 /**
@@ -114,7 +114,7 @@ void load_var(Array *var, const string &data_file, vector<T> &buf)
 {
     if (!var) throw Error(string(__FUNCTION__) + ": The Array variable was null.");
     //string data_file = src_dir + "/" + file;
-    read_data_from_file(data_file, buf.size(), &buf[0]);
+    read_data_from_file(data_file, buf.size(), buf.data());
     //if (!var) throw Error(string(__FUNCTION__) + ": Could not find '" + var->name() + "'.");
     if (!var->set_value(buf, buf.size())) throw Error(string(__FUNCTION__) + ": Could not set '" + var->name() + "'.");
     var->set_read_p(true);

@@ -163,7 +163,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     // to avoid using new/delete.
     string temp_file_name = JPEG2000Transmitter::temp_dir + '/' + "jp2XXXXXX";
     vector<char> temp_file(temp_file_name.length() + 1);
-    string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
+    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.length());
     temp_file[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
@@ -171,7 +171,7 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     mode_t original_mode = umask(077);
 
     // Make and open (an atomic operation) the temporary file. Then reset the umask
-    int fd = mkstemp(&temp_file[0]);
+    int fd = mkstemp(temp_file.data());
     umask(original_mode);
 
     if (fd == -1)
@@ -240,28 +240,28 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     catch (Error &e) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw BESDapError("Failed to transform data to JPEG2000: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw;
     }
     catch (...) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw BESInternalError("Fileout GeoTiff, was not able to transform to JPEG2000, unknown error", __FILE__, __LINE__);
     }
 
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
 
     BESDEBUG("JPEG20002", "JPEG2000Transmitter::send_data - done transmitting to jp2" << endl);

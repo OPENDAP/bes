@@ -31,7 +31,7 @@ bool HDFEOS2GeoCF1D::read()
 
     // Obtain offset,step and count from the client expression constraint
     int nelms = -1;
-    nelms = format_constraint(&offset[0], &step[0], &count[0]);
+    nelms = format_constraint(offset.data(), step.data(), count.data());
 
     vector<double> val;
     val.resize(tnumelm);
@@ -51,14 +51,14 @@ bool HDFEOS2GeoCF1D::read()
         val[i] = val[i-1] + step_v;
 
     if (nelms == tnumelm) {
-        set_value((dods_float64 *) &val[0], nelms);
+        set_value((dods_float64 *) val.data(), nelms);
     }
     else {
         vector<double>val_subset;
         val_subset.resize(nelms);
         for (int i = 0; i < count[0]; i++)
             val_subset[i] = val[offset[0] + step[0] * i];
-        set_value((dods_float64 *) &val_subset[0], nelms);
+        set_value((dods_float64 *) val_subset.data(), nelms);
     }
  
     return false;

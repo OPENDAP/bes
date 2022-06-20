@@ -52,7 +52,7 @@ HDFEOS2Array_RealField::read ()
 
     // Obtain offset,step and count from the client expression constraint
     int nelms = 0;
-    nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
@@ -229,7 +229,7 @@ HDFEOS2Array_RealField::read ()
     try {
         if((false == is_modis_l1b) && (false == is_modis_vip)
            &&(false == has_Key_attr) && (true == HDF4RequestHandler::get_disable_scaleoffset_comp()))
-            write_dap_data_disable_scale_comp(gridid,nelms,&offset32[0],&count32[0],&step32[0]);
+            write_dap_data_disable_scale_comp(gridid,nelms,offset32.data(),count32.data(),step32.data());
         else 
             write_dap_data_scale_comp(gridid,nelms,offset32,count32,step32);
     }
@@ -497,7 +497,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -521,7 +521,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)&attrbuf2[0]);
+                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)attrbuf2.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -540,8 +540,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST *ptr = (CAST*)&attrbuf[0]; \
-            CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+            CAST *ptr = (CAST*)attrbuf.data(); \
+            CAST *ptr2 = (CAST*)attrbuf2.data(); \
             radiance_scales = new float[temp_attrcount]; \
             radiance_offsets = new float[temp_attrcount]; \
             for(int l=0; l<temp_attrcount; l++) \
@@ -577,7 +577,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_general_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -602,7 +602,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)&attrbuf2[0]);
+                ret = SDreadattr(sdsid, cf_general_attrindex2, (VOIDP)attrbuf2.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -618,8 +618,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST *ptr = (CAST*)&attrbuf[0]; \
-            CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+            CAST *ptr = (CAST*)attrbuf.data(); \
+            CAST *ptr2 = (CAST*)attrbuf2.data(); \
             reflectance_scales = new float[temp_attrcount]; \
             reflectance_offsets = new float[temp_attrcount]; \
             for(int l=0; l<temp_attrcount; l++) \
@@ -656,7 +656,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, scale_factor_attr_index, (VOIDP)attrbuf.data());
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
@@ -674,7 +674,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_SCALE_FACTOR_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+            CAST tmpvalue = *(CAST*)attrbuf.data(); \
             scale = (float)tmpvalue; \
         } \
         break;
@@ -716,7 +716,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, add_offset_attr_index, (VOIDP)attrbuf.data());
                 if (ret==FAIL) 
                 {
                     SDendaccess(sdsid);
@@ -734,7 +734,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_ADD_OFFSET_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+            CAST tmpvalue = *(CAST*)attrbuf.data(); \
             field_offset = (float)tmpvalue; \
         } \
         break;
@@ -774,7 +774,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_fv_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_fv_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
@@ -792,7 +792,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_FILLVALUE_ATTR_VALUE(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST tmpvalue = *(CAST*)&attrbuf[0]; \
+            CAST tmpvalue = *(CAST*)attrbuf.data(); \
             fillvalue = (float)tmpvalue; \
         } \
         break;
@@ -832,7 +832,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_vr_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_vr_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
@@ -944,7 +944,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                   "The number of attribute count should be 2 for the DFNT_UINT8 type.");
                         }
 
-                        unsigned char* temp_valid_range = (unsigned char *)&attrbuf[0]; 
+                        unsigned char* temp_valid_range = (unsigned char *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -961,7 +961,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                   "The number of attribute count should be 2 for the DFNT_INT16 type.");
                         }
 
-                        short* temp_valid_range = (short *)&attrbuf[0]; 
+                        short* temp_valid_range = (short *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -978,7 +978,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                 "The number of attribute count should be 2 for the DFNT_UINT16 type.");
                         }
 
-                        unsigned short* temp_valid_range = (unsigned short *)&attrbuf[0]; 
+                        unsigned short* temp_valid_range = (unsigned short *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -995,7 +995,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                 "The number of attribute count should be 2 for the DFNT_INT32 type.");
                         }
 
-                        int* temp_valid_range = (int *)&attrbuf[0]; 
+                        int* temp_valid_range = (int *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -1012,7 +1012,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                "The number of attribute count should be 2 for the DFNT_UINT32 type.");
                         }
 
-                        unsigned int* temp_valid_range = (unsigned int *)&attrbuf[0]; 
+                        unsigned int* temp_valid_range = (unsigned int *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -1029,7 +1029,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                               "The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
                         }
 
-                        float* temp_valid_range = (float *)&attrbuf[0]; 
+                        float* temp_valid_range = (float *)attrbuf.data();
                         orig_valid_min = temp_valid_range[0];
                         orig_valid_max = temp_valid_range[1];
                     }
@@ -1045,7 +1045,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                             throw InternalErr(__FILE__,__LINE__,
                               "The number of attribute count should be 2 for the DFNT_FLOAT64 type.");
                         }
-                        double* temp_valid_range = (double *)&attrbuf[0];
+                        double* temp_valid_range = (double *)attrbuf.data();
 
                         // Notice: this approach will lose precision and possibly overflow. 
                         // Fortunately it is not a problem for MODIS data.
@@ -1106,7 +1106,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
@@ -1131,7 +1131,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex2, (VOIDP)&attrbuf2[0]);
+                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex2, (VOIDP)attrbuf2.data());
                 if (ret==FAIL)
                 {
                     SDendaccess(sdsid);
@@ -1151,8 +1151,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST *ptr = (CAST*)&attrbuf[0]; \
-            CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+            CAST *ptr = (CAST*)attrbuf.data(); \
+            CAST *ptr2 = (CAST*)attrbuf2.data(); \
             radiance_scales = new float[temp_attrcount]; \
             radiance_offsets = new float[temp_attrcount]; \
             for(int l=0; l<temp_attrcount; l++) \
@@ -1196,7 +1196,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex, (VOIDP)&attrbuf[0]);
+                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex, (VOIDP)attrbuf.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1226,7 +1226,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
-                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex2, (VOIDP)&attrbuf2[0]);
+                ret = SDreadattr(sdsid, cf_modl1b_rr_attrindex2, (VOIDP)attrbuf2.data());
                 if (ret==FAIL)
                 {
                     release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1244,8 +1244,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
 #define GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(TYPE, CAST) \
     case DFNT_##TYPE: \
         { \
-            CAST *ptr = (CAST*)&attrbuf[0]; \
-            CAST *ptr2 = (CAST*)&attrbuf2[0]; \
+            CAST *ptr = (CAST*)attrbuf.data(); \
+            CAST *ptr2 = (CAST*)attrbuf2.data(); \
             reflectance_scales = new float[temp_attrcount]; \
             reflectance_offsets = new float[temp_attrcount]; \
             for(int l=0; l<temp_attrcount; l++) \
@@ -1449,7 +1449,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)&tmpval[0], nelms); \
+            set_value((dods_float32 *)tmpval.data(), nelms); \
         } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=nullptr && radiance_offsets!=nullptr) || (reflectance_scales!=nullptr && reflectance_offsets!=nullptr)) \
         { \
             size_t dimindex=0; \
@@ -1489,7 +1489,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)&tmpval[0], nelms); \
+            set_value((dods_float32 *)tmpval.data(), nelms); \
         } \
     } \
     if(!change_data_value) \
@@ -1572,7 +1572,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)&tmpval[0], nelms); \
+            set_value((dods_float32 *)tmpval.data(), nelms); \
         } else 	if((num_eles_of_an_attr>1) && (((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) || ((reflectance_scales!=nullptr) && (reflectance_offsets!=nullptr)))) \
         { \
             size_t dimindex=0; \
@@ -1613,7 +1613,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 } \
             } \
             change_data_value = true; \
-            set_value((dods_float32 *)&tmpval[0], nelms); \
+            set_value((dods_float32 *)tmpval.data(), nelms); \
         } \
     } \
     if(!change_data_value) \
@@ -1641,7 +1641,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             vector<int8>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
@@ -1651,7 +1651,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            RECALCULATE(int8*, dods_byte*, &val[0]);
+            RECALCULATE(int8*, dods_byte*, val.data());
 #else
 
             vector<int32>newval;
@@ -1660,7 +1660,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
-            RECALCULATE(int32*, dods_int32*, &newval[0]);
+            RECALCULATE(int32*, dods_int32*, newval.data());
 #endif
         }
             break;
@@ -1671,7 +1671,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             vector<uint8>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
@@ -1681,7 +1681,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint8*, dods_byte*, &val[0]);
+            RECALCULATE(uint8*, dods_byte*, val.data());
         }
             break;
 
@@ -1690,7 +1690,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
             vector<int16>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
 
             if (r != 0) {
 
@@ -1701,7 +1701,7 @@ cerr<<"tmp_rank again is "<<tmp_rank <<endl;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            RECALCULATE(int16*, dods_int16*, &val[0]);
+            RECALCULATE(int16*, dods_int16*, val.data());
         }
             break;
         case DFNT_UINT16:
@@ -1727,7 +1727,7 @@ if (r != 0) {
 #endif
 
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
@@ -1737,7 +1737,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint16*, dods_uint16*, &val[0]);
+            RECALCULATE(uint16*, dods_uint16*, val.data());
         }
             break;
         case DFNT_INT32:
@@ -1745,7 +1745,7 @@ if (r != 0) {
             vector<int32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1756,7 +1756,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(int32*, dods_int32*, &val[0]);
+            RECALCULATE(int32*, dods_int32*, val.data());
         }
             break;
         case DFNT_UINT32:
@@ -1764,7 +1764,7 @@ if (r != 0) {
             vector<uint32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1775,7 +1775,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint32*, dods_uint32*, &val[0]);
+            RECALCULATE(uint32*, dods_uint32*, val.data());
         }
             break;
         case DFNT_FLOAT32:
@@ -1783,7 +1783,7 @@ if (r != 0) {
             vector<float32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1795,8 +1795,8 @@ if (r != 0) {
             }
 
             // Recalculate seems not necessary.
-            RECALCULATE(float32*, dods_float32*, &val[0]);
-            //set_value((dods_float32*)&val[0],nelms);
+            RECALCULATE(float32*, dods_float32*, val.data());
+            //set_value((dods_float32*)val.data(),nelms);
         }
             break;
         case DFNT_FLOAT64:
@@ -1804,7 +1804,7 @@ if (r != 0) {
             vector<float64>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                &offset32[0], &step32[0], &count32[0], &val[0]);
+                offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
@@ -1814,7 +1814,7 @@ if (r != 0) {
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
         }
             break;
         default:
@@ -1911,7 +1911,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<int8>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -1919,7 +1919,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value((dods_byte*)&val[0],nelms);
+            set_value((dods_byte*)val.data(),nelms);
 #else
 
             vector<int32>newval;
@@ -1928,7 +1928,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
-            set_value((dods_int32*)&newval[0],nelms);
+            set_value((dods_int32*)newval.data(),nelms);
 #endif
         }
             break;
@@ -1939,7 +1939,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<uint8>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
 
                 ostringstream eherr;
@@ -1947,7 +1947,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value((dods_byte*)&val[0],nelms);
+            set_value((dods_byte*)val.data(),nelms);
         }
             break;
 
@@ -1956,14 +1956,14 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<int16>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
 
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-           set_value((dods_int16*)&val[0],nelms);
+           set_value((dods_int16*)val.data(),nelms);
         }
             break;
         case DFNT_UINT16:
@@ -1971,14 +1971,14 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<uint16>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value((dods_uint16*)&val[0],nelms);
+            set_value((dods_uint16*)val.data(),nelms);
         }
             break;
         case DFNT_INT32:
@@ -1986,14 +1986,14 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<int32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value((dods_int32*)&val[0],nelms);
+            set_value((dods_int32*)val.data(),nelms);
         }
             break;
         case DFNT_UINT32:
@@ -2001,14 +2001,14 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<uint32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value((dods_uint32*)&val[0],nelms);
+            set_value((dods_uint32*)val.data(),nelms);
         }
             break;
         case DFNT_FLOAT32:
@@ -2016,7 +2016,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<float32>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
@@ -2024,7 +2024,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             }
 
             // Recalculate seems not necessary.
-            set_value((dods_float32*)&val[0],nelms);
+            set_value((dods_float32*)val.data(),nelms);
         }
             break;
         case DFNT_FLOAT64:
@@ -2032,13 +2032,13 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             vector<float64>val;
             val.resize(nelms);
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
-                offset32, step32, count32, &val[0]);
+                offset32, step32, count32, val.data());
             if (r != 0) {
                 ostringstream eherr;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
         }
             break;
         default:

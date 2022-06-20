@@ -202,10 +202,10 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset, int* step, int nelm
         total_val.resize(LL_total_num);
         for (int total_i = 0; total_i < LL_total_num; total_i++)
             total_val[total_i] = LL_first_point + total_i * LL_step;
-        memcpy(buf, &total_val[0], 4 * LL_total_num);
+        memcpy(buf, total_val.data(), 4 * LL_total_num);
     }
 
-    set_value((dods_float32 *) &val[0], nelms);
+    set_value((dods_float32 *) val.data(), nelms);
     H5Gclose(rootid);
     HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
 }
@@ -379,7 +379,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
             total_val.resize(latsize);
             for (int total_i = 0; total_i < latsize; total_i++)
                 total_val[total_i] = lat_start + lat_res / 2 + total_i * lat_res;
-            memcpy(buf, &total_val[0], 4 * latsize);
+            memcpy(buf, total_val.data(), 4 * latsize);
         }
     }
     else if (CV_LON_MISS == cvartype) {
@@ -399,12 +399,12 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
             total_val.resize(lonsize);
             for (int total_i = 0; total_i < lonsize; total_i++)
                 total_val[total_i] = lon_start + lon_res / 2 + total_i * lon_res;
-            memcpy(buf, &total_val[0], 4 * lonsize);
+            memcpy(buf, total_val.data(), 4 * lonsize);
         }
 
     }
 
-    set_value((dods_float32 *) &val[0], nelms);
+    set_value((dods_float32 *) val.data(), nelms);
 
     H5Gclose(grid_grp_id);
     HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
@@ -425,7 +425,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
     for (int i = 0; i < nelms; ++i)
     val[i] = LL_first_point + (offset[0] + i*step[0])*LL_step;
 
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
     H5Gclose(rootid);
     //H5Fclose(fileid);
 #endif
@@ -513,7 +513,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         }
         else {
             str_attr_value.resize(atype_size);
-            if (H5Aread(s_attr_id, attr_type, &str_attr_value[0]) < 0) {
+            if (H5Aread(s_attr_id, attr_type, str_attr_value.data()) < 0) {
                 string msg = "cannot retrieve the value of  the attribute ";
                 msg += s_attr_name;
                 H5Tclose(attr_type);
@@ -574,7 +574,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
 #endif
         BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
         grid_info_value1.resize(strlen(attr_na.value));
-        memcpy(&grid_info_value1[0],attr_na.value,strlen(attr_na.value));
+        memcpy(grid_info_value1.data(),attr_na.value,strlen(attr_na.value));
 #if 0
         string tv(grid_info_value1.begin(),grid_info_value1.end());
         cerr<<"grid_info_value1 is "<<tv <<endl;
@@ -603,7 +603,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
                 //grid_info_value2(attr_na.value,attr_na.value+strlen(attr_na.value));
 #endif
                 grid_info_value2.resize(strlen(attr_na.value));
-                memcpy(&grid_info_value2[0],attr_na.value,strlen(attr_na.value));
+                memcpy(grid_info_value2.data(),attr_na.value,strlen(attr_na.value));
 #if 0
             string tv(grid_info_value2.begin(),grid_info_value2.end());
             //cerr<<"grid_info_value2 is "<<tv <<endl;
@@ -863,7 +863,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
             total_val.resize(latsize);
             for (int total_i = 0; total_i < latsize; total_i++)
                 total_val[total_i] = lat_start + lat_res / 2 + total_i * lat_res;
-            memcpy(buf, &total_val[0], 4 * latsize);
+            memcpy(buf, total_val.data(), 4 * latsize);
         }
     }
     else if (CV_LON_MISS == cvartype) {
@@ -884,12 +884,12 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
             total_val.resize(lonsize);
             for (int total_i = 0; total_i < lonsize; total_i++)
                 total_val[total_i] = lon_start + lon_res / 2 + total_i * lon_res;
-            memcpy(buf, &total_val[0], 4 * lonsize);
+            memcpy(buf, total_val.data(), 4 * lonsize);
         }
 
     }
 
-    set_value((dods_float32 *) &val[0], nelms);
+    set_value((dods_float32 *) val.data(), nelms);
 
 }
 
@@ -908,12 +908,12 @@ void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf)
     count.resize(rank);
     step.resize(rank);
 
-    int nelms = format_constraint(&offset[0], &step[0], &count[0]);
+    int nelms = format_constraint(offset.data(), step.data(), count.data());
 
     if (GPMM_L3 == product_type || GPMS_L3 == product_type || GPM_L3_New == product_type)
-        obtain_gpm_l3_ll(&offset[0], &step[0], nelms, add_cache, buf);
+        obtain_gpm_l3_ll(offset.data(), step.data(), nelms, add_cache, buf);
     else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
-        obtain_aqu_obpg_l3_ll(&offset[0], &step[0], nelms, add_cache, buf);
+        obtain_aqu_obpg_l3_ll(offset.data(), step.data(), nelms, add_cache, buf);
 
     return;
 

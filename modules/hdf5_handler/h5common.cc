@@ -192,15 +192,15 @@ get_slabdata(hid_t dset, const int *offset, const int *step, const int *count, c
     }
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET, 
-                           (const hsize_t *)&dyn_offset[0], &dyn_step[0],
-                            &dyn_count[0], nullptr) < 0) {
+                           (const hsize_t *)dyn_offset.data(), dyn_step.data(),
+                            dyn_count.data(), nullptr) < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
         H5Sclose(dspace);
         throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
     }
 
-    hid_t memspace = H5Screate_simple(num_dim, &dyn_count[0], nullptr);
+    hid_t memspace = H5Screate_simple(num_dim, dyn_count.data(), nullptr);
     if (memspace < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
@@ -314,9 +314,9 @@ bool read_vlen_string(hid_t dsetid, const int nelms, const hsize_t *hoffset, con
     strval.resize(nelms*ty_size);
     hid_t read_ret = -1;
     if (true == is_scalar) 
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
+        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)strval.data());
     else 
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&strval[0]);
+        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)strval.data());
 
     if (read_ret < 0) {
         if (false == is_scalar)  
@@ -328,7 +328,7 @@ bool read_vlen_string(hid_t dsetid, const int nelms, const hsize_t *hoffset, con
     }
 
     // For scalar, nelms is 1.
-    char *temp_bp = &strval[0];
+    char *temp_bp = strval.data();
     for (int i =0;i<nelms;i++) {
         char *onestring = *(char**)temp_bp;
         if(onestring!=nullptr ) 
@@ -341,9 +341,9 @@ bool read_vlen_string(hid_t dsetid, const int nelms, const hsize_t *hoffset, con
     if (false == strval.empty()) {
         herr_t ret_vlen_claim;
         if (true == is_scalar) 
-            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
+            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)strval.data());
         else 
-            ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)&strval[0]);
+            ret_vlen_claim = H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)strval.data());
         if (ret_vlen_claim < 0){
             if (false == is_scalar) 
                 H5Sclose(mspace);

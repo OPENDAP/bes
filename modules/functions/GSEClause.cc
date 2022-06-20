@@ -106,7 +106,7 @@ void
 GSEClause::set_start_stop()
 {
     vector<T> vals(d_map->length());
-    d_map->value(&vals[0]);
+    d_map->value(vals.data());
 
     if (!((unsigned long)d_start < vals.size() && (unsigned long)d_stop < vals.size()))
         throw BESInternalError("Access beyond the bounds of a Grid Map.", __FILE__, __LINE__);

@@ -259,13 +259,13 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
             vector<char> oname;
             oname.resize((size_t) oname_size + 1);
 
-            if (H5Lget_name_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oname[0], (size_t) (oname_size + 1),
+            if (H5Lget_name_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, oname.data(), (size_t) (oname_size + 1),
                 H5P_DEFAULT) < 0)
             throw2("Error getting the hdf5 object name from the group: ", gname);
 
             // Check if it is a hard link or a soft link
             H5L_info_t linfo;
-            if (H5Lget_info(grp_id, &oname[0], &linfo, H5P_DEFAULT) < 0)
+            if (H5Lget_info(grp_id, oname.data(), &linfo, H5P_DEFAULT) < 0)
             throw2("HDF5 link name error from ", gname);
 
             // We ignore soft links and external links for the CF options 
@@ -550,7 +550,7 @@ void File::Retrieve_H5_VarDim(Var *var, hid_t dset_id, const string & varname, b
 
                 // The netcdf DAP client supports the representation of the unlimited dimension. 
                 // So we need to check.
-                if (H5Sget_simple_extent_dims(dspace_id, &dsize[0], &maxsize[0]) < 0)
+                if (H5Sget_simple_extent_dims(dspace_id, dsize.data(), maxsize.data()) < 0)
                     throw2("Cannot obtain the dim. info for the variable ", varname);
 
                 for (int i = 0; i < ndims; i++) {
@@ -662,7 +662,7 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
             maxsize.resize(ndims);
 
             // Obtain the attribute data space information.
-            if (H5Sget_simple_extent_dims(aspace_id, &asize[0], &maxsize[0]) < 0)
+            if (H5Sget_simple_extent_dims(aspace_id, asize.data(), maxsize.data()) < 0)
             throw2("Cannot obtain the dim. info for the attribute ", attr_name);
 
             // Here we need to take care of 0-length attribute. This is legal in HDF5.
@@ -793,12 +793,12 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name)
             vector<char> temp_buf;
             temp_buf.resize(total_bytes);
 
-            if (H5Aread(attr_id, memtype_id, &temp_buf[0]) < 0)
+            if (H5Aread(attr_id, memtype_id, temp_buf.data()) < 0)
                 throw4("Cannot obtain the value of the attribute ", attr->name, " of object ", obj_name);
 
             char *temp_bp = nullptr;
-            char *ptr_1stvlen_ptr = &temp_buf[0];
-            temp_bp = &temp_buf[0];
+            char *ptr_1stvlen_ptr = temp_buf.data();
+            temp_bp = temp_buf.data();
             char* onestring = nullptr;
             string total_vstring = "";
 
@@ -825,7 +825,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name)
                     throw4("Cannot obtain space id for ", attr->name, " of object ", obj_name);
 
                 // Reclaim any VL memory if necessary.
-                if (H5Dvlen_reclaim(memtype_id, aspace_id, H5P_DEFAULT, &temp_buf[0]) < 0)
+                if (H5Dvlen_reclaim(memtype_id, aspace_id, H5P_DEFAULT, temp_buf.data()) < 0)
                     throw4("Cannot reclaim VL memory for ", attr->name, " of object ", obj_name);
 
                 H5Sclose(aspace_id);
@@ -2621,7 +2621,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
         }
         vector<char> strval;
         strval.resize(total_elms * ty_size);
-        hid_t read_ret = H5Dread(dset_id, dtype_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void*) &strval[0]);
+        hid_t read_ret = H5Dread(dset_id, dtype_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void*) strval.data());
         if (read_ret < 0) {
             H5Tclose(dtype_id);
             H5Dclose(dset_id);
@@ -2630,7 +2630,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
 
         vector<string> finstrval;
         finstrval.resize(total_elms);
-        char*temp_bp = &strval[0];
+        char*temp_bp = strval.data();
         char*onestring = nullptr;
         for (unsigned long long i = 0; i < total_elms; i++) {
             onestring = *(char**) temp_bp;
@@ -2652,7 +2652,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
                 H5Dclose(dset_id);
                 throw2("Cannot obtain the dataspace id.", varpath);
             }
-            ret_vlen_claim = H5Dvlen_reclaim(dtype_id, dspace_id, H5P_DEFAULT, (void*) &strval[0]);
+            ret_vlen_claim = H5Dvlen_reclaim(dtype_id, dspace_id, H5P_DEFAULT, (void*) strval.data());
             if (ret_vlen_claim < 0) {
                 H5Tclose(dtype_id);
                 H5Sclose(dspace_id);
@@ -2717,7 +2717,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
 
             vector<char> strval;
             strval.resize(total_elms * ty_size);
-            hid_t read_ret = H5Dread(dset_id, dtype_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void*) &strval[0]);
+            hid_t read_ret = H5Dread(dset_id, dtype_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void*) strval.data());
             if (read_ret < 0) {
                 H5Tclose(dtype_id);
                 H5Dclose(dset_id);
@@ -2726,7 +2726,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
 
             vector<string> finstrval;
             finstrval.resize(total_elms);
-            char*temp_bp = &strval[0];
+            char*temp_bp = strval.data();
             char*onestring = nullptr;
             for (unsigned long long i = 0; i < total_elms; i++) {
                 onestring = *(char**) temp_bp;
@@ -2746,7 +2746,7 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
                     H5Dclose(dset_id);
                     throw2("Cannot obtain the dataspace id.", varpath);
                 }
-                ret_vlen_claim = H5Dvlen_reclaim(dtype_id, dspace_id, H5P_DEFAULT, (void*) &strval[0]);
+                ret_vlen_claim = H5Dvlen_reclaim(dtype_id, dspace_id, H5P_DEFAULT, (void*) strval.data());
                 if (ret_vlen_claim < 0) {
                     H5Tclose(dtype_id);
                     H5Sclose(dspace_id);

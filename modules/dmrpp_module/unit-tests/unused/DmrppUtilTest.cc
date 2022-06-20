@@ -85,7 +85,7 @@ public:
 
         ifs.seekg(offset);
         vector<char> buf(size);
-        ifs.read(&buf[0], size);
+        ifs.read(buf.data(), size);
 
         if (ifs.bad() || ifs.fail()) throw BESError("Could not open file: " + file, BES_INTERNAL_ERROR, __FILE__,
         __LINE__);
@@ -101,7 +101,7 @@ public:
             vector<char> buf = read_chunk(test_data_dir + "/chunked_oneD.h5", 3496, chunk_size);
 
             for (unsigned int i = 0; i < chunk_size / sizeof(dods_float32); ++i) {
-                dods_float32 value = *(reinterpret_cast<dods_float32*>(&buf[0] + i * sizeof(dods_float32)));
+                dods_float32 value = *(reinterpret_cast<dods_float32*>(buf.data() + i * sizeof(dods_float32)));
                 BESDEBUG("dmrpp", "buf[" << i << "]: " << value << endl);
                 CPPUNIT_ASSERT(double_eq(value, i));
             }
@@ -128,10 +128,10 @@ public:
 
             vector<char> dest(uncomp_size);
 
-            inflate(&dest[0], dest.size(), &buf[0], buf.size());
+            inflate(dest.data(), dest.size(), buf.data(), buf.size());
 
             for (unsigned int i = 0; i < dest.size() / sizeof(dods_float32); ++i) {
-                dods_float32 value = *(reinterpret_cast<dods_float32*>(&dest[0] + i * sizeof(dods_float32)));
+                dods_float32 value = *(reinterpret_cast<dods_float32*>(dest.data() + i * sizeof(dods_float32)));
                 BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
                 CPPUNIT_ASSERT(double_eq(value, i));
             }
@@ -157,10 +157,10 @@ public:
 
             vector<char> dest(elems * width);
 
-            unshuffle(&dest[0], src, elems * width, width);
+            unshuffle(dest.data(), src, elems * width, width);
 
             for (unsigned int i = 0; i < elems; ++i) {
-                dods_int32 value = *(reinterpret_cast<dods_int32*>(&dest[0] + i * sizeof(dods_int32)));
+                dods_int32 value = *(reinterpret_cast<dods_int32*>(dest.data() + i * sizeof(dods_int32)));
                 BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
                 CPPUNIT_ASSERT(value == (dods_int32)i + 1);
             }
@@ -189,10 +189,10 @@ public:
 
             vector<char> dest(src_size);
 
-            unshuffle(&dest[0], src, src_size, width);
+            unshuffle(dest.data(), src, src_size, width);
 
             for (unsigned int i = 0; i < elems; ++i) {
-                dods_int32 value = *(reinterpret_cast<dods_int32*>(&dest[0] + i * sizeof(dods_int32)));
+                dods_int32 value = *(reinterpret_cast<dods_int32*>(dest.data() + i * sizeof(dods_int32)));
                 BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
                 CPPUNIT_ASSERT(value == (dods_int32)i + 1);
             }
@@ -222,10 +222,10 @@ public:
 
             vector<char> dest(src_size);
 
-            unshuffle(&dest[0], src, src_size, width);
+            unshuffle(dest.data(), src, src_size, width);
 
             for (unsigned int i = 0; i < elems; ++i) {
-                dods_byte value = *(reinterpret_cast<dods_byte*>(&dest[0] + i * sizeof(dods_byte)));
+                dods_byte value = *(reinterpret_cast<dods_byte*>(dest.data() + i * sizeof(dods_byte)));
                 BESDEBUG("dmrpp", "dest[" << i << "]: " << value << endl);
                 CPPUNIT_ASSERT(value == (dods_byte)i);
             }

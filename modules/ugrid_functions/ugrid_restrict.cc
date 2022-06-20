@@ -558,7 +558,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
             BESDEBUG("ugrid", "ugrid_restrict() - there are "<< nodeResultSize << " nodes in the subset." << endl);
             vector<unsigned int> node_subset_index(nodeResultSize);
             if (nodeResultSize > 0) {
-                tdmt->getResultIndex(node, &node_subset_index[0]);
+                tdmt->getResultIndex(node, node_subset_index.data());
             }
             location_subset_indices[node] = &node_subset_index;
 
@@ -568,7 +568,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
             BESDEBUG("ugrid", "ugrid_restrict() - there are "<< faceResultSize << " faces in the subset." << endl);
             vector<unsigned int> face_subset_index(faceResultSize);
             if (faceResultSize > 0) {
-                tdmt->getResultIndex(face, &face_subset_index[0]);
+                tdmt->getResultIndex(face, face_subset_index.data());
             }
             location_subset_indices[face] = &face_subset_index;
             BESDEBUG("ugrid2", "ugrid_restrict() - face_subset_index: "<< vectorToString(&face_subset_index) << endl);

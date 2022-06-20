@@ -443,7 +443,7 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, &d_dim_ids[0], &_varid);
+        int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &_varid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - Failed to define variable " + _varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -460,9 +460,9 @@ void FONcArray::define(int ncid) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
             if (FONcRequestHandler::chunk_size == 0)
                 // I have no idea if chunksizes is needed in this case.
-                stax = nc_def_var_chunking(ncid, _varid, NC_CONTIGUOUS, &d_chunksizes[0]);
+                stax = nc_def_var_chunking(ncid, _varid, NC_CONTIGUOUS, d_chunksizes.data());
             else
-                stax = nc_def_var_chunking(ncid, _varid, NC_CHUNKED, &d_chunksizes[0]);
+                stax = nc_def_var_chunking(ncid, _varid, NC_CHUNKED, d_chunksizes.data());
 
             if (stax != NC_NOERR) {
                 string err = "fileout.netcdf - Failed to define chunking for variable " + _varname;
@@ -628,7 +628,7 @@ void FONcArray::write(int ncid) {
             var_start[d_ndims - 1] = 0;
 
             // write out the string
-            int stax = nc_put_vara_text(ncid, _varid, &var_start[0], &var_count[0], d_a->get_str()[element].c_str()); //d_str_data[element].c_str());
+            int stax = nc_put_vara_text(ncid, _varid, var_start.data(), var_count.data(), d_a->get_str()[element].c_str()); //d_str_data[element].c_str());
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to create array of strings for " + _varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -685,7 +685,7 @@ void FONcArray::write(int ncid) {
                     for (int d_i = 0; d_i < d_nelements; d_i++)
                         data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
-                    int stax = nc_put_var_short(ncid, _varid, &data[0]);
+                    int stax = nc_put_var_short(ncid, _varid, data.data());
                     if (stax != NC_NOERR) {
                         string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -732,7 +732,7 @@ void FONcArray::write(int ncid) {
                     for (int d_i = 0; d_i < d_nelements; d_i++)
                         data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
 
-                    int stax = nc_put_var_int(ncid, _varid, &data[0]);
+                    int stax = nc_put_var_int(ncid, _varid, data.data());
                     if (stax != NC_NOERR) {
                         string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);

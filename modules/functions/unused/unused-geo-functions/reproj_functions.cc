@@ -312,7 +312,7 @@ void read_band_data(const Grid* g, const SizeBox &g_size, GDALRasterBand* band)
 
 	// TODO Look at using WriteBlock() because it might be faster. jhrg 10/6/16
 	CPLErr error = band->RasterIO(GF_Write, 0, 0, g_size.x_size, g_size.y_size,
-			&values[0], g_size.x_size, g_size.y_size, GDT_Float64, 0, 0);
+			values.data(), g_size.x_size, g_size.y_size, GDT_Float64, 0, 0);
 	if (error != CPLE_None)
 		throw Error("Could not load data for grid '" + g->name() + "': " + CPLGetLastErrorMsg());
 }
@@ -350,7 +350,7 @@ unique_ptr<GDALDataset> build_src_dataset(Grid *g)
 	read_band_data(g, g_size, band);
 
 	vector<double> geo_transform = get_geotransform_data(lat, lon, g_size);
-    ds->SetGeoTransform(&geo_transform[0]);
+    ds->SetGeoTransform(geo_transform.data());
 
     // Supported values:
     // "WGS84": same as "EPSG:4326" but has no dependence on EPSG data files.
@@ -463,7 +463,7 @@ Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs, 
     	throw Error("Could not set the dataset native CRS.");
 
     vector<double> geo_transform = get_geotransform_data(lat, lon, g_size);
-    ds->SetGeoTransform(&geo_transform[0]);
+    ds->SetGeoTransform(geo_transform.data());
 
    // Read this from the 'missing_value' or '_FillValue' attributes
      string mv_attr = g->get_attr_table().get_attr("missing_value");

@@ -1002,7 +1002,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,const Attr
             throw2("Cannot obtain the memory datatype for the attribute ",dimlistattr->name);
 
 
-        if (H5Aread(attr_id,amemtype_id,&vlbuf[0]) <0)  
+        if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)
             throw2("Cannot obtain the referenced object for the variable ",var->name);
         
 
@@ -1037,7 +1037,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,const Attr
             if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
-            if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
+            if ((objnamelen= H5Iget_name(ref_dset,objname.data(),objnamelen+1))<=0)
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
 
             auto objname_str = string(objname.begin(),objname.end());
@@ -1059,7 +1059,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,const Attr
             if ((aspace_id = H5Aget_space(attr_id)) < 0)
                 throw2("Cannot get hdf5 dataspace id for the attribute ",dimlistattr->name);
 
-            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)&vlbuf[0])<0) 
+            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0)
                 throw2("Cannot successfully clean up the variable length memory for the variable ",var->name);
 
             H5Sclose(aspace_id);
@@ -1270,7 +1270,7 @@ void GMFile::Add_Dim_Name_GPM()
 
                 vector<string> ind_elems;
                 char sep=',';
-                HDF5CFUtil::Split(&dimname_value[0],sep,ind_elems);
+                HDF5CFUtil::Split(dimname_value.data(),sep,ind_elems);
 
                 if(ind_elems.size() != (size_t)((*irv)->getRank())) {
                     throw2("The number of dims obtained from the <DimensionNames> attribute is not equal to the rank ", 
@@ -2797,7 +2797,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
             throw2("Cannot obtain the memory datatype for the attribute ",dimlistattr->name);
 
 
-        if (H5Aread(attr_id,amemtype_id,&vlbuf[0]) <0)  
+        if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)
             throw2("Cannot obtain the referenced object for the variable ",var->name);
         
 
@@ -2816,7 +2816,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
             if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
-            if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
+            if ((objnamelen= H5Iget_name(ref_dset,objname.data(),objnamelen+1))<=0)
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
 
             auto objname_str = string(objname.begin(),objname.end());
@@ -2846,7 +2846,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
             if ((aspace_id = H5Aget_space(attr_id)) < 0)
                 throw2("Cannot get hdf5 dataspace id for the attribute ",dimlistattr->name);
 
-            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)&vlbuf[0])<0) 
+            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0)
                 throw2("Cannot successfully clean up the variable length memory for the variable ",var->name);
 
             H5Sclose(aspace_id);

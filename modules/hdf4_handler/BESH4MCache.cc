@@ -187,7 +187,7 @@ bool BESH4Cache::write_cached_data(const string & cache_file_name, const int exp
         ssize_t ret_val = 0;
 
         // 2. write the file.
-        ret_val = write(fd, &val[0], expected_file_size);
+        ret_val = write(fd, val.data(), expected_file_size);
 
         // 3. If the written size is not the same as the expected file size, purge the file.
         if (ret_val != expected_file_size) {

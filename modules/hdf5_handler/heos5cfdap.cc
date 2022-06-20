@@ -1139,7 +1139,7 @@ void read_ecs_metadata(hid_t s_file_id,
 
         // Obtain the name of the object.
         vector<char> oname(oname_size + 1);
-        if (H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+        if (H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
                 (size_t)(oname_size+1), H5P_DEFAULT)<0){
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
@@ -1150,7 +1150,7 @@ void read_ecs_metadata(hid_t s_file_id,
         // Check if this object is an HDF5 dataset, not, throw an error.
         // First, check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(ecs_grp_id,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(ecs_grp_id,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
             H5Gclose(ecs_grp_id);
@@ -1509,7 +1509,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         // Obtain the real value of the metadata
         vector<char> s_buf(dtype_size*s_nelms +1);
 
-        if ((H5Dread(s_dset_id,s_ty_id,H5S_ALL,H5S_ALL,H5P_DEFAULT,&s_buf[0]))<0) {
+        if ((H5Dread(s_dset_id,s_ty_id,H5S_ALL,H5S_ALL,H5P_DEFAULT,s_buf.data()))<0) {
 
             string msg = "Cannot read HDF5 dataset  ";
             msg += s_oname[i];
