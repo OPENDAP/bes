@@ -34,12 +34,6 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
     if(rank !=2) 
         throw InternalErr (__FILE__, __LINE__, "The field rank must be 2 for swath multi-dimension map reading.");
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
@@ -518,7 +512,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
 int
 HDFEOS2ArraySwathGeoMultiDimMapField::format_constraint (int *offset, int *step, int *count)
 {  
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -550,7 +544,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::format_constraint (int *offset, int *step,
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }// end of while
 
     return nels;
 }
@@ -559,12 +553,12 @@ HDFEOS2ArraySwathGeoMultiDimMapField::format_constraint (int *offset, int *step,
 // from the DAP expression constraint
 template < class T >
 bool HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset (T * outlatlon,
-                                                  const int /*majordim //unused SBL 2/7/20 */,
+                                                  const int ,
                                                   const int minordim,
                                                   T * latlon,
-                                                  int32 * offset,
-                                                  int32 * count,
-                                                  int32 * step)
+                                                  const int32 * offset,
+                                                  const int32 * count,
+                                                  const int32 * step) const
 {
 #if 0
     T (*templatlonptr)[majordim][minordim] = (T *[][]) latlon;
@@ -608,7 +602,7 @@ template < class T > int
 HDFEOS2ArraySwathGeoMultiDimMapField::
 GetFieldValue (int32 swathid, const string & geofieldname,
     const vector <int>&dimsizes,const vector<int>&offset,const vector<int>&inc,
-    vector < T > &vals, vector<int32>&newdims)
+    vector < T > &vals, vector<int32>&newdims) 
 {
 
     int32 ret = -1; 
@@ -674,7 +668,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::_expand_dimmap_field (vector < T >
                                                     int dimindex,
                                                     int32 ddimsize,
                                                     int32 offset,
-                                                    int32 inc)
+                                                    int32 inc) const
 {
     vector < T > orig = *pvals;
     vector < int32 > pos;

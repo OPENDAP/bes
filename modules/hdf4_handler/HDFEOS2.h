@@ -69,17 +69,15 @@ namespace HDFEOS2
         public:
             /// Constructor
             explicit Exception (const std::string & msg)
-                : message (msg), isHDFEOS2 (true)
+                : message (msg)
             {
             }
 
             /// Destructor
-            virtual ~ Exception () throw ()
-            {
-            }
+            ~ Exception () throw () override = default;
 
             /// Exception message
-            virtual const char *what () const throw ()
+            const char *what () const throw () override
             {
                 return this->message.c_str ();
             }
@@ -98,14 +96,14 @@ namespace HDFEOS2
             }
 
             /// set exception message
-            virtual void setException (std::string exception_message)
+            virtual void setException (const std::string & exception_message)
             {
                 this->message = exception_message;
             }
 
         private:
             std::string message;
-            bool isHDFEOS2;
+            bool isHDFEOS2 = true;
     };
 
     /// This class is similar to a standard vector class but with only limited
@@ -118,9 +116,7 @@ namespace HDFEOS2
     /// subclasses use this class to hold elements in the field.
     template < typename T > class LightVector {
         public:
-            LightVector ()
-                : data (0), length (0), capacity (0) {
-            }
+            LightVector () = default;
 
             LightVector (const LightVector < T > &that)
             {
@@ -217,9 +213,9 @@ namespace HDFEOS2
             }
 
         private:
-            T * data;
-            unsigned int length;
-            unsigned int capacity;
+            T * data = nullptr;
+            unsigned int length = 0;
+            unsigned int capacity = 0;
     };
 
     class SwathDimensionAdjustment;
@@ -260,8 +256,6 @@ namespace HDFEOS2
     {
         public:
             Field ()
-                :fieldtype (0), condenseddim (false), iscoard (false), ydimmajor (true), speciallon (false), specialformat (0), haveaddedfv (false), addedfv (-9999.0), dmap (false)/*, field_cache(0)*/
-
             {
                 name ="";
                 rank =-1;
@@ -275,8 +269,6 @@ namespace HDFEOS2
                 units="";
             }
             virtual ~ Field ();
-
-        public:
 
             /// Get the name of this field
             const std::string & getName () const
@@ -327,19 +319,19 @@ namespace HDFEOS2
             }
 
             /// Set the "coordinates" attribute value
-            void setCoordinates (std::string coor)
+            void setCoordinates (const std::string& coor)
             {
                 coordinates = coor;
             }
 
             /// Get the "units" attribute value 
-            const std::string getUnits () const
+            std::string getUnits () const
             {
                 return this->units;
             }
 
             /// Set the "units" attribute value
-            void setUnits (std::string uni)
+            void setUnits (const std::string& uni)
             {
                 units = uni;
             }
@@ -402,19 +394,19 @@ namespace HDFEOS2
             /// Obtain swath the dimension map offset of the first dimenion.
             /// Only apply to Latitude/Longitude(fieldtype=1,or 2) when
             /// the file contains multiple swath dimension maps(multi_dimmap =true).
-            const int getLLDim0Offset () const
+            int getLLDim0Offset () const
             {
                 return this->ll_dim0_offset;
             }
-            const int getLLDim0Inc () const
+            int getLLDim0Inc () const
             {
                 return this->ll_dim0_inc;
             }
-            const int getLLDim1Offset () const
+            int getLLDim1Offset () const
             {
                 return this->ll_dim1_offset;
             }
-            const int getLLDim1Inc () const
+            int getLLDim1Inc () const
             {
                 return this->ll_dim1_inc;
             }
@@ -463,7 +455,7 @@ namespace HDFEOS2
                 return this->field_cache;
             }
 #endif
-        protected:
+        private:
             // field name
             std::string name;
 
@@ -500,7 +492,7 @@ namespace HDFEOS2
             // 3 means this field is other dimension variable.
             // 4 means this field is added other dimension variable with nature number.
             // 5 means time, but currently the units is not correct.
-            int fieldtype;
+            int fieldtype = 0;
 
             //  Latitude and longitude retrieved by HDF-EOS2 are always
             //  2-D arrays(XDim * YDim). However, for some projections
@@ -510,17 +502,17 @@ namespace HDFEOS2
             //  the disk storage and can greatly improve the performance for 
             //  the visualization tool to access the latitude and longitde.
             //  condenseddim is the flag internally used by the handler to track this.
-            bool condenseddim;
+            bool condenseddim = false;
 
             //   This flag is to mark if the data should follow COARDS.
-            bool iscoard;
+            bool iscoard = false;
 
             //   This flag is to check if the field is YDim major(temp(YDim,XDim). This
             //   flag is necessary when calling GDij2ll to retrieve latitude and longitude.
-            bool ydimmajor;
+            bool ydimmajor = true;
 
             // SOme special longitude is from 0 to 360.We need to check this case with this flag.
-            bool speciallon;
+            bool speciallon = false;
 
             // This flag specifies the special latitude/longitude coordinate format
             // The latiude and longitude should represent as DDDMMMSSS format
@@ -530,7 +522,7 @@ namespace HDFEOS2
             // 0 means normal 
             // 1 means the coordinate is -180 to 180
             // 2 means the coordinate is default(0)
-            int specialformat;
+            int specialformat = 0;
 
             // CF units attribute(mostly to add latitude and longitude CF units).
             std::string units;
@@ -538,16 +530,16 @@ namespace HDFEOS2
             // Some data products have fillvalue(-9999.0) but don't specify the fillvalue.
             // We add the fillvalue to ensure the netCDF client can successfully display the data.
             // haveaddedfv and addedfv are to check if having added fillvalues.
-            bool haveaddedfv;
+            bool haveaddedfv = false;
             int ll_dim0_offset;
             int ll_dim0_inc;
             int ll_dim1_offset;
             int ll_dim1_inc;
              
-            float addedfv;
+            float addedfv = -9999.0;
 
             // Check if this swath uses the dimension map. 
-            bool dmap;
+            bool dmap = false;
 
         friend class Dataset;
         friend class SwathDimensionAdjustment;
@@ -701,7 +693,7 @@ namespace HDFEOS2
             /// MODIS_EQ_SCALE: raw_data = scale*data + offset
             /// MODIS_MUL_SCALE: raw_data = scale*(data -offset)
             /// MODIS_DIV_SCALE: raw_data = (data-offset)/scale
-            void SetScaleType(const std::string EOS2ObjName) throw(Exception);
+            void SetScaleType(const std::string & EOS2ObjName) throw(Exception);
 
             int obtain_dimsize_with_dimname(const std::string& dimname);
         protected:
@@ -793,14 +785,11 @@ namespace HDFEOS2
                         return this->lowright;
                     }
                 protected:
-                    Info() {
-                        xdim = -1;
-                        ydim = -1;
-                    }
+                    Info() = default;
 
                 private:
-                    int32 xdim;
-                    int32 ydim;
+                    int32 xdim = -1;
+                    int32 ydim = -1;
                     float64 upleft[2];
                     float64 lowright[2];
 
@@ -851,21 +840,15 @@ namespace HDFEOS2
                     }
 
                 protected:
-                    Projection() {
-                        code = -1;
-                        zone = -1;
-                        sphere = -1;
-                        pix    = -1;
-                        origin = -1;
+                    Projection() = default;
 
-                    }
                 private:
-                    int32 code;
-                    int32 zone;
-                    int32 sphere;
+                    int32 code = -1;
+                    int32 zone = -1;
+                    int32 sphere = -1;
                     float64 param[16];
-                    int32 pix;
-                    int32 origin;
+                    int32 pix = -1;
+                    int32 origin =-1;
 
                 friend class GridDataset;
             };
@@ -879,14 +862,16 @@ namespace HDFEOS2
                     /// We follow C-major convention. Normally YDim is major.
                     /// Sometimes it is not. .
                     bool isYDimMajor () throw (Exception);
+#if 0
                     /// The projection can be either 1-D or 2-D. For 1-D, the method
                     /// returns true. Otherwise, return false.
                     /// bool isOrthogonal () throw (Exception);
+#endif
 
                 protected:
 
                     explicit Calculated (const GridDataset * eos_grid)
-                        : grid (eos_grid),  ydimmajor (false)
+                        : grid (eos_grid)
                     {
                     }
 
@@ -909,7 +894,7 @@ namespace HDFEOS2
 
                 private:
                     const GridDataset *grid;
-                    bool ydimmajor;
+                    bool ydimmajor = false;
 
                 friend class GridDataset;
                 friend class File;
@@ -919,7 +904,7 @@ namespace HDFEOS2
                 /// Read all information regarding this Grid.
                 static GridDataset *Read (int32 fd, const std::string & gridname) throw (Exception);
 
-                virtual ~ GridDataset ();
+                ~ GridDataset () override;
 
                 /// Return all information of Info class.
                 const Info & getInfo () const
@@ -937,12 +922,12 @@ namespace HDFEOS2
                 Calculated & getCalculated () const;
 
                 /// set dimxname, "XDim" may be "LonDim" or "nlon"
-                void setDimxName (std::string dxname)
+                void setDimxName (const std::string &dxname)
                 {
                     dimxname = dxname;
                 }
                 /// set dimyname, "YDim" may be "LatDim" or "nlat"
-                void setDimyName (std::string dyname)
+                void setDimyName (const std::string &dyname)
                 {
                     dimyname = dyname;
                 }
@@ -955,10 +940,8 @@ namespace HDFEOS2
 
             private:
                 explicit GridDataset (const std::string & g_name)
-                    : Dataset (g_name), calculated (0), ownllflag (false), iscoard (false)
+                    : Dataset (g_name), calculated(0)
                 {
-                    latfield = NULL;
-                    lonfield = NULL;
                 }
 
             private:
@@ -974,14 +957,14 @@ namespace HDFEOS2
                 mutable Calculated calculated;
 
                 /// This flag is for AIRS level 3 data since the lat/lon for this product is under the geolocation grid.
-                bool ownllflag;
+                bool ownllflag = false;
 
                 /// If this grid is following COARDS
-                bool iscoard;
+                bool iscoard = false;
 
                 /// Each grid has its own lat and lon. So separate them from the rest fields.
-                Field *latfield;
-                Field *lonfield;
+                Field *latfield = nullptr;
+                Field *lonfield = nullptr;
 
                 /// Each grid has its own dimension names for latitude and longtiude. Also separate them from the rest fields.
                 std::string dimxname;
@@ -1086,7 +1069,7 @@ namespace HDFEOS2
                 /// This method reads the information of all fields in a swath
                 static SwathDataset *Read (int32 fd, const std::string & swathname) throw (Exception);
 
-                virtual ~ SwathDataset ();
+                ~ SwathDataset () override;
 
                 /// Obtain all information regarding dimension maps of this swath
                 const std::vector < DimensionMap * >&getDimensionMaps () const
@@ -1117,7 +1100,7 @@ namespace HDFEOS2
 
             private:
                  explicit SwathDataset (const std::string & swath_name)
-                    : Dataset (swath_name),num_map(0),GeoDim_in_vars(false) {
+                    : Dataset (swath_name) {
                  }
 
 
@@ -1148,9 +1131,9 @@ namespace HDFEOS2
 
                 /// Return the number of dimension map to correctly handle the subsetting case 
                 ///  without dimension map.
-                int num_map;
+                int num_map = 0;
 
-                bool GeoDim_in_vars;
+                bool GeoDim_in_vars = false;
 
             friend class File;
         };
@@ -1162,7 +1145,7 @@ namespace HDFEOS2
         {
             public:
                 static PointDataset *Read (int32 fd, const std::string & point_name) throw (Exception);
-                virtual ~ PointDataset ();
+                ~ PointDataset () override;
 
             private:
                 explicit PointDataset (const std::string & point_name)
@@ -1193,7 +1176,7 @@ namespace HDFEOS2
 
                 /// This is for the case(AIRS level 3) that the latitude and longitude of all grids are put under 
                 /// a special location grid. So all grids share one lat/lon.
-                bool getOneLatLon ()
+                bool getOneLatLon () const
                 {
                     return this->onelatlon;
                 }
@@ -1216,7 +1199,7 @@ namespace HDFEOS2
                     return this->swaths;
                 }
 
-                const bool getMultiDimMaps() const 
+                bool getMultiDimMaps() const 
                 {
                     return this->multi_dimmap;
                 }
@@ -1225,8 +1208,11 @@ namespace HDFEOS2
                     return this->points;
                 }
 
-                const std::string get_first_grid_name() const 
-                { return this->grids[0]->getName();}
+                std::string get_first_grid_name() const 
+                { 
+                    return this->grids[0]->getName();
+                }
+
 #if 0
                 /// Get the scale and offset type  
                 /// const SOType getScaleType () const
@@ -1240,7 +1226,7 @@ namespace HDFEOS2
 
             protected:
                 explicit File (const char *eos2_file_path)
-                    : path (eos2_file_path), onelatlon (false), iscoard (false), handle_swath_dimmap(false),backward_handle_swath_dimmap(false),multi_dimmap(false),gridfd (-1), swathfd (-1)
+                    : path (eos2_file_path)
                 {
                 }
 
@@ -1264,10 +1250,10 @@ namespace HDFEOS2
                 // the latitude and longitude under a special grid.
                 // By default, the grid name is "location". This will
                 // cover the AIRS grid case.
-                bool onelatlon;
+                bool onelatlon = false;
 
                 /// If this file should follow COARDS, this is necessary to cover one pair lat/lon grids case.
-                bool iscoard;
+                bool iscoard = false;
 
                 /// The bool to indicate that the dimension maps are not supported.
                 /// We currently only support a pair of dimension maps.
@@ -1275,15 +1261,15 @@ namespace HDFEOS2
                 /// dimension maps should appy to both latitude and longitude. This is what we know
                 ///  the current NASA MODIS uses. 
                 /// When this bool is set to true, the swath will be mapped to DAP2 as there are no dimension maps.
-                bool handle_swath_dimmap;
+                bool handle_swath_dimmap = false;
                 
                 /// Handle swath dimmap backward compatible with the old way
                 /// For MODIS level 1B and swaths that have 2 dimension maps and variables that only use
                 /// dimension data dimensions.
-                bool backward_handle_swath_dimmap;
+                bool backward_handle_swath_dimmap = false;
 
                 /// The flag to handle multiple dimension maps, need to export for Data reading.
-                bool multi_dimmap;
+                bool multi_dimmap = false;
 
             protected:
                 /* 
@@ -1377,7 +1363,7 @@ namespace HDFEOS2
                 // Special handling SOM(Space Oblique Mercator) projection files
                 void handle_grid_SOM_projection() throw(Exception);
 
-                bool find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name);
+                bool find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name) const;
 
                 // Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
                 // The input parameter is the number of swath.
@@ -1430,11 +1416,11 @@ namespace HDFEOS2
 
                 // HDF-EOS2 Grid File ID. Notice this ID is not an individual grid ID but the grid file ID returned by 
                 // calling the HDF-EOS2 API GDopen. 
-                int32 gridfd;
+                int32 gridfd = -1;
 
                 // HDF-EOS2 Swath File ID. Notice this ID is not an individual swath ID but the swath file ID returned by
                  // calling the HDF-EOS2 API SWopen.
-                int32 swathfd;
+                int32 swathfd = -1;
 
                 /// Some MODIS files don't use the CF linear equation y = scale * x + offset,
                 /// the scaletype will describe this case. 

@@ -57,7 +57,8 @@ struct dimmap_entry
     std::string datadim;
     
     // offset and increment of a dimension map
-    int32 offset, inc;
+    int32 offset;
+    int32 inc;
 };
 
 
@@ -113,7 +114,7 @@ struct HDFCFUtil
 
 
     // Subsetting the 2-D fields
-    template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
+    template <typename T> static void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, const int32 * offset, const int32 * count, const int32 * step);
 
     /// CF requires the _FillValue attribute datatype is the same as the corresponding field datatype. For some NASA files, this is not true.
     /// So we need to check if the _FillValue's datatype is the same as the attribute's. If not, we need to correct them.
@@ -185,18 +186,18 @@ struct HDFCFUtil
 
     // The following four functions is to handle 1-D CF CV variables required by CF projection conventions for grid. 
     // Obtains the latitude and longitude dimension info. of an HDF-EOS2 grid.
-    static void obtain_grid_latlon_dim_info(HDFEOS2::GridDataset*,string &,int32 &,string &,int32 &);
+    static void obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset*,string &,int32 &,string &,int32 &);
 
     // Adds the 1-D cf grid projection mapping attribute to data variables
     // It is called by the function add_cf_grid_attrs. 
-    static void add_cf_grid_mapping_attr(libdap::DAS &das, HDFEOS2::GridDataset*gdset,const string& cf_projection,
+    static void add_cf_grid_mapping_attr(libdap::DAS &das, const HDFEOS2::GridDataset*gdset,const string& cf_projection,
                                          const string & dim0name,int32 dim0size,const string &dim1name,int32 dim1size);
 
     // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
-    static void add_cf_grid_cvs(libdap::DDS & dds, HDFEOS2::GridDataset *gdset);
+    static void add_cf_grid_cvs(libdap::DDS & dds, const HDFEOS2::GridDataset *gdset);
 
     //Adds 1D grid mapping CF attributes to CV and data variables.
-    static void add_cf_grid_cv_attrs(libdap::DAS &das, HDFEOS2::GridDataset *gdset);
+    static void add_cf_grid_cv_attrs(libdap::DAS &das, const HDFEOS2::GridDataset *gdset);
 
 #endif 
 
@@ -207,20 +208,20 @@ struct HDFCFUtil
     // For some OBPG files that only provide slope and intercept at the file level, 
     // global slope and intercept are needed to add to all fields and their names are needed to be changed to scale_factor and add_offset.
     // For OBPG files that provide slope and intercept at the field level,  slope and intercept are needed to rename to scale_factor and add_offset.
-    static void add_obpg_special_attrs(HDFSP::File*f,libdap::DAS &das,  HDFSP::SDField* spsds,std::string & scaling, float&slope,bool &global_slope_flag,float& intercept,bool &global_intercept_flag);
+    static void add_obpg_special_attrs(const HDFSP::File*f,libdap::DAS &das,  const HDFSP::SDField* spsds,const std::string & scaling, float&slope,const bool &global_slope_flag,float& intercept,const bool &global_intercept_flag);
 
     // Handle HDF4 OTHERHDF products that follow SDS dimension scale model. 
     // The special handling of AVHRR data is also included.
-    static void handle_otherhdf_special_attrs(HDFSP::File *f, libdap::DAS &das);
+    static void handle_otherhdf_special_attrs(const HDFSP::File *f, libdap::DAS &das);
 
     // Add  missing CF attributes for non-CV varibles
-    static void add_missing_cf_attrs(HDFSP::File*f,libdap::DAS &das);
+    static void add_missing_cf_attrs(const HDFSP::File*f,libdap::DAS &das);
 
     // Handle Merra and CERES attributes with the BES key EnableCERESMERRAShortName.
-    static void handle_merra_ceres_attrs_with_bes_keys(HDFSP::File*f, libdap::DAS &das,const std::string& filename);
+    static void handle_merra_ceres_attrs_with_bes_keys(const HDFSP::File*f, libdap::DAS &das,const std::string& filename);
 
     // Handle the attributes with the BES key EnableVdataDescAttr.
-    static void handle_vdata_attrs_with_desc_key(HDFSP::File*f,libdap::DAS &das);
+    static void handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS &das);
 
     // Map AIRS version 6 or MOD08 HDF-EOS object attributes to DAP2, here we simply call Hopen and just retrieve the vgroup info. for the performance reason.
     static void map_eos2_objects_attrs(libdap::DAS &das,const string &filename);
@@ -257,8 +258,8 @@ struct HDFCFUtil
     // wrap function of Unix read to a buffer. Memory for the buffer should be allocated.
     static ssize_t read_buffer_from_file(int fd,void*buf,size_t);
     static std::string obtain_cache_fname(const std::string & fprefix, const std::string & fname, const std::string &vname); 
-    static size_t obtain_dds_cache_size(HDFSP::File*);
-    static void write_sp_sds_dds_cache(HDFSP::File*,FILE*,size_t,const std::string & fname);
+    static size_t obtain_dds_cache_size(const HDFSP::File*);
+    static void write_sp_sds_dds_cache(const HDFSP::File*,FILE*,size_t,const std::string & fname);
     static void read_sp_sds_dds_cache(FILE*,libdap::DDS * dds_ptr,const std::string &filename, const std::string &hdf_filename);
      
 };
@@ -268,10 +269,12 @@ inline int32
 INDEX_nD_TO_1D (const std::vector < int32 > &dims,
                                 const std::vector < int32 > &pos)
 {
+#if 0
     /*
      int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
      int b[10][2]; // &b[1][2] == b + (20*1 + 2);
     */
+#endif
     assert (dims.size () == pos.size ());
     int32 sum = 0;
     int32 start = 1;
@@ -290,7 +293,7 @@ INDEX_nD_TO_1D (const std::vector < int32 > &dims,
 // Build a lock of a certain type.
 static inline struct flock *lock(int type) {
     static struct flock lock;
-    lock.l_type = type;
+    lock.l_type = (short)type;
     lock.l_whence = SEEK_SET;
     lock.l_start = 0;
     lock.l_len = 0;
@@ -300,7 +303,7 @@ static inline struct flock *lock(int type) {
 }
 
 static inline string get_errno() {
-        char *s_err = strerror(errno);
+        const char *s_err = strerror(errno);
         if (s_err)
                 return s_err;
         else

@@ -37,12 +37,6 @@ HDFEOS2ArraySwathDimMapField::read ()
     if(length() == 0)        
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
@@ -165,10 +159,13 @@ HDFEOS2ArraySwathDimMapField::read ()
         vector<string> mapnames;
         HDFCFUtil::Split(namelist.data(), bufsize, ',', mapnames);
         int map_count = 0;
+#if 0
         for (vector<string>::const_iterator i = mapnames.begin();
             i != mapnames.end(); ++i) {
+#endif
+        for (auto const &mapname:mapnames) {
             vector<string> parts;
-            HDFCFUtil::Split(i->c_str(), '/', parts);
+            HDFCFUtil::Split(mapname.c_str(), '/', parts);
             if (parts.size() != 2){
                 detachfunc(swathid);
                 close_fileid(sfid,-1);
@@ -180,11 +177,13 @@ HDFEOS2ArraySwathDimMapField::read ()
             tempdimmap.datadim = parts[1];
             tempdimmap.offset = map_offset[map_count];
             tempdimmap.inc    = increment[map_count];
+#if 0
 //cerr<<"map_count is: "<<map_count <<endl;
 //cerr<<"dimmap geodim is: "<<tempdimmap.geodim <<endl; 
 //cerr<<"dimmap datadim is: "<<tempdimmap.datadim <<endl; 
 //cerr<<"offset is: "<<tempdimmap.offset <<endl;
 //cerr<<"inc is: "<<tempdimmap.inc <<endl;
+#endif
             dimmaps.push_back(tempdimmap);
             ++map_count;
         }
@@ -236,11 +235,6 @@ cerr<<"inc is: "<<dimmaps[i].inc <<endl;
     bool is_modis1b = false;
     if("MODIS_SWATH_Type_L1B" == swathname) 
         is_modis1b = true;
-#if 0
-    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
-    bool turn_on_disable_scale_comp_key= false;
-    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
-#endif
 
     try {
         //if(true == turn_on_disable_scale_comp_key && false== is_modis1b) 
@@ -284,7 +278,7 @@ cerr<<"inc is: "<<dimmaps[i].inc <<endl;
 int
 HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -363,9 +357,11 @@ GetFieldValue (int32 swathid, const string & geofieldname,
 
         for (it = sw_dimmaps.begin (); it != sw_dimmaps.end (); it++) {
             if (it->geodim == dimname[i]) {
+#if 0
 //cerr<<"dimnames["<<i<<"]: " <<dimname[i]<<endl;
 //cerr<<"offset is "<<it->offset<<endl;
 //cerr<<"inc is "<<it->inc<<endl;
+#endif
                 int32 ddimsize = SWdiminfo (swathid, (char *) it->datadim.c_str ());
                 if (ddimsize == -1)
                     return -1;
@@ -380,7 +376,6 @@ GetFieldValue (int32 swathid, const string & geofieldname,
 
     // dims[] are expanded already.
     for (int i = 0; i < sw_rank; i++) { 
-        //cerr<<"i "<< i << " "<< dims[i] <<endl;
         if (dims[i] < 0)
             return -1;
         newdims[i] = dims[i];
@@ -397,7 +392,7 @@ HDFEOS2ArraySwathDimMapField::_expand_dimmap_field (vector < T >
                                                     int dimindex,
                                                     int32 ddimsize,
                                                     int32 offset,
-                                                    int32 inc)
+                                                    int32 inc) const  
 {
     vector < T > orig = *pvals;
     vector < int32 > pos;
@@ -493,9 +488,9 @@ template < class T >
 bool HDFEOS2ArraySwathDimMapField::FieldSubset (T * outlatlon,
                                                 const vector<int32>&newdims,
                                                 T * latlon,
-                                                int32 * offset,
-                                                int32 * count,
-                                                int32 * step)
+                                                const int32 * offset,
+                                                const int32 * count,
+                                                const int32 * step) 
 {
 
     if (newdims.size() == 1) 
@@ -516,9 +511,9 @@ template < class T >
 bool HDFEOS2ArraySwathDimMapField::Field1DSubset (T * outlatlon,
                                                   const int majordim,
                                                   T * latlon,
-                                                  int32 * offset,
-                                                  int32 * count,
-                                                  int32 * step)
+                                                  const int32 * offset,
+                                                  const int32 * count,
+                                                  const int32 * step)
 {
     if (majordim < count[0]) 
         throw InternalErr(__FILE__, __LINE__,
@@ -533,12 +528,12 @@ bool HDFEOS2ArraySwathDimMapField::Field1DSubset (T * outlatlon,
 // from the DAP expression constraint
 template < class T >
 bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
-                                                  const int /*majordim //unused SBL 2/7/20 */,
+                                                  const int ,
                                                   const int minordim,
                                                   T * latlon,
-                                                  int32 * offset,
-                                                  int32 * count,
-                                                  int32 * step)
+                                                  const int32 * offset,
+                                                  const int32 * count,
+                                                  const int32 * step)
 {
 #if 0
     T (*templatlonptr)[majordim][minordim] = (T *[][]) latlon;
@@ -581,9 +576,9 @@ template < class T >
 bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
                                                   const vector<int32>& newdims,
                                                   T * latlon,
-                                                  int32 * offset,
-                                                  int32 * count,
-                                                  int32 * step)
+                                                  const int32 * offset,
+                                                  const int32 * count,
+                                                  const int32 * step)
 {
     if (newdims.size() !=3) 
         throw InternalErr(__FILE__, __LINE__,
@@ -601,7 +596,9 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
     int dim1count = count[1];
     int dim2count = count[2];
 
-    int dim0index[dim0count], dim1index[dim1count],dim2index[dim2count];
+    int dim0index[dim0count];
+    int dim1index[dim1count];
+    int dim2index[dim2count];
 
     for (i = 0; i < count[0]; i++) // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
@@ -668,7 +665,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         int32 sdfileid = -1;
 
         if (true == isgeofile || false == check_pass_fileid_key) {
-            sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+            sdfileid = SDstart(filename.c_str (), DFACC_READ);
             if (FAIL == sdfileid) {
                 ostringstream eherr;
                 eherr << "Cannot Start the SD interface for the file " << filename <<endl;
@@ -747,8 +744,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             scale = (float)tmpvalue; \
         } \
         break;
-                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float);
-                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double);
+                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float)
+                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
@@ -794,8 +791,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             offset2 = (float)tmpvalue; \
         } \
         break;
-                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float);
-                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
+                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float)
+                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
                 }
@@ -840,16 +837,18 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             fillvalue = (float)tmpvalue; \
         } \
         break;
-                    GET_FILLVALUE_ATTR_VALUE(INT8,   int8);
-                    GET_FILLVALUE_ATTR_VALUE(INT16,  int16);
-                    GET_FILLVALUE_ATTR_VALUE(INT32,  int32);
-                    GET_FILLVALUE_ATTR_VALUE(UINT8,  uint8);
-                    GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
-                    GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
+                    GET_FILLVALUE_ATTR_VALUE(INT8,   int8)
+                    GET_FILLVALUE_ATTR_VALUE(INT16,  int16)
+                    GET_FILLVALUE_ATTR_VALUE(INT32,  int32)
+                    GET_FILLVALUE_ATTR_VALUE(UINT8,  uint8)
+                    GET_FILLVALUE_ATTR_VALUE(UINT16, uint16)
+                    GET_FILLVALUE_ATTR_VALUE(UINT32, uint32)
                     // Float and double are not considered. Handle them later.
                     default:
                         ;
+#if 0
                      //   throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#endif
 
                 }
 #undef GET_FILLVALUE_ATTR_VALUE
@@ -1082,8 +1081,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         }
     }
 
+    // RECALCULATE formula in the following #if block
+#if 0
 ////
-// RECALCULATE formula
 /*                            if(sotype==MODIS_MUL_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)*scale; \
 //                            else if(sotype==MODIS_EQ_SCALE) \
@@ -1091,6 +1091,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 //                            else if(sotype==MODIS_DIV_SCALE) \
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 */
+#endif
 
 
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
@@ -1591,19 +1592,11 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
     }
 
     return 0;
-/// ADD READING CODE
-//#endif
 }
 
 void HDFEOS2ArraySwathDimMapField::close_fileid(const int32 swfileid, const int32 sdfileid) {
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
-    //if(true == isgeofile || false == check_pass_fileid_key) {
     if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 
         if(sdfileid != -1)
@@ -1617,7 +1610,7 @@ void HDFEOS2ArraySwathDimMapField::close_fileid(const int32 swfileid, const int3
 }
 
 bool HDFEOS2ArraySwathDimMapField::check_num_elems_constraint(const int num_elems,
-                                                              const vector<int32>&newdims) {
+                                                              const vector<int32>&newdims) const {
 
     int total_dim_size = 1;
     for (int i =0;i<rank;i++)

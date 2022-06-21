@@ -111,15 +111,18 @@ File::~File ()
     if (this->sdfd != -1) {
         if (sd != nullptr)
             delete sd;
-        // No need to close SD interface since for performance reasons
+        // No need to close SD interface.
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc)
-        // KY 2014-02-18
+        //  KY 2014-02-18
+#if 0
         //SDend (this->sdfd);
+#endif
     }
 
     // Close V interface IDs and release vdata resources
     if (this->fileid != -1) {
 
+#if 0
         for (vector < VDATA * >::const_iterator i = this->vds.begin ();
 	     i != this->vds.end (); ++i) {
              delete *i;
@@ -129,11 +132,17 @@ File::~File ()
              i != this->vg_attrs.end (); ++i) {
              delete *i;
         }
+#endif
+
+        std::for_each (this->vds.begin (), this->vds.end (), delete_elem ());
+        std::for_each (this->vg_attrs.begin (), this->vg_attrs.end (), delete_elem ());
 
         Vend (this->fileid);
-        // No need to close H interface since for performance reasons 
+        // No need to close H interface  
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc) 
+#if 0
         //Hclose (this->fileid);
+#endif
     }
 }
 
@@ -151,7 +160,7 @@ VDATA::~VDATA ()
 // Destructor to release SD resources
 SD::~SD ()
 {
-    // Release vdata attributes
+    // Release SD attributes
     std::for_each (this->attrs.begin (), this->attrs.end (), delete_elem ());
 
     // Release SD field pointers
@@ -179,9 +188,6 @@ SDField::~SDField ()
 // may not be in a good place, however, the good part is that we don't need to allocate dimension resources
 //  for vdata.
 
-VDField::~VDField ()
-{
-}
 
 // We only need to release attributes since that's shared for both Vdata fields and SDS fields.
 Field::~Field ()
@@ -204,7 +210,7 @@ throw (Exception)
 {
 
     // Allocate a new file object.
-    File *file = new File (path);
+    auto file = new File (path);
  
 #if 0
     int32 mysdid = -1;
@@ -258,10 +264,13 @@ File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
 throw (Exception)
 {
     // New File 
-    File *file = new File (path);
+    auto file = new File (path);
     if(file == nullptr)
         throw1("Memory allocation for file class failed. ");
+
+#if 0
 //cerr<<"File is opened for HDF4 "<<endl;
+#endif
 
 #if 0
     // Obtain SD interface
@@ -288,7 +297,10 @@ throw (Exception)
         throw2 ("Cannot start vdata/vgroup interface", path);
     }
 
+#if 0
     //if(file != nullptr) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
+#endif
+
     try {
 
         // Retrieve extra SDS info.
@@ -304,7 +316,10 @@ throw (Exception)
         delete file;
         throw;
     }
+
+#if 0
     //}
+#endif
          
     return file;
 }
@@ -396,18 +411,14 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                 // We want to map fields of vdata with more than 10 records to DAP variables
                 // and we need to add the path and vdata name to the new vdata field name
                 if (!vdataobj->getTreatAsAttrFlag ()) {
-                    for (std::vector < VDField * >::const_iterator it_vdf =
-                        vdataobj->getFields ().begin ();
-                        it_vdf != vdataobj->getFields ().end (); it_vdf++) {
+                    for (const auto &vdf:vdataobj->getFields ()) {
 
                         // vdata name conventions. 
-                        // "vdata"+vdata_newname+"_vdf_"+(*it_vdf)->newname
-                        (*it_vdf)->newname =
-                                            "vdata_" + vdataobj->newname + "_vdf_" +
-                                             (*it_vdf)->name;
+                        // "vdata"+vdata_newname+"_vdf_"+vdf->newname
+                        vdf->newname = "vdata_" + vdataobj->newname + "_vdf_" + vdf->name;
 
                         //Make sure the name is following CF, KY 2012-6-26
-                        (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
+                        vdf->newname = HDFCFUtil::get_CF_string(vdf->newname);
                     }
                 }
 
@@ -473,7 +484,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                             bool VS_fun_err = false;
 
                             // Allocate data buf
-                            char *databuf = (char *) malloc (fieldsize * nelms);
+                            auto databuf = (char *) malloc (fieldsize * nelms);
                             if (databuf == nullptr) {
                                 err_msg = string(ERR_LOC) + "No enough memory to allocate buffer.";
                                 data_buf_err = true;
@@ -557,9 +568,13 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
     int32 file_id        = -1;
     int32 vgroup_id      = -1;
     int32 vdata_id       = -1;
+
+#if 0
     //int32 vgroup_ref     = -1;
     //int32 obj_index      = -1;
     //int32 num_of_vg_objs = -1;
+#endif
+
     int32 obj_tag        = -1;
     int32 obj_ref        = -1;
 
@@ -674,9 +689,11 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 err_msg = "No enough memory to allocate the buffer for full_path.";
                 VS_or_mem_err = true;
                 goto cleanFail;
+#if 0
                 //Vdetach (vgroup_id);
                 //throw;
                 //throw1 ("No enough memory to allocate the buffer.");
+#endif
             }
             else
                 memset(full_path,'\0',MAX_FULL_PATH_LEN);
@@ -694,8 +711,10 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 err_msg = "No enough memory to allocate the buffer for cfull_path.";
                 VS_or_mem_err = true;
                 goto cleanFail;
+#if 0
                 //throw;
                 //throw1 ("No enough memory to allocate the buffer.");
+#endif
             }
             else 
                 memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -710,11 +729,13 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     err_msg = "Vgettagref failed";
                     VS_or_mem_err = true;
                     goto cleanFail;
+#if 0
                     //Vdetach (vgroup_id);
                     //free (full_path);
                     //free (cfull_path);
                     //throw5 ("Vgettagref failed ", "vgroup_name is ",
                     //         vgroup_name, " reference number is ", obj_ref);
+#endif
                 }
 
                 // If the object is a vgroup,always pass the original full path to its decendant vgroup
@@ -797,19 +818,16 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                         //We want to map fields of vdata with more than 10 records to DAP variables
                         // and we need to add the path and vdata name to the new vdata field name
                         if (!vdataobj->getTreatAsAttrFlag ()) {
-                            for (std::vector <VDField * >::const_iterator it_vdf =
-                                vdataobj->getFields ().begin ();
-                                it_vdf != vdataobj->getFields ().end ();
-                                it_vdf++) {
+                            for (const auto &vdf:vdataobj->getFields ()) {
 
                                 // Change vdata name conventions. 
-                                // "vdata"+vdata_newname+"_vdf_"+(*it_vdf)->newname
+                                // "vdata"+vdata_newname+"_vdf_"+vdf->newname
 
-                                (*it_vdf)->newname =
-                                    "vdata" + vdataobj->newname + "_vdf_" + (*it_vdf)->name;
+                                vdf->newname =
+                                    "vdata" + vdataobj->newname + "_vdf_" + vdf->name;
 
                                 //Make sure the name is following CF, KY 2012-6-26
-                                (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
+                                vdf->newname = HDFCFUtil::get_CF_string(vdf->newname);
                             }
 
                         }
@@ -830,11 +848,13 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                 }
 
                 //Ignore the handling of SDS objects. They are handled elsewhere. 
+#if 0
                 else{
 
                 }
+#endif
             }
-// STOP: add error handling
+
 cleanFail:            
             if(full_path != nullptr)
                 free (full_path);
@@ -882,19 +902,15 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
     FullXDim= FullXDim+grid_name;
     FullYDim =FullYDim+grid_name;
 
-    for (vector < SDField * >::const_iterator i =
-        this->sd->getFields ().begin ();
-        i != this->sd->getFields ().end (); ++i) {
+    for (const auto &sdf:this->sd->getFields ()) {
 
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
-            if((*k)->getName() !=FullXDim && (*k)->getName()!=FullYDim)
-               dimnameset.insert((*k)->getName());
+        for (const auto &dim:sdf->getDimensions()) {
+            if(dim->getName() !=FullXDim && dim->getName()!=FullYDim)
+               dimnameset.insert(dim->getName());
         }
 
-        if (1==(*i)->getRank())
-            fldset.insert(*i);
+        if (1==sdf->getRank())
+            fldset.insert(sdf);
 
     }
 
@@ -909,13 +925,11 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
     size_t grid_name_size = grid_name.size();
     string reduced_dimname;
 
-    for(set<SDField*>::const_iterator j =
-            fldset.begin(); j!=fldset.end(); ++ j) {
-        
-        size_t dim_size = ((*j)->getDimensions())[0]->getName().size();
+    for (const auto &fld:fldset) {
+        size_t dim_size = (fld->getDimensions())[0]->getName().size();
         if( dim_size > grid_name_size){
-           reduced_dimname = ((*j)->getDimensions())[0]->getName().substr(0,dim_size-grid_name_size-1);
-           if ((*j)->getName() == reduced_dimname)
+           reduced_dimname = (fld->getDimensions())[0]->getName().substr(0,dim_size-grid_name_size-1);
+           if (fld->getName() == reduced_dimname)
                 total_num_dims++;
         }
     }
@@ -924,18 +938,14 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
         return false;
 
     // Updated dimension names for all variables: removing the grid_name prefix.
-    for (vector < SDField * >::const_iterator i =
-        this->sd->getFields ().begin ();
-        i != this->sd->getFields ().end (); ++i) {
+    for (const auto &sdf:this->sd->getFields()) {
 
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+        for (const auto &dim:sdf->getDimensions ()) {
 
-             size_t dim_size = (*k)->getName().size();
+             size_t dim_size = dim->getName().size();
              if( dim_size > grid_name_size){
-                reduced_dimname = (*k)->getName().substr(0,dim_size-grid_name_size-1);
-                (*k)->name = reduced_dimname;
+                reduced_dimname = dim->getName().substr(0,dim_size-grid_name_size-1);
+                dim->name = reduced_dimname;
              }
              else // Here we enforce that the dimension name has the grid suffix. This can be lifted in the future. KY 2014-01-16
                 return false;
@@ -944,32 +954,31 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
     }
 
     // Build up Dimensions for DDS and DAS. 
-    for(std::set<SDField*>::const_iterator j =
-		    fldset.begin(); j!=fldset.end(); ++ j) {
+    for (const auto &fld:fldset) {
 
-           if ((*j)->getName() == ((*j)->getDimensions())[0]->getName()) {
+           if (fld->getName() == (fld->getDimensions())[0]->getName()) {
  
-            if("XDim" == (*j)->getName()){
+            if("XDim" == fld->getName()){
                 std::string tempunits = "degrees_east";
-                (*j)->setUnits (tempunits); 
-                (*j)->fieldtype = 2;
+                fld->setUnits (tempunits); 
+                fld->fieldtype = 2;
             }
 
-            else if("YDim" == (*j)->getName()){
+            else if("YDim" == fld->getName()){
                 std::string tempunits = "degrees_north";
-                (*j)->setUnits (tempunits); 
-                (*j)->fieldtype = 1;
+                fld->setUnits (tempunits); 
+                fld->fieldtype = 1;
             }
 
-            else if("Pressure_Level" == (*j)->getName()) {
+            else if("Pressure_Level" == fld->getName()) {
                 std::string tempunits = "hPa";
-                (*j)->setUnits (tempunits);
-                (*j)->fieldtype = 3;
+                fld->setUnits (tempunits);
+                fld->fieldtype = 3;
             }
             else {
                 std::string tempunits = "level";
-                (*j)->setUnits (tempunits);
-                (*j)->fieldtype = 3;
+                fld->setUnits (tempunits);
+                fld->fieldtype = 3;
             }
         }
     }
@@ -1005,6 +1014,7 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
     }
 }
 #endif
+
 void
 File::Handle_AIRS_L23() throw(Exception) {
 
@@ -1026,31 +1036,28 @@ File::Handle_AIRS_L23() throw(Exception) {
 
     // 1.  Loop through SDS fields and remove suffixes(:???) of the dimension names and the variable names. 
     //     Also create scaled dim. name set and non-scaled dim. name set.
-    for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        string tempname = (*i)->name;
+        string tempname = sdf->name;
         size_t found_colon = tempname.find_first_of(':');
         if(found_colon!=string::npos) 
-            (*i)->newname = tempname.substr(0,found_colon);
+            sdf->newname = tempname.substr(0,found_colon);
 
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+        for (const auto &dim:sdf->getDimensions()) {
 
-            tempname = (*k)->name;
+            tempname = dim->name;
             found_colon = tempname.find_first_of(':');
             if(found_colon!=string::npos) 
-                (*k)->name = tempname.substr(0,found_colon);
+                dim->name = tempname.substr(0,found_colon);
 
-            if(0==(*k)->getType()) {
-                ret = non_scaled_dname_set.insert((*k)->name);
+            if(0==dim->getType()) {
+                ret = non_scaled_dname_set.insert(dim->name);
                 if (true == ret.second)
-                    non_scaled_dname_to_size[(*k)->name] = (*k)->dimsize;
+                    non_scaled_dname_to_size[dim->name] = dim->dimsize;
             }
-            else{
-                scaled_dname_set.insert((*k)->name);
-           }
+            else
+                scaled_dname_set.insert(dim->name);
+            
                       
         }
 
@@ -1071,48 +1078,50 @@ cerr<<"scaled dim. name "<<*sdim_it <<endl;
     // An Example: StdPressureLev:asecending is the same as the StdPressureLev:descending, reduce to StdPressureLev 
 
     // Make a copy of the scaled-dim name set:scaled-dim-marker
-  if(true == airs_l3) {
-    set<string>scaled_dname_set_marker = scaled_dname_set;
+
+    if(true == airs_l3) {
+
+        set<string>scaled_dname_set_marker = scaled_dname_set;
   
-    // Loop through all the SDS objects, 
-    // If finding a 1-D variable name 
-    // b1) in both the scaled-dim name set and the scaled-dim-marker set, 
-    //     keep this variable but remove the variable name from the scaled-dim-marker. 
-    //     Mark this variable as a CV.(XDim: 2, YDim:1 Others: 3). 
-    // b2) In the scaled-dim name set but not in the scaled-dim-marker set, 
-    //     remove the variable from the variable vector.
-    for (std::vector < SDField * >::iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
-        if(1 == (*i)->getRank()) {
-            if(scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
-                if(scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
-                    scaled_dname_set_marker.erase((*i)->getNewName());
+        // Loop through all the SDS objects, 
+        // If finding a 1-D variable name 
+        // b1) in both the scaled-dim name set and the scaled-dim-marker set, 
+        //     keep this variable but remove the variable name from the scaled-dim-marker. 
+        //     Mark this variable as a CV.(XDim: 2, YDim:1 Others: 3). 
+        // b2) In the scaled-dim name set but not in the scaled-dim-marker set, 
+        //     remove the variable from the variable vector.
+        for (std::vector < SDField * >::iterator i =
+                file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ) {
+            if(1 == (*i)->getRank()) {
+                if(scaled_dname_set.find((*i)->getNewName())!=scaled_dname_set.end()) {
+                    if(scaled_dname_set_marker.find((*i)->getNewName())!=scaled_dname_set_marker.end()) {
+                        scaled_dname_set_marker.erase((*i)->getNewName());
+                        ++i;
+                    }
+    
+                    else {// Redundant variables
+                        delete(*i);
+                        i= file->sd->sdfields.erase(i);
+                    }
+                }
+                else {
                     ++i;
                 }
-
-                else {// Redundant variables
+            }
+            // Remove Latitude and Longitude 
+            else if( 2 == (*i)->getRank()) {
+                if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
                     delete(*i);
-                    i= file->sd->sdfields.erase(i);
+                    i = file->sd->sdfields.erase(i);
+                }
+                else {
+                    ++i;
                 }
             }
-            else {
+            else 
                 ++i;
-            }
         }
-        // Remove Latitude and Longitude 
-        else if( 2 == (*i)->getRank()) {
-            if ("Latitude" == (*i)->getNewName() ||  "Longitude" == (*i)->getNewName()) {
-                delete(*i);
-                i = file->sd->sdfields.erase(i);
-            }
-            else {
-                ++i;
-            }
-        }
-        else 
-            ++i;
     }
-  }
 
 #if 0
 for(set<string>::const_iterator sdim_it = scaled_dname_set.begin();
@@ -1127,30 +1136,25 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
     
     // 3.1 Find the true dimensions that don't have dimension scales.
     set<string>final_non_scaled_dname_set;
-    for(set<string>::const_iterator non_sdim_it = non_scaled_dname_set.begin(); 
-                                    non_sdim_it !=non_scaled_dname_set.end(); 
-                                    ++non_sdim_it) {
-//cerr<<"non-scaled dim. name "<<*non_sdim_it <<endl;
-        if(scaled_dname_set.find(*non_sdim_it)==scaled_dname_set.end())
-            final_non_scaled_dname_set.insert(*non_sdim_it);
+    for (const auto &non_sdim:non_scaled_dname_set) {
+        if(scaled_dname_set.find(non_sdim)==scaled_dname_set.end())
+            final_non_scaled_dname_set.insert(non_sdim);
     }
 
     // 3.2 Create the missing CVs based on the non-scaled dimensions.
-    for(set<string>::const_iterator non_sdim_it = final_non_scaled_dname_set.begin();
-                                    non_sdim_it !=final_non_scaled_dname_set.end();
-                                    ++non_sdim_it) {
+    for (const auto &non_sdim:final_non_scaled_dname_set) {
 
-        SDField *missingfield = new SDField ();
+        auto missingfield = new SDField ();
 
         // The name of the missingfield is not necessary.
         // We only keep here for consistency.
         missingfield->type = DFNT_INT32;
-        missingfield->name = *non_sdim_it;
-        missingfield->newname = *non_sdim_it;
+        missingfield->name = non_sdim;
+        missingfield->newname = non_sdim;
         missingfield->rank = 1;
         missingfield->fieldtype = 4;
         missingfield->setUnits("level");
-        Dimension *dim = new Dimension (*non_sdim_it,non_scaled_dname_to_size[*non_sdim_it] , 0);
+        auto dim = new Dimension (non_sdim,non_scaled_dname_to_size[non_sdim] , 0);
 
         missingfield->dims.push_back (dim);
         file->sd->sdfields.push_back (missingfield);
@@ -1159,28 +1163,25 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
     // For AIRS level 3 only
     // Change XDim to Longitude and YDim to Latitude for field name and dimension names
 
-  if(true == airs_l3) {
-    for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-        if(1 ==(*i)->getRank()){
-            if ("XDim" == (*i)->newname)
-                (*i)->newname = "Longitude";
-            else if ("YDim" == (*i)->newname)
-                (*i)->newname = "Latitude";
+    if (true == airs_l3) {
+        for (const auto &sdf:file->sd->sdfields) {
+    
+            if(1 ==sdf->getRank()){
+                if ("XDim" == sdf->newname)
+                    sdf->newname = "Longitude";
+                else if ("YDim" == sdf->newname)
+                    sdf->newname = "Latitude";
+            }
+    
+            for (const auto &dim:sdf->getDimensions()) {
+                if("XDim" == dim->name)
+                    dim->name = "Longitude";
+                else if ("YDim" == dim->name)
+                    dim->name = "Latitude";
+            }
+    
         }
-
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
-            if("XDim" == (*k)->name)
-                (*k)->name = "Longitude";
-            else if ("YDim" == (*k)->name)
-                (*k)->name = "Latitude";
-        }
-
     }
-  }
   
     // For AIRS level 2 only
     if(false == airs_l3) {
@@ -1192,24 +1193,23 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
 
         // 1. Assign the lat/lon units according to the CF conventions. 
         // 2. Obtain dimension names of lat/lon.
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (const auto &sdf:file->sd->sdfields) {
 
-            if(2 == (*i)->getRank()) {
-                if("Latitude" == (*i)->newname){
-                    (*i)->fieldtype = 1;
+            if(2 == sdf->getRank()) {
+                if("Latitude" == sdf->newname){
+                    sdf->fieldtype = 1;
                     change_lat_unit = true;
                     string tempunits = "degrees_north";
-                    (*i)->setUnits(tempunits);
-                    ll_dimname1 = (*i)->getDimensions()[0]->getName();
-                    ll_dimname2 = (*i)->getDimensions()[1]->getName();
+                    sdf->setUnits(tempunits);
+                    ll_dimname1 = sdf->getDimensions()[0]->getName();
+                    ll_dimname2 = sdf->getDimensions()[1]->getName();
 
                 }
-                else if("Longitude" == (*i)->newname) {
-                    (*i)->fieldtype = 2;
+                else if("Longitude" == sdf->newname) {
+                    sdf->fieldtype = 2;
                     change_lon_unit = true;
                     string tempunits = "degrees_east";
-                    (*i)->setUnits(tempunits);
+                    sdf->setUnits(tempunits);
                 }
                 if((true == change_lat_unit) && (true == change_lon_unit))
                     break;
@@ -1221,14 +1221,13 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
         string tempfieldname   = "";
         int tempcount = 0;
         
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (const auto &sdf:file->sd->sdfields) {
 
             // We don't want to add "coordinates" attributes to all dimension scale variables.
             bool dimscale_var = false;
-            dimscale_var = ((*i)->rank == 1) & (((*i)->newname) == ((*i)->getDimensions()[0]->getName()));
+            dimscale_var = (sdf->rank == 1) & ((sdf->newname) == (sdf->getDimensions()[0]->getName()));
            
-            if((0 ==(*i)->fieldtype) && (false == dimscale_var)) {
+            if ((0 ==sdf->fieldtype) && (false == dimscale_var)) {
 
                 tempcount = 0;
                 tempcoordinates = "";
@@ -1237,50 +1236,42 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
                 // First check if the dimension names of this variable include both ll_dimname1 and ll_dimname2.
                 bool has_lldim1 = false;
                 bool has_lldim2 = false;
-                for (std::vector < Dimension * >::const_iterator j =
-                    (*i)->getDimensions ().begin ();
-                    j != (*i)->getDimensions ().end (); ++j) {
-                    if((*j)->name == ll_dimname1)
+                for (const auto &dim:sdf->getDimensions ()) {
+                    if(dim->name == ll_dimname1)
                         has_lldim1 = true;
-                    else if ((*j)->name == ll_dimname2)
+                    else if (dim->name == ll_dimname2)
                         has_lldim2 = true;
                     if((true == has_lldim1) && (true == has_lldim2))
                         break;
  
                 }
-              
                
-                if((true == has_lldim1) && (true == has_lldim2)) {
-                  for (std::vector < Dimension * >::const_iterator j =
-                    (*i)->getDimensions ().begin ();
-                    j != (*i)->getDimensions ().end (); ++j) {
-                    if((*j)->name == ll_dimname1)
-                        tempfieldname = "Latitude";
-                    else if ((*j)->name == ll_dimname2)
-                        tempfieldname = "Longitude";
-                    else 
-                        tempfieldname = (*j)->name;
-                
-                    if (0 == tempcount)
-                        tempcoordinates = tempfieldname;
-                    else
-                        tempcoordinates = tempcoordinates + " " + tempfieldname;
-                    tempcount++;
-                  }
+                if ((true == has_lldim1) && (true == has_lldim2)) {
+                    for (const auto &dim:sdf->getDimensions ()) { 
+                        if(dim->name == ll_dimname1)
+                            tempfieldname = "Latitude";
+                        else if (dim->name == ll_dimname2)
+                            tempfieldname = "Longitude";
+                        else 
+                            tempfieldname = dim->name;
+                    
+                        if (0 == tempcount)
+                            tempcoordinates = tempfieldname;
+                        else
+                            tempcoordinates = tempcoordinates + " " + tempfieldname;
+                        tempcount++;
+                    }
                 }
                 else {
-                  for (std::vector < Dimension * >::const_iterator j =
-                    (*i)->getDimensions ().begin ();
-                    j != (*i)->getDimensions ().end (); ++j) {
-                    if (0 == tempcount)
-                        tempcoordinates = (*j)->name;
-                    else
-                        tempcoordinates = tempcoordinates + " " + (*j)->name;
-                    tempcount++;
-                  }
-
+                    for (const auto &dim:sdf->getDimensions()) {
+                        if (0 == tempcount)
+                            tempcoordinates = dim->name;
+                        else
+                            tempcoordinates = tempcoordinates + " " + dim->name;
+                        tempcount++;
+                    }
                 }
-                (*i)->setCoordinates (tempcoordinates);
+                sdf->setCoordinates (tempcoordinates);
 
             }
         }
@@ -1304,27 +1295,25 @@ throw (Exception)
         int trmm_single_gridflag = 0;
         int trmm_swathflag = 0;
 
-        for (std::vector < Attribute * >::const_iterator i =
-            this->sd->getAttributes ().begin ();
-            i != this->sd->getAttributes ().end (); ++i) {
-            if ((*i)->getName () == "FileHeader") {
+        for (const auto &attr:this->sd->getAttributes ()) {
+            if (attr->getName () == "FileHeader") {
                 trmm_multi_gridflag++;
                 trmm_single_gridflag++;
                 trmm_swathflag++;
             }
-            if ((*i)->getName () == "FileInfo") {
+            if (attr->getName () == "FileInfo") {
                 trmm_multi_gridflag++;
                 trmm_single_gridflag++;
                 trmm_swathflag++;
             }
-            if ((*i)->getName () == "SwathHeader") 
+            if (attr->getName () == "SwathHeader") 
                 trmm_swathflag++;
 
-            if ((*i)->getName () == "GridHeader")
+            if (attr->getName () == "GridHeader")
                 trmm_single_gridflag++;
 
-            else if (((*i)->getName ().find ("GridHeader") == 0) &&
-                     (((*i)->getName()).size() >10))
+            else if ((attr->getName ().find ("GridHeader") == 0) &&
+                     ((attr->getName()).size() >10))
                 trmm_multi_gridflag++;
 
         }
@@ -1345,16 +1334,14 @@ throw (Exception)
 
         int metadataflag = 0;
 
-        for (std::vector < Attribute * >::const_iterator i =
-            this->sd->getAttributes ().begin ();
-            i != this->sd->getAttributes ().end (); ++i) {
-            if ((*i)->getName () == "CoreMetadata.0")
-            metadataflag++;
-            if ((*i)->getName () == "ArchiveMetadata.0")
+        for (const auto &attr:this->sd->getAttributes ()) {
+            if (attr->getName () == "CoreMetadata.0")
                 metadataflag++;
-            if ((*i)->getName () == "StructMetadata.0")
+            if (attr->getName () == "ArchiveMetadata.0")
                 metadataflag++;
-            if ((*i)->getName ().find ("SubsettingMethod") !=
+            if (attr->getName () == "StructMetadata.0")
+                metadataflag++;
+            if (attr->getName ().find ("SubsettingMethod") !=
                 std::string::npos)
                 metadataflag++;
         }
@@ -1370,14 +1357,11 @@ throw (Exception)
         // is the TRMM "geolocation" field.
         if (metadataflag == 2) {	
 
-            for (std::vector < SDField * >::const_iterator i =
-                this->sd->getFields ().begin ();
-                i != this->sd->getFields ().end (); ++i) {
-                if (((*i)->getName () == "geolocation")
-                    && (*i)->getNewName ().find ("DATA_GRANULE") !=
-                    std::string::npos
-                    && (*i)->getNewName ().find ("SwathData") !=
-                    std::string::npos && (*i)->getRank () == 3) {
+            for (const auto &sdf:this->sd->getFields ()) {
+                if ((sdf->getName () == "geolocation")
+                    && sdf->getNewName ().find ("DATA_GRANULE") != string::npos
+                    && sdf->getNewName ().find ("SwathData") != string::npos
+                    && sdf->getRank () == 3) {
                     this->sptype = TRMML2_V6;
                     break;
                 }
@@ -1392,16 +1376,13 @@ throw (Exception)
             // The information is obtained from 
 	    // http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
             if (this->sptype == OTHERHDF) {
-                for (std::vector < SDField * >::const_iterator i =
-                    this->sd->getFields ().begin ();
-                    i != this->sd->getFields ().end (); ++i) {
-                    if ((*i)->getNewName ().find ("DATA_GRANULE") !=
-                        std::string::npos) {
+                for (const auto &sdf:this->sd->getFields ()) {
+                    if (sdf->getNewName ().find ("DATA_GRANULE") != string::npos) {
                         bool l3b_v6_lonflag = false;
                         bool l3b_v6_latflag = false;
                         for (std::vector < Dimension * >::const_iterator k =
-                            (*i)->getDimensions ().begin ();
-                            k != (*i)->getDimensions ().end (); ++k) {
+                            sdf->getDimensions ().begin ();
+                            k != sdf->getDimensions ().end (); ++k) {
                             if ((*k)->getSize () == 1440)
                             l3b_v6_lonflag = true;
 
@@ -1412,7 +1393,6 @@ throw (Exception)
                             this->sptype = TRMML3B_V6;
                             break;
                         }
-
                         
                         bool l3a_v6_latflag = false;
                         bool l3a_v6_lonflag = false;
@@ -1420,22 +1400,20 @@ throw (Exception)
                         bool l3c_v6_lonflag = false;
                         bool l3c_v6_latflag = false;
 
-                        if ((*i)->getRank()>2) {
-                            for (std::vector < Dimension * >::const_iterator k =
-                            (*i)->getDimensions ().begin ();
-                            k != (*i)->getDimensions ().end (); ++k) {
-                            if ((*k)->getSize () == 360)
-                                l3a_v6_lonflag = true;
-
-                            if ((*k)->getSize () == 180)
-                                l3a_v6_latflag = true;
-
-                            if ((*k)->getSize () == 720)
-                                l3c_v6_lonflag = true;
-
-                            if ((*k)->getSize () == 148)
-                                l3c_v6_latflag = true;
-                           }
+                        if (sdf->getRank()>2) {
+                            for (const auto &dim:sdf->getDimensions()) {
+                                if (dim->getSize () == 360)
+                                    l3a_v6_lonflag = true;
+    
+                                if (dim->getSize () == 180)
+                                    l3a_v6_latflag = true;
+    
+                                if (dim->getSize () == 720)
+                                    l3c_v6_lonflag = true;
+    
+                                if (dim->getSize () == 148)
+                                    l3c_v6_latflag = true;
+                            }
                            
                         }
 
@@ -1448,21 +1426,18 @@ throw (Exception)
                             this->sptype = TRMML3C_V6;
                             break;
                         }
-
-
                     }
                 }
             }
         }
     }
+
 #if 0
 if(this->sptype == TRMML3A_V6) 
 cerr<<"3A46 products "<<endl;
 if(this->sptype == TRMML3C_V6) 
 cerr<<"CSH products "<<endl;
 #endif
-
-
 
     // Check the OBPG case
     // OBPG includes SeaWIFS,OCTS,CZCS,MODISA,MODIST
@@ -1506,86 +1481,81 @@ cerr<<"CSH products "<<endl;
         // Loop the global attributes and find the attribute called "Product Name"
         // and the attribute called "Sensor Name",
         // then identify different products.
-        for (std::vector < Attribute * >::const_iterator i =
-            this->sd->getAttributes ().begin ();
-            i != this->sd->getAttributes ().end (); ++i) {
-            if ((*i)->getName () == "Product Name") {
 
-            std::string attrvalue ((*i)->getValue ().begin (),
-                                   (*i)->getValue ().end ());
-            if ((attrvalue.find_first_of ('A', 0) == 0)
-                && (attrvalue.find (".L2", 0) != std::string::npos))
-                modisal2flag++;
-            else if ((attrvalue.find_first_of ('A', 0) == 0)
-                    && (attrvalue.find (".L3m", 0) != std::string::npos))
-                modisal3mflag++;
-            else if ((attrvalue.find_first_of ('T', 0) == 0)
+        for (const auto &attr:this->sd->getAttributes ()) {
+
+            if (attr->getName () == "Product Name") {
+
+                std::string attrvalue (attr->getValue ().begin (),
+                                       attr->getValue ().end ());
+                if ((attrvalue.find_first_of ('A', 0) == 0)
                     && (attrvalue.find (".L2", 0) != std::string::npos))
-                modistl2flag++;
-            else if ((attrvalue.find_first_of ('T', 0) == 0)
-                    && (attrvalue.find (".L3m", 0) != std::string::npos))
-                modistl3mflag++;
-            else if ((attrvalue.find_first_of ('O', 0) == 0)
-                    && (attrvalue.find (".L2", 0) != std::string::npos))
-                octsl2flag++;
-            else if ((attrvalue.find_first_of ('O', 0) == 0)
-                    && (attrvalue.find (".L3m", 0) != std::string::npos))
-                octsl3mflag++;
-            else if ((attrvalue.find_first_of ('S', 0) == 0)
-                    && (attrvalue.find (".L2", 0) != std::string::npos))
-                seawifsl2flag++;
-            else if ((attrvalue.find_first_of ('S', 0) == 0)
-                    && (attrvalue.find (".L3m", 0) != std::string::npos))
-                seawifsl3mflag++;
-            else if ((attrvalue.find_first_of ('C', 0) == 0)
-                    && ((attrvalue.find (".L2", 0) != std::string::npos)
-                    ||
-                    (attrvalue.find (".L1A", 0) != std::string::npos)))
-                czcsl2flag++;
-            else if ((attrvalue.find_first_of ('C', 0) == 0)
-                    && (attrvalue.find (".L3m", 0) != std::string::npos))
-                czcsl3mflag++;
-            else{
-
+                    modisal2flag++;
+                else if ((attrvalue.find_first_of ('A', 0) == 0)
+                        && (attrvalue.find (".L3m", 0) != std::string::npos))
+                    modisal3mflag++;
+                else if ((attrvalue.find_first_of ('T', 0) == 0)
+                        && (attrvalue.find (".L2", 0) != std::string::npos))
+                    modistl2flag++;
+                else if ((attrvalue.find_first_of ('T', 0) == 0)
+                        && (attrvalue.find (".L3m", 0) != std::string::npos))
+                    modistl3mflag++;
+                else if ((attrvalue.find_first_of ('O', 0) == 0)
+                        && (attrvalue.find (".L2", 0) != std::string::npos))
+                    octsl2flag++;
+                else if ((attrvalue.find_first_of ('O', 0) == 0)
+                        && (attrvalue.find (".L3m", 0) != std::string::npos))
+                    octsl3mflag++;
+                else if ((attrvalue.find_first_of ('S', 0) == 0)
+                        && (attrvalue.find (".L2", 0) != std::string::npos))
+                    seawifsl2flag++;
+                else if ((attrvalue.find_first_of ('S', 0) == 0)
+                        && (attrvalue.find (".L3m", 0) != std::string::npos))
+                    seawifsl3mflag++;
+                else if ((attrvalue.find_first_of ('C', 0) == 0)
+                        && ((attrvalue.find (".L2", 0) != std::string::npos)
+                        ||
+                        (attrvalue.find (".L1A", 0) != std::string::npos)))
+                    czcsl2flag++;
+                else if ((attrvalue.find_first_of ('C', 0) == 0)
+                        && (attrvalue.find (".L3m", 0) != std::string::npos))
+                    czcsl3mflag++;
             }
+            if (attr->getName () == "Sensor Name") {
+    
+                std::string attrvalue (attr->getValue ().begin (),
+                                       attr->getValue ().end ());
+                if (attrvalue.find ("MODISA", 0) != std::string::npos) {
+                    modisal2flag++;
+    		modisal3mflag++;
+                }
+                else if (attrvalue.find ("MODIST", 0) != std::string::npos) {
+                    modistl2flag++;
+                    modistl3mflag++;
+                }
+                else if (attrvalue.find ("OCTS", 0) != std::string::npos) {
+                    octsl2flag++;
+                    octsl3mflag++;
+                }
+                else if (attrvalue.find ("SeaWiFS", 0) != std::string::npos) {
+                    seawifsl2flag++;
+                    seawifsl3mflag++;
+                }
+                else if (attrvalue.find ("CZCS", 0) != std::string::npos) {
+                    czcsl2flag++;
+                    czcsl3mflag++;
+                }
+            }
+    
+            if ((modisal2flag == 2) || (modisal3mflag == 2)
+                || (modistl2flag == 2) || (modistl3mflag == 2)
+                || (octsl2flag == 2) || (octsl3mflag == 2)
+                || (seawifsl2flag == 2) || (seawifsl3mflag == 2)
+                || (czcsl2flag == 2) || (czcsl3mflag == 2))
+                break;
+    
         }
-        if ((*i)->getName () == "Sensor Name") {
 
-            std::string attrvalue ((*i)->getValue ().begin (),
-                                   (*i)->getValue ().end ());
-            if (attrvalue.find ("MODISA", 0) != std::string::npos) {
-                modisal2flag++;
-		modisal3mflag++;
-            }
-            else if (attrvalue.find ("MODIST", 0) != std::string::npos) {
-                modistl2flag++;
-                modistl3mflag++;
-            }
-            else if (attrvalue.find ("OCTS", 0) != std::string::npos) {
-                octsl2flag++;
-                octsl3mflag++;
-            }
-            else if (attrvalue.find ("SeaWiFS", 0) != std::string::npos) {
-                seawifsl2flag++;
-                seawifsl3mflag++;
-            }
-            else if (attrvalue.find ("CZCS", 0) != std::string::npos) {
-                czcsl2flag++;
-                czcsl3mflag++;
-            }
-            else{
-
-            }
-        }
-
-        if ((modisal2flag == 2) || (modisal3mflag == 2)
-            || (modistl2flag == 2) || (modistl3mflag == 2)
-            || (octsl2flag == 2) || (octsl3mflag == 2)
-            || (seawifsl2flag == 2) || (seawifsl3mflag == 2)
-            || (czcsl2flag == 2) || (czcsl3mflag == 2))
-            break;
-
-        }
         // Only when both the sensor name and the product name match, we can
         // be sure the products are OBPGL2 or OBPGL3m.
         if ((modisal2flag == 2) || (modistl2flag == 2) ||
@@ -1614,9 +1584,6 @@ throw (Exception)
 
     // Number of SDS attributes in this file
     int32  n_sd_attrs    = 0;
-
-    // Object index 
-    int    sds_index     = 0;
 
     // SDS ID
     int32  sds_id        = 0;
@@ -1649,14 +1616,17 @@ throw (Exception)
     // Otherwise, this dimension type is the datatype of this dimension scale.
     int32  dim_type      = 0; 
 
+#if 0
     // Number of dimension attributes(This is almost never used)
     //int32  num_dim_attrs = 0;
+#endif
 
     // Attribute value count
     int32  attr_value_count = 0;
 
     // Obtain a SD instance
-    SD* sd = new SD (sdfd, fileid);
+    auto sd = new SD ();
+
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
@@ -1665,10 +1635,10 @@ throw (Exception)
     }
 
     // Go through the SDS object
-    for (sds_index = 0; sds_index < n_sds; sds_index++) {
+    for (int sds_index = 0; sds_index < n_sds; sds_index++) {
 
         // New SDField instance
-        SDField *field = new SDField ();
+        auto field = new SDField ();
 
         // Obtain SDS ID.
         sds_id = SDselect (sdfd, sds_index);
@@ -1734,9 +1704,7 @@ throw (Exception)
 
             // Obtain dimension info.: dim_name, dim_size,dim_type and num of dim. attrs.
             int temp_num_dim_attrs = 0;
-            status =
-                SDdiminfo (dimid, dim_name, &dim_size, &dim_type,
-                           (int32*)&temp_num_dim_attrs);
+            status =  SDdiminfo (dimid, dim_name, &dim_size, &dim_type, &temp_num_dim_attrs);
             if (status == FAIL) {
                delete sd;
                delete field;
@@ -1768,8 +1736,7 @@ throw (Exception)
 
             // Since dim_size will be 0 if the dimension is 
             // unlimited dimension, so use dim_sizes instead
-            Dimension *dim =
-                new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
+            auto dim = new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
 
             // Save this dimension
             field->dims.push_back (dim);
@@ -1793,7 +1760,7 @@ throw (Exception)
             for (int dimindex = 0; dimindex < field->rank; dimindex++) {
 
                 string dim_name_str = (field->dims)[dimindex]->name;
-                AttrContainer *dim_info = new AttrContainer ();
+                auto dim_info = new AttrContainer ();
                 string index_str;
                 stringstream out_index;
                 out_index  << dimindex;
@@ -1829,7 +1796,7 @@ throw (Exception)
                 // Loop through to obtain the dimension attributes and save the corresponding attributes to dim_info.
                 for (int attrindex = 0; attrindex < num_dim_attrs[dimindex]; attrindex++) {
 
-                    Attribute *attr = new Attribute();
+                    auto attr = new Attribute();
                     status = SDattrinfo(dimids[dimindex],attrindex,attr_name,
                                                &attr->type,&attr_value_count);
                     if (status == FAIL) {
@@ -1861,7 +1828,7 @@ throw (Exception)
                 // as the attribute value.
                 if (false == dimname_flag) { 
 
-                    Attribute *attr = new Attribute();
+                    auto attr = new Attribute();
                     attr->name = "name";
                     attr->newname = "name";
                     attr->type = DFNT_CHAR;
@@ -1877,7 +1844,7 @@ throw (Exception)
 
         // Loop through all the SDS attributes and save them to the class field instance.
         for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
-            Attribute *attr = new Attribute ();
+            auto attr = new Attribute ();
             status =
                 SDattrinfo (sds_id, attrindex, attr_name, &attr->type,
                             &attr_value_count);
@@ -1918,7 +1885,7 @@ throw (Exception)
     // Loop through all SD(file) attributes and save them to the class sd instance.
     for (int attrindex = 0; attrindex < n_sd_attrs; attrindex++) {
 
-        Attribute *attr = new Attribute ();
+        auto attr = new Attribute ();
         status = SDattrinfo (sdfd, attrindex, attr_name, &attr->type,
                              &attr_value_count);
         if (status == FAIL) {
@@ -2022,15 +1989,11 @@ throw (Exception)
     int32 obj_ref = 0;
     int32 obj_tag = 0;
 
-    // Temporary index.
-    int i = 0;
 
     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168.
     char vgroup_name[VGNAMELENMAX*4];
     char vgroup_class[VGNAMELENMAX*4];
-
-    //std::string full_path;
 
     // full path of an object
     char *full_path = nullptr;
@@ -2041,7 +2004,7 @@ throw (Exception)
 //    char cfull_path[MAX_FULL_PATH_LEN];
 
     // Obtain a SD instance
-    SD *sd = new SD (sdfd, fileid);
+    SD *sd = new SD ();
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
@@ -2172,7 +2135,6 @@ throw (Exception)
                 if(sd!= nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
-                //throw;
                 throw1 ("No enough memory to allocate the buffer.");
             }
             else 
@@ -2187,7 +2149,6 @@ throw (Exception)
                 Vdetach (vgroup_id);
                 if(full_path != nullptr)
                     free (full_path);
-                //throw;
                 throw1 ("No enough memory to allocate the buffer.");
             }
             else 
@@ -2195,7 +2156,7 @@ throw (Exception)
             strncpy (cfull_path, full_path,strlen(full_path));
 
             // Loop all objects in this vgroup
-            for (i = 0; i < num_gobjects; i++) {
+            for (int i = 0; i < num_gobjects; i++) {
 
                 // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
@@ -2225,21 +2186,16 @@ throw (Exception)
                     // if the the path includes "Data Fields" or "Geolocation Fields".
                     // If the object is an EOS object, we will remove the sds 
                     // reference number from the list.
-                    string temp_str = string(full_path);
+                    auto temp_str = string(full_path);
                     if((temp_str.find("Data Fields") != std::string::npos)||
                         (temp_str.find("Geolocation Fields") != std::string::npos))                                   
                         sd->sds_ref_list.remove(obj_ref);
 
                 }
                 // Do nothing for other objects
-                else{
-
-                }
             }
-            //if(full_path != nullptr)
-                free (full_path);
-            //if(cfull_path != nullptr)
-                free (cfull_path);
+            free (full_path);
+            free (cfull_path);
 
             status = Vdetach (vgroup_id);
 
@@ -2253,16 +2209,19 @@ throw (Exception)
     }// end of the if loop
 
     // Loop through the sds reference list; now the list should only include non-EOS SDS objects.
+#if 0
     for(std::list<int32>::iterator sds_ref_it = sd->sds_ref_list.begin(); 
         sds_ref_it!=sd->sds_ref_list.end();++sds_ref_it) {
+#endif
+    for (const auto &sds_ref:sd->sds_ref_list) {
 
-        extra_sds_index = SDreftoindex(sdfd,*sds_ref_it);
+        extra_sds_index = SDreftoindex(sdfd,sds_ref);
         if(extra_sds_index == FAIL) { 
             delete sd;
-            throw3("SDreftoindex Failed ","SDS reference number ", *sds_ref_it);
+            throw3("SDreftoindex Failed ","SDS reference number ", sds_ref);
         }
 
-        SDField *field = new SDField ();
+        auto field = new SDField ();
         sds_id = SDselect (sdfd, extra_sds_index);
        	if (sds_id == FAIL) {
             delete field;
@@ -2287,8 +2246,8 @@ throw (Exception)
         field->name = tempname;
         tempname = HDFCFUtil::get_CF_string(tempname);
         field->newname = tempname+"_"+"NONEOS";
-        field->fieldref = *sds_ref_it;
-        sd->refindexlist[*sds_ref_it] = extra_sds_index;
+        field->fieldref = sds_ref;
+        sd->refindexlist[sds_ref] = extra_sds_index;
 
         // Handle dimensions with original dimension names
         for (int dimindex = 0; dimindex < field->rank; dimindex++) {
@@ -2315,8 +2274,7 @@ throw (Exception)
 
             // Since dim_size will be 0 if the dimension is unlimited dimension, 
             // so use dim_sizes instead
-            Dimension *dim =
-                new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
+            auto dim = new Dimension (dim_name_str, dim_sizes[dimindex], dim_type);
 
             field->dims.push_back (dim);
 
@@ -2337,7 +2295,7 @@ throw (Exception)
             // So far we don't meet the above case. KY 2013-07-12
 
             string cfdimname =  HDFCFUtil::get_CF_string(dim_name_str);
-            Dimension *correcteddim =
+            auto correcteddim =
                 new Dimension (cfdimname, dim_sizes[dimindex], dim_type);
 
             field->correcteddims.push_back (correcteddim);
@@ -2347,7 +2305,7 @@ throw (Exception)
         // Loop through all SDS attributes and save them to field.
         for (int attrindex = 0; attrindex < n_sds_attrs; attrindex++) {
 
-            Attribute *attr = new Attribute ();
+            auto attr = new Attribute ();
 
             status = SDattrinfo (sds_id, attrindex, attr_name, &attr->type,
                                  &attr_value_count);
@@ -2359,12 +2317,12 @@ throw (Exception)
                 throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
             }
 
-            string tempname (attr_name);
-            attr->name = tempname;
+            string temp_attrname (attr_name);
+            attr->name = temp_attrname;
 
             // Checking and handling the special characters for the SDS attribute name.
-            tempname = HDFCFUtil::get_CF_string(tempname);
-            attr->newname = tempname;
+            temp_attrname = HDFCFUtil::get_CF_string(temp_attrname);
+            attr->newname = temp_attrname;
             attr->count = attr_value_count;
             attr->value.resize (attr_value_count * DFKNTsize (attr->type));
             if (SDreadattr (sds_id, attrindex, &attr->value[0]) == -1) {
@@ -2405,7 +2363,7 @@ throw (Exception)
     // Documented in a jira ticket HFRHANDLER-168. 
     char vdata_name[VSNAMELENMAX];
 
-    VDATA *vdata = new VDATA (vdata_id, obj_ref);
+    auto vdata = new VDATA (obj_ref);
 
     vdata->vdref = obj_ref;
 
@@ -2437,18 +2395,10 @@ throw (Exception)
     // Using the BES KEY for people to choose to map the vdata to attribute for a smaller number of record.
     // KY 2012-6-26 
   
-#if 0
-    string check_vdata_to_attr_key="H4.EnableVdata_to_Attr";
-    bool turn_on_vdata_to_attr_key = false;
-
-    turn_on_vdata_to_attr_key = HDFCFUtil::check_beskeys(check_vdata_to_attr_key);
-#endif
-
     // The reason to add this flag is if the number of record is too big, the DAS table is too huge to allow some clients to work.
     // Currently if the number of record is >=10; one vdata field is mapped to a DAP variable.
     // Otherwise, it is mapped to a DAP attribute.
 
-    //if (num_record <= 10 && true == turn_on_vdata_to_attr_key)
     if (num_record <= 10 && true == HDF4RequestHandler::get_enable_vdata_attr())
         vdata->TreatAsAttrFlag = true;
     else
@@ -2457,11 +2407,10 @@ throw (Exception)
     // Loop through all fields and save information to a vector 
     for (int i = 0; i < num_field; i++) {
 
-        VDField *field = new VDField ();
+        auto field = new VDField ();
 
         if(field == nullptr) {
             delete vdata;
-            //throw;
             throw1("Memory allocation for field class failed.");
 
         }
@@ -2509,8 +2458,11 @@ throw (Exception)
         field->size = fieldsize;
         field->rank = 1;
         field->numrec = num_record;
+
+#if 0
 //cerr<<"vdata field name is "<<field->name <<endl;
 //cerr<<"vdata field type is "<<field->type <<endl;
+#endif
 
         
         if (vdata->getTreatAsAttrFlag () && num_record > 0) {	// Currently we only save small size vdata to attributes
@@ -2604,7 +2556,7 @@ throw (Exception)
         // Obtain number of vdata attributes 
         for (int i = 0; i < nattrs; i++) {
 
-            Attribute *attr = new Attribute ();
+            auto attr = new Attribute ();
 
             status = VSattrinfo (vdata_id, _HDF_VDATA, i, attr_name,
                                  &attr->type, &attr->count, &attrsize);
@@ -2667,7 +2619,7 @@ throw (Exception)
         // Obtain vdata field attributes
         for (int i = 0; i < nattrs; i++) {
 
-            Attribute *attr = new Attribute ();
+            auto attr = new Attribute ();
 
             status = VSattrinfo (vdata_id, fieldindex, i, attr_name,
                                  &attr->type, &attr->count, &attrsize);
@@ -2678,27 +2630,28 @@ throw (Exception)
                          fieldindex, " attr index is ", i);
             }
 
-           if(attr != nullptr) { // Make coverity happy since it doesn't understand throw5.
-            string tempname(attr_name);
-            attr->name = tempname;
+            if (attr != nullptr) { // Make coverity happy since it doesn't understand throw5.
 
-            // Checking and handling the special characters for the vdata field attribute name.
-            attr->newname = HDFCFUtil::get_CF_string(attr->name);
-
-            attr->value.resize (attrsize);
-            if (VSgetattr (vdata_id, fieldindex, i, &attr->value[0]) == FAIL) {
-                delete attr;
-                throw5 ("VSgetattr failed ", "vdata field index is ",
-                         fieldindex, " attr index is ", i);
-            }
-            attrs.push_back (attr);
+                string tempname(attr_name);
+                attr->name = tempname;
+    
+                // Checking and handling the special characters for the vdata field attribute name.
+                attr->newname = HDFCFUtil::get_CF_string(attr->name);
+    
+                attr->value.resize (attrsize);
+                if (VSgetattr (vdata_id, fieldindex, i, &attr->value[0]) == FAIL) {
+                    delete attr;
+                    throw5 ("VSgetattr failed ", "vdata field index is ",
+                             fieldindex, " attr index is ", i);
+                }
+                attrs.push_back (attr);
            }
         }
     }
 }
 
 void 
-File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
+File::ReadVgattrs(int32 vgroup_id,const char*fullpath) throw(Exception) {
 
     intn status_n;
     //int  n_attr_value = 0;
@@ -2718,7 +2671,7 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
 
         Attribute *attr = new Attribute();
         int32 value_size_32 = 0;
-        status_n = Vattrinfo(vgroup_id, (intn)attr_index, attr_name, &attr->type, 
+        status_n = Vattrinfo(vgroup_id, attr_index, attr_name, &attr->type, 
                             &attr->count, &value_size_32);
         if(status_n == FAIL) {
             delete attr;
@@ -2768,9 +2721,6 @@ throw (Exception)
 
     // Vdata ID
     int32 vdata_id = 0;
-
-    // Lone vgroup index 
-    int32 lone_vg_number = 0;		 
 
     // Number of lone vgroups
     int32 num_of_lones = -1;		
@@ -2833,7 +2783,7 @@ throw (Exception)
         }
 
         // Loop through all lone vgroups
-        for (lone_vg_number = 0; lone_vg_number < num_of_lones;
+        for (int lone_vg_number = 0; lone_vg_number < num_of_lones;
              lone_vg_number++) {
 
             // Attach to the current vgroup 
@@ -2881,7 +2831,6 @@ throw (Exception)
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
             if (full_path == nullptr) {
                 Vdetach (vgroup_id);
-                //throw;
                 throw1 ("No enough memory to allocate the buffer.");
             }
             else {// Not necessary, however this will make coverity scan happy.
@@ -2904,7 +2853,6 @@ throw (Exception)
             if (cfull_path == nullptr) {
                 Vdetach (vgroup_id);
                 free (full_path);
-                //throw;
                 throw1 ("No enough memory to allocate the buffer.");
             }
             else { // Not necessary, however this will make coverity scan happy.
@@ -3014,21 +2962,17 @@ throw (Exception)
                         //We want to map fields of vdata with more than 10 records to DAP variables
                         // and we need to add the path and vdata name to the new vdata field name
                         if (!vdataobj->getTreatAsAttrFlag ()) {
-                            for (std::vector <VDField * >::const_iterator it_vdf =
-                                vdataobj->getFields ().begin ();
-                                it_vdf != vdataobj->getFields ().end ();
-                                it_vdf++) {
+                            for (const auto &vdf:vdataobj->getFields ()) {
 
                                 // Change vdata name conventions. 
-                                // "vdata"+vdata_newname+"_vdf_"+(*it_vdf)->newname
+                                // "vdata"+vdata_newname+"_vdf_"+vdf->newname
 
-                                (*it_vdf)->newname =
-                                    "vdata" + vdataobj->newname + "_vdf_" + (*it_vdf)->name;
+                                vdf->newname =
+                                    "vdata" + vdataobj->newname + "_vdf_" + vdf->name;
 
                                 //Make sure the name is following CF, KY 2012-6-26
-                                (*it_vdf)->newname = HDFCFUtil::get_CF_string((*it_vdf)->newname);
+                                vdf->newname = HDFCFUtil::get_CF_string(vdf->newname);
                             }
-
                         }
                 
                         vdataobj->newname = HDFCFUtil::get_CF_string(vdataobj->newname);
@@ -3051,8 +2995,7 @@ throw (Exception)
                          || obj_tag == DFTAG_SD) {
 
                     // We need to obtain the SDS index; also need to store the new name(object name + full_path).
-                    if (this->sd->refindexlist.find (obj_ref) !=
-                    sd->refindexlist.end ()) {
+                    if (this->sd->refindexlist.find (obj_ref) != sd->refindexlist.end ()) {
                         // coverity cannot recognize the macro of throw(throw1,2,3..), so
                         // it claims that full_path is freed. The coverity is wrong. 
                         // To make coverity happy, here I will have a check.
@@ -3070,13 +3013,8 @@ throw (Exception)
                                 " is not found");
                     }
                 }
-                else{
-
-                }
             }
-            //if(full_path != nullptr)
             free (full_path);
-            //if(cfull_path != nullptr)
             free (cfull_path);
 
             status = Vdetach (vgroup_id);
@@ -3135,7 +3073,6 @@ throw (Exception)
     char *cfull_path = nullptr;
 
     bool unexpected_fail = false;
-
 
     vgroup_pid = Vattach (file_id, pobj_ref, "r");
     if (vgroup_pid == FAIL) 
@@ -3331,7 +3268,6 @@ throw (Exception)
 
     int32 vgroup_cid = -1;
     int32 status = 0;
-    int i = 0;
     int num_gobjects = 0;
 
     // Now HDF4 provides a dynamic way to allocate the length of an HDF4 object name, should update to use that in the future.
@@ -3382,7 +3318,7 @@ throw (Exception)
 
     string err_msg;
 
-    for (i = 0; i < num_gobjects; i++) {
+    for (int i = 0; i < num_gobjects; i++) {
 
         if (Vgettagref (vgroup_cid, i, &obj_tag, &obj_ref) == FAIL) {
             unexpected_fail = true;
@@ -3433,8 +3369,7 @@ cleanFail:
 // We may combine them in the future. Documented at HFRHANDLER-166.
 
 void
-File::obtain_vdata_path (int32 file_id,  char *full_path,
-				   int32 pobj_ref)
+File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
 throw (Exception)
 {
 
@@ -3677,27 +3612,24 @@ File::handle_sds_fakedim_names() throw(Exception) {
     std::map < int32, std::string > fakedimsizenamelist;
     std::map < int32, std::string >::iterator fakedimsizenamelistit;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getDimensions ().begin ();
-            j != (*i)->getDimensions ().end (); ++j) {
+        for (const auto &sdim:sdf->getDimensions ()) {
 
             //May treat corrected dimension names as the original dimension names the SAME, CORRECT it in the future.
             if (file->sptype != OTHERHDF)
-                tempdimname = (*j)->getName ();
+                tempdimname = sdim->getName ();
             else
-                tempdimname = (*j)->getName () + temppath;
+                tempdimname = sdim->getName () + temppath;
 
             Dimension *dim =
-                new Dimension (tempdimname, (*j)->getSize (),
-                               (*j)->getType ());
-            (*i)->correcteddims.push_back (dim);
+                new Dimension (tempdimname, sdim->getSize (),
+                               sdim->getType ());
+            sdf->correcteddims.push_back (dim);
             if (tempdimname.find ("fakeDim") != std::string::npos) {
-                fakedimsizeit = fakedimsizeset.insert ((*j)->getSize ());
+                fakedimsizeit = fakedimsizeset.insert (sdim->getSize ());
                 if (fakedimsizeit.second == true) {
-                    fakedimsizenamelist[(*j)->getSize ()] = (*j)->getName ();	//Here we just need the original name since fakeDim is globally generated.
+                    fakedimsizenamelist[sdim->getSize ()] = sdim->getName ();	//Here we just need the original name since fakeDim is globally generated.
                 }
             }
         }
@@ -3734,17 +3666,14 @@ void File::create_sds_dim_name_list() {
     File *file = this;
 
     // Create the new dimension name set and the dimension name to size map.
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getCorrectedDimensions ().begin ();
-            j != (*i)->getCorrectedDimensions ().end (); ++j) {
+    for (const auto &sdf:file->sd->sdfields) {
+        for (const auto &dim:sdf->getCorrectedDimensions ()) {
             std::pair < std::set < std::string >::iterator, bool > ret;
-            ret = file->sd->fulldimnamelist.insert ((*j)->getName ());
+            ret = file->sd->fulldimnamelist.insert (dim->getName ());
 
             // Map from the unique dimension name to its size
             if (ret.second == true) {
-                file->sd->n1dimnamelist[(*j)->getName ()] = (*j)->getSize ();
+                file->sd->n1dimnamelist[dim->getName ()] = dim->getSize ();
             }
         }
     }

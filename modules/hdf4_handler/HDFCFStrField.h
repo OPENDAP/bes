@@ -23,7 +23,7 @@ class HDFCFStrField:public libdap::Array
                    int32 fieldorder, 
                    const std::string & fieldname,  
                    const std::string & n = "", 
-                   libdap::BaseType * v = 0):
+                   libdap::BaseType * v = nullptr):
         Array (n, v),
         rank (rank),
         filename(filename),
@@ -34,20 +34,19 @@ class HDFCFStrField:public libdap::Array
         fieldname(fieldname)
         {
         }
-        virtual ~ HDFCFStrField ()
-        {
-        }
+
+        ~ HDFCFStrField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        BaseType *ptr_duplicate ()
+        BaseType *ptr_duplicate () override
         {
             return new HDFCFStrField (*this);
         }
 
         // Read the data.
-        virtual bool read ();
+        bool read () override;
 
     private:
 

@@ -16,9 +16,6 @@ HDFEOS2GeoCFProj::HDFEOS2GeoCFProj(const string & n, const string &d ) : Byte(n,
 {
 }
 
-HDFEOS2GeoCFProj::~HDFEOS2GeoCFProj()
-{
-}
 BaseType *HDFEOS2GeoCFProj::ptr_duplicate()
 {
     return new HDFEOS2GeoCFProj(*this);

@@ -19,7 +19,7 @@
 class HDFEOS2ArraySwathGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", libdap::BaseType * v = 0):
+        HDFEOS2ArraySwathGeoField (int rank, const std::string & filename, const int swathfd, const std::string & swathname, const std::string & fieldname, const string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v),
             rank (rank),
             filename(filename),
@@ -27,20 +27,18 @@ class HDFEOS2ArraySwathGeoField:public libdap::Array
             swathname (swathname), 
             fieldname (fieldname) {
         }
-        virtual ~ HDFEOS2ArraySwathGeoField ()
-        {
-        }
+        ~ HDFEOS2ArraySwathGeoField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathGeoField (*this);
         }
 
         // Read the data 
-        virtual bool read ();
+        bool read () override;
 
     private:
 

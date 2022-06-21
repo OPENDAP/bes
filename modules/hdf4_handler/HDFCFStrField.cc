@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // This file is part of the hdf4 data handler for the OPeNDAP data server.
-// It retrieves the HDF4 DFNT_CHAR >1D array and then send to DAP as a DAP string array for the CF option.
+// It retrieves the HDF4 DFNT_CHAR >1D array and then send to DAP as a DAP string array. 
+// This file is used when the CF option of the handler is turned on.
 //  Authors:   MuQun Yang <myang6@hdfgroup.org>  
 // Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
@@ -32,11 +33,6 @@ HDFCFStrField::read ()
     if(length() == 0)        
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Note that one dimensional character array is one string,
@@ -85,7 +81,7 @@ HDFCFStrField::read ()
 
         int32 sdid = -1;
         if(false == check_pass_fileid_key) {
-            sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
+            sdid = SDstart (filename.c_str (), DFACC_READ);
             if (sdid < 0) {
                 ostringstream eherr;
                 eherr << "File " << filename.c_str () << " cannot be open.";
@@ -115,7 +111,9 @@ HDFCFStrField::read ()
         }
 
         int32 dim_sizes[H4_MAX_VAR_DIMS];
-        int32 sds_rank, data_type, n_attrs;
+        int32 sds_rank;
+        int32  data_type;
+        int32  n_attrs;
         char  name[H4_MAX_NC_NAME];
 
         r = SDgetinfo (sdsid, name, &sds_rank, dim_sizes,
@@ -207,7 +205,7 @@ HDFCFStrField::read ()
 
 
         // Seek the position of the starting point
-        if (VSseek (vdata_id, (int32) offset32[0]) == -1) {
+        if (VSseek (vdata_id, offset32[0]) == -1) {
             VSdetach (vdata_id);
             Vend (file_id);
             HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
@@ -267,7 +265,7 @@ HDFCFStrField::read ()
 int
 HDFCFStrField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();

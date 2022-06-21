@@ -18,22 +18,20 @@
 class HDFEOS2ArrayMissGeoField:public libdap::Array
 {
     public:
-        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+        HDFEOS2ArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v), rank (rank), tnumelm (tnumelm) {
             }
-        virtual ~ HDFEOS2ArrayMissGeoField ()
-        {
-        }
+        ~ HDFEOS2ArrayMissGeoField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArrayMissGeoField (*this);
         }
 
-        virtual bool read ();
+        virtual bool read () override;
 
     private:
 

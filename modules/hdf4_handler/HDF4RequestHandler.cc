@@ -82,8 +82,8 @@
 using namespace std;
 using namespace libdap;
 
-bool check_beskeys(const string);
-bool get_beskeys(const string,string &);
+bool check_beskeys(const string &);
+bool get_beskeys(const string &,string &);
 
 extern void read_das(DAS & das, const string & filename);
 extern void read_dds(DDS & dds, const string & filename);
@@ -206,8 +206,10 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 
 }
 
+#if 0
 HDF4RequestHandler::~HDF4RequestHandler() {
 }
+#endif
 
 bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
@@ -241,7 +243,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
     }
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
+    auto bdas = dynamic_cast<BESDASResponse *> (response);
     if (!bdas)
         throw BESInternalError("cast error", __FILE__, __LINE__);
 
@@ -262,7 +264,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
             // Obtain HDF4 file IDs
             //SDstart
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
@@ -271,7 +273,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             }
  
             // H open
-            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            fileid = Hopen(accessed.c_str(), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
                 string invalid_file_msg="HDF4 Hopen error for the file ";
@@ -311,7 +313,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             }
             
             try {
-                bool ecs_metadata = !(_disable_ecsmetadata_all);
+                bool ecs_metadata = !_disable_ecsmetadata_all;
 #if 0
 if(ecs_metadata == true)
 cerr<<"output ecs metadata "<<endl;
@@ -409,7 +411,7 @@ gettimeofday(&start_time,nullptr);
 #endif
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDDSResponse *> (response);
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
 
@@ -423,7 +425,7 @@ gettimeofday(&start_time,nullptr);
         string accessed = dhi.container->access();
         dds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
@@ -435,7 +437,7 @@ gettimeofday(&start_time,nullptr);
 
             // Obtain HDF4 file IDs
             //SDstart
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
@@ -444,7 +446,7 @@ gettimeofday(&start_time,nullptr);
             }
 
             // H open
-            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            fileid = Hopen(accessed.c_str(), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
                 string invalid_file_msg="HDF4 Hopen error for the file ";
@@ -485,7 +487,7 @@ gettimeofday(&start_time,nullptr);
             }
  
             try {
-                bool ecs_metadata = !(_disable_ecsmetadata_all);
+                bool ecs_metadata = !_disable_ecsmetadata_all;
                 read_das_use_eos2lib(*das, accessed,sdfd,fileid,gridfd,swathfd,ecs_metadata,&h4file,&eosfile);
                 Ancillary::read_ancillary_das(*das, accessed);
 
@@ -606,7 +608,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     }
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -622,7 +624,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         string accessed = dhi.container->access();
         dds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
@@ -632,7 +634,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
             // Obtain HDF4 file IDs
             //SDstart
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd) {
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
@@ -641,7 +643,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
             }
 
             // H open
-            fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+            fileid = Hopen(accessed.c_str(), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
                 string invalid_file_msg="HDF4 Hopen error for the file ";
@@ -776,7 +778,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 #endif
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -799,14 +801,14 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         string accessed = dhi.container->access();
         hdds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
 
         // Obtain HDF4 file IDs
         //SDstart
-        sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+        sdfd = SDstart (accessed.c_str(), DFACC_READ);
         if( -1 == sdfd) {
             string invalid_file_msg="HDF4 SDstart error for the file ";
             invalid_file_msg +=accessed;
@@ -814,7 +816,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
             throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
         }
         // H open
-        fileid = Hopen(const_cast<char *>(accessed.c_str()), DFACC_READ,0);
+        fileid = Hopen(accessed.c_str(), DFACC_READ,0);
         if (-1 == fileid) {
             SDend(sdfd);
             string invalid_file_msg="HDF4 Hopen error for the file ";
@@ -942,7 +944,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
     HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDDSResponse *> (response);
 
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -960,7 +962,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
         string accessed = dhi.container->access();
         dds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
 
         // Check and set up dds and das cache files.
@@ -1014,7 +1016,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
         if(false == dds_das_get_cache) { 
 
             // Obtain SD ID, this is the only ID we need to use.
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd) {
 
                 string invalid_file_msg="HDF4 SDstart error for the file ";
@@ -1026,7 +1028,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            bool ecs_metadata = !(_disable_ecsmetadata_all);
+            bool ecs_metadata = !_disable_ecsmetadata_all;
 #if 0
         bool ecs_metadata = true;
         if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
@@ -1101,7 +1103,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
     HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
+    auto bdas = dynamic_cast<BESDASResponse *> (response);
 
     if (!bdas)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -1109,7 +1111,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
     try {
         bdas->set_container(dhi.container->get_symbolic_name());
 
-        DAS *das = bdas->get_das();
+        auto das = bdas->get_das();
         string base_file_name = basename(dhi.container->access());
 
         string accessed = dhi.container->access();
@@ -1150,7 +1152,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
         // Need to retrieve DAS from the HDF4 file.
         if(false == das_get_cache) {
             // Obtain SD ID.
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
@@ -1167,7 +1169,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 #endif
             // Here we will check if ECS_Metadata key if set. For DDS and DAS, 
             // only when the DisableECSMetaDataAll key is set, ecs_metadata is off.
-            bool ecs_metadata = !(_disable_ecsmetadata_all);
+            bool ecs_metadata = !_disable_ecsmetadata_all;
                
             read_das_sds(*das, accessed,sdfd,ecs_metadata,&h4file);
             Ancillary::read_ancillary_das(*das, accessed);
@@ -1217,7 +1219,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
     HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -1230,7 +1232,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
         string accessed = dhi.container->access();
         dds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
@@ -1277,7 +1279,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
         if(false == dds_das_get_cache) { 
 
             // Obtain HDF4 SD ID
-            sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+            sdfd = SDstart (accessed.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=accessed;
@@ -1363,7 +1365,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
     HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
@@ -1371,7 +1373,8 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
 
-        HDF4DDS *hdds = new HDF4DDS(bdds->get_dds());
+        auto hdds = new HDF4DDS(bdds->get_dds());
+
 
         delete bdds->get_dds();
 
@@ -1381,12 +1384,12 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
         string accessed = dhi.container->access();
         hdds->filename(accessed);
 
-        DAS *das = new DAS;
+        auto das = new DAS;
         BESDASResponse bdas(das);
         bdas.set_container(dhi.container->get_symbolic_name());
 
         //Obtain SD ID. 
-        sdfd = SDstart (const_cast < char *>(accessed.c_str()), DFACC_READ);
+        sdfd = SDstart (accessed.c_str(), DFACC_READ);
         if( -1 == sdfd) {
             string invalid_file_msg="HDF4 SDstart error for the file ";
             invalid_file_msg +=accessed;
@@ -1494,7 +1497,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
             // Obtain HDF4 file IDs
             //SDstart
-            sdfd = SDstart (const_cast < char *>(data_path.c_str()), DFACC_READ);
+            sdfd = SDstart (data_path.c_str(), DFACC_READ);
             if( -1 == sdfd){
                 string invalid_file_msg="HDF4 SDstart error for the file ";
                 invalid_file_msg +=data_path;
@@ -1503,7 +1506,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             }
 
             // H open
-            fileid = Hopen(const_cast<char *>(data_path.c_str()), DFACC_READ,0);
+            fileid = Hopen(data_path.c_str(), DFACC_READ,0);
             if (-1 == fileid) {
                 SDend(sdfd);
                 string invalid_file_msg="HDF4 Hopen error for the file ";
@@ -1653,7 +1656,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // CE.
     bes_dmr.set_dap4_constraint(dhi);
     bes_dmr.set_dap4_function(dhi);
-    dmr->set_factory(0);
+    dmr->set_factory(nullptr);
 
     return true;
 }
@@ -1682,7 +1685,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
     // Obtain HDF4 file IDs
     //SDstart
-    sdfd = SDstart (const_cast < char *>(data_path.c_str()), DFACC_READ);
+    sdfd = SDstart (data_path.c_str(), DFACC_READ);
     if( -1 == sdfd){
         string invalid_file_msg="HDF4 SDstart error for the file ";
         invalid_file_msg +=data_path;
@@ -1691,7 +1694,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     }
 
     // H open
-    fileid = Hopen(const_cast<char *>(data_path.c_str()), DFACC_READ,0);
+    fileid = Hopen(data_path.c_str(), DFACC_READ,0);
     if (-1 == fileid) {
         SDend(sdfd);
         string invalid_file_msg="HDF4 SDstart error for the file ";
@@ -1816,7 +1819,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
     dmr->build_using_dds(dds);
-    HDF4DMR *hdf4_dmr = new HDF4DMR(dmr);
+    auto hdf4_dmr = new HDF4DMR(dmr);
 #ifdef USE_HDFEOS2_LIB
     hdf4_dmr->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
 #else
@@ -1832,7 +1835,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     // CE.
     bes_dmr.set_dap4_constraint(dhi);
     bes_dmr.set_dap4_function(dhi);
-    hdf4_dmr->set_factory(0);
+    hdf4_dmr->set_factory(nullptr);
 
     return true;
 
@@ -1840,7 +1843,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
 
 bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESInfo *info = dynamic_cast<BESInfo *> (response);
+	auto info = dynamic_cast<BESInfo *> (response);
 	if (!info)
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
@@ -1849,7 +1852,7 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
         attrs["version"] = MODULE_VERSION ;
 	list < string > services;
 	BESServiceRegistry::TheRegistry()->services_handled(HDF4_NAME, services);
-	if (services.size() > 0) {
+	if (services.empty() == false) {
 		string handles = BESUtil::implode(services, ',');
 		attrs["handles"] = handles;
 	}
@@ -1861,7 +1864,7 @@ bool HDF4RequestHandler::hdf4_build_help(BESDataHandlerInterface & dhi) {
 
 bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi) {
 	BESResponseObject *response = dhi.response_handler->get_response_object();
-	BESVersionInfo *info = dynamic_cast<BESVersionInfo *> (response);
+	auto info = dynamic_cast<BESVersionInfo *> (response);
 	if (!info)
 		throw BESInternalError("cast error", __FILE__, __LINE__);
 
@@ -2046,7 +2049,7 @@ bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string &
 
 }
 
-bool check_beskeys(const string key) {
+bool check_beskeys(const string & key) {
 
     bool found = false;
     string doset ="";
@@ -2063,7 +2066,7 @@ bool check_beskeys(const string key) {
 
 }
 
-bool get_beskeys(const string key,string &key_value) {
+bool get_beskeys(const string & key,string &key_value) {
 
     bool found = false;
 

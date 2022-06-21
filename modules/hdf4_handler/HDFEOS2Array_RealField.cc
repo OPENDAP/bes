@@ -34,12 +34,6 @@ HDFEOS2Array_RealField::read ()
     if(length() == 0)        
         return true;
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Declare offset, count and step
@@ -64,9 +58,9 @@ HDFEOS2Array_RealField::read ()
 
     // Just obtain the offset,count and step in the datatype of int32.
     for (int i = 0; i < rank; i++) {
-        offset32[i] = (int32) offset[i];
-        count32[i] = (int32) count[i];
-        step32[i] = (int32) step[i];
+        offset32[i] = offset[i];
+        count32[i] = count[i];
+        step32[i] = step[i];
     }
 
     // Define function pointers to handle both grid and swath
@@ -122,13 +116,6 @@ HDFEOS2Array_RealField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-#if 0
-    string check_disable_scale_comp_key = "H4.DisableScaleOffsetComp";
-    bool turn_on_disable_scale_comp_key= false;
-    turn_on_disable_scale_comp_key = HDFCFUtil::check_beskeys(check_disable_scale_comp_key);
-#endif
-    
-
     bool is_modis_l1b = false;
     if("MODIS_SWATH_Type_L1B" == swathname)
         is_modis_l1b = true;
@@ -178,7 +165,7 @@ HDFEOS2Array_RealField::read ()
 
         if (true == isgeofile || false == check_pass_fileid_key)  {
 
-            sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+            sdfileid = SDstart(filename.c_str (), DFACC_READ);
 
             if (FAIL == sdfileid) {
                 detachfunc(gridid);
@@ -273,11 +260,6 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
              "coming to HDFEOS2Array_RealField write_dap_data_scale_comp "
              <<endl);
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     // Define function pointers to handle both grid and swath
@@ -440,7 +422,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             if(false == isgeofile || false == check_pass_fileid_key) 
                 sdfileid = sdfd;
             else {
-                sdfileid = SDstart(const_cast < char *>(filename.c_str ()), DFACC_READ);
+                sdfileid = SDstart(filename.c_str (), DFACC_READ);
                 if (FAIL == sdfileid) {
                     ostringstream eherr;
                     eherr << "Cannot Start the SD interface for the file " 
@@ -678,21 +660,21 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             scale = (float)tmpvalue; \
         } \
         break;
-                    GET_SCALE_FACTOR_ATTR_VALUE(INT8, int8);
-                    GET_SCALE_FACTOR_ATTR_VALUE(CHAR,int8);
-                    GET_SCALE_FACTOR_ATTR_VALUE(UINT8, uint8);
-                    GET_SCALE_FACTOR_ATTR_VALUE(UCHAR,uint8);
-                    GET_SCALE_FACTOR_ATTR_VALUE(INT16, int16);
-                    GET_SCALE_FACTOR_ATTR_VALUE(UINT16, uint16);
-                    GET_SCALE_FACTOR_ATTR_VALUE(INT32, int32);
-                    GET_SCALE_FACTOR_ATTR_VALUE(UINT32, uint32);
-                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float);
-                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double);
+                    GET_SCALE_FACTOR_ATTR_VALUE(INT8, int8)
+                    GET_SCALE_FACTOR_ATTR_VALUE(CHAR,int8)
+                    GET_SCALE_FACTOR_ATTR_VALUE(UINT8, uint8)
+                    GET_SCALE_FACTOR_ATTR_VALUE(UCHAR,uint8)
+                    GET_SCALE_FACTOR_ATTR_VALUE(INT16, int16)
+                    GET_SCALE_FACTOR_ATTR_VALUE(UINT16, uint16)
+                    GET_SCALE_FACTOR_ATTR_VALUE(INT32, int32)
+                    GET_SCALE_FACTOR_ATTR_VALUE(UINT32, uint32)
+                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float)
+                    GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
                     
-                };
+                }
 #undef GET_SCALE_FACTOR_ATTR_VALUE
             }
 
@@ -738,20 +720,20 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             field_offset = (float)tmpvalue; \
         } \
         break;
-                    GET_ADD_OFFSET_ATTR_VALUE(INT8, int8);
-                    GET_ADD_OFFSET_ATTR_VALUE(CHAR,int8);
-                    GET_ADD_OFFSET_ATTR_VALUE(UINT8, uint8);
-                    GET_ADD_OFFSET_ATTR_VALUE(UCHAR,uint8);
-                    GET_ADD_OFFSET_ATTR_VALUE(INT16, int16);
-                    GET_ADD_OFFSET_ATTR_VALUE(UINT16, uint16);
-                    GET_ADD_OFFSET_ATTR_VALUE(INT32, int32);
-                    GET_ADD_OFFSET_ATTR_VALUE(UINT32, uint32);
-                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float);
-                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double);
+                    GET_ADD_OFFSET_ATTR_VALUE(INT8, int8)
+                    GET_ADD_OFFSET_ATTR_VALUE(CHAR,int8)
+                    GET_ADD_OFFSET_ATTR_VALUE(UINT8, uint8)
+                    GET_ADD_OFFSET_ATTR_VALUE(UCHAR,uint8)
+                    GET_ADD_OFFSET_ATTR_VALUE(INT16, int16)
+                    GET_ADD_OFFSET_ATTR_VALUE(UINT16, uint16)
+                    GET_ADD_OFFSET_ATTR_VALUE(INT32, int32)
+                    GET_ADD_OFFSET_ATTR_VALUE(UINT32, uint32)
+                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float)
+                    GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-                };
+                }
 #undef GET_ADD_OFFSET_ATTR_VALUE
             }
 
@@ -796,18 +778,18 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             fillvalue = (float)tmpvalue; \
         } \
         break;
-                    GET_FILLVALUE_ATTR_VALUE(INT8, int8);
-                    GET_FILLVALUE_ATTR_VALUE(CHAR, int8);
-                    GET_FILLVALUE_ATTR_VALUE(INT16, int16);
-                    GET_FILLVALUE_ATTR_VALUE(INT32, int32);
-                    GET_FILLVALUE_ATTR_VALUE(UINT8, uint8);
-                    GET_FILLVALUE_ATTR_VALUE(UCHAR, uint8);
-                    GET_FILLVALUE_ATTR_VALUE(UINT16, uint16);
-                    GET_FILLVALUE_ATTR_VALUE(UINT32, uint32);
+                    GET_FILLVALUE_ATTR_VALUE(INT8, int8)
+                    GET_FILLVALUE_ATTR_VALUE(CHAR, int8)
+                    GET_FILLVALUE_ATTR_VALUE(INT16, int16)
+                    GET_FILLVALUE_ATTR_VALUE(INT32, int32)
+                    GET_FILLVALUE_ATTR_VALUE(UINT8, uint8)
+                    GET_FILLVALUE_ATTR_VALUE(UCHAR, uint8)
+                    GET_FILLVALUE_ATTR_VALUE(UINT16, uint16)
+                    GET_FILLVALUE_ATTR_VALUE(UINT32, uint32)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
-                };
+                }
 #undef GET_FILLVALUE_ATTR_VALUE
             }
 
@@ -876,8 +858,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                         //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
 #endif
                         
-                        orig_valid_min = atof((attrbuf_str.substr(0,found)).c_str());
-                        orig_valid_max = atof((attrbuf_str.substr(found+1)).c_str());
+                        orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
+                        orig_valid_max = (float)(atof((attrbuf_str.substr(found+1)).c_str()));
                     
                     }
                     break;
@@ -910,11 +892,13 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                                   "Only one separator , should be available.");
                             }
 
+#if 0
                             //istringstream(attrbuf_str.substr(0,found))>> orig_valid_min;
                             //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
+#endif
 
-                            orig_valid_min = atof((attrbuf_str.substr(0,found)).c_str());
-                            orig_valid_max = atof((attrbuf_str.substr(found+1)).c_str());
+                            orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
+                            orig_valid_max = (float)(atof((attrbuf_str.substr(found+1)).c_str()));
 
                         }
                         else if (2 == temp_attrcount) {
@@ -944,7 +928,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                   "The number of attribute count should be 2 for the DFNT_UINT8 type.");
                         }
 
-                        unsigned char* temp_valid_range = (unsigned char *)attrbuf.data();
+                        auto temp_valid_range = (unsigned char *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -961,7 +945,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                   "The number of attribute count should be 2 for the DFNT_INT16 type.");
                         }
 
-                        short* temp_valid_range = (short *)attrbuf.data();
+                        auto temp_valid_range = (short *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -978,7 +962,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                 "The number of attribute count should be 2 for the DFNT_UINT16 type.");
                         }
 
-                        unsigned short* temp_valid_range = (unsigned short *)attrbuf.data();
+                        auto temp_valid_range = (unsigned short *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -995,7 +979,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                 "The number of attribute count should be 2 for the DFNT_INT32 type.");
                         }
 
-                        int* temp_valid_range = (int *)attrbuf.data();
+                        auto temp_valid_range = (int *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -1012,7 +996,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                                "The number of attribute count should be 2 for the DFNT_UINT32 type.");
                         }
 
-                        unsigned int* temp_valid_range = (unsigned int *)attrbuf.data();
+                        auto temp_valid_range = (unsigned int *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
                     }
@@ -1029,7 +1013,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                               "The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
                         }
 
-                        float* temp_valid_range = (float *)attrbuf.data();
+                        auto temp_valid_range = (float *)attrbuf.data();
                         orig_valid_min = temp_valid_range[0];
                         orig_valid_max = temp_valid_range[1];
                     }
@@ -1045,7 +1029,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                             throw InternalErr(__FILE__,__LINE__,
                               "The number of attribute count should be 2 for the DFNT_FLOAT64 type.");
                         }
-                        double* temp_valid_range = (double *)attrbuf.data();
+                        auto temp_valid_range = (double *)attrbuf.data();
 
                         // Notice: this approach will lose precision and possibly overflow. 
                         // Fortunately it is not a problem for MODIS data.
@@ -1162,8 +1146,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             } \
         } \
         break;
-                    GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
-                    GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                    GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float)
+                    GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
@@ -1255,8 +1239,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             } \
         } \
         break;
-                    GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float);
-                    GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double);
+                    GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float)
+                    GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double)
                     default:
                         throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 
@@ -1266,34 +1250,6 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
             }
 
             SDendaccess(sdsid);
- /// DEL LATER
-#if 0
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-
-cerr<<"tmp_rank 3 is "<<tmp_rank <<endl;
-#endif
-      //if (true == isgeofile || false == check_pass_fileid_key)
-       //         SDend(sdfileid);
- /// DEL LATER
-#if 0
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-
-cerr<<"tmp_rank 4 is "<<tmp_rank <<endl;
-#endif
  
             BESDEBUG("h4","scale is "<<scale <<endl);
             BESDEBUG("h4","offset is "<<field_offset <<endl);
@@ -1512,6 +1468,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 // this restriction may be valid since valid_range pairs with scale/offset to identify
 // the valid data values. KY 2014-02-19
 //
+#if 0
 /*    if((float)tmptr[l] != fillvalue ) \
 //                    { \
 //          f(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[l]))\
@@ -1525,6 +1482,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 //                                tmpval[l] = (tmptr[l]-field_offset)/scale; \
 //                        } \
 */
+#endif 
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
@@ -1621,19 +1579,6 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         set_value ((DODS_CAST)VAL, nelms); \
     } \
 }
-#if 0
-/// DEL LATER
-r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
-if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-}
-
-cerr<<"tmp_rank again is "<<tmp_rank <<endl;
-#endif
     switch (field_dtype) {
         case DFNT_INT8:
         {
@@ -2114,14 +2059,6 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
 void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) {
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
-
-
-    //if(true == isgeofile || false == check_pass_fileid_key) {
     if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 
         if(sdfileid != -1)

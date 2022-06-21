@@ -21,7 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \file HDFEOS2CFStrField.h
-/// \brief This class provides a way to map HDFEOS2  character >1D array  to DAP Str array for the CF option
+/// \brief This class provides a way to map HDFEOS2 character >1D array to DAP Str array for the CF option
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
@@ -52,7 +52,7 @@ class HDFEOS2CFStrField:public libdap::Array {
                         const std::string &varname, 
                         int grid_or_swath,
                         const std::string &n="",
-                        libdap::BaseType*v=0):
+                        libdap::BaseType*v=nullptr):
         libdap::Array (n, v),
         rank(rank),
         gsfd(gsfd),
@@ -63,17 +63,15 @@ class HDFEOS2CFStrField:public libdap::Array {
     {
     }
 
-    virtual ~ HDFEOS2CFStrField()
-    {
-    }
-    virtual libdap::BaseType *ptr_duplicate(){
+    ~ HDFEOS2CFStrField() override = default;
+    libdap::BaseType *ptr_duplicate() override{
         return new HDFEOS2CFStrField(*this);
     }
 
     // Standard way to pass the coordinates of the subsetted region from the client to the handlers
     int format_constraint (int *cor, int *step, int *edg);
 
-    virtual bool read();
+    bool read() override;
   private:
     int   rank;
     int32 gsfd;
