@@ -889,7 +889,7 @@ namespace HDFSP
             void ReadHybridNonLoneVdatas(File*) throw(Exception);
 
             /// Obtain vgroup attributes.
-            void ReadVgattrs(int32 vgroup_id, char *fullpath) throw(Exception);
+            void ReadVgattrs(int32 vgroup_id, const char *fullpath) throw(Exception);
 
             /// The full path of SDS and Vdata will be obtained.
             void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
