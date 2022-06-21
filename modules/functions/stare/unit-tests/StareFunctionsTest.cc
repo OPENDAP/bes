@@ -620,7 +620,7 @@ public:
 
             CPPUNIT_ASSERT(stare != nullptr);
             vector<STARE_ArrayIndexSpatialValue> result_s_indices;
-            stare->value(&result_s_indices[0]);
+            stare->value(result_s_indices.data());
 
             DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
         }
@@ -666,7 +666,7 @@ public:
 
              CPPUNIT_ASSERT(stare != nullptr);
              vector<STARE_ArrayIndexSpatialValue> result_s_indices;
-             stare->value(&result_s_indices[0]);
+             stare->value(result_s_indices.data());
 
              DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
          }

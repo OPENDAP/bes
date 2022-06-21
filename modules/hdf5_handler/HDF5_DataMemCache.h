@@ -30,7 +30,7 @@ public:
 #if 0
     //void get_var_buf(vector<char>&var_buf) { var_buf = databuf;}
 #endif
-    void* get_var_buf() { return &databuf[0];}
+    void* get_var_buf() { return databuf.data();}
 #if 0
     //void set_varname(const string& name) {varname = name; }
 #endif

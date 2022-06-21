@@ -114,7 +114,7 @@ template<typename T> void FoInstanceJsonTransform::json_simple_type_array(std::o
         long length = fojson::computeConstrainedShape(a, &shape);
 
         vector<T> src(length);
-        a->value(&src[0]);
+        a->value(src.data());
 
         unsigned int indx = 0;
 

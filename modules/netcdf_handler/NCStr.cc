@@ -172,16 +172,16 @@ bool NCStr::read()
             vector<char*> strpp(1);
 
             // get the data
-            errstat = nc_get_var1_string(ncid, varid, cor, &strpp[0]);
+            errstat = nc_get_var1_string(ncid, varid, cor, strpp.data());
             if (errstat != NC_NOERR) {
                 throw Error(errstat, string("Could not read data from the variable `") + name() + string("'."));
             }
 
             // poke the data into the DAP string
-            // replaced this 'set_value(string(*(char**)&strpp[0]));' with ...
+            // replaced this 'set_value(string(*(char**)strpp.data()));' with ...
             set_value(string(strpp[0]));
 
-            nc_free_string(1, &strpp[0]);
+            nc_free_string(1, strpp.data());
 
             break;
         }

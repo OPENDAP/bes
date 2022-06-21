@@ -75,8 +75,8 @@ BESRegex::init(const char *t)
                                   static_cast<size_t>(0));
 
         vector<char> msg(msg_len+1);
-        regerror(result, static_cast<regex_t*>(d_preg), &msg[0], msg_len);
-        string err = string("BESRegex error: ") + string(&msg[0], msg_len);
+        regerror(result, static_cast<regex_t*>(d_preg), msg.data(), msg_len);
+        string err = string("BESRegex error: ") + string(msg.data(), msg_len);
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 #else

@@ -137,7 +137,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
         // Obtain the name of the object
         oname.resize((size_t) oname_size + 1);
 
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
             (size_t)(oname_size+1), H5P_DEFAULT) < 0){
             string msg =
                     "h5_dmr handler: Error getting the hdf5 object name from the group: ";
@@ -147,7 +147,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -157,8 +157,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
         if(linfo.type == H5L_TYPE_SOFT) { 
             slinkindex++;
             size_t val_size = linfo.u.val_size;
-            get_softlink(par_grp,pid,&oname[0],slinkindex,val_size);
-            //get_softlink(par_grp,pid,gname,&oname[0],slinkindex,val_size);
+            get_softlink(par_grp,pid,oname.data(),slinkindex,val_size);
+            //get_softlink(par_grp,pid,gname,oname.data(),slinkindex,val_size);
             continue;
         }
 
@@ -195,7 +195,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                 copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
                 t_fpn[full_path_name.length()] = '\0';
 
-                hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
+                hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
                 if (cgroup < 0){
                      throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
 		}
@@ -215,8 +215,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                         par_grp->add_group_nocopy(tem_d4_cgroup);
 
                         // Continue searching the objects under this group
-                        //depth_first(cgroup, &t_fpn[0], dmr, tem_d4_cgroup,fname);
-                        depth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname);
+                        //depth_first(cgroup, t_fpn.data(), dmr, tem_d4_cgroup,fname);
+                        depth_first(cgroup, t_fpn.data(), tem_d4_cgroup,fname);
                     }
                     catch(...) {
                         H5Gclose(cgroup);
@@ -362,7 +362,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         // Obtain the name of the object
         oname.resize((size_t) oname_size + 1);
 
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
             (size_t)(oname_size+1), H5P_DEFAULT) < 0){
             string msg =
                     "h5_dmr handler: Error getting the hdf5 object name from the group: ";
@@ -372,7 +372,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -384,7 +384,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 
             // Size of a soft link value
             size_t val_size = linfo.u.val_size;
-            get_softlink(par_grp,pid,&oname[0],slinkindex,val_size);
+            get_softlink(par_grp,pid,oname.data(),slinkindex,val_size);
             continue;
          }
 
@@ -477,7 +477,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         // Obtain the name of the object
         oname.resize((size_t) oname_size + 1);
 
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
             (size_t)(oname_size+1), H5P_DEFAULT) < 0){
             string msg =
                     "h5_dmr handler: Error getting the hdf5 object name from the group: ";
@@ -487,7 +487,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -529,7 +529,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
             t_fpn[full_path_name.length()] = '\0';
 
-            hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
+            hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
             if (cgroup < 0){
                 throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
             }
@@ -546,7 +546,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale,hdf5_hls);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,hdf5_hls);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -944,7 +944,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             // Need to obtain the memtype since we still find BE data.
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
+            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
                 delete d4_attr;
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
@@ -953,7 +953,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             // For scalar data, just read data once.
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, &value[0]);
+                    print_rep = print_attr(ty_id, loc, value.data());
                     if (print_rep.c_str() != nullptr) {
                         d4_attr->add_value(print_rep);
                     }
@@ -973,7 +973,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
                 // Due to the implementation of print_attr, the attribute value will be 
                 // written one by one.
-                char *tempvalue = &value[0];
+                char *tempvalue = value.data();
 
                 // Write this value. the "loc" can always be set to 0 since
                 // tempvalue will be moved to the next value.
@@ -1111,7 +1111,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
         buf.resize(val_size + 1);
 
         // get link target name
-        if (H5Lget_val(h5obj_id, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) {
+        if (H5Lget_val(h5obj_id, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
         softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);

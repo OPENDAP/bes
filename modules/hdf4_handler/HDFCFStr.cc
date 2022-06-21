@@ -141,7 +141,7 @@ bool HDFCFStr::read()
         vector<char>val;
         val.resize(count32[0]);
 
-        r = SDreaddata (sdsid, &offset32[0], &step32[0], &count32[0], &val[0]);
+        r = SDreaddata (sdsid, offset32.data(), step32.data(), count32.data(), val.data());
         if (r != 0) {
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -228,7 +228,7 @@ bool HDFCFStr::read()
         val.resize(num_rec);
 
         // Read the data
-        if(VSread (vdata_id, (uint8 *) &val[0], num_rec,
+        if(VSread (vdata_id, (uint8 *) val.data(), num_rec,
                     FULL_INTERLACE) == -1) {
             VSdetach (vdata_id);
             Vend (file_id);

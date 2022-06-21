@@ -209,7 +209,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     // to avoid using new/delete.
     string temp_file_name = GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX";
     vector<char> temp_file(temp_file_name.length() + 1);
-    string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
+    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.length());
     temp_file[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
@@ -217,7 +217,7 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     mode_t original_mode = umask(077);
 
     // Make and open (an atomic operation) the temporary file. Then reset the umask
-    int fd = mkstemp(&temp_file[0]);
+    int fd = mkstemp(temp_file.data());
     umask(original_mode);
 
     if (fd == -1)
@@ -243,28 +243,28 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     catch (Error &e) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw BESDapError("Failed to transform data to GeoTiff: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
     }
     catch (BESError &e) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw;
     }
     catch (...) {
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
         throw BESInternalError("Fileout GeoTiff, was not able to transform to geotiff, unknown error", __FILE__, __LINE__);
     }
 
 #if 0
         close(fd);
-        (void) unlink(&temp_file[0]);
+        (void) unlink(temp_file.data());
 #endif
 
     BESDEBUG("fong2", "GeoTiffTransmitter::send_data - done transmitting to geotiff" << endl);

@@ -80,7 +80,7 @@ void mask_array_helper(Array *array, double no_data_value, const vector<dods_byt
     array->read();
     array->set_read_p(true);
     vector<T> data(array->length());
-    array->value(&data[0]);
+    array->value(data.data());
 
     assert(data.size() == mask.size());
 
@@ -135,7 +135,7 @@ void function_mask_dap2_array(int argc, BaseType * argv[], DDS &, BaseType **btp
     mask_var->read();
     mask_var->set_read_p(true);
     vector<dods_byte> mask(mask_var->length());
-    mask_var->value(&mask[0]);     // get the value
+    mask_var->value(mask.data());     // get the value
 
     // Now mask the arrays
     for (int i = 0; i < argc-2; ++i) {
@@ -231,7 +231,7 @@ BaseType *function_mask_dap4_array(D4RValueList *args, DMR &dmr)
     mask_var->read();
     mask_var->set_read_p(true);
     vector<dods_byte> mask(mask_var->length());
-    mask_var->value(&mask[0]);     // get the value
+    mask_var->value(mask.data());     // get the value
 
     // Now mask the arrays
     for (unsigned int i = 0; i < args->size() - 2; ++i) {

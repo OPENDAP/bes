@@ -49,7 +49,7 @@ HDFSPArray_VDField::read ()
     step.resize(rank);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
+    int nelms = format_constraint(offset.data(),step.data(),count.data());
 
     int32 file_id = -1;
 
@@ -115,7 +115,7 @@ HDFSPArray_VDField::read ()
                 orival.resize(vdfelms);
 
                 // Read the data
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                 FULL_INTERLACE);
 
                 if (r == -1) {
@@ -138,7 +138,7 @@ HDFSPArray_VDField::read ()
 
 
 #ifndef SIGNED_BYTE_TO_INT32
-                set_value ((dods_byte *) &val[0], nelms);
+                set_value ((dods_byte *) val.data(), nelms);
 #else
                 vector<int32>newval;
                 newval.resize(nelms);
@@ -146,7 +146,7 @@ HDFSPArray_VDField::read ()
                 for (int counter = 0; counter < nelms; counter++)
                     newval[counter] = (int32) (val[counter]);
 
-                set_value ((dods_int32 *) &newval[0], nelms);
+                set_value ((dods_int32 *) newval.data(), nelms);
 
 #endif
             }
@@ -162,7 +162,7 @@ HDFSPArray_VDField::read ()
                 vector<uint8>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, &orival[0], 1+(count[0] -1)* step[0], FULL_INTERLACE);
+                r = VSread (vdata_id, orival.data(), 1+(count[0] -1)* step[0], FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
                     eherr << "VSread failed.";
@@ -179,7 +179,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_byte *) &val[0], nelms);
+                set_value ((dods_byte *) val.data(), nelms);
             }
 
                 break;
@@ -191,7 +191,7 @@ HDFSPArray_VDField::read ()
                 vector<int16>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -209,7 +209,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_int16 *) &val[0], nelms);
+                set_value ((dods_int16 *) val.data(), nelms);
             }
                 break;
 
@@ -222,7 +222,7 @@ HDFSPArray_VDField::read ()
                 vector<uint16>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -240,7 +240,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_uint16 *) &val[0], nelms);
+                set_value ((dods_uint16 *) val.data(), nelms);
             }
                 break;
             case DFNT_INT32:
@@ -250,7 +250,7 @@ HDFSPArray_VDField::read ()
                 vector<int32>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -268,7 +268,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_int32 *) &val[0], nelms);
+                set_value ((dods_int32 *) val.data(), nelms);
             }
                 break;
 
@@ -281,7 +281,7 @@ HDFSPArray_VDField::read ()
                 vector<uint32>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -299,7 +299,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_uint32 *) &val[0], nelms);
+                set_value ((dods_uint32 *) val.data(), nelms);
             }
                 break;
             case DFNT_FLOAT32:
@@ -309,7 +309,7 @@ HDFSPArray_VDField::read ()
                 vector<float32>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -327,7 +327,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_float32 *) &val[0], nelms);
+                set_value ((dods_float32 *) val.data(), nelms);
             }
                 break;
             case DFNT_FLOAT64:
@@ -339,7 +339,7 @@ HDFSPArray_VDField::read ()
                 vector<float64>orival;
                 orival.resize(vdfelms);
 
-                r = VSread (vdata_id, (uint8 *) &orival[0], 1+(count[0] -1)* step[0],
+                r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
                     ostringstream eherr;
@@ -357,7 +357,7 @@ HDFSPArray_VDField::read ()
                         val[i] = orival[i * step[0]];
                 }
 
-                set_value ((dods_float64 *) &val[0], nelms);
+                set_value ((dods_float64 *) val.data(), nelms);
             }
                 break;
             default:

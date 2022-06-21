@@ -112,7 +112,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     vector<char> attr_name;
     attr_name.resize(name_size+1);
     // Obtain the attribute name.    
-    if ((H5Aget_name(attrid, name_size+1, &attr_name[0])) < 0) {
+    if ((H5Aget_name(attrid, name_size+1, attr_name.data())) < 0) {
         H5Aclose(attrid);
         string msg = "unable to obtain the hdf5 attribute name  ";
         throw InternalErr(__FILE__, __LINE__, msg);
@@ -218,7 +218,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
 
     //The HDF5 attribute should not have unlimited dimension,
     // maxsize is only a place holder.
-    if (H5Sget_simple_extent_dims(aspace_id, &size[0], &maxsize[0])<0){
+    if (H5Sget_simple_extent_dims(aspace_id, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
@@ -262,7 +262,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     (*attr_inst_ptr).ndims = ndims;
     (*attr_inst_ptr).nelmts = nelmts;
     (*attr_inst_ptr).need = need;
-    strncpy((*attr_inst_ptr).name, &attr_name[0], name_size+1);
+    strncpy((*attr_inst_ptr).name, attr_name.data(), name_size+1);
 
     // The handler assumes the size of an attribute is limited to 32-bit int
     for (int j = 0; j < ndims; j++) {
@@ -529,7 +529,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
+    if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -687,7 +687,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
     vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
+    if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -769,7 +769,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
                     dim_attr_mark[i] = 0;
 
             // This will check if "NAME" and "REFERENCE_LIST" exists.
-            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &dim_attr_mark[0]);
+            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark.data());
             herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
@@ -912,12 +912,12 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 if(sign == H5T_SGN_NONE) {
                     gp.ucp = (unsigned char *) sm_buf;
                     unsigned char tuchar = *(gp.ucp + loc);
-                    snprintf(&rep[0], 32, "%u", tuchar);
+                    snprintf(rep.data(), 32, "%u", tuchar);
                 }
 
                 else {
                     gp.tcp = (char *) sm_buf;
-                    snprintf(&rep[0], 32, "%d", *(gp.tcp + loc));
+                    snprintf(rep.data(), 32, "%d", *(gp.tcp + loc));
                 }
             }
 
@@ -925,12 +925,12 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
                 if(sign == H5T_SGN_NONE) {
                     gp.tusp = (unsigned short *) sm_buf;
-                    snprintf(&rep[0], 32, "%hu", *(gp.tusp + loc));
+                    snprintf(rep.data(), 32, "%hu", *(gp.tusp + loc));
  
                 }
                 else {
                     gp.tsp = (short *) sm_buf;
-                    snprintf(&rep[0], 32, "%hd", *(gp.tsp + loc));
+                    snprintf(rep.data(), 32, "%hd", *(gp.tsp + loc));
  
                 }
             }
@@ -939,23 +939,23 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
                 if(sign == H5T_SGN_NONE) {
                     gp.tuip = (unsigned int *) sm_buf;
-                    snprintf(&rep[0], 32, "%u", *(gp.tuip + loc));
+                    snprintf(rep.data(), 32, "%u", *(gp.tuip + loc));
  
                 }
                 else {
                     gp.tip = (int *) sm_buf;
-                    snprintf(&rep[0], 32, "%d", *(gp.tip + loc));
+                    snprintf(rep.data(), 32, "%d", *(gp.tip + loc));
                 }
             }
             else if (size == 8) {
 
                 if(sign == H5T_SGN_NONE) {
                     gp.tulp = (unsigned long *) sm_buf;
-                    snprintf(&rep[0], 32, "%lu", *(gp.tulp + loc));
+                    snprintf(rep.data(), 32, "%lu", *(gp.tulp + loc));
                 }
                 else {
                     gp.tlp = (long *) sm_buf;
-                    snprintf(&rep[0], 32, "%ld", *(gp.tlp + loc));
+                    snprintf(rep.data(), 32, "%ld", *(gp.tlp + loc));
                 }
             }
             else 
@@ -986,7 +986,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 }
 
                 gps[ll] = '\0';
-                snprintf(&rep[0], 32, "%s", gps);
+                snprintf(rep.data(), 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 8) {
 
@@ -1002,7 +1002,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                     gps[ll++] = '.';
                 }
                 gps[ll] = '\0';
-                snprintf(&rep[0], 32, "%s", gps);
+                snprintf(rep.data(), 32, "%s", gps);
             } 
             else if (H5Tget_size(type) == 0){
                 throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
@@ -1026,7 +1026,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             //rep.resize(str_size+1);
 #endif
             rep.resize(str_size);
-            strncpy(&rep[0], (char *) sm_buf, str_size);
+            strncpy(rep.data(), (char *) sm_buf, str_size);
 
             //Also should add the NULL term at the end. We just need the data in C++.
 #if 0
@@ -1039,11 +1039,11 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
 
                 
                 buf = new char[str_size + 1];
-                strncpy(&buf[0], (char *) sm_buf, str_size);
+                strncpy(buf.data(), (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
                 // Not necessarily allocate 3 more bytes. 
                 rep.resize(str_size+3);
-                snprintf(&rep[0], str_size + 3, "%s", buf);
+                snprintf(rep.data(), str_size + 3, "%s", buf);
                 rep[str_size + 2] = '\0';
                 delete[] buf; buf = 0;
             }
@@ -1553,7 +1553,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
             //int count = 0;
             // Check if having "class = DIMENSION_SCALE" and REFERENCE_LIST attributes.
             //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &count);
-            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &dim_attr_mark[0]);
+            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark.data());
             herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark);
             if(ret < 0) {
                 H5Sclose(dspace);
@@ -1775,7 +1775,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                     }
                     vector<char> objname;
                     objname.resize(objnamelen+1);
-                    if ((objnamelen= H5Iget_name(loc_id,&objname[0],objnamelen+1))<=0) {
+                    if ((objnamelen= H5Iget_name(loc_id,objname.data(),objnamelen+1))<=0) {
                         string msg = "Cannot obtain the variable name." ;
                         throw InternalErr(__FILE__,__LINE__,msg);
                     }
@@ -1818,7 +1818,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                 // since the applications only care about retrieving the data.
                 // So we don't check the maxsize to see if it is the unlimited dimension 
                 // attribute.
-                if (H5Sget_simple_extent_dims(aspace_id, &asize[0], &maxsize[0])<0) {
+                if (H5Sget_simple_extent_dims(aspace_id, asize.data(), maxsize.data())<0) {
                     H5Sclose(aspace_id);
                     throw InternalErr(__FILE__, __LINE__, "Cannot obtain the dim. info in the H5Aiterate2 call back function.");
                 }
@@ -1842,13 +1842,13 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                 vector<char> temp_buf;
                 temp_buf.resize(total_bytes);
 
-                if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+                if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
                     H5Sclose(aspace_id);
                     throw InternalErr(__FILE__,__LINE__,"Cannot read the attribute in the H5Aiterate2 call back function");
                 }
 
                 char *temp_bp = nullptr;
-                temp_bp = &temp_buf[0];
+                temp_bp = temp_buf.data();
                 char* onestring = nullptr;
 
                 for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
@@ -1863,9 +1863,9 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                     temp_bp +=ty_size;
                 }
 
-                if ((&temp_buf[0]) != nullptr) {
+                if ((temp_buf.data()) != nullptr) {
                     // Reclaim any VL memory if necessary.
-                    if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
+                    if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0) {
                         H5Sclose(aspace_id);
                         throw InternalErr(__FILE__,__LINE__,"Cannot reclaim VL memory in the H5Aiterate2 call back function.");
                     }
@@ -1877,7 +1877,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                 // string attribute values 
                 vector<char> temp_buf;
                 temp_buf.resize(total_bytes);
-                if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+                if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
                     H5Sclose(aspace_id);
                     throw InternalErr(__FILE__,__LINE__,"Cannot read the attribute in the H5Aiterate2 call back function");
                 }
@@ -1964,7 +1964,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
  
             }
 
-            if (H5Aread(attr_id,amemtype_id,&vlbuf[0]) <0)  {
+            if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
                 string msg = "Cannot obtain the referenced object for the variable  " + string(dt_inst_ptr->name);
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
@@ -1996,7 +1996,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                 }
 
                 objname.resize(objnamelen+1);
-                if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) {
+                if ((objnamelen= H5Iget_name(ref_dset,objname.data(),objnamelen+1))<=0) {
                     H5Dclose(ref_dset);
                     string msg = "Cannot obtain the dimension name for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__,__LINE__,msg);
@@ -2122,7 +2122,7 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
 
-                if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)&vlbuf[0])<0) {
+                if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
                     throw InternalErr(__FILE__,__LINE__,"Cannot reclaim the variable length memory in the function obtain_dimnames()");
                 }
 
@@ -2177,7 +2177,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     // Variable length string attribute values only store pointers of the actual string value.
     temp_buf.resize((size_t)attr_inst_ptr->need);
                 
-    if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
+    if (H5Aread(attr_id, ty_id, temp_buf.data()) < 0) {
         H5Tclose(ty_id);
         H5Aclose(attr_id);
         H5Sclose(temp_space_id);
@@ -2187,7 +2187,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     }
 
     char *temp_bp;
-    temp_bp = &temp_buf[0];
+    temp_bp = temp_buf.data();
     for (unsigned int temp_i = 0; temp_i <attr_inst_ptr->nelmts; temp_i++) {
 
         // This line will assure that we get the real variable length string value.
@@ -2208,7 +2208,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
 
         // Reclaim any VL memory if necessary.
         herr_t ret_vlen_claim;
-        ret_vlen_claim = H5Dvlen_reclaim(ty_id,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
+        ret_vlen_claim = H5Dvlen_reclaim(ty_id,temp_space_id,H5P_DEFAULT,temp_buf.data());
         if(ret_vlen_claim < 0){
             H5Tclose(ty_id);
             H5Aclose(attr_id);
@@ -2249,7 +2249,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
         vector<hsize_t> asize;
         asize.resize(ndims);
-        if (H5Sget_simple_extent_dims(aspace_id, &asize[0], nullptr)<0) {
+        if (H5Sget_simple_extent_dims(aspace_id, asize.data(), nullptr)<0) {
             H5Sclose(aspace_id);
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain the dimension info.");
         }
@@ -2273,13 +2273,13 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
         vector<char> temp_buf;
         temp_buf.resize(total_bytes);
 
-        if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+        if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
             H5Sclose(aspace_id);
             throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
         }
 
         char *temp_bp = nullptr;
-        temp_bp = &temp_buf[0];
+        temp_bp = temp_buf.data();
 
         for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
 
@@ -2293,9 +2293,9 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
             temp_bp +=ty_size;
         }
 
-        if ((&temp_buf[0]) != nullptr) {
+        if ((temp_buf.data()) != nullptr) {
             // Reclaim any VL memory if necessary.
-            if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
+            if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0) {
                 H5Sclose(aspace_id);
                 throw InternalErr(__FILE__,__LINE__,"Fail to reclaim VL memory.");
             }
@@ -2307,7 +2307,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
         // string attribute values 
         vector<char> temp_buf;
         temp_buf.resize(total_bytes);
-        if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+        if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
             H5Sclose(aspace_id);
             throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
         }

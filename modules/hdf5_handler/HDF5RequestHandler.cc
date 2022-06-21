@@ -1937,11 +1937,11 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
             vector<char> buf;
             buf.resize(bytes_expected_read);
-            size_t bytes_to_read =fread((void*)&buf[0],1,bytes_expected_read,md_file);
+            size_t bytes_to_read =fread((void*)buf.data(),1,bytes_expected_read,md_file);
             if(bytes_to_read != bytes_expected_read) 
                 throw InternalErr(__FILE__,__LINE__,"Fail to read the data from the das cache file.");
 
-            char* temp_pointer =&buf[0];
+            char* temp_pointer =buf.data();
 
             AttrTable*at = nullptr;
             // recursively build DAS
@@ -2141,12 +2141,12 @@ void write_container_name_to_file(const string& cont_name,FILE *das_file) {
     vector<char> buf;
     size_t bytes_to_write = cont_name.size()+sizeof(size_t)+1;
     buf.resize(bytes_to_write);
-    char*temp_pointer =&buf[0];
+    char*temp_pointer =buf.data();
     memcpy((void*)temp_pointer,(void*)&category_flag,1);
     temp_pointer++;
     temp_pointer=copy_str(temp_pointer,cont_name);
 
-    size_t bytes_to_be_written = fwrite((const void*)&buf[0],1,bytes_to_write,das_file);
+    size_t bytes_to_be_written = fwrite((const void*)buf.data(),1,bytes_to_write,das_file);
     if(bytes_to_be_written != bytes_to_write)
         throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS container name to a cache");
     return;
@@ -2178,7 +2178,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
 
     vector<char>attr_buf;
     attr_buf.resize(bytes_to_write_attr);
-    char* temp_attrp =&attr_buf[0];
+    char* temp_attrp =attr_buf.data();
 
     // The attribute flag
     memcpy((void*)temp_attrp,(void*)&category_flag,1);
@@ -2196,7 +2196,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
     for (unsigned int i = 0; i <num_attr_elems;i++)
         temp_attrp=copy_str(temp_attrp,(*(dtp->get_attr_vector(attr_name)))[i]);
 
-    size_t bytes_to_be_written = fwrite((const void*)&attr_buf[0],1,bytes_to_write_attr,das_file);
+    size_t bytes_to_be_written = fwrite((const void*)attr_buf.data(),1,bytes_to_write_attr,das_file);
     if(bytes_to_be_written != bytes_to_write_attr)
         throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS attribute to a cache");
  
@@ -2434,7 +2434,7 @@ char* copy_str(char*temp_ptr,const string & str) {
     memcpy((void*)temp_ptr,(void*)&str_size,sizeof(size_t));
     temp_ptr+=sizeof(size_t);
     vector<char>temp_vc2(str.begin(),str.end());
-    memcpy((void*)temp_ptr,(void*)&temp_vc2[0],str.size());
+    memcpy((void*)temp_ptr,(void*)temp_vc2.data(),str.size());
     temp_ptr+=str.size();
     return temp_ptr;
 

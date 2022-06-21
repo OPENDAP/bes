@@ -395,12 +395,12 @@ static bool convertUnicodeStringToStdString(std::string& toString, const icu::Un
     vector<char> buffer; // std::string element[0] isn't guaranteed contiguous like vectors, so we need a temp...
     buffer.resize(fromUniString.length() + 1); // +1 for NULL terminator
     UErrorCode errorCode = U_ZERO_ERROR;
-    int32_t patternLen = fromUniString.extract(&buffer[0], buffer.size(), 0, errorCode);
+    int32_t patternLen = fromUniString.extract(buffer.data(), buffer.size(), 0, errorCode);
     if (patternLen >= static_cast<int32_t>(buffer.size()) || U_FAILURE(errorCode)) {
         return false;
     }
     else {
-        toString = std::string(&buffer[0]);
+        toString = std::string(buffer.data());
         return true;
     }
 }

@@ -152,13 +152,13 @@ bool check_gpm_l1(hid_t s_root_id) {
                 vector<char> oname;
                 oname.resize((size_t)oname_size+1);
 
-                if (H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+                if (H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
                     (size_t)(oname_size+1), H5P_DEFAULT) < 0)
                     throw InternalErr(__FILE__,__LINE__,"Error getting the hdf5 object name from the root group. ");
 
                 // Check if it is the hard link or the soft link
                 H5L_info_t linfo;
-                if (H5Lget_info(s_root_id,&oname[0],&linfo,H5P_DEFAULT)<0)
+                if (H5Lget_info(s_root_id,oname.data(),&linfo,H5P_DEFAULT)<0)
                     throw InternalErr (__FILE__,__LINE__,"HDF5 link name error from the root group. ");
 
                 // Ignore soft links and external links  
@@ -176,7 +176,7 @@ bool check_gpm_l1(hid_t s_root_id) {
                 if(obj_type == H5O_TYPE_GROUP) {
 
                     // Check the attribute name of that group
-                    cgroup = H5Gopen(s_root_id,&oname[0],H5P_DEFAULT);
+                    cgroup = H5Gopen(s_root_id,oname.data(),H5P_DEFAULT);
                     if(cgroup < 0) 
                         throw InternalErr(__FILE__,__LINE__,"Cannot open the group.");
 
@@ -344,13 +344,13 @@ bool check_gpmm_l3(hid_t s_root_id) {
                     vector<char> oname;
                     oname.resize((size_t)oname_size+1);
 
-                    if (H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+                    if (H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
                                     (size_t)(oname_size+1), H5P_DEFAULT) < 0)
                         throw InternalErr(__FILE__,__LINE__,"Error getting the hdf5 object name from the root group. ");
 
                     // Check if it is the hard link or the soft link
                     H5L_info_t linfo;
-                    if (H5Lget_info(cgroup_id,&oname[0],&linfo,H5P_DEFAULT)<0)
+                    if (H5Lget_info(cgroup_id,oname.data(),&linfo,H5P_DEFAULT)<0)
                         throw InternalErr (__FILE__,__LINE__,"HDF5 link name error from the root group. ");
 
                     // Ignore soft links and external links  
@@ -368,7 +368,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
                     if(obj_type == H5O_TYPE_GROUP) {
 
                         // Check the attribute name of that group
-                        cgroup2_id = H5Gopen(cgroup_id,&oname[0],H5P_DEFAULT);
+                        cgroup2_id = H5Gopen(cgroup_id,oname.data(),H5P_DEFAULT);
                         if(cgroup2_id < 0)
                             throw InternalErr(__FILE__,__LINE__,"Cannot open the group.");
 
@@ -795,7 +795,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     vector<char>temp_buf;
                     temp_buf.resize(total_data_size);
 
-                    if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, &temp_buf[0])<0){
+                    if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf.data())<0){
                         H5Tclose(dtype);
                         H5Dclose(s_dset_id);
                         H5Sclose(dspace);
@@ -806,7 +806,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                         throw InternalErr(__FILE__, __LINE__, msg);
                     }
 
-                    char *temp_bp = &temp_buf[0];
+                    char *temp_bp = temp_buf.data();
                     char *onestring = nullptr;
                     string total_string="";
                         
@@ -826,7 +826,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                         
                     // Reclaim any VL memory if necessary.
                     herr_t ret_vlen_claim;
-                    ret_vlen_claim = H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,&temp_buf[0]);
+                    ret_vlen_claim = H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,temp_buf.data());
                     if(ret_vlen_claim < 0) {
                         H5Sclose(dspace);
                         H5Tclose(dtype);
@@ -846,7 +846,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                 }
                 else {
                     vector<char> temp_buf(total_data_size+1);
-                    if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, &temp_buf[0])<0){
+                    if (H5Dread(s_dset_id,dtype,H5S_ALL,H5S_ALL,H5P_DEFAULT, temp_buf.data())<0){
                            H5Tclose(dtype);
                            H5Dclose(s_dset_id);
                            H5Sclose(dspace);
@@ -953,7 +953,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         vector<char> temp_buf;
         // Variable length string attribute values only store pointers of the actual string value.
         temp_buf.resize(atype_size*num_elm);
-        if (H5Aread(s_attr_id, attr_type, &temp_buf[0]) < 0) {
+        if (H5Aread(s_attr_id, attr_type, temp_buf.data()) < 0) {
             string msg = "cannot retrieve the value of  the attribute ";
             msg += string(s_attr_name);
             H5Tclose(attr_type);
@@ -964,7 +964,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         }
 
         char *temp_bp;
-        temp_bp = &temp_buf[0];
+        temp_bp = temp_buf.data();
         char* onestring;
         for (int temp_i = 0; temp_i <num_elm; temp_i++) {
 
@@ -981,7 +981,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
 
             // Reclaim any VL memory if necessary.
             herr_t ret_vlen_claim;
-            ret_vlen_claim = H5Dvlen_reclaim(attr_type,attr_space,H5P_DEFAULT,&temp_buf[0]);
+            ret_vlen_claim = H5Dvlen_reclaim(attr_type,attr_space,H5P_DEFAULT,temp_buf.data());
             if(ret_vlen_claim < 0){
                 H5Tclose(attr_type);
                 H5Aclose(s_attr_id);
@@ -994,7 +994,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
     }
     else {
         vector<char> temp_buf(atype_size*num_elm+1);
-        if (H5Aread(s_attr_id,attr_type, &temp_buf[0])<0){
+        if (H5Aread(s_attr_id,attr_type, temp_buf.data())<0){
             string msg = "cannot retrieve the value of  the attribute ";
             msg += string(s_attr_name);
             H5Tclose(attr_type);

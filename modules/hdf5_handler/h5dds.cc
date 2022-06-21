@@ -125,7 +125,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
         // Obtain the name of the object
         oname.resize((size_t) oname_size + 1);
 
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,&oname[0],
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
             (size_t)(oname_size+1), H5P_DEFAULT) < 0){
             string msg =
                     "h5_dds handler: Error getting the hdf5 object name from the group: ";
@@ -135,7 +135,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid,&oname[0],&linfo,H5P_DEFAULT)<0) {
+        if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -178,17 +178,17 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
                 t_fpn[full_path_name.length()] = '\0';
 
-                hid_t cgroup = H5Gopen(pid, &t_fpn[0],H5P_DEFAULT);
+                hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
                 if (cgroup < 0){
                     throw InternalErr(__FILE__, __LINE__, "h5_dds handler: H5Gopen() failed.");
                 }
 
                 // Check the hard link loop and break the loop if it exists.
                 // Note the function get_hardlink is defined in h5das.cc
-                string oid = get_hardlink(pid, &oname[0]);
+                string oid = get_hardlink(pid, oname.data());
                 if (oid == "") {
                     try {
-                        depth_first(cgroup, &t_fpn[0], dds, fname);
+                        depth_first(cgroup, t_fpn.data(), dds, fname);
                     }
                     catch(...) {
                         H5Gclose(cgroup);

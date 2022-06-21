@@ -54,11 +54,11 @@ read_test_baseline(const string &fn)
     vector<char> buffer(length+1);
 
     // read data as a block:
-    is.read (&buffer[0], length);
+    is.read (buffer.data(), length);
     is.close();
     buffer[length] = '\0';
 
-    return string(&buffer[0]);
+    return string(buffer.data());
 }
 
 void clean_cache_dir(const string &cache)

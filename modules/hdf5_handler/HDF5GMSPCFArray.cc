@@ -92,7 +92,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         hstep.resize(rank);
  
 
-        nelms = format_constraint (&offset[0], &step[0], &count[0]);
+        nelms = format_constraint (offset.data(), step.data(), count.data());
 
         for (int i = 0; i <rank; i++) {
             hoffset[i] = (hsize_t) offset[i];
@@ -137,8 +137,8 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
-                           &hoffset[0], &hstep[0],
-                           &hcount[0], nullptr) < 0) {
+                           hoffset.data(), hstep.data(),
+                           hcount.data(), nullptr) < 0) {
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
@@ -149,7 +149,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],nullptr);
+    mspace = H5Screate_simple(rank, (const hsize_t*)hcount.data(),nullptr);
     if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid);
@@ -238,7 +238,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     vector<int> val;
     val.resize(nelms);
  
-    read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,&orig_val[0]);
+    read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,orig_val.data());
     if (read_ret < 0) {
         H5Sclose(mspace);
         H5Tclose(dtypeid);
@@ -273,7 +273,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         val[i] = (orig_val[i]/num_cut)%max_num;
 
 
-    set_value ((dods_int32 *)&val[0],nelms);
+    set_value ((dods_int32 *)val.data(),nelms);
        
     H5Sclose(mspace);
     H5Tclose(dtypeid);

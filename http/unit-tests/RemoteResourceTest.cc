@@ -171,8 +171,8 @@ private:
         char buf[4096];
 
         do {
-            src_is.read(&buf[0], 4096);
-            tmp_os.write(&buf[0], src_is.gcount());
+            src_is.read(buf, 4096);
+            tmp_os.write(buf, src_is.gcount());
         }while (src_is.gcount() > 0);
         tmp_file=pointer;
     }

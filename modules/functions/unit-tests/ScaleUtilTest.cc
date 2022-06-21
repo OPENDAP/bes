@@ -155,7 +155,7 @@ public:
     {
         vector<dods_float32> lat_buf(y_size);
         Array *lat = dynamic_cast<Array*>(small_dds->var("lat"));
-        lat->value(&lat_buf[0]);
+        lat->value(lat_buf.data());
         DBG(cerr << "lat: ");
         DBG(copy(lat_buf.begin(), lat_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -165,7 +165,7 @@ public:
 
         vector<dods_float32> lon_buf(x_size);
         Array *lon = dynamic_cast<Array*>(small_dds->var("lon"));
-        lon->value(&lon_buf[0]);
+        lon->value(lon_buf.data());
         DBG(cerr << "lon: ");
         DBG(copy(lon_buf.begin(), lon_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -176,7 +176,7 @@ public:
         Array *d = dynamic_cast<Array*>(small_dds->var("data"));
         const int data_size = x_size * y_size;
         vector<dods_float32> data(data_size);
-        d->value(&data[0]);
+        d->value(data.data());
         DBG(cerr << "data: ");
         DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -246,7 +246,7 @@ public:
 
         // Get the affine transform from the GCPs
         vector<double> gt(6);
-        int status = GDALGCPsToGeoTransform(gcp_list.size(), &gcp_list[0], &gt[0], 1 /* cp_list*/);
+        int status = GDALGCPsToGeoTransform(gcp_list.size(), gcp_list.data(), gt.data(), 1 /* cp_list*/);
         CPPUNIT_ASSERT(status == true);
 
         // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
@@ -266,7 +266,7 @@ public:
         int sample = 4; // For these data, 5 will fail.
 
         gcp_list = get_gcp_data(lon, lat, sample, sample);
-        status = GDALGCPsToGeoTransform(gcp_list.size(), &gcp_list[0], &gt[0], 0 /* ApproxOK */);
+        status = GDALGCPsToGeoTransform(gcp_list.size(), gcp_list.data(), gt.data(), 0 /* ApproxOK */);
         CPPUNIT_ASSERT(status == true);
 
         // Xgeo = GT(0) + Xpixel*GT(1) + Yline*GT(2)
@@ -425,7 +425,7 @@ public:
             CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             vector<double> gt(6);
-            ds->GetGeoTransform(&gt[0]);
+            ds->GetGeoTransform(gt.data());
 
             DBG(cerr << "gt values: ");
             DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
@@ -480,7 +480,7 @@ public:
             CPPUNIT_ASSERT(double_eq(max, 8.9));
 
             vector<double> gt(6);
-            dst->GetGeoTransform(&gt[0]);
+            dst->GetGeoTransform(gt.data());
 
             DBG(cerr << "gt values: ");
             DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
@@ -496,7 +496,7 @@ public:
 
             // Extract the data now.
             vector<dods_float32> buf(dst_size * dst_size);
-            error = band->RasterIO(GF_Read, 0, 0, dst_size, dst_size, &buf[0], dst_size, dst_size, get_array_type(data),
+            error = band->RasterIO(GF_Read, 0, 0, dst_size, dst_size, buf.data(), dst_size, dst_size, get_array_type(data),
                 0, 0);
             if (error != CPLE_None)
                 throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
@@ -543,7 +543,7 @@ public:
             DBG(cerr << endl);
 
             vector<dods_float32> buf(x_size * y_size);
-            result->value(&buf[0]);
+            result->value(buf.data());
 
             if (debug) {
                 cerr << "buf:" << endl;
@@ -585,7 +585,7 @@ public:
         CPPUNIT_ASSERT(x == x_size);
 
         vector<dods_float32> buf_lon(x);
-        built_lon->value(&buf_lon[0]);
+        built_lon->value(buf_lon.data());
 
         if (debug) {
             cerr << "buf_lon:" << endl;
@@ -595,7 +595,7 @@ public:
         }
 
         vector<dods_float32> orig_lon(x_size);
-        lon->value(&orig_lon[0]);
+        lon->value(orig_lon.data());
 
         if (debug) {
             cerr << "orig_lon:" << endl;
@@ -611,7 +611,7 @@ public:
         CPPUNIT_ASSERT(y == y_size);
 
         vector<dods_float32> buf_lat(y);
-        built_lat->value(&buf_lat[0]);
+        built_lat->value(buf_lat.data());
 
         if (debug) {
             cerr << "buf_lat:" << endl;
@@ -621,7 +621,7 @@ public:
         }
 
         vector<dods_float32> orig_lat(y_size);
-        lat->value(&orig_lat[0]);
+        lat->value(orig_lat.data());
 
         if (debug) {
             cerr << "orig_lat:" << endl;

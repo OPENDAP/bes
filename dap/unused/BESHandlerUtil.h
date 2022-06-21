@@ -70,14 +70,14 @@ public:
      */
     ~TemporaryFile() {
         close(d_fd);
-        unlink(&d_name[0]);
+        unlink(d_name.data());
     }
 #endif
     /** @return The temporary file's file descriptor */
     int get_fd() const { return d_fd; }
 
     /** @return The temporary file's name */
-    std::string get_name() const { return &d_name[0]; }
+    std::string get_name() const { return d_name.data(); }
 };
 
 } // namespace bes

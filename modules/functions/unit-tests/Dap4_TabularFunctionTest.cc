@@ -184,7 +184,7 @@ public:
         BaseType *result = 0;
         try {
             result = TabularFunction::function_dap4_tabular(args, *four_var_2_dmr);
-            // function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dmr, &result);
+            // function_dap2_tabular(arrays.size(), arrays.data(), *four_var_2_dmr, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());

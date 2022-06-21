@@ -233,7 +233,7 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         vector<char>attr_data;
         attr_data.resize((attr_count+1) *DFKNTsize(attr_type));
 
-        if(SDreadattr(sd_id, i, &attr_data[0]) == FAIL){
+        if(SDreadattr(sd_id, i, attr_data.data()) == FAIL){
             Vend(file_id);
             //delete[] attr_data;
             ostringstream error;
@@ -267,7 +267,7 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 #endif
         
         for (int loc=0; loc < attr_count ; loc++) {
-                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)&attr_data[0] );
+                string print_rep = HDFCFUtil::print_attr(attr_type, loc, (void*)attr_data.data() );
                 at->append_attr(attr_namestr, HDFCFUtil::print_type(attr_type), print_rep);
         }
 
@@ -437,7 +437,7 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
     vector<char> attrvalue;
     attrvalue.resize((count+1)*DFKNTsize(type));
 
-    if(SDreadattr(sd_id, sds_index, &attrvalue[0]) == FAIL){
+    if(SDreadattr(sd_id, sds_index, attrvalue.data()) == FAIL){
         Vend(file_id);
         ostringstream error;
         error <<  "Failed to read the SDS global attribute"  << attrname << endl;
@@ -743,7 +743,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 
         vector<char> value;
         value.resize((n_values+1) * DFKNTsize(datatype));
-        status = SDreadattr(_sds_id, j, &value[0]);
+        status = SDreadattr(_sds_id, j, value.data());
         if (status < 0){
             Vend(file_id);
             SDendaccess(_sds_id);
@@ -763,7 +763,7 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
         string attr_cf_name = string(buf_attr,strlen(buf_attr));
         attr_cf_name = HDFCFUtil::get_CF_string(attr_cf_name);
 	for (int loc=0; loc < n_values ; loc++) {
-	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)&value[0]);
+	    string print_rep = HDFCFUtil::print_attr(datatype, loc, (void *)value.data());
 
             // Override any existing _FillValue attribute.
             if (attr_cf_name == "_FillValue") {
@@ -863,7 +863,7 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
         
         vector<char> data;     
         data.resize((count_v+1) * DFKNTsize(number_type));
-        if (VSgetattr(vid, _HDF_VDATA, i, &data[0]) < 0) {
+        if (VSgetattr(vid, _HDF_VDATA, i, data.data()) < 0) {
 
             // problem: clean up and throw an exception
             VSdetach(vid);
@@ -880,7 +880,7 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
         
         for(int j=0; j < count_v ; j++){
 
-	    string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)&data[0]);
+	    string print_rep = HDFCFUtil::print_attr(number_type, j, (void *)data.data());
 
             // Override any existing _FillValue attribute.
             if(!strncmp(buf, "_FillValue", H4_MAX_NC_NAME)){
@@ -1067,8 +1067,8 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         {
             uint8 val = (uint8) value;
             v_val.resize(1);
-            memcpy(&v_val[0],&val,1);
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,1);
+            v_ptr = (void*)v_val.data();
         }
 
         break;
@@ -1076,16 +1076,16 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         {
             int8 val = (int8) value;
             v_val.resize(1);
-            memcpy(&v_val[0],&val,1);
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,1);
+            v_ptr = (void*)v_val.data();
         }
         break;
         case DFNT_INT16:
         {
             int16 val = (int16) value;
             v_val.resize(sizeof(short));
-            memcpy(&v_val[0],&val,sizeof(short));
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,sizeof(short));
+            v_ptr = (void*)v_val.data();
         }
         break;
 
@@ -1093,8 +1093,8 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         {
             uint16 val = (uint16) value;
             v_val.resize(sizeof(unsigned short));
-            memcpy(&v_val[0],&val,sizeof(unsigned short));
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,sizeof(unsigned short));
+            v_ptr = (void*)v_val.data();
         }
         break;
 
@@ -1102,16 +1102,16 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         {
             int32 val = (int32) value;
             v_val.resize(sizeof(int));
-            memcpy(&v_val[0],&val,sizeof(int));
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,sizeof(int));
+            v_ptr = (void*)v_val.data();
         }
         break;
         case DFNT_UINT32:        
         {
             uint32 val = (uint32) value;
             v_val.resize(sizeof(unsigned int));
-            memcpy(&v_val[0],&val,sizeof(int));
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,sizeof(int));
+            v_ptr = (void*)v_val.data();
         }
         break;
         case DFNT_FLOAT:
@@ -1123,8 +1123,8 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         {
             float64 val = (float64) value;
             v_val.resize(sizeof(double));
-            memcpy(&v_val[0],&val,sizeof(double));
-            v_ptr = (void*)&v_val[0];
+            memcpy(v_val.data(),&val,sizeof(double));
+            v_ptr = (void*)v_val.data();
         }
         break;
         default:
@@ -1236,7 +1236,7 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
         vector<char> value;
         // We have already checked the number of attribute values. The number is 1. 
         value.resize(DFKNTsize(so_dtype));
-        status = SDreadattr(_sds_id, so_index, &value[0]);
+        status = SDreadattr(_sds_id, so_index, value.data());
         if (status < 0){
             SDendaccess(_sds_id);
             ostringstream error;
@@ -1246,7 +1246,7 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
         // If this attribute is "scale_factor",
         if(true == is_scale) {
             if(DFNT_FLOAT32 == so_dtype) {
-                float final_scale_value = *((float*)((void*)(&value[0])));
+                float final_scale_value = *((float*)((void*)(value.data())));
                 if(final_scale_value == 1.0) 
                     ignore_so = 1;
                 // This is the ugly case that the variable type is integer, the
@@ -1258,7 +1258,7 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
                     ignore_so = 2;
             }
             else if(DFNT_FLOAT64 == so_dtype) {
-                double final_scale_value = *((double*)((void*)(&value[0])));
+                double final_scale_value = *((double*)((void*)(value.data())));
                 if(final_scale_value == 1.0) 
                     ignore_so = 1;
                 else if(var_dtype !=DFNT_FLOAT32 && var_dtype != DFNT_FLOAT64)
@@ -1268,7 +1268,7 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
         else {
             // has offset, we need to make a mark for the case when scale_factor applies to a varialbe that has an integer type  
             ignore_so = -1;
-            string print_rep = HDFCFUtil::print_attr(so_dtype, 0, (void *)&value[0]);
+            string print_rep = HDFCFUtil::print_attr(so_dtype, 0, (void *)value.data());
             if(DFNT_FLOAT32 == so_dtype || DFNT_FLOAT64 == so_dtype) {
                 if(atof(print_rep.c_str()) == 0.0) 
                     ignore_so = 1;

@@ -140,7 +140,7 @@ static void parse_datadds_response(istream &in, string &prolog, vector<char> &bl
     // Fix for HYRAX-804: Change reserve() to resize() for the vector
     // blob. jhrg 8/3/18
     blob.resize(length);
-    in.read(&blob[0], length);
+    in.read(blob.data(), length);
 }
 
 class ResponseBuilderTest: public TestFixture {

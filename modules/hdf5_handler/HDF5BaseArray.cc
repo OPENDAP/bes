@@ -124,7 +124,7 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
     step.resize(rank);
 
 
-    int nelms = format_constraint(&offset[0], &step[0], &count[0]);
+    int nelms = format_constraint(offset.data(), step.data(), count.data());
 
     // Since we always assign the the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always
@@ -135,12 +135,12 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
-        set_value(&val[0], nelms);
+        set_value(val.data(), nelms);
     }
     else {
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value(&val[0], nelms);
+        set_value(val.data(), nelms);
     }
 }
 
@@ -160,7 +160,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     offset.resize(ndims);
     count.resize(ndims);
     step.resize(ndims);
-    int nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    int nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // set the original position to the starting point
     vector<size_t>pos(ndims,0);
@@ -178,15 +178,15 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       buf,
                                       ndims,
                                       h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
+                                      offset.data(),
+                                      step.data(),
+                                      count.data(),
                                       &val,
                                       pos,
                                       0
                                      );
 
-            set_value ((dods_byte *) &val[0], nelms);
+            set_value ((dods_byte *) val.data(), nelms);
         } // case H5UCHAR
             break;
 
@@ -198,9 +198,9 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       buf,
                                       ndims,
                                       h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
+                                      offset.data(),
+                                      step.data(),
+                                      count.data(),
                                       &val,
                                       pos,
                                       0
@@ -213,10 +213,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 
                 for (int counter = 0; counter < nelms; counter++)
                     newval[counter] = (short) (val[counter]);
-                set_value ((dods_int16 *) &val[0], nelms);
+                set_value ((dods_int16 *) val.data(), nelms);
             }
             else 
-                set_value ((dods_int8 *) &val[0], nelms);
+                set_value ((dods_int8 *) val.data(), nelms);
 
 
         } // case H5CHAR
@@ -229,16 +229,16 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       buf,
                                       ndims,
                                       h5_dimsizes,
-                                      &offset[0],
-                                      &step[0],
-                                      &count[0],
+                                      offset.data(),
+                                      step.data(),
+                                      count.data(),
                                       &val,
                                       pos,
                                       0
                                      );
 
 
-            set_value ((dods_int16 *) &val[0], nelms);
+            set_value ((dods_int16 *) val.data(), nelms);
         }// H5INT16
             break;
 
@@ -250,16 +250,16 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				    buf,
 				    ndims,
                                     h5_dimsizes,
-                                    &offset[0],
-                                    &step[0],
-                                    &count[0],
+                                    offset.data(),
+                                    step.data(),
+                                    count.data(),
                                     &val,
                                     pos,
                                     0
                                   );
 
                
-            set_value ((dods_uint16 *) &val[0], nelms);
+            set_value ((dods_uint16 *) val.data(), nelms);
         } // H5UINT16
             break;
 
@@ -270,15 +270,15 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			buf,
 			ndims,
 			h5_dimsizes,
-			&offset[0],
-			&step[0],
-			&count[0],
+			offset.data(),
+			step.data(),
+			count.data(),
 			&val,
 			pos,
 			0
 			);
 
-            set_value ((dods_int32 *) &val[0], nelms);
+            set_value ((dods_int32 *) val.data(), nelms);
         } // case H5INT32
             break;
 
@@ -289,15 +289,15 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				buf,
 				ndims,
 				h5_dimsizes,
-				&offset[0],
-				&step[0],
-				&count[0],
+				offset.data(),
+				step.data(),
+				count.data(),
 				&val,
 				pos,
 				0
 				);
 
-            set_value ((dods_uint32 *) &val[0], nelms);
+            set_value ((dods_uint32 *) val.data(), nelms);
         }
             break;
         // Add the code for the CF option DAP4 support
@@ -311,15 +311,15 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			buf,
 			ndims,
 			h5_dimsizes,
-			&offset[0],
-			&step[0],
-			&count[0],
+			offset.data(),
+			step.data(),
+			count.data(),
 			&val,
 			pos,
 			0
 			);
 
-            set_value ((dods_int64 *) &val[0], nelms);
+            set_value ((dods_int64 *) val.data(), nelms);
         } // case H5INT64
             break;
 
@@ -330,15 +330,15 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				buf,
 				ndims,
 				h5_dimsizes,
-				&offset[0],
-				&step[0],
-				&count[0],
+				offset.data(),
+				step.data(),
+				count.data(),
 				&val,
 				pos,
 				0
 				);
 
-            set_value ((dods_uint64 *) &val[0], nelms);
+            set_value ((dods_uint64 *) val.data(), nelms);
         }
             break;
 
@@ -350,14 +350,14 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 	    		  buf,
 			  ndims,
 			  h5_dimsizes,
-			  &offset[0],
-			  &step[0],
-			  &count[0],
+			  offset.data(),
+			  step.data(),
+			  count.data(),
 			  &val,
 			  pos,
 			  0
 			  );
-            set_value ((dods_float32 *) &val[0], nelms);
+            set_value ((dods_float32 *) val.data(), nelms);
         }
             break;
 
@@ -370,14 +370,14 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 		    	    buf,
 	    		    ndims,
     			    h5_dimsizes,
-			    &offset[0],
-    			    &step[0],
-    			    &count[0],
+			    offset.data(),
+    			    step.data(),
+    			    count.data(),
 			    &val,
 			    pos,
 			    0
 			    );
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
         } // case H5FLOAT64
             break;
 
@@ -593,7 +593,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
        	buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(h5_dtype));
 
         // This routine will read the data, send it to the DAP and save the buf to the cache.
-  	read_data_NOT_from_mem_cache(true,&buf[0]);
+  	read_data_NOT_from_mem_cache(true,buf.data());
             
         // Create a new cache element.
 #if 0

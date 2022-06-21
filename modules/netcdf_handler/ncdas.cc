@@ -286,7 +286,7 @@ static void append_values(int ncid, int v, int len, nc_type datatype, char *attr
     if (errstat != NC_NOERR) throw Error(errstat, "Could not get the size for the type.");
 
     vector<char> value((len + 1) * size);
-    errstat = nc_get_att(ncid, v, attrname, &value[0]);
+    errstat = nc_get_att(ncid, v, attrname, value.data());
     if (errstat != NC_NOERR) {
         throw Error(errstat, string("Could not get the value for attribute '") + attrname + string("'"));
     }
@@ -301,7 +301,7 @@ static void append_values(int ncid, int v, int len, nc_type datatype, char *attr
 
     // add all the attributes in the array
     for (int loc = 0; loc < len; loc++) {
-        string print_rep = print_attr(datatype, loc, &value[0]);
+        string print_rep = print_attr(datatype, loc, value.data());
         at->append_attr(attrname, print_type(datatype), print_rep);
     }
 }
@@ -352,7 +352,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
                 // Make recursive attrs work?
                 vector<unsigned char> values((len + 1) * size);
 
-                int errstat = nc_get_att(ncid, varid, attrname, &values[0]);
+                int errstat = nc_get_att(ncid, varid, attrname, values.data());
                 if (errstat != NC_NOERR) throw Error(errstat, string("Could not get the value for attribute '") + attrname + string("'"));
 
                 for (size_t i = 0; i < nfields; ++i) {
@@ -361,7 +361,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
                     size_t field_offset;
                     nc_inq_compound_field(ncid, datatype, i, field_name, &field_offset, &field_typeid, 0, 0);
 
-                    at->append_attr(field_name, print_type(field_typeid), print_attr(field_typeid, 0, &values[0] + field_offset));
+                    at->append_attr(field_name, print_type(field_typeid), print_attr(field_typeid, 0, values.data() + field_offset));
                 }
                 break;
             }
@@ -376,11 +376,11 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
             case NC_OPAQUE: {
                 vector<unsigned char> values((len + 1) * size);
 
-                int errstat = nc_get_att(ncid, varid, attrname, &values[0]);
+                int errstat = nc_get_att(ncid, varid, attrname, values.data());
                 if (errstat != NC_NOERR) throw Error(errstat, string("Could not get the value for attribute '") + attrname + string("'"));
 
                 for (size_t i = 0; i < size; ++i)
-                    at->append_attr(attrname, print_type(NC_BYTE), print_attr(NC_BYTE, i, &values[0]));
+                    at->append_attr(attrname, print_type(NC_BYTE), print_attr(NC_BYTE, i, values.data()));
 
                 break;
             }
@@ -394,11 +394,11 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
 #endif
                 vector<unsigned char> values((len + 1) * size);
 
-                int errstat = nc_get_att(ncid, varid, attrname, &values[0]);
+                int errstat = nc_get_att(ncid, varid, attrname, values.data());
                 if (errstat != NC_NOERR) throw Error(errstat, string("Could not get the value for attribute '") + attrname + string("'"));
 
                 for (size_t i = 0; i < len; ++i)
-                    at->append_attr(attrname, print_type(base_type), print_attr(base_type, i, &values[0]));
+                    at->append_attr(attrname, print_type(base_type), print_attr(base_type, i, values.data()));
 
                 break;
             }
@@ -519,14 +519,14 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
             //var_type >= NC_FIRSTUSERTYPEID) {
             vector<char> name(MAX_NC_NAME + 1);
             int class_type;
-            errstat = nc_inq_user_type(ncid, var_type, &name[0], 0, 0, 0, &class_type);
+            errstat = nc_inq_user_type(ncid, var_type, name.data(), 0, 0, 0, &class_type);
             if (errstat != NC_NOERR)
                 throw(InternalErr(__FILE__, __LINE__, "Could not get information about a user-defined type (" + long_to_string(errstat) + ")."));
 
             switch (class_type) {
             case NC_OPAQUE: {
                 attr_table_ptr->append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_OPAQUE");
-                attr_table_ptr->append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), &name[0]);
+                attr_table_ptr->append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), name.data());
                 break;
             }
 
@@ -534,7 +534,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
                 //vector<char> name(MAX_NC_NAME + 1);
                 nc_type base_nc_type;
                 size_t base_size, num_members;
-                errstat = nc_inq_enum(ncid, var_type, 0/*&name[0]*/, &base_nc_type, &base_size, &num_members);
+                errstat = nc_inq_enum(ncid, var_type, 0/*name.data()*/, &base_nc_type, &base_size, &num_members);
                 if (errstat != NC_NOERR)
                     throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum(" + long_to_string(errstat) + ")."));
 
@@ -551,15 +551,15 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
                 for (size_t i = 0; i < num_members; ++i) {
                     vector<char> member_name(MAX_NC_NAME + 1);
                     vector<char> member_value(base_size);
-                    errstat = nc_inq_enum_member(ncid, var_type, i, &member_name[0], &member_value[0]);
+                    errstat = nc_inq_enum_member(ncid, var_type, i, member_name.data(), member_value.data());
                     if (errstat != NC_NOERR)
                         throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum value (" + long_to_string(errstat) + ")."));
-                    attr_table_ptr->append_attr("DAP2_EnumValues", print_type(base_nc_type), print_attr(base_nc_type, 0, &member_value[0]));
-                    attr_table_ptr->append_attr("DAP2_EnumNames", print_type(NC_STRING), &member_name[0]);
+                    attr_table_ptr->append_attr("DAP2_EnumValues", print_type(base_nc_type), print_attr(base_nc_type, 0, member_value.data()));
+                    attr_table_ptr->append_attr("DAP2_EnumNames", print_type(NC_STRING), member_name.data());
                 }
 
                 attr_table_ptr->append_attr("DAP2_OriginalNetCDFBaseType", print_type(NC_STRING), "NC_ENUM");
-                attr_table_ptr->append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), &name[0]);
+                attr_table_ptr->append_attr("DAP2_OriginalNetCDFTypeName", print_type(NC_STRING), name.data());
 
                 break;
             }

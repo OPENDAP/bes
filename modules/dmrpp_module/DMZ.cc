@@ -936,7 +936,7 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         case dods_float32_c:
         case dods_float64_c:
-            btp->val2buf(reinterpret_cast<void *>(&decoded[0]));
+            btp->val2buf(reinterpret_cast<void *>(decoded.data()));
             btp->set_read_p(true);
             break;
 

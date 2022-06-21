@@ -175,7 +175,7 @@ public:
         DBG(cerr << "Run test_reading_data." << endl);
         vector<dods_float32> lat_buf(y_size);
         Array *lat = dynamic_cast<Array*>(test3D_dds->var("lat"));
-        lat->value(&lat_buf[0]);
+        lat->value(lat_buf.data());
         DBG(cerr << "lat: ");
         DBG(copy(lat_buf.begin(), lat_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -185,7 +185,7 @@ public:
 
         vector<dods_float32> lon_buf(x_size);
         Array *lon = dynamic_cast<Array*>(test3D_dds->var("lon"));
-        lon->value(&lon_buf[0]);
+        lon->value(lon_buf.data());
         DBG(cerr << "lon: ");
         DBG(copy(lon_buf.begin(), lon_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -196,7 +196,7 @@ public:
         Array *d = dynamic_cast<Array*>(test3D_dds->var("data"));
         const int data_size = t_size * x_size * y_size;
         vector<dods_float32> data(data_size);
-        d->value(&data[0]);
+        d->value(data.data());
         DBG(cerr << "data: ");
         DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -310,7 +310,7 @@ public:
             } // end band loop
 
             vector<double> geo_transform = get_geotransform_data(x, y);
-            ds->SetGeoTransform(&geo_transform[0]);
+            ds->SetGeoTransform(geo_transform.data());
 
             OGRSpatialReference native_srs;
             if (CE_None != native_srs.SetWellKnownGeogCS(srs.c_str())){
@@ -353,7 +353,7 @@ public:
                 CPPUNIT_ASSERT(double_eq(max, 1.0));
 
                 vector<double> gt(6);
-                ds->GetGeoTransform(&gt[0]);
+                ds->GetGeoTransform(gt.data());
 
                 DBG(cerr << "gt values: ");
                 DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
@@ -404,7 +404,7 @@ public:
                     DBG(cerr << "band y_size: " << band->GetYSize() << endl);
 
                     vector<dods_float32> buf(x->length() * y->length());
-                    CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, &buf[0], x_size, y_size, get_array_type(data), 0, 0);
+                    CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, buf.data(), x_size, y_size, get_array_type(data), 0, 0);
                     if (error != CPLE_None)
                         throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
 
@@ -516,7 +516,7 @@ public:
                 CPPUNIT_ASSERT(same_as(max, 1.0));
 
                 vector<double> gt(6);
-                dst->GetGeoTransform(&gt[0]);
+                dst->GetGeoTransform(gt.data());
 
                 DBG(cerr << "gt values: ");
                 DBG(copy(gt.begin(), gt.end(), std::ostream_iterator<double>(std::cerr, " ")));
@@ -532,7 +532,7 @@ public:
 
                 // Extract the data now.
                 vector<dods_float32> buf(dst_size_x * dst_size_y);
-                error = band->RasterIO(GF_Read, 0, 0, dst_size_x, dst_size_y, &buf[0], dst_size_x, dst_size_y,
+                error = band->RasterIO(GF_Read, 0, 0, dst_size_x, dst_size_y, buf.data(), dst_size_x, dst_size_y,
                     get_array_type(arr), 0, 0);
                 if (error != CPLE_None)
                     throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
@@ -610,9 +610,9 @@ public:
            built_time->append_dim(t_size);
        }
        vector<dods_float32> t_buf(t_size);
-       t->value(&t_buf[0]);
+       t->value(t_buf.data());
 
-       built_time->set_value(&t_buf[0], t_size);
+       built_time->set_value(t_buf.data(), t_size);
 
         DBG(cerr << "built_time after: ");
         DBG(built_time.get()->print_val(cerr))

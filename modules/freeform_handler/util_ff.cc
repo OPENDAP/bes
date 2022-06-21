@@ -184,8 +184,8 @@ long read_ff(const char *dataset, const char *if_file, const char *o_format, cha
 
         // memory freed automatically on exit
         vector<char> l_bufsz(sizeof(FF_BUFSIZE));
-        //bufsz = (FF_BUFSIZE *)&l_bufsz[0];
-        FF_BUFSIZE_PTR bufsz = reinterpret_cast<FF_BUFSIZE_PTR>(&l_bufsz[0]);
+        //bufsz = (FF_BUFSIZE *)l_bufsz.data();
+        FF_BUFSIZE_PTR bufsz = reinterpret_cast<FF_BUFSIZE_PTR>(l_bufsz.data());
 
         bufsz->usage = 1;
         bufsz->buffer = o_buffer;
