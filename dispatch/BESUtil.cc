@@ -1136,7 +1136,7 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
     BESDEBUG(MODULE,  msg.str());
     INFO_LOG( msg.str());
 
-    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
     std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
 
     // good() returns true if !(eofbit || badbit || failbit)
@@ -1161,8 +1161,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
     // This is where the file is copied.
     uint64_t tcount = 0;
     while (i_stream.good() && o_strm.good()){
-        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
-        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
     }
     o_strm.flush();
@@ -1198,7 +1198,6 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         msg << " current_position: " << crntpos << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
-        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
     msg.str("");
@@ -1214,7 +1213,7 @@ uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostre
     BESDEBUG(MODULE,  msg.str());
     INFO_LOG( msg.str());
 
-    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
     std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
 
     // good() returns true if !(eofbit || badbit || failbit)
@@ -1241,8 +1240,8 @@ uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostre
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
     while (i_stream.good() && o_strm.good()){
-        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
-        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
         BESDEBUG(MODULE, "i_stream: " << i_stream.gcount() << endl);
         byteCount += i_stream.gcount();
     }
@@ -1279,7 +1278,6 @@ uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostre
         msg << " current_position: " << crntpos << endl;
         BESDEBUG(MODULE, msg.str());
         ERROR_LOG(msg.str());
-        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
     msg.str(prolog);
@@ -1308,12 +1306,7 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
     BESDEBUG(MODULE, msg.str());
     INFO_LOG(msg.str());
 
-    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
-
-    // this hack gets the code past the tests when the task is launched
-    // using the async policy. It's not needed if the task is run as a
-    // deferred task. jhrg 6/4/21
-    //sleep(1);
+    vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
 
     std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);
 #if FILE_CALLS
@@ -1331,10 +1324,10 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
             break;
         }
         else {
-            i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+            i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
 
 #if FILE_CALLS
-            int status = read(fd, &rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);
+            int status = read(fd, rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);
             if (status == 0) {
                 eof = true;
             }
@@ -1342,11 +1335,11 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
                 BESDEBUG(MODULE, "read() call error: " << errno << endl);
             }
 
-            o_strm.write(&rbuffer[0], status); // buf, then write the buf to
+            o_strm.write(rbuffer.data(), status); // buf, then write the buf to
             tcount += status;
 #endif
 
-            o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+            o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
             tcount += i_stream.gcount();
             BESDEBUG(MODULE, "transfer bytes " << tcount << endl);
         }

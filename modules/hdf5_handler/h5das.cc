@@ -92,7 +92,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         }
         // Obtain the name of the object.
         vector<char> oname(oname_size + 1);
-        if (H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oname[0], (size_t) (oname_size + 1),
+        if (H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, oname.data(), (size_t) (oname_size + 1),
             H5P_DEFAULT) < 0) {
             string msg = "hdf5 object name error from: ";
             msg += gname;
@@ -101,7 +101,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
         // Check if it is the hard link or the soft link
         H5L_info_t linfo;
-        if (H5Lget_info(pid, &oname[0], &linfo, H5P_DEFAULT) < 0) {
+        if (H5Lget_info(pid, oname.data(), &linfo, H5P_DEFAULT) < 0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -111,7 +111,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         if (linfo.type == H5L_TYPE_SOFT) {
             slinkindex++;
             size_t val_size = linfo.u.val_size;
-            get_softlink(das, pid, gname, &oname[0], slinkindex, val_size);
+            get_softlink(das, pid, gname, oname.data(), slinkindex, val_size);
             continue;
         }
 
@@ -128,12 +128,12 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
         case H5O_TYPE_GROUP: {
 
-            BESDEBUG("h5", "=depth_first():H5G_GROUP " << &oname[0] << endl);
+            BESDEBUG("h5", "=depth_first():H5G_GROUP " << oname.data() << endl);
 
             // This function will store the HDF5 group hierarchy into an DAP attribute. 
-            add_group_structure_info(das, gname, &oname[0], true);
+            add_group_structure_info(das, gname, oname.data(), true);
 
-            string full_path_name = string(gname) + string(&oname[0]) + "/";
+            string full_path_name = string(gname) + string(oname.data()) + "/";
 
             hid_t cgroup = H5Gopen(pid, full_path_name.c_str(), H5P_DEFAULT);
             if (cgroup < 0) {
@@ -199,12 +199,12 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
         case H5O_TYPE_DATASET: {
 
-            BESDEBUG("h5", "=depth_first():H5G_DATASET " << &oname[0] << endl);
+            BESDEBUG("h5", "=depth_first():H5G_DATASET " << oname.data() << endl);
 
             // This function will store the HDF5 group hierarchy into an DAP attribute.
-            add_group_structure_info(das, gname, &oname[0], false);
+            add_group_structure_info(das, gname, oname.data(), false);
 
-            string full_path_name = string(gname) + string(&oname[0]);
+            string full_path_name = string(gname) + string(oname.data());
             hid_t dset = -1;
 
             // Open the dataset
@@ -361,7 +361,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             // Variable length string attribute values only store pointers of the actual string value.
             temp_buf.resize((size_t) attr_inst.need);
 
-            if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
+            if (H5Aread(attr_id, ty_id, temp_buf.data()) < 0) {
                 H5Sclose(temp_space_id);
                 H5Tclose(ty_id);
                 H5Aclose(attr_id);
@@ -369,7 +369,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             }
 
             char *temp_bp;
-            temp_bp = &temp_buf[0];
+            temp_bp = temp_buf.data();
             char* onestring;
             for (unsigned int temp_i = 0; temp_i < attr_inst.nelmts; temp_i++) {
 
@@ -388,7 +388,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             if (temp_buf.empty() != true) {
                 // Reclaim any VL memory if necessary.
                 herr_t ret_vlen_claim;
-                ret_vlen_claim = H5Dvlen_reclaim(ty_id, temp_space_id, H5P_DEFAULT, &temp_buf[0]);
+                ret_vlen_claim = H5Dvlen_reclaim(ty_id, temp_space_id, H5P_DEFAULT, temp_buf.data());
                 if(ret_vlen_claim < 0) {
                     H5Sclose(temp_space_id);
                     throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
@@ -405,7 +405,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) 
+            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0)
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             
             H5Aclose(memtype);
@@ -413,7 +413,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
             // For scalar data, just read data once.
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
-                    print_rep = print_attr(ty_id, loc, &value[0]);
+                    print_rep = print_attr(ty_id, loc, value.data());
                     if (print_rep.c_str() != nullptr) {
                         attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
                     }
@@ -436,7 +436,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
                 // Due to the implementation of print_attr, the attribute value will be 
                 // written one by one.
-                char *tempvalue = &value[0];
+                char *tempvalue = value.data();
 
                 // Write this value. the "loc" can always be set to 0 since
                 // tempvalue will be moved to the next value.
@@ -583,9 +583,9 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
     vector<char>buf((val_size + 1) * sizeof(char));
 
     // get link target name
-    if (H5Lget_val(pgroup, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) 
+    if (H5Lget_val(pgroup, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0)
         throw InternalErr(__FILE__, __LINE__, "unable to get link value");
-    attr_softlink_ptr->append_attr(softlink_value_name, STRING, &buf[0]);
+    attr_softlink_ptr->append_attr(softlink_value_name, STRING, buf.data());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -670,14 +670,14 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
     if (comment_size > 0) {
         vector<char> comment;
         comment.resize(comment_size + 1);
-        if (H5Oget_comment(oid, &comment[0], comment_size + 1) < 0) {
+        if (H5Oget_comment(oid, comment.data(), comment_size + 1) < 0) {
             throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment.");
         }
 
         // Insert this comment into the das table.
         AttrTable *at = das.get_table(varname);
         if (!at) at = das.add_table(varname, new AttrTable);
-        at->append_attr("HDF5_COMMENT", STRING, &comment[0]);
+        at->append_attr("HDF5_COMMENT", STRING, comment.data());
 
     }
 }

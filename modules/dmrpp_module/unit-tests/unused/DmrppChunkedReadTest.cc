@@ -440,7 +440,7 @@ public:
             DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
-            var->value(&values[0]);
+            var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
             for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
@@ -512,7 +512,7 @@ public:
             // Read the variable and transfer the data
             read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
-            var->value(&values[0]);
+            var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
             for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
@@ -586,7 +586,7 @@ public:
             // Read the variable and transfer the data
             read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
-            var->value(&values[0]);
+            var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
             for (unsigned long long a_index = 0; a_index < array_length; a_index++) {
@@ -724,7 +724,7 @@ public:
             // Read the variable and transfer the data
             read_var_check_name_and_length(var, variable_name, array_length);
             vector<dods_float32> values(var->length());
-            var->value(&values[0]);
+            var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
             for (unsigned long long a_index = 0; a_index < array_length; a_index++) {

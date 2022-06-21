@@ -51,7 +51,7 @@ TemporaryFile::~TemporaryFile()
     try {
         if (!close(d_fd))
             ERROR_LOG("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
-        if (!unlink(&d_name[0]))
+        if (!unlink(d_name.data()))
             ERROR_LOG("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
     }
     catch (...) {
@@ -78,13 +78,13 @@ TemporaryFile::TemporaryFile(const std::string &path_template)
     //vector<char> temp_file(path_template.length() + 1);
     d_name.reserve(path_template.length() + 1);
 
-    string::size_type len = path_template.copy(&d_name[0], path_template.length());
+    string::size_type len = path_template.copy(d_name.data(), path_template.length());
     d_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.
     mode_t original_mode = umask(077);
-    d_fd = mkstemp(&d_name[0]);
+    d_fd = mkstemp(d_name.data());
     umask(original_mode);
 
     if (d_fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);

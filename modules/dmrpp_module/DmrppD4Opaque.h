@@ -65,7 +65,7 @@ public:
      */
     virtual unsigned char *get_buf()
     {
-        return &d_buf[0];
+        return d_buf.data();
     }
 
     /**

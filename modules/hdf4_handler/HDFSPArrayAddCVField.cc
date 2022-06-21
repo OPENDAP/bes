@@ -43,7 +43,7 @@ HDFSPArrayAddCVField::read ()
     step.resize(1);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = format_constraint(&offset[0],&step[0],&count[0]); 
+    int nelms = format_constraint(offset.data(),step.data(),count.data());
 
     if(sptype == TRMML3C_V6) {
 
@@ -65,7 +65,7 @@ HDFSPArrayAddCVField::read ()
 
 
     if (nelms == tnumelm) {
-        set_value ((dods_float32 *) &total_val[0], nelms);
+        set_value ((dods_float32 *) total_val.data(), nelms);
     }
     else {
 
@@ -74,7 +74,7 @@ HDFSPArrayAddCVField::read ()
         
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
     }
 
@@ -139,7 +139,7 @@ HDFSPArrayAddCVField::read ()
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value ((dods_float32 *) &total_val[0], nelms);
+        set_value ((dods_float32 *) total_val.data(), nelms);
     }
     else {
 
@@ -148,7 +148,7 @@ HDFSPArrayAddCVField::read ()
         
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
     }
 
@@ -172,7 +172,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value ((dods_float32 *) &total_val[0], nelms);
+        set_value ((dods_float32 *) total_val.data(), nelms);
     }
     else {
 
@@ -181,7 +181,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
         
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
 }
 
@@ -229,7 +229,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value ((dods_float32 *) &total_val[0], nelms);
+        set_value ((dods_float32 *) total_val.data(), nelms);
     }
     else {
 
@@ -238,7 +238,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
         
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value ((dods_float32 *) &val[0], nelms);
+        set_value ((dods_float32 *) val.data(), nelms);
     }
 }
 

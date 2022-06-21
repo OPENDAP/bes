@@ -159,7 +159,7 @@ bool HDF5Array::read()
     vector<int> offset(d_num_dim);
     vector<int> count(d_num_dim);
     vector<int> step(d_num_dim);
-    int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
+    int nelms = format_constraint(offset.data(), step.data(), count.data()); // Throws Error.
     vector<char>values;
  
 
@@ -184,7 +184,7 @@ bool HDF5Array::read()
     }
 
     try {
-        do_array_read(dset_id,dtype_id,values,false,0,nelms,&offset[0],&count[0],&step[0]);
+        do_array_read(dset_id,dtype_id,values,false,0,nelms,offset.data(),count.data(),step.data());
     }
     catch(...) {
         H5Tclose(dtype_id);
@@ -243,7 +243,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
         vector<string>finstrval;
         finstrval.resize(nelms);
         try {
-	    read_vlen_string(dset_id, nelms, &hoffset[0], &hstep[0], &hcount[0],finstrval);
+	    read_vlen_string(dset_id, nelms, hoffset.data(), hstep.data(), hcount.data(),finstrval);
         }
         catch(...) {
             H5Tclose(memtype);
@@ -258,7 +258,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
         if (nelms == d_num_elm) {
 
 	    vector<char> convbuf(d_memneed);
-	    get_data(dset_id, (void *) &convbuf[0]);
+	    get_data(dset_id, (void *) convbuf.data());
 
 	    // Check if a Signed Byte to Int16 conversion is necessary, this is only valid for DAP2.
           if(false == is_dap4()) {
@@ -274,13 +274,13 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 		    ;
 	        }
 	        // Libdap will generate the wrong output.
-	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
+	        m_intern_plain_array_data((char*) convbuf2.data(),memtype);
 	    }
 	    else 
-                m_intern_plain_array_data(&convbuf[0],memtype);
+                m_intern_plain_array_data(convbuf.data(),memtype);
           }
           else 
-              m_intern_plain_array_data(&convbuf[0],memtype);
+              m_intern_plain_array_data(convbuf.data(),memtype);
         } // end of "if (nelms == d_num_elm)"
         else {
     	    size_t data_size = nelms * H5Tget_size(memtype);
@@ -288,7 +288,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	        throw InternalErr(__FILE__, __LINE__, "get_size failed");
             }
 	    vector<char> convbuf(data_size);
-	    get_slabdata(dset_id, &offset[0], &step[0], &count[0], d_num_dim, &convbuf[0]);
+	    get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
 
 	    // Check if a Signed Byte to Int16 conversion is necessary.
           if(false == is_dap4()){
@@ -297,14 +297,14 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
 	        for (int i = 0; i < (int)data_size; i++) {
 	    	    convbuf2[i] = static_cast<signed char> (convbuf[i]);
 	        }
-	        m_intern_plain_array_data((char*) &convbuf2[0],memtype);
+	        m_intern_plain_array_data((char*) convbuf2.data(),memtype);
 	    }
 	    else {
-	        m_intern_plain_array_data(&convbuf[0],memtype);
+	        m_intern_plain_array_data(convbuf.data(),memtype);
 	    }
           }
           else 
-	      m_intern_plain_array_data(&convbuf[0],memtype);
+	      m_intern_plain_array_data(convbuf.data(),memtype);
 
         }
         H5Tclose(memtype);
@@ -372,15 +372,15 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         }
 
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
-                                &hoffset[0], &hstep[0],
-                                &hcount[0], nullptr) < 0) {
+                                hoffset.data(), hstep.data(),
+                                hcount.data(), nullptr) < 0) {
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
             throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
         }
 
-        mspace = H5Screate_simple(d_num_dim, &hcount[0],nullptr);
+        mspace = H5Screate_simple(d_num_dim, hcount.data(),nullptr);
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Tclose(memtype);
@@ -390,7 +390,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
         values.resize(nelms*ty_size);
         hid_t read_ret = -1;
-        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)&values[0]);
+        read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,(void*)values.data());
         if (read_ret < 0) {
             H5Tclose(memtype);
             H5Tclose(dtypeid);
@@ -460,24 +460,24 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                     vector<int> at_count(at_ndims,0);
                     vector<int> at_step(at_ndims,0);
 
-                    int at_nelms = h5_array_type.format_constraint(&at_offset[0],&at_step[0],&at_count[0]);
+                    int at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
 
                     // Read the array data
                     h5_array_type.do_h5_array_type_read(dsetid,memb_id,values,has_values,memb_offset+values_offset+ty_size*element,
-                                                        at_nelms,&at_offset[0],&at_count[0],&at_step[0]);
+                                                        at_nelms,at_offset.data(),at_count.data(),at_step.data());
 
                 }
                 else if(memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT) {
 
                     if(true == promote_char_to_short(memb_cls,memb_id)) {
-                        void *src = (void*)(&values[0] + (element*ty_size) + values_offset +memb_offset);
+                        void *src = (void*)(values.data() + (element*ty_size) + values_offset +memb_offset);
                         char val_int8;
                         memcpy(&val_int8,src,1);
                         short val_short=(short)val_int8;
                         field->val2buf(&val_short);
                     }
                     else {
-                        field->val2buf(&values[0] + (element*ty_size) + values_offset +memb_offset);
+                        field->val2buf(values.data() + (element*ty_size) + values_offset +memb_offset);
                     }
 
                 }
@@ -485,13 +485,13 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
                     // distinguish between variable length and fixed length
                     if(true == H5Tis_variable_str(memb_id)) {
-                        void *src = (void*)(&values[0]+(element*ty_size)+values_offset + memb_offset);
+                        void *src = (void*)(values.data()+(element*ty_size)+values_offset + memb_offset);
                         string final_str;
                         get_vlen_str_data((char*)src,final_str);
                         field->val2buf(&final_str);
                     }
                     else {// Obtain fixed-size string value
-                        void *src = (void*)(&values[0]+(element*ty_size)+values_offset + memb_offset);
+                        void *src = (void*)(values.data()+(element*ty_size)+values_offset + memb_offset);
                         vector<char> str_val;
                         size_t memb_size = H5Tget_size(memb_id);
                         if (memb_size == 0) {
@@ -501,7 +501,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                             throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
                         }
                         str_val.resize(memb_size);
-                        memcpy(&str_val[0],src,memb_size);
+                        memcpy(str_val.data(),src,memb_size);
                         string temp_string(str_val.begin(),str_val.end());
                         field->val2buf(&temp_string);
                     }
@@ -529,7 +529,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             if(-1 == mspace) 
                 throw InternalErr(__FILE__, __LINE__, "memory type and memory space for this compound datatype should be valid.");
 
-            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)&values[0])<0) 
+            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0)
                 throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
             H5Sclose(mspace);
         
@@ -548,7 +548,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         if(h5s != nullptr)
             delete h5s;
         if(true == has_values) {
-            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)(&values[0]))<0) {
+            if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)(values.data()))<0) {
                 H5Tclose(memtype);
                 H5Sclose(mspace);
             }
@@ -580,7 +580,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	vector<int> step(d_num_dim);
 
 
-	int nelms = format_constraint(&offset[0], &step[0], &count[0]); // Throws Error.
+	int nelms = format_constraint(offset.data(), step.data(), count.data()); // Throws Error.
 	vector<string> v_str(nelms);
 
 	BESDEBUG("h5", "=read() URL type is detected. "
@@ -599,7 +599,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
             if(rbuf == nullptr){
                 throw InternalErr(__FILE__, __LINE__, "new() failed.");
             }
-	    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &rbuf[0]) < 0) {
+	    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, rbuf) < 0) {
 		throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
 	    }
 
@@ -655,7 +655,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			BESDEBUG("h5", "=read() npoints are " << npoints
 				<< endl);
 			vector<hsize_t> buf(npoints * ndim);
-			if (H5Sget_select_elem_pointlist(space_id, 0, npoints, &buf[0]) < 0) {
+			if (H5Sget_select_elem_pointlist(space_id, 0, npoints, buf.data()) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
 			}
 
@@ -693,11 +693,11 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 				H5Sget_select_hyper_nblocks(space_id) << endl);
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
-			if (H5Sget_select_bounds(space_id, &start[0], &end[0]) < 0) {
+			if (H5Sget_select_bounds(space_id, start.data(), end.data()) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
 			}
 #else
-			if (H5Sget_regular_hyperslab(space_id, &start[0], &stride[0], &s_count[0], &block[0]) < 0) {
+			if (H5Sget_regular_hyperslab(space_id, start.data(), stride.data(), s_count.data(), block.data()) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
 			}
 #endif
@@ -753,7 +753,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	    BESDEBUG("h5", "=read() Got object reference. " << endl);
             vector<hobj_ref_t> orbuf;
             orbuf.resize(d_num_elm);
-	    if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, H5P_DEFAULT, &orbuf[0]) < 0) {
+	    if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL, H5P_DEFAULT, orbuf.data()) < 0) {
 		throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
 	    }
 
@@ -775,7 +775,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 		v_str[i] = varname;
 	    }
 	}
-	set_value(&v_str[0], nelms);
+	set_value(v_str.data(), nelms);
 	return false;
     }
     catch (...) {
@@ -811,7 +811,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         vector<hsize_t>hcount(d_num_dim);
         vector<hsize_t>hstep(d_num_dim);
 
-	int nelms = format_constraint(&offset[0], &step[0], &count[0]); 
+	int nelms = format_constraint(offset.data(), step.data(), count.data());
         for (int i = 0; i <d_num_dim; i++) {
             hoffset[i] = (hsize_t) offset[i];
             hcount[i] = (hsize_t) count[i];
@@ -828,16 +828,16 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset file space.");
 
         if (H5Sselect_hyperslab(file_space_id, H5S_SELECT_SET,
-                               &hoffset[0], &hstep[0],
-                               &hcount[0], nullptr) < 0) 
+                               hoffset.data(), hstep.data(),
+                               hcount.data(), nullptr) < 0)
             throw InternalErr (__FILE__, __LINE__, "Fail to select the hyperslab for reference dataset.");
       
 
-        mem_space_id = H5Screate_simple(d_num_dim,&hcount[0],nullptr);
+        mem_space_id = H5Screate_simple(d_num_dim,hcount.data(),nullptr);
         if(mem_space_id < 0) 
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset memory space.");
 
-        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,&rbuf[0])<0) 
+        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,rbuf.data())<0)
             throw InternalErr(__FILE__, __LINE__, "Fail to read hyperslab reference dataset.");
 
         H5Sclose(mem_space_id);
@@ -846,7 +846,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         // Now we need to retrieve the reference info. fot the nelms elements.
         vector<string> v_str;
 
-        H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)&rbuf[0]);
+        H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)rbuf.data());
 
         // The referenced objects can only be either objects or dataset regions.
         if(ref_type != H5R_OBJECT2 && ref_type !=H5R_DATASET_REGION2)
@@ -865,7 +865,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
             }
             objname.resize(objnamelen+1);
-            if ((objnamelen= H5Iget_name(obj_id,&objname[0],objnamelen+1))<=0) {
+            if ((objnamelen= H5Iget_name(obj_id,objname.data(),objnamelen+1))<=0) {
                 H5Oclose(obj_id);
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
             }
@@ -919,7 +919,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			BESDEBUG("h5", "=read() npoints are " << npoints
 				<< endl);
 			vector<hsize_t> buf(npoints * ndim);
-			if (H5Sget_select_elem_pointlist(region_space_id, 0, npoints, &buf[0]) < 0) {
+			if (H5Sget_select_elem_pointlist(region_space_id, 0, npoints, buf.data()) < 0) {
                             H5Sclose(region_space_id);
                             H5Oclose(obj_id);
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
@@ -958,7 +958,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			BESDEBUG("h5", "=read() nblock is " <<
 				H5Sget_select_hyper_nblocks(region_space_id) << endl);
 
-			if (H5Sget_regular_hyperslab(region_space_id, &start[0], &stride[0], &s_count[0], &block[0]) < 0) {
+			if (H5Sget_regular_hyperslab(region_space_id, start.data(), stride.data(), s_count.data(), block.data()) < 0) {
 	                    H5Sclose(region_space_id);
                             H5Oclose(obj_id);
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
@@ -1004,7 +1004,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         delete[] rbuf;
         H5Sclose(mem_space_id);
         H5Sclose(file_space_id);
-	set_value(&v_str[0], nelms);
+	set_value(v_str.data(), nelms);
         return false;
     }
     catch (...) {
@@ -1072,12 +1072,12 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 		<< " d_num_elm=" << d_num_elm << endl);
 
 	for (int strindex = 0; strindex < d_num_elm; strindex++) {
-	    get_strdata(strindex, &convbuf[0], &strbuf[0], (int)elesize);
-	    BESDEBUG("h5", "=read()<get_strdata() strbuf=" << &strbuf[0] << endl);
-	    v_str[strindex] = &strbuf[0];
+	    get_strdata(strindex, convbuf, strbuf.data(), (int)elesize);
+	    BESDEBUG("h5", "=read()<get_strdata() strbuf=" << strbuf.data() << endl);
+	    v_str[strindex] = strbuf.data();
 	}
 	set_read_p(true);
-	val2buf((void *) &v_str[0]);
+	val2buf((void *) v_str.data());
     }
     else {
 	set_read_p(true);
@@ -1108,7 +1108,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
     vector<hsize_t>at_dims_h(at_ndims,0);
 
     // Obtain the number of elements for each dims
-    if(H5Tget_array_dims(memb_id,&at_dims_h[0])<0) {
+    if(H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
         H5Tclose(at_base_type);
         throw InternalErr (__FILE__, __LINE__, "Fail to obtain dimensions of the array datatype.");
     }
@@ -1229,15 +1229,15 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     vector<int> child_at_count(child_at_ndims,0);
                     vector<int> child_at_step(child_at_ndims,0);
 
-                    int child_at_nelms = h5_array_type.format_constraint(&child_at_offset[0],&child_at_step[0],&child_at_count[0]);
+                    int child_at_nelms = h5_array_type.format_constraint(child_at_offset.data(),child_at_step.data(),child_at_count.data());
 
                     if(at_total_nelms == at_nelms) {
                         h5_array_type.do_h5_array_type_read(dsetid,child_memb_id,values,has_values,child_memb_offset+values_offset+at_base_type_size*array_index,
-                                                        child_at_nelms,&child_at_offset[0],&child_at_count[0],&child_at_step[0]);
+                                                        child_at_nelms,child_at_offset.data(),child_at_count.data(),child_at_step.data());
                     }
                     else {// Adjust memb_offset+values_offset, basically change at_base_type_size*array_index
                         h5_array_type.do_h5_array_type_read(dsetid,child_memb_id,values,has_values,child_memb_offset+values_offset+at_base_type_size*at_orig_index,
-                                                        child_at_nelms,&child_at_offset[0],&child_at_count[0],&child_at_step[0]);
+                                                        child_at_nelms,child_at_offset.data(),child_at_count.data(),child_at_step.data());
  
                     }
                 }
@@ -1246,14 +1246,14 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
                     int number_index =((at_total_nelms == at_nelms)?array_index:at_orig_index);
                     if(true == promote_char_to_short(child_memb_cls,child_memb_id)) {
-                        void *src = (void*)(&values[0] + (number_index*at_base_type_size) + values_offset +child_memb_offset);
+                        void *src = (void*)(values.data() + (number_index*at_base_type_size) + values_offset +child_memb_offset);
                         char val_int8;
                         memcpy(&val_int8,src,1);
                         short val_short=(short)val_int8;
                         field->val2buf(&val_short);
                     }
                     else 
-                        field->val2buf(&values[0] + (number_index * at_base_type_size) + values_offset+child_memb_offset);
+                        field->val2buf(values.data() + (number_index * at_base_type_size) + values_offset+child_memb_offset);
 
 
                 }
@@ -1265,17 +1265,17 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     if(true == H5Tis_variable_str(child_memb_id)) {
 
                         // Need to check if the size of variable length array type is right in HDF5 lib.
-                        void *src = (void*)(&values[0]+(string_index *at_base_type_size)+values_offset+child_memb_offset);
+                        void *src = (void*)(values.data()+(string_index *at_base_type_size)+values_offset+child_memb_offset);
                         string final_str;
                         char*temp_bp =(char*)src;
                         get_vlen_str_data(temp_bp,final_str);
-                        field->val2buf(&final_str[0]); 
+                        field->val2buf(&final_str[0]);
 #if 0
                         field->set_value(final_str);                       
 #endif
                     } 
                     else {// Obtain string
-                        void *src = (void*)(&values[0]+(string_index *at_base_type_size)+values_offset+child_memb_offset);
+                        void *src = (void*)(values.data()+(string_index *at_base_type_size)+values_offset+child_memb_offset);
                         vector<char> str_val;
                         size_t memb_size = H5Tget_size(child_memb_id);
                         if (memb_size == 0) {
@@ -1286,8 +1286,8 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                             throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
                         }
                         str_val.resize(memb_size);
-                        memcpy(&str_val[0],src,memb_size);
-                        field->val2buf(&str_val[0]);
+                        memcpy(str_val.data(),src,memb_size);
+                        field->val2buf(str_val.data());
                     
                     }
                 }
@@ -1336,18 +1336,18 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             if( true == promote_char_to_short(array_cls ,at_base_type)) {
                 vector<char> val_int8;
                 val_int8.resize(at_nelms);
-                void*src = (void*)(&values[0] +values_offset);
-                memcpy(&val_int8[0],src,at_nelms);
+                void*src = (void*)(values.data() +values_offset);
+                memcpy(val_int8.data(),src,at_nelms);
                 
                 vector<short> val_short;
                 for (int i = 0; i<at_nelms; i++)
                     val_short[i] = (short)val_int8[i];
                  
-                val2buf(&val_short[0]);
+                val2buf(val_short.data());
 
             }
             else // short cut for others
-                val2buf(&values[0] + values_offset);
+                val2buf(values.data() + values_offset);
 
         }
         else { // Adjust the value for the subset of the array datatype
@@ -1356,7 +1356,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             string dap_type = get_dap_type(at_base_type,is_dap4());
 
             // The total array type data is read.
-            void*src = (void*)(&values[0] + values_offset);
+            void*src = (void*)(values.data() + values_offset);
 
             // set the original position to the starting point
             vector<int>at_pos(at_ndims,0);
@@ -1367,11 +1367,11 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
                 vector<unsigned char>total_val;
                 total_val.resize(at_total_nelms);
-                memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                 vector<unsigned char>final_val;
                 subset<unsigned char>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1382,7 +1382,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                set_value(&final_val[0],at_nelms);
+                set_value(final_val.data(),at_nelms);
 
 
             }
@@ -1392,11 +1392,11 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 if(true == promote_char_to_short(array_cls,at_base_type)) {
                     vector<char>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<char>final_val;
                     subset<char>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1412,18 +1412,18 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     for(int i = 0; i<at_nelms; i++)
                         final_val_short[i] = final_val[i];
                        
-                    val2buf(&final_val_short[0]);
+                    val2buf(final_val_short.data());
 
                 }
                 else {// short
 
                     vector<short>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<short>final_val;
                     subset<short>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1434,18 +1434,18 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
 
                 }
             } 
             else if( UINT16 == dap_type) {
                     vector<unsigned short>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<unsigned short>final_val;
                     subset<unsigned short>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1456,17 +1456,17 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
                     
             }
             else if(UINT32 == dap_type) {
                     vector<unsigned int>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<unsigned int>final_val;
                     subset<unsigned int>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1476,18 +1476,18 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       at_pos,
                                       0
                                      );
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
                 
 
             }
             else if(INT32 == dap_type) {
                     vector<int>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<int>final_val;
                     subset<int>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1498,17 +1498,17 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
 
             }
             else if(FLOAT32 == dap_type) {
                     vector<float>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<float>final_val;
                     subset<float>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1519,17 +1519,17 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
 
             }
             else if(FLOAT64 == dap_type) {
                     vector<double>total_val;
                     total_val.resize(at_total_nelms);
-                    memcpy(&total_val[0],src,at_total_nelms*at_base_type_size);
+                    memcpy(total_val.data(),src,at_total_nelms*at_base_type_size);
  
                     vector<double>final_val;
                     subset<double>(
-                                      &total_val[0],
+                                      total_val.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1540,9 +1540,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
 #if 0                
-                    //field->val2buf(&final_val[0]);
+                    //field->val2buf(final_val.data());
 #endif
-                    val2buf(&final_val[0]);
+                    val2buf(final_val.data());
 
             }
             else {
@@ -1564,7 +1564,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
         total_strval.resize(at_total_nelms);
 
         if(true == H5Tis_variable_str(at_base_type)) {
-            void *src = (void*)(&values[0]+values_offset);
+            void *src = (void*)(values.data()+values_offset);
             char*temp_bp =(char*)src;
             for(int i = 0;i <at_total_nelms; i++){
                 string tempstrval;
@@ -1580,11 +1580,11 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             }
             else {// obtain subset for variable-length string.
 #if 0
-                //field->val2buf(&values[0] + values_offset);
+                //field->val2buf(values.data() + values_offset);
 #endif
                 vector<string>final_val;
                 subset<string>(
-                                      &total_strval[0],
+                                      total_strval.data(),
                                       at_ndims,
                                       at_dims,
                                       at_offset,
@@ -1601,13 +1601,13 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
         }
         else {// For fixed-size string.
-            void *src = (void*)(&values[0]+values_offset);
+            void *src = (void*)(values.data()+values_offset);
             for(int i = 0; i <at_total_nelms; i++)
                 total_strval[i].resize(at_base_type_size);
 
             vector<char> str_val;
             str_val.resize(at_total_nelms*at_base_type_size);
-            memcpy((void*)&str_val[0],src,at_total_nelms*at_base_type_size);
+            memcpy((void*)str_val.data(),src,at_total_nelms*at_base_type_size);
             string total_in_one_string(str_val.begin(),str_val.end());
             for(int i = 0; i<at_total_nelms;i++)
                 total_strval[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
@@ -1617,7 +1617,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             else {
                 vector<string>final_val;
                 subset<string>(
-                               &total_strval[0],
+                               total_strval.data(),
                                at_ndims,
                                at_dims,
                                at_offset,

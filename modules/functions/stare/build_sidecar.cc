@@ -108,15 +108,15 @@ struct coordinates {
      * addresses of the memory blocks for these vectors.
      * @{
      */
-    hsize_t *get_dims() { return &dims[0]; }
+    hsize_t *get_dims() { return dims.data(); }
 
-    unsigned long *get_x() { return &x[0]; }
-    unsigned long *get_y() { return &y[0]; }
+    unsigned long *get_x() { return x.data(); }
+    unsigned long *get_y() { return y.data(); }
 
-    float64 *get_lon() { return &lon[0]; }
-    float64 *get_lat() { return &lat[0]; }
+    float64 *get_lon() { return lon.data(); }
+    float64 *get_lat() { return lat.data(); }
 
-    STARE_ArrayIndexSpatialValue *get_s_index() { return &s_index[0]; }
+    STARE_ArrayIndexSpatialValue *get_s_index() { return s_index.data(); }
     /** @} */
 };
 
@@ -238,7 +238,7 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
 
     //Get the size of the dimensions so that we know how big to make the memory space
     //dims holds the size of the ndims dimensions.
-    H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
+    H5Sget_simple_extent_dims(dspace, dims.data(), NULL);
 
     //We need to get the filespace and memspace before reading the values from each dataset
     hid_t latFilespace = H5Dget_space(latDataset);
@@ -266,7 +266,7 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     lat.resize(latSize);
     lon.resize(lonSize);
 
-    hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
+    hid_t memspace = H5Screate_simple(ndims, dims.data(), NULL);
     if (memspace < 0)
         throw Error(
                 string("Could not make an HDF5 memory space while working with '").append(filename).append("'"),
@@ -274,12 +274,12 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
 
     //Read the data file and store the values of each dataset into an array
     // was H5T_NATIVE_FLOAT. jhrg 4/17/20
-    herr_t status = H5Dread(latDataset, H5T_NATIVE_DOUBLE, memspace, latFilespace, H5P_DEFAULT, &lat[0]);
+    herr_t status = H5Dread(latDataset, H5T_NATIVE_DOUBLE, memspace, latFilespace, H5P_DEFAULT, lat.data());
     if (status < 0)
         throw Error(string("Could not read data for '").append(lat_name).append("'"), __FILE__, __LINE__);
 
 
-    status = H5Dread(lonDataset, H5T_NATIVE_DOUBLE, memspace, lonFilespace, H5P_DEFAULT, &lon[0]);
+    status = H5Dread(lonDataset, H5T_NATIVE_DOUBLE, memspace, lonFilespace, H5P_DEFAULT, lon.data());
     if (status < 0)
         throw Error(string("Could not read data for '").append(lon_name).append("'"), __FILE__, __LINE__);
 
@@ -588,7 +588,7 @@ void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords)
     dataset = H5Dcreate2(file, datasetName, dataTypes, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     VERBOSE(cerr << "Writing data to dataset" << endl);
-    H5Dwrite(dataset, dataTypes, H5S_ALL, H5S_ALL, H5P_DEFAULT, &keyVals[0]);
+    H5Dwrite(dataset, dataTypes, H5S_ALL, H5S_ALL, H5P_DEFAULT, keyVals.data());
 #endif
 
     /*
@@ -634,11 +634,11 @@ void writeHDF5(const string &filename, string tmpStorage, vector<coord> *coords)
     }
 
     VERBOSE(cerr << "Writing data to dataset" << endl);
-    H5Dwrite(datasetX, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &xArray[0]);
-    H5Dwrite(datasetY, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &yArray[0]);
-    H5Dwrite(datasetLat, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &latArray[0]);
-    H5Dwrite(datasetLon, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &lonArray[0]);
-    H5Dwrite(datasetStare, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, &s_indices[0]);
+    H5Dwrite(datasetX, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, xArray.data());
+    H5Dwrite(datasetY, H5T_NATIVE_ULONG, H5S_ALL, H5S_ALL, H5P_DEFAULT, yArray.data());
+    H5Dwrite(datasetLat, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, latArray.data());
+    H5Dwrite(datasetLon, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, lonArray.data());
+    H5Dwrite(datasetStare, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, s_indices.data());
 
     /*
      * Close/release resources.
@@ -714,7 +714,7 @@ void writeHDF5(const string &filename, string tmp_storage, coordinates *c) {
     dataset = H5Dcreate2(file, datasetName, dataTypes, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
     VERBOSE(cerr << "Writing data to dataset" << endl);
-    H5Dwrite(dataset, dataTypes, H5S_ALL, H5S_ALL, H5P_DEFAULT, &keyVals[0]);
+    H5Dwrite(dataset, dataTypes, H5S_ALL, H5S_ALL, H5P_DEFAULT, keyVals.data());
 #endif
 
     /*

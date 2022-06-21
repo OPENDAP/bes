@@ -384,7 +384,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
 
             // Get chunking information: rank and dimensions
             vector<size_t> chunk_dims(dataset_rank);
-            unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t*) &chunk_dims[0]);
+            unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t*) chunk_dims.data());
             if (chunk_rank != dataset_rank)
                 throw BESNotFoundError("Found a chunk with rank different than the dataset's (aka variables's) rank", __FILE__, __LINE__);
 
@@ -399,7 +399,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc)
                 hsize_t size = 0;
 
                 //H5_DLL herr_t H5Dget_chunk_info(hid_t dset_id, hid_t fspace_id, hsize_t chk_idx, hsize_t *coord, unsigned *filter_mask, haddr_t *addr, hsize_t *size);
-                status = H5Dget_chunk_info(dataset, fspace_id, i, &temp_coords[0], NULL, &addr, &size);
+                status = H5Dget_chunk_info(dataset, fspace_id, i, temp_coords.data(), NULL, &addr, &size);
                 if (status < 0) {
                     VERBOSE(cerr << "ERROR" << endl);
                     throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
@@ -678,7 +678,7 @@ void build_dmr_with_StandAloneApp(
     std::vector<char*> argv;
     for(unsigned i=0; i<arguments.size() ; i++){
         const string &arg = arguments[i];
-        argv.push_back((char*)&arg[0]);
+        argv.push_back((char*)arg.data());
     }
     argv.push_back(0);
 

@@ -239,7 +239,7 @@ public:
             CPPUNIT_ASSERT(da->length() == 2);
 
             vector<dods_int16> v16(da->length());
-            da->value(&v16[0]);
+            da->value(v16.data());
             BESDEBUG("dmrpp", "v16[0]: " << v16[0] << ", v16[1]: " << v16[1] << endl);
             CPPUNIT_ASSERT(v16[0] == -32768);
             CPPUNIT_ASSERT(v16[1] == 32767);
@@ -249,7 +249,7 @@ public:
             CPPUNIT_ASSERT(da);
             read_var_check_name_and_length(da, "d16_2", 4);
             vector<dods_int16> v16_2(da->length());
-            da->value(&v16_2[0]);
+            da->value(v16_2.data());
 
             if (debug) copy(v16_2.begin(), v16_2.end(), ostream_iterator<dods_int16>(cerr, " "));
 
@@ -262,7 +262,7 @@ public:
             CPPUNIT_ASSERT(da);
             read_var_check_name_and_length(da, "d32_1", 8);
             vector<dods_int32> v32(da->length());
-            da->value(&v32[0]);
+            da->value(v32.data());
 
             if (debug) copy(v32.begin(), v32.end(), ostream_iterator<dods_int32>(cerr, " "));
 
@@ -275,7 +275,7 @@ public:
             CPPUNIT_ASSERT(da);
             read_var_check_name_and_length(da, "d32_2", 32);
             vector<dods_int32> v32_2(da->length());
-            da->value(&v32_2[0]);
+            da->value(v32_2.data());
 
             if (debug) copy(v32_2.begin(), v32_2.end(), ostream_iterator<dods_int32>(cerr, " "));
 
@@ -355,7 +355,7 @@ public:
             read_var_check_name_and_length(temperature, "temperature", 32);
             {
                 vector<dods_float32> f32(temperature->length());
-                temperature->value(&f32[0]);
+                temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
                 BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
@@ -383,7 +383,7 @@ public:
             read_var_check_name_and_length(temperature, "temperature", 32);
             {
                 vector<dods_float32> f32(temperature->length());
-                temperature->value(&f32[0]);
+                temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
                 BESDEBUG("dmrpp", "temperature[8]:  " << f32[8] << endl);
@@ -490,7 +490,7 @@ public:
             read_var_check_name_and_length(temperature, "temperature", 6);
             {
                 vector<dods_float32> f32(temperature->length());
-                temperature->value(&f32[0]);
+                temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]: " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 11);
                 BESDEBUG("dmrpp", "temperature[1]:  " << f32[1] << endl);
@@ -537,7 +537,7 @@ public:
             read_var_check_name_and_length(t2, "temperature", 4);
             {
                 vector<dods_float32> f32(t2->length());
-                t2->value(&f32[0]);
+                t2->value(f32.data());
                 BESDEBUG("dmrpp", "t2[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
                 BESDEBUG("dmrpp", "t2[1]:  " << f32[1] << endl);
@@ -588,7 +588,7 @@ public:
             DmrppArray *coadsx = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(coadsx, "COADSX", 180);
             vector<dods_float64> coadsx_vals(coadsx->length());
-            coadsx->value(&coadsx_vals[0]);
+            coadsx->value(coadsx_vals.data());
             // first element
             index = 0;
             test_float64 = 21.0;
@@ -608,7 +608,7 @@ public:
             DmrppArray *coadsy = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(coadsy, "COADSY", 90);
             vector<dods_float64> coadsy_vals(coadsy->length());
-            coadsy->value(&coadsy_vals[0]);
+            coadsy->value(coadsy_vals.data());
             // first element
             index = 0;
             test_float64 = -89.0;
@@ -628,7 +628,7 @@ public:
             DmrppArray *time = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(time, "TIME", 12);
             vector<dods_float64> time_vals(time->length());
-            time->value(&time_vals[0]);
+            time->value(time_vals.data());
             // first element
             index = 0;
             test_float64 = 366.0;
@@ -648,7 +648,7 @@ public:
             DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(sst, "SST", 194400);
             vector<dods_float32> sst_vals(sst->length());
-            sst->value(&sst_vals[0]);
+            sst->value(sst_vals.data());
 
             // check [0][0][0]
             index = 0;
@@ -684,7 +684,7 @@ public:
             DmrppArray *airt = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(airt, "AIRT", 194400);
             vector<dods_float32> airt_vals(airt->length());
-            airt->value(&airt_vals[0]);
+            airt->value(airt_vals.data());
 
             // check [0][0][0]
             index = 0;
@@ -720,7 +720,7 @@ public:
             DmrppArray *uwnd = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(uwnd, "UWND", 194400);
             vector<dods_float32> uwnd_vals(uwnd->length());
-            uwnd->value(&uwnd_vals[0]);
+            uwnd->value(uwnd_vals.data());
 
             // check [0][0][0]
             index = 0;
@@ -763,7 +763,7 @@ public:
             DmrppArray *vwnd = dynamic_cast<DmrppArray*>(*vIter);
             read_var_check_name_and_length(vwnd, "VWND", 194400);
             vector<dods_float32> vwnd_vals(vwnd->length());
-            vwnd->value(&vwnd_vals[0]);
+            vwnd->value(vwnd_vals.data());
 
             // check [0][0][0]
             index = 0;
@@ -839,7 +839,7 @@ public:
             read_var_check_name_and_length(sst, "SST", 30);
             // Grab the stuff
             vector<dods_float32> sst_vals(sst->length());
-            sst->value(&sst_vals[0]);
+            sst->value(sst_vals.data());
             // Check the values against expected result
             dods_float32 sst_expected[] = { 13.43333, 12.61500, 15.27133, 13.46167, 15.03625, -1e+34, 27.77918,
                 28.75823, 26.95918, -1e+34, -1e+34, 28.91667, 26.78999, 23.47861, 25.63762, 11.00667, 10.79999,

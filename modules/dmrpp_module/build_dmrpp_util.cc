@@ -406,7 +406,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                 // Get chunking information: rank and dimensions
                 vector<hsize_t> chunk_dims(dataset_rank);
-                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, &chunk_dims[0]);
+                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, chunk_dims.data());
                 if (chunk_rank != dataset_rank)
                     throw BESNotFoundError(
                             "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
@@ -419,7 +419,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                     haddr_t addr = 0;
                     hsize_t size = 0;
 
-                    status = H5Dget_chunk_info(dataset, fspace_id, i, &chunk_coords[0],
+                    status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
                                                nullptr, &addr, &size);
                     if (status < 0) {
                         VERBOSE(cerr << "ERROR" << endl);
@@ -468,9 +468,9 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         case dods_int64_c:
                         case dods_uint64_c: {
                             values.resize(memRequired);
-                            get_data(dataset, reinterpret_cast<void *>(&values[0]));
+                            get_data(dataset, reinterpret_cast<void *>(values.data()));
                             btp->set_read_p(true);
-                            btp->val2buf(reinterpret_cast<void *>(&values[0]));
+                            btp->val2buf(reinterpret_cast<void *>(values.data()));
                             break;
 
                         }
@@ -493,7 +493,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 // jhrg 9/17/20
                                 assert(btp->length() == 1);
                                 values.resize(memRequired);
-                                get_data(dataset, reinterpret_cast<void *>(&values[0]));
+                                get_data(dataset, reinterpret_cast<void *>(values.data()));
                                 string str(values.begin(), values.end());
                                 vector<string> strings = {str};
                                 btp->set_value(strings, (int)strings.size());

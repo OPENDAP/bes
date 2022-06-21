@@ -447,7 +447,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 			// throw InternalErr(__FILE__, __LINE__, "VSsetfields");
 		}
 
-		if (VSread(vid, (uchar8 *)&data[0], nrecs, FULL_INTERLACE) < 0) {
+		if (VSread(vid, (uchar8 *)data.data(), nrecs, FULL_INTERLACE) < 0) {
 			throw InternalErr(__FILE__, __LINE__, "VSread error with the field: " + f.name + " (" + long_to_string(vid) + ").");
 		}
 #if 0
@@ -463,7 +463,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		if (nrecs == 0)
 			gv = hdf_genvec(fieldtype, 0, 0, 0, 0);
 		else
-			gv = hdf_genvec(fieldtype, &data[0], i, (nrecs * fieldorder) - 1, stride);
+			gv = hdf_genvec(fieldtype, data.data(), i, (nrecs * fieldorder) - 1, stride);
 		f.vals.push_back(gv);
 	}
 	// delete[] data;

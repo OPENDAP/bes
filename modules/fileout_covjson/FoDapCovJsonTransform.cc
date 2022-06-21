@@ -353,7 +353,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 currAxis->values += "\"values\": [";
                 unsigned int indx = 0;
                 vector<T> src(length);
-                a->value(&src[0]);
+                a->value(src.data());
 
                 ostringstream astrm;
                 bool is_time_axis_for_sgeo = false;
@@ -361,7 +361,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                     is_time_axis_for_sgeo = true;
 
 
-                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0,is_time_axis_for_sgeo,a->var()->type());
+                indx = covjsonSimpleTypeArrayWorker(&astrm, src.data(), 0, &shape, 0,is_time_axis_for_sgeo,a->var()->type());
                 currAxis->values += astrm.str();
 
                 currAxis->values += "]";
@@ -426,10 +426,10 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             currParameter->values += "\"values\": [";
             unsigned int indx = 0;
             vector<T> src(length);
-            a->value(&src[0]);
+            a->value(src.data());
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0,false,a->var()->type());
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, src.data(), 0, &shape, 0,false,a->var()->type());
             currParameter->values += pstrm.str();
 
             currParameter->values += "]";
@@ -488,7 +488,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
                 a->value(sourceValues);
 
                 ostringstream astrm;
-                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0,false,a->var()->type());
+                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (sourceValues.data()), 0, &shape, 0,false,a->var()->type());
                 currAxis->values += astrm.str();
 
                 if (length != indx) {
@@ -548,7 +548,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
             a->value(sourceValues);
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0,false,a->var()->type());
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (sourceValues.data()), 0, &shape, 0,false,a->var()->type());
             currParameter->values += pstrm.str();
 
             if (length != indx) {
@@ -1992,7 +1992,7 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
                 int num_lengths = d_a->length();
                 vector<double>temp_val;
                 temp_val.resize(num_lengths);
-                d_a->value(&temp_val[0]);
+                d_a->value(temp_val.data());
                 
                 av_bnd_val.resize(num_lengths);
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
@@ -2008,7 +2008,7 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
             if(sendData) {
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
-                d_a->value(&av_bnd_val[0]);
+                d_a->value(av_bnd_val.data());
 #if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
@@ -2032,7 +2032,7 @@ cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
             if(sendData) {
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
-                d_a->value(&av_bnd_val[0]);
+                d_a->value(av_bnd_val.data());
 #if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
@@ -2044,7 +2044,7 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
                 int num_lengths = d_a->length();
                 vector<float>temp_val;
                 temp_val.resize(num_lengths);
-                d_a->value(&temp_val[0]);
+                d_a->value(temp_val.data());
                 av_bnd_val.resize(num_lengths);
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
                     av_bnd_val[i] =(double)temp_val[i];

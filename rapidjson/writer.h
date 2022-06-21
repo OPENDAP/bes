@@ -598,9 +598,9 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
     static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
     static const char bslash[16] = { '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\' };
     static const char space[16]  = { 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F };
-    const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&dquote[0]));
-    const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&bslash[0]));
-    const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&space[0]));
+    const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(dquote.data()));
+    const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(bslash.data()));
+    const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(space.data()));
 
     for (; p != endAligned; p += 16) {
         const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));

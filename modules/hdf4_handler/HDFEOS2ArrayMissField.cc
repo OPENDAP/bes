@@ -39,7 +39,7 @@ bool HDFEOS2ArrayMissGeoField::read()
 
     // Obtain offset,step and count from the client expression constraint
     int nelms = -1;
-    nelms = format_constraint(&offset[0], &step[0], &count[0]);
+    nelms = format_constraint(offset.data(), step.data(), count.data());
 
     vector<int> val;
     val.resize(nelms);
@@ -50,7 +50,7 @@ bool HDFEOS2ArrayMissGeoField::read()
     if (nelms == tnumelm) {
         for (int i = 0; i < nelms; i++)
             val[i] = i;
-        set_value((dods_int32 *) &val[0], nelms);
+        set_value((dods_int32 *) val.data(), nelms);
     }
     else {
         if (rank != 1) {
@@ -58,7 +58,7 @@ bool HDFEOS2ArrayMissGeoField::read()
         }
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value((dods_int32 *) &val[0], nelms);
+        set_value((dods_int32 *) val.data(), nelms);
     }
  
     return false;

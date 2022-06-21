@@ -259,7 +259,7 @@ Array *Geo2DArray::GetDAPArray()
     int     nLineSpace
     ) */
     vector<double> data(x * y);
-    rb->RasterIO(GF_Read, 0, 0, x, y, &data[0], x, y, GDT_Float64, 0, 0);
+    rb->RasterIO(GF_Read, 0, 0, x, y, data.data(), x, y, GDT_Float64, 0, 0);
 
     // NB: set_value() copies into new storage
     a->set_value(data, data.size());
@@ -327,7 +327,7 @@ Grid *Geo2DArray::GetDAPGrid()
     }
 
     // load (copy) values
-    lon->set_value(&data[0], lon_size);
+    lon->set_value(data.data(), lon_size);
     // Set the map
     g->add_var_nocopy(lon, maps);
 
@@ -341,7 +341,7 @@ Grid *Geo2DArray::GetDAPGrid()
         data[k] = m_geo_transform_coef[5] * k + m_geo_transform_coef[3];
     }
 
-    lat->set_value(&data[0], lat_size);
+    lat->set_value(data.data(), lat_size);
     g->add_var_nocopy(lat, maps);
 
     DBG(cerr << "GetDAPGrid() - END" << endl);
@@ -670,7 +670,7 @@ CPLErr Geo2DArray::set_gcp_georef(GDALDataset* poVDS)
     }
 #else
     {
-        if(CE_None!=poVDS->SetGCPs(m_gdalGCPs.size(), (GDAL_GCP*)&m_gdalGCPs[0], psTargetSRS))
+        if(CE_None!=poVDS->SetGCPs(m_gdalGCPs.size(), (GDAL_GCP*)m_gdalGCPs.data(), psTargetSRS))
         {
             OGRFree( psTargetSRS );
             throw Error("Failed to set GCPs.");

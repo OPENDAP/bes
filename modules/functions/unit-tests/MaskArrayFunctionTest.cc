@@ -200,7 +200,7 @@ public:
             mask_array_helper<dods_int32>(one_d_array, 0, d_mask);
 
             vector<dods_int32> data(one_d_array->length());
-            one_d_array->value(&data[0]);
+            one_d_array->value(data.data());
             DBG(cerr << "Masked data values: ");
             DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG(cerr << endl);
@@ -222,7 +222,7 @@ public:
             mask_array_helper<dods_int32>(two_d_array, 0, d_mask2);
 
             vector<dods_int32> data(two_d_array->length());
-            two_d_array->value(&data[0]);
+            two_d_array->value(data.data());
             DBG(cerr << "Masked data values: ");
             DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_int32>(std::cerr, " ")));
             DBG(cerr << endl);
@@ -248,7 +248,7 @@ public:
             mask_array_helper<dods_float32>(float_2d_array, 0, d_mask2);
 
             vector<dods_float32> data(float_2d_array->length());
-            float_2d_array->value(&data[0]);
+            float_2d_array->value(data.data());
             DBG(cerr << "Masked data values: ");
             DBG(copy(data.begin(), data.end(), std::ostream_iterator<dods_float32>(std::cerr, " ")));
             DBG(cerr << endl);
@@ -305,7 +305,7 @@ public:
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
         vector<dods_float32> vals(result_array->length());
-        result_array->value(&vals[0]);
+        result_array->value(vals.data());
 
         CPPUNIT_ASSERT(double_eq(vals[4], 0.253823));
         CPPUNIT_ASSERT(double_eq(vals[5], 0.0));
@@ -356,7 +356,7 @@ public:
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
         vector<dods_int32> vals_1(array_1->length());
-        array_1->value(&vals_1[0]);
+        array_1->value(vals_1.data());
 
         CPPUNIT_ASSERT(vals_1[4] == 2);
         CPPUNIT_ASSERT(vals_1[5] == 0);
@@ -369,7 +369,7 @@ public:
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
         vector<dods_float32> vals_2(array_2->length());
-        array_2->value(&vals_2[0]);
+        array_2->value(vals_2.data());
 
         CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
         CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));
@@ -426,7 +426,7 @@ public:
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
         vector<dods_int32> vals_1(array_1->length());
-        array_1->value(&vals_1[0]);
+        array_1->value(vals_1.data());
 
         CPPUNIT_ASSERT(vals_1[4] == 2);
         CPPUNIT_ASSERT(vals_1[5] == 0);
@@ -439,7 +439,7 @@ public:
         DBG(cerr << "Result value: " << endl << oss.str() << endl);
 
         vector<dods_float32> vals_2(array_2->length());
-        array_2->value(&vals_2[0]);
+        array_2->value(vals_2.data());
 
         CPPUNIT_ASSERT(double_eq(vals_2[4], 0.253823));
         CPPUNIT_ASSERT(double_eq(vals_2[5], 0.0));

@@ -565,7 +565,7 @@ public:
         DBG(cerr << "second dep var name: " << dep_vars.at(1)->name() << endl);
 
         vector<dods_uint32> synth(8);
-        dep_vars.at(0)->value(&synth[0]);
+        dep_vars.at(0)->value(synth.data());
 
         CPPUNIT_ASSERT(synth.at(0) == 0);
         CPPUNIT_ASSERT(synth.at(7) == 3);
@@ -587,7 +587,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *result = 0;
         try {
-            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_dds, &result);
+            TabularFunction::function_dap2_tabular(arrays.size(), arrays.data(), *four_var_dds, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -657,7 +657,7 @@ public:
         // call it; the function reads the values of the array
         BaseType *result = 0;
         try {
-            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_2_dds, &result);
+            TabularFunction::function_dap2_tabular(arrays.size(), arrays.data(), *four_var_2_dds, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -725,7 +725,7 @@ public:
 
         BaseType *result = 0;
         try {
-            TabularFunction::function_dap2_tabular(arrays.size(), &arrays[0], *four_var_mixed, &result);
+            TabularFunction::function_dap2_tabular(arrays.size(), arrays.data(), *four_var_mixed, &result);
         }
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());

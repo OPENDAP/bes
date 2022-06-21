@@ -87,11 +87,11 @@ FFStr::read()
             if (!isspace(*(ptr + j))) break;
 
         sLength = i - j + 1;
-		strncpy(&TmpBuf[0], ptr + j, sLength /*i - j + 1 jhrg 4/7/22*/);
+		strncpy(TmpBuf.data(), ptr + j, sLength /*i - j + 1 jhrg 4/7/22*/);
 		TmpBuf[sLength /*i - j + 1 jhrg 4/7/22*/] = '\0';
 
 		// Use set_value() jhrg 8/19/14
-		set_value(&TmpBuf[0]);
+		set_value(TmpBuf.data());
 		set_read_p(true);
 
 		BufPtr += length();

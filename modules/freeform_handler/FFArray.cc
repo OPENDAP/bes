@@ -252,14 +252,14 @@ bool FFArray::read()
     vector<long> start(ndims);
     vector<long> stride(ndims);
     vector<long> edge(ndims);
-    long count = Arr_constraint(&start[0], &stride[0], &edge[0], &dname[0], &has_stride);
+    long count = Arr_constraint(start.data(), stride.data(), edge.data(), dname.data(), &has_stride);
 
     if (!count) {
         throw Error(unknown_error, "Constraint returned an empty dataset.");
     }
 
     string output_format = makeND_output_format(name(), var()->type(), var()->width(),
-            ndims, &start[0], &edge[0], &stride[0], &dname[0]);
+            ndims, start.data(), edge.data(), stride.data(), dname.data());
 
     // For each cardinal-type variable, do the following:
     //     Use ff to read the data
@@ -310,7 +310,7 @@ template<class T>
 bool FFArray::extract_array(const string &ds, const string &if_fmt, const string &o_fmt)
 {
     vector<T> d(length());
-    long bytes = read_ff(ds.c_str(), if_fmt.c_str(), o_fmt.c_str(), (char *) &d[0], width());
+    long bytes = read_ff(ds.c_str(), if_fmt.c_str(), o_fmt.c_str(), (char *) d.data(), width());
 
     BESDEBUG("ff", "FFArray::extract_array: Read " << bytes << " bytes." << endl);
 

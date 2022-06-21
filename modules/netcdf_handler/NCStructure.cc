@@ -170,7 +170,7 @@ void NCStructure::do_structure_read(int ncid, int varid, nc_type datatype,
             case NC_COMPOUND: {
                 if (!has_values) {
                     values.resize(size);
-                    int errstat = nc_get_var(ncid, varid, &values[0] /*&values[0]*/);
+                    int errstat = nc_get_var(ncid, varid, values.data() /*values.data()*/);
                     if (errstat != NC_NOERR)
                         throw Error(errstat, string("Could not get the value for variable '") + name() + string("'"));
                     has_values = true;
@@ -199,13 +199,13 @@ void NCStructure::do_structure_read(int ncid, int varid, nc_type datatype,
                         vector<size_t> edg(field_ndims);
                         vector<ptrdiff_t> step(field_ndims);
                         bool has_stride;
-                        long nels = child_array.format_constraint(&cor[0], &step[0], &edg[0], &has_stride);
+                        long nels = child_array.format_constraint(cor.data(), step.data(), edg.data(), &has_stride);
                         child_array.do_array_read(ncid, varid, field_typeid,
                                 values, has_values, field_offset + values_offset,
-                                nels, &cor[0], &edg[0], &step[0], has_stride);
+                                nels, cor.data(), edg.data(), step.data(), has_stride);
                     }
                     else if (var(field_name)->is_simple_type()) {
-                        var(field_name)->val2buf(&values[0]  + field_offset + values_offset);
+                        var(field_name)->val2buf(values.data()  + field_offset + values_offset);
                     }
                     else {
                         throw InternalErr(__FILE__, __LINE__, "Expecting a netcdf user defined type or an array or a scalar.");

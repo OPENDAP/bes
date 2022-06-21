@@ -47,7 +47,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     step.resize(rank);
 
     // Obtain offset,step and count from the client expression constraint
-    int nelms = format_constraint(&offset[0],&step[0],&count[0]);
+    int nelms = format_constraint(offset.data(),step.data(),count.data());
 
     // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
@@ -161,7 +161,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<int8>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -171,7 +171,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
-            set_value ((dods_byte *) &val[0], nelms);
+            set_value ((dods_byte *) val.data(), nelms);
 #else
 
             vector<int32>newval;
@@ -179,7 +179,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
-            set_value ((dods_int32 *) &newval[0], nelms);
+            set_value ((dods_int32 *) newval.data(), nelms);
 #endif
         }
 
@@ -191,7 +191,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             val.resize(nelms);
 
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -200,7 +200,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_byte *) &val[0], nelms);
+            set_value ((dods_byte *) val.data(), nelms);
         }
             break;
 
@@ -209,7 +209,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<int16>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -218,7 +218,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int16 *) &val[0], nelms);
+            set_value ((dods_int16 *) val.data(), nelms);
         }
             break;
         case DFNT_UINT16:
@@ -226,7 +226,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<uint16>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -235,7 +235,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint16 *) &val[0], nelms);
+            set_value ((dods_uint16 *) val.data(), nelms);
         }
             break;
         case DFNT_INT32:
@@ -243,7 +243,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<int32>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -252,7 +252,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_int32 *) &val[0], nelms);
+            set_value ((dods_int32 *) val.data(), nelms);
         }
             break;
         case DFNT_UINT32:
@@ -260,7 +260,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<uint32>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -269,7 +269,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_uint32 *) &val[0], nelms);
+            set_value ((dods_uint32 *) val.data(), nelms);
         }
             break;
         case DFNT_FLOAT32:
@@ -277,7 +277,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<float32>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -286,7 +286,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            set_value ((dods_float32 *) &val[0], nelms);
+            set_value ((dods_float32 *) val.data(), nelms);
         }
             break;
         case DFNT_FLOAT64:
@@ -294,7 +294,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             vector<float64>val;
             val.resize(nelms);
             r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), 
-                               &offset32[0], &step32[0], &count32[0], &val[0]);
+                               offset32.data(), step32.data(), count32.data(), val.data());
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
@@ -302,7 +302,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            set_value ((dods_float64 *) &val[0], nelms);
+            set_value ((dods_float64 *) val.data(), nelms);
         }
             break;
         default: 

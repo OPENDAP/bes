@@ -1206,7 +1206,7 @@ void TwoDMeshTopology::getResultGFAttributeValues(string attrName, libdap::Type 
 
         BESDEBUG("ugrid",
             "TwoDMeshTopology::getResultGFAttributeValues() - Copying GF result to target memory" << endl);
-        memcpy(target, &GF_ints[0], GF_ints.size() * sizeof(dods_int32));
+        memcpy(target, GF_ints.data(), GF_ints.size() * sizeof(dods_int32));
         break;
     }
     case dods_float32_c:
@@ -1224,7 +1224,7 @@ void TwoDMeshTopology::getResultGFAttributeValues(string attrName, libdap::Type 
 #endif
         BESDEBUG("ugrid",
             "TwoDMeshTopology::getResultGFAttributeValues() - Copying GF result to target memory" << endl);
-        memcpy(target, &GF_floats[0], GF_floats.size() * sizeof(dods_float64));
+        memcpy(target, GF_floats.data(), GF_floats.size() * sizeof(dods_float64));
         break;
 
     }

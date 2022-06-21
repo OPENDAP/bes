@@ -765,11 +765,11 @@ void BESDapResponseBuilder::serialize_dap2_data_ddx(ostream &out, DDS **dds, Con
     uuid_t uu;
     uuid_generate(uu);
     char uuid[37];
-    uuid_unparse(uu, &uuid[0]);
+    uuid_unparse(uu, uuid.data());
     char domain[256];
     if (getdomainname(domain, 255) != 0 || strlen(domain) == 0) strncpy(domain, "opendap.org", 255);
 
-    string cid = string(&uuid[0]) + "@" + string(&domain[0]);
+    string cid = string(uuid.data()) + "@" + string(domain.data());
 
     // Send constrained DDX with a data blob reference.
     // Note: CID passed but ignored jhrg 10/20/15

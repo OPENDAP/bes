@@ -1292,13 +1292,13 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
             switch(a->var()->type()) {
             case dods_byte_c: {
                 vector<dods_byte> v(a->length());
-                a->value(&v[0]);
+                a->value(v.data());
                 static_cast<Array*>(*d)->set_value(v, v.size());
                 break;
             }
             case dods_float32_c: {
                 vector<dods_float32> v(a->length());
-                a->value(&v[0]);
+                a->value(v.data());
                 static_cast<Array*>(*d)->set_value(v, a->length());
                 break;
             }

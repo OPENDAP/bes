@@ -45,7 +45,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
     step.resize(rank);
 
     // Obtain offset,step and count from the client expression constraint
-    int  nelms = format_constraint (&offset[0], &step[0], &count[0]);
+    int  nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // Just declare offset,count and step in the int32 type.
     vector<int32>offset32;
@@ -144,7 +144,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
     int32 type =-1;
     intn r = -1;
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, &tmp_dims[0], &type, tmp_dimlist);
+        &tmp_rank, tmp_dims.data(), &type, tmp_dimlist);
     if (r != 0) {
         detachfunc (swathid);
         HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -163,7 +163,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
             if(true == no_interpolation) {
                 vector<int8>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -172,14 +172,14 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 #ifndef SIGNED_BYTE_TO_INT32
-                set_value ((dods_byte *) &val[0], nelms);
+                set_value ((dods_byte *) val.data(), nelms);
 #else
                 vector<int32>newval;
                 newval.resize(nelms);
 
                 for (int counter = 0; counter < nelms; counter++)
                     newval[counter] = (int32) (val[counter]);
-                set_value ((dods_int32 *) &newval[0], nelms);
+                set_value ((dods_int32 *) newval.data(), nelms);
 #endif
             }
             else {
@@ -198,18 +198,18 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<int8>val8;
                 val8.resize(nelms);
-                Field2DSubset (&val8[0], newdims[0], newdims[1],&total_val8[0], 
-                                 &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val8.data(), newdims[0], newdims[1],total_val8.data(),
+                                 offset32.data(), count32.data(), step32.data());
 
 #ifndef SIGNED_BYTE_TO_INT32
-                set_value ((dods_byte *) &val8[0], nelms);
+                set_value ((dods_byte *) val8.data(), nelms);
 #else
                 vector<int32>newval;
                 newval.resize(nelms);
 
                 for (int counter = 0; counter < nelms; counter++)
                     newval[counter] = (int32) (val8[counter]);
-                set_value ((dods_int32 *) &newval[0], nelms);
+                set_value ((dods_int32 *) newval.data(), nelms);
 #endif
             }
         }
@@ -231,16 +231,16 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<uint8>val_uint8;
                 val_uint8.resize(nelms);
-                Field2DSubset (&val_uint8[0], newdims[0], newdims[1],&total_val_uint8[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_uint8.data(), newdims[0], newdims[1],total_val_uint8.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_byte *) &val_uint8[0], nelms);
+                set_value ((dods_byte *) val_uint8.data(), nelms);
             }
             else {
  
                 vector<uint8>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -249,7 +249,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                set_value ((dods_byte *) &val[0], nelms);
+                set_value ((dods_byte *) val.data(), nelms);
             }
         }
             break;
@@ -270,16 +270,16 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<int16>val_int16;
                 val_int16.resize(nelms);
-                Field2DSubset (&val_int16[0], newdims[0], newdims[1],&total_val_int16[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_int16.data(), newdims[0], newdims[1],total_val_int16.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_int16 *) &val_int16[0], nelms);
+                set_value ((dods_int16 *) val_int16.data(), nelms);
             }
 
             else {
                 vector<int16>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -287,7 +287,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
-                set_value ((dods_int16 *) &val[0], nelms);
+                set_value ((dods_int16 *) val.data(), nelms);
             }
         }
             break;
@@ -308,16 +308,16 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<uint16>val_uint16;
                 val_uint16.resize(nelms);
-                Field2DSubset (&val_uint16[0], newdims[0], newdims[1],&total_val_uint16[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_uint16.data(), newdims[0], newdims[1],total_val_uint16.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_uint16 *) &val_uint16[0], nelms);
+                set_value ((dods_uint16 *) val_uint16.data(), nelms);
             }
 
             else {
                 vector<uint16>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -326,7 +326,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                set_value ((dods_uint16 *) &val[0], nelms);
+                set_value ((dods_uint16 *) val.data(), nelms);
             }
         }
             break;
@@ -347,15 +347,15 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<int32>val_int32;
                 val_int32.resize(nelms);
-                Field2DSubset (&val_int32[0], newdims[0], newdims[1],&total_val_int32[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_int32.data(), newdims[0], newdims[1],total_val_int32.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_int32 *) &val_int32[0], nelms);
+                set_value ((dods_int32 *) val_int32.data(), nelms);
             }
             else {
                 vector<int32>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -364,7 +364,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                set_value ((dods_int32 *) &val[0], nelms);
+                set_value ((dods_int32 *) val.data(), nelms);
             }
         }
             break;
@@ -385,15 +385,15 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<uint32>val_uint32;
                 val_uint32.resize(nelms);
-                Field2DSubset (&val_uint32[0], newdims[0], newdims[1],&total_val_uint32[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_uint32.data(), newdims[0], newdims[1],total_val_uint32.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_uint32 *) &val_uint32[0], nelms);
+                set_value ((dods_uint32 *) val_uint32.data(), nelms);
             }
             else {
                 vector<uint32>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -402,7 +402,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                set_value ((dods_uint32 *) &val[0], nelms);
+                set_value ((dods_uint32 *) val.data(), nelms);
             }
         }
             break;
@@ -422,15 +422,15 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<float32>val_f32;
                 val_f32.resize(nelms);
-                Field2DSubset (&val_f32[0], newdims[0], newdims[1],&total_val_f32[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_f32.data(), newdims[0], newdims[1],total_val_f32.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_float32 *) &val_f32[0], nelms);
+                set_value ((dods_float32 *) val_f32.data(), nelms);
             }
             else {
                 vector<float32>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -438,7 +438,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     eherr << "field " << fieldname.c_str () << "cannot be read.";
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
-                set_value ((dods_float32 *) &val[0], nelms);
+                set_value ((dods_float32 *) val.data(), nelms);
             }
         }
             break;
@@ -458,15 +458,15 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                 }
                 vector<float64>val_f64;
                 val_f64.resize(nelms);
-                Field2DSubset (&val_f64[0], newdims[0], newdims[1],&total_val_f64[0], 
-                             &offset32[0], &count32[0], &step32[0]);
+                Field2DSubset (val_f64.data(), newdims[0], newdims[1],total_val_f64.data(),
+                             offset32.data(), count32.data(), step32.data());
 
-                set_value ((dods_float64 *) &val_f64[0], nelms);
+                set_value ((dods_float64 *) val_f64.data(), nelms);
             }
             else {
                 vector<float64>val;
                 val.resize(nelms);
-                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), &offset32[0], &step32[0], &count32[0], &val[0]);
+                r = readfieldfunc (swathid, const_cast < char *>(fieldname.c_str ()), offset32.data(), step32.data(), count32.data(), val.data());
                 if (r != 0) {
                     detachfunc (swathid);
                     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
@@ -475,7 +475,7 @@ cerr<<"datadim1inc "<<dim1inc <<endl;
                     throw InternalErr (__FILE__, __LINE__, eherr.str ());
                 }
 
-                set_value ((dods_float64 *) &val[0], nelms);
+                set_value ((dods_float64 *) val.data(), nelms);
             }
         }
             break;
@@ -629,7 +629,7 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     vals.resize (size);
 
     ret = SWreadfield (swathid, const_cast < char *>(geofieldname.c_str ()),
-                       NULL, NULL, NULL, (void *) &vals[0]);
+                       NULL, NULL, NULL, (void *) vals.data());
     if (ret != 0)
         return -1;
 

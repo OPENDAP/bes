@@ -62,7 +62,7 @@ HDFEOS2CFStrField::read ()
         // Note that one dimensional character array is one string,
         // so the rank for character arrays should be rank from string+1 
         // Obtain offset,step and count from the client expression constraint
-        nelms = format_constraint (&offset[0], &step[0], &count[0]);
+        nelms = format_constraint (offset.data(), step.data(), count.data());
 
         // Assign the offset32,count32 and step32 up to the dimension rank-1.
         // Will assign the dimension rank later.
@@ -151,7 +151,7 @@ HDFEOS2CFStrField::read ()
     val.resize(nelms*count32[rank]);
 
     r = readfieldfunc(gsid,const_cast<char*>(varname.c_str()),
-                       &offset32[0], &step32[0], &count32[0], &val[0]);
+                       offset32.data(), step32.data(), count32.data(), val.data());
 
     if (r != 0) {
         detachfunc(gsid);
@@ -170,11 +170,11 @@ HDFEOS2CFStrField::read ()
     // The array values of the last dimension should be saved as the
     // string.
     for (int i = 0; i<nelms;i++) { 
-        strncpy(&temp_buf[0],&val[0]+last_dim_size*i,last_dim_size);
+        strncpy(temp_buf.data(),val.data()+last_dim_size*i,last_dim_size);
         temp_buf[last_dim_size]='\0';
-        final_val[i] = &temp_buf[0];
+        final_val[i] = temp_buf.data();
     } 
-    set_value(&final_val[0],nelms);
+    set_value(final_val.data(),nelms);
 
     detachfunc(gsid);
     if(false == check_pass_fileid_key)

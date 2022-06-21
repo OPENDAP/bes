@@ -113,7 +113,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
          offset.resize(rank);
          count.resize(rank);
          step.resize(rank);
-         nelms = format_constraint (&offset[0], &step[0], &count[0]);
+         nelms = format_constraint (offset.data(), step.data(), count.data());
     }
 
     if (nelms <= 0) 
@@ -238,7 +238,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                           "Cannot seek the cached file offset.");
 
             }
-            ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)&var_value[0],var_value.size()*sizeof(double));
+            ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)var_value.data(),var_value.size()*sizeof(double));
             ll_cache->unlock_and_close(cache_fname);
 
             // If the cached file is not read correctly, we should purge the file.
@@ -249,20 +249,20 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             else {
                 // short-cut, no need to do subset.
                 if(total_elms == nelms)
-                    set_value((dods_float64 *)&var_value[0],total_elms);
+                    set_value((dods_float64 *)var_value.data(),total_elms);
                 else {
                     vector<double>val;
                     subset<double>(
-                           &var_value[0],
+                           var_value.data(),
                            rank,
                            dimsizes,
-                           &offset[0],
-                           &step[0],
-                           &count[0],
+                           offset.data(),
+                           step.data(),
+                           count.data(),
                            &val,
                            pos,
                            0);
-                    set_value((dods_float64 *)&val[0],nelms);              
+                    set_value((dods_float64 *)val.data(),nelms);
                 }
                 return;
             }
@@ -272,8 +272,8 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     }
     
     // Calculate Lat/lon by using GCTP
-    r = GDij2ll (eos5_projcode, eos5_zone, &eos5_params[0], eos5_sphere, xdimsize, ydimsize, upleft, lowright,
-                 xdimsize * ydimsize, &rows[0], &cols[0], &lon[0], &lat[0], eos5_pixelreg, eos5_origin);
+    r = GDij2ll (eos5_projcode, eos5_zone, eos5_params.data(), eos5_sphere, xdimsize, ydimsize, upleft, lowright,
+                 xdimsize * ydimsize, rows.data(), cols.data(), lon.data(), lat.data(), eos5_pixelreg, eos5_origin);
     if (r != 0) {
         ostringstream eherr;
         eherr << "cannot calculate grid latitude and longitude";
@@ -319,40 +319,40 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     
     if(CV_LON_MISS == cvartype) {
         if(total_elms == nelms)
-            set_value((dods_float64 *)&lon[0],total_elms);
+            set_value((dods_float64 *)lon.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
-                           &lon[0],
+                           lon.data(),
                            rank,
                            dimsizes,
-                           &offset[0],
-                           &step[0],
-                           &count[0],
+                           offset.data(),
+                           step.data(),
+                           count.data(),
                            &val,
                            pos,
                            0);
-            set_value((dods_float64 *)&val[0],nelms);              
+            set_value((dods_float64 *)val.data(),nelms);
         }
        
     }
     else if(CV_LAT_MISS == cvartype) {
 
         if(total_elms == nelms)
-            set_value((dods_float64 *)&lat[0],total_elms);
+            set_value((dods_float64 *)lat.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
-                           &lat[0],
+                           lat.data(),
                            rank,
                            dimsizes,
-                           &offset[0],
-                           &step[0],
-                           &count[0],
+                           offset.data(),
+                           step.data(),
+                           count.data(),
                            &val,
                            pos,
                            0);
-            set_value((dods_float64 *)&val[0],nelms);              
+            set_value((dods_float64 *)val.data(),nelms);
         }
     }
     return;
@@ -442,7 +442,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
          offset.resize(rank);
          count.resize(rank);
          step.resize(rank);
-         nelms = format_constraint (&offset[0], &step[0], &count[0]);
+         nelms = format_constraint (offset.data(), step.data(), count.data());
     }
 
     if (nelms <= 0) 
@@ -488,7 +488,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
                 for (int total_i = 0; total_i < ydimsize; total_i++)
 		    total_val[total_i] = ((total_i + 0.5F) * lat_step + start) / 1000000.0F;
                 // Note: the float is size 4 
-                memcpy(buf,&total_val[0],4*ydimsize);
+                memcpy(buf,total_val.data(),4*ydimsize);
             }
 
 	}
@@ -503,7 +503,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
                 for (int total_i = 0; total_i < ydimsize; total_i++)
 		    total_val[total_i] = ((float)(total_i) * lat_step + start) / 1000000.0F;
                 // Note: the float is size 4 
-                memcpy(buf,&total_val[0],4*ydimsize);
+                memcpy(buf,total_val.data(),4*ydimsize);
             }
 
 	}
@@ -539,7 +539,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
                 for (int total_i = 0; total_i < xdimsize; total_i++)
 		    total_val[total_i] = ((total_i+0.5F) * lon_step + start) / 1000000.0F;
                 // Note: the float is size 4 
-                memcpy(buf,&total_val[0],4*xdimsize);
+                memcpy(buf,total_val.data(),4*xdimsize);
             }
 
 	}
@@ -554,7 +554,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
                 for (int total_i = 0; total_i < xdimsize; total_i++)
 		    total_val[total_i] = ((float)(total_i) * lon_step + start) / 1000000.0F;
                 // Note: the float is size 4 
-                memcpy(buf,&total_val[0],4*xdimsize);
+                memcpy(buf,total_val.data(),4*xdimsize);
             }
 	}
     }
@@ -564,7 +564,7 @@ for (int i =0; i <nelms; i++)
 "h5","final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
-    set_value ((dods_float32 *) &val[0], nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
     
  
     return;

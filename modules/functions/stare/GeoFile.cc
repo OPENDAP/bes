@@ -148,7 +148,7 @@ GeoFile::get_stare_indices(const std::string &variable_name, vector<unsigned lon
             BESDEBUG(MODULE, "found" << endl);
 
             values.resize(d_size_i[v] * d_size_j[v]);
-            int status = nc_get_var(d_ncid, d_stare_varid[v], &values[0]);
+            int status = nc_get_var(d_ncid, d_stare_varid[v], values.data());
             if (status != NC_NOERR)
                 throw BESInternalError("Could not get STARE indices from the sidecar file "
                                    + sanitize_pathname(sidecar_filename(d_data_file_name))

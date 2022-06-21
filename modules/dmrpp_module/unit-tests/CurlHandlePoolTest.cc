@@ -245,7 +245,7 @@ public:
         // Start the max number of processing pipelines
         //pthread_t threads[chp->get_max_handles()];
         vector<pthread_t> threads(chp->get_max_handles());
-        memset(&threads[0], 0, sizeof(pthread_t) * chp->get_max_handles());
+        memset(threads.data(), 0, sizeof(pthread_t) * chp->get_max_handles());
 
         try {
             unsigned int num_threads = 0;
@@ -325,7 +325,7 @@ public:
         catch (...) {
             // cancel all the threads, otherwise we'll have threads out there using up resources
             // defined in DmrppCommon.cc
-            join_threads(&threads[0], chp->get_max_handles());
+            join_threads(threads.data(), chp->get_max_handles());
             // close the pipe used to communicate with the child threads
             close(fds[0]);
             close(fds[1]);

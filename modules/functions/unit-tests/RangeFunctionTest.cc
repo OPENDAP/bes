@@ -168,7 +168,7 @@ public:
 
         vector<dods_float64> lat_buf(y_size);
         Array *lat = dynamic_cast<Array*>(small_float64_dds->var("lat"));
-        lat->value(&lat_buf[0]);
+        lat->value(lat_buf.data());
         DBG(cerr << "lat: ");
         DBG(copy(lat_buf.begin(), lat_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -178,7 +178,7 @@ public:
 
         vector<dods_float64> lon_buf(x_size);
         Array *lon = dynamic_cast<Array*>(small_float64_dds->var("lon"));
-        lon->value(&lon_buf[0]);
+        lon->value(lon_buf.data());
         DBG(cerr << "lon: ");
         DBG(copy(lon_buf.begin(), lon_buf.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -189,7 +189,7 @@ public:
         Array *d = dynamic_cast<Array*>(small_float64_dds->var("data"));
         const int data_size = x_size * y_size;
         vector<dods_float64> data(data_size);
-        d->value(&data[0]);
+        d->value(data.data());
         DBG(cerr << "data: ");
         DBG(copy(data.begin(), data.end(), ostream_iterator<double>(cerr, " ")));
         DBG(cerr << endl);
@@ -226,7 +226,7 @@ public:
         vector<double> data;
         data.push_back(-100);
 
-        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        min_max_t v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -100);
         CPPUNIT_ASSERT(v.max_val == -100);
@@ -234,7 +234,7 @@ public:
 
         data.push_back(100);
 
-        v = find_min_max(&data[0], data.size(), false, 0);
+        v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -100);
         CPPUNIT_ASSERT(v.max_val == 100);
@@ -257,13 +257,13 @@ public:
         data.push_back(101);
         data.push_back(-9999);
 
-        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        min_max_t v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -9999);
         CPPUNIT_ASSERT(v.max_val == 101);
         CPPUNIT_ASSERT(v.monotonic == false);
 
-        v = find_min_max(&data[0], data.size(), true, -9999);
+        v = find_min_max(data.data(), data.size(), true, -9999);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == -101);
         CPPUNIT_ASSERT(v.max_val == 101);
@@ -280,7 +280,7 @@ public:
         data.push_back(100);
 
         // One value
-        min_max_t v = find_min_max(&data[0], data.size(), false, 0);
+        min_max_t v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  100);
         CPPUNIT_ASSERT(v.max_val == 100);
@@ -289,7 +289,7 @@ public:
         data.push_back(10);
 
         // Two value
-        v = find_min_max(&data[0], data.size(), false, 0);
+        v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  10);
         CPPUNIT_ASSERT(v.max_val == 100);
@@ -301,7 +301,7 @@ public:
         data.push_back(50);
 
         // Third value directtion change
-        v = find_min_max(&data[0], data.size(), false, 0);
+        v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  10);
         CPPUNIT_ASSERT(v.max_val == 100);
@@ -311,14 +311,14 @@ public:
         // Last value direction change.
         data[0] = 1;
         data.push_back(-9999);
-        v = find_min_max(&data[0], data.size(), false, 0);
+        v = find_min_max(data.data(), data.size(), false, 0);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val ==  -9999);
         CPPUNIT_ASSERT(v.max_val == 50);
         CPPUNIT_ASSERT(v.monotonic == false);
 
 
-        v = find_min_max(&data[0], data.size(), true, -9999);
+        v = find_min_max(data.data(), data.size(), true, -9999);
         DBG(cerr << "v: " << v << endl);
         CPPUNIT_ASSERT(v.min_val == 1);
         CPPUNIT_ASSERT(v.max_val == 50);

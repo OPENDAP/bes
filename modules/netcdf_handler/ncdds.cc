@@ -275,11 +275,11 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
 
         case NC_OPAQUE: {
             vector<char> name(NC_MAX_NAME+1);
-            status = nc_inq_varname(ncid, varid, &name[0]);
+            status = nc_inq_varname(ncid, varid, name.data());
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
 
-            NCArray *opaque = new NCArray(&name[0], dataset, new NCByte(&name[0], dataset));
+            NCArray *opaque = new NCArray(name.data(), dataset, new NCByte(name.data(), dataset));
 
             if (ndims > 0) {
                 for (int i = 0; i < ndims; ++i) {
@@ -288,7 +288,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                     int errstat = nc_inq_dim(ncid, dim_ids[i], dimname, &dim_sz);
                     if (errstat != NC_NOERR) {
                         delete opaque;
-                        throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
+                        throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + name.data());
                     }
                     opaque->append_dim(dim_sz, dimname);
                 }
@@ -301,21 +301,21 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
         case NC_ENUM: {
             nc_type base_nc_type;
             size_t base_size;
-            status = nc_inq_enum(ncid, xtype, 0 /*&name[0]*/, &base_nc_type, &base_size, 0/*&num_members*/);
+            status = nc_inq_enum(ncid, xtype, 0 /*name.data()*/, &base_nc_type, &base_size, 0/*&num_members*/);
             if (status != NC_NOERR)
                 throw(InternalErr(__FILE__, __LINE__, "Could not get information about an enum(" + long_to_string(status) + ")."));
 
             // get the name here - we want the var name and not the type name
             vector<char> name(MAX_NC_NAME + 1);
-            status = nc_inq_varname(ncid, varid, &name[0]);
+            status = nc_inq_varname(ncid, varid, name.data());
             if (status != NC_NOERR)
                 throw InternalErr(__FILE__, __LINE__, "Could not get name of an opaque (" + long_to_string(status) + ").");
 
 
-            BaseType *enum_var = build_scalar(&name[0], dataset, base_nc_type);
+            BaseType *enum_var = build_scalar(name.data(), dataset, base_nc_type);
 
             if (ndims > 0) {
-                NCArray *ar = new NCArray(&name[0], dataset, enum_var);
+                NCArray *ar = new NCArray(name.data(), dataset, enum_var);
 
                 for (int i = 0; i < ndims; ++i) {
                     char dimname[NC_MAX_NAME + 1];
@@ -323,7 +323,7 @@ static BaseType *build_user_defined(int ncid, int varid, nc_type xtype, const st
                     int errstat = nc_inq_dim(ncid, dim_ids[i], dimname, &dim_sz);
                     if (errstat != NC_NOERR) {
                         delete ar;
-                        throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + &name[0]);
+                        throw InternalErr(__FILE__, __LINE__, string("Failed to read dimension information for the compound variable ") + name.data());
                     }
                     ar->append_dim(dim_sz, dimname);
                 }

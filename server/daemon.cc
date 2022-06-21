@@ -794,7 +794,7 @@ static void set_group_id()
         struct group in;
         struct group *result = nullptr;
         vector<char> buffer(1024);
-        int rc = getgrnam_r(group_str.c_str(), &in, &buffer[0], buffer.size(), &result);
+        int rc = getgrnam_r(group_str.c_str(), &in, buffer.data(), buffer.size(), &result);
         if (rc != 0 || result == nullptr) {
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = string( "FAILED: Group ") + group_str + " does not exist (" + strerror(errno) + ").";
@@ -876,7 +876,7 @@ static void set_user_id()
         struct passwd in;
         struct passwd *result = nullptr;
         vector<char> buffer(1024);
-        int rc = getpwnam_r(user_str.c_str(), &in, &buffer[0], buffer.size(), &result);
+        int rc = getpwnam_r(user_str.c_str(), &in, buffer.data(), buffer.size(), &result);
         if (rc != 0 || result == nullptr) {
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Bad user name specified: " + user_str + "(" + strerror(errno) + ").";
@@ -900,7 +900,7 @@ static void set_user_id()
     //int set_sups(const int target_sups_size, const gid_t* const target_sups_list)
     vector<gid_t> groups(1);
     groups.at(0) = getegid();
-    if (set_sups(groups.size(), &groups[0]) == -1) {
+    if (set_sups(groups.size(), groups.data()) == -1) {
         BESDEBUG("server", "beslistener: FAILED" << endl);
         ostringstream err;
         err << "FAILED: Unable to relinquish supplementary groups (" << new_id << ")";

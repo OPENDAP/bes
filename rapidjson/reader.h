@@ -297,7 +297,7 @@ inline const char *SkipWhitespace_SIMD(const char* p) {
 
     // The rest of string using SIMD
     static const char whitespace[16] = " \n\r\t";
-    const __m128i w = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespace[0]));
+    const __m128i w = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespace.data()));
 
     for (;; p += 16) {
         const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));
@@ -316,7 +316,7 @@ inline const char *SkipWhitespace_SIMD(const char* p, const char* end) {
 
     // The middle of string using SIMD
     static const char whitespace[16] = " \n\r\t";
-    const __m128i w = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespace[0]));
+    const __m128i w = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespace.data()));
 
     for (; p <= end - 16; p += 16) {
         const __m128i s = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
@@ -351,10 +351,10 @@ inline const char *SkipWhitespace_SIMD(const char* p) {
     static const char whitespaces[4][16] = { C16(' '), C16('\n'), C16('\r'), C16('\t') };
     #undef C16
 
-    const __m128i w0 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[0][0]));
-    const __m128i w1 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[1][0]));
-    const __m128i w2 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[2][0]));
-    const __m128i w3 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[3][0]));
+    const __m128i w0 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[0].data()));
+    const __m128i w1 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[1].data()));
+    const __m128i w2 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[2].data()));
+    const __m128i w3 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[3].data()));
 
     for (;; p += 16) {
         const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));
@@ -387,10 +387,10 @@ inline const char *SkipWhitespace_SIMD(const char* p, const char* end) {
     static const char whitespaces[4][16] = { C16(' '), C16('\n'), C16('\r'), C16('\t') };
     #undef C16
 
-    const __m128i w0 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[0][0]));
-    const __m128i w1 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[1][0]));
-    const __m128i w2 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[2][0]));
-    const __m128i w3 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&whitespaces[3][0]));
+    const __m128i w0 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[0].data()));
+    const __m128i w1 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[1].data()));
+    const __m128i w2 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[2].data()));
+    const __m128i w3 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(whitespaces[3].data()));
 
     for (; p <= end - 16; p += 16) {
         const __m128i s = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
@@ -1083,9 +1083,9 @@ private:
         static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
         static const char bslash[16] = { '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\' };
         static const char space[16]  = { 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F };
-        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&dquote[0]));
-        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&bslash[0]));
-        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&space[0]));
+        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(dquote.data()));
+        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(bslash.data()));
+        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(space.data()));
 
         for (;; p += 16) {
             const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));
@@ -1146,9 +1146,9 @@ private:
         static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
         static const char bslash[16] = { '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\' };
         static const char space[16] = { 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F };
-        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&dquote[0]));
-        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&bslash[0]));
-        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&space[0]));
+        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(dquote.data()));
+        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(bslash.data()));
+        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(space.data()));
 
         for (;; p += 16, q += 16) {
             const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));
@@ -1194,9 +1194,9 @@ private:
         static const char dquote[16] = { '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"', '\"' };
         static const char bslash[16] = { '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\', '\\' };
         static const char space[16] = { 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F };
-        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&dquote[0]));
-        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&bslash[0]));
-        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&space[0]));
+        const __m128i dq = _mm_loadu_si128(reinterpret_cast<const __m128i *>(dquote.data()));
+        const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(bslash.data()));
+        const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(space.data()));
 
         for (;; p += 16) {
             const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));

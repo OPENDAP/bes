@@ -3059,7 +3059,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
         // and call Vlone again to retrieve the reference numbers into 
         // the buffer ref_array.
       
-        num_of_lones = Vlone (file_id, &ref_array[0], num_of_lones);
+        num_of_lones = Vlone (file_id, ref_array.data(), num_of_lones);
 
         // Loop the name and class of each lone vgroup.
         for (int lone_vg_number = 0; lone_vg_number < num_of_lones; 
@@ -3086,7 +3086,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
  
             vector<char> vgroup_name;
             vgroup_name.resize(name_len+1);
-            status_32 = Vgetname (vgroup_id, &vgroup_name[0]);
+            status_32 = Vgetname (vgroup_id, vgroup_name.data());
             if(status_32 == FAIL) {
                 unexpected_fail = true;
                 Vdetach(vgroup_id);
@@ -3104,7 +3104,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
            
             vector<char>vgroup_class;
             vgroup_class.resize(name_len+1);
-            status_32 = Vgetclass (vgroup_id, &vgroup_class[0]);
+            status_32 = Vgetclass (vgroup_id, vgroup_class.data());
             if(status_32 == FAIL) {
                 unexpected_fail = true;
                 Vdetach(vgroup_id);
@@ -3171,7 +3171,7 @@ void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_i
             }
             vector<char> attr_vgroup_name; 
             attr_vgroup_name.resize(name_len+1);
-            status_32 = Vgetname (object_attr_vgroup, &attr_vgroup_name[0]);
+            status_32 = Vgetname (object_attr_vgroup, attr_vgroup_name.data());
             if(status_32 == FAIL) {
                 Vdetach(object_attr_vgroup);
                 throw InternalErr(__FILE__,__LINE__,"Failed to obtain an EOS2 vgroup name. ");
@@ -3271,7 +3271,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
                 vector<char> vdata_value;
                 vdata_value.resize(fieldsize);
-                if(VSread(vdata_id,(uint8*)&vdata_value[0],1,FULL_INTERLACE) == FAIL) {
+                if(VSread(vdata_id,(uint8*)vdata_value.data(),1,FULL_INTERLACE) == FAIL) {
                     VSdetach(vdata_id);
                     throw InternalErr(__FILE__,__LINE__,"EOS2 object vdata: VSread failed.");
                 }
@@ -3284,7 +3284,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                     at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
                 }
                 else {
-                    string print_rep = HDFCFUtil::print_attr(fieldtype, 0, (void*) &vdata_value[0]);
+                    string print_rep = HDFCFUtil::print_attr(fieldtype, 0, (void*) vdata_value.data());
                     at->append_attr(vdataname_cfstr, HDFCFUtil::print_type(fieldtype), print_rep);
                 }
             
@@ -3353,7 +3353,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
      
      vector<string> ind_elems;
      char sep='\n';
-     HDFCFUtil::Split(&value[0],sep,ind_elems);
+     HDFCFUtil::Split(value.data(),sep,ind_elems);
      // The number of elements in the GridHeader is 9. 
      //The string vector will add a leftover. So the size should be 10.
      // For the  MacOS clang compiler, the string vector size may become 11.
@@ -3582,14 +3582,14 @@ string HDFCFUtil::get_double_str(double x,int total_digit,int after_point) {
            res[i] = '\0';
         if (x<0) { 
            str.push_back('-');
-           dtoa(-x,&res[0],after_point);
+           dtoa(-x,res.data(),after_point);
            for(int i = 0; i<total_digit;i++) {
                if(res[i] != '\0')
                   str.push_back(res[i]);
            }
         }
         else {
-           dtoa(x, &res[0], after_point);
+           dtoa(x, res.data(), after_point);
            for(int i = 0; i<total_digit;i++) {
                if(res[i] != '\0')
                   str.push_back(res[i]);
@@ -3623,8 +3623,8 @@ string HDFCFUtil::get_int_str(int x) {
          num_digit++;
       vector<char> buf;
       buf.resize(num_digit);
-      snprintf(&buf[0],num_digit,"%d",x);
-      str.assign(&buf[0]);
+      snprintf(buf.data(),num_digit,"%d",x);
+      str.assign(buf.data());
 
    }      
 
@@ -3635,7 +3635,7 @@ string HDFCFUtil::get_int_str(int x) {
 ssize_t HDFCFUtil::read_vector_from_file(int fd, vector<double> &val, size_t dtypesize) {
 
     ssize_t ret_val;
-    ret_val = read(fd,&val[0],val.size()*dtypesize);
+    ret_val = read(fd,val.data(),val.size()*dtypesize);
     
     return ret_val;
 }
@@ -3735,7 +3735,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
     // The buffer to hold information to write to a DDS cache file.
     vector<char>temp_buf;
     temp_buf.resize(total_bytes_dds_cache);
-    char* temp_pointer = &temp_buf[0];
+    char* temp_pointer = temp_buf.data();
 
     const vector<HDFSP::SDField *>& spsds = spf->getSD()->getFields();
 
@@ -3765,7 +3765,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         memcpy((void*)temp_pointer,(void*)&sds_ftype,sizeof(int));
         temp_pointer +=sizeof(int);
         
-        memcpy((void*)temp_pointer,(void*)&dimsizes[0],sds_rank*sizeof(int));
+        memcpy((void*)temp_pointer,(void*)dimsizes.data(),sds_rank*sizeof(int));
         temp_pointer +=sds_rank*sizeof(int);
         
         // total written bytes so far
@@ -3775,7 +3775,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         // we need to a delimiter to distinguish each name.
         string temp_varname = fd->getName();
         vector<char>temp_val1(temp_varname.begin(),temp_varname.end());
-        memcpy((void*)temp_pointer,(void*)&temp_val1[0],temp_varname.size());
+        memcpy((void*)temp_pointer,(void*)temp_val1.data(),temp_varname.size());
         temp_pointer +=temp_varname.size();
         memcpy((void*)temp_pointer,&delimiter,1);
         temp_pointer +=1;
@@ -3794,7 +3794,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         else {
             string temp_varnewname = fd->getNewName();
             vector<char>temp_val2(temp_varnewname.begin(),temp_varnewname.end());
-            memcpy((void*)temp_pointer,(void*)&temp_val2[0],temp_varnewname.size());
+            memcpy((void*)temp_pointer,(void*)temp_val2.data(),temp_varnewname.size());
             temp_pointer +=temp_varnewname.size();
             memcpy((void*)temp_pointer,&delimiter,1);
             temp_pointer +=1;
@@ -3805,7 +3805,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         for(int i = 0; i < sds_rank; i++) {
             string temp_dimname = dims[i]->getName();
             vector<char>temp_val3(temp_dimname.begin(),temp_dimname.end());
-            memcpy((void*)temp_pointer,(void*)&temp_val3[0],temp_dimname.size());
+            memcpy((void*)temp_pointer,(void*)temp_val3.data(),temp_dimname.size());
             temp_pointer +=temp_dimname.size();
             memcpy((void*)temp_pointer,&delimiter,1);
             temp_pointer +=1;
@@ -3826,7 +3826,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         throw InternalErr (__FILE__, __LINE__,msg);
     }
 
-    size_t bytes_really_written = fwrite((const void*)&temp_buf[0],1,total_bytes_dds_cache,dds_file);
+    size_t bytes_really_written = fwrite((const void*)temp_buf.data(),1,total_bytes_dds_cache,dds_file);
 
     if(bytes_really_written != total_bytes_dds_cache) { 
         stringstream s_expected_bytes;
@@ -3859,7 +3859,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
     // Allocate the buffer size based on the file size.
     vector<char> temp_buf;
     temp_buf.resize(bytes_expected_read);
-    size_t bytes_really_read = fread((void*)&temp_buf[0],1,bytes_expected_read,dds_file);
+    size_t bytes_really_read = fread((void*)temp_buf.data(),1,bytes_expected_read,dds_file);
 
     // Now bytes_really_read should be the same as bytes_expected_read if the element size is 1.
     if(bytes_really_read != bytes_expected_read) {
@@ -3871,7 +3871,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         msg = msg + ". But the real read size from the buffer is  " + s_bytes_really_read.str();
         throw InternalErr (__FILE__, __LINE__,msg);
     }
-    char* temp_pointer = &temp_buf[0];
+    char* temp_pointer = temp_buf.data();
 
     char delimiter = '\0';
     // The end of the whole string.
@@ -4020,7 +4020,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 
         if(*temp_pointer == cend)
             end_file_flag = true;
-        if((temp_pointer - &temp_buf[0]) > (int)bytes_expected_read) {
+        if((temp_pointer - temp_buf.data()) > (int)bytes_expected_read) {
             string msg = cache_filename + " doesn't have the end-line character at the end. The file may be corrupted.";
             throw InternalErr (__FILE__, __LINE__,msg);
         }

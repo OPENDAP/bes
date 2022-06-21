@@ -115,7 +115,7 @@ void build_masked_data(libdap::Array *dependent_var,
 {
     vector<T> src_data(dependent_var->length());
     dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
-    dependent_var->value(&src_data[0]);
+    dependent_var->value(src_data.data());
 
     //T mask_value = 0;  // TODO This should use the value in mask_val_var. jhrg 6/16/20
     vector<T> result_data(dependent_var->length(), mask_value);

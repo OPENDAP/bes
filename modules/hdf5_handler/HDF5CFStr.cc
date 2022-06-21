@@ -144,7 +144,7 @@ bool HDF5CFStr::read()
         vector <char> strval;
         strval.resize(ty_size);
         hid_t read_ret = -1;
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
+        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)strval.data());
 
         if (read_ret < 0) {
             H5Tclose(memtype);
@@ -158,7 +158,7 @@ bool HDF5CFStr::read()
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
-        char*temp_bp = &strval[0];
+        char*temp_bp = strval.data();
         char*onestring = nullptr;
         string final_str ="";
                
@@ -171,7 +171,7 @@ bool HDF5CFStr::read()
 
         if (""!=final_str) {
             herr_t ret_vlen_claim = 0;
-            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)&strval[0]);
+            ret_vlen_claim = H5Dvlen_reclaim(memtype,dspace,H5P_DEFAULT,(void*)strval.data());
             if (ret_vlen_claim < 0){
                 H5Tclose(memtype);
                 H5Tclose(dtypeid);
@@ -213,7 +213,7 @@ bool HDF5CFStr::read()
         vector <char> strval;
         strval.resize(1+ty_size);
         hid_t read_ret = -1;
-        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)&strval[0]);
+        read_ret = H5Dread(dsetid,memtype,H5S_ALL,H5S_ALL,H5P_DEFAULT,(void*)strval.data());
 
         if (read_ret < 0) {
             H5Tclose(memtype);

@@ -114,7 +114,7 @@ bool HDF5Str::read()
         else { 
             vector<char>chr;
             chr.resize(size+1);
-	    get_data(dset_id, (void *) &chr[0]);
+	    get_data(dset_id, (void *) chr.data());
 	    set_read_p(true);
             string str(chr.begin(),chr.end());
 	    set_value(str);

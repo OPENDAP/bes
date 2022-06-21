@@ -86,7 +86,7 @@ short write_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fnam
     string dname_str(m_dmrpp_fname);
     string file_content = fname_str +' '+dname_str+' '+sha256_buf+'\n';
     vector<char>buf(file_content.begin(),file_content.end());
-    size_t fsize = fwrite(&buf[0],1,file_content.size(),fp);
+    size_t fsize = fwrite(buf.data(),1,file_content.size(),fp);
     if(fsize != file_content.size())
         sha_fname_ret = -1;
     fclose(fp);
@@ -159,7 +159,7 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
             FILE*fp = fopen(store_h5_fname,"a");
             string file_content = exist_m_h5_name +' '+exist_m_dmrpp_name;
             vector<char>buf(file_content.begin(),file_content.end());
-            size_t fsize = fwrite(&buf[0],1,file_content.size(),fp);
+            size_t fsize = fwrite(buf.data(),1,file_content.size(),fp);
             if(fsize != file_content.size())
                 ret_value = -1;
             fclose(fp);
@@ -209,7 +209,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
     }
 
     // Calculate the hash
-    SHA256((const unsigned char*)&buf[0],fSize,hash);
+    SHA256((const unsigned char*)buf.data(),fSize,hash);
 
     string output="";
 
@@ -240,7 +240,7 @@ bool retrieve_chunk_info(FILE*fp,vector<size_t> &offsets,vector<size_t> &nbytes)
 
     vector<char>buf;
     buf.resize((size_t)fSize);
-    size_t result = fread(&buf[0],1,fSize,fp);
+    size_t result = fread(buf.data(),1,fSize,fp);
     if(result != fSize) 
         return false;
 
