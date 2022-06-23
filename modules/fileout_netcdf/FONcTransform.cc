@@ -365,7 +365,10 @@ void FONcTransform::transform_dap2(ostream &strm) {
     }
     else {
         BESDEBUG(MODULE,  prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
-        stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+        if (FONcRequestHandler::nc3_classic_format) 
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+        else 
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_64BIT_OFFSET, &_ncid);
     }
 
     if (stax != NC_NOERR) {
@@ -785,7 +788,10 @@ void FONcTransform::transform_dap4_no_group() {
     else {
         BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile
                                                                                                        << endl);
-        stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+        if (FONcRequestHandler::nc3_classic_format)                                                    
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+        else 
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_64BIT_OFFSET, &_ncid);
     }
 
     if (stax != NC_NOERR) {

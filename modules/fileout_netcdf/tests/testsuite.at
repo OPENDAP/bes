@@ -162,6 +162,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/coad_d4c_nm.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/coad_d4c_m.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/coad_d4c_nm_lc.bescmd)
 
+dnl fileout netcdf3 out of DAP4 test
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_2d_2dll.nc4.h5.bescmd)
+
 dnl Add HDF5 CF response (for the flattened DMR: no group)
 AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED(bescmd/h5_numeric_types.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED(bescmd/h5_numeric_types.1.bescmd)
