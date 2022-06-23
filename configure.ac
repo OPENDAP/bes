@@ -402,6 +402,9 @@ AM_PATH_CPPUNIT(1.12.0,
 	]
 )
 
+dnl Check for RHEL 8 and tirpc
+OX_RHEL8_TIRPC
+
 dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
 dnl AC_ARG_WITH([dap-exp-modules],
