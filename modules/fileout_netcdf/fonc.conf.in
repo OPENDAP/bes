@@ -51,4 +51,12 @@ FONc.RequestMaxSizeKB = 0
 #    line doesn't need to be turned on.
 # FONc.UseShuffle=true
 
+# Uncomment the following line to generate netCDF-3 classic format.
+# Note: 
+#  This key only takes effect when the response is for fileout netCDF-3. Without uncommenting
+#  the line, the fileout netCDF-3 generates a netCDF-3 file with 64-bit offset. This
+#  will make the netCDF-3 file size to be extended to 4GB, which can address some user's request.
+#  See https://bugs.earthdata.nasa.gov/browse/HYRAX-749.  
+# FONc.NC3ClassicFormat=true
+
 

@@ -73,6 +73,9 @@
 #define FONC_REQUEST_MAX_SIZE_KB 0
 #define FONC_REQUEST_MAX_SIZE_KB_KEY "FONc.RequestMaxSizeKB"
 
+#define FONC_NC3_CLASSIC_FORMAT false
+#define FONC_NC3_CLASSIC_FORMAT_KEY "FONc.NC3ClassicFormat"
+
 std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
@@ -81,6 +84,7 @@ size_t FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::no_global_attrs;
 size_t FONcRequestHandler::request_max_size_kb;
+bool FONcRequestHandler::nc3_classic_format;
 
 using namespace std;
 
@@ -172,6 +176,8 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
 
     read_key_value(FONC_REQUEST_MAX_SIZE_KB_KEY, FONcRequestHandler::request_max_size_kb, FONC_REQUEST_MAX_SIZE_KB);
 
+    read_key_value(FONC_NC3_CLASSIC_FORMAT_KEY, FONcRequestHandler::nc3_classic_format, FONC_NC3_CLASSIC_FORMAT);
+
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_compression: " << FONcRequestHandler::use_compression << endl);
@@ -180,6 +186,7 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
     BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);
     BESDEBUG("fonc", "FONcRequestHandler::request_max_size_kb: " << FONcRequestHandler::request_max_size_kb << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::nc3_classic_format " << FONcRequestHandler::nc3_classic_format << endl);
 }
 
 /** @brief Any cleanup that needs to take place
