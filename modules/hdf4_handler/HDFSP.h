@@ -817,7 +817,7 @@ namespace HDFSP
             void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2) throw(Exception);
 
             /// Create "coordinates", "units" CF attributes
-            void handle_sds_coords(bool & COARDFLAG, std::string &lldimname1,std::string &lldimname2) throw(Exception);
+            void handle_sds_coords(bool COARDFLAG, const std::string &lldimname1,const std::string &lldimname2) throw(Exception);
 
             /// Handle Vdata
             void handle_vdata() throw(Exception);
