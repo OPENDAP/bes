@@ -4011,7 +4011,7 @@ void
 File::handle_vdata() throw(Exception) {
 
     // Define File 
-    File *file = this;
+    const File *file = this;
 
     // Handle vdata, only need to check name clashings and special characters for vdata field names 
     // 
@@ -5372,7 +5372,7 @@ throw (Exception)
     // 1. Obtain the expanded size of the latitude/longitude
     for (const auto &attr:file->sd->getAttributes()) {
         if (attr->getName () == pixels_per_scan_line_name) {
-            int* attrvalueptr = (int *) (&(attr->getValue ()[0]));
+            auto attrvalueptr = (int *) (&(attr->getValue ()[0]));
             pixels_per_scan_line = *attrvalueptr;
             break;
         }
@@ -5461,7 +5461,7 @@ throw (Exception)
 
         if (attr->getName () == num_lat_name) {
 
-            int* attrvalue = (int *) (&(attr->getValue ()[0]));
+            auto attrvalue = (int *) (&(attr->getValue ()[0]));
 
             num_lat = *attrvalue;
             tempcountllflag++;
