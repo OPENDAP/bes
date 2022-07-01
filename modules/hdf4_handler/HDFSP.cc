@@ -3683,11 +3683,11 @@ void File::create_sds_dim_name_list() {
 // Add the missing coordinate variables based on the corrected dimension name list
 void File::handle_sds_missing_fields() {
 
-    File *file = this;
+    const File *file = this;
 
     // Adding the missing coordinate variables based on the corrected dimension name list
     // For some CERES products, there are so many vgroups, so there are potentially many missing fields.
-    // Go through the n1dimnamelist and check the map dimcvarlist; 
+    // Go through the n1dimnamelist and check the map dimcvarlist,
     // if no dimcvarlist[dimname], then this dimension namelist must be a missing field
     // Create the missing field and insert the missing field to the SDField list. 
 
@@ -4610,9 +4610,9 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                     }
                 }
 
-                for (const auto &cdim:sdf->getCorrectedDimensions()) {
-                    if(cdim->getSize() == 6  && cdim->name == nthrsh_base_name) {
-                       cdim->name = nthrsh_zo_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_zo_name;
                        break;
                     }
                 }
@@ -4627,9 +4627,9 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                     }
                 }
 
-                for (const auto &cdim:sdf->getCorrectedDimensions()) {
-                    if(cdim->getSize() == 6  && cdim->name == nthrsh_base_name) {
-                       cdim->name = nthrsh_hb_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_hb_name;
                        break;
                     }
                 }
@@ -4643,9 +4643,9 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                     }
                 }
 
-                for (const auto &cdim:sdf->getCorrectedDimensions()) {
-                    if(cdim->getSize() == 6  && cdim->name == nthrsh_base_name) {
-                       cdim->name = nthrsh_srt_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_srt_name;
                        break;
                     }
                 }
@@ -5372,7 +5372,7 @@ throw (Exception)
     // 1. Obtain the expanded size of the latitude/longitude
     for (const auto &attr:file->sd->getAttributes()) {
         if (attr->getName () == pixels_per_scan_line_name) {
-            auto attrvalueptr = (int *) (&(attr->getValue ()[0]));
+            int* attrvalueptr = (int *) (&(attr->getValue ()[0]));
             pixels_per_scan_line = *attrvalueptr;
             break;
         }
@@ -5461,7 +5461,7 @@ throw (Exception)
 
         if (attr->getName () == num_lat_name) {
 
-            auto attrvalue = (int *) (&(attr->getValue ()[0]));
+            int* attrvalue = (int *) (&(attr->getValue ()[0]));
 
             num_lat = *attrvalue;
             tempcountllflag++;
@@ -5897,17 +5897,17 @@ throw (Exception)
 
         // Add a loop to change the odddimnames to (normal)tempdimnames.
         for (const auto &sdf:file->sd->sdfields) {
-            for (const auto &dim:sdf->getDimensions()) {
-                if (odddimname1 == dim->name)
-                    dim->name = tempdimname1;
-                if (odddimname2 == dim->name)
-                    dim->name = tempdimname2;
+            for (const auto &sdim:sdf->getDimensions()) {
+                if (odddimname1 == sdim->name)
+                    sdim->name = tempdimname1;
+                if (odddimname2 == sdim->name)
+                    sdim->name = tempdimname2;
             }
-            for (const auto &dim:sdf->getCorrectedDimensions()) {
-                if (odddimname1 == dim->name)
-                    dim->name = tempdimname1;
-                if (odddimname2 == dim->name)
-                    dim->name = tempdimname2;
+            for (const auto &sdim:sdf->getCorrectedDimensions()) {
+                if (odddimname1 == sdim->name)
+                    sdim->name = tempdimname1;
+                if (odddimname2 == sdim->name)
+                    sdim->name = tempdimname2;
             }
         }
     }    
