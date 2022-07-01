@@ -3,6 +3,9 @@
 # a replacement for the autotools build. But it does provide information that
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
 
+cmake_minimum_required(VERSION 3.21)
+project(BES)
+
 # Comment/Remove this if it's problematic. jhrg 5/13/20
 #add_subdirectory(modules/sql_handler)
 
@@ -99,7 +102,6 @@ include_directories(modules/dmrpp_module/unit-tests)
 #include_directories(modules/dmrpp_module/unused)
 include_directories(modules/fileout_covjson)
 include_directories(modules/fileout_covjson/unit-tests)
-include_directories(modules/fileout_gdal)
 include_directories(modules/fileout_json)
 include_directories(modules/fileout_json/unit-tests)
 include_directories(modules/fileout_netcdf)
@@ -111,7 +113,7 @@ include_directories(modules/freeform_handler/FFND)
 include_directories(modules/freeform_handler/win32)
 include_directories(modules/gateway_module)
 #include_directories(modules/gateway_module/unused)
-include_directories(modules/gdal_handler)
+include_directories(modules/gdal_module)
 include_directories(modules/hdf4_handler)
 include_directories(modules/hdf4_handler/grammarfiles)
 include_directories(modules/hdf4_handler/hdfclass)
@@ -729,11 +731,9 @@ add_executable(bes
     modules/dmrpp_module/NgapS3Credentials.h
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
     modules/dmrpp_module/unit-tests/CurlHandlePoolTest.cc
-    modules/dmrpp_module/retriever.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc
     modules/dmrpp_module/unit-tests/SuperChunkTest.cc
-    modules/dmrpp_module/SuperChunky.cc
     modules/dmrpp_module/SuperChunk.cc
     modules/dmrpp_module/SuperChunk.h
 
@@ -752,20 +752,6 @@ add_executable(bes
     modules/fileout_covjson/StreamString.cc
     modules/fileout_covjson/StreamString.h
 
-    modules/fileout_gdal/FONgGrid.cc
-    modules/fileout_gdal/FONgGrid.h
-    modules/fileout_gdal/FONgModule.cc
-    modules/fileout_gdal/FONgModule.h
-    modules/fileout_gdal/FONgRequestHandler.cc
-    modules/fileout_gdal/FONgRequestHandler.h
-    modules/fileout_gdal/FONgTransform.cc
-    modules/fileout_gdal/FONgTransform.h
-    modules/fileout_gdal/FONgType.cc
-    modules/fileout_gdal/FONgType.h
-    modules/fileout_gdal/GeoTiffTransmitter.cc
-    modules/fileout_gdal/GeoTiffTransmitter.h
-    modules/fileout_gdal/JPEG2000Transmitter.cc
-    modules/fileout_gdal/JPEG2000Transmitter.h
 
     modules/fileout_json/unit-tests/FoJsonTest.cc
     modules/fileout_json/unit-tests/test_config.h
@@ -975,7 +961,29 @@ add_executable(bes
     modules/freeform_handler/util_ff.cc
     modules/freeform_handler/util_ff.h
 
-    modules/gateway_module/GatewayContainer.cc
+	modules/gdal_module/GDALModule.h
+	modules/gdal_module/GDALModule.cc
+	modules/gdal_module/GDALRequestHandler.h
+	modules/gdal_module/GDALRequestHandler.h
+
+	modules/gdal_module/writer/FONgGrid.h
+	modules/gdal_module/writer/FONgGrid.cc
+	modules/gdal_module/writer/FONgTransform.h
+	modules/gdal_module/writer/FONgTransform.cc
+	modules/gdal_module/writer/FONgType.h
+	modules/gdal_module/writer/FONgType.cc
+	modules/gdal_module/writer/GeoTiffTransmitter.h
+	modules/gdal_module/writer/GeoTiffTransmitter.cc
+	modules/gdal_module/writer/JPEG2000Transmitter.h
+	modules/gdal_module/writer/JPEG2000Transmitter.cc
+
+	modules/gdal_module/reader/gdal_utils.h
+	modules/gdal_module/reader/gdal_utils.cc
+	modules/gdal_module/reader/GDALArray.cc
+	modules/gdal_module/reader/GDALGrid.cc
+	modules/gdal_module/reader/GDALTypes.h
+
+	modules/gateway_module/GatewayContainer.cc
     modules/gateway_module/GatewayContainer.h
     modules/gateway_module/GatewayContainerStorage.cc
     modules/gateway_module/GatewayContainerStorage.h
@@ -991,15 +999,6 @@ add_executable(bes
     modules/gateway_module/GatewayRequestHandler.h
     modules/gateway_module/GatewayNames.h
 
-    modules/gdal_handler/gdal_utils.cc
-    modules/gdal_handler/gdal_utils.h
-    modules/gdal_handler/GDALArray.cc
-    modules/gdal_handler/GDALGrid.cc
-    modules/gdal_handler/GDALModule.cc
-    modules/gdal_handler/GDALModule.h
-    modules/gdal_handler/GDALRequestHandler.cc
-    modules/gdal_handler/GDALRequestHandler.h
-    modules/gdal_handler/GDALTypes.h
     modules/hdf4_handler/data/src/grid_1_2d.c
     modules/hdf4_handler/data/src/grid_1_2d_xy.c
     modules/hdf4_handler/data/src/grid_1_2d_xy_no_cf_attr.c
