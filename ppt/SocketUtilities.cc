@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include <cstdlib>
+#include <time.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
