@@ -1,5 +1,1682 @@
 
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## BES Version 3.20.11
+##
+
+2022-07-01  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.10-0 2022-07-01T21:19:53+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.10-90 2022-07-01T19:14:50+0000 Triggering BES build for snapshots.
+
+2022-07-01  ndp-opendap  <ndp@opendap.org>
+
+	Updating CMakeLists.txt for GDAL migration
+
+2022-06-27  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-89 2022-06-27T16:58:28+0000 Triggering BES build for snapshots.
+
+2022-06-27  James Gallagher  <jgallagher@opendap.org>
+
+	Added OX_RHEL8_TIRPC macro to bes/configure (#652)
+
+2022-06-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	HYRAX-749, make fileout netCDF-3 to support file size up to 4GB by using 64-bit offset flag. Update the testsuite. Also add a key for people to switch to classic format. In the long term run, hopefully the fileout netCDF-3 support can be dropped and the corresponding keys can be removed. (#651)
+
+2022-06-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #647 from OPENDAP/h4-clean-csmell
+	H4 clean csmell
+
+2022-06-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, more range-for and auto C++11 features
+
+	Merge branch 'master' into h4-clean-csmell
+
+2022-06-21  James Gallagher  <jgallagher@opendap.org>
+
+	Changed from &vector[0] to vector.data() for direct access (#649)
+	* Changed from &vector[0] to vector.data() for direct access
+	* Fix for strings in CMR
+
+2022-06-20  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-87 2022-06-20T23:54:22+0000 Triggering BES build for snapshots.
+
+2022-06-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, clean up code:remove old commented out code, use range-for, const, auto and default/override.
+
+2022-06-20  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-86 2022-06-20T22:51:19+0000 Triggering BES build for snapshots.
+
+2022-06-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use in-class initializer, auto and remove empty statements; clean up code
+
+2022-06-19  Nathan Potter  <ndp@opendap.org>
+
+	Refactored std::vector memory access patterns in NCArray (#648)
+	* Replaced usage of std::vector pattern &v[0] with the c++11 method
+	v.data() in the hope that this change will address rh8 SIGABRT
+	issues that seemd tied to the old pattern.
+	* retrigger ci build
+	* Smells...
+
+2022-06-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use range-for-loop, const and auto
+
+	Merge branch 'master' into h4-clean-csmell
+
+2022-06-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, clean up code, remove redundant code, use range-for-loop,auto and const.
+
+2022-06-16  James Gallagher  <jgallagher@opendap.org>
+	    ndp-opendap  <ndp@opendap.org>
+
+	New gdal (#646)
+	* Added modules/configured_featres.txt
+	This can be used in AT_SKIP_IF() to make our tests sensitive
+	to features.
+	* Added a 'skip this test' based on a features list to the handler test macros
+	And used that for the function module when the server si built w/o
+	gdal.
+	* Modified ncml handler to skip tests if a feature is not present
+	More of a hack, really. This only works for the macros AT_CHECK_ALL_DAP_RESPONSES
+	and AT_CHECK_DATADDS_GETDAP but that is good enough for the tests that
+	use gdal. I think we should probably change AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT
+	but I don't know how to test that w/o much more work. Suggest a new ticket.
+	* Fixed the tests adnd modified AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT
+	The AT_CHECK_ALL_DAP_RESPONSES_WITH_CONSTRAINT macro now supports
+	skipping tests if a feature is not present.
+	* Added conditional bes.conf use to Makefile.am
+	There are two different bes.conf files depending on whether gdal
+	is present. This is probably not scaleable to O(10) features but
+	for one or two it should work OK.
+	* Added an experimental gdal_module that encompasses both read and writer
+	This will enable the functionality now spread across two modules
+	in one, so that we only have to link once to gdal and reducing the
+	module count in the process.
+	* WIP
+	* WIP
+	* The reader works
+	* Both the reader and writer functions work now.
+	* Clean up after the hackery
+	* Removed GDAL from functions for now
+	* Removed CPLQuietErrorHandler from the functions module
+	* moved gdal_handler and fileout_gdal to modules/unused
+	* distcheck WIP
+	* distcheck WIP
+	* more distcheck hackery
+	* Back out some parts of the 'make gdal optional' features from ncml_module
+	* Removed the if BUILD_GDAL ... endif lines from Makefile.am files
+	* More cleaning in functions
+	* Fixed an error WRT GDAL and ScaleGrid.h
+	* Odd linking issue. Fix trial
+	* Revert functions/unit-tests/Makefile.am to the version on master
+	* Remove GDAL-dependent unit tests from the functions module
+	* Moved STARE template functions to StareFunctions.h
+	* Warnings & cleanup in the STARE functions
+	* The cast for STARE_SpatialIntervals to dods_uint64* is needed on RHEL8
+	* more cleanup
+	* Trigger TravisCI
+	* Trigger TravisCI
+	* Revert Travis change [skip-ci]
+
+2022-06-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, forget removing an unused parameter. fix it.
+
+	HYRAX-667, use const, range for to reduce code smell.
+
+	HYRAX-667, reduce code smell by new sonar cloud analysis, mostly use private rather than protected and const.
+
+	HYRAX-667, clean more code smell with range for,auto and const
+
+2022-06-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto to replace the iterators etc.
+
+2022-06-14  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-84 2022-06-14T18:18:07+0000 Triggering BES build for snapshots.
+
+2022-06-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use more range for loops.
+
+2022-06-13  ndp-opendap  <ndp@opendap.org>
+
+	Fixed type in get_dmrpp library name
+
+2022-06-13  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'h4-clean-csmell' of https://github.com/opendap/bes into h4-clean-csmell
+
+2022-06-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, fix a typo introduced by the code cleaning, also use range for loop etc.
+
+2022-06-13  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h4-clean-csmell
+
+2022-06-12  Nathan Potter  <ndp@opendap.org>
+
+	get_dmrpp clean up and repair of make missing feature (#644)
+	* Sorted out m4/autotest macro issues with xfail clamped to 4th paramater issues
+	* Cleaning up the m4 macros code
+	* Simplifying get_dmrpp test incovcations
+	* Turned off broken get_dmrpp -I (inventory) test until it can be sorted.
+	* Making global variables conform to all caps naming scheme
+	* Making global variables conform to all caps naming scheme
+	* Making global variables conform to all caps naming scheme
+	* Making global variables conform to all caps naming scheme
+	* All globals are now capitialized.
+	* Added cleanup functions, problems with architecture and subshell
+	* Make missing phaffing
+	* syncing goo
+	* Maybe fixed -M make missing
+	* Missing data feature working.
+	* Missing data feature working.
+	* Wholesale code reformat for readability
+	* Updating getdmrpp baselines
+	* Updating baselines
+	* More with the baselines
+	* More mods to get_dmrpp for the -M switch
+	* Make missing data test working.
+	* Fixing baseline production for make missing m4 macro
+	* Added make missing baselines
+	* Fixed s3 test
+	* fixing distcheck, refactored verbose mode
+	* Fixed missing data file upload to s3
+	* Fixed inventory test. Had to drop the dap2 DDX tests and the dap4 attributes tests because, broken
+	* Added inventory test
+	* Added missing data url injection test
+	* Added baseline files, updated help output
+	* SYnc
+	* silenced temp file cleanup chatter
+	* Tied get_dmrpp verbose mode to testsuite verbose mode
+	* Tied -X (no delete) to testsuite -v
+	* working??
+	* Now concurrent tests for now
+	* Annotated verbose output sections
+	* Temporary verbose mode for -I inventory check
+	* Sorting out stderr vs stdout issues
+	* Debuggin the bugs
+	* Verbosity for debuggin
+	* Force verbose on inventory test
+	* Force verbose on inventory test
+	* Changed bash computation for tests_run
+	* Changed bash computation for tests_run
+	* Changed bash computation for tests_run, using bc because the shell in ubuntu is stupidpants
+	* Switch inventory test BES data root to builddir
+	* Trying dedicated m4 macro for get_dmrpp internal testing targets
+	* Inventory test refinement to accomodate the addition of chunks
+	* Trying again to sort our inventory test
+	* Trying to stop concurrent distcheck tests for tests_build_dmrpp
+	* Comments [skip-ci]
+	* Comments [skip-ci]
+
+2022-06-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto, nullptr etc and remove some const_cast pointers.
+
+2022-06-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-557, use in-class initializer
+
+	HYRAX-667, correct the slicing bug and remove a const_cast accroding to sonarcloud
+
+2022-06-10  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #645 from OPENDAP/hyrax-639
+	Hyrax 639
+
+2022-06-10  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-639, use gmtime_r instead of gmtime. Also correct other issues found by sonarcloud
+
+	HYRAX-639, make the current module support only the CF simple geographic projection since the reference system are not handled right for other cases.
+
+2022-06-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-639, add testsuite to test AIRS and GLDAS files.
+
+	HYRAX-639, fix an issue to generate the time in Gregorian calendar: need to use replace localtime etc. with gmtime etc. The covjson currently should only support CF time in UTC. Also make the default support of "simple geographic projection and ignoring z-axis if necessary". Correct the testing baseline file and the configuration file.
+
+2022-06-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-639, 1) Add bound support, 2) Fix issues for simple tests. 3) Replace the tests with simple geographic projection tests.
+
+	HYRAX-639, make the simple xy/xyz case work.
+
+2022-06-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-639, adding the bound for axis x, later for y and zwq
+
+2022-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	Moved the call to AT_XFAIL_IF to the top of the macros (#641)
+	This makes it more clear what is really happening - that
+	AT_XFAIL_IF is run before any other part of the macro and
+	which parameter is used. Also, this fixed one bug.
+
+2022-06-02  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #642 from OPENDAP/hyrax-712
+	Hyrax 712
+
+2022-06-02  myang6  <myang6@hdfgroup.org>
+
+	Add on-line hyrax user's guide.
+
+	HYRAX-712, update h5.conf.in, README and USAGE to be consistent with the user's guide.
+
+2022-06-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-712, update the comments for the BES keys so that they are consistent with the user's guide
+
+2022-05-29  myang6  <myang6@hdfgroup.org>
+
+	Add more descrption.
+
+	HYRAX-712, update the BES key description.
+
+2022-05-27  myang6  <myang6@hdfgroup.org>
+
+	Update README to reflect the new document at github hyrax_guide.
+
+	Merge branch 'master' into hyrax-712
+
+	Add document links.
+
+2022-05-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #640 from OPENDAP/hyrax-714
+	HYRAX-714, add comments not to forget the discovery
+
+2022-05-27  Nathan Potter  <ndp@opendap.org>
+
+	Added testsuite switch for S3 tests. Turned off always on verbose mode (#639)
+	* Added testsuite switch for S3 tests. Turned over always on verbose
+	* Added test for AWS CLI with creds and use that in Makefile to determine if the S3 tests should be run.
+	* Refining AWSCheck
+
+2022-05-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-714, correct a typo.
+
+	HYRAX-714, add comments not to forget the discovery
+
+2022-05-26  Nathan Potter  <ndp@opendap.org>
+
+	Refactor get dmrpp config (#638)
+	Stripped out all the unused/unneeded bes keys from get_dmrpp
+	I looked at the handler to see the default values compiled into
+	the code (See HDF5RequestHandler.cc). And removed the other bes
+	keys are were not needed. This makes the configuration list much
+	more useful.
+
+2022-05-26  Dan Holloway  <d.holloway@opendap.org>
+	    ndp-opendap  <ndp@opendap.org>
+	    dh-opendap  <dholloway@opendap.org>
+
+	Get dmrpp tests (#637)
+	* Added test for -o output_file
+	* Updated tests_build_dmrpp
+	* New baseline files
+	* Updated dmrpp-tests
+	* Updated for -U
+	* Updated -U test baseline file
+	* Updated testsuite.at to include only working tests with existing macros.m4 setup
+	* Removed missing-file test, broken in get_dmrpp
+	* Set tests_build_dmrpp testsuite verbose by default
+	* Adding grep to Travis machine
+	* Exlicit call to test for s3 check
+	* distcheck issues
+	* distcheck issues
+
+2022-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Removed some unused programs (#634)
+	Moved to the 'unused' dir along with the relevant Makefile lines.
+
+2022-05-25  James Gallagher  <jgallagher@opendap.org>
+
+	Deflate fix (#636)
+	In HDF5, it's possible to call deflate twice on a chunk.
+	The code actually handled this, I broke it and then added it back, but
+	with tests now. I also removed a large file that was added temporarily
+	to GitHub but is no longer needed.
+
+2022-05-24  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-83 2022-05-24T16:08:51+0000 Triggering BES build for snapshots.
+
+2022-05-23  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #631 from OPENDAP/h5-clean-warning
+	H5 clean warning
+
+2022-05-23  Nathan Potter  <ndp@opendap.org>
+
+	Refined template substitution to resolve incorrect template matching (#632)
+	* Refined template substitution to resolve incorrect template matching
+	* code organization
+	* Dropping unused includes From NgapContainer.cc
+	* Dropping unused includes From NgapContainer.cc
+	* Added build_dmrpp to CMakeLists.txt
+	* Added new filter test for update scheme in NgapContainer
+
+2022-05-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto to replace iterator, also use default for constructor/destructor as well as using const.
+
+2022-05-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto to replace iterator,type and override to replace virtual. Also comments, cleaning up old code.
+
+	HYRAX-667, use auto to replace iterator and type, also use empty() to replace size()
+
+2022-05-19  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto to replace many iterator lines, also compact the original lines with iterator to one line. Use empty instead of size() to check if the vector is empty. etc.
+
+2022-05-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use more auto
+
+	HYRAX-667, use auto,overide and in-class initializer to replace the old-style according to sonar cloud.
+
+2022-05-18  ndp-opendap  <ndp@opendap.org>
+
+	Renamed stages for clarity
+
+	Trigger CI
+
+2022-05-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use in-class initializer and override keywords. unfinished - just check.
+
+	Merge branch 'master' into h5-clean-warning
+
+2022-05-17  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto-pointer and default constructor/destructor as well as in-class initialization
+
+2022-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes [skip ci]
+
+	Spelling fix
+	[skip ci]
+
+2022-05-17  ndp-opendap  <ndp@opendap.org>
+
+	Trigger CI
+
+2022-05-17  James Gallagher  <jgallagher@opendap.org>
+
+	Fill value fix 1 (#629)
+	This fixes a bug where 'fill value' chunks had filters applied
+	It does not address the 'defalte deflate' (cosmetic and minor performance) issue
+	in the DMR++ XML documents.
+
+2022-05-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use auto and remove data type conversion code smell
+
+2022-05-13  James Gallagher  <jgallagher@opendap.org>
+
+	Hdf5 fill value (#616)
+	Add support for HDF5 fill values to the DMR++ XML files and to the DMR++ Handler
+	When fill values were used by HDF5 to eliminate storing 'empty' chunks, the
+	DMR++ handler was choking since it was trying to read data from chunks that
+	did not exist.
+	This change has two parts: build_dmrpp/get_dmrpp now builds DMR++ XML
+	files that include information about the fill values, and the DMR++ handler will
+	use that information to build the correct data values for those chunks which
+	use the fill values.
+	There are some cases that are not currently supported such as string variables,
+	hdf5 array variables (which are different from 'datasets' (that's an array in DAP)
+	and compound variables.
+
+2022-05-12  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-712
+
+	HYRAX-712, update the doc under the source directory to make it consistent with the hyrax user guide
+
+2022-05-11  ndp-opendap  <ndp@opendap.org>
+
+	Oops - missed a _ separator
+
+2022-05-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-712, update INSTALL and README.
+
+2022-05-09  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-81 2022-05-09T20:01:08+0000 Triggering BES build for snapshots.
+
+2022-05-07  ndp-opendap  <ndp@opendap.org>
+
+	Tweaked the bes-modules scan so there is some make check feedback
+
+2022-05-06  ndp-opendap  <ndp@opendap.org>
+
+	piping make check output into /dev/null for sonarscan stage
+
+2022-05-06  Nathan Potter  <ndp@opendap.org>
+
+	New init() for TempFile static member (#628)
+	* New init() for TempFile static member
+	* TempFile lifecycle management
+	* oops. mutex.
+	* Switched to unique_ptr to control open_files lifecycle
+	* Including <memory>
+	* Sonar pinged me.
+	* Making once_flag instance a static class member...
+	* TempFile lifecycle management
+	* Moved cleanup responsibility of temp_file_test dir to Makefile.am
+	* Adding TempFile sanity checks.
+	* Debugging and error messages
+	* Made temp dir sanity check a compile option
+	* sorting unique_ptr initialization
+	* Moved exception prone activity from constructor to new create() method
+	* Smells
+	* Working on temp file template qc
+	* Scoping locks
+	* More code cleanup.
+	* Made the template construction for mkstemp() part of the TempFile::create() method. Adjusted callers accordingly.
+	* Added exception trapping to the SIGPIPE handler code
+	* Formatting
+	* SonarPinged
+
+2022-05-04  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #625 from OPENDAP/move-setcontext
+	Moved setContext XML command handling to build_data_request_plan
+
+2022-05-04  Nathan Potter  <ndp@opendap.org>
+
+	Changed TempFile to take a separate dir and file template as parameters (#627)
+	* Changed TempFile to take a dir as well as a file template to its constructor.
+	Updated all the usages. Now the code that uses TempFile is not limited to /tmp
+	or some other prexisting directory.
+	* Dropped unneccessary string fiddling in mk_temp_dir
+	* Fixing default temp dirs and temp file templates
+	* unfuxord tempfile names in fonc
+	* Documentation [skip ci]
+
+2022-05-04  dh-opendap  <dholloway@opendap.org>
+
+	Replaced declaration with reference so I don't make a copy
+
+	Restore to master
+
+	Call SetContextsResponseHandler::execute() in build_data_request_plan directly
+
+	Updated comments only
+
+2022-05-04  Nathan Potter  <ndp@opendap.org>
+
+	Dmz issues (#626)
+	* Fix incorrect string conversions in add_chunk() call
+	* Fix incorrect string conversions in add_chunk() call
+	* Fix incorrect string conversions in add_chunk() call
+	* Adding docs to the add_chunk() methods in DmrppCommon
+	* Added docs and a safety check to be sure that at least one needed Chunk is found during the read()
+	* Code formatting
+
+2022-05-03  dh-opendap  <dholloway@opendap.org>
+
+	Moved setContext XML command handling to build_data_request_plan
+
+2022-05-02  dh-opendap  <dholloway@opendap.org>
+
+	Merge branch 'replace-sigalrm', includes RequestServiceTimer singleton elapsed timer, changes to handlers to poll this timer at various locations to determine if bes_timeout has elapsed.  When a timeout is recognized the timer will throw an exception that provides an error message that will be available thru the olfs to the end-user.
+
+2022-05-02  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into replace-sigalrm
+
+2022-05-02  Nathan Potter  <ndp@opendap.org>
+
+	Basic test suite for the get_dmrpp script (#623)
+	* Adding compact example data file and test of href injection
+	* Inject conf test changes
+	* Working on get_dmrpp tests. syncing
+	* Added test for get_dmrpp -c option
+	* Adding test_bes.conf to repo
+	* Sync commit
+	* Disabling svae file test, fixing inject bes conf baseline
+	* Hacking the distcheckness
+	* Hacking the distcheckness
+	* More distcheckyness but still not working
+	* Fixed BES.Catalog.catalog.RootDirectory in test_bes.conf to point to source tree
+	* Added test_bes.conf to DISTCLEANFILES
+	* Some minor cleanup in get_dmrpp tests
+
+2022-05-02  ndp-opendap  <ndp@opendap.org>
+
+	Merge master branch to replace-sigalrm
+
+	Normailed BESDBUG activity in FONCTransform.cc
+
+2022-04-29  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #624 from OPENDAP/hyrax-706
+	Hyrax 706
+
+2022-04-28  dh-opendap  <dholloway@opendap.org>
+
+	Updated Throw-if-time-expired error message
+
+2022-04-28  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-706, update baseline files based on the new error message.
+
+2022-04-28  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-706, make the meaningful error message due to the netCDF classic model datatype limitation
+
+2022-04-28  dh-opendap  <dholloway@opendap.org>
+
+	Remove tmp files
+
+	Added distcheck changes for fileout_covjson/json
+
+	Updated bes-tiemout error message
+
+	New unit-test input-files location
+
+	Updated bes-timeout error message
+
+	Changed location of test.keys
+
+2022-04-27  dh-opendap  <dholloway@opendap.org>
+
+	Added doc comments
+
+2022-04-27  Nathan Potter  <ndp@opendap.org>
+
+	Fixing a prpblem with the way the DMZ processes trusted urls (#621)
+
+2022-04-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #620 from OPENDAP/hyrax-418
+	Hyrax 418
+
+2022-04-27  dh-opendap  <dholloway@opendap.org>
+
+	Wholesale replacement of global bes-time/sigalrm usage with RequestServiceTimer
+
+2022-04-27  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-418, one more typo.
+
+	HYRAX-418, update a comment caught by James.
+
+2022-04-27  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-77 2022-04-27T16:39:51+0000 Triggering BES build for snapshots.
+
+2022-04-26  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-72 2022-04-27T00:13:16+0000 Triggering BES build for snapshots.
+
+2022-04-26  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-418
+
+2022-04-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-418, add the descrption to use the shuffle filter.
+
+2022-04-26  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #619 from OPENDAP/hyrax-661
+	Hyrax 661
+
+2022-04-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-418, update the testsuite to include the shuffle check inside the compression test.
+
+	 HYRAX-661, add comments for the change
+
+	Merge branch 'master' into hyrax-661
+
+2022-04-25  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-661, optimize the code to handle the string dataset reading.
+
+2022-04-25  James Gallagher  <jgallagher@opendap.org>
+
+	quiet down git (#618)
+
+2022-04-25  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #614 from OPENDAP/hyrax-687
+	Hyrax 687
+
+2022-04-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-418, add option to support shuffle, >=2 byte integer size by default
+
+2022-04-22  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-687, update the NASA DMR baseline files to reflect the feature of listing coordinate variables first in the layout.
+
+2022-04-22  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, make coordinate(map) variables listed first for the EOS5 module.
+
+2022-04-21  dh-opendap  <dholloway@opendap.org>
+
+	Adding new timeout logic to transmitters/transforms
+
+2022-04-21  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-687, switch the order of variables and coordinate variables for general products(netcdf4-like), update the nc4_group_atomic.h5.use_cf.baseline for get_dmrpp
+
+2022-04-21  dh-opendap  <dholloway@opendap.org>
+
+	Merged master with remove-sigalarm changes
+
+2022-04-21  James Gallagher  <jgallagher@opendap.org>
+
+	Sigalarm removal (#617)
+	The sigalarm code has been removed.
+	Also, the tests for debug_functions have been normalized to
+	use the common set of handler macros and two of the tests
+	which used to trigger a timeout are now marked as 'xfail'
+	since they fail - there are no timeouts in the code on this
+	branch.
+	I left the 'volatile int bes_timeout' line in BESInterface,
+	and the calls to set_bes_timeout() and clear_bes_timeout()
+	but only really as placeholders - those don't do anything
+	except set the global volatile int 'bes_timeout.'
+
+2022-04-21  dh-opendap  <dholloway@opendap.org>
+
+	Added timeout handling
+
+	Added timeout handling
+
+2022-04-20  ndp-opendap  <ndp@opendap.org>
+
+	BESObj chnge removal
+
+	BESObj chnge removal
+
+	Tweaked throw_if_timeout_expired()
+
+	Adding throw method to RequestServiceTimer
+
+	Adding throw method to RequestServiceTimer
+
+	Addint throw method to RequestServiceTimer
+
+	Addint throw method to RequestServiceTimer
+
+	Addint throw method to RequestServiceTimer
+
+	Addint throw method to RequestServiceTimer
+
+	Minor cleanup in TempFile
+
+	Minor cleanup in TempFile
+
+	Added improved docs and move semantics to BESObj::throw_if_timeout_expired()
+
+	CMakeLists.txt again
+
+2022-04-20  dh-opendap  <dholloway@opendap.org>
+
+	Updated FoJson
+
+	Updated FoJson
+
+	Updates for timeout throw
+
+2022-04-19  dh-opendap  <dholloway@opendap.org>
+
+	Throwing when timeout exceeded
+
+2022-04-19  James Gallagher  <jgallagher@opendap.org>
+
+	Refactor build_dmrpp (#615)
+	Refactor build_dmrpp.cc before adding a new feature
+
+	Unit tests fix (#613)
+	Added a header that simplifies writing the main() for unit-tests.
+	See modules/run_tests_cppunit.h
+
+2022-04-18  ndp-opendap  <ndp@opendap.org>
+
+	Made default constructor and member variable initialization c++11 friendly
+
+2022-04-18  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-687, update the valgrind .at and NASA baseline files.
+
+2022-04-18  ndp-opendap  <ndp@opendap.org>
+
+	Fixed comment reference to is_timeout_enabled()
+
+	Dropping unused includes
+
+	Cleaning up RequestServiceTimerApi
+
+	Dropping redundant methods from RequestServiceTimer
+
+2022-04-18  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, clean up code to use one common function to handle both EOS5 and GM modules.
+
+2022-04-18  ndp-opendap  <ndp@opendap.org>
+
+	Cleaning up variable names and utilizing chrono types in call to RequesServiceTomer::start()
+
+	Cleaning up variable names and utilizing chrono types in call to RequesServiceTomer::start()
+
+	Updated CMakeLists, dropp BESDapErrorInfo, added RequesTimerTes
+
+2022-04-16  ndp-opendap  <ndp@opendap.org>
+
+	Fixed bug in is_elapsed()
+
+	Fixed bug in is_elapsed()
+
+2022-04-15  ndp-opendap  <ndp@opendap.org>
+
+	Fixed default timeout value, more chrono fixes
+
+2022-04-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, add the DAP4 coverage support for the EOS module.
+
+2022-04-15  ndp-opendap  <ndp@opendap.org>
+
+	Added second restart test
+
+	More chrono fixes, added restart timer test
+
+2022-04-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, need to ensure the mapped array exists. Tested with real NASA files.
+
+2022-04-15  ndp-opendap  <ndp@opendap.org>
+
+	Updated RequestTimerTest so that it's more chrono comlete
+
+2022-04-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, adding the support of the swath case.
+
+	HYRAX-687, commit the testing dmr bescmd files.
+
+2022-04-15  ndp-opendap  <ndp@opendap.org>
+
+	Added loc to dump method
+
+2022-04-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-687, add the DAP4 coverage support to the HDF5 CF option. Compiled.
+
+2022-04-15  ndp-opendap  <ndp@opendap.org>
+
+	RequestServiceTimer code cleanup
+
+	Merge branch 'replace-sigalrm' of https://github.com/OPENDAP/bes into replace-sigalrm
+
+	Cleaned up RequestServiceTimer::dump()
+
+2022-04-14  dh-opendap  <dholloway@opendap.org>
+
+	Removed errant debugging
+
+	RequestTimer updates and unit-tests
+
+2022-04-14  ndp-opendap  <ndp@opendap.org>
+
+	Dropping the is_started state variable
+
+	Removing async timer efforts
+
+	Removing async timer efforts
+
+	Merged master to replace-sigarlm
+
+	std::chrono based request timer
+
+	- Update CMakeLists.txt
+
+2022-04-14  dh-opendap  <dholloway@opendap.org>
+
+	Updated
+
+	RequestServiceTimer.cc
+
+2022-04-13  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #612 from OPENDAP/h5-clean-warning
+	H5 clean warning
+
+2022-04-13  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-667, more places to use vector instead of arrays.
+
+2022-04-13  dh-opendap  <dholloway@opendap.org>
+
+	Updated banner
+
+	Added RequestServiceTimer
+
+	Added RequestServiceTimer
+
+2022-04-13  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h5-clean-warning
+
+2022-04-13  James Gallagher  <jgallagher@opendap.org>
+
+	Makefile.am was 'cleaning' the testsuite scripts (#611)
+	Cleaning these scripts with a parallel make meant that
+	in some cases the testsuite script was removed before it
+	could be run as per 'clean-local' resulting a failure.
+	Since the testsuite script is included in the tar ball,
+	I removed it from CLEANFILES in three Makefile.am files.
+	This seems to fix the issues with 'make clean --jobs=12'
+	failing.
+
+2022-04-13  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h5-clean-warning
+
+2022-04-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, 1. When handling the string attribute in the default option of the HDF5 handler, extra NULL terms are added to the end of the string. This doesn't show in the DAS/DMR output. However, it shows extra NULL terms in the fileout netCDF output. So correct them and also update the fake and NASA testsuite in the fileout netCDF. This is actually a bug-fix rather than cleaning warnings. Since I happen to find when cleaning up the warnings and the fix is easy. So just fix it.
+
+2022-04-13  ndp-opendap  <ndp@opendap.org>
+
+	Fixed typos in test data README
+
+2022-04-12  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into h5-clean-warning
+
+	HYRAX-667, use in-class initializer.
+
+2022-04-12  James Gallagher  <jgallagher@opendap.org>
+
+	Standalone fix (#608)
+	Fixed some warnings in StandAloneApp
+	Found that BESDapErrorInfo, which has warnings, is not used so I removed it.
+	And fixed an annoying warning in the FFND library.
+	Moved BESDapErrorInfo to 'unused.'
+
+2022-04-12  Nathan Potter  <ndp@opendap.org>
+
+	Add a README file to the top level of our test data hierarchy (#610)
+	* Dropped modules/ncml_module/RCObjectInterface.cc and
+	modules/ngap_module/NgapError.h from CMakeLists.txt as they are no longer
+	in the code base.
+	* Adding README file to our top level data directory that
+	is distrinbuted with the server.
+
+2022-04-12  James Gallagher  <jgallagher@opendap.org>
+
+	Edits for BESInterface and async
+
+2022-04-12  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-667, update the readme to avoid the removal of valgrind output.
+
+2022-04-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, fix more code smell and warnings: 1. Use const in the function parameter if possible 2. Use auto to replace iterator/type 3. use default for constructor/destructor 4. remove old and no longer valid comments, statements 5. Reduce compiling warnings 6. Use vector to replace arrays(still have a few)
+
+2022-04-12  dh-opendap  <dholloway@opendap.org>
+
+	Updated comments
+
+	Updated concurrency logic and comments
+
+	Handling simplest concurrency case
+
+	Making BESXMLInterface protected methods public
+
+2022-04-12  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #609 from OPENDAP/h5-clean-warning
+	HYRAX-667, change NULL to nullptr for the HDF4 handler. This can redu…
+
+2022-04-11  dh-opendap  <dholloway@opendap.org>
+
+	Updated concurrency for execute_request
+
+	Updated concurrency for execute_request
+
+	Updated concurrency for execute_request
+
+2022-04-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, change NULL to nullptr for the HDF4 handler. This can reduce the code smell and also easy to find other issues from sonar cloud.
+
+2022-04-11  dh-opendap  <dholloway@opendap.org>
+
+	Updated std::async call parameters
+
+2022-04-11  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #607 from OPENDAP/hyrax-695
+	Hyrax 695
+
+2022-04-08  dh-opendap  <dholloway@opendap.org>
+
+	Cleaned up concurrency loop
+
+	Made private accessors public
+
+	Merge changes to BESInterface, BESUtil for use of atomics Merge branch 'replace-sigalrm' of https://github.com/opendap/bes into replace-sigalrm
+
+	Concurrency changes
+
+2022-04-08  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-695, forgot updating 3 baseline files for SMAP due to the escaping of the special characters.
+
+2022-04-08  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-695
+
+2022-04-08  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #606 from OPENDAP/h5-clean-warning
+	H5 clean warning - 1
+
+2022-04-08  James Gallagher  <jgallagher@opendap.org>
+
+	Warnings removed (#605)
+	Warnings removed
+
+2022-04-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-595, update baseline files for NASA tests because of escaping special characters.
+
+2022-04-08  James Gallagher  <jgallagher@opendap.org>
+
+	Size fix (#604)
+	Extended the response size code so that Apple/OSX values are correct
+	I also moved the code into a new DapUtils file that can be
+	used by Transmitters outside of the bes/dap code. This way
+	the ASCII, etc., code can log the size info. I also made
+	DapUtils a namespace and not a class with static methods.
+
+2022-04-08  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, 1. change NULL to nullptr to follow C++11. 2. Make integer comparison consistent (either for all unsigned or signed) 3. Move callback functions to the .cc rather to .h to avoid compiler confusion.
+
+2022-04-06  myang6  <myang6@hdfgroup.org>
+
+	 HYRAX-677, fix bug/code smells from sonar cloud, more to come
+
+	Merge branch 'master' into h5-clean-warning
+
+2022-04-06  James Gallagher  <jgallagher@opendap.org>
+
+	Ncml auto ptr begone (#603)
+	No more auto_ptr in the NCML code
+	Clean up the global static string objects
+	Removed the PRINT_CONSTRAINTS code (#if 0)
+	Removed RCObjectInterface.cc - moved the sole method into the header.
+
+2022-04-05  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-667, use nullptr instead of NULL or 0.
+
+2022-04-04  Sam Lloyd  <slloyd@opendap.org>
+
+	added default and max FONc.RequestMaxSizeKB values to fonc.conf.in (#602)
+
+2022-04-01  James Gallagher  <jgallagher@opendap.org>
+
+	Auto ptr begone (#600)
+	Removing auto_ptr from all but the NCML handler
+	In the course of doing this, I modified the sonarscan properties file in what seemed
+	to be an innocuous way yet the scan broke with a message about node.js. I removed the
+	change and the error went away. The change was to remove a directory that no longer
+	exists from the 'exclude' list. No Idea why this broke the scan, but it was the only change
+	and undoing that 'fixed' the problem.
+
+2022-03-31  Nathan Potter  <ndp@opendap.org>
+	    James Gallagher  <jgallagher@opendap.org>
+
+	Tests for the get_dmrpp application. (#596)
+	* Starter kit baselines and config for get_dmrpp tests
+	* testing
+	* Just DMR test
+	* travis hack to get verbose builrd. experiement
+	* Switchoing get_dmrpp from /bin/sh to /bin/bash
+	* Improved baseline/test filtering
+	* Added fully qualified get_dmrpp invocation using abs_top_builddir to locate get_dmrpp
+	* Added fully qualified get_dmrpp invocation using abs_top_builddir to locate get_dmrpp
+	* Ensure get_dmrpp is executabe
+	* Ensure get_dmrpp is executabe
+	* Fix path for besstandalone and get_dmrpp
+	* Fix path for besstandalone and get_dmrpp
+	* Fix path for besstandalone and get_dmrpp
+	* Hardwiored verbose mode for get_dmrpp m4 code.
+	* Hardwired verbose mode for get_dmrpp m4 code. - take 2
+	* Hardwired verbose mode for get_dmrpp m4 code. - take 2
+	* Reorder test buids. Verbose in m4 m,acros
+	* small fix for verbose
+	* WIP - make check works, make distcheck does not
+	* Added get_dmrpp.conf.in to EXTRA_DIST in dmrpp_module/data
+	* Added baselines and fixed sed regex
+	The sed regex did not match pathnames that include version numbers like
+	-x.y.z
+	* Added get_drmpp.conf to DISTCLEAN
+	* Renamed get_dmrpp.conf.in to get_dmrpp_mkcheck.conf.in and get_dmrpp.conf to get_dmrpp_mkcheck.conf
+	* Renamed get_dmrpp.conf.in to get_dmrpp_mkcheck.conf.in and get_dmrpp.conf to get_dmrpp_mkcheck.conf
+	* Consolidated build/install/test configurations for get_dmrpp
+	* Specifying build_dmrpp location for M4 macros
+	* Entangling paths
+	* Removed AUTOTES verbose flag from build.
+	* Dropping unneeded get_dmrpp_mkcheck.conf.in file
+	* Adding mkdchk, a low output 'make distcheck' invoker
+
+2022-03-31  James Gallagher  <jgallagher@opendap.org>
+
+	Error redux (#598)
+	Edits to the BESError and child classes - inherits from std::exception now
+	Note: gcc (i.e., linux, for us) does not like the default copy constructor (but OSX/cland does).
+	Having the default copy constructor 'violates' the rule of zero and Sonar was griping about
+	that. I marked it as a false positive.
+
+2022-03-30  Sam Lloyd  <slloyd@opendap.org>
+	    James Gallagher  <jgallagher@opendap.org>
+
+	Add timeout (#599)
+	* added "too big" to fileout_netcdf
+	* Added a new macro to help test BES Keys more easily
+	* added size 0kb and 50kb conf.in files for
+	* added size 0kb and 50kb conf.in files for future use
+	* token testing
+	* git url testing
+	* testing done, reverting
+	* added bescmd file for max response size testing
+	* Added autotest macro that enables different bes.conf files
+	* Modifications to add max response size tests
+	* Added the first test
+	* Added on test that should fail for response max size - WIP
+	* added regression tests for netcdf->dap2 'request size too big' check
+	* added netcdf->dap4 'request size is too big' checks and regression tests
+	* add size##.conf.in files to EXTRA_DIST for make distcheck
+	* Fixes for dist check
+	Move the conf files from testsuite's dependencies and add them
+	to noinst_DATA to ensure generation in the build directory.
+
+2022-03-29  James Gallagher  <jgallagher@opendap.org>
+
+	Bad alloc test (#597)
+	Testing how bad_alloc exceptions are processed.
+	Added memory footprint output to errors in the log
+	Tweaks to BESInterface - sonar and getrusage() for OSX
+
+2022-03-28  James Gallagher  <jgallagher@opendap.org>
+
+	Added GZIP_ENV=--fast to the distcheck target
+	We don't care if it's a small tarball but we do care if it
+	takes all day to build!
+	[skip ci]
+
+2022-03-24  James Gallagher  <jgallagher@opendap.org>
+
+	Refactor of the code in bes/server (#595)
+	Refactor of the code in bes/server
+
+	More refactoring.
+
+2022-03-22  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed 'OPENDAP' in travis/trigger-olfs-build.sh
+	The github repo is /OPENDAP/olfs, not opendap/olfs.
+
+	Remove the old WWW interface - we now use code in the front end. (#594)
+	Remove the old WWW interface - we now use code in the front end.
+
+2022-03-21  James Gallagher  <jgallagher@opendap.org>
+
+	Comments and an added dependency to fileout_netcdf/tests/Makefile.am
+	[skip ci]
+
+2022-03-18  James Gallagher  <jgallagher@opendap.org>
+
+	Esc attr 536 delta (#593)
+	Added a new BES key to the hdf5 handler EscapeUTF8Attr (default true)
+	When true, use the same escaping scheme for UTF-8 values for attributes
+	as for ASCII. If false, allow the UTF-8 values to appear unescaped in
+	DAS, DDX and DMR responses. Those values currently cause failures in the
+	OLFS when it builds the HTML form from the DMR or DDX (the failure actually
+	probably happens in the browser and me be due to the xml character encoding
+	we use for the DDX and DMR XML which is ISO-8859-1).
+	The tests include a new macro that I'd like to also add to the common
+	collection of macros in bes/modules/handler_tests_macros.m4. It provides
+	a way to test different bes.conf files against the same bescmd file
+	without using multiple .at files. As a bonus, this also shows how to
+	'inherit' from a bes.conf file to avoid repeating listings of keys and
+	how to avoid the need to build a conf file using configure/Malefile.am.
+
+2022-03-14  Nathan Potter  <ndp@opendap.org>
+
+	Adding improved verbose and error output to build_dmrpp (#590)
+	* Adding improved verbose and error output to build_dmrpp
+	* Removed spurious /
+
+2022-03-10  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-68 2022-03-10T18:45:44+0000 Triggering BES build for snapshots.
+
+2022-03-09  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-67 2022-03-10T05:51:01+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.9-66 2022-03-10T00:01:05+0000 Triggering BES build for snapshots.
+
+2022-03-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #591 from OPENDAP/hyrax-595-fnoc
+	Hyrax 595 fnoc
+
+2022-03-09  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-595-fnoc
+
+	HYRAX-595, corrected a Makefile.am syntax in the master that causes make check failed
+
+2022-03-09  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-64 2022-03-09T19:01:31+0000 Triggering BES build for snapshots.
+
+2022-03-09  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-595-fnoc
+
+2022-03-09  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-595, add fileout netCDF platform-specific tests for NASA files.
+
+2022-03-08  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-62 2022-03-08T16:44:01+0000 Triggering BES build for snapshots.
+
+2022-03-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes from Kent's review of the mds/history fix branch [skip ci]
+
+2022-03-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added test-deploy feature to .travis.yml
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Spelling in a comment [skip ci]
+
+2022-03-07  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-595, add the HDF5 file and bescmd file for the macOS-off testing option
+
+2022-03-04  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #588 from OPENDAP/hyrax-595
+	Hyrax 595
+
+2022-03-04  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-595
+
+2022-03-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-58 2022-03-04T19:33:38+0000 Triggering BES build for snapshots.
+
+2022-03-04  James Gallagher  <jgallagher@opendap.org>
+
+	Dmrpp string array fix (#587)
+	Patch for HYRAX-451 - String Array failure.
+	This addresses only the simplest case where we have a String Array
+	with one element and no constraint. Other cases will fail. This
+	case needs tests. Then we will need to expand the way String
+	Arrays are represented in the DMR++ and modify the handler to process
+	the various ways string arrays can be encoded.
+
+2022-03-04  ndp-opendap  <ndp@opendap.org>
+
+	Updating CMakeLists.txt to drop functions
+
+2022-03-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Spelling fixes [skip ci]
+
+2022-03-04  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-595, update valgrind .at files.
+
+2022-03-04  James Gallagher  <jgallagher@opendap.org>
+
+	History mds fix (#586)
+	Turned off the 'stop escaping attributes' modification:
+	It turns out that this is not needed for the  history_json attribute. That was hard to see, but having
+	this on have _no effect_ on the operation of that code. See HYRAX-649 for more info
+	I also reorganized the tests so there is one testsuite, not two since the time when netcdf4 support
+	can be optional has long passed.
+	Removed conditional support for netcdf4 - it is now required
+	Removed the old netcdf_handlerTest.at in favor of testsuite.at
+
+2022-03-04  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-595, make several NASA tests platform-specific.
+
+2022-03-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-595, make the final clean-up  on the feature to tests on different platforms.
+
+2022-03-03  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-595' of https://github.com/opendap/bes into hyrax-595
+
+	HYRAX-595, AT_XFAIL_IF will always be checked although logically it may be executed. However, if the condition is not wrong, it won't take effect. So using this feature to separate different platforms.
+
+2022-03-03  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-595' of https://github.com/opendap/bes into hyrax-595
+
+	HYRAX-595, check in the correct baseline file.
+
+2022-03-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-595, hopefully this will make Linux happy
+
+	HYRAX-595, add a test as expected failure on MacOS for DMR that has different attribute orders.
+
+2022-02-28  myang6  <myang6@hdfgroup.org>
+
+	hyrax-595, pass configure host to the M4
+
+2022-02-28  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #585 from OPENDAP/hyrax-648
+	Hyrax 648
+
+2022-02-28  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-648
+
+	HYRAX-648, add DAP4 Grid expression constraint tests by following the DAP4 specification.
+
+2022-02-25  Nathan Potter  <ndp@opendap.org>
+
+	Get dmrpp s3 (#584)
+	* First try at adding s3 support to get_dmrpp
+	* Refining dmr++ S3 interaction. Fixed version number issue
+	* Cleaning up the get_dmrpp.in code by placing the missing var merge and testing activities in functions in order to reduce complexity in 'main'
+	* Documentation
+	* Updated error handling. Made AWS_DEFAULT_REGION optional
+
+2022-02-24  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #583 from OPENDAP/hyrax-394
+	Hyrax 394
+
+2022-02-24  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-394
+
+	HYRAX-394, add DAP4 Grid expression constraint tests to the fileout_netCDF module.
+
+2022-02-24  Sam Lloyd  <slloyd@opendap.org>
+
+	Memory logging (#582)
+	* added memory logging to BESDapResponseBuilder.cc
+	* added memory logging to BESDapResponseBuilder.cc
+
+2022-02-22  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-55 2022-02-22T16:50:35+0000 Triggering BES build for snapshots.
+
+2022-02-21  myang6  <myang6@hdfgroup.org>
+
+	Add netCDF handler and fileout covjson sample tests for convenience.
+
+2022-02-20  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #581 from OPENDAP/hyrax-641
+	Hyrax 641
+
+2022-02-20  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-641, update GPM baseline files due to the update of GPM special attribute handling routine.
+
+	Merge branch 'master' into hyrax-641
+
+	HYRAX-641, use the libdap's DAP4 attribute erase function to update GPM attrs.
+
+2022-02-18  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-52 2022-02-19T04:54:45+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.9-50 2022-02-18T20:15:44+0000 Triggering BES build for snapshots.
+
+2022-02-17  myang6  <myang6@hdfgroup.org>
+
+	HFRHANDLER-335, add trace-children in the valgrind test to avoid the fake memory leaking message generated by the bash script.
+
+	HYRAX-641, update special GPM attributes.
+
+2022-02-16  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-45 2022-02-17T00:39:26+0000 Triggering BES build for snapshots.
+
+2022-02-16  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #580 from OPENDAP/hyrax-641
+	Hyrax 641
+
+2022-02-16  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-641
+
+	HYRAX-641, add the special GPM fillvalue handling for the CF to DMR implementation.
+
+2022-02-16  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-41 2022-02-16T21:57:46+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.9-39 2022-02-16T17:43:50+0000 Triggering BES build for snapshots.
+
+2022-02-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #579 from OPENDAP/hfrhandler-335
+	HFRHANDLER-335, update the BES configuration files for the testing un…
+
+2022-02-15  myang6  <myang6@hdfgroup.org>
+
+	HFRHANDLER-335, update the BES configuration files for the testing under the modules/hdf4_handler.
+
+2022-02-15  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-37 2022-02-15T21:53:04+0000 Triggering BES build for snapshots.
+
+2022-02-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #578 from OPENDAP/hyrax-640
+	Hyrax 640
+
+2022-02-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-640, add baseline files for the tests of FakeDim dimension names for the same dimension size
+
+2022-02-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-640, add bescmd files.
+
+	HYRAX-640, add more code to handle Fake dimension
+
+2022-02-14  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-640, add python scripts and the HDF5 files which the variables hold the same dimension size for different dimensions.
+
+2022-02-14  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #577 from OPENDAP/hyrax-629
+	Hyrax 629
+
+2022-02-14  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-629, has to comment out the dmr test for SMAP_L3_SM_P_E because of different attribute orders on Mac and Linux.
+
+2022-02-14  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'hyrax-629' of https://github.com/opendap/bes into hyrax-629
+
+	HYRAX-629, clean up code and add the test for SMAP_L3_SM_P_E for valgrind.
+
+2022-02-14  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-629, update URL for new SMAP level 3 tests.
+
+2022-02-14  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-629, add the SMAP_L3_SM_P_E test for the same dimension size for different dimensions.
+
+	Merge branch 'master' into hyrax-629
+
+2022-02-13  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-629, make the unique FakeDim dimension name the same for the same dimension size in different variables.
+
+2022-02-13  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-35 2022-02-13T18:30:59+0000 Triggering BES build for snapshots.
+
+2022-02-11  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-30 2022-02-12T04:34:59+0000 Triggering BES build for snapshots.
+
+2022-02-11  James Gallagher  <jgallagher@opendap.org>
+
+	A final step to the deployment puzzle
+
+	Added centos-stream8 to the deploy conditional
+
+	Cs8 rpms (#576)
+	Build cs8 rpms - test #1
+	Fix for the cs8 -vs- c7 dependencies tar ball builds
+	Added env vars for the tirpc lib to the travis rpm build
+	Also added the sonar quality gate 'wait' option so that the test
+	is reading the state of the current scan and not the previous scan.
+
+2022-02-11  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-28 2022-02-11T20:31:49+0000 Triggering BES build for snapshots.
+
+2022-02-08  James Gallagher  <jgallagher@opendap.org>
+
+	If CXXFLAGS is set in the shell, it will be used, with or w/o developer mode (#574)
+	By default CXXFLAGS is -g -O2 for autoconf. If CXXFLAGS is set, it
+	should contain those values
+
+	Use the covjson module's static archive to link the unit test (#573)
+	Also fixed some warnings in the code where an error case was not handled
+	and suppressed annoying warnings about arrays and C99 using -Wno-vla-extension
+	where 'no' turns off the warning.
+
+2022-02-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added FoCovJsonRequestHandler.o to the covjson module's unit-test
+
+2022-02-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-11 2022-02-04T21:40:37+0000 Triggering BES build for snapshots.
+
+2022-02-04  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #572 from OPENDAP/hyrax-610
+	Hyrax 610
+
+2022-02-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, remove debugging info and some compiling warnings.
+
+	HYRAX-610, add the support of AIRS level 3 and GLDAS level products.
+
+2022-02-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-10 2022-02-04T17:45:40+0000 Triggering BES build for snapshots.
+
+2022-02-04  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, make time bound attribute work
+
+2022-02-03  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, generate the correct time bound value.
+
+	HFVHANDLER-365, update the BES configuration input files for bes/modules/hdf5_handler. Some configuration settings are not consistent with the previous builds.
+
+2022-02-03  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-610, use trace children for valgrind to get rid of fake memory leaks by bash scripts.
+
+2022-02-02  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, still handling the CF to greg time conversion. Found I have to use unsigned long long to keep the time values.
+
+2022-02-01  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, more code to handle time axis for simple geographic projection.
+
+2022-01-31  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Update formatting.
+
+2022-01-30  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Correct .at script name for the step 3 4).
+
+	Correct .at file name for the step 3 (2).
+
+2022-01-29  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Add more steps for the sample NASA data testing.
+
+2022-01-27  James Gallagher  <jgallagher@opendap.org>
+
+	More string fixes (#571)
+	I found places where string length was potentially misused
+	To wit, using "value[value.length() - 1]" will fail if the string
+	is empty() (i.e., length() == 0). value[0 - 1] winds up with an
+	index that's huge. On CentOS8 this triggers a run-time assert.
+	BESUtil has two functions to trim trailing slashes and surrounding double quotes
+	(trim_if_trailign_slash() and trim_if_surrounds_quotes()). Both modify the string
+	passed by reference. Both are safe for empty strings and should be fast. As a by
+	product, I rewrote the BESUtil unit test.
+	Rewrote assemblePath and added tests. Found one set of values that fail,
+	but it's an obscure case, so I marked the test as expected to fail
+
+2022-01-26  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, finish the non-polished code to handle AIRS level 3 coverage pre-processing handling. The parameter variables are as expected. Need to handle the coverage output for the geographic projection grid support for GLDAS level 4 and AIRS level 3.
+
+2022-01-26  Kodi Neumiller  <kneumiller@mtech.edu>
+	    James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a bug inside TheBESKeys (#570)
+
+2022-01-26  James Gallagher  <jgallagher@opendap.org>
+
+	removed extraneous comment in travis.yml
+	[skip ci]
+
+2022-01-26  H. Joe Lee  <hyoklee@hdfgroup.org>
+
+	Fix section numbers and auto test script name.
+
+2022-01-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added python exec discovery to configure and patched Makefile.am files (#567)
+	Use ${PYTHON} to find a python 2 or 3 interpreter in the Makefiles
+
+2022-01-24  James Gallagher  <jgallagher@opendap.org>
+
+	Changed how the code links to the dap_module to fix 'non-portable' warnings (#569)
+	* Changed how the code links to the dap_module to fix 'non-portable' warnings.
+	The code was linking against dap_module.la which becomes dap_module.so
+	which is actually a 'module' and not a real library. This generates
+	warnings from libtool and also, on linux, with rpath. The changes are
+	mostly in unit-tests but also appears in the dmrpp tools like build_dmrpp.
+	* Fix for centos 7 rpm and static archives
+	The RPM build used --disable-static, but the code now links with
+	libdap_module.a. I removed --disable-static. However, the .a archives
+	are not part of the RPM, so the install step removes them.
+
+2022-01-24  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, add the routines to retrieve the bound values
+
+	HFRHANDLer-334, update the .at file when the handler is configured with the HDF4 library only. The testsuite then carries out the tests correctly.
+
+2022-01-24  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #568 from OPENDAP/get-dmrpp-add-types
+	Add Kevin Beam testing options
+
+2022-01-24  myang6  <myang6@hdfgroup.org>
+
+	Add README file on how to test the cases the "make check" doesn't cover.
+
+2022-01-21  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-610, support more GES DISC level 3 and level 4 products. Writing code to check several cases of coverage for the simple grid.
+
+2022-01-20  dh-opendap  <dholloway@opendap.org>
+
+	Add Kevin Beam testing options
+
+2022-01-19  James Gallagher  <jgallagher@opendap.org>
+
+	Added comment re: HYARX-378 - Read failure in Chunk::chunk_write_data() cripples Hyrax
+	[skip ci]
+
+	Build deps test (#563)
+	Speed up the Travis CI builds
+	Test the BES build with the new dependencies, esp the slimmer GDAL library
+	Fix for the centos7 rpm package build
+	Add sonarscan caching
+	Combined build and package steps for more speed
+
+	Hdf5 hackery (#564)
+	Move the hdf5_handler code from a submodule to a subtree to streamline BES development.
+
+	Fix for the issue where OSX 11 dlopen() fails in some cases. (#566)
+	Fix for the issue where OSX 11 dlopen() fails in some cases.
+	For libgdal, dlopen fails to find libcurl when the reference is within
+	a library loaded as a run-time loadable module. The fix is to switch
+	from RTLD_NOW to RTLD_LAZY.
+	Added sqlite-devel to build-rpm.sh to fix the centos7 rpm package step
+
+2022-01-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/hdf4_handler
+
+2022-01-11  myang6  <myang6@hdfgroup.org>
+
+	ESDIS-584, update the .at file for the non-HDF-EOS2 configuration option, the original .at file doesn't perform correctly. Note this test is not run automatically by "make check". This is a good example to validate the github subtree option for the HDF4 handler.
+
+2022-01-08  James Gallagher  <jgallagher@opendap.org>
+
+	Pugi integration (#562)
+	Replaced pugixml submodule with a subtree
+
+2022-01-07  James Gallagher  <jgallagher@opendap.org>
+
+	Hdf4 integration (#561)
+	Switched from modules/hdf4_handler as a submodule to a subtree
+	
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## BES Version 3.20.10
+##
 
 2021-12-30  ndp-opendap  <ndp@opendap.org>
 

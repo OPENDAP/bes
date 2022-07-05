@@ -1,3 +1,41 @@
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## News for 3.20.11
+
+* Support for RHEL8
+* Refactored get_dmrpp, application. Some features still broken but core
+  functionality is working now.
+# Continued general migration to C++11 coding norms.
+
+* Improved support for more GES DISC level 3 and level 4 products
+* Support for add the support of AIRS level 3 and GLDAS level products.
+* Refactored project so that all of the code that depends on the gdal library
+  is in a single module, modules/gdal_module.
+* Retired use of auto_ptr.
+*  Refactored timeout implementation and dropped the use of SIGALRM therein.
+* Modified fileout_netcdf handler to allow netcdf-3 responses to be up to 4GB
+  in size. This behavior can be reverted by setting FONc.NC3ClassicFormat=true
+  in the BEs configuration (aka /etc/bes/site.conf file)
+
+### DMR++ Improvements
+
+* Various improvements for supporting FillValue in dmr++ lifecycle.
+* Various improvements for supporting FillValue in dmr++ lifecycle.
+* Improved support for arrays of type String.
+* Fixed trusted url bug in DMZ parser.
+* Added support for "empty" valuyes scalars with associated _FillValue metadata.
+
+#### get_dmrpp Improvements
+* Added support for S3 hosted granules to get_dmrpp
+* Added regression test suite for get_dmrpp
+
+### DAP4
+
+* Added Map elements to DMR
+* Modify the HDF5 handler so that DAP4 Coverages have Map
+  elements. This support extends to a number of DAAC "specials"
+  like HDF-EOS5
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.20.10
 
 #### DMR++ Improvements
