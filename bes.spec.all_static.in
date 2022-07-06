@@ -45,7 +45,7 @@ Requires:       openssl
 
 Requires(pre):  shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.9
+BuildRequires:  libdap-devel >= 3.20.10
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0

@@ -1,3 +1,9 @@
+bes (3.20.12-0) trusty; urgency=medium
+
+* Patched bug in HDF5Array.cc introduced by the std::vector refactor
+* Added time.h header to ppt/SocketUtilities.cc
+
+
 bes (3.20.11-0) trusty; urgency=medium
 
 ## BES Updates
