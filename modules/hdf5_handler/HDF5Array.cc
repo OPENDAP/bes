@@ -837,7 +837,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         if(mem_space_id < 0) 
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset memory space.");
 
-        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,rbuf.data())<0)
+        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,&rbuf[0])<0)
             throw InternalErr(__FILE__, __LINE__, "Fail to read hyperslab reference dataset.");
 
         H5Sclose(mem_space_id);
@@ -846,7 +846,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         // Now we need to retrieve the reference info. fot the nelms elements.
         vector<string> v_str;
 
-        H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)rbuf.data());
+        H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)&rbuf[0]);
 
         // The referenced objects can only be either objects or dataset regions.
         if(ref_type != H5R_OBJECT2 && ref_type !=H5R_DATASET_REGION2)
@@ -1004,7 +1004,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         delete[] rbuf;
         H5Sclose(mem_space_id);
         H5Sclose(file_space_id);
-	set_value(v_str.data(), nelms);
+	    set_value(v_str.data(), nelms);
         return false;
     }
     catch (...) {

@@ -23,7 +23,10 @@
 
 2022-06-27  kyang2014  <kyang2014@users.noreply.github.com>
 
-	HYRAX-749, make fileout netCDF-3 to support file size up to 4GB by using 64-bit offset flag. Update the testsuite. Also add a key for people to switch to classic format. In the long term run, hopefully the fileout netCDF-3 support can be dropped and the corresponding keys can be removed. (#651)
+	HYRAX-749, make fileout netCDF-3 to support file size up to 4GB by using 64-bit 
+	offset flag. Update the testsuite. Also add a key for people to switch to classic 
+	format. In the long term run, hopefully the fileout netCDF-3 support can be 
+	dropped and the corresponding keys can be removed. (#651)
 
 2022-06-21  kyang2014  <kyang2014@users.noreply.github.com>
 
@@ -48,7 +51,8 @@
 
 2022-06-20  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, clean up code:remove old commented out code, use range-for, const, auto and default/override.
+	HYRAX-667, clean up code:remove old commented out code, use range-for, const, 
+	auto and default/override.
 
 2022-06-20  The-Robot-Travis  <npotter@opendap.org>
 
@@ -135,7 +139,8 @@
 
 	HYRAX-667, use const, range for to reduce code smell.
 
-	HYRAX-667, reduce code smell by new sonar cloud analysis, mostly use private rather than protected and const.
+	HYRAX-667, reduce code smell by new sonar cloud analysis, mostly use private r
+	ather than protected and const.
 
 	HYRAX-667, clean more code smell with range for,auto and const
 
@@ -196,7 +201,8 @@
 	* Fixed s3 test
 	* fixing distcheck, refactored verbose mode
 	* Fixed missing data file upload to s3
-	* Fixed inventory test. Had to drop the dap2 DDX tests and the dap4 attributes tests because, broken
+	* Fixed inventory test. Had to drop the dap2 DDX tests and the dap4 attributes 
+	tests because, broken
 	* Added inventory test
 	* Added missing data url injection test
 	* Added baseline files, updated help output
@@ -215,7 +221,8 @@
 	* Force verbose on inventory test
 	* Changed bash computation for tests_run
 	* Changed bash computation for tests_run
-	* Changed bash computation for tests_run, using bc because the shell in ubuntu is stupidpants
+	* Changed bash computation for tests_run, using bc because the shell in ubuntu 
+	is stupidpants
 	* Switch inventory test BES data root to builddir
 	* Trying dedicated m4 macro for get_dmrpp internal testing targets
 	* Inventory test refinement to accomodate the addition of chunks
@@ -243,17 +250,22 @@
 
 	HYRAX-639, use gmtime_r instead of gmtime. Also correct other issues found by sonarcloud
 
-	HYRAX-639, make the current module support only the CF simple geographic projection since the reference system are not handled right for other cases.
+	HYRAX-639, make the current module support only the CF simple geographic projection 
+	since the reference system are not handled right for other cases.
 
 2022-06-09  myang6  <myang6@hdfgroup.org>
 
 	HYRAX-639, add testsuite to test AIRS and GLDAS files.
 
-	HYRAX-639, fix an issue to generate the time in Gregorian calendar: need to use replace localtime etc. with gmtime etc. The covjson currently should only support CF time in UTC. Also make the default support of "simple geographic projection and ignoring z-axis if necessary". Correct the testing baseline file and the configuration file.
+	HYRAX-639, fix an issue to generate the time in Gregorian calendar: need to use replace 
+	localtime etc. with gmtime etc. The covjson currently should only support CF time in UTC. 
+	Also make the default support of "simple geographic projection and ignoring z-axis if 
+	necessary". Correct the testing baseline file and the configuration file.
 
 2022-06-08  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-639, 1) Add bound support, 2) Fix issues for simple tests. 3) Replace the tests with simple geographic projection tests.
+	HYRAX-639, 1) Add bound support, 2) Fix issues for simple tests. 3) Replace the tests 
+	with simple geographic projection tests.
 
 	HYRAX-639, make the simple xy/xyz case work.
 
@@ -281,7 +293,8 @@
 
 2022-06-01  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-712, update the comments for the BES keys so that they are consistent with the user's guide
+	HYRAX-712, update the comments for the BES keys so that they are consistent with 
+	the user's guide
 
 2022-05-29  myang6  <myang6@hdfgroup.org>
 
@@ -306,7 +319,8 @@
 
 	Added testsuite switch for S3 tests. Turned off always on verbose mode (#639)
 	* Added testsuite switch for S3 tests. Turned over always on verbose
-	* Added test for AWS CLI with creds and use that in Makefile to determine if the S3 tests should be run.
+	* Added test for AWS CLI with creds and use that in Makefile to determine if the 
+	S3 tests should be run.
 	* Refining AWSCheck
 
 2022-05-27  myang6  <myang6@hdfgroup.org>
@@ -377,23 +391,27 @@
 
 2022-05-22  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, use auto to replace iterator, also use default for constructor/destructor as well as using const.
+	HYRAX-667, use auto to replace iterator, also use default for constructor/destructor 
+	as well as using const.
 
 2022-05-20  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, use auto to replace iterator,type and override to replace virtual. Also comments, cleaning up old code.
+	HYRAX-667, use auto to replace iterator,type and override to replace virtual. Also 
+	comments, cleaning up old code.
 
 	HYRAX-667, use auto to replace iterator and type, also use empty() to replace size()
 
 2022-05-19  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, use auto to replace many iterator lines, also compact the original lines with iterator to one line. Use empty instead of size() to check if the vector is empty. etc.
+	HYRAX-667, use auto to replace many iterator lines, also compact the original lines 
+	with iterator to one line. Use empty instead of size() to check if the vector is empty. etc.
 
 2022-05-18  myang6  <myang6@hdfgroup.org>
 
 	HYRAX-667, use more auto
 
-	HYRAX-667, use auto,overide and in-class initializer to replace the old-style according to sonar cloud.
+	HYRAX-667, use auto,overide and in-class initializer to replace the old-style 
+	according to sonar cloud.
 
 2022-05-18  ndp-opendap  <ndp@opendap.org>
 
@@ -409,7 +427,8 @@
 
 2022-05-17  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, use auto-pointer and default constructor/destructor as well as in-class initialization
+	HYRAX-667, use auto-pointer and default constructor/destructor as well as in-class 
+	initialization
 
 2022-05-17  James Gallagher  <jgallagher@opendap.org>
 
@@ -452,7 +471,8 @@
 
 	Merge branch 'master' into hyrax-712
 
-	HYRAX-712, update the doc under the source directory to make it consistent with the hyrax user guide
+	HYRAX-712, update the doc under the source directory to make it consistent with the 
+	hyrax user guide
 
 2022-05-11  ndp-opendap  <ndp@opendap.org>
 
@@ -495,7 +515,8 @@
 	* Working on temp file template qc
 	* Scoping locks
 	* More code cleanup.
-	* Made the template construction for mkstemp() part of the TempFile::create() method. Adjusted callers accordingly.
+	* Made the template construction for mkstemp() part of the TempFile::create() 
+	method. Adjusted callers accordingly.
 	* Added exception trapping to the SIGPIPE handler code
 	* Formatting
 	* SonarPinged
@@ -533,7 +554,8 @@
 	* Fix incorrect string conversions in add_chunk() call
 	* Fix incorrect string conversions in add_chunk() call
 	* Adding docs to the add_chunk() methods in DmrppCommon
-	* Added docs and a safety check to be sure that at least one needed Chunk is found during the read()
+	* Added docs and a safety check to be sure that at least one needed Chunk is
+	  found during the read()
 	* Code formatting
 
 2022-05-03  dh-opendap  <dholloway@opendap.org>
@@ -542,7 +564,11 @@
 
 2022-05-02  dh-opendap  <dholloway@opendap.org>
 
-	Merge branch 'replace-sigalrm', includes RequestServiceTimer singleton elapsed timer, changes to handlers to poll this timer at various locations to determine if bes_timeout has elapsed.  When a timeout is recognized the timer will throw an exception that provides an error message that will be available thru the olfs to the end-user.
+	Merge branch 'replace-sigalrm', includes RequestServiceTimer singleton 
+	elapsed timer, changes to handlers to poll this timer at various locations 
+	to determine if bes_timeout has elapsed.  When a timeout is recognized the 
+	timer will throw an exception that provides an error message that will be 
+	available thru the olfs to the end-user.
 
 2022-05-02  ndp-opendap  <ndp@opendap.org>
 
@@ -561,7 +587,8 @@
 	* Hacking the distcheckness
 	* Hacking the distcheckness
 	* More distcheckyness but still not working
-	* Fixed BES.Catalog.catalog.RootDirectory in test_bes.conf to point to source tree
+	* Fixed BES.Catalog.catalog.RootDirectory in test_bes.conf to point to 
+	source tree
 	* Added test_bes.conf to DISTCLEANFILES
 	* Some minor cleanup in get_dmrpp tests
 
@@ -586,7 +613,8 @@
 
 2022-04-28  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-706, make the meaningful error message due to the netCDF classic model datatype limitation
+	HYRAX-706, make the meaningful error message due to the netCDF classic 
+	model datatype limitation
 
 2022-04-28  dh-opendap  <dholloway@opendap.org>
 
@@ -648,7 +676,8 @@
 
 2022-04-26  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-418, update the testsuite to include the shuffle check inside the compression test.
+	HYRAX-418, update the testsuite to include the shuffle check inside the 
+	compression test.
 
 	 HYRAX-661, add comments for the change
 
@@ -673,7 +702,8 @@
 
 2022-04-22  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-687, update the NASA DMR baseline files to reflect the feature of listing coordinate variables first in the layout.
+	HYRAX-687, update the NASA DMR baseline files to reflect the feature of 
+	listing coordinate variables first in the layout.
 
 2022-04-22  myang6  <myang6@hdfgroup.org>
 
@@ -685,7 +715,8 @@
 
 2022-04-21  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-687, switch the order of variables and coordinate variables for general products(netcdf4-like), update the nc4_group_atomic.h5.use_cf.baseline for get_dmrpp
+	HYRAX-687, switch the order of variables and coordinate variables for general 
+	products(netcdf4-like), update the nc4_group_atomic.h5.use_cf.baseline for get_dmrpp
 
 2022-04-21  dh-opendap  <dholloway@opendap.org>
 
@@ -904,7 +935,13 @@
 
 2022-04-13  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, 1. When handling the string attribute in the default option of the HDF5 handler, extra NULL terms are added to the end of the string. This doesn't show in the DAS/DMR output. However, it shows extra NULL terms in the fileout netCDF output. So correct them and also update the fake and NASA testsuite in the fileout netCDF. This is actually a bug-fix rather than cleaning warnings. Since I happen to find when cleaning up the warnings and the fix is easy. So just fix it.
+	HYRAX-667, 1. When handling the string attribute in the default 
+	option of the HDF5 handler, extra NULL terms are added to the 
+	end of the string. This doesn't show in the DAS/DMR output. 
+	However, it shows extra NULL terms in the fileout netCDF output. 
+	So correct them and also update the fake and NASA testsuite in the 
+	fileout netCDF. This is actually a bug-fix rather than cleaning 
+	warnings. Since I happen to find when cleaning up the warnings and the fix is easy. So just fix it.
 
 2022-04-13  ndp-opendap  <ndp@opendap.org>
 
@@ -943,7 +980,13 @@
 
 2022-04-12  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, fix more code smell and warnings: 1. Use const in the function parameter if possible 2. Use auto to replace iterator/type 3. use default for constructor/destructor 4. remove old and no longer valid comments, statements 5. Reduce compiling warnings 6. Use vector to replace arrays(still have a few)
+	HYRAX-667, fix more code smell and warnings: 
+	1. Use const in the function parameter if possible 
+	2. Use auto to replace iterator/type 
+	3. use default for constructor/destructor 
+	4. remove old and no longer valid comments, statements 
+	5. Reduce compiling warnings 
+	6. Use vector to replace arrays(still have a few)
 
 2022-04-12  dh-opendap  <dholloway@opendap.org>
 
@@ -958,7 +1001,8 @@
 2022-04-12  kyang2014  <kyang2014@users.noreply.github.com>
 
 	Merge pull request #609 from OPENDAP/h5-clean-warning
-	HYRAX-667, change NULL to nullptr for the HDF4 handler. This can redu…
+	HYRAX-667, change NULL to nullptr for the HDF4 handler. 
+	This can redu…
 
 2022-04-11  dh-opendap  <dholloway@opendap.org>
 
@@ -970,7 +1014,9 @@
 
 2022-04-11  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, change NULL to nullptr for the HDF4 handler. This can reduce the code smell and also easy to find other issues from sonar cloud.
+	HYRAX-667, change NULL to nullptr for the HDF4 handler. 
+	This can reduce the code smell and also easy to find other issues 
+	from sonar cloud.
 
 2022-04-11  dh-opendap  <dholloway@opendap.org>
 
@@ -987,13 +1033,16 @@
 
 	Made private accessors public
 
-	Merge changes to BESInterface, BESUtil for use of atomics Merge branch 'replace-sigalrm' of https://github.com/opendap/bes into replace-sigalrm
+	Merge changes to BESInterface, BESUtil for use of atomics 
+	Merge branch 'replace-sigalrm' of https://github.com/opendap/bes 
+	into replace-sigalrm
 
 	Concurrency changes
 
 2022-04-08  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-695, forgot updating 3 baseline files for SMAP due to the escaping of the special characters.
+	HYRAX-695, forgot updating 3 baseline files for SMAP due to the 
+	escaping of the special characters.
 
 2022-04-08  myang6  <myang6@hdfgroup.org>
 
@@ -1011,7 +1060,8 @@
 
 2022-04-08  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-595, update baseline files for NASA tests because of escaping special characters.
+	HYRAX-595, update baseline files for NASA tests because of escaping 
+	special characters.
 
 2022-04-08  James Gallagher  <jgallagher@opendap.org>
 
@@ -1024,7 +1074,10 @@
 
 2022-04-08  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-667, 1. change NULL to nullptr to follow C++11. 2. Make integer comparison consistent (either for all unsigned or signed) 3. Move callback functions to the .cc rather to .h to avoid compiler confusion.
+	HYRAX-667, 
+	1. change NULL to nullptr to follow C++11. 
+	2. Make integer comparison consistent (either for all unsigned or signed) 
+	3. Move callback functions to the .cc rather to .h to avoid compiler confusion.
 
 2022-04-06  myang6  <myang6@hdfgroup.org>
 
@@ -1296,7 +1349,9 @@
 
 	Merge branch 'hyrax-595' of https://github.com/opendap/bes into hyrax-595
 
-	HYRAX-595, AT_XFAIL_IF will always be checked although logically it may be executed. However, if the condition is not wrong, it won't take effect. So using this feature to separate different platforms.
+	HYRAX-595, AT_XFAIL_IF will always be checked although logically it may be executed. 
+	However, if the condition is not wrong, it won't take effect. So using this feature 
+	to separate different platforms.
 
 2022-03-03  Kent Yang  <myang6@hdfgroup.org>
 
@@ -1330,7 +1385,8 @@
 	Get dmrpp s3 (#584)
 	* First try at adding s3 support to get_dmrpp
 	* Refining dmr++ S3 interaction. Fixed version number issue
-	* Cleaning up the get_dmrpp.in code by placing the missing var merge and testing activities in functions in order to reduce complexity in 'main'
+	* Cleaning up the get_dmrpp.in code by placing the missing var merge and 
+	testing activities in functions in order to reduce complexity in 'main'
 	* Documentation
 	* Updated error handling. Made AWS_DEFAULT_REGION optional
 
@@ -1366,7 +1422,8 @@
 
 2022-02-20  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-641, update GPM baseline files due to the update of GPM special attribute handling routine.
+	HYRAX-641, update GPM baseline files due to the update of GPM special attribute 
+	handling routine.
 
 	Merge branch 'master' into hyrax-641
 
@@ -1380,7 +1437,8 @@
 
 2022-02-17  myang6  <myang6@hdfgroup.org>
 
-	HFRHANDLER-335, add trace-children in the valgrind test to avoid the fake memory leaking message generated by the bash script.
+	HFRHANDLER-335, add trace-children in the valgrind test to avoid the fake 
+	memory leaking message generated by the bash script.
 
 	HYRAX-641, update special GPM attributes.
 
@@ -1412,7 +1470,8 @@
 
 2022-02-15  myang6  <myang6@hdfgroup.org>
 
-	HFRHANDLER-335, update the BES configuration files for the testing under the modules/hdf4_handler.
+	HFRHANDLER-335, update the BES configuration files for the testing under the
+	 modules/hdf4_handler.
 
 2022-02-15  The-Robot-Travis  <npotter@opendap.org>
 
@@ -1425,7 +1484,8 @@
 
 2022-02-15  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-640, add baseline files for the tests of FakeDim dimension names for the same dimension size
+	HYRAX-640, add baseline files for the tests of FakeDim dimension names for 
+	the same dimension size
 
 2022-02-14  myang6  <myang6@hdfgroup.org>
 
@@ -1435,7 +1495,8 @@
 
 2022-02-14  Muqun Yang  <myang6@hdfgroup.org>
 
-	HYRAX-640, add python scripts and the HDF5 files which the variables hold the same dimension size for different dimensions.
+	HYRAX-640, add python scripts and the HDF5 files which the variables hold 
+	the same dimension size for different dimensions.
 
 2022-02-14  kyang2014  <kyang2014@users.noreply.github.com>
 
@@ -1444,7 +1505,8 @@
 
 2022-02-14  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-629, has to comment out the dmr test for SMAP_L3_SM_P_E because of different attribute orders on Mac and Linux.
+	HYRAX-629, has to comment out the dmr test for SMAP_L3_SM_P_E because of 
+	different attribute orders on Mac and Linux.
 
 2022-02-14  myang6  <myang6@hdfgroup.org>
 
@@ -1458,13 +1520,15 @@
 
 2022-02-14  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-629, add the SMAP_L3_SM_P_E test for the same dimension size for different dimensions.
+	HYRAX-629, add the SMAP_L3_SM_P_E test for the same dimension size for 
+	different dimensions.
 
 	Merge branch 'master' into hyrax-629
 
 2022-02-13  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-629, make the unique FakeDim dimension name the same for the same dimension size in different variables.
+	HYRAX-629, make the unique FakeDim dimension name the same for the same 
+	dimension size in different variables.
 
 2022-02-13  The-Robot-Travis  <npotter@opendap.org>
 
@@ -1533,15 +1597,19 @@
 
 	HYRAX-610, generate the correct time bound value.
 
-	HFVHANDLER-365, update the BES configuration input files for bes/modules/hdf5_handler. Some configuration settings are not consistent with the previous builds.
+	HFVHANDLER-365, update the BES configuration input files for 
+	bes/modules/hdf5_handler. Some configuration settings are not 
+	consistent with the previous builds.
 
 2022-02-03  Kent Yang  <myang6@hdfgroup.org>
 
-	HYRAX-610, use trace children for valgrind to get rid of fake memory leaks by bash scripts.
+	HYRAX-610, use trace children for valgrind to get rid of fake memory 
+	leaks by bash scripts.
 
 2022-02-02  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-610, still handling the CF to greg time conversion. Found I have to use unsigned long long to keep the time values.
+	HYRAX-610, still handling the CF to greg time conversion. Found I have 
+	to use unsigned long long to keep the time values.
 
 2022-02-01  myang6  <myang6@hdfgroup.org>
 
@@ -1577,7 +1645,10 @@
 
 2022-01-26  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-610, finish the non-polished code to handle AIRS level 3 coverage pre-processing handling. The parameter variables are as expected. Need to handle the coverage output for the geographic projection grid support for GLDAS level 4 and AIRS level 3.
+	HYRAX-610, finish the non-polished code to handle AIRS level 3 coverage 
+	pre-processing handling. The parameter variables are as expected. Need 
+	to handle the coverage output for the geographic projection grid support 
+	for GLDAS level 4 and AIRS level 3.
 
 2022-01-26  Kodi Neumiller  <kneumiller@mtech.edu>
 	    James Gallagher  <jgallagher@opendap.org>
@@ -1615,7 +1686,8 @@
 
 	HYRAX-610, add the routines to retrieve the bound values
 
-	HFRHANDLer-334, update the .at file when the handler is configured with the HDF4 library only. The testsuite then carries out the tests correctly.
+	HFRHANDLer-334, update the .at file when the handler is configured with the
+	 HDF4 library only. The testsuite then carries out the tests correctly.
 
 2022-01-24  Dan Holloway  <d.holloway@opendap.org>
 
@@ -1628,7 +1700,8 @@
 
 2022-01-21  myang6  <myang6@hdfgroup.org>
 
-	HYRAX-610, support more GES DISC level 3 and level 4 products. Writing code to check several cases of coverage for the simple grid.
+	HYRAX-610, support more GES DISC level 3 and level 4 products. Writing code 
+	to check several cases of coverage for the simple grid.
 
 2022-01-20  dh-opendap  <dholloway@opendap.org>
 
@@ -1662,7 +1735,10 @@
 
 2022-01-11  myang6  <myang6@hdfgroup.org>
 
-	ESDIS-584, update the .at file for the non-HDF-EOS2 configuration option, the original .at file doesn't perform correctly. Note this test is not run automatically by "make check". This is a good example to validate the github subtree option for the HDF4 handler.
+	ESDIS-584, update the .at file for the non-HDF-EOS2 configuration option, 
+	the original .at file doesn't perform correctly. Note this test is not run 
+	automatically by "make check". This is a good example to validate the github 
+	subtree option for the HDF4 handler.
 
 2022-01-08  James Gallagher  <jgallagher@opendap.org>
 
