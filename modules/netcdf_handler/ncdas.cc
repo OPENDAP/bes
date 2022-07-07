@@ -121,7 +121,11 @@ static string print_attr(nc_type type, int loc, void *vals)
         }
 
     case NC_CHAR:
-        return escattr(static_cast<const char*>(vals));
+    {
+        //return escattr(static_cast<const char*>(vals));
+        string tmp_str = static_cast<const char*>(vals);
+        return tmp_str;
+    }
 
     case NC_STRING:
         gp.stringp = (char **) vals;
