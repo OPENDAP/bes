@@ -223,41 +223,82 @@ FONcTransform::~FONcTransform() {
 #define FOUR_GB_IN_KB (4294967296/1024)
 #define TWO_GB_IN_KB (2147483648/1024)
 
-void FONcTransform::throw_if_dap2_response_too_big(DDS *dds)
+void FONcTransform::throw_if_dap2_response_too_big(DDS *dds, const string &ce)
 {
+    const string classic_model(" (classic model)");
+    const string sixtyfour_bit_model(" (64-bit offset model)");
+    string return_encoding;
 
     unsigned long long max_request_size_kb = FONcRequestHandler::get_request_max_size_kb();
+    BESDEBUG(MODULE, prolog << "Configured max_request_size_kb: " << max_request_size_kb << endl);
 
+    unsigned long long req_size_kb = dds->get_request_size_kb(true);
+    BESDEBUG(MODULE, prolog << "dds->get_request_size_kb(): " << req_size_kb << endl);
+
+    // The following conditional accomplishes two things:
+    // 1) It correctly controls the values of "max_request_size_kb" so that even if it's
+    //    set to unlimited (aka 0) rational limits will be enforced based on the type of
+    //    response coding that was requested.
+    // 2) It constructs the string "return_encoding" for use in debugging and as
+    //    a component of the "it's too big" error message.
     if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF3) {
+        return_encoding = string(FONC_RETURN_AS_NETCDF3).append("-3 ");
         if (FONcRequestHandler::nc3_classic_format) {
-            if (max_request_size_kb >= TWO_GB_IN_KB) {
+            return_encoding += classic_model;
+            if (max_request_size_kb == 0 || max_request_size_kb >= TWO_GB_IN_KB) {
                 max_request_size_kb = TWO_GB_IN_KB - 1 /* kb */;
+                BESDEBUG(MODULE, prolog << "Configured size was incompatible with NetCDF-3 classic format. " <<
+                                           "Reset to: " << max_request_size_kb << endl);
             }
         }
         else {
-            if (max_request_size_kb >= FOUR_GB_IN_KB) {
+            return_encoding += sixtyfour_bit_model;
+            if (max_request_size_kb == 0 || max_request_size_kb >= FOUR_GB_IN_KB) {
                 max_request_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
+                BESDEBUG(MODULE, prolog << "Configured size was incompatible with NetCDF-3 w/64-bit offset format. " <<
+                                           "Reset to: " << max_request_size_kb << endl);
             }
         }
     }
+    else {
+        return_encoding = FONC_RETURN_AS_NETCDF4;
+        if (FONcRequestHandler::nc3_classic_format) {
+            return_encoding += classic_model;
+        }
+    }
+    BESDEBUG(MODULE, prolog << "return_encoding: " << return_encoding << endl);
 
     // set the max request size in kilobytes for testing if the request is too large
     dds->set_response_limit_kb(max_request_size_kb);
 
-
     if (dds->too_big()) {
-#if 0
         stringstream msg;
-        msg << "The Request for " << request_size / 1024 << " kilobytes is too large; ";
-        msg << "requests on this server are limited to "
-            + long_to_string(dds->get_response_limit() /1024) + "KB.";
-        throw Error(msg.str());
-#endif
-        stringstream msg;
-        msg << "The submitted DAP2 request will generate a " << dds->get_request_size_kb(true);
+        msg << "You requested for a DAP2 data model response to be encoded as a " << return_encoding << ". ";
+        msg << "Your request will generate a " << dds->get_request_size_kb(true);
         msg <<  " kilobyte response, which is too large. ";
-        msg << "The maximum response size for this server is limited to " << dds->get_response_limit_kb();
-        msg << " kilobytes.";
+        if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF3) {
+            msg << "The return encoding " << return_encoding << " is limited to ";
+            if (FONcRequestHandler::nc3_classic_format) {
+                msg << TWO_GB_IN_KB << " kilobytes" << classic_model << ".";
+            }
+            else {
+                msg << FOUR_GB_IN_KB << " kilobytes" << sixtyfour_bit_model << ".";
+            }
+            msg << "One thing to try would be to reissue the the request, but change the requested response encoding ";
+            msg << "to NetCDF-4. This can be accomplished with the buttons in the Data Request Form, or by modifying ";
+            msg << "the request URL by changing the terminal path suffix from \".nc\" to \".nc4\".  ";
+        }
+        else {
+            msg << "The maximum response size for this server is limited to " << max_request_size_kb << " kilobytes . ";
+        }
+        if(ce.empty()){
+            msg << "I see that no constraint expression accompanied your request. ";
+        } else {
+            msg << "Your request employed the constraint expression: " << ce << " ";
+        }
+        msg << "You can also reduce the size of the request by choosing just the variables you need and/or by ";
+        msg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
+
         throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
     }
 }
@@ -351,7 +392,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
     _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-    throw_if_dap2_response_too_big(_dds);
+    throw_if_dap2_response_too_big(_dds, besDRB.get_ce());
 
     // Convert the DDS into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
