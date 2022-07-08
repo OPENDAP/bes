@@ -104,6 +104,7 @@ private:
     virtual bool is_streamable();
     virtual bool is_dds_streamable();
     virtual bool is_dmr_streamable(libdap::D4Group *group);
+    void throw_if_dap2_response_too_big(DDS *dds);
 
 };
 

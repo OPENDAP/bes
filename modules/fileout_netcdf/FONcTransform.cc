@@ -73,6 +73,8 @@
 #include "FONcAttributes.h"
 #include "FONcTransmitter.h"
 #include "history_utils.h"
+#include "FONcNames.h"
+
 
 using namespace libdap;
 using namespace std;
@@ -218,9 +220,31 @@ FONcTransform::~FONcTransform() {
  * param uses KB. The DMR uses KB throughout.
  * @param dds
  */
-static void
-throw_if_dap2_response_too_big(DDS *dds)
+#define FOUR_GB_IN_KB (4294967296/1024)
+#define TWO_GB_IN_KB (2147483648/1024)
+
+void FONcTransform::throw_if_dap2_response_too_big(DDS *dds)
 {
+
+    unsigned long long max_request_size_kb = FONcRequestHandler::get_request_max_size_kb();
+
+    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF3) {
+        if (FONcRequestHandler::nc3_classic_format) {
+            if (max_request_size_kb >= TWO_GB_IN_KB) {
+                max_request_size_kb = TWO_GB_IN_KB - 1 /* kb */;
+            }
+        }
+        else {
+            if (max_request_size_kb >= FOUR_GB_IN_KB) {
+                max_request_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
+            }
+        }
+    }
+
+    // set the max request size in kilobytes for testing if the request is too large
+    dds->set_response_limit_kb(max_request_size_kb);
+
+
     if (dds->too_big()) {
 #if 0
         stringstream msg;
@@ -321,8 +345,6 @@ void FONcTransform::transform_dap2(ostream &strm) {
         promote_function_output_structures(_dds);
     }
 
-    // set the max request size in kilobytes for testing if the request is too large
-    _dds->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
 
     // evaluate the rest of the CE - the part that follows the function calls.
     eval.parse_constraint(besDRB.get_ce(), *_dds);
@@ -352,7 +374,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
     // Open the file for writing
     int stax;
-    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
+    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
         if (FONcRequestHandler::classic_model) {
             BESDEBUG(MODULE,  prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
                     << _localfile << endl);
@@ -401,7 +423,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             AttrTable &globals = _dds->get_attr_table();
             BESDEBUG(MODULE,  prolog << "Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
-            if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
+            if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "", is_netCDF_enhanced);
             // We could add the json history directly to the netcdf file here. For now,
@@ -476,7 +498,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
  * @return false if file returns as netcdf-4 OR has a structure datatype
  */
 bool FONcTransform::is_streamable() {
-    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
+    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
         return false;
     }
 
@@ -532,6 +554,22 @@ bool FONcTransform::is_dmr_streamable(D4Group *group) {
 static void
 throw_if_dap4_response_too_big(DMR *dmr)
 {
+    unsigned long long max_request_size_kb = FONcRequestHandler::get_request_max_size_kb();
+
+    if (FONcRequestHandler::nc3_classic_format){
+        if( max_request_size_kb >= FOUR_GB_IN_KB){
+            max_request_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
+        }
+    }
+    else {
+        if( max_request_size_kb >= FOUR_GB_IN_KB){
+            max_request_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
+        }
+    }
+
+    // set the max request size in kilobytes for testing if the request is too large
+    dmr->set_response_limit_kb(max_request_size_kb);
+
     if (dmr->too_big()) {
 #if 0
         stringstream msg;
@@ -773,7 +811,7 @@ void FONcTransform::transform_dap4_no_group() {
 
     // Open the file for writing
     int stax = -1;
-    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
+    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
         if (FONcRequestHandler::classic_model) {
             BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
                              << _localfile << endl);
@@ -830,7 +868,7 @@ void FONcTransform::transform_dap4_no_group() {
             }
 #endif
             bool is_netCDF_enhanced = false;
-            if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
+            if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_dap4_attributes(_ncid, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
             // *** Add the json history here
@@ -968,7 +1006,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-            FONcBaseType *fb = FONcUtils::convert(v, RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+            FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
 
             fonc_vars_in_grp.push_back(fb);
 
@@ -1003,7 +1041,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         }
 
         bool is_netCDF_enhanced = false;
-        if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
+        if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
             is_netCDF_enhanced = true;
 
 
@@ -1049,7 +1087,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
 // Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
 bool FONcTransform::check_group_support() {
-    if (RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model &&
+    if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model &&
         (_dmr->root()->grp_begin() != _dmr->root()->grp_end()))
         return true;
     else

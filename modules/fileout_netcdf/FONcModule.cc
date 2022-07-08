@@ -35,6 +35,7 @@
 
 using std::endl;
 
+#include "FONcNames.h"
 #include "FONcBaseType.h"
 #include "FONcModule.h"
 #include "FONcTransmitter.h"
@@ -66,17 +67,17 @@ void FONcModule::initialize(const string &modname)
     BESRequestHandler *handler = new FONcRequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
-    BESReturnManager::TheManager()->add_transmitter(RETURN_AS_NETCDF, new FONcTransmitter());
+    BESReturnManager::TheManager()->add_transmitter(FONC_RETURN_AS_NETCDF3, new FONcTransmitter());
 
-    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, RETURN_AS_NETCDF);
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, FONC_RETURN_AS_NETCDF3);
 
-    BESReturnManager::TheManager()->add_transmitter(RETURN_AS_NETCDF4, new FONcTransmitter());
+    BESReturnManager::TheManager()->add_transmitter(FONC_RETURN_AS_NETCDF4, new FONcTransmitter());
 
-    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, RETURN_AS_NETCDF4);
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DATA_SERVICE, FONC_RETURN_AS_NETCDF4);
 
     //BESReturnManager::TheManager()->add_transmitter( RETURNAS_NETCDF4, new FONcTransmitter());
 
-    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURN_AS_NETCDF4);
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, FONC_RETURN_AS_NETCDF4);
 
 
     BESDebug::Register("fonc");
@@ -96,9 +97,9 @@ void FONcModule::terminate(const string &modname)
 {
     BESDEBUG("fonc", "Cleaning module " << modname << endl);
 
-    BESReturnManager::TheManager()->del_transmitter(RETURN_AS_NETCDF);
+    BESReturnManager::TheManager()->del_transmitter(FONC_RETURN_AS_NETCDF3);
 
-    BESReturnManager::TheManager()->del_transmitter(RETURN_AS_NETCDF4);
+    BESReturnManager::TheManager()->del_transmitter(FONC_RETURN_AS_NETCDF4);
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     delete rh;
