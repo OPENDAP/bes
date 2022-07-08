@@ -44,7 +44,8 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcFloat.h FONcDouble.h FONcStructure.h FONcArray.h		\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
-	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h
+	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h \
+	FONcNames.h
 
 EXTRA_DIST = data fonc.conf.in
 

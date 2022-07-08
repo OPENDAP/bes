@@ -2010,5 +2010,7 @@ if (EXISTS modules/sql_handler)
 		modules/sql_handler/SQLPluginList.h
 		modules/sql_handler/SQLRequestHandler.cc
 		modules/sql_handler/SQLRequestHandler.h
-		modules/sql_handler/SQLResponseNames.h modules/fileout_netcdf/FONcNames.cc modules/fileout_netcdf/FONcNames.h)
+		modules/sql_handler/SQLResponseNames.h
+		modules/fileout_netcdf/FONcNames.h
+		)
 endif()
