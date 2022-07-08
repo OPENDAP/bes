@@ -104,7 +104,15 @@ private:
     virtual bool is_streamable();
     virtual bool is_dds_streamable();
     virtual bool is_dmr_streamable(libdap::D4Group *group);
-    void throw_if_dap2_response_too_big(DDS *dds, const string &ce="");
+    void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
+    void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
+    string too_big_error_msg(
+            const unsigned dap_version,
+            const string &return_encoding,
+            const unsigned long long request_size_kb,
+            const unsigned long long  max_request_size_kb,
+            const string &ce);
+    void get_response_size_and_return_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
 };
 
