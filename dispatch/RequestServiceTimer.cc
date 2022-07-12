@@ -186,7 +186,12 @@ void RequestServiceTimer::dump( ostream &strm ) const
 */
 void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
 {
+    std::stringstream errMsg;
+    errMsg << "The service request has exceeded the bes_timeout, ";
+    errMsg << "reduce the amount of data requested to stay within the timeout limit. ";
+    errMsg << "The timeout was exceeded at " << std::move(message);
+
     if (is_expired()) {
-        throw BESInternalFatalError(std::move(message), std::move(file), line);
+        throw BESInternalFatalError(errMsg.str(), std::move(file), line);
     }
 }
