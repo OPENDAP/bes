@@ -472,7 +472,8 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
         bt.get_attr_table().print_xml_writer(xml);
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
+    // If the scalar variable with contiguous contains a fillvalue, also needs to output. ky 07/12/22
+    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
