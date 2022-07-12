@@ -236,6 +236,13 @@ AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.das])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunk.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_chunk.dods])
 
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dmr])
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dds])
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.das])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_scalar.dods])
+
+
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_all_fill.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_fill_not_write.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_fill_notdefined.dap])
