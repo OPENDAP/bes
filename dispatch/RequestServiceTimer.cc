@@ -184,22 +184,27 @@ void RequestServiceTimer::dump( ostream &strm ) const
  * @param file The file (__FILE__) that called this method
  * @param line The line (__LINE__) in the file that made the call to this method.
 */
-void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
+void RequestServiceTimer::throw_if_timeout_expired(const string &message, const string &file, const int line)
 {
-    std::stringstream timeoutInSeconds;
-    timeoutInSeconds << d_bes_timeout.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den;
-
-    std::stringstream errMsg;
-    errMsg << "Your request has exceeded the maximum request timeout. ";
-    errMsg << "The maximum request timeout for this server is limited to " << timeoutInSeconds.str() << " seconds. ";
-
-    errMsg << "One thing to try would be to reissue the request but change the amount of data requested. ";
-    errMsg << "You may reduce the size of the request by choosing just the variables you need and/or by ";
-    errMsg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
-
-    //errMsg << "The timeout was exceeded at " << std::move(message);
-
     if (is_expired()) {
-        throw BESTimeoutError(errMsg.str(), std::move(file), line);
+        double time_out_seconds = d_bes_timeout.count()/1000.00;
+        std::stringstream errMsg;
+        errMsg << "The request that you submitted timed out. The server was unable to begin transmitting a response in ";
+        errMsg << "the time allowed. Requests processed by this server must begin transmitting a response in less ";
+        errMsg << "than " << time_out_seconds << " seconds. ";
+
+        errMsg << "Some things you can try: Reissue the request but change the amount of data requested. ";
+        errMsg << "You may reduce the size of the request by choosing just the variables you need and/or by ";
+        errMsg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested. ";
+        errMsg << "You can also try requesting a different encoding for the response. If you asked for the response ";
+        errMsg << "to be encoded as a NetCDF-3 or NetCDF-4 file be aware that these response encodings are not " <<
+                  "streamable. In order ";
+        errMsg << "to build these responses the server must write the entire response to a temporary file before it can ";
+        errMsg << "begin to send the response to the requesting client. Changing to a different encoding, such as DAP4 ";
+        errMsg << "data, may allow the server to successfully respond to your request. ";
+
+        errMsg << "The service component that ran out of time said: " <<  message;
+
+        throw BESTimeoutError(errMsg.str(), file, line);
     }
 }
