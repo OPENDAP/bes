@@ -186,7 +186,6 @@ void RequestServiceTimer::dump( ostream &strm ) const
 */
 void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
 {
-
     std::stringstream timeoutInSeconds;
     timeoutInSeconds << d_bes_timeout.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den;
 
