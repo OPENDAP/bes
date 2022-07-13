@@ -186,14 +186,15 @@ void RequestServiceTimer::dump( ostream &strm ) const
 */
 void RequestServiceTimer::throw_if_timeout_expired(string message, string file, int line)
 {
-    std::stringstream errMsg;
+
     std::stringstream timeoutInSeconds;
     timeoutInSeconds << d_bes_timeout.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den;
 
-    errMsg << "Your request has exceeded the maximum request timeout.";
-    errMsg << "The maximum request timeout for this server is limited to " << timeoutInSeconds.str() << " seconds.";
+    std::stringstream errMsg;
+    errMsg << "Your request has exceeded the maximum request timeout. ";
+    errMsg << "The maximum request timeout for this server is limited to " << timeoutInSeconds.str() << " seconds. ";
 
-    errMsg << "One thing to try would be to reissue the request but change the amount of data requested.";
+    errMsg << "One thing to try would be to reissue the request but change the amount of data requested. ";
     errMsg << "You may reduce the size of the request by choosing just the variables you need and/or by ";
     errMsg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
 
