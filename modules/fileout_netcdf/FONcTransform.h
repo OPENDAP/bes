@@ -109,8 +109,8 @@ private:
     string too_big_error_msg(
             const unsigned dap_version,
             const string &return_encoding,
-            const unsigned long long request_size_kb,
-            const unsigned long long  max_request_size_kb,
+            const unsigned long long config_max_response_size_kb,
+            const unsigned long long  contextual_max_response_size_kb,
             const string &ce);
     void get_response_size_and_return_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
