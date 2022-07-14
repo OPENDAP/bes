@@ -261,7 +261,7 @@ FONcUtils::convert(BaseType *v,
 
     // We need to handle netCDF-4 enhanced differently. More datatypes are supported.
     bool is_netcdf4_enhanced = false;
-    if(ncdf_version == RETURN_AS_NETCDF4 && is_classic_model == false)
+    if(ncdf_version == FONC_RETURN_AS_NETCDF4 && is_classic_model == false)
         is_netcdf4_enhanced = true;
     
     bool unsigned_promote = true;
@@ -394,11 +394,11 @@ FONcUtils::convert(BaseType *v,
     }
     // The following code may be combined with other related code. TODO: later.
     b->setVersion(ncdf_version);
-    if(ncdf_version == RETURN_AS_NETCDF4) {
+    if(ncdf_version == FONC_RETURN_AS_NETCDF4) {
         if(is_classic_model)
-            b->setNC4DataModel("NC4_CLASSIC_MODEL");
+            b->setNC4DataModel(FONC_NC4_CLASSIC_MODEL);
         else
-            b->setNC4DataModel("NC4_ENHANCED");
+            b->setNC4DataModel(FONC_NC4_ENHANCED);
     }
     return b;
 }

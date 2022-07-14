@@ -40,12 +40,8 @@
 #include <libdap/D4Attributes.h>
 #include <libdap/D4AttributeType.h>
 #include <BESObj.h>
+#include "FONcNames.h"
 
-#define RETURN_AS_NETCDF "netcdf"
-#define RETURN_AS_NETCDF4 "netcdf-4"
-#define NC4_CLASSIC_MODEL "NC4_CLASSIC_MODEL"
-#define NC4_ENHANCED "NC4_ENHANCED"
-// May add netCDF-3 CDF-5 in the future.
 
 namespace libdap {
 class BaseType;
