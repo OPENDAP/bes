@@ -240,13 +240,20 @@ string FONcTransform::too_big_error_msg(
 
     stringstream msg;
 
-    msg << "Your request was for a (DAP"<< dap_version << " data model response) to be encoded as " << return_encoding << ". ";
-    msg << "The response to your specific request would produce a " << dap2_response_size_kb;
+    msg << "Your request was for a (DAP"<< dap_version << " data model response) to be encoded as ";
+    msg << return_encoding << ". ";
+    msg << "The response to your specific request will produce a " << dap2_response_size_kb;
     msg <<  " kilobyte response. On this server the response size for your request is limited to ";
     msg << contextual_max_response_size_kb << " kilobytes. ";
 
-    auto max_response_size_kb = FONcRequestHandler::get_request_max_size_kb();
-    msg << "The server is configured to allow responses as large as: " << max_response_size_kb <<" kilobytes. ";
+    msg << "The server is configured to allow ";
+    auto conf_max_request_size_kb =FONcRequestHandler::get_request_max_size_kb();
+    if(conf_max_request_size_kb==0){
+        msg << " responses of unlimited size. ";
+    }
+    else {
+        msg << "responses as large as: " << conf_max_request_size_kb <<" kilobytes. ";
+    }
 
     if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF3) {
         msg << "Additionally, the requested response encoding " << return_encoding << " is structurally limited to ";
@@ -281,7 +288,7 @@ string FONcTransform::too_big_error_msg(
  * @param return_encoding The error response message component is modified to be the netcdf-3|4 tag followed by an
  * optional netcdf model tag. example: "netcdf-3 (classic)"
  */
-void FONcTransform::get_response_size_and_return_encoding(unsigned long long &max_response_size_kb, string &return_encoding){
+void FONcTransform::set_max_size_and_encoding(unsigned long long &max_request_size_kb, string &return_encoding){
 
     return_encoding.clear();
 
@@ -295,18 +302,18 @@ void FONcTransform::get_response_size_and_return_encoding(unsigned long long &ma
         return_encoding = string(FONC_RETURN_AS_NETCDF3).append("-3 ");
         if (FONcRequestHandler::nc3_classic_format) {
             return_encoding += MSG_LABEL_CLASSIC_MODEL;
-            if (max_response_size_kb == 0 || max_response_size_kb >= TWO_GB_IN_KB) {
-                max_response_size_kb = TWO_GB_IN_KB - 1 /* kb */;
+            if (max_request_size_kb == 0 || max_request_size_kb >= TWO_GB_IN_KB) {
+                max_request_size_kb = TWO_GB_IN_KB - 1 /* kb */;
                 BESDEBUG(MODULE, prolog << "Configured max request size was incompatible with NetCDF-3 classic format. " <<
-                                        "Reset to: " << max_response_size_kb << endl);
+                                        "Reset to: " << max_request_size_kb << endl);
             }
         }
         else {
             return_encoding += MSG_LABEL_SIXTYFOUR_BIT_MODEL;
-            if (max_response_size_kb == 0 || max_response_size_kb >= FOUR_GB_IN_KB) {
-                max_response_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
+            if (max_request_size_kb == 0 || max_request_size_kb >= FOUR_GB_IN_KB) {
+                max_request_size_kb = FOUR_GB_IN_KB - 1 /* kb */;
                 BESDEBUG(MODULE, prolog << "Configured max request size was incompatible with NetCDF-3 w/64-bit offset format. " <<
-                                        "Reset to: " << max_response_size_kb << endl);
+                                        "Reset to: " << max_request_size_kb << endl);
             }
         }
     }
@@ -317,7 +324,7 @@ void FONcTransform::get_response_size_and_return_encoding(unsigned long long &ma
         }
     }
     BESDEBUG(MODULE, prolog << "return_encoding: " << return_encoding << endl);
-    BESDEBUG(MODULE, prolog << "max_request_size_kb: " << max_response_size_kb << endl);
+    BESDEBUG(MODULE, prolog << "max_request_size_kb: " << max_request_size_kb << endl);
 }
 
 
@@ -337,7 +344,7 @@ void FONcTransform::throw_if_dap2_response_too_big(DDS *dds, const string &dap2_
     unsigned long long dap2_response_size_kb = dds->get_request_size_kb(true);
     BESDEBUG(MODULE, prolog << "dds->get_request_size_kb(): " << dap2_response_size_kb << endl);
 
-    get_response_size_and_return_encoding(max_response_size_kb, return_encoding);
+    set_max_size_and_encoding(max_response_size_kb, return_encoding);
 
     // set the max request size in kilobytes for testing if the request is too large
     dds->set_response_limit_kb(max_response_size_kb);
@@ -632,7 +639,8 @@ bool FONcTransform::is_dmr_streamable(D4Group *group) {
 }
 
 /**
- * @brief convenience function for the response limit test.
+ * @brief Throws a BESSyntaxUserError if the size of the responses exceeds what is permitted or possible
+ * .\
  * The DDS stores the response size limit in Bytes even though the context
  * param uses KB. The DMR uses KB throughout.
  * @param dds
@@ -645,9 +653,8 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
     unsigned long long req_size_kb = dmr->request_size_kb(true);
     BESDEBUG(MODULE, prolog << "dmr->get_request_size_kb(): " << req_size_kb << endl);
 
-
     string return_encoding;
-    get_response_size_and_return_encoding(max_response_size_kb, return_encoding);
+    set_max_size_and_encoding(max_response_size_kb, return_encoding);
 
     // set the max request size in kilobytes for testing if the request is too large
     dmr->set_response_limit_kb(max_response_size_kb);
@@ -656,6 +663,10 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
         string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
         throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
     }
+
+
+
+
 }
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF

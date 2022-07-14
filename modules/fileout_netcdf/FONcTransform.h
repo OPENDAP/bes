@@ -112,7 +112,7 @@ private:
             const unsigned long long config_max_response_size_kb,
             const unsigned long long  contextual_max_response_size_kb,
             const string &ce);
-    void get_response_size_and_return_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
+    void set_max_size_and_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
 };
 
