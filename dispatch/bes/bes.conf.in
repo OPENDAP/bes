@@ -94,7 +94,7 @@ BES.UncompressCache.size=500
 # parameter BES.CancelTimeoutOnSend and set it to true. If not set
 # the value of this parameter defaults to false.
 
-# BES.CancelTimeoutOnSend=true
+BES.CancelTimeoutOnSend=true
 
 # Experimental: Annotation service URL. Set this parameter to the URL
 # of an annotation service. If the value is not null, then a global
