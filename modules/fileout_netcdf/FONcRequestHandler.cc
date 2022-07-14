@@ -45,45 +45,16 @@
 #include <BESUtil.h>
 
 #include "FONcRequestHandler.h"
-
-#define FONC_TEMP_DIR "/tmp"
-#define FONC_TEMP_DIR_KEY "FONc.Tempdir"
-
-// I think this should be true always. I'm leaving it in for now
-// but the code does not use the key. Maybe this will be used when
-// there is more comprehensive support for DAP4. jhrg 11/30/15
-#define FONC_BYTE_TO_SHORT true
-#define FONC_BYTE_TO_SHORT_KEY "FONc.ByteToShort"
-
-#define FONC_USE_COMP true
-#define FONC_USE_COMP_KEY "FONc.UseCompression"
-
-#define FONC_USE_SHUFFLE false
-#define FONC_USE_SHUFFLE_KEY "FONc.UseShuffle"
-
-#define FONC_CHUNK_SIZE 4096
-#define FONC_CHUNK_SIZE_KEY "FONc.ChunkSize"
-
-#define FONC_CLASSIC_MODEL true
-#define FONC_CLASSIC_MODEL_KEY "FONc.ClassicModel"
-
-#define FONC_NO_GLOBAL_ATTRS false
-#define FONC_NO_GLOBAL_ATTRS_KEY "FONc.NoGlobalAttrs"
-
-#define FONC_REQUEST_MAX_SIZE_KB 0
-#define FONC_REQUEST_MAX_SIZE_KB_KEY "FONc.RequestMaxSizeKB"
-
-#define FONC_NC3_CLASSIC_FORMAT false
-#define FONC_NC3_CLASSIC_FORMAT_KEY "FONc.NC3ClassicFormat"
+#include "FONcNames.h"
 
 std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
 bool FONcRequestHandler::use_shuffle;
-size_t FONcRequestHandler::chunk_size;
+unsigned long long  FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::no_global_attrs;
-size_t FONcRequestHandler::request_max_size_kb;
+unsigned long long FONcRequestHandler::request_max_size_kb;
 bool FONcRequestHandler::nc3_classic_format;
 
 using namespace std;
@@ -136,6 +107,25 @@ static void read_key_value(const string &key_name, size_t &key, const int defaul
         iss >> key;
         // if (iss.eof() || iss.bad() || iss.fail()) key = default_value;
         if (iss.bad() || iss.fail()) key = default_value;
+    }
+    else {
+        key = default_value;
+    }
+}
+
+static void read_key_value(const string &key_name, unsigned long long &key, const unsigned long long default_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    // 'key' holds the string value at this point if key_found is true
+    if (key_found) {
+        try {
+            key = stoull(value);
+        }
+        catch (const std::invalid_argument& ia) {
+            key = default_value;
+        }
     }
     else {
         key = default_value;
