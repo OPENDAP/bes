@@ -5,6 +5,7 @@
 README for the OPeNDAP BES 
 ==========================
 # Version 3.20.13
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6884800.svg)](https://doi.org/10.5281/zenodo.6884800)
 
 This version of the BES is part of Hyrax 1.16.8, a data server that supports the
 OPeNDAP data access protocols. See
@@ -17,7 +18,6 @@ since the previous release.
 
 This version of the BES requires *libdap-3.20.11*
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6878992.svg)](https://doi.org/10.5281/zenodo.6878992)
-
 
 # Version 3.20.12
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6803473.svg)](https://doi.org/10.5281/zenodo.6803473)
