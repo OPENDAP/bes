@@ -970,7 +970,6 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     string offset;
     string size;
     string chunk_position_in_array;
-
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -1028,32 +1027,39 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
+void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
 {
+    
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
-            dc->set_filter(attr.value());
+            dc(btp)->set_filter(attr.value());
         }
         else if (is_eq(attr.name(), "fillValue")) {
-            // Fill values are only supported for Arrays (5/9/22)
-            auto array = dynamic_cast<libdap::Array*>(dc);
-            if (!array)
-                throw BESInternalError("Fill Value chunks are only supported for Arrays.", __FILE__, __LINE__);
 
-            add_fill_value_information(dc, attr.value(), array->var()->type());
+            // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
+            if (btp->type()== dods_str_c || btp->type()==dods_url_c || btp->type()== dods_structure_c 
+               || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
+                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
+
+            if (btp->type() == dods_array_c) {
+                auto array = dynamic_cast<libdap::Array*>(btp);
+                add_fill_value_information(dc(btp), attr.value(), array->var()->type());
+            }
+            else 
+                add_fill_value_information(dc(btp), attr.value(), btp->type());
         }
         else if (is_eq(attr.name(), "byteOrder")) {
-            dc->ingest_byte_order(attr.value());
+            dc(btp)->ingest_byte_order(attr.value());
         }
     }
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
-    process_cds_node(dc, chunks);
+    process_cds_node(dc(btp), chunks);
 
     // Chunks for this node will be held in the var_node siblings.
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
         if (is_eq(chunk.name(), "dmrpp:chunk")) {
-            process_chunk(dc, chunk);
+            process_chunk(dc(btp), chunk);
         }
     }
 }
@@ -1178,7 +1184,7 @@ void DMZ::load_chunks(BaseType *btp)
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
         chunks_found = 1;
-        process_chunks(dc(btp), child);
+        process_chunks(btp, child);
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
@@ -1212,6 +1218,20 @@ void DMZ::load_chunks(BaseType *btp)
             shape pia(0,array_shape.size());
             auto dcp = dc(btp);
             dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+        }
+        // This is the case when the scalar variable that holds the fill value with the contiguous storage comes. 
+        // Note we only support numeric datatype now. KY 2022-07-12
+        else if (btp->type()!=dods_array_c && dc(btp)->get_immutable_chunks().empty()) {
+            if (btp->type() == dods_grid_c || btp->type() == dods_sequence_c || btp->type() == dods_str_c
+                 || btp->type() ==dods_url_c) {
+                ostringstream oss;
+                oss << " For scalar variable with the contiguous storage that holds the fillvalue, only numeric" 
+                    << " types are supported.";
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            shape pia;
+            auto dcp = dc(btp);
+            dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
         }
     }
 
