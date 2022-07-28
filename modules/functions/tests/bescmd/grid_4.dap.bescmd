@@ -2,18 +2,15 @@
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
 
   <!-- using 3.2 or 2 seems to make no difference -->
-  <!-- bes:setContext name="xdap_accept">3.2</bes:setContext -->
-  
-  <setContext name="dap_format">dap4</setContext>
-  
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  
-  <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/coads.dap</bes:setContainer>
+
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/coads_climatology.nc</bes:setContainer>
   
   <bes:define name="d1" space="default">
-    <bes:container name="catalogContainer">
+    <bes:container name="c">
       <!-- %22 is a double quote and %3E is greater than -->
       <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
       <bes:dap4function>grid(SST,%2245%3ECOADSY%3E35%22,%22140%3ECOADSX%3E120%22,%22TIME=366%22)</bes:dap4function>
@@ -21,8 +18,6 @@
   </bes:define>
   
   <bes:get type="dap" definition="d1">
-    <bes:contentStartId>48d3bccf:1824543180e:-7fed@opendap.org</bes:contentStartId>
-    <bes:mimeBoundary>Part_34386433626363663a31383234353433313830653a2d37666565</bes:mimeBoundary>
   </bes:get>
   
 </bes:request>
