@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_c_fv_undef.h5" dmrpp:href="data/fill_value/One_chunk_c_fv_undef.h5">
+    <Int32 name="chunk_normal_fv_undef">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <Attribute name="origname" type="String">
+            <Value>chunk_normal_fv_undef</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/chunk_normal_fv_undef</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="32" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+</Dataset>
