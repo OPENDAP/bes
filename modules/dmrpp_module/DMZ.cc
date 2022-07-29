@@ -1030,12 +1030,14 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
 void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
 {
     
+    bool has_fill_value = false;
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
             dc(btp)->set_filter(attr.value());
         }
         else if (is_eq(attr.name(), "fillValue")) {
 
+            has_fill_value = true;
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
             if (btp->type()== dods_str_c || btp->type()==dods_url_c || btp->type()== dods_structure_c 
                || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
@@ -1052,6 +1054,10 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
             dc(btp)->ingest_byte_order(attr.value());
         }
     }
+
+    // reset one_chunk_fillvalue to false if has_fill_value = false
+    if (has_fill_value == false && dc(btp)->get_one_chunk_fill_value() == true) // reset fillvalue 
+        dc(btp)->set_one_chunk_fill_value(false);
 
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
     process_cds_node(dc(btp), chunks);
@@ -1202,6 +1208,13 @@ void DMZ::load_chunks(BaseType *btp)
                     chunk_size_bytes *= dim_size;
                 process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
                                           array_shape, chunk_size_bytes);
+                // Now we need to check if this var only contains one chunk.
+                // If yes, we will go ahead to set one_chunk_fill_value be true. 
+                // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
+                if (num_logical_chunks == 1) 
+                    dc(btp)->set_one_chunk_fill_value(true);
+
+                
             }
         }
         // If both chunks and chunk_dimension_sizes are empty, this is contiguous storage

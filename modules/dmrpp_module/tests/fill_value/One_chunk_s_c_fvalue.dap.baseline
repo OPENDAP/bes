@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_s_c_fvalue.h5">
+    <Int32 name="chunks_all_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+</Dataset>
+
+The data:
+Int32 chunks_all_fill[4][4] = {{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99},{-99, -99, -99, -99}};
+
