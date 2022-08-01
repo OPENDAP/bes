@@ -75,7 +75,7 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
-    /// Holds names of the XML elements thst define variables (e.g., Byte)
+    /// Holds names of the XML elements that define variables (e.g., Byte)
     static const std::set<std::string> variable_elements;
 
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);

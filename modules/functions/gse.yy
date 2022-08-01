@@ -63,11 +63,8 @@ using namespace functions;
 int gse_lex(void);
 void gse_error(gse_arg *arg, const char *str);
 GSEClause *build_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val);
-GSEClause *build_rev_gse_clause(gse_arg *arg, char id[ID_MAX], int op,
-				double val);
-GSEClause *
-build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, 
-		      int op2, double val2);
+GSEClause *build_rev_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val);
+GSEClause *build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, int op2, double val2);
 
 } // code
 
@@ -107,23 +104,19 @@ build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1,
 
 %%
 
-clause:		identifier relop constant
-                {
-		    ((gse_arg *)arg)->set_gsec(
-			build_gse_clause((gse_arg *)(arg), $1, $2, $3));
+clause:	identifier relop constant
+        {
+		    ((gse_arg *)arg)->set_gsec(build_gse_clause((gse_arg *)(arg), $1, $2, $3));
 		    $$ = true;
 		}
 		| constant relop identifier
-                {
-		    ((gse_arg *)arg)->set_gsec(
-		       build_rev_gse_clause((gse_arg *)(arg), $3, $2, $1));
+        {
+		    ((gse_arg *)arg)->set_gsec(build_rev_gse_clause((gse_arg *)(arg), $3, $2, $1));
 		    $$ = true;
 		}
 		| constant relop identifier relop constant
-                {
-		    ((gse_arg *)arg)->set_gsec(
-		       build_dual_gse_clause((gse_arg *)(arg), $3, $2, $1, $4,
-					     $5));
+        {
+		    ((gse_arg *)arg)->set_gsec(build_dual_gse_clause((gse_arg *)(arg), $3, $2, $1, $4, $5));
 		    $$ = true;
 		}
 ;
@@ -131,12 +124,12 @@ clause:		identifier relop constant
 identifier:	SCAN_WORD 
 ;
 
-constant:       SCAN_INT
+constant: SCAN_INT
 		| SCAN_FLOAT
 ;
 
-relop:		SCAN_EQUAL
-                | SCAN_NOT_EQUAL
+relop:	SCAN_EQUAL
+        | SCAN_NOT_EQUAL
 		| SCAN_GREATER
 		| SCAN_GREATER_EQL
 		| SCAN_LESS
@@ -203,13 +196,11 @@ build_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val)
 GSEClause *
 build_rev_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val)
 {
-    return new GSEClause(arg->get_grid(), (string)id, val, 
-			 decode_inverse_relop(op));
+    return new GSEClause(arg->get_grid(), (string)id, val, decode_inverse_relop(op));
 }
 
 GSEClause *
-build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, 
-		      int op2, double val2)
+build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, int op2, double val2)
 {
     // Check that the operands (op1 and op2) and the values (val1 and val2)
     // describe a monotonic interval.
