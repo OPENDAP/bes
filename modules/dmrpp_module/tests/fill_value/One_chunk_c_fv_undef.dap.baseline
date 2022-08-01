@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_scalar_cont.h5">
-    <Int32 name="cont_scalar_fill">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_c_fv_undef.h5">
+    <Int32 name="chunk_normal_fv_undef">
+        <Dim size="4"/>
+        <Dim size="4"/>
         <Attribute name="origname" type="String">
-            <Value>cont_scalar_fill</Value>
+            <Value>chunk_normal_fv_undef</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
-            <Value>/cont_scalar_fill</Value>
+            <Value>/chunk_normal_fv_undef</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
@@ -22,11 +24,11 @@
             <Value>libdap-3.20.10</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>/Users/myang6/work/opendap/hyrax-792/bes/modules/dmrpp_module/.libs/build_dmrpp -f FValue_scalar_cont.h5 -r FValue_scalar_cont.h5.dmr -M</Value>
+            <Value>/Users/myang6/work/opendap/hyrax-792/bes/modules/dmrpp_module/.libs/build_dmrpp -f One_chunk_c_fv_undef.h5 -r One_chunk_undef_c.h5.dmr -M</Value>
         </Attribute>
     </Attribute>
 </Dataset>
 
 The data:
-Int32 cont_scalar_fill = -99;
+Int32 chunk_normal_fv_undef[4][4] = {{0, 1, 2, 3},{1, 2, 3, 4},{2, 3, 4, 5},{3, 4, 5, 6}};
 
