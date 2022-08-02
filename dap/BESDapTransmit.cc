@@ -83,11 +83,13 @@ public:
         }
         catch (const InternalErr &e) {
             string err = "libdap error transmitting " + response_string + ": " + e.get_error_message();
-            throw BESDapError(err, true, e.get_error_code(), e.get_file(), e.get_line());
+            throw BESDapError(err, true, e.get_error_code(), (e.get_file().empty() ? __FILE__: e.get_file()),
+                              (e.get_line() == 0 ? __LINE__: e.get_line()));
         }
         catch (const Error &e) {
             string err = "libdap error transmitting " + response_string + ": " + e.get_error_message();
-            throw BESDapError(err, false, e.get_error_code(), e.get_file(), e.get_line());
+            throw BESDapError(err, false, e.get_error_code(), (e.get_file().empty() ? __FILE__: e.get_file()),
+                              (e.get_line() == 0 ? __LINE__: e.get_line()));
         }
         catch (const BESError &) {
             throw; // rethrow as is
