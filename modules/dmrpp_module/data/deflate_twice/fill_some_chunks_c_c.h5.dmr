@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_chunks_partial_fill.h5">
+    <Int32 name="chunks_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <Attribute name="origname" type="String">
+            <Value>chunks_some_fill</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/chunks_some_fill</Value>
+        </Attribute>
+    </Int32>
+</Dataset>

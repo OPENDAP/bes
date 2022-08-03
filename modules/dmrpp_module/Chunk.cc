@@ -214,12 +214,13 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  * @param src Compressed data
  * @param src_len Size of the compressed data
  */
-void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long long src_len) {
+unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
     /* Sanity check */
     assert(src_len > 0);
     assert(src);
     assert(dest_len > 0);
-    assert(dest);
+    assert(destp);
+    assert(*destp);
 
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
@@ -228,8 +229,12 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
     memset(&z_strm, 0, sizeof(z_strm));
     z_strm.next_in = (Bytef *) src;
     z_strm.avail_in = src_len;
-    z_strm.next_out = (Bytef *) dest;
+    z_strm.next_out = (Bytef *) (*destp);
     z_strm.avail_out = dest_len;
+
+    size_t nalloc = dest_len;
+
+    char *outbuf = *destp;
 
     /* Initialize the decompression routines */
     if (Z_OK != inflateInit(&z_strm))
@@ -255,34 +260,32 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
             throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-            /* If we're not done and just ran out of buffer space, it's an error.
-             * The HDF5 library code would extend the buffer as-needed, but for
-             * this handler, we should always know the size of the decompressed chunk.
-             */
+
+            // If we're not done and just ran out of buffer space, we need to extend the buffer.
+            // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
             if (0 == z_strm.avail_out) {
-                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
-#if 0
-                /* Here's how to extend the buffer if needed. This might be useful some day... */
-                void *new_outbuf; /* Pointer to new output buffer */
 
                 /* Allocate a buffer twice as big */
+                size_t outbuf_size = nalloc;
                 nalloc *= 2;
-                if (NULL == (new_outbuf = H5MM_realloc(outbuf, nalloc))) {
-                    (void) inflateEnd(&z_strm);
-                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for inflate decompression")
-                } /* end if */
+                char *new_outbuf = new char[nalloc];
+                memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
+                delete[] outbuf;
                 outbuf = new_outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
                 z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
                 z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
-#endif
+
             } /* end if */
         } /* end else */
     } while (true /* status == Z_OK */);    // Exit via the break statement after the call to inflate(). jhrg 11/8/21
 
+    *destp = outbuf;
+    outbuf = nullptr;
     /* Finish decompressing the stream */
     (void) inflateEnd(&z_strm);
+    return z_strm.total_out;
 }
 
 // #define this to enable the duff's device loop unrolling code.
@@ -612,16 +615,41 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
+    // We need to check if the filters that include the deflate filters are contiguous.
+    // That is: the filters must be something like "deflate deflate deflate" instead of "deflate other_filter deflate"
+
+    bool is_1st_deflate = true;
+    unsigned cur_deflate_index = 0;
+    for (unsigned i = 0; i<filter_array.size(); i++) {
+
+        if (filter_array[i] == "deflate") {
+            if (is_1st_deflate == true) {
+                cur_deflate_index = i;
+                is_1st_deflate = false;
+            }
+            else if (i != (cur_deflate_index+1)) {
+                throw BESInternalError("The deflate filters must be adjacent to each other",
+                                       __FILE__, __LINE__);
+            }
+            else 
+                cur_deflate_index = i;
+        }
+
+    }
+
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
         string filter = *i;
 
         if (filter == "deflate") {
             char *dest = new char[chunk_size];
+            char **destp = &dest;
             try {
-                inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
+                unsigned long long out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
                 // This replaces (and deletes) the original read_buffer with dest.
 #if DMRPP_USE_SUPER_CHUNKS
-                set_read_buffer(dest, chunk_size, chunk_size, true);
+                //set_read_buffer(dest, chunk_size, chunk_size, true);
+                char* new_dest=*destp;
+                set_read_buffer(new_dest, out_buf_size, out_buf_size, true);
 #else
                 set_rbuf(dest, chunk_size);
 #endif
