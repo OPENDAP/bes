@@ -27,6 +27,9 @@
 #include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Grid.h>
+#include <libdap/Array.h>
+#include <libdap/D4Maps.h>
+#include <libdap/DMR.h>
 #include <libdap/util.h>
 
 #include <BESDebug.h>
@@ -169,6 +172,94 @@ void apply_grid_selection_expressions(Grid * grid, vector < GSEClause * >clauses
         apply_grid_selection_expr(grid, *clause_i++);
 
     grid->set_read_p(false);
+}
+
+/**
+ * Recursively traverses the BaseType bt (if its a constructor type) and collects pointers to all of the Arrays and places said pointers
+ * into the vector parameter 'coverages'. If the BaseType parameter bt is an instance of Array the it is placed in the vector.
+ * @param bt The BaseType to evaluate
+ * @param grids A vector into which to place a pointer to every Array.
+ */
+void get_coverages(BaseType *bt, vector<Array *> *coverages)
+{
+    switch (bt->type()) {
+
+        case dods_array_c: {
+            if ( static_cast<Array *>(bt)->is_dap2_grid() ) {
+                // Yay! It's a Grid!
+                coverages->push_back(static_cast<Array *>(bt));
+            }
+            break;
+        }
+        case dods_structure_c: {
+            // It's a Structure - but of what? Check each variable in the Structure.
+            Structure &s = static_cast<Structure&>(*bt);
+            for (Structure::Vars_iter i = s.var_begin(); i != s.var_begin(); i++) {
+                get_coverages(*i, coverages);
+            }
+            break;
+        }
+
+        // Only an Array can be a Coverage in DAP4.
+        default:
+            break;
+    }
+}
+
+/**
+* Recursively traverses the DMR and collects pointers to all of the Arrays and places said pointers
+* into the vector parameter 'coverages'.
+* @param dds The dmr to search
+* @param grids A vector into which to place a pointer to every Array in the DMR.
+*/
+/*void get_coverages(DMR &dmr, vector<Array *> *coverages)
+{
+    for (DMR::Vars_iter i = dmr.var_begin(); i != dmr.var_end(); i++) {
+        get_coverages(*i, coverages);
+    }
+}*/
+
+static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
+{
+    // Basic plan: For each map, look at each clause and set start and stop
+    // to be the intersection of the ranges in those clauses.
+    D4Maps *d4_maps = coverage->maps();
+    D4Maps::D4MapsIter miter = d4_maps->map_begin();
+    while (miter != d4_maps->map_end() && (*miter)->name() != clause->get_map_name())
+        ++miter;
+
+    if (miter == d4_maps->map_end())
+        throw Error(malformed_expr,"The map vector '" + clause->get_map_name()
+                                   + "' is not in the array '" + coverage->name() + "'.");
+
+    D4Map *d4_map = (*miter);
+
+    // Use pointer arith & the rule that map order must match array dim order
+
+    Array::Dim_iter coverage_dim = (coverage->dim_begin()); // + (map_i - grid->map_begin()));
+
+    Array *map = const_cast<Array *>(d4_map->array());
+    if (!map)
+        throw InternalErr(__FILE__, __LINE__, "Expected an Array");
+    int start = max(map->dimension_start(map->dim_begin()), clause->get_start());
+    int stop = min(map->dimension_stop(map->dim_begin()), clause->get_stop());
+
+    if (start > stop) {
+        ostringstream msg;
+        msg
+                << "The expressions passed to grid() do not result in an inclusive \n"
+                << "subset of '" << clause->get_map_name()
+                << "'. The map's values range " << "from "
+                << clause->get_map_min_value() << " to "
+                << clause->get_map_max_value() << ".";
+        throw Error(malformed_expr,msg.str());
+    }
+
+    BESDEBUG("GeoGrid", "Setting constraint on " << map->name() << "[" << start << ":" << stop << "]" << endl);
+
+    // Stride is always one.
+    map->add_constraint(map->dim_begin(), start, 1, stop);
+    coverage->add_constraint(coverage_dim, start, 1, stop);
 }
 
 } //namespace libdap

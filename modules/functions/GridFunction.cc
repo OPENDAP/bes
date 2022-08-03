@@ -30,6 +30,8 @@
 #include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
+#include <libdap/D4RValue.h>
+
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
 #include <libdap/debug.h>
@@ -45,7 +47,13 @@ using namespace libdap;
 
 namespace functions {
 
-/** The grid function uses a set of relational expressions to form a selection
+    string grid_info =
+            string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            + "<function name=\"grid\" version=\"1.0b1\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid\">\n"
+            + "</function>";
+
+
+    /** The grid function uses a set of relational expressions to form a selection
  within a Grid variable based on the values in the Grid's map vectors.
  Thus, if a Grid has a 'temperature' map which ranges from 0.0 to 32.0
  degrees, it's possible to request the values of the Grid that fall between
@@ -75,18 +83,14 @@ namespace functions {
  @see geogrid() (func_geogrid_select) A function which has logic specific
  to longitude/latitude selection. */
 void
-function_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+function_dap2_grid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
     DBG(cerr << "Entering function_grid..." << endl);
-
-    string info =
-    string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"grid\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid\">\n" +
-    "</function>\n";
+    BESDEBUG("function", "function_dap2_grid()  BEGIN " << endl);
 
     if (argc == 0) {
         Str *response = new Str("info");
-        response->set_value(info);
+        response->set_value(grid_info);
         *btpp = response;
         return;
     }
@@ -168,6 +172,45 @@ bool GridFunction::canOperateOn(DDS &dds)
 	get_grids(dds, &grids);
 
 	return !grids.empty();
+}
+
+
+/** The grid function uses a set of relational expressions to form a selection
+ within a Grid variable based on the values in the Grid's map vectors.
+ Thus, if a Grid has a 'temperature' map which ranges from 0.0 to 32.0
+ degrees, it's possible to request the values of the Grid that fall between
+ 10.5 and 12.5 degrees without knowing to which array indexes those values
+ correspond. The function takes one or more arguments:<ul>
+ <li>The name of a Grid.</li>
+ <li>Zero or more strings which hold relational expressions of the form:<ul>
+ <li><code>&lt;map var&gt; &lt;relop&gt; &lt;constant&gt;</code></li>
+ <li><code>&lt;constant&gt; &lt;relop&gt; &lt;map var&gt; &lt;relop&gt;
+ &lt;constant&gt;</code></li>
+ </ul></li>
+ </ul>
+
+ Each of the relation expressions is applied to the Grid and the result is
+ returned.
+
+ @note Since this is a function and one of the arguments is the grid, the
+ grid is read (using the Grid::read() method) at the time the argument list
+ is built.
+
+ @note The main difference between this function and the DAP2
+ version is to use args->size() in place of argc and
+ args->get_rvalue(n)->value(dmr) in place of argv[n].
+
+ @note Not yet implemented.
+
+ @see function_dap2_grid
+ */
+BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
+{
+    BESDEBUG("function", "function_dap4_grid()  BEGIN " << endl);
+
+    throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
+
+    return 0; //response.release();
 }
 
 } // namesspace functions

@@ -29,6 +29,9 @@ namespace libdap {
 class DDS;
 class BaseType;
 class Grid;
+
+class DMR;
+class Array;
 }
 
 namespace functions {
@@ -40,8 +43,13 @@ void get_grids(libdap::BaseType *bt, std::vector<libdap::Grid *> *grids);
 void get_grids(libdap::DDS &dds, std::vector<libdap::Grid *> *grids);
 bool is_geo_grid(libdap::Grid *d_grid);
 
+void get_coverages(libdap::BaseType *bt, std::vector<libdap::Array *> *coverages);
+void get_coverages(libdap::DMR &dmr, std::vector<libdap::Array *> *coverages);
+bool is_geo_grid(libdap::Array *d_coverage);
+
 void parse_gse_expression(gse_arg *arg, libdap::BaseType * expr);
 void apply_grid_selection_expressions(libdap::Grid * grid, std::vector <GSEClause *>clauses);
+void apply_grid_selection_expressions(libdap::Array * coverage, std::vector <GSEClause *>clauses);
 
 }
 

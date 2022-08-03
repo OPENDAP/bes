@@ -47,12 +47,15 @@ class GSEClause;
 struct gse_arg
 {
     GSEClause *_gsec;           // The gse parsed.
-    libdap::Grid *_grid;                // The Grid being constrained.
+    libdap::Grid *_grid;        // The Grid being constrained.
+    libdap::Array *_coverage;   // The Dap4 Array being constrained (aka Coverage)
     int _status;                // The parser's status.
 
-    gse_arg(): _gsec(0), _grid(0), _status(1)
+    gse_arg(): _gsec(0), _grid(0), _coverage(0), _status(1)
     {}
-    gse_arg(libdap::Grid *g): _gsec(0), _grid(g), _status(1)
+    gse_arg(libdap::Grid *g): _gsec(0), _grid(g), _coverage(0), _status(1)
+    {}
+    gse_arg(libdap::Array *a): _gsec(0), _grid(0), _coverage(a), _status(1)
     {}
     virtual ~gse_arg()
     {}
@@ -72,6 +75,14 @@ struct gse_arg
     libdap::Grid *get_grid()
     {
         return _grid;
+    }
+    void set_coverage(libdap::Array *a)
+    {
+        _coverage = a;
+    }
+    libdap::Array *get_coverage()
+    {
+        return _coverage;
     }
     void set_status(int stat)
     {
