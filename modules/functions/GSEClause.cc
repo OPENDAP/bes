@@ -39,6 +39,7 @@
 
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
+#include <libdap/D4Maps.h>
 #include <libdap/dods-datatypes.h>
 //#include <libdap/Error.h>
 //#include <libdap/InternalErr.h>
@@ -222,6 +223,87 @@ GSEClause::GSEClause(Grid *grid, const string &map, const double value1,
         throw Error(string("The map variable '") + map
                     + string("' does not exist in the grid '")
                     + grid->name() + string("'."));
+
+    DBG(cerr << d_map->toString());
+
+    // Initialize the start and stop indices.
+    Array::Dim_iter iter = d_map->dim_begin();
+    d_start = d_map->dimension_start(iter);
+    d_stop = d_map->dimension_stop(iter);
+
+    compute_indices();
+}
+
+/** @brief Create an instance using discrete parameters. */
+GSEClause::GSEClause(Array *coverage, const string &map, const double value, const relop op)
+    : d_map(0),
+    d_value1(value), d_value2(0), d_op1(op), d_op2(dods_nop_op),
+    d_map_min_value(""), d_map_max_value("")
+{
+    if (!coverage->is_dap2_grid())
+        throw Error(string("The grid function cannot be applied to the array variable '")
+                    + coverage->name() + string("'."));
+
+    // Process the Map Arrays.
+    bool mapFound = false;
+    D4Maps *d4_maps = coverage->maps();
+    D4Maps::D4MapsIter miter = d4_maps->map_begin();
+    D4Maps::D4MapsIter end = d4_maps->map_end();
+    for (; miter != end; miter++) {
+        D4Map *d4_map = (*miter);
+        if (d4_map->name() == map) {
+            mapFound = true;
+            d_map = const_cast<Array *>(d4_map->array());
+            break;
+        }
+    }
+
+    if (!mapFound)
+        throw Error(string("The map variable '") + map
+                + string("' does not exist in the array '")
+                + coverage->name() + string("'."));
+
+    DBG(cerr << d_map->toString());
+
+    // Initialize the start and stop indices.
+    Array::Dim_iter iter = d_map->dim_begin();
+    d_start = d_map->dimension_start(iter);
+    d_stop = d_map->dimension_stop(iter);
+
+    compute_indices();
+}
+
+/** @brief Create an instance using discrete parameters. */
+
+GSEClause::GSEClause(Array *coverage, const string &map, const double value1,
+                     const relop op1, const double value2, const relop op2)
+        : d_map(0),
+          d_value1(value1), d_value2(value2), d_op1(op1), d_op2(op2),
+          d_map_min_value(""), d_map_max_value("")
+{
+
+    if (!coverage->is_dap2_grid())
+        throw Error(string("The grid function cannot be applied to the array variable '")
+                    + coverage->name() + string("'."));
+
+    // Process the Map Arrays.
+    bool mapFound = false;
+    D4Maps *d4_maps = coverage->maps();
+    D4Maps::D4MapsIter miter = d4_maps->map_begin();
+    D4Maps::D4MapsIter end = d4_maps->map_end();
+    for (; miter != end; miter++) {
+        D4Map *d4_map = (*miter);
+        if (d4_map->name() == map) {
+            mapFound = true;
+            d_map = const_cast<Array *>(d4_map->array());
+            break;
+        }
+    }
+
+    if (!mapFound)
+        throw Error(string("The map variable '") + map
+                    + string("' does not exist in the array '")
+                    + coverage->name() + string("'."));
 
     DBG(cerr << d_map->toString());
 
