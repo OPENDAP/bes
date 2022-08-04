@@ -29,20 +29,20 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 #include "config.h"
 
 #include <libdap/DDS.h>
 #include <libdap/DAS.h>
 #include <libdap/DataDDS.h>
 #include <libdap/ConstraintEvaluator.h>
-// #include <libdap/DMR.h>
+
 #include <libdap/Error.h>
 
 #include "BESDapTransmit.h"
 #include "BESContainer.h"
 #include "BESDapNames.h"
 #include "BESDataNames.h"
-#include "BESResponseNames.h"
 
 #include "BESDASResponse.h"
 #include "BESDDSResponse.h"
@@ -71,9 +71,7 @@ using namespace std;
 class Sender
 {
 public:
-    virtual ~Sender()
-    {
-    }
+    virtual ~Sender() = default;
 
     // The main call, non-virtual to force exception handling.
     // Subclasses will override send_internal private virtual.
@@ -83,15 +81,17 @@ public:
         try {
             send_internal(obj, dhi);
         }
-        catch (InternalErr &e) {
+        catch (const InternalErr &e) {
             string err = "libdap error transmitting " + response_string + ": " + e.get_error_message();
-            throw BESDapError(err, true, e.get_error_code(), __FILE__, __LINE__);
+            throw BESDapError(err, true, e.get_error_code(), (e.get_file().empty() ? __FILE__: e.get_file()),
+                              (e.get_line() == 0 ? __LINE__: e.get_line()));
         }
-        catch (Error &e) {
+        catch (const Error &e) {
             string err = "libdap error transmitting " + response_string + ": " + e.get_error_message();
-            throw BESDapError(err, false, e.get_error_code(), __FILE__, __LINE__);
+            throw BESDapError(err, false, e.get_error_code(), (e.get_file().empty() ? __FILE__: e.get_file()),
+                              (e.get_line() == 0 ? __LINE__: e.get_line()));
         }
-        catch (const BESError &e) {
+        catch (const BESError &) {
             throw; // rethrow as is
         }
         catch (const std::exception &e) {
@@ -101,8 +101,7 @@ public:
         }
         catch (...) {
             string s = "unknown error caught transmitting " + response_string + ": ";
-            BESInternalFatalError ex(s, __FILE__, __LINE__);
-            throw ex;
+            throw BESInternalFatalError(s, __FILE__, __LINE__);
         }
     }
 
