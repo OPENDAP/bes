@@ -28,6 +28,7 @@
 namespace libdap {
 class BaseType;
 class DDS;
+class DMR;
 }
 
 namespace functions {
@@ -54,6 +55,7 @@ public:
     }
 
     bool canOperateOn(libdap::DDS &dds);
+    bool canOperateOn(libdap::DMR &dmr);
 };
 
 } // functions namespace

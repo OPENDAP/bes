@@ -29,6 +29,7 @@
 #include <libdap/Grid.h>
 #include <libdap/Array.h>
 #include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
 #include <libdap/DMR.h>
 #include <libdap/util.h>
 
@@ -212,12 +213,21 @@ void get_coverages(BaseType *bt, vector<Array *> *coverages)
 * @param dds The dmr to search
 * @param grids A vector into which to place a pointer to every Array in the DMR.
 */
-/*void get_coverages(DMR &dmr, vector<Array *> *coverages)
+void get_coverages(DMR &dmr, vector<Array *> *coverages)
 {
-    for (DMR::Vars_iter i = dmr.var_begin(); i != dmr.var_end(); i++) {
-        get_coverages(*i, coverages);
+    D4Group *root = dmr.root();
+
+    // variables
+    Constructor::Vars_iter v = root->var_begin();
+    while (v != root->var_end()) {
+        get_coverages(*v, coverages);
+        ++v;
     }
-}*/
+    // groups
+    D4Group::groupsIter g = root->grp_begin();
+    while (g != root->grp_end())
+        get_coverages((*g++),coverages);
+}
 
 static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
 {
@@ -260,6 +270,15 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
     // Stride is always one.
     map->add_constraint(map->dim_begin(), start, 1, stop);
     coverage->add_constraint(coverage_dim, start, 1, stop);
+}
+
+void apply_grid_selection_expressions(Array * coverage, vector < GSEClause * >clauses)
+{
+    vector < GSEClause * >::iterator clause_i = clauses.begin();
+    while (clause_i != clauses.end())
+        apply_grid_selection_expr(coverage, *clause_i++);
+
+    coverage->set_read_p(false);
 }
 
 } //namespace libdap

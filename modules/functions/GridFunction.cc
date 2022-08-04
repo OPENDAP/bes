@@ -34,6 +34,7 @@
 
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
+#include <libdap/DMR.h>
 #include <libdap/debug.h>
 #include <libdap/util.h>
 
@@ -211,6 +212,19 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
 
     return 0; //response.release();
+}
+
+/**
+* The passed DMR parameter dmr is evaluated to see if it contains DAP4 Arrays that conform with DAP2 Grid objects.
+*
+* @param dmr The DMR to be evaluated.
+*/
+bool GridFunction::canOperateOn(DMR &dmr)
+{
+    vector<Array *> coverages;
+    get_coverages(dmr, &coverages);
+
+    return !coverages.empty();
 }
 
 } // namesspace functions
