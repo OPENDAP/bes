@@ -35,7 +35,7 @@ main (int argc, char*argv[])
 
     if(argc !=3) {
         printf("Please provide the HDF5 file name and the HDF5 dataset name as the following:\n");
-        printf(" ./h5dstoreinfo h5_file_name h5_dset_path .\n");
+        printf(" ./h5_obj_addr_info h5_file_name h5_dataset_path .\n");
         return 0;
     }
     /*
@@ -76,7 +76,7 @@ main (int argc, char*argv[])
         }
         cont_size = H5Dget_storage_size(dataset);
         // Need to check if fill value if cont_size.
-        printf("    Addr: %llu\n",cont_addr);
+        printf("    Addr: %lu\n",cont_addr);
         printf("    Size: %llu\n",cont_size);
    
     }
@@ -100,7 +100,7 @@ main (int argc, char*argv[])
         chunk_rank = H5Pget_chunk(cparms,dataset_rank,chunk_dims);
         printf("   Number of dimensions in a chunk is  %i\n",chunk_rank);
         for(i = 0; i <chunk_rank; i++) 
-            printf(" Chunk Dim %d is %d\n",i,chunk_dims[i]);  
+            printf(" Chunk Dim %d is %llu\n",i,chunk_dims[i]);
         temp_coords = (hsize_t*)calloc(chunk_rank,sizeof(size_t));
         H5Sselect_all(filespace);
         H5Dget_num_chunks(dataset,filespace,&total_num_chunks);
@@ -115,12 +115,12 @@ printf("total_num_chunks is %llu\n",total_num_chunks);
  
             H5Dget_chunk_info(dataset,filespace,i,temp_coords,NULL,&addr,&size);
             printf("    Chunk index:  %d\n",i);
-            printf("    Number of bytes:  %u\n",size);
+            printf("    Number of bytes:  %llu\n",size);
             printf("    Logical offset: offset");
             for (j=0; j<chunk_rank; j++) 
                 printf("[%llu]",temp_coords[j]);
             printf("\n");
-            printf("      Physical offset: %llu\n",addr); 
+            printf("      Physical offset: %lu\n",addr);
             printf("\n");
         }
         free(temp_coords);

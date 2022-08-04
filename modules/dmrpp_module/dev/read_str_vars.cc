@@ -18,9 +18,11 @@
  */
 
 #include "hdf5.h"
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <sstream>
 #define MAX_PATHLEN 256
 
 using namespace std;
@@ -31,14 +33,24 @@ int read_str_data(hid_t,vector<string>&strdata);
 int read_vlen_str(hid_t dset_id, int num_elems, hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar);
 int read_fixed_str(hid_t dset_id, int num_elems, hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar);
 
-int
-main (int argc, char **argv)
+/**
+ *
+ * @param argc
+ * @param argv
+ * @return
+ */
+int main (int argc, char *argv[])
 {
-    hid_t       file, root_id;         /* file and dataset handles */
+    hid_t file;    // file handle
+    hid_t root_id; // dataset handle
 
-    file = H5Fopen(argv[1], H5F_ACC_RDONLY, H5P_DEFAULT);
+
+    string hdf_file(argv[1]);
+
+    file = H5Fopen(hdf_file.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+
     if(file < 0) {
-        printf("HDF5 file %s cannot be opened successfully,check the file name and try again.\n",argv[1]);
+        cerr << "HDF5 file " << hdf_file << " cannot be opened successfully,check the file name and try again." << endl;
         return -1;
     }
 
@@ -47,13 +59,16 @@ main (int argc, char **argv)
      // Iterate through the file to see the members from the root.
     H5G_info_t g_info; 
     hsize_t nelems = 0;
+
+
     if(H5Gget_info(root_id,&g_info) <0) {
-        cerr<<"H5Gget_info failed "<<endl; 
+        cerr << "H5Gget_info failed " << endl;
         return -1;
     }
 
+
     nelems = g_info.nlinks;
-        
+
     for (hsize_t i = 0; i < nelems; i++) {
 
         // Obtain the object type, such as group or dataset. 
@@ -86,7 +101,15 @@ main (int argc, char **argv)
 
     return 0;
 }
+// #####################################################################################################################
 
+
+
+/**
+ *
+ * @param dset_id
+ * @return
+ */
 bool is_str_type(hid_t dset_id) {
     bool ret_value = false;
     hid_t dtype_id = H5Dget_type(dset_id);
