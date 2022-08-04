@@ -1,0 +1,21 @@
+CXX=/usr/bin/g++
+CFLAGS=-Wall -I/Users/myang6/work/opendap/hyrax-652/hdf5-1.10.7/hdf5/include
+#CFLAGS=-Wno-deprecated -I/Users/myang6/work/opendap/hyrax-652/hdf5-1.10.7/hdf5/include
+LDFLAGS=-L/Users/myang6/work/opendap/hyrax-652/hdf5-1.10.7/hdf5/lib
+LIBS=-lhdf5 -lhdf5_hl -lm -lz 
+
+all: read_str_vars h5_vlstr_info
+read_str_vars: read_str_vars.o
+	$(CXX) $(LDFLAGS) $(LIBS) -o read_str_vars read_str_vars.o
+
+read_str_vars.o: read_str_vars.cc
+	$(CXX) $(CFLAGS) -c read_str_vars.cc
+
+h5_vlstr_info: h5_vlstr_info.o
+	$(CXX) $(LDFLAGS) $(LIBS) -o h5_vlstr_info h5_vlstr_info.o
+
+h5_vlstr_info.o: h5_vlstr_info.cc
+	$(CXX) $(CFLAGS) -c h5_vlstr_info.cc
+
+clean:
+	rm -f read_str_vars.o read_str_vars h5_vlstr_info.o h5_vlstr_info 
