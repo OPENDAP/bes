@@ -26,6 +26,7 @@
 
 using namespace std;
 
+
 int
 main (int argc, char*argv[])
 {
@@ -43,7 +44,7 @@ main (int argc, char*argv[])
 
     if(argc !=3) {
         cerr << "Please provide the HDF5 file name and the HDF5 dataset name as the following:" << endl;
-        cerr << "    ./h5_obj_addr_info h5_file_name h5_dataset_path " << endl ;
+        cerr << argv[0] << " h5_file_name h5_dataset_path " << endl ;
         return 1;
     }
     string filename(argv[1]);
@@ -66,7 +67,7 @@ main (int argc, char*argv[])
         cerr << "check the dataset path and try again." << endl;
         return 1;
     }
-    cout << "#        DATASET: " << vname << endl;
+    cout << "#   DATASET NAME: " << vname << endl;
 
     /*
      * Get creation properties list.
@@ -76,19 +77,17 @@ main (int argc, char*argv[])
     data_layout = H5Pget_layout(cparms);
 
     if (H5D_CONTIGUOUS == data_layout)  {
-
-        haddr_t cont_addr = 0;
-        hsize_t cont_size = 0;
         cout << "#        storage: contiguous" << endl;
+
         // Using H5Dget_offset(dset_id) for offset and H5Dget_storage_size for size.
-        cont_addr = H5Dget_offset(dataset);
+        haddr_t cont_addr = H5Dget_offset(dataset);
         if(cont_addr == HADDR_UNDEF) {
             H5Dclose(dataset);
             H5Fclose(file);
             cerr << "Cannot obtain the contiguous storage address." << endl;
             return 1;
         }
-        cont_size = H5Dget_storage_size(dataset);
+        haddr_t cont_size = H5Dget_storage_size(dataset);
         // Need to check if fill value if cont_size.
         cout << "#      cont_addr: " << cont_addr << endl;
         cout << "#      cont_size: " << cont_size << endl;
@@ -128,21 +127,21 @@ main (int argc, char*argv[])
 
         cout << "#" << endl;
         for(int chunk_index = 0; chunk_index<chunk_count; chunk_index++) {
-
             haddr_t file_offset = 0;
             hsize_t size = 0;
             hsize_t chunk_coords[chunk_rank];
 
             H5Dget_chunk_info(dataset,filespace,chunk_index,chunk_coords,NULL,&file_offset,&size);
             cout << "#      chunk_index: " << chunk_index << endl;
+            cout << "#      file_offset: " << file_offset << endl;
             cout << "#             size: " << size << " bytes" << endl;
+
             cout << "#     chunk_coords: ";
             for (int j=0; j<chunk_rank; j++) {
                 cout << "[" << chunk_coords[j] << "]";
             }
             cout << endl;
-            cout << "#      file_offset: " << file_offset << endl;
-            cout << "#    -- -- -- -- -- -- -- --" << endl;
+            cout << "#    -- -- -- -- -- -- -- -- -- --" << endl;
         }
         H5Sclose(filespace);
     }

@@ -86,8 +86,8 @@ bool decode_heap_info(FILE*fp, const heap_obj_info_t hobj_info, uint16_t s_max_o
 int main(int argc, char *argv[]) {
 
     if (argc != 4) {
-        printf("Please provide the HDF5 file name and the HDF5 dataset offset and size-in-bytes as the following:\n");
-        printf(" ./h5_vl_addr h5_file_name offset size \n");
+        cerr << "Please provide the HDF5 file name and the HDF5 dataset offset and size-in-bytes as the following:" << endl;
+        cerr << argv[0] << "h5_file_name offset size" << endl;
         return 0;
     }
 
