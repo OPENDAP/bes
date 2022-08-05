@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     FILE *fp;
     
     if((fp= fopen(argv[1],"rb"))==NULL) {
-    printf("Error, Cann't open file.");
+    printf("Error, Can't open file.");
     exit(1);
     }
     vector<char>databuf(t_nelems);

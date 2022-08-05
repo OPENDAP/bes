@@ -18,7 +18,7 @@
  */
 
 #include "hdf5.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -30,8 +30,8 @@ using namespace std;
 bool is_str_type(hid_t);
 int obtain_str_info_data(hid_t,hid_t, int);
 int read_str_data(hid_t,vector<string>&strdata);
-int read_vlen_str(hid_t dset_id, int num_elems, hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar);
-int read_fixed_str(hid_t dset_id, int num_elems, hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar);
+int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
+int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar);
 
 /**
  *
@@ -219,7 +219,7 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
     return 0;
 }
 
-int read_vlen_str(hid_t dset, int nelms,hid_t dtype,hid_t dspace, hid_t mspace,bool is_scalar) {
+int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar) {
 
     vector<string> finstrval;
     finstrval.resize(nelms);

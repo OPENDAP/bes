@@ -21,7 +21,10 @@
  */
 
 #include "hdf5.h"
-#include <stdlib.h>
+#include <cstdlib>
+#include <iostream>
+
+using namespace std;
 
 int
 main (int argc, char*argv[])
@@ -33,26 +36,37 @@ main (int argc, char*argv[])
 
     herr_t      status;
 
+
+    cout << "#################################################################################################" << endl;
+    cout << "# " << argv[0] << endl;
+    cout << "#" << endl;
+
     if(argc !=3) {
-        printf("Please provide the HDF5 file name and the HDF5 dataset name as the following:\n");
-        printf(" ./h5_obj_addr_info h5_file_name h5_dataset_path .\n");
-        return 0;
+        cerr << "Please provide the HDF5 file name and the HDF5 dataset name as the following:" << endl;
+        cerr << "    ./h5_obj_addr_info h5_file_name h5_dataset_path " << endl ;
+        return 1;
     }
+    string filename(argv[1]);
+    string vname(argv[2]);
     /*
      * Open the file and the dataset.
      */
-    file = H5Fopen(argv[1], H5F_ACC_RDONLY, H5P_DEFAULT);
+    file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if(file < 0) {
-        printf("HDF5 file %s cannot be opened successfully,check the file name and try again.\n",argv[1]);
-        return -1;
+        cerr << "HDF5 file " << filename << " cannot be opened successfully,check the file name and try again." << endl;
+        return 1;
     }
+    cout << "# FILE: " << filename << endl;
+    cout << "#" << endl;
 
-    dataset = H5Dopen2(file, argv[2], H5P_DEFAULT);
+    dataset = H5Dopen2(file, vname.c_str(), H5P_DEFAULT);
     if(dataset < 0) {
         H5Fclose(file);
-        printf("HDF5 dataset %s cannot be opened successfully,check the dataset path and try again.\n",argv[2]);
-        return -1;
+        cerr << "HDF5 dataset (variable):  " << vname << " was not opened successfully, ";
+        cerr << "check the dataset path and try again." << endl;
+        return 1;
     }
+    cout << "#        DATASET: " << vname << endl;
 
     /*
      * Get creation properties list.
@@ -65,70 +79,75 @@ main (int argc, char*argv[])
 
         haddr_t cont_addr = 0;
         hsize_t cont_size = 0;
-        printf("Storage: contiguous\n");
+        cout << "#        storage: contiguous" << endl;
         // Using H5Dget_offset(dset_id) for offset and H5Dget_storage_size for size.
         cont_addr = H5Dget_offset(dataset);
         if(cont_addr == HADDR_UNDEF) {
             H5Dclose(dataset);
             H5Fclose(file);
-            printf("Cannot obtain the contiguous storage address.\n");
-            return -1;
+            cerr << "Cannot obtain the contiguous storage address." << endl;
+            return 1;
         }
         cont_size = H5Dget_storage_size(dataset);
         // Need to check if fill value if cont_size.
-        printf("    Addr: %lu\n",cont_addr);
-        printf("    Size: %llu\n",cont_size);
-   
+        cout << "#           Addr: " << cont_addr << endl;
+        cout << "#           Size: " << cont_size << endl;
     }
     else if (H5D_CHUNKED == data_layout)  {
 
         hid_t filespace;
-        unsigned int dataset_rank;
-        hsize_t* temp_coords;
-        hsize_t* chunk_dims;
+        int dataset_rank;
         int chunk_rank;
-        hsize_t num_chunks;
-        hsize_t total_num_chunks;
-        int i,j;
 
-        printf("storage: chunked.\n");
+        cout << "#        storage: chunked" << endl;
 
         /* Get filespace handle first. */
         filespace = H5Dget_space(dataset);   
         dataset_rank = H5Sget_simple_extent_ndims(filespace);
-        chunk_dims = (hsize_t*)calloc(dataset_rank,sizeof(size_t));
-        chunk_rank = H5Pget_chunk(cparms,dataset_rank,chunk_dims);
-        printf("   Number of dimensions in a chunk is  %i\n",chunk_rank);
-        for(i = 0; i <chunk_rank; i++) 
-            printf(" Chunk Dim %d is %llu\n",i,chunk_dims[i]);
-        temp_coords = (hsize_t*)calloc(chunk_rank,sizeof(size_t));
-        H5Sselect_all(filespace);
-        H5Dget_num_chunks(dataset,filespace,&total_num_chunks);
-printf("total_num_chunks is %llu\n",total_num_chunks);
-        H5Dget_num_chunks(dataset,filespace,&num_chunks);
-        printf("   Number of chunks is %llu\n",num_chunks);
+        cout << "#   dataset_rank: " << dataset_rank << endl;
 
-        for(i = 0; i<num_chunks;i++) {
+        // What is happening in this next line?
+        // chunk_dims = (hsize_t*)calloc(dataset_rank,sizeof(size_t));
 
-            haddr_t addr = 0;
-            hsize_t size = 0;
- 
-            H5Dget_chunk_info(dataset,filespace,i,temp_coords,NULL,&addr,&size);
-            printf("    Chunk index:  %d\n",i);
-            printf("    Number of bytes:  %llu\n",size);
-            printf("    Logical offset: offset");
-            for (j=0; j<chunk_rank; j++) 
-                printf("[%llu]",temp_coords[j]);
-            printf("\n");
-            printf("      Physical offset: %lu\n",addr);
-            printf("\n");
+        hsize_t c_dims[dataset_rank];
+
+        chunk_rank = H5Pget_chunk(cparms,dataset_rank,c_dims);
+        if(chunk_rank<0){
+            cerr << "Call to H5Pget_chunk() returned an error. retval: " << chunk_rank << endl;
+            return 1;
         }
-        free(temp_coords);
-        free(chunk_dims);
+        cout << "#     chunk_rank: " << chunk_rank << endl;
+        for(int i = 0; i <chunk_rank; i++)
+            cout << "#    ChunkDim[" << i << "]: " << c_dims[i] << endl;
+        H5Sselect_all(filespace);
+
+        hsize_t chunk_count;
+        H5Dget_num_chunks(dataset,filespace,&chunk_count);
+        cout << "#    chunk_count: " << chunk_count << endl;
+
+
+        cout << "#" << endl;
+        for(int chunk_index = 0; chunk_index<chunk_count; chunk_index++) {
+
+            haddr_t file_offset = 0;
+            hsize_t size = 0;
+            hsize_t chunk_coords[chunk_rank];
+
+            H5Dget_chunk_info(dataset,filespace,chunk_index,chunk_coords,NULL,&file_offset,&size);
+            cout << "#      chunk_index: " << chunk_index << endl;
+            cout << "#             size: " << size << " bytes" << endl;
+            cout << "#     chunk_coords: ";
+            for (int j=0; j<chunk_rank; j++) {
+                cout << "[" << chunk_coords[j] << "]";
+            }
+            cout << endl;
+            cout << "#      file_offset: " << file_offset << endl;
+            cout << "#     -- -- -- -- -- -- --" << endl;
+        }
         H5Sclose(filespace);
     }
     else if(H5D_COMPACT == data_layout) {/* Compact storage */
-        printf("Storage: compact\n");
+        cout << "#        storage: compact" << endl;
         size_t comp_size =0;
     }
     H5Pclose(cparms);

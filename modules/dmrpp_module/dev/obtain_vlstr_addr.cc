@@ -21,8 +21,8 @@
 
 /* Author: Kent Yang <myang6@hdfgroup.org> */ 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <stdint.h>
 #include <iostream>
 #include <vector>
