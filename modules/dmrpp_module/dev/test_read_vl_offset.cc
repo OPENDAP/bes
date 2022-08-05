@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
     if (argc != 4) {
         printf("Please provide the HDF5 file name and the HDF5 real data offset and size-in-bytes as the following:\n");
-        printf(" ./h5_vl_read h5_file_name offset size \n");
+        printf(" ./test_read_vl_offset h5_file_name offset size \n");
         return 0;
     }
 

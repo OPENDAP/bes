@@ -93,9 +93,10 @@ int main(int argc, char *argv[]) {
 
     if (argc != 4) {
         printf("Please provide the HDF5 file name and the HDF5 dataset offset and size-in-bytes as the following:\n");
-        printf(" ./h5_vl_addr h5_file_name offset size \n");
+        printf(" ./obtain_vlstr_addr_hard_code_subset h5_file_name offset size \n");
         return 0;
     }
+
 
     // Not checking errors, the wrong offset and size, errors will occur afterwards.
     char *t_ptr;
