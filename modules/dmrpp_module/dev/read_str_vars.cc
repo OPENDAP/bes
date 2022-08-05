@@ -30,7 +30,7 @@ using namespace std;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-bool debug = true;
+bool debug = false;
 
 bool is_str_type(hid_t);
 int obtain_str_info_data(hid_t,hid_t, int);
@@ -148,7 +148,12 @@ bool is_str_type(hid_t dset_id) {
     return ret_value;
 }
 
-
+/**
+ *
+ * @param root_id
+ * @param dset_index
+ * @return
+ */
 string get_object_name(hid_t root_id, int dset_index)
 {
     ssize_t oname_size;
@@ -187,7 +192,13 @@ string get_object_name(hid_t root_id, int dset_index)
 }
 
 
-
+/**
+ *
+ * @param root_id
+ * @param dset_id
+ * @param dset_index
+ * @return
+ */
 int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
 
     string variable_name = get_object_name(root_id,dset_index);
@@ -266,6 +277,16 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
     return 0;
 }
 
+/**
+ *
+ * @param dset
+ * @param nelms
+ * @param dtype
+ * @param dspace
+ * @param mspace
+ * @param is_scalar
+ * @return
+ */
 int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar) {
 
     vector<string> finstrval;
@@ -319,11 +340,22 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
     return 0;
 }
 
+
+/**
+ *
+ * @param dset_id
+ * @param nelems
+ * @param dtype
+ * @param dspace
+ * @param mspace
+ * @param is_scalar
+ * @return
+ */
 int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
 {
     size_t type_size = H5Tget_size(dtype);
     cout << "#" << endl;
-    cout << "#      type_size:  " << type_size <<endl;
+    cout << "#      type_size:  " << type_size << endl;
     vector <char> strval;
     strval.resize(nelems*type_size);
     hid_t read_ret;
@@ -353,10 +385,11 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
         foo.append(strdata[i]);
     }
     cout << "# strdata.size(): " << strdata.size() <<endl;
+    int i=0;
+    for(auto &s:strdata)
+        cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
+
     cout << "#            foo: '" << foo << "' (" << foo.length() << " chars)" << endl;
-
-
-
 
     // String data 
     cout << "# Fixed-size string data: "<<endl;
@@ -365,9 +398,59 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
         return -1;
     }
 
+    cout << "# strdata.size(): " << strdata.size() <<endl;
+    i=0;
+    for(auto &s:strdata)
+        cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
+
     return 0;
 }
 
+
+/**
+ * @brief Trim all of the trailing pad_char values from the string sdata.
+ * @param sdata
+ * @param pad_char
+ * @return
+ */
+int trim_string_padding(string &sdata, const char pad_char){
+    // For space pad, we need to find the first non-space character
+    // backward.
+    size_t pad_pos = string::npos;
+    if (pad_char == ' ') {
+        size_t last_not_pad_pos = sdata.find_last_not_of(pad_char);
+        if(last_not_pad_pos==string::npos) {
+            pad_pos = 0;
+        }
+        else {
+            pad_pos = last_not_pad_pos + 1;
+        }
+    }
+    else {
+        pad_pos = sdata.find(pad_char);
+    }
+
+    if (pad_pos == string::npos) {
+        // I elided this error state return because I think it's a bug
+        // Basically if the fixed length string is full of valid string chars then
+        // there are no pad chars, and that's legit. - ndp
+        // cerr << "#  WaRNing:  String pad is not found. \n";
+        // return -1;
+    }
+
+    if (pad_pos != 0) {
+        sdata = sdata.substr(0, pad_pos);
+    }
+
+    return 0;
+}
+
+/**
+ *
+ * @param dtype
+ * @param strdata
+ * @return
+ */
 int read_str_data(hid_t dtype, vector<string> & strdata) {
 
     // PAD will be removed in the trimmed output.
@@ -380,7 +463,7 @@ int read_str_data(hid_t dtype, vector<string> & strdata) {
     // H5T_STR_SPACEPAD: 2
    
     H5T_str_t str_pad = H5Tget_strpad(dtype);
-    char pad_char = '\0';
+    char pad_char = '\0'; // I think this can just be 0 instead of '\0' - ndp
     if (str_pad == H5T_STR_SPACEPAD) 
         pad_char = ' ';
     else if (str_pad != H5T_STR_NULLTERM && str_pad != H5T_STR_NULLPAD) {
@@ -388,45 +471,11 @@ int read_str_data(hid_t dtype, vector<string> & strdata) {
         return -1;
     }
 
-
+    int retval;
     for (int i = 0; i < strdata.size(); i++) {
-//        cout << "## BEGIN strdata["<< i << "]  length: " << strdata[i].length() << " ";
-//        cout << "value: '" << std::hex << strdata[i]  << std::dec << "'" << endl;
-
-        // For space pad, we need to find the first non-space character
-        // backward. 
-        size_t pad_pos = string::npos;
-        if (pad_char == ' ') {
-            size_t last_not_pad_pos = strdata[i].find_last_not_of(pad_char);
-            if(last_not_pad_pos==string::npos) {
-                pad_pos = 0;
-            }
-            else {
-                pad_pos = last_not_pad_pos + 1;
-            }
-        }
-        else {
-            pad_pos = strdata[i].find(pad_char);
-        }
-
-        if (pad_pos == string::npos) {
-            // cerr << "#  WaRNing:  String pad is not found. \n";
-            // I elided this return  because I think it's a bug
-            // Basically if the fixed length string is full of valid string chars then
-            // there are no pad chars, and that's legit. - ndp
-            // return -1;
-
-        }
-
-        if (pad_pos != 0) {
-            strdata[i] = strdata[i].substr(0, pad_pos);
-        }
-
-//        cout << "## END   strdata["<< i << "]  length: " << strdata[i].length() << " ";
-//        cout << "value: '" << std::hex<< strdata[i] << std::dec << "'" << endl;
-
+        retval = trim_string_padding(strdata[i],pad_char);
+        if(retval!=0)
+            return retval;
     }
-
     return 0;
-
 }
