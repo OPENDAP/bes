@@ -120,7 +120,7 @@ int main (int argc, char *argv[])
                 }
             }
             else {
-                cout << "#  The Object " << object_name << " is not a string type." << endl;
+                cout << "# The object '" << object_name << "' is not a string type." << endl;
             }
             H5Dclose(dset_id);
             cout << "# -- -- -- -- -- -- -- -- -- --" << endl;
@@ -353,18 +353,20 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
  */
 int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
 {
+    cout << "# -- -- -- -- -- -- -- --" << endl;
+    cout << "# BEGIN: read_fixed_str()" << endl;
+
     size_t type_size = H5Tget_size(dtype);
-    cout << "#" << endl;
-    cout << "#      type_size:  " << type_size << endl;
+    cout << "# type_size:  " << type_size << endl;
     vector <char> strval;
     strval.resize(nelems*type_size);
     hid_t read_ret;
     if (is_scalar) {
-        cout << "#      Object is scalar."  << endl;
+        cout << "# The object is a scalar."  << endl;
         read_ret = H5Dread(dset_id, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void *) strval.data());
     }
     else {
-        cout << "#      Object is Array."  << endl;
+        cout << "# The object is an Array."  << endl;
         read_ret = H5Dread(dset_id, dtype, mspace, dspace, H5P_DEFAULT, (void *) strval.data());
     }
 
@@ -375,21 +377,28 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
 
     string total_string(strval.begin(),strval.end());
     strval.clear();
-    cout << "#   total_string(" << total_string.length() << " chars): '" << total_string << "'" << endl;
+    cout << "# total_string(" << total_string.length() << " chars): '" << total_string << "'" << endl;
 
     vector <string> strdata; 
     strdata.resize(nelems);
-    string foo;
+    string sanity_check;
     for (int i = 0; i<nelems; i++) {
         strdata[i] = total_string.substr(i * type_size, type_size);
-        foo.append(strdata[i]);
+        sanity_check.append(strdata[i]);
     }
     cout << "# strdata.size(): " << strdata.size() <<endl;
     int i=0;
     for(auto &s:strdata)
         cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
 
-    cout << "#            foo: '" << foo << "' (" << foo.length() << " chars)" << endl;
+    cout << "# sanity_check(" << sanity_check.length() << " chars): '" << sanity_check << "'" << endl;
+
+    if(sanity_check == total_string){
+        cout << "## The sanity_check matched the total_string." << endl;
+    }
+    else {
+        cout << "## The sanity_check did NOT match the total_string." << endl;
+    }
 
     // String data 
     cout << "# Fixed-size string data: "<<endl;
@@ -401,7 +410,8 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
     cout << "# strdata.size(): " << strdata.size() <<endl;
     i=0;
     for(auto &s:strdata)
-        cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
+        cout << "#     strdata[" << i++ << "]: '" << std::hex << s.c_str() << std::dec << "'" <<endl;
+    cout << "# END: read_fixed_str()" << endl;
 
     return 0;
 }
@@ -472,10 +482,15 @@ int read_str_data(hid_t dtype, vector<string> & strdata) {
     }
 
     int retval;
-    for (int i = 0; i < strdata.size(); i++) {
-        retval = trim_string_padding(strdata[i],pad_char);
+    for(string &sdata:strdata){
+        retval = trim_string_padding(sdata,pad_char);
         if(retval!=0)
             return retval;
     }
+    //for (int i = 0; i < strdata.size(); i++) {
+    //    retval = trim_string_padding(strdata[i],pad_char);
+    //    if(retval!=0)
+    //        return retval;
+   // }
     return 0;
 }
