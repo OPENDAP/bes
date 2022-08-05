@@ -90,8 +90,8 @@ main (int argc, char*argv[])
         }
         cont_size = H5Dget_storage_size(dataset);
         // Need to check if fill value if cont_size.
-        cout << "#           Addr: " << cont_addr << endl;
-        cout << "#           Size: " << cont_size << endl;
+        cout << "#      cont_addr: " << cont_addr << endl;
+        cout << "#      cont_size: " << cont_size << endl;
     }
     else if (H5D_CHUNKED == data_layout)  {
 
@@ -142,7 +142,7 @@ main (int argc, char*argv[])
             }
             cout << endl;
             cout << "#      file_offset: " << file_offset << endl;
-            cout << "#     -- -- -- -- -- -- --" << endl;
+            cout << "#    -- -- -- -- -- -- -- --" << endl;
         }
         H5Sclose(filespace);
     }
