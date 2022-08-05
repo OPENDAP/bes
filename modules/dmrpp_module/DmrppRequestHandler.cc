@@ -97,11 +97,11 @@ shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
-bool DmrppRequestHandler::d_use_transfer_threads = false;
-unsigned int DmrppRequestHandler::d_max_transfer_threads = 1;
+bool DmrppRequestHandler::d_use_transfer_threads = true;
+unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
 
-bool DmrppRequestHandler::d_use_compute_threads = false;
-unsigned int DmrppRequestHandler::d_max_compute_threads = 1;
+bool DmrppRequestHandler::d_use_compute_threads = true;
+unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
 unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;

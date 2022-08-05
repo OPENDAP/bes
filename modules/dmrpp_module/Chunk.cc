@@ -262,7 +262,7 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
             throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-
+//cerr<<"coming to inflate else "<<endl;
             // If we're not done and just ran out of buffer space, we need to extend the buffer.
             // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
             if (0 == z_strm.avail_out) {
@@ -652,6 +652,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     char* dest = nullptr;
     char* tmp_buf = nullptr;
     char* tmp_dest = nullptr;
+
+    bool ignore_rest_deflate = false;
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
 
         string filter = *i;
@@ -659,29 +661,33 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
         if (filter == "deflate") {
 
             
-            if (num_deflate > 1) {
+            if (num_deflate > 1 && !ignore_rest_deflate) {
 
                 dest = new char[chunk_size];
                 try {
                     destp = &dest;
                     if (deflate_index == 0) {
+//cerr<<"index 0: input buf size before is "<<get_rbuf_size() <<endl;
                         out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
-cerr<<"index 0: input buf size is "<<get_rbuf_size() <<endl;
+//cerr<<"index 0: input buf size after is "<<get_rbuf_size() <<endl;
                         tmp_dest = *destp;
                     }
                     else {
-cerr<<"index 1: input buf size is "<<in_buf_size <<endl;
+//cerr<<"index 1: input buf size is "<<in_buf_size <<endl;
                         tmp_buf = tmp_dest;
                         out_buf_size = inflate(destp, chunk_size, tmp_buf, in_buf_size);
-cerr<<"out buf size is "<<out_buf_size <<endl;
+//cerr<<"out buf size is "<<out_buf_size <<endl;
                         tmp_dest = *destp;
                         delete[] tmp_buf;
                     }
                     deflate_index ++;
                     in_buf_size = out_buf_size;
+//cerr<<"index 0: input buf size OUT is "<<in_buf_size <<endl;
 #if DMRPP_USE_SUPER_CHUNKS
                     // This is the last deflate filter, output the buffer.
-                    if (deflate_index == num_deflate) {
+                    if (in_buf_size == chunk_size)
+                        ignore_rest_deflate = true;
+                    if (ignore_rest_deflate || deflate_index == num_deflate) {
                         char* newdest = *destp;
                         set_read_buffer(newdest, chunk_size, chunk_size, true);
                     }
@@ -699,7 +705,7 @@ cerr<<"out buf size is "<<out_buf_size <<endl;
  
 
             }
-            else {
+            else if(num_deflate == 1) {
                 dest = new char[chunk_size];
                 destp = &dest;
                 try {
