@@ -371,8 +371,8 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
 int read_str_data(hid_t dtype, vector<string> & strdata) {
 
     // PAD will be removed in the trimmed output.
-    //vector <string>trimmed_strdata;
-    //trimmed_strdata.resize(strdata.size());
+    // vector <string>trimmed_strdata;
+    // trimmed_strdata.resize(strdata.size());
     // pad information is represented as an enum.
     // H5T_STR_ERROR: -1
     // H5T_STR_NULLTERM: 0
