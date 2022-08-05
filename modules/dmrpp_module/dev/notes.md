@@ -1,4 +1,16 @@
-
+# PODAAC Granules With String Arrays.
+The following hdf5/nc4 granule files, identified by Phoebe Sham, contain variables (aka datasets)
+stored as arrays.
+* [Africa_Congo_Jason3_13.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/PRESWOT_HYDRO_GRRATS_L2_VIRTUAL_STATION_HEIGHTS_V2/Africa_Congo_Jason3_13.nc)
+* [Asia_Yenisei1kmdaily.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/PRESWOT_HYDRO_GRRATS_L2_DAILY_VIRTUAL_STATION_HEIGHTS_V2/Asia_Yenisei1kmdaily.nc)
+* [NOAA_PRAWLER_L2_20100905_20200106_VER001.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_PRELAUNCH_L2_PRAWLER_V1/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc)
+* [SWOT_L2_HR_PIXCVec_006_509_207L_20220801T115408_20220801T115418_Dx0000_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_NA_CONTINENT_L2_HR_PIXCVEC_V1/SWOT_L2_HR_PIXCVec_006_509_207L_20220801T115408_20220801T115418_Dx0000_01.nc)
+* [SWOT_L2_LR_SSH_Expert_001_001_20111113T000000_20111113T005105_DG10_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_L2_KARIN_SSH_ECCO_LLC4320_CALVAL_V1/SWOT_L2_LR_SSH_Expert_001_001_20111113T000000_20111113T005105_DG10_01.nc)
+* [SWOT_L2_LR_SSH_Expert_001_001_20111113T000000_20111113T005126_DG10_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_L2_KARIN_SSH_ECCO_LLC4320_SCIENCE_V1/SWOT_L2_LR_SSH_Expert_001_001_20111113T000000_20111113T005126_DG10_01.nc)
+* [SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125105_DG10_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_L2_KARIN_SSH_GLORYS_CALVAL_V1/SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125105_DG10_01.nc)
+* [SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125126_DG10_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_L2_KARIN_SSH_GLORYS_SCIENCE_V1/SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125126_DG10_01.nc)
+* [SWOT_L2_LR_SSH_Expert_001_008_20140412T180008_20140412T185134_DG10_01.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_SIMULATED_L2_KARIN_SSH_GLORYS_SCIENCE_V1/SWOT_L2_LR_SSH_Expert_001_008_20140412T180008_20140412T185134_DG10_01.nc)
+* [rutgers-ru26d-L2-20190905T2055.nc](https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SWOT_PRELAUNCH_L2_GLIDER_V1/rutgers-ru26d-L2-20190905T2055.nc)
 
 ## Africa_Congo_Jason3_13.nc
 _Contains 2 Scalar Strings._
@@ -16,8 +28,6 @@ _Contains 2 Scalar Strings._
     Storage: contiguous
     Addr: 63457
     Size: 15
-
-
 
 ## Asia_Yenisei1kmdaily.nc
 _Contains one (small) 1D String Array_
