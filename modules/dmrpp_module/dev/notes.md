@@ -54,10 +54,11 @@ _Contains 1 large 1D String Array_
     Chunk Dim 1 is 8
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  323386
-    Logical offset: offset[0][0]
-    Physical offset: 756683
+
+        Chunk index:  0
+        Number of bytes:  323386
+        Logical offset: offset[0][0]
+        Physical offset: 756683
 
 
 
@@ -79,10 +80,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 6
     total_num_chunks is 4
     Number of chunks is 4
-    Chunk index:  0
-    Number of bytes:  28928
-    Logical offset: offset[0][0]
-    Physical offset: 4473132
+
+        Chunk index:  0
+        Number of bytes:  28928
+        Logical offset: offset[0][0]
+        Physical offset: 4473132
     
         Chunk index:  1
         Number of bytes:  29245
@@ -106,10 +108,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 7
     total_num_chunks is 4
     Number of chunks is 4
-    Chunk index:  0
-    Number of bytes:  31266
-    Logical offset: offset[0][0]
-    Physical offset: 4534031
+
+        Chunk index:  0
+        Number of bytes:  31266
+        Logical offset: offset[0][0]
+        Physical offset: 4534031
     
         Chunk index:  1
         Number of bytes:  39236
@@ -133,10 +136,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 5
     total_num_chunks is 4
     Number of chunks is 4
-    Chunk index:  0
-    Number of bytes:  27623
-    Logical offset: offset[0][0]
-    Physical offset: 4643012
+
+        Chunk index:  0
+        Number of bytes:  27623
+        Logical offset: offset[0][0]
+        Physical offset: 4643012
     
         Chunk index:  1
         Number of bytes:  28375
@@ -160,10 +164,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 7
     total_num_chunks is 4
     Number of chunks is 4
-    Chunk index:  0
-    Number of bytes:  66530
-    Logical offset: offset[0][0]
-    Physical offset: 4760388
+
+        Chunk index:  0
+        Number of bytes:  66530
+        Logical offset: offset[0][0]
+        Physical offset: 4760388
     
         Chunk index:  1
         Number of bytes:  82611
@@ -186,10 +191,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 0 is 614182
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  3163
-    Logical offset: offset[0]
-    Physical offset: 5075917
+
+        Chunk index:  0
+        Number of bytes:  3163
+        Logical offset: offset[0]
+        Physical offset: 5075917
 
 
 ## SWOT files with one 1D String Array
@@ -205,10 +211,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 2
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  43
-    Logical offset: offset[0][0]
-    Physical offset: 2642254
+
+        Chunk index:  0
+        Number of bytes:  43
+        Logical offset: offset[0][0]
+        Physical offset: 2642254
 
 
 ### SWOT_L2_LR_SSH_Expert_001_001_20111113T000000_20111113T005126_DG10_01.nc
@@ -223,10 +230,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 2
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  43
-    Logical offset: offset[0][0]
-    Physical offset: 2656596
+
+        Chunk index:  0
+        Number of bytes:  43
+        Logical offset: offset[0][0]
+        Physical offset: 2656596
 
 ### SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125105_DG10_01.nc
     polarization_karin[ /num_lines= 0..9867] (Type is String)
@@ -240,10 +248,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 2
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  43
-    Logical offset: offset[0][0]
-    Physical offset: 3007094
+
+        Chunk index:  0
+        Number of bytes:  43
+        Logical offset: offset[0][0]
+        Physical offset: 3007094
 
 ### SWOT_L2_LR_SSH_Expert_001_001_20140412T120000_20140412T125126_DG10_01.nc
     polarization_karin[ /num_lines= 0..9865] (Type is String)
@@ -256,10 +265,11 @@ _Contains 5 larger 1D String Array_
     Chunk Dim 1 is 2
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  43
-    Logical offset: offset[0][0]
-    Physical offset: 3011281
+
+        Chunk index:  0
+        Number of bytes:  43
+        Logical offset: offset[0][0]
+        Physical offset: 3011281
 
 
 
@@ -281,10 +291,11 @@ _Contains three 2D Arrays of String_
     Chunk Dim 2 is 18
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  1005
-    Logical offset: offset[0][0][0]
-    Physical offset: 390383
+
+        Chunk index:  0
+        Number of bytes:  1005
+        Logical offset: offset[0][0][0]
+        Physical offset: 390383
     
     % h5_obj_addr_info rutgers-ru26d-L2-20190905T2055.nc the8x3_filename
     storage: chunked.
@@ -294,10 +305,11 @@ _Contains three 2D Arrays of String_
     Chunk Dim 2 is 8
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  397
-    Logical offset: offset[0][0][0]
-    Physical offset: 396572
+
+        Chunk index:  0
+        Number of bytes:  397
+        Logical offset: offset[0][0][0]
+        Physical offset: 396572
     
     % h5_obj_addr_info rutgers-ru26d-L2-20190905T2055.nc profile_dir
     storage: chunked.
@@ -307,10 +319,11 @@ _Contains three 2D Arrays of String_
     Chunk Dim 2 is 1
     total_num_chunks is 1
     Number of chunks is 1
-    Chunk index:  0
-    Number of bytes:  60
-    Logical offset: offset[0][0][0]
-    Physical offset: 489174
+
+        Chunk index:  0
+        Number of bytes:  60
+        Logical offset: offset[0][0][0]
+        Physical offset: 489174
     
 
 
