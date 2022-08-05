@@ -272,9 +272,7 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
                 nalloc *= 2;
                 char *new_outbuf = new char[nalloc];
                 memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
-cerr<<"coming before delete "<<endl;
                 delete[] outbuf;
-cerr<<"coming after delete "<<endl;
                 outbuf = new_outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
@@ -646,7 +644,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     }
 
-cerr<<"num_deflate is "<<num_deflate <<endl;
+//cerr<<"num_deflate is "<<num_deflate <<endl;
     unsigned deflate_index = 0;
     unsigned long long out_buf_size = 0;
     unsigned long long in_buf_size = 0;
@@ -671,14 +669,19 @@ cerr<<"Coming here i 0"<<endl;
                     else {
 cerr<<"Coming here i 1"<<endl;
                         tmp_buf =*destp;
+                        char *tmp_buf2 = new char[in_buf_size];
+                        memcpy((void*) tmp_buf2,(void*)tmp_buf,in_buf_size);
+cerr<<"in_buf_size is "<<in_buf_size <<endl;
                         destp = &dest;
 cerr<<"Coming here i 1 before inflate"<<endl;
-                        out_buf_size = inflate(destp, chunk_size, tmp_buf, in_buf_size);
+                        out_buf_size = inflate(destp, chunk_size, tmp_buf2, in_buf_size);
 cerr<<"Coming here i 1 after inflate()"<<endl;
+                        delete[] tmp_buf2;
                         delete[] tmp_buf;
                     }
                     deflate_index ++;
                     in_buf_size = out_buf_size;
+cerr<<"in_buf_size outside is "<<in_buf_size <<endl;
 #if DMRPP_USE_SUPER_CHUNKS
                 //set_read_buffer(dest, chunk_size, chunk_size, true);
 
@@ -689,8 +692,9 @@ cerr<<"Coming here i 1 after inflate()"<<endl;
                     // This is the last deflate filter, output the buffer.
                     if (deflate_index == num_deflate) {
 cerr<<"Coming to the final stop" <<endl;
-                        char* new_dest = *destp;
-                        set_read_buffer(new_dest, chunk_size, chunk_size, true);
+                        char* newdest = *destp;
+                        set_read_buffer(newdest, chunk_size, chunk_size, true);
+cerr<<"After the final stop" <<endl;
                     }
                     else 
                         delete[] dest;
@@ -700,8 +704,8 @@ cerr<<"Coming to the final stop" <<endl;
 
                 }
                 catch (...) {
-                    delete[] dest;
-                    delete[] tmp_buf;
+                    //delete[] dest;
+                    //delete[] tmp_buf;
                     throw;
                 }
  
