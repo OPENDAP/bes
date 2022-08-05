@@ -222,6 +222,8 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
     assert(destp);
     assert(*destp);
 
+//cerr<<"dest_len is "<<dest_len <<endl;
+//cerr<<"src_len is "<<src_len <<endl;
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
 
@@ -270,7 +272,9 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
                 nalloc *= 2;
                 char *new_outbuf = new char[nalloc];
                 memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
+cerr<<"coming before delete "<<endl;
                 delete[] outbuf;
+cerr<<"coming after delete "<<endl;
                 outbuf = new_outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
@@ -285,6 +289,8 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
     outbuf = nullptr;
     /* Finish decompressing the stream */
     (void) inflateEnd(&z_strm);
+//cerr<<"total_out is "<<z_strm.total_out <<endl;
+
     return z_strm.total_out;
 }
 
@@ -620,6 +626,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     bool is_1st_deflate = true;
     unsigned cur_deflate_index = 0;
+    unsigned num_deflate = 0;
+
     for (unsigned i = 0; i<filter_array.size(); i++) {
 
         if (filter_array[i] == "deflate") {
@@ -633,30 +641,94 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             }
             else 
                 cur_deflate_index = i;
+            num_deflate++;
         }
 
     }
 
+cerr<<"num_deflate is "<<num_deflate <<endl;
+    unsigned deflate_index = 0;
+    unsigned long long out_buf_size = 0;
+    unsigned long long in_buf_size = 0;
+    char**destp = nullptr;
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
+
         string filter = *i;
 
         if (filter == "deflate") {
-            char *dest = new char[chunk_size];
-            char **destp = &dest;
-            try {
-                unsigned long long out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
-                // This replaces (and deletes) the original read_buffer with dest.
+
+            
+            if (num_deflate > 1) {
+ 
+                char*tmp_buf = nullptr;
+                char *dest = new char[chunk_size];
+                try {
+                    if (deflate_index == 0) {
+cerr<<"Coming here i 0"<<endl;
+                        destp = &dest;
+                        out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
+                    }
+                    else {
+cerr<<"Coming here i 1"<<endl;
+                        tmp_buf =*destp;
+                        destp = &dest;
+cerr<<"Coming here i 1 before inflate"<<endl;
+                        out_buf_size = inflate(destp, chunk_size, tmp_buf, in_buf_size);
+cerr<<"Coming here i 1 after inflate()"<<endl;
+                        delete[] tmp_buf;
+                    }
+                    deflate_index ++;
+                    in_buf_size = out_buf_size;
 #if DMRPP_USE_SUPER_CHUNKS
                 //set_read_buffer(dest, chunk_size, chunk_size, true);
-                char* new_dest=*destp;
-                set_read_buffer(new_dest, out_buf_size, out_buf_size, true);
+
+                //set_read_buffer(new_dest, out_buf_size, chunk_size, true);
+                //set_read_buffer(new_dest, chunk_size, chunk_size, true);
+                //set_read_buffer(new_dest, out_buf_size, out_buf_size, true);
+
+                    // This is the last deflate filter, output the buffer.
+                    if (deflate_index == num_deflate) {
+cerr<<"Coming to the final stop" <<endl;
+                        char* new_dest = *destp;
+                        set_read_buffer(new_dest, chunk_size, chunk_size, true);
+                    }
+                    else 
+                        delete[] dest;
 #else
                 set_rbuf(dest, chunk_size);
 #endif
+
+                }
+                catch (...) {
+                    delete[] dest;
+                    delete[] tmp_buf;
+                    throw;
+                }
+ 
+
             }
-            catch (...) {
-                delete[] dest;
-                throw;
+            else {
+                char *dest = new char[chunk_size];
+                destp = &dest;
+                try {
+                    if (inflate(destp, chunk_size, get_rbuf(), get_rbuf_size()) <0) {
+                        throw BESError("inflate size is <0", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+                    }
+                    // This replaces (and deletes) the original read_buffer with dest.
+#if DMRPP_USE_SUPER_CHUNKS
+                    //set_read_buffer(dest, chunk_size, chunk_size, true);
+                    char* new_dest=*destp;
+                    //set_read_buffer(new_dest, out_buf_size, chunk_size, true);
+                    set_read_buffer(new_dest, chunk_size, chunk_size, true);
+                    //set_read_buffer(new_dest, out_buf_size, out_buf_size, true);
+#else
+                    set_rbuf(dest, chunk_size);
+#endif
+                }
+                catch (...) {
+                    delete[] dest;
+                    throw;
+                }
             }
         }// end filter is deflate
         else if (filter == "shuffle"){
