@@ -209,12 +209,14 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  *
  * @note Stolen from the HDF5 library and hacked to fit.
  *
- * @param dest Write the 'inflated' data here
+ * @param destp The pointer to the pointer of the 'inflated' data 
  * @param dest_len Size of the destination buffer
  * @param src Compressed data
  * @param src_len Size of the compressed data
+ * @return The number of bytes of the inflated data
  */
-unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+unsigned long long inflate(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+
     /* Sanity check */
     assert(src_len > 0);
     assert(src);
@@ -222,8 +224,6 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
     assert(destp);
     assert(*destp);
 
-//cerr<<"dest_len is "<<dest_len <<endl;
-//cerr<<"src_len is "<<src_len <<endl;
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
 
@@ -262,7 +262,6 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
             throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-//cerr<<"coming to inflate else "<<endl;
             // If we're not done and just ran out of buffer space, we need to extend the buffer.
             // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
             if (0 == z_strm.avail_out) {
@@ -287,7 +286,6 @@ unsigned long long  inflate(char **destp, unsigned long long dest_len, char *src
     outbuf = nullptr;
     /* Finish decompressing the stream */
     (void) inflateEnd(&z_strm);
-//cerr<<"total_out is "<<z_strm.total_out <<endl;
 
     return z_strm.total_out;
 }
@@ -644,7 +642,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     }
 
-//cerr<<"num_deflate is "<<num_deflate <<endl;
+    // If there are >1 deflate filters applied, we want to localize the handling of the compressed data  in this function.
     unsigned deflate_index = 0;
     unsigned long long out_buf_size = 0;
     unsigned long long in_buf_size = 0;
@@ -654,35 +652,47 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     char* tmp_dest = nullptr;
 
     bool ignore_rest_deflate = false;
+
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
 
         string filter = *i;
 
         if (filter == "deflate") {
 
-            
+            // Here we find that the deflate filter is applied twice. 
+            // Note: we find one GHRSST file is using the deflate twice, 
+            // However, for one chunk the deflate filter only applies once. 
+            // The returned decompressed size of this chunk is equal to
+            // the chunk size. So we have to skip the second "inflate" of this chunk by
+            // checking if the inflated size is equal to the chunk size. KY 2022-08-07
+
             if (num_deflate > 1 && !ignore_rest_deflate) {
 
                 dest = new char[chunk_size];
                 try {
                     destp = &dest;
                     if (deflate_index == 0) {
-//cerr<<"index 0: input buf size before is "<<get_rbuf_size() <<endl;
+                        // First inflate, receive the buffer and the corresponding info from
+                        // the BES, save the inflated buffer into a tmp. buffer.
                         out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
-//cerr<<"index 0: input buf size after is "<<get_rbuf_size() <<endl;
                         tmp_dest = *destp;
                     }
                     else {
-//cerr<<"index 1: input buf size is "<<in_buf_size <<endl;
+                        // Obtain the buffer and the size locally starting from the second inflate.
+                        // Remember to release the tmp_buf memory.
+#if 0
                         tmp_buf = tmp_dest;
                         out_buf_size = inflate(destp, chunk_size, tmp_buf, in_buf_size);
-//cerr<<"out buf size is "<<out_buf_size <<endl;
                         tmp_dest = *destp;
                         delete[] tmp_buf;
+#endif
+                        out_buf_size = inflate(destp, chunk_size, tmp_dest, in_buf_size);
+                        delete[] tmp_dest;
+                        tmp_dest = *destp;
+
                     }
                     deflate_index ++;
                     in_buf_size = out_buf_size;
-//cerr<<"index 0: input buf size OUT is "<<in_buf_size <<endl;
 #if DMRPP_USE_SUPER_CHUNKS
                     // This is the last deflate filter, output the buffer.
                     if (in_buf_size == chunk_size)
@@ -706,6 +716,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
             }
             else if(num_deflate == 1) {
+                // The following is the same code as before. We need to use the double pointer
+                // to pass the buffer. KY 2022-08-07
                 dest = new char[chunk_size];
                 destp = &dest;
                 try {
@@ -714,11 +726,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                     }
                     // This replaces (and deletes) the original read_buffer with dest.
 #if DMRPP_USE_SUPER_CHUNKS
-                    //set_read_buffer(dest, chunk_size, chunk_size, true);
                     char* new_dest=*destp;
-                    //set_read_buffer(new_dest, out_buf_size, chunk_size, true);
                     set_read_buffer(new_dest, chunk_size, chunk_size, true);
-                    //set_read_buffer(new_dest, out_buf_size, out_buf_size, true);
 #else
                     set_rbuf(dest, chunk_size);
 #endif
