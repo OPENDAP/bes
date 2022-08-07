@@ -648,7 +648,9 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     unsigned long long in_buf_size = 0;
     char**destp = nullptr;
     char* dest = nullptr;
+#if 0
     char* tmp_buf = nullptr;
+#endif
     char* tmp_dest = nullptr;
 
     bool ignore_rest_deflate = false;
@@ -709,7 +711,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                 }
                 catch (...) {
                     delete[] dest;
-                    delete[] tmp_buf;
+                    delete[] tmp_dest;
                     throw;
                 }
  
