@@ -52,7 +52,7 @@ void *gse_string(const char *yy_str);
 namespace functions {
 
 /**
- * Recursively traverses the BaseType bt (if its a constructor type) and collects pointers to all of the Grid and places said pointers
+ * Recursively traverses the BaseType bt (if it's a constructor type) and collects pointers to all of the Grid and places said pointers
  * into the vector parameter 'grids'. If the BaseType parameter bt is an instance of Grid the it is placed in the vector.
  * @param bt The BaseType to evaluate
  * @param grids A vector into which to place a pointer to every Grid.
