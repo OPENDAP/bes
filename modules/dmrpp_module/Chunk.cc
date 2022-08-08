@@ -209,7 +209,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  *
  * @note Stolen from the HDF5 library and hacked to fit.
  *
- * @param destp The pointer to the pointer of the 'inflated' data 
+ * @param destp A value-result parameter of the 'inflated' data 
  * @param dest_len Size of the destination buffer
  * @param src Compressed data
  * @param src_len Size of the compressed data
