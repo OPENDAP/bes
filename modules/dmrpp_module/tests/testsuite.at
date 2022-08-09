@@ -274,6 +274,9 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/One_chunk_c_fv_undef.dap])
 # inflated twice). The first file uses deflate once, the second uses it
 # twice. jhrg 5/25/22
 
+# A simple one chunk deflate twice case. KY 08/07/22
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/One_chunk_c_c.h5.dap])
+
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
@@ -281,3 +284,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.ce.dap])
+
+
+#special case to deflate twice. The second inflate input buffer size is bigger than chunk size.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
+#Also add a shuffle + deflate + deflate special case.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
+
+
+
