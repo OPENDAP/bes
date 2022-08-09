@@ -237,7 +237,7 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
     if (!is_scalar) {
 
         int ndims = H5Sget_simple_extent_ndims(dspace);
-        cout <<"# The Array " << object_name << " has " << ndims << " dimensions." << endl;
+        cout <<"# The Array '" << object_name << "' has " << ndims << " dimensions." << endl;
 
         offset.resize(ndims);
         shape.resize(ndims);
@@ -380,16 +380,16 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
     cout << "# fixed_str_length: " << fixed_str_length  << endl;
 
     unsigned long long total_str_count=1;
-    for(unsigned int index=1; index < (shape.size()) ;index++){
+    for(unsigned int index=0; index < (shape.size()-1) ;index++){
         total_str_count *= shape[index];
     }
     cout << "# total_str_count: " << total_str_count  << endl;
 
-    unsigned long long total_bytes = total_str_count * fixed_str_length * type_size;
-    cout << "# total_bytes: " << total_bytes  << endl;
+    unsigned long long total_size = total_str_count * fixed_str_length * type_size;
+    cout << "# total_size: " << total_size  << " bytes" << endl;
 
     vector <char> data;
-    data.resize(total_bytes);
+    data.resize(total_size);
     hid_t read_ret;
     if (is_scalar) {
         cout << "# The object is a scalar."  << endl;
