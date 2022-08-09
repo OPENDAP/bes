@@ -30,6 +30,12 @@ using namespace std;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
+#define HR3  "# ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ..."
+#define HR2  "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+#define HR1  "# -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==-"
+#define HR0 "###################################################################"
+
+
 bool debug = false;
 
 bool is_str_type(hid_t);
@@ -38,6 +44,8 @@ int read_str_data(hid_t,vector<string>&strdata);
 int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
 int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
 string get_object_name(hid_t root_id, int dset_index);
+int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
+
 
 /**
  *
@@ -50,7 +58,7 @@ int main (int argc, char *argv[])
     hid_t file;    // file handle
     hid_t root_id; // dataset handle
 
-    cout << "#################################################################################################" << endl;
+    cout << HR0 << endl;
     cout << "# " << argv[0] << endl;
     cout << "#" << endl;
 
@@ -68,7 +76,7 @@ int main (int argc, char *argv[])
         cerr << "ERROR: HDF5 file " << hdf_file << " cannot be opened successfully,check the file name and try again." << endl;
         exit(1);
     }
-    DBG(cout << "#  Opened file: " << hdf_file << endl);
+    cout << "#  Opened file: " << hdf_file << endl;
     cout << "#" << endl;
 
     root_id = H5Gopen(file, "/", H5P_DEFAULT);
@@ -76,12 +84,15 @@ int main (int argc, char *argv[])
      // Iterate through the file to see the members from the root.
     H5G_info_t g_info;
     if(H5Gget_info(root_id,&g_info) <0) {
-        cerr << "ERROR: H5Gget_info failed " << endl;
+        cerr << "ERROR: H5Gget_info failed." << endl;
         exit(1);
     }
+
+
     hsize_t nelems = g_info.nlinks;
     for (hsize_t grmndx = 0; grmndx < nelems; grmndx++) {
-        cout << "# grmndx: " << grmndx << endl;
+        cout << HR1 << endl;
+        cout << "# Processing HDF5 object. grmndx: " << grmndx << endl;
 
         string object_name = get_object_name(root_id,grmndx);
         cout << "# object_name: " << object_name << endl;
@@ -97,7 +108,7 @@ int main (int argc, char *argv[])
         DBG(cout << "# H5Oget_info_by_idx2() succeeded." << endl);
 
         if(oinfo.type  == H5O_TYPE_DATASET) {
-            DBG(cout << "# Found H5O_TYPE_DATASET" << endl);
+            cout << "# Found H5O_TYPE_DATASET" << endl;
             hid_t dset_id = H5Oopen_by_idx(root_id,
                                            "/",
                                            H5_INDEX_NAME,
@@ -123,7 +134,6 @@ int main (int argc, char *argv[])
                 cout << "# The object '" << object_name << "' is not a string type." << endl;
             }
             H5Dclose(dset_id);
-            cout << "# -- -- -- -- -- -- -- -- -- --" << endl;
         }
     } // for i is 0 ... nelems
 
@@ -201,8 +211,9 @@ string get_object_name(hid_t root_id, int dset_index)
  */
 int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
 
-    string variable_name = get_object_name(root_id,dset_index);
-    cout <<"# variable_name:  " << variable_name << endl;
+    cout << HR2 << endl << "# BEGIN: obtain_str_info_data()" << endl << "#" << endl;
+    string object_name = get_object_name(root_id,dset_index);
+    cout <<"# object_name:  " << object_name << endl;
 
     // ************* Note: ******************** 
     // So far, the code above is mainly the set_up of this program. The DMRPP should
@@ -219,18 +230,20 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
     bool is_scalar = H5Sget_simple_extent_type(dspace) == H5S_SCALAR;
 
     vector<hsize_t> offset;
-    vector<hsize_t> count;
+    vector<hsize_t> shape;
     vector<hsize_t> step;
     unsigned long long total_num_elems = 1;
  
     if (!is_scalar) {
 
         int ndims = H5Sget_simple_extent_ndims(dspace);
+        cout <<"# The Array " << object_name << " has " << ndims << " dimensions." << endl;
+
         offset.resize(ndims);
-        count.resize(ndims);
+        shape.resize(ndims);
         step.resize(ndims);
 
-        if (H5Sget_simple_extent_dims(dspace,count.data(),NULL) < 0) {
+        if (H5Sget_simple_extent_dims(dspace,shape.data(),NULL) < 0) {
             cerr<<"ERROR: Cannot obtain dataspace dimension info. "<<endl;
             return -1;
         }
@@ -238,42 +251,55 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
         for (int i = 0; i < ndims; i++) {
             offset[i] = 0;
             step[i] = 1;
-            total_num_elems *= count[i];
+            total_num_elems *= shape[i];
+            cout <<"# shape[" << i << "]: " << shape[i] << endl;
         }
 
+
+
+        // By passing the shape array into H5Sselect_hyperslab() for the count array:
+        // "The count array determines how many positions to select from the dataspace in each dimension."
+        // ask for all of the data in the array.
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET, 
                                offset.data(), step.data(),
-                               count.data(), NULL) < 0) {
-            cerr << "ERROR: Cannot select hyperslab  "<<endl;
+                                shape.data(), NULL) < 0) {
+            cerr << "ERROR: Cannot select hyperslab  " << endl;
             return -1;
         } 
    
-        if ((mspace = H5Screate_simple(ndims, count.data(),NULL)) < 0) {
+        if ((mspace = H5Screate_simple(ndims, shape.data(),NULL)) < 0) {
             cerr <<"ERROR: Cannot create the memory space " << endl;
             return -1;
         }
     }   
 
     hid_t dtype_id = H5Dget_type(dset_id);
-    if (H5Tis_variable_str(dtype_id) > 0) {
-        cout <<"# Object '" << variable_name << "' is a variable length String" << endl;
-        if (read_vlen_str(dset_id,total_num_elems,dtype_id,dspace,mspace,is_scalar) < 0) {
+    if (H5Tis_variable_str(dtype_id)) {
+        cout <<"# Object '" << object_name << "' is a variable length String." << endl;
+        if (read_vlen_str(dset_id, total_num_elems, dtype_id, dspace, mspace, is_scalar) < 0) {
             cerr << "ERROR: read_vlen_str failed " << endl;
             return -1;
         } 
     }
     else {
-        cout <<"# Object '" << variable_name << "' is a fixed length String" << endl;
-        if (read_fixed_str(dset_id,total_num_elems,dtype_id,dspace,mspace,is_scalar) < 0) {
-            cerr << "ERROR: read_fixed_str failed " << endl;
+        cout <<"# Object '" << object_name << "' is a fixed length String" << endl;
+       // if (read_fixed_str(dset_id, total_num_elems, dtype_id, dspace, mspace, is_scalar) < 0) {
+       //     cerr << "ERROR: read_fixed_str failed " << endl;
+       //     return -1;
+       // }
+        if (read_fixed_length_str(dset_id, shape, dtype_id, dspace, mspace, is_scalar) < 0) {
+            cerr << "ERROR: read_fixed_length_str failed." << endl;
             return -1;
         }
     }
-    if (false == is_scalar)
+
+    if (!is_scalar)
         H5Sclose(mspace);
+
     H5Sclose(dspace);
     H5Tclose(dtype_id);
 
+    cout << "# END: obtain_str_info_data()" << endl << HR2 << endl << "#" << endl;
     return 0;
 }
 
@@ -341,6 +367,89 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
 }
 
 
+int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
+{
+    cout << HR3 << endl << "# BEGIN: read_fixed_length_str()" <<  endl;
+    cout << "# shape.size():  " << shape.size() << endl;
+
+    size_t type_size = H5Tget_size(dtype);
+    cout << "# type_size:  " << type_size << endl;
+
+    // size_t fixed_str_length = shape.back();
+    size_t fixed_str_length = shape.back();
+    cout << "# fixed_str_length: " << fixed_str_length  << endl;
+
+    unsigned long long total_str_count=1;
+    for(unsigned int index=1; index < (shape.size()) ;index++){
+        total_str_count *= shape[index];
+    }
+    cout << "# total_str_count: " << total_str_count  << endl;
+
+    unsigned long long total_bytes = total_str_count * fixed_str_length * type_size;
+    cout << "# total_bytes: " << total_bytes  << endl;
+
+    vector <char> data;
+    data.resize(total_bytes);
+    hid_t read_ret;
+    if (is_scalar) {
+        cout << "# The object is a scalar."  << endl;
+        read_ret = H5Dread(dset_id, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void *) data.data());
+        string scalar_value(data.begin(),data.end());
+        cout << "# scalar_value: '" << scalar_value << "'" << endl;
+        return 0;
+    }
+    else {
+        cout << "# The object is an array."  << endl;
+        read_ret = H5Dread(dset_id, dtype, mspace, dspace, H5P_DEFAULT, (void *) data.data());
+    }
+
+    if (read_ret < 0) {
+        cerr << "ERROR: H5Dread failed " << endl;
+        return -1;
+    }
+
+    switch( shape.size()) {
+        case 2:
+        {
+            cout << "# 2D array" << endl;
+            vector<string> result_set;
+            result_set.resize(shape[0]);
+            for (unsigned long long i = 0; i < total_str_count; i++) {
+                string foo = string(&(data[fixed_str_length * i]), fixed_str_length);
+                result_set[i] = foo;
+                cout << "## result_set[" << i << "/" << total_str_count << "):  '" << foo << "'" << endl;
+            }
+        }
+        break;
+
+        case 3:
+        {
+            cout << "# 3D array" << endl;
+            vector<string> result_set;
+            result_set.resize(shape[0]);
+            for (unsigned long long i = 0; i < shape[0]; i++) {
+                result_set[i] = string(&(data[fixed_str_length * i]), fixed_str_length);
+                cout << "## result_set[" << i << "/" << result_set[i].size() << "):  '" << result_set[i] << "'" << endl;
+            }
+        }
+        break;
+
+        case 1:
+        default:
+        {
+            string result_set(data.begin(),data.end());
+            cout << "## result_set(size:"<<result_set.size() << "): '" << result_set << "'" << endl;
+        }
+        break;
+
+    }
+    data.clear();
+
+    cout << "# END: read_fixed_length_str()" << endl << HR3 << endl << "#" << endl;
+
+    return 0;
+}
+
 /**
  *
  * @param dset_id
@@ -353,11 +462,11 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
  */
 int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
 {
-    cout << "# -- -- -- -- -- -- -- --" << endl;
-    cout << "# BEGIN: read_fixed_str()" << endl;
+    cout << HR3 << endl << "# BEGIN: read_fixed_str()" <<  endl;
 
     size_t type_size = H5Tget_size(dtype);
     cout << "# type_size:  " << type_size << endl;
+
     vector <char> strval;
     strval.resize(nelems*type_size);
     hid_t read_ret;
@@ -366,7 +475,7 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
         read_ret = H5Dread(dset_id, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void *) strval.data());
     }
     else {
-        cout << "# The object is an Array."  << endl;
+        cout << "# The object is an array."  << endl;
         read_ret = H5Dread(dset_id, dtype, mspace, dspace, H5P_DEFAULT, (void *) strval.data());
     }
 
@@ -377,7 +486,7 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
 
     string total_string(strval.begin(),strval.end());
     strval.clear();
-    cout << "# total_string(" << total_string.length() << " chars): '" << total_string << "'" << endl;
+//    cout << "# total_string(" << total_string.length() << " chars): '" << total_string << "'" << endl;
 
     vector <string> strdata; 
     strdata.resize(nelems);
@@ -388,10 +497,10 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
     }
     cout << "# strdata.size(): " << strdata.size() <<endl;
     int i=0;
-    for(auto &s:strdata)
-        cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
+//    for(auto &s:strdata)
+//        cout << "#     strdata[" << i++ << "]: '" << s << "'" <<endl;
 
-    cout << "# sanity_check(" << sanity_check.length() << " chars): '" << sanity_check << "'" << endl;
+//    cout << "# sanity_check(" << sanity_check.length() << " chars): '" << sanity_check << "'" << endl;
 
     if(sanity_check == total_string){
         cout << "## The sanity_check matched the total_string." << endl;
@@ -409,10 +518,10 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
 
     cout << "# strdata.size(): " << strdata.size() <<endl;
     i=0;
-    for(auto &s:strdata)
-        cout << "#     strdata[" << i++ << "]: '" << std::hex << s.c_str() << std::dec << "'" <<endl;
-    cout << "# END: read_fixed_str()" << endl;
+    //for(auto &s:strdata)
+    //    cout << "#     strdata[" << i++ << "]: '" << std::hex << s.c_str() << std::dec << "'" <<endl;
 
+    cout << "# END: read_fixed_str()" << endl << HR3 << endl << "#" << endl;
     return 0;
 }
 
@@ -487,10 +596,5 @@ int read_str_data(hid_t dtype, vector<string> & strdata) {
         if(retval!=0)
             return retval;
     }
-    //for (int i = 0; i < strdata.size(); i++) {
-    //    retval = trim_string_padding(strdata[i],pad_char);
-    //    if(retval!=0)
-    //        return retval;
-   // }
     return 0;
 }

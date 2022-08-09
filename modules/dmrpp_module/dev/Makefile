@@ -1,6 +1,12 @@
 
 BUILD_FLAGS = -L$(prefix)/deps/lib -lhdf5 -I$(prefix)/deps/include
-progs = h5_obj_addr_info obtain_vlstr_addr obtain_vlstr_addr_hard_code_subset read_str_vars test_read_vl_offset
+
+progs = h5_obj_addr_info \
+		obtain_vlstr_addr \
+		obtain_vlstr_addr_hard_code_subset \
+		read_str_vars \
+		read_str_vars_orig \
+		test_read_vl_offset
 
 all: prefix-set
 	for d in $(progs); do $(MAKE) $(MFLAGS) $$d; done
@@ -21,6 +27,9 @@ obtain_vlstr_addr_hard_code_subset: obtain_vlstr_addr_hard_code_subset.cc
 
 read_str_vars: read_str_vars.cc
 	g++  $(BUILD_FLAGS) -o read_str_vars read_str_vars.cc
+
+read_str_vars_orig: read_str_vars_orig.cc
+	g++  $(BUILD_FLAGS) -o read_str_vars_orig read_str_vars_orig.cc
 
 test_read_vl_offset: test_read_vl_offset.cc
 	g++  $(BUILD_FLAGS) -o test_read_vl_offset test_read_vl_offset.cc
