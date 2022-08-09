@@ -367,6 +367,18 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
 }
 
 
+/**
+ * @brief Reads an Array of fixed lengths strings.
+ * @param dset_id The hdf5 dataset (aka variable) to be read
+ * @param shape The shape of the array
+ * @param dtype The hdf5 type of the array primitive
+ * @param dspace The hdf5 dataspace
+ * @param mspace I don't think this needs to be passed in as I don't think it's ever actually
+ * initialized or used in a meaningful way. -ndp
+ * @param is_scalar Indicates if the dataset/variable is a scalar or an Array and is used to read the
+ * dataset's data differently.
+ * @return
+ */
 int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
 {
     cout << HR3 << endl << "# BEGIN: read_fixed_length_str()" <<  endl;
@@ -375,9 +387,13 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
     size_t type_size = H5Tget_size(dtype);
     cout << "# type_size:  " << type_size << endl;
 
-    // size_t fixed_str_length = shape.back();
+    // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+    // I guessed this. Looking at the shape[] handed back by H5Sget_simple_extent_dims()
+    // There is always an extra dimension and the size of that dimension seems to be
+    // a reasonable candidate for the size of the fixed length strings in the arrau. - ndp 08/09/22
     size_t fixed_str_length = shape.back();
     cout << "# fixed_str_length: " << fixed_str_length  << endl;
+    // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
     unsigned long long total_str_count=1;
     for(unsigned int index=0; index < (shape.size()-1) ;index++){
@@ -399,6 +415,7 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
         return 0;
     }
     else {
+        // I think this call gets all the data in the array object and puts it into the vector<char> data.
         cout << "# The object is an array."  << endl;
         read_ret = H5Dread(dset_id, dtype, mspace, dspace, H5P_DEFAULT, (void *) data.data());
     }
@@ -425,11 +442,14 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
         case 3:
         {
             cout << "# 3D array" << endl;
-            vector<string> result_set;
+            vector< vector<string> > result_set;
             result_set.resize(shape[0]);
             for (unsigned long long i = 0; i < shape[0]; i++) {
-                result_set[i] = string(&(data[fixed_str_length * i]), fixed_str_length);
-                cout << "## result_set[" << i << "/" << result_set[i].size() << "):  '" << result_set[i] << "'" << endl;
+                result_set[i].resize(shape[1]);
+                for (unsigned long long j = 0; j < shape[1]; j++) {
+                    result_set[i][j] = string(&(data[fixed_str_length * i * j]), fixed_str_length);
+                    cout << "## result_set[" << i << "/" << result_set[i][j].size() << "):  '" << result_set[i][j] << "'" << endl;
+                }
             }
         }
         break;
