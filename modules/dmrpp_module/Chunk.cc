@@ -647,10 +647,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     unsigned long long out_buf_size = 0;
     unsigned long long in_buf_size = 0;
     char**destp = nullptr;
-    char* dest = nullptr;
-#if 0
-    char* tmp_buf = nullptr;
-#endif
+    char* dest_deflate = nullptr;
     char* tmp_dest = nullptr;
 
     bool ignore_rest_deflate = false;
@@ -670,9 +667,9 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
             if (num_deflate > 1 && !ignore_rest_deflate) {
 
-                dest = new char[chunk_size];
+                dest_deflate = new char[chunk_size];
                 try {
-                    destp = &dest;
+                    destp = &dest_deflate;
                     if (deflate_index == 0) {
                         // First inflate, receive the buffer and the corresponding info from
                         // the BES, save the inflated buffer into a tmp. buffer.
@@ -705,12 +702,12 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                     }
  
 #else
-                set_rbuf(dest, chunk_size);
+                set_rbuf(dest_deflate, chunk_size);
 #endif
 
                 }
                 catch (...) {
-                    delete[] dest;
+                    delete[] dest_deflate;
                     delete[] tmp_dest;
                     throw;
                 }
@@ -720,22 +717,22 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             else if(num_deflate == 1) {
                 // The following is the same code as before. We need to use the double pointer
                 // to pass the buffer. KY 2022-08-07
-                dest = new char[chunk_size];
-                destp = &dest;
+                dest_deflate = new char[chunk_size];
+                destp = &dest_deflate;
                 try {
-                    if (inflate(destp, chunk_size, get_rbuf(), get_rbuf_size()) <0) {
-                        throw BESError("inflate size is <0", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+                    if (inflate(destp, chunk_size, get_rbuf(), get_rbuf_size()) ==0) {
+                        throw BESError("inflate size should be greater than 0", BES_INTERNAL_ERROR, __FILE__, __LINE__);
                     }
                     // This replaces (and deletes) the original read_buffer with dest.
 #if DMRPP_USE_SUPER_CHUNKS
                     char* new_dest=*destp;
                     set_read_buffer(new_dest, chunk_size, chunk_size, true);
 #else
-                    set_rbuf(dest, chunk_size);
+                    set_rbuf(dest_deflate, chunk_size);
 #endif
                 }
                 catch (...) {
-                    delete[] dest;
+                    delete[] dest_deflate;
                     throw;
                 }
             }
