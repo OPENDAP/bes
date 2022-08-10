@@ -31,6 +31,7 @@
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <libdap/D4RValue.h>
+#include <libdap/D4Maps.h>
 
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
@@ -209,9 +210,83 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
 {
     BESDEBUG("function", "function_dap4_grid()  BEGIN " << endl);
 
-    throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
+    // DAP4 function porting information: in place of 'argc' use 'args.size()'
+    if (args == 0 || args->size() < 2) {
+        Str *response = new Str("info");
+        response->set_value(grid_info);
+        // DAP4 function porting: return a BaseType* instead of using the value-result parameter
+        return response;
+    }
 
-    return 0; //response.release();
+    BaseType *a_btp = args->get_rvalue(0)->value(dmr);
+    Array *original_array = dynamic_cast < Array * >(a_btp);
+    if (!original_array) {
+        delete a_btp;
+        throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
+    }
+
+    // Duplicate the array; ResponseBuilder::send_data() will delete the variable
+    // after serializing it.
+    BaseType *btp = original_array->ptr_duplicate();
+    Array *l_array = dynamic_cast < Array * >(btp);
+    if (!l_array) {
+        delete btp;
+        throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
+    }
+
+    DBG(cerr << "array: past initialization code" << endl);
+
+    // Read the maps. Do this before calling parse_gse_expression(). Avoid
+    // reading the array until the constraints have been applied because it
+    // might be large.
+
+    BESDEBUG("functions", "original_array: read_p: " << original_array->read_p() << endl);
+    BESDEBUG("functions", "l_array: read_p: " << l_array->read_p() << endl);
+
+    // Basic plan: For each map, set the send_p flag and read the map
+    D4Maps *d4_maps = l_array->maps();
+    D4Maps::D4MapsIter miter = d4_maps->map_begin();
+    while (miter != d4_maps->map_end()) {
+        D4Map *d4_map = (*miter);
+        Array *map = const_cast<Array *>(d4_map->array());
+        map->set_send_p(true);
+        map->read();
+        ++miter;
+    }
+
+    DBG(cerr << "array: past map read" << endl);
+
+    // argv[1..n] holds strings; each are little expressions to be parsed.
+    // When each expression is parsed, the parser makes a new instance of
+    // GSEClause. GSEClause checks to make sure the named map really exists
+    // in the Grid and that the range of values given makes sense.
+    vector < GSEClause * > clauses;
+    gse_arg *arg = new gse_arg(l_array); // unique_ptr here
+    for (unsigned int i = 1; i < args->size(); ++i) {
+        string relop = extract_string_argument(args->get_rvalue(i)->value(dmr));
+        parse_gse_expression(arg, args->get_rvalue(i)->value(dmr));
+        clauses.push_back(arg->get_gsec());
+    }
+    delete arg;
+    arg = 0;
+
+    apply_grid_selection_expressions(l_array, clauses);
+
+    DBG(cerr << "array: past gse application" << endl);
+
+    // Make a new array here and copy just the parts of the Array
+    // that are in the current projection - this means reading
+    // the array slicing information, extracting the correct
+    // values and building destination arrays with just those
+    // values.
+
+    l_array->set_send_p(true);
+    l_array->read();
+
+    return l_array;
+
+    //throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
+    //return 0; //response.release();
 }
 
 /**

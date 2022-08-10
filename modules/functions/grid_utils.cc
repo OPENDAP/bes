@@ -246,7 +246,15 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
 
     // Use pointer arith & the rule that map order must match array dim order
 
-    Array::Dim_iter coverage_dim = (coverage->dim_begin()); // + (map_i - grid->map_begin()));
+    Array::Dim_iter dim_i = coverage->dim_begin();
+    while (dim_i != coverage->dim_end() && coverage->dimension_name(dim_i) != clause->get_map_name())
+        ++dim_i;
+
+    if (dim_i == coverage->dim_end())
+        throw Error(malformed_expr,"The map vector '" + clause->get_map_name()
+                                   + "' is not a dimension in the array '" + coverage->name() + "'.");
+
+    Array::Dim_iter coverage_dim = (coverage->dim_begin() + (dim_i - coverage->dim_begin()));
 
     Array *map = const_cast<Array *>(d4_map->array());
     if (!map)
