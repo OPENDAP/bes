@@ -302,4 +302,4 @@ bool GridFunction::canOperateOn(DMR &dmr)
     return !coverages.empty();
 }
 
-} // namesspace functions
+} // namespace functions
