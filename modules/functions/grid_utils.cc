@@ -235,7 +235,7 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
     // to be the intersection of the ranges in those clauses.
     D4Maps *d4_maps = coverage->maps();
     D4Maps::D4MapsIter miter = d4_maps->map_begin();
-    while (miter != d4_maps->map_end() && (*miter)->name() != clause->get_map_name())
+    while (miter != d4_maps->map_end() && (*miter)->name() != clause->get_map()->FQN())
         ++miter;
 
     if (miter == d4_maps->map_end())
@@ -247,9 +247,9 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
     // Use pointer arith & the rule that map order must match array dim order
 
     Array::Dim_iter dim_i = coverage->dim_begin();
-    while (dim_i != coverage->dim_end() && coverage->dimension_name(dim_i) != clause->get_map_name())
+    while (dim_i != coverage->dim_end() && coverage->dimension_D4dim(dim_i)->fully_qualified_name() != clause->get_map()->FQN())
         ++dim_i;
-
+    
     if (dim_i == coverage->dim_end())
         throw Error(malformed_expr,"The map vector '" + clause->get_map_name()
                                    + "' is not a dimension in the array '" + coverage->name() + "'.");
