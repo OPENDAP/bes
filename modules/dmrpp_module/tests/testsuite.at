@@ -224,6 +224,12 @@ AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.dds])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_utc.dods])
 
+dnl scalar variable tests for the compact storage
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_vlstr.dap])
+
+
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dmr])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.das])
@@ -241,6 +247,7 @@ AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.das])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_scalar.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_compact.dap])
 
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_all_fill.dap])
@@ -274,6 +281,9 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/One_chunk_c_fv_undef.dap])
 # inflated twice). The first file uses deflate once, the second uses it
 # twice. jhrg 5/25/22
 
+# A simple one chunk deflate twice case. KY 08/07/22
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/One_chunk_c_c.h5.dap])
+
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
@@ -281,3 +291,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.ce.dap])
+
+
+#special case to deflate twice. The second inflate input buffer size is bigger than chunk size.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
+#Also add a shuffle + deflate + deflate special case.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
+
+
+

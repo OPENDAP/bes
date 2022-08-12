@@ -51,6 +51,8 @@
 #include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppStr.h"
+#include "DmrppUrl.h"
 #include "DmrppD4Group.h"
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
@@ -913,11 +915,16 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
 
-    if (btp->type() != dods_array_c)
-        throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
+    // Current not support structure, sequence and grid for compact storage.
+    if (btp->type()== dods_structure_c || btp->type() == dods_sequence_c || btp->type() == dods_grid_c) 
+        throw BESInternalError("The dmrpp::compact element must be the child of an array or a scalar variable", __FILE__, __LINE__);
 
-    // We know from the above that this is an Array, so accessing btp->var() is OK.
-    switch (btp->var()->type()) {
+    // Obtain the datatype for array and scalar.
+    Type dtype =btp->type();
+    if (dtype == dods_array_c)
+        dtype = btp->var()->type();
+
+    switch (dtype) {
         case dods_array_c:
             throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__, __LINE__);
 
@@ -942,12 +949,28 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         case dods_str_c:
         case dods_url_c: {
+         
             std::string str(decoded.begin(), decoded.end());
-            auto *st = static_cast<DmrppArray *>(btp);
-            // Although val2buf() takes a void*, for DAP Str and Url types, it casts
-            // that to std::string*. jhrg 11/4/21
-            st->val2buf(&str);
-            st->set_read_p(true);
+            if (btp->type() == dods_array_c) {
+                auto *st = static_cast<DmrppArray *>(btp);
+                // Although val2buf() takes a void*, for DAP Str and Url types, it casts
+                // that to std::string*. jhrg 11/4/21
+                st->val2buf(&str);
+                st->set_read_p(true);
+            }
+            else {// Scalar
+                if(btp->type() == dods_str_c) {
+                    auto *st = static_cast<DmrppStr *>(btp);
+                    st->val2buf(&str);
+                    st->set_read_p(true);
+                }
+                else {
+                    auto *st = static_cast<DmrppUrl *>(btp);
+                    st->val2buf(&str);
+                    st->set_read_p(true);
+                }
+                
+            }
             break;
         }
 
@@ -1038,21 +1061,27 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
         else if (is_eq(attr.name(), "fillValue")) {
 
             has_fill_value = true;
+
             // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
-            if (btp->type()== dods_str_c || btp->type()==dods_url_c || btp->type()== dods_structure_c 
+            if (btp->type()==dods_url_c || btp->type()== dods_structure_c 
                || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
                 throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
 
-            if (btp->type() == dods_array_c) {
-                auto array = dynamic_cast<libdap::Array*>(btp);
-                add_fill_value_information(dc(btp), attr.value(), array->var()->type());
+            // Here we should not add fill value for string since this is not handled. 
+            // Why not issuing an error since the string fill value is assigned as "unsupported-string" in the get_value_as_string()
+            // in build_dmrpp_util.cc.  HDF5 string variables rarely contain any fill value even if fill value is set.
+            // So to avoid the error of processing string variables, we just ignore the string fillvalues.
+            if (btp->type() !=dods_str_c) { 
+               if (btp->type() == dods_array_c) {
+                   auto array = dynamic_cast<libdap::Array*>(btp);
+                   add_fill_value_information(dc(btp), attr.value(), array->var()->type());
+               }
+               else 
+                   add_fill_value_information(dc(btp), attr.value(), btp->type());
             }
-            else 
-                add_fill_value_information(dc(btp), attr.value(), btp->type());
         }
-        else if (is_eq(attr.name(), "byteOrder")) {
+        else if (is_eq(attr.name(), "byteOrder")) 
             dc(btp)->ingest_byte_order(attr.value());
-        }
     }
 
     // reset one_chunk_fillvalue to false if has_fill_value = false
@@ -1235,8 +1264,7 @@ void DMZ::load_chunks(BaseType *btp)
         // This is the case when the scalar variable that holds the fill value with the contiguous storage comes. 
         // Note we only support numeric datatype now. KY 2022-07-12
         else if (btp->type()!=dods_array_c && dc(btp)->get_immutable_chunks().empty()) {
-            if (btp->type() == dods_grid_c || btp->type() == dods_sequence_c || btp->type() == dods_str_c
-                 || btp->type() ==dods_url_c) {
+            if (btp->type() == dods_grid_c || btp->type() == dods_sequence_c || btp->type() ==dods_url_c) { 
                 ostringstream oss;
                 oss << " For scalar variable with the contiguous storage that holds the fillvalue, only numeric" 
                     << " types are supported.";
