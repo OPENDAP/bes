@@ -30,9 +30,9 @@ using namespace std;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-#define HR3  "# ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ..."
-#define HR2  "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-#define HR1  "# -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==-"
+#define HR3 "# ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ... ..."
+#define HR2 "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+#define HR1 "# -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==- -==-"
 #define HR0 "###################################################################"
 
 
@@ -390,7 +390,7 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     // I guessed this. Looking at the shape[] handed back by H5Sget_simple_extent_dims()
     // There is always an extra dimension and the size of that dimension seems to be
-    // a reasonable candidate for the size of the fixed length strings in the arrau. - ndp 08/09/22
+    // a reasonable candidate for the size of the fixed length strings in the array. - ndp 08/09/22
     size_t fixed_str_length = shape.back();
     cout << "# fixed_str_length: " << fixed_str_length  << endl;
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -434,7 +434,7 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
             for (unsigned long long i = 0; i < total_str_count; i++) {
                 string foo = string(&(data[fixed_str_length * i]), fixed_str_length);
                 result_set[i] = foo;
-                cout << "## result_set[" << i << "/" << total_str_count << "):  '" << foo << "'" << endl;
+                cout << "## result_set[" << i << "/" << total_str_count << "]:  '" << foo << "'" << endl;
             }
         }
         break;
@@ -448,7 +448,7 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
                 result_set[i].resize(shape[1]);
                 for (unsigned long long j = 0; j < shape[1]; j++) {
                     result_set[i][j] = string(&(data[fixed_str_length * i * j]), fixed_str_length);
-                    cout << "## result_set[" << i << "/" << result_set[i][j].size() << "):  '" << result_set[i][j] << "'" << endl;
+                    cout << "## result_set[" << i << "/" << result_set[i][j].size() << "]:  '" << result_set[i][j] << "'" << endl;
                 }
             }
         }
@@ -458,7 +458,7 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
         default:
         {
             string result_set(data.begin(),data.end());
-            cout << "## result_set(size:"<<result_set.size() << "): '" << result_set << "'" << endl;
+            cout << "## result_set(size:"<<result_set.size() << "]: '" << result_set << "'" << endl;
         }
         break;
 

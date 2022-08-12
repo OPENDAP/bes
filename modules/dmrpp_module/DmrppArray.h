@@ -54,6 +54,15 @@ class XMLWriter;
 namespace dmrpp {
 
     class SuperChunk;
+
+enum flen_str_pad_type { null_term, null_pad, space_pad };
+
+struct offset_size{
+    unsigned long long offset;
+    unsigned long long size;
+    offset_size(const std::string &ona_par_str);
+};
+
 /**
  * @brief Extend libdap::Array so that a handler can read data using a DMR++ file.
  *
@@ -69,6 +78,21 @@ class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
 
 private:
     //void _duplicate(const DmrppArray &ts);
+
+    // In the dmr++ XML:
+    //     <dmrpp:vStringArray>
+    //         <v>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</v>
+    //     </dmrpp:vStringArray
+    std::string d_vlen_string_addrs;
+
+    // In the dmr++ XML:
+    //     <dmrpp:fStringArray string_length="##" pad="null | space" />
+    unsigned long long d_flen_str_length;
+    flen_str_pad_type d_flen_str_pad_type;
+
+    void mk_vlen_str_addrs(const std::string &ona_strs, vector<const offset_size &> &vlen_str_addrs);
+
+
 
     bool is_projected();
 
@@ -194,7 +218,7 @@ struct one_child_chunk_args_new {
 };
 
 
-bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
+bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
 
 } // namespace dmrpp
 

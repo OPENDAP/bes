@@ -477,7 +477,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                         case dods_str_c: {
                             if (H5Tis_variable_str(dtypeid) > 0) {
-                                vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                vector<string> finstrval;   // passed by reference to read_vlen_string
+                                finstrval.push_back("");
                                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                 btp->set_value(finstrval, (int)finstrval.size());
                                 btp->set_read_p(true);
@@ -495,7 +496,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 values.resize(memRequired);
                                 get_data(dataset, reinterpret_cast<void *>(values.data()));
                                 string str(values.begin(), values.end());
-                                vector<string> strings = {str};
+                                vector<string> strings;
+                                strings.push_back(str);
                                 btp->set_value(strings, (int)strings.size());
                                 btp->set_read_p(true);
                             }

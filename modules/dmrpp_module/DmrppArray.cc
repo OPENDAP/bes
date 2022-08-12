@@ -406,7 +406,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
  * @param super_chunks The queue of SuperChunk objects to process.
  * @param array The DmrppArray into which the chunk data will be placed.
  */
-void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
+void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks, DmrppArray *array)
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
@@ -1815,6 +1815,33 @@ void DmrppArray::dump(ostream &strm) const
     Array::dump(strm);
     strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
     BESIndent::UnIndent();
+}
+
+void DmrppArray::mk_vlen_str_addrs(const std::string &ona_strs, vector<const &offset_size> &vlen_str_addrs)
+{
+    const string comma(",");
+    size_t last = 0;
+    size_t next = 0;
+
+    while ((next = ona_strs.find(comma, last)) != string::npos) {
+        string ona_pair_str = ona_strs.substr(last, next-last);
+        vlen_str_addrs.push_back(std::move(offset_size(ona_pair_str)));
+        last = next + 1;
+    }
+    cout << ona_strs.substr(last) << endl;
+}
+
+
+offset_size::offset_size(const std::string &ona_par_str)
+{
+    const string colon(":");
+    size_t colon_pos = ona_par_str.find(colon);
+
+    string offset_str = ona_par_str.substr(0,colon_pos);
+    offset = stoull(offset_str);
+
+    string size_str = ona_par_str.substr(colon_pos + 1);
+    size = stoull(size_str);
 }
 
 } // namespace dmrpp
