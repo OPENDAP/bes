@@ -37,6 +37,7 @@
 
 #include "h5common.h"   // This is in the hdf5 handler
 
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
@@ -333,7 +334,13 @@ string get_hdf5_fill_value(hid_t dataset_id)
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
+
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);
+    if (!dc)
+        throw BESInternalError(string("Expected a BaseType that was also a DmrppCommon instance (")
+                                       .append((btp) ? btp->name() : "unknown").append(")."), __FILE__, __LINE__);
+ 
     std::string byteOrder;
     H5T_order_t byte_order;
 
@@ -445,71 +452,130 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                 vector<uint8_t> values;
 
-                auto btp = dynamic_cast<Array *>(dc);
-                if (btp != nullptr) {
-                    dc->set_compact(true);
-                    size_t memRequired = btp->length() * dsize;
+                Type dap_type = btp->type();
 
-                    if (comp_size != memRequired) {
-                        throw BESInternalError("Compact storage size does not match D4Array.", __FILE__, __LINE__);
+                if (dap_type == dods_url_c || dap_type == dods_structure_c 
+                   || dap_type == dods_sequence_c || dap_type == dods_grid_c)
+                    throw BESInternalError("Only Array, string and numeric datatypes are supported for the compact storage.", __FILE__, __LINE__);
+                else {
+                    dc->set_compact(true);
+                    // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
+                    // We know the length is 1 for a scalar string.
+                    size_t memRequired = 0;
+                    if (dap_type == dods_str_c) 
+                        memRequired = dsize;
+                    else 
+                        memRequired = btp->length() * dsize;
+
+                    // For variable length string, the storage size and the datatype size is not the same.
+                    // And we don't need to know then since it is a variable length string.
+                    if(H5Tis_variable_str(dtypeid) == 0) {
+                        if (comp_size != memRequired) 
+                            throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__, __LINE__);
                     }
 
-                    switch (btp->var()->type()) {
-                        case dods_byte_c:
-                        case dods_char_c:
-                        case dods_int8_c:
-                        case dods_uint8_c:
-                        case dods_int16_c:
-                        case dods_uint16_c:
-                        case dods_int32_c:
-                        case dods_uint32_c:
-                        case dods_float32_c:
-                        case dods_float64_c:
-                        case dods_int64_c:
-                        case dods_uint64_c: {
-                            values.resize(memRequired);
-                            get_data(dataset, reinterpret_cast<void *>(values.data()));
-                            btp->set_read_p(true);
-                            btp->val2buf(reinterpret_cast<void *>(values.data()));
-                            break;
+                    if (dap_type == dods_array_c) {
 
-                        }
-
-                        case dods_str_c: {
-                            if (H5Tis_variable_str(dtypeid) > 0) {
-                                vector<string> finstrval = {""};   // passed by reference to read_vlen_string
-                                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                                btp->set_value(finstrval, (int)finstrval.size());
-                                btp->set_read_p(true);
-                            }
-                            else {
-                                // For this case, the Array is really a single string - check for that
-                                // with the following assert - but is an Array because the string data
-                                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
-                                // a string and load that into a vector<string> (which will be a vector
-                                // of length one). Set that as the value of the Array. Really, this
-                                // value could be stored as a scalar, but that's complicated and client
-                                // software might be expecting an array, so better to handle it this way.
-                                // jhrg 9/17/20
-                                assert(btp->length() == 1);
+                        auto array = dynamic_cast<libdap::Array*>(btp);
+                        switch (array->var()->type()) {
+                            case dods_byte_c:
+                            case dods_char_c:
+                            case dods_int8_c:
+                            case dods_uint8_c:
+                            case dods_int16_c:
+                            case dods_uint16_c:
+                            case dods_int32_c:
+                            case dods_uint32_c:
+                            case dods_float32_c:
+                            case dods_float64_c:
+                            case dods_int64_c:
+                            case dods_uint64_c: {
                                 values.resize(memRequired);
                                 get_data(dataset, reinterpret_cast<void *>(values.data()));
-                                string str(values.begin(), values.end());
-                                vector<string> strings = {str};
-                                btp->set_value(strings, (int)strings.size());
-                                btp->set_read_p(true);
+                                array->set_read_p(true);
+                                array->val2buf(reinterpret_cast<void *>(values.data()));
+                                break;
+    
                             }
-                            break;
+                            case dods_str_c: {
+                                if (H5Tis_variable_str(dtypeid) > 0) {
+                                    vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                    read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                                    array->set_value(finstrval, (int)finstrval.size());
+                                    array->set_read_p(true);
+                                }
+                                else {
+                                    // For this case, the Array is really a single string - check for that
+                                    // with the following assert - but is an Array because the string data
+                                    // is stored as an array of chars (hello, FORTRAN). Read the chars, make
+                                    // a string and load that into a vector<string> (which will be a vector
+                                    // of length one). Set that as the value of the Array. Really, this
+                                    // value could be stored as a scalar, but that's complicated and client
+                                    // software might be expecting an array, so better to handle it this way.
+                                    // jhrg 9/17/20
+                                    assert(array->length() == 1);
+                                    values.resize(memRequired);
+                                    get_data(dataset, reinterpret_cast<void *>(values.data()));
+                                    string str(values.begin(), values.end());
+                                    vector<string> strings = {str};
+                                    array->set_value(strings, (int)strings.size());
+                                    array->set_read_p(true);
+                                }
+                                break;
+                            }
+    
+                            default:
+                                throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
+                        }
+                    }
+                    else {
+                        switch (dap_type) {
+                            case dods_byte_c:
+                            case dods_char_c:
+                            case dods_int8_c:
+                            case dods_uint8_c:
+                            case dods_int16_c:
+                            case dods_uint16_c:
+                            case dods_int32_c:
+                            case dods_uint32_c:
+                            case dods_float32_c:
+                            case dods_float64_c:
+                            case dods_int64_c:
+                            case dods_uint64_c: {
+                                values.resize(memRequired);
+                                get_data(dataset, reinterpret_cast<void *>(values.data()));
+                                btp->set_read_p(true);
+                                btp->val2buf(reinterpret_cast<void *>(values.data()));
+                                break;
+    
+                            }
+    
+                            case dods_str_c: {
+ 
+                                auto str = dynamic_cast<libdap::Str*>(btp);
+                                if (H5Tis_variable_str(dtypeid) > 0) {
+                                    vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                    read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                                    string vlstr=finstrval[0];
+                                    str->set_value(vlstr);
+                                    str->set_read_p(true);
+                                }
+                                else {
+                                    // A single string for scalar.
+                                    values.resize(memRequired);
+                                    get_data(dataset, reinterpret_cast<void *>(values.data()));
+                                    string fstr(values.begin(),values.end());
+                                    str->set_value(fstr);
+                                    str->set_read_p(true);
+                                    
+                                }
+                                break;
+                            }
+                             default:
+                                throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                         }
 
-                        default:
-                            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                     }
-
-                }
-                else {
-                    throw BESInternalError("Compact storage variable is not a D4Array.",
-                                           __FILE__, __LINE__);
                 }
                 break;
             }
@@ -584,7 +650,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 continue;
         }
 
-        get_variable_chunk_info(dataset, dynamic_cast<DmrppCommon *>(*v));
+        get_variable_chunk_info(dataset, *v);
     }
 
     // all groups in the group

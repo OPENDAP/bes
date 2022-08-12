@@ -224,6 +224,12 @@ AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.dds])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_utc.dods])
 
+dnl scalar variable tests for the compact storage
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_vlstr.dap])
+
+
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dmr])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.das])
@@ -241,6 +247,7 @@ AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.das])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_scalar.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_compact.dap])
 
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_all_fill.dap])
