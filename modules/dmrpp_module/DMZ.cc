@@ -51,6 +51,8 @@
 #include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppStr.h"
+#include "DmrppUrl.h"
 #include "DmrppD4Group.h"
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
@@ -913,11 +915,16 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
 
-    if (btp->type() != dods_array_c)
-        throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
+    // Current not support structure, sequence and grid for compact storage.
+    if (btp->type()== dods_structure_c || btp->type() == dods_sequence_c || btp->type() == dods_grid_c) 
+        throw BESInternalError("The dmrpp::compact element must be the child of an array or a scalar variable", __FILE__, __LINE__);
 
-    // We know from the above that this is an Array, so accessing btp->var() is OK.
-    switch (btp->var()->type()) {
+    // Obtain the datatype for array and scalar.
+    Type dtype =btp->type();
+    if (dtype == dods_array_c)
+        dtype = btp->var()->type();
+
+    switch (dtype) {
         case dods_array_c:
             throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__, __LINE__);
 
@@ -942,12 +949,28 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         case dods_str_c:
         case dods_url_c: {
+         
             std::string str(decoded.begin(), decoded.end());
-            auto *st = static_cast<DmrppArray *>(btp);
-            // Although val2buf() takes a void*, for DAP Str and Url types, it casts
-            // that to std::string*. jhrg 11/4/21
-            st->val2buf(&str);
-            st->set_read_p(true);
+            if (btp->type() == dods_array_c) {
+                auto *st = static_cast<DmrppArray *>(btp);
+                // Although val2buf() takes a void*, for DAP Str and Url types, it casts
+                // that to std::string*. jhrg 11/4/21
+                st->val2buf(&str);
+                st->set_read_p(true);
+            }
+            else {// Scalar
+                if(btp->type() == dods_str_c) {
+                    auto *st = static_cast<DmrppStr *>(btp);
+                    st->val2buf(&str);
+                    st->set_read_p(true);
+                }
+                else {
+                    auto *st = static_cast<DmrppUrl *>(btp);
+                    st->val2buf(&str);
+                    st->set_read_p(true);
+                }
+                
+            }
             break;
         }
 
@@ -970,7 +993,6 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
     string offset;
     string size;
     string chunk_position_in_array;
-
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -1028,32 +1050,51 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks) const
+void DMZ::process_chunks(BaseType *btp, const xml_node &chunks) const
 {
+    
+    bool has_fill_value = false;
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
-            dc->set_filter(attr.value());
+            dc(btp)->set_filter(attr.value());
         }
         else if (is_eq(attr.name(), "fillValue")) {
-            // Fill values are only supported for Arrays (5/9/22)
-            auto array = dynamic_cast<libdap::Array*>(dc);
-            if (!array)
-                throw BESInternalError("Fill Value chunks are only supported for Arrays.", __FILE__, __LINE__);
 
-            add_fill_value_information(dc, attr.value(), array->var()->type());
+            has_fill_value = true;
+
+            // Fill values are only supported for Arrays and scalar numeric datatypes (7/12/22)
+            if (btp->type()==dods_url_c || btp->type()== dods_structure_c 
+               || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
+                throw BESInternalError("Fill Value chunks are only supported for Arrays and numeric datatypes.", __FILE__, __LINE__);
+
+            // Here we should not add fill value for string since this is not handled. 
+            // Why not issuing an error since the string fill value is assigned as "unsupported-string" in the get_value_as_string()
+            // in build_dmrpp_util.cc.  HDF5 string variables rarely contain any fill value even if fill value is set.
+            // So to avoid the error of processing string variables, we just ignore the string fillvalues.
+            if (btp->type() !=dods_str_c) { 
+               if (btp->type() == dods_array_c) {
+                   auto array = dynamic_cast<libdap::Array*>(btp);
+                   add_fill_value_information(dc(btp), attr.value(), array->var()->type());
+               }
+               else 
+                   add_fill_value_information(dc(btp), attr.value(), btp->type());
+            }
         }
-        else if (is_eq(attr.name(), "byteOrder")) {
-            dc->ingest_byte_order(attr.value());
-        }
+        else if (is_eq(attr.name(), "byteOrder")) 
+            dc(btp)->ingest_byte_order(attr.value());
     }
 
+    // reset one_chunk_fillvalue to false if has_fill_value = false
+    if (has_fill_value == false && dc(btp)->get_one_chunk_fill_value() == true) // reset fillvalue 
+        dc(btp)->set_one_chunk_fill_value(false);
+
     // Look for the chunksDimensionSizes element - it will not be present for contiguous data
-    process_cds_node(dc, chunks);
+    process_cds_node(dc(btp), chunks);
 
     // Chunks for this node will be held in the var_node siblings.
     for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
         if (is_eq(chunk.name(), "dmrpp:chunk")) {
-            process_chunk(dc, chunk);
+            process_chunk(dc(btp), chunk);
         }
     }
 }
@@ -1178,7 +1219,7 @@ void DMZ::load_chunks(BaseType *btp)
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
         chunks_found = 1;
-        process_chunks(dc(btp), child);
+        process_chunks(btp, child);
         auto array = dynamic_cast<Array*>(btp);
         // It's possible to have a chunk, but not have a chunk dimension sizes element
         // when there is only one chunk (e.g., with HDF5 Contiguous storage). jhrg 5/5/22
@@ -1196,6 +1237,13 @@ void DMZ::load_chunks(BaseType *btp)
                     chunk_size_bytes *= dim_size;
                 process_fill_value_chunks(dc(btp), chunk_map, dc(btp)->get_chunk_dimension_sizes(),
                                           array_shape, chunk_size_bytes);
+                // Now we need to check if this var only contains one chunk.
+                // If yes, we will go ahead to set one_chunk_fill_value be true. 
+                // While later in process_chunks(), we will check if fillValue is defined and adjust the value.
+                if (num_logical_chunks == 1) 
+                    dc(btp)->set_one_chunk_fill_value(true);
+
+                
             }
         }
         // If both chunks and chunk_dimension_sizes are empty, this is contiguous storage
@@ -1212,6 +1260,19 @@ void DMZ::load_chunks(BaseType *btp)
             shape pia(0,array_shape.size());
             auto dcp = dc(btp);
             dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), array_size_bytes, pia);
+        }
+        // This is the case when the scalar variable that holds the fill value with the contiguous storage comes. 
+        // Note we only support numeric datatype now. KY 2022-07-12
+        else if (btp->type()!=dods_array_c && dc(btp)->get_immutable_chunks().empty()) {
+            if (btp->type() == dods_grid_c || btp->type() == dods_sequence_c || btp->type() ==dods_url_c) { 
+                ostringstream oss;
+                oss << " For scalar variable with the contiguous storage that holds the fillvalue, only numeric" 
+                    << " types are supported.";
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            shape pia;
+            auto dcp = dc(btp);
+            dcp->add_chunk(dcp->get_byte_order(), dcp->get_fill_value(), dcp->get_fill_value_type(), btp->width(), pia);
         }
     }
 

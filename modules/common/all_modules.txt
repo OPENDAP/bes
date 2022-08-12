@@ -4,13 +4,12 @@ csv_handler
 debug_functions
 dmrpp_module
 fileout_covjson
-fileout_gdal
 fileout_json
 fileout_netcdf
 fits_handler
 freeform_handler
 gateway_module
-gdal_handler
+gdal_module
 hdf4_handler
 hdf5_handler
 httpd_catalog_module

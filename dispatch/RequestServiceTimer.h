@@ -75,7 +75,7 @@ public:
 
     void dump( std::ostream &strm ) const ;
 
-    void throw_if_timeout_expired(std::string message, std::string file, int line);
+    void throw_if_timeout_expired(const std::string &message, const std::string &file, const int line);
 
 };
 

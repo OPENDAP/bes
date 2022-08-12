@@ -117,12 +117,12 @@ void FONcBaseType::setNC4DataModel(const string &nc4_datamodel)
  */
 bool FONcBaseType::isNetCDF4()
 {
-    return FONcBaseType::_ncVersion == RETURN_AS_NETCDF4;
+    return FONcBaseType::_ncVersion == FONC_RETURN_AS_NETCDF4;
 }
 
 bool FONcBaseType::isNetCDF4_ENHANCED()
 {
-    return FONcBaseType::_nc4_datamodel == NC4_ENHANCED;
+    return FONcBaseType::_nc4_datamodel == FONC_NC4_ENHANCED;
 }
 
 void FONcBaseType::updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t)

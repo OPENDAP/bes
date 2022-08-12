@@ -23,7 +23,7 @@
 args=`getopt "nvk" $*`
 if test $? != 0
 then
-    echo "Usage: version_update_modules.sh [-nvk] <directories>"
+    echo "Usage: version_update_modules.sh [-nvk]"
     exit 2
 fi
 
@@ -58,9 +58,14 @@ verbose() {
     fi
 }
 
-for module in $@
+
+modules=$(cat all_modules.txt)
+
+for module in $modules
 do
-    echo "Entering $module"
+    echo "# == == == == == == == == == == == == == =="
+    echo "# Entering $module"
+    echo "#"
     
     (cd ../$module
 

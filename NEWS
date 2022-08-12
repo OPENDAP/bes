@@ -1,5 +1,11 @@
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## News for 3.20.13
+
+* Improved error messages for the response is too big, and response tool too
+  much time to marshall.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.20.12
 
 * Patched bug in HDF5Array.cc introduced by the std::vector refactor

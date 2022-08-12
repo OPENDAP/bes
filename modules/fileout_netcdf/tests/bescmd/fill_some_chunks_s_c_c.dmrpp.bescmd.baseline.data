@@ -1,0 +1,24 @@
+netcdf test {
+dimensions:
+	dim1 = 4 ;
+	dim2 = 4 ;
+variables:
+	int chunks_some_fill(dim1, dim2) ;
+		chunks_some_fill:origname = "chunks_some_fill" ;
+		chunks_some_fill:fullnamepath = "/chunks_some_fill" ;
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.10" ;
+		:build_dmrpp_metadata.invocation = "/Users/myang6/work/opendap/hyrax-771/bes/modules/dmrpp_module/.libs/build_dmrpp -f fill_some_chunks_s_c_c.h5 -r fill_some_chunks_c_c.h5.dmr -M" ;
+		:history = "removed date-timex fill_some_chunks_s_c_c.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"fill_some_chunks_s_c_c.h5.dmrpp\"}]}]" ;
+data:
+
+ chunks_some_fill =
+  0, 1, -99, -99,
+  1, 2, -99, -99,
+  -99, -99, 4, 5,
+  -99, -99, 5, 6 ;
+}

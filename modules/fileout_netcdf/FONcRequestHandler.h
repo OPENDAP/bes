@@ -53,15 +53,15 @@ public:
     static bool byte_to_short;
     static bool use_compression;
     static bool use_shuffle;
-    static size_t chunk_size;
+    static unsigned long long chunk_size;
     static bool classic_model;
     static bool no_global_attrs;
-    static size_t request_max_size_kb;
+    static unsigned long long request_max_size_kb;
     static bool nc3_classic_format;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
-    static size_t get_request_max_size_kb(){
+    static unsigned long long get_request_max_size_kb(){
         return request_max_size_kb;
     }
 };

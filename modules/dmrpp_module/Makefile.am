@@ -17,7 +17,7 @@ AM_CPPFLAGS += $(OPENSSL_INC)
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=dmrpp_module
-M_VER=1.1.5
+M_VER=1.1.6
 
 AM_CPPFLAGS += -DMODULE_VERSION=\"$(M_VER)\"
 
