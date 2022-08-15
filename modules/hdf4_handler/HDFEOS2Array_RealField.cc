@@ -31,7 +31,7 @@ HDFEOS2Array_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
-    if(length() == 0)        
+    if(length() == 0)
         return true;
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();

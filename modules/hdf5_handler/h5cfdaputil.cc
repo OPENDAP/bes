@@ -71,14 +71,14 @@ string HDF5CFDAPUtil::escattr(string s)
     ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
-        ind += DOUBLE_ESC.length();
+        ind += DOUBLE_ESC.size();
     }
 
     // escape " with backslash
     ind = 0;
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         s.replace(ind, 1, ESCQUOTE);
-        ind += ESCQUOTE.length();
+        ind += ESCQUOTE.size();
     }
 #endif
 

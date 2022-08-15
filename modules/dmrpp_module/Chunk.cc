@@ -387,7 +387,7 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
 static void split_by_comma(const string &s, vector<unsigned long long> &res)
 {
     const string delimiter = ",";
-    const size_t delim_len = delimiter.length();
+    const size_t delim_len = delimiter.size();
 
     size_t pos_start = 0, pos_end;
 
@@ -407,14 +407,14 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
 
     // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
     // [1] is a minimal 'position in array' string.
-    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
+    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.size() < 3)
         throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
 
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
     try {
-        split_by_comma(pia.substr(1, pia.length() - 2), cpia_vect);
+        split_by_comma(pia.substr(1, pia.size() - 2), cpia_vect);
     }
     catch(const std::invalid_argument &e) {
         throw BESInternalError(string("while parsing a DMR++, chunk position string illegal character(s): ").append(e.what()), __FILE__, __LINE__);
@@ -516,10 +516,10 @@ void Chunk::add_tracking_query_param() {
     string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
 
     BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
-    int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+    int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
     if(match_result>=0) {
         auto match_length = (unsigned int) match_result;
-        if (match_length == d_data_url->str().length()) {
+        if (match_length == d_data_url->str().size()) {
             BESDEBUG(MODULE,
                      prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
             add_tracking = true;;
@@ -530,10 +530,10 @@ void Chunk::add_tracking_query_param() {
         // All S3 buckets, path style URL
         string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
         BESRegex s3_path_regex(s3_path_regex_str.c_str());
-        match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+        match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
         if(match_result>=0) {
             auto match_length = (unsigned int) match_result;
-            if (match_length == d_data_url->str().length()) {
+            if (match_length == d_data_url->str().size()) {
                 BESDEBUG(MODULE,
                          prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
                 add_tracking = true;;

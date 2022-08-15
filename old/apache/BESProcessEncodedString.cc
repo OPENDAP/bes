@@ -67,7 +67,7 @@ BESProcessEncodedString::BESProcessEncodedString (const char *s)
 		}
 		else
 		{
-		    _entries[parseHex( key.c_str(), key.length() )] = parseHex( value.c_str(), value.length() ) ;
+		    _entries[parseHex( key.c_str(), key.size() )] = parseHex( value.c_str(), value.size() ) ;
 		    getting_key_data = true ;
 		    key = "" ;
 		}
@@ -77,7 +77,7 @@ BESProcessEncodedString::BESProcessEncodedString (const char *s)
 	    cerr << "BESProcessEncodedString: parse error.\n" ;
 	else
 	{
-	    _entries[parseHex( key.c_str(), key.length() )] = parseHex( value.c_str(), value.length() ) ;
+	    _entries[parseHex( key.c_str(), key.size() )] = parseHex( value.c_str(), value.size() ) ;
 	}
     }
     else

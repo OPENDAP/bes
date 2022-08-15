@@ -206,8 +206,8 @@ void send_data(DDS **dds, ConstraintEvaluator &eval, BESDataHandlerInterface &dh
     }
 
     string temp_file_name = temp_dir + '/' + "ncXXXXXX";
-    char *temp_full = new char[temp_file_name.length() + 1];
-    string::size_type len = temp_file_name.copy(temp_full, temp_file_name.length());
+    char *temp_full = new char[temp_file_name.size() + 1];
+    string::size_type len = temp_file_name.copy(temp_full, temp_file_name.size());
     *(temp_full + len) = '\0';
     // cover the case where older versions of mkstemp() create the file using
     // a mode of 666.

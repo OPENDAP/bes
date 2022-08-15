@@ -41,7 +41,7 @@ bool HDFSPArrayGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArrayGeoField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     // Declare offset, count and step

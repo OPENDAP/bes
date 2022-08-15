@@ -199,21 +199,21 @@ bool CmdClient::executeClientCommand(const string & cmd)
 {
     bool do_exit = false;
     string suppress = "suppress";
-    if (cmd.compare(0, suppress.length(), suppress) == 0) {
+    if (cmd.compare(0, suppress.size(), suppress) == 0) {
         setOutput(NULL, false);
         return do_exit;
     }
 
     string output = "output to";
-    if (cmd.compare(0, output.length(), output) == 0) {
-        string subcmd = cmd.substr(output.length() + 1);
+    if (cmd.compare(0, output.size(), output) == 0) {
+        string subcmd = cmd.substr(output.size() + 1);
         string screen = "screen";
-        if (subcmd.compare(0, screen.length(), screen) == 0) {
+        if (subcmd.compare(0, screen.size(), screen) == 0) {
             setOutput(&cout, false);
         }
         else {
             // subcmd is the name of the file - then semicolon
-            string file = subcmd.substr(0, subcmd.length() - 1);
+            string file = subcmd.substr(0, subcmd.size() - 1);
             ofstream *fstrm = new ofstream(file.c_str(), ios::app);
             if (fstrm && !(*fstrm)) {
                 delete fstrm;
@@ -228,8 +228,8 @@ bool CmdClient::executeClientCommand(const string & cmd)
 
     // load commands from an input file and run them
     string load = "load";
-    if (cmd.compare(0, load.length(), load) == 0) {
-        string file = cmd.substr(load.length() + 1, cmd.length() - load.length() - 2);
+    if (cmd.compare(0, load.size(), load) == 0) {
+        string file = cmd.substr(load.size() + 1, cmd.size() - load.size() - 2);
         ifstream fstrm(file.c_str());
         if (!fstrm) {
             cerr << "Unable to load commands from file " << file << ": file does not exist or failed to open file"
@@ -263,8 +263,8 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
 {
     bool do_exit = false;
     const string client = "client";
-    if (cmd.compare(0, client.length(), client) == 0) {
-        do_exit = executeClientCommand(cmd.substr(client.length() + 1));
+    if (cmd.compare(0, client.size(), client) == 0) {
+        do_exit = executeClientCommand(cmd.substr(client.size() + 1));
     }
     else {
         if (repeat < 1) repeat = 1;
@@ -446,7 +446,7 @@ bool CmdClient::interact()
         else if (message == "help" || message == "help;" || message == "?") {
             this->displayHelp();
         }
-        else if (message.length() > 6 && message.substr(0, 6) == "client") {
+        else if (message.size() > 6 && message.substr(0, 6) == "client") {
             do_exit = this->executeCommand(message, 1);
         }
         else if (len != 0 && message != "") {

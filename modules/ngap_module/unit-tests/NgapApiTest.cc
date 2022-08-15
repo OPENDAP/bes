@@ -162,10 +162,10 @@ public:
 
     void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
-        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
+        CPPUNIT_ASSERT (data_access_url.size() > granule_name.size() );
 
         if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()) == granule_name;
+        bool endsWithGranuleName = data_access_url.substr(data_access_url.size()-granule_name.size(), granule_name.size()) == granule_name;
         CPPUNIT_ASSERT( endsWithGranuleName == true );
 
         if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;

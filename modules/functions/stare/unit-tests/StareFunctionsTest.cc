@@ -699,7 +699,7 @@ int main(int argc, char *argv[]) {
             case 'h': {
                 cerr << "StareFunctionsTest has the following tests: " << endl;
                 const std::vector<Test *> &tests = StareFunctionsTest::suite()->getTests();
-                unsigned int prefix_len = StareFunctionsTest::suite()->getName().append("::").length();
+                unsigned int prefix_len = StareFunctionsTest::suite()->getName().append("::").size();
                 for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                     cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
                 }

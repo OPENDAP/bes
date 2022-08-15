@@ -148,7 +148,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
             strVal = chunk_dims.substr(0, strPos);
             // TODO stoull (CDS uses uint64_t) jhrg 5/2/22
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
-            chunk_dims.erase(0, strPos + space.length());
+            chunk_dims.erase(0, strPos + space.size());
         }
     }
 

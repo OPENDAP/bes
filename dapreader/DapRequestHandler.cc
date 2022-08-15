@@ -94,7 +94,7 @@ static void read_key_value(const std::string &key_name, bool &key_value, bool &i
 static bool extension_match(const string &data_source, const string &extension)
 {
     string::size_type pos = data_source.rfind(extension);
-    return pos != string::npos && pos + extension.length() == data_source.length();
+    return pos != string::npos && pos + extension.size() == data_source.size();
 }
 
 DapRequestHandler::DapRequestHandler(const string &name) :

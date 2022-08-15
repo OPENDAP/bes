@@ -94,7 +94,7 @@ public:
             DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
             BESRegex reg_expr("123456");
             string inQuestion = "01234567";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == 6);
         }
         catch (BESError &e) {
@@ -109,7 +109,7 @@ public:
             DBG(cerr << "Match reg ex ^123456$ against string 01234567" << endl);
             BESRegex reg_expr("^123456$");
             string inQuestion = "01234567";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
@@ -125,7 +125,7 @@ public:
             DBG(cerr << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl);
             BESRegex reg_expr("^123456$");
             string inQuestion = "123456";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == 6);
         }
         catch (BESError &e) {
@@ -140,7 +140,7 @@ public:
             DBG(cerr << R"(Match reg ex ".*\.nc$;" against string fnoc1.nc)" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.nc";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
@@ -155,7 +155,7 @@ public:
             DBG(cerr << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.ncd";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
@@ -170,7 +170,7 @@ public:
             DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
@@ -185,7 +185,7 @@ public:
             DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc.gz";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.length());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             CPPUNIT_ASSERT(result == 11);
         }
         catch (BESError &e) {
@@ -272,7 +272,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: regexT has the following tests:" << endl;
             const std::vector<Test*> &tests = regexT::suite()->getTests();
-            unsigned int prefix_len = regexT::suite()->getName().append("::").length();
+            unsigned int prefix_len = regexT::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

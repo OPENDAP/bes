@@ -63,8 +63,8 @@ vector < string > split(const string & str, const string & delim)
 {
     vector < string > rv;
 
-    string::size_type len = str.length();
-    string::size_type dlen = delim.length();
+    string::size_type len = str.size();
+    string::size_type dlen = delim.size();
     for (string::size_type i = 0, previ = -dlen;; previ = i) {
         i = str.find(delim, previ + dlen);
         if (i == 0)

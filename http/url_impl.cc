@@ -182,7 +182,7 @@ void url::parse() {
                                            protocol_end.begin(), protocol_end.end());
 
     if (prot_i != parse_url_target.end())
-        advance(prot_i, protocol_end.length());
+        advance(prot_i, protocol_end.size());
 
     d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
     transform(parse_url_target.begin(), prot_i,
@@ -192,7 +192,7 @@ void url::parse() {
         return;
 
     if (d_protocol == FILE_PROTOCOL) {
-        d_path = parse_url_target.substr(d_protocol.length());
+        d_path = parse_url_target.substr(d_protocol.size());
         BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
     else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){

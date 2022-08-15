@@ -100,7 +100,7 @@ bool ArrayGeoConstraint::build_lat_lon_maps()
         lon_map[i] = ((d_extent.d_right - d_extent.d_left) / (number_elements_longitude - 1)) * i + d_extent.d_left;
     }
     set_lon(lon_map);
-    set_lon_length(number_elements_longitude);
+    set_lon_size(number_elements_longitude);
 
     // Find the latitude dimension: Assume it is the next-rightmost
     set_lat_dim(d_array->dim_begin() + (d_array->dimensions() - 2));
@@ -111,7 +111,7 @@ bool ArrayGeoConstraint::build_lat_lon_maps()
         lat_map[i] = ((d_extent.d_bottom - d_extent.d_top) / (number_elements_latitude - 1)) * i + d_extent.d_top;
     }
     set_lat(lat_map);
-    set_lat_length(number_elements_latitude);
+    set_lat_size(number_elements_latitude);
 
     return get_lat() && get_lon();
 }
@@ -174,7 +174,7 @@ void ArrayGeoConstraint::apply_constraint_to_data()
 
         // alter the indexes; the left index has now been moved to 0, and the right
         // index is now at lon_vector_length-left+right.
-        set_longitude_index_right(get_lon_length() - get_longitude_index_left()
+        set_longitude_index_right(get_lon_size() - get_longitude_index_left()
                                   + get_longitude_index_right());
         set_longitude_index_left(0);
     }

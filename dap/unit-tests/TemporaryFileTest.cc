@@ -223,7 +223,7 @@ public:
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file name.
         char *glob_name;
-        int name_size = TEMP_FILE_PREFIX.length() + 1;
+        int name_size = TEMP_FILE_PREFIX.size() + 1;
         glob_name = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
         pid_t pid = fork();
@@ -287,7 +287,7 @@ public:
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file names.
         char *glob_name[3];
-        int name_size = TEMP_FILE_PREFIX.length() + 1;
+        int name_size = TEMP_FILE_PREFIX.size() + 1;
         glob_name[0] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
         glob_name[1] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
         glob_name[2] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
@@ -407,7 +407,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: TemporaryFileTest has the following tests:" << endl;
             const std::vector<Test*> &tests = TemporaryFileTest::suite()->getTests();
-            unsigned int prefix_len = TemporaryFileTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = TemporaryFileTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

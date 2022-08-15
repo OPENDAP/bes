@@ -30,7 +30,7 @@ HDFSPArray_VDField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_VDField read "<<endl);
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
 #if 0

@@ -417,7 +417,7 @@ private:
      * and return it as an Array* if so.  Else throw or return null.
      * A valid c.v. will:
      *          o Be an Array with name dim.name with 1 dimension whose name is also dim.name
-     *          o Have a length() that matches dim.size
+     *          o Have a size() that matches dim.size
      * @param pBT  the variable to validate as a dim c.v.
      * @param dim  the dimension information to check for
      * @return pBT cast as an Array* if it is valid, else NULL.
@@ -492,7 +492,7 @@ private:
      * The Array is not added to the DDS, just returned as new memory.
      *
      * @param dim the dimension to create the coord var for
-     * @return a newly created Array with length() == dim.size() containing the
+     * @return a newly created Array with size() == dim.size() containing the
      *         values of the proper type.  (Either string or double now).
      */
     std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimension(const agg_util::Dimension& dim) const;
@@ -523,7 +523,7 @@ private:
      * be passed in directly.
      *
      * @param dim  the dimension we're using to make the coord variable
-     * @return the new Array with type string or double.  It will have length() == dim.size()
+     * @return the new Array with type string or double.  It will have size() == dim.size()
      * @exception parse error if any datasets fail to have coordValue set.
      * @exception parse error if the first dataset coord is a number but any others are not.
      */
@@ -540,7 +540,7 @@ private:
      * where the 'i' will be the index of the dataset in parse order.
      * @param dim the dimension to create the coordinate variable for
      * @return the new Array of type String with the values in it.  It
-     *          will have length() == dim.size().
+     *          will have size() == dim.size().
      */
     std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingLocation(const agg_util::Dimension& dim) const;
 

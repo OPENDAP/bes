@@ -199,7 +199,7 @@ void DODS_Date::parse_iso8601_time(string date)
 		_format = ym;
 	}
 
-	else if ((pos1 == date.npos) && (date.length() == 4)) {
+	else if ((pos1 == date.npos) && (date.size() == 4)) {
 		// There are no dashes, assume a ccyy date.
 		_day = 1;
 		_month = 1;
@@ -299,7 +299,7 @@ void DODS_Date::set(string date)
 	else if (date.find("-") != string::npos) {
 		parse_iso8601_time(date);
 	}
-	else if (date.length() == 4) {
+	else if (date.size() == 4) {
 		date += "-1-1";
 		parse_iso8601_time(date);
 	}

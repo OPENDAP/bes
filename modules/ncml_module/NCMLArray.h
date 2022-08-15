@@ -162,7 +162,7 @@ public:
         }
 
         // Finally, copy the data.
-        // Initialize with length() values so the storage and size of _allValues is correct.
+        // Initialize with size() values so the storage and size of _allValues is correct.
         _allValues = new std::vector<T>(from.length());
         NCML_ASSERT(_allValues->size() == static_cast<unsigned int>(from.length()));
 
@@ -311,8 +311,8 @@ protected:
 
 #if 0
             ostringstream oss;
-            oss <<"NCMLArray expected superclass Vector length() to be the same as unconstrained space size, but it wasn't!";
-            oss << "length(): " << length() << "' spaceSize: " << spaceSize;
+            oss <<"NCMLArray expected superclass Vector size() to be the same as unconstrained space size, but it wasn't!";
+            oss << "size(): " << size() << "' spaceSize: " << spaceSize;
             NCML_ASSERT_MSG(static_cast<unsigned int>(length()) == spaceSize, oss.str());
 #else
             NCML_ASSERT_MSG(static_cast<unsigned int>(length()) == spaceSize,

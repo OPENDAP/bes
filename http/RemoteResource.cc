@@ -88,7 +88,7 @@ RemoteResource::RemoteResource(
         d_resourceCacheFileName = d_remoteResourceUrl->path();
         while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
             // Strip trailing slashes, because this about files, not directories
-            d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+            d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.size()-1);
         }
         // Now we check that the data is in the BES_CATALOG_ROOT
         string catalog_root;
@@ -159,7 +159,7 @@ RemoteResource::RemoteResource(
             d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
             while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
                 // Strip trailing slashes, because this about files, not directories
-                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.size()-1);
             }
             // Now we check that the data is in the BES_CATALOG_ROOT
             string catalog_root;
@@ -548,7 +548,7 @@ void RemoteResource::ingest_http_headers_and_type() {
         }
         else {
             string key = BESUtil::lowercase(header.substr(0, colon_index));
-            string value = header.substr(colon_index + colon_space.length());
+            string value = header.substr(colon_index + colon_space.size());
             BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
             (*d_http_response_headers)[key] = value;
         }
@@ -752,7 +752,7 @@ void RemoteResource::setType(const vector<string> *resp_hdrs) {
                 string colon_space = ": ";
                 int index = hdr_line.find(colon_space);
                 string hdr_name = hdr_line.substr(0, index);
-                string hdr_value = hdr_line.substr(index + colon_space.length());
+                string hdr_value = hdr_line.substr(index + colon_space.size());
 
                 BESDEBUG(MODULE, prolog << "hdr_name: '" << hdr_name << "'   hdr_value: '" << hdr_value  << "' " << endl);
 

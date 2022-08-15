@@ -254,7 +254,7 @@ string BESUtil::www2id(const string &in, const string &escape, const string &exc
 string BESUtil::lowercase(const string &s)
 {
     string return_string = s;
-    for (int j = 0; j < static_cast<int>(return_string.length()); j++) {
+    for (int j = 0; j < static_cast<int>(return_string.size()); j++) {
         return_string[j] = (char) tolower(return_string[j]);
     }
 
@@ -270,7 +270,7 @@ string BESUtil::unescape(const string &s)
     while (!done) {
         string::size_type bs = s.find('\\', index);
         if (bs == string::npos) {
-            new_str += s.substr(index, s.length() - index);
+            new_str += s.substr(index, s.size() - index);
             done = true;
         }
         else {
@@ -552,7 +552,7 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
             while (!endquote) {
                 aquote = str.find('"', qstart);
                 if (aquote == string::npos) {
-                    string currval = str.substr(start, str.length() - start);
+                    string currval = str.substr(start, str.size() - start);
                     string err = "BESUtil::explode - No end quote after value " + currval;
                     throw BESInternalError(err, __FILE__, __LINE__);
                 }
@@ -572,12 +572,12 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
                     qstart = aquote + 1;
                 }
             }
-            if (str[qstart] != delim && qstart != str.length()) {
+            if (str[qstart] != delim && qstart != str.size()) {
                 string currval = str.substr(start, qstart - start);
                 string err = "BESUtil::explode - No delim after end quote " + currval;
                 throw BESInternalError(err, __FILE__, __LINE__);
             }
-            if (qstart == str.length()) {
+            if (qstart == str.size()) {
                 adelim = string::npos;
             }
             else {
@@ -588,7 +588,7 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
             adelim = str.find(delim, start);
         }
         if (adelim == string::npos) {
-            aval = str.substr(start, str.length() - start);
+            aval = str.substr(start, str.size() - start);
             done = true;
         }
         else {
@@ -597,7 +597,7 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
 
         values.push_back(aval);
         start = adelim + 1;
-        if (start == str.length()) {
+        if (start == str.size()) {
             values.push_back("");
             done = true;
         }
@@ -675,7 +675,7 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
     rest = url_str.substr(colon);
 
     string::size_type slash = rest.find("/");
-    if (slash == string::npos) slash = rest.length();
+    if (slash == string::npos) slash = rest.size();
 
     string::size_type at = rest.find("@");
     if ((at != string::npos) && (at < slash)) {
@@ -693,7 +693,7 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
         rest = rest.substr(at + 1);
     }
     slash = rest.find("/");
-    if (slash == string::npos) slash = rest.length();
+    if (slash == string::npos) slash = rest.size();
     colon = rest.find(":");
     if ((colon != string::npos) && (colon < slash)) {
         // everything before the colon is the domain
@@ -758,7 +758,7 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
     // Note that this removes all the slashes. jhrg 9/27/16
     while (!first.empty() && *first.rbegin() == separator) {
         // C++-11 first.pop_back();
-        first = first.substr(0, first.length() - 1);
+        first = first.substr(0, first.size() - 1);
     }
     // make sure second part does not BEGIN with a slash
     while (!second.empty() && second[0] == separator) {
@@ -820,7 +820,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     }
     else {
         while (!newPath.empty() && newPath.back() == '/')
-            newPath.erase(newPath.length()-1);
+            newPath.erase(newPath.size()-1);
     }
 
     BESDEBUG(MODULE, prolog << "newPath: " << newPath << endl);
@@ -833,8 +833,8 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
  */
 bool BESUtil::endsWith(string const &fullString, string const &ending)
 {
-    if (fullString.length() >= ending.length()) {
-        return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    if (fullString.size() >= ending.size()) {
+        return (0 == fullString.compare(fullString.size() - ending.size(), ending.size(), ending));
     }
     else {
         return false;
@@ -945,7 +945,7 @@ unsigned int BESUtil::replace_all(string &s, string find_this, string replace_wi
  */
 string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator /* = "/" */)
 {
-    if (separator.length() != 1)
+    if (separator.size() != 1)
         throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
     char separator_char = separator[0];
     string double_separator;
@@ -978,7 +978,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
     }
     else {
         if (*path.rbegin() == separator_char) {
-            path = path.substr(0, path.length() - 1);
+            path = path.substr(0, path.size() - 1);
         }
     }
     return path;
@@ -1103,7 +1103,7 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
             // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
-            ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
+            ppath = BESUtil::normalize_path(path.substr(path_tokens[0].size()), true, false);
             BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << use_container << endl);
         }
     }
@@ -1384,7 +1384,7 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
  */
 void BESUtil::split(const string &s, const string &delimiter, vector<uint64_t> &res)
 {
-    const size_t delim_len = delimiter.length();
+    const size_t delim_len = delimiter.size();
 
     size_t pos_start = 0, pos_end;
 
@@ -1407,7 +1407,7 @@ void BESUtil::split(const string &s, const string &delimiter, vector<uint64_t> &
  */
 void BESUtil::split(const string &s, const string &delimiter, vector<string> &res)
 {
-    const size_t delim_len = delimiter.length();
+    const size_t delim_len = delimiter.size();
 
     size_t pos_start = 0, pos_end;
 

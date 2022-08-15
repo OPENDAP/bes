@@ -128,7 +128,7 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
         // the path, as there is no hostname.
         string file_path = candidate_url->path();
         BESDEBUG(MODULE, prolog << "   file_path: '" << file_path <<
-                                "' (length: " << file_path.length() << " size: " << file_path.size() << ")" <<endl);
+                                "' (length: " << file_path.size() << " size: " << file_path.size() << ")" <<endl);
         // Get the BES Catalog
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
@@ -144,11 +144,11 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
 
         string catalog_root = bcat->get_root();
         BESDEBUG(MODULE, prolog << "catalog_root: '" << catalog_root <<
-            "' (length: " << catalog_root.length() << " size: " << catalog_root.size() << ")" << endl);
+            "' (length: " << catalog_root.size() << " size: " << catalog_root.size() << ")" << endl);
 
         string relative_path;
         if (file_path[0] == '/') {
-            if (file_path.length() < catalog_root.length()) {
+            if (file_path.size() < catalog_root.size()) {
                 // Upward traversal is not allowed (specified resource path is shorter than data root path)
                 why_not = "Path is out of scope from configuration.";
                 isAllowed = false;
@@ -158,7 +158,7 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
                 size_t ret = file_path.find(catalog_root);
                 BESDEBUG(MODULE, prolog << "file_path.find(catalog_root): " << ret << endl);
                 isAllowed = (ret == 0);
-                relative_path = file_path.substr(catalog_root.length());
+                relative_path = file_path.substr(catalog_root.size());
                 BESDEBUG(MODULE, prolog << "relative_path: " << relative_path << endl);
                 BESDEBUG(MODULE, prolog << "isAllowed: " << (isAllowed?"true":"false") << endl);
 
@@ -217,10 +217,10 @@ bool AllowedHosts::check(const std::string &url){
     for (; it != end_it && !isAllowed; it++) {
         string a_regex_pattern = *it;
         BESRegex reg_expr(a_regex_pattern.c_str());
-        int match_result = reg_expr.match(url.c_str(), url.length());
+        int match_result = reg_expr.match(url.c_str(), url.size());
         if (match_result >= 0) {
             auto match_length = (unsigned int) match_result;
-            if (match_length == url.length()) {
+            if (match_length == url.size()) {
                 BESDEBUG(MODULE,
                          prolog << "FULL MATCH. pattern: " << a_regex_pattern << " url: " << url << endl);
                 isAllowed = true;;
