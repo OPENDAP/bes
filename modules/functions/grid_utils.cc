@@ -249,7 +249,7 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
     Array::Dim_iter dim_i = coverage->dim_begin();
     while (dim_i != coverage->dim_end() && coverage->dimension_D4dim(dim_i)->fully_qualified_name() != clause->get_map()->FQN())
         ++dim_i;
-    
+
     if (dim_i == coverage->dim_end())
         throw Error(malformed_expr,"The map vector '" + clause->get_map_name()
                                    + "' is not a dimension in the array '" + coverage->name() + "'.");
@@ -278,6 +278,7 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
     // Stride is always one.
     map->add_constraint(map->dim_begin(), start, 1, stop);
     coverage->add_constraint(coverage_dim, start, 1, stop);
+    coverage->add_constraint(coverage_dim,coverage->dimension_D4dim(coverage_dim));
 }
 
 void apply_grid_selection_expressions(Array * coverage, vector < GSEClause * >clauses)
