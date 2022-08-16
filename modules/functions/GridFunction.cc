@@ -30,6 +30,7 @@
 #include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
+#include <libdap/Structure.h>
 #include <libdap/D4RValue.h>
 #include <libdap/D4Maps.h>
 
@@ -280,10 +281,32 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     // values and building destination arrays with just those
     // values.
 
-    l_array->set_send_p(true);
-    l_array->read();
+    // Build the return value(s) - this means make copies of the Map arrays
+    BaseType *grid_struct = nullptr;
+    grid_struct = new Structure("GridFunc");
 
-    return l_array;
+    // Basic plan: Add the new array to the destination structure.
+    grid_struct->add_var_nocopy(l_array);
+
+    // Basic plan: For each map in the array, add it to the destination structure
+    d4_maps = l_array->maps();
+    miter = d4_maps->map_begin();
+    while (miter != d4_maps->map_end()) {
+        D4Map *d4_map = (*miter);
+        Array *map = const_cast<Array *>(d4_map->array());
+        grid_struct->add_var_nocopy(map);
+        ++miter;
+    }
+
+    grid_struct->set_send_p(true);
+    grid_struct->read();
+
+    return grid_struct;
+
+    //l_array->set_send_p(true);
+    //l_array->read();
+
+    //return l_array;
 
     //throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
     //return 0; //response.release();
