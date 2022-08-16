@@ -277,7 +277,8 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
 
     // Stride is always one.
     map->add_constraint(map->dim_begin(), start, 1, stop);
-    coverage->add_constraint(coverage_dim, start, 1, stop);
+    //coverage->add_constraint(coverage_dim, start, 1, stop);
+    coverage->dimension_D4dim(coverage_dim)->set_constraint(start, 1, stop);
     coverage->add_constraint(coverage_dim,coverage->dimension_D4dim(coverage_dim));
 }
 
