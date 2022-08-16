@@ -223,7 +223,6 @@ int main(int argc, char *argv[]) {
 
             XMLWriter writer;
             dmrpp.print_dmrpp(writer, url_name);
-
             cout << writer.get_doc();
         } else {
             string bes_data_root = TheBESKeys::TheKeys()->read_string_key(ROOT_DIRECTORY, "");

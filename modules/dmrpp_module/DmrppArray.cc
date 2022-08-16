@@ -833,7 +833,7 @@ void DmrppArray::read_contiguous()
     }
 
     // Now that the_one_chunk has been read, we do what is necessary...
-    if (!is_filters_empty()){
+    if (!is_filters_empty() && !get_one_chunk_fill_value()) {
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
     }
 
@@ -1471,7 +1471,7 @@ void DmrppArray::read_contiguous_string()
     the_one_chunk->read_chunk();
 
     // Now that the_one_chunk has been read, we do what is necessary...
-    if (!is_filters_empty()){
+    if (!is_filters_empty() && !get_one_chunk_fill_value()){
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
     }
 

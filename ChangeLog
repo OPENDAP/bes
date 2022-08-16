@@ -1,4 +1,61 @@
 ## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+## BES Version 3.20.13
+##
+
+2022-07-21  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.11-0 2022-07-21T23:48:51+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.11-4 2022-07-21T23:13:13+0000 Triggering BES build for snapshots.
+
+2022-07-19  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.10-3 2022-07-19T16:00:22+0000 Triggering BES build for snapshots.
+
+2022-07-14  Nathan Potter  <ndp@opendap.org>
+
+	Hyrax 772 (#659)
+	* First cut on checking for netcdf-3 limitations
+	* First cut on checking for netcdf-3 limitations
+	* And now, a more comprehensize and dynamic error message to the Its Too Big deal in fonc
+	* And now, a more comprehensize and dynamic error message to the Its Too Big deal in fonc
+	* More sync
+	* Made the default bes.conf set BES.CancelTimeoutOnSend=true
+	* Message cleanup, nearly good to go
+	* Updated baselines
+
+2022-07-14  Dan Holloway  <d.holloway@opendap.org>
+
+	Merge pull request #658 from OPENDAP/generic_timeout_errmsg
+	Generic timeout errmsg
+
+2022-07-13  ndp-opendap  <ndp@opendap.org>
+
+	More words for the general timeout error. Added test for RequestTimerTest::test_throw_if_timeout_expired()
+
+2022-07-13  dh-opendap  <dholloway@opendap.org>
+
+	Final-final revision to RequestServiceTimer::throw_if_timeout_expired()
+
+	Final revisions to RequestServiceTimer::throw_if_timeout_expired()
+
+2022-07-12  dh-opendap  <dholloway@opendap.org>
+
+	Updated generic timeout message
+
+	Updated generic timeout message
+
+	Added generic error message
+
+2022-07-09  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.10-2 2022-07-09T18:30:19+0000 Triggering BES build for snapshots.
+
+2022-07-06  ndp-opendap  <ndp@opendap.org>
+
+	Minor release 1.16.7
+
+## -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## BES Version 3.20.12
 ##
 

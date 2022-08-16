@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <curl/curl.h>
 
 #include "BESDefaultModule.h"
 
@@ -91,6 +92,9 @@ using namespace bes;
 int BESDefaultModule::initialize(int, char**)
 {
     BESDEBUG("bes", "Initializing default modules:" << endl);
+
+    // initialize curl for the hyrax software
+    curl_global_init(CURL_GLOBAL_DEFAULT);
 
     // TODO Remove this. jhrg 12/27/18
     //BESContainerStorageList::TheList()->add_persistence(new BESContainerStorageVolatile( DEFAULT ));

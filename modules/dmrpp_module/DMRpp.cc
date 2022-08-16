@@ -116,7 +116,6 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
                                             (const xmlChar*) get_version().c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for version");
 
-
         root()->print_dap4(xml, constrained);
 
         if (xmlTextWriterEndElement(xml.get_writer()) < 0)
