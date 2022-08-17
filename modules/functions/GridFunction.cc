@@ -285,19 +285,22 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     BaseType *grid_struct = nullptr;
     grid_struct = new Structure("GridFunc");
 
-    // Basic plan: Add the new array to the destination structure.
+    // Basic plan: Add the new array to the destination structure, and clear read_p flag.
+    l_array->set_read_p(false);
     grid_struct->add_var_nocopy(l_array);
 
-    // Basic plan: For each map in the array, add it to the destination structure
+    // Basic plan: For each map in the array, add it to the destination structure and clear the read_p flag
     d4_maps = l_array->maps();
     miter = d4_maps->map_begin();
     while (miter != d4_maps->map_end()) {
         D4Map *d4_map = (*miter);
         Array *map = const_cast<Array *>(d4_map->array());
+        map->set_read_p(false);
         grid_struct->add_var_nocopy(map);
         ++miter;
     }
 
+    // Basic plan: Mark the Structure for sending and read the data.
     grid_struct->set_send_p(true);
     grid_struct->read();
 
