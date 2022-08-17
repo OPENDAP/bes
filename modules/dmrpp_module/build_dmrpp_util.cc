@@ -327,7 +327,7 @@ string get_hdf5_fill_value(hid_t dataset_id)
 }
 
 
-string_pad_type get_str_pad_type(const H5T_str_t str_pad){
+string_pad_type convert_h5_str_pad_type(const H5T_str_t str_pad){
     string_pad_type pad_type;
     switch(str_pad){
         case H5T_STR_SPACEPAD:
@@ -358,7 +358,7 @@ string_pad_type get_pad_type(const hid_t dataset) {
     if(str_pad < 0) {
         throw runtime_error("ERROR: H5Tget_strpad() failed.");
     }
-    return get_str_pad_type(str_pad);
+    return convert_h5_str_pad_type(str_pad);
 }
 
 
@@ -659,8 +659,6 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                                 strings.push_back("");
                                 array->set_value(strings, (int) strings.size());
                                 array->set_read_p(true);
-
-
                             }
                             break;
                         }
@@ -668,7 +666,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                         default:
                             throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                     }
-                } else {
+                }
+                else {
                     switch (dap_type) {
                         case dods_byte_c:
                         case dods_char_c:
@@ -700,7 +699,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                                 string vlstr = finstrval[0];
                                 str->set_value(vlstr);
                                 str->set_read_p(true);
-                            } else {
+                            }
+                            else {
                                 // A single string for scalar.
                                 values.resize(memRequired);
                                 get_data(dataset, reinterpret_cast<void *>(values.data()));
@@ -794,7 +794,8 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
                 throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
             }
 
-        } else {
+        }
+        else {
             // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
             // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
             //
@@ -809,6 +810,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (dataset < 0) {
                VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
                 // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                continue;
             }
         }
 
