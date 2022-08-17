@@ -57,10 +57,10 @@ namespace dmrpp {
 
 enum flen_str_pad_type { null_term, null_pad, space_pad };
 
-struct offset_size{
+struct ons {
     unsigned long long offset;
     unsigned long long size;
-    offset_size(const std::string &ona_par_str);
+    ons(const std::string &ons_pair_str);
 };
 
 /**
@@ -85,14 +85,11 @@ private:
     //     </dmrpp:vStringArray
     std::string d_vlen_string_addrs;
 
+
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null | space" />
     unsigned long long d_flen_str_length;
     flen_str_pad_type d_flen_str_pad_type;
-
-    void mk_vlen_str_addrs(const std::string &ona_strs, vector<const offset_size &> &vlen_str_addrs);
-
-
 
     bool is_projected();
 
@@ -172,6 +169,17 @@ public:
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void dump(ostream &strm) const;
+
+    void set_fixed_string_length(unsigned long long length){ d_flen_str_length = length; }
+
+    unsigned long long get_fixed_string_length(){ return d_flen_str_length; }
+
+    void set_fixed_length_string_pad(const flen_str_pad_type pad){ d_flen_str_pad_type = pad; }
+
+    flen_str_pad_type get_fixed_length_string_pad(){ return d_flen_str_pad_type; }
+
+    void mk_vlen_str_addrs(const std::string &ons_str, vector<ons> &vlen_str_addrs);
+
 };
 
 /**

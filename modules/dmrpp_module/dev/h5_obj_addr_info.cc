@@ -77,20 +77,20 @@ main (int argc, char*argv[])
     data_layout = H5Pget_layout(cparms);
 
     if (H5D_CONTIGUOUS == data_layout)  {
-        cout << "#        storage: contiguous" << endl;
+        cout << "#              storage: contiguous" << endl;
 
         // Using H5Dget_offset(dset_id) for offset and H5Dget_storage_size for size.
-        haddr_t cont_addr = H5Dget_offset(dataset);
-        if(cont_addr == HADDR_UNDEF) {
+        haddr_t contiguous_addr = H5Dget_offset(dataset);
+        if(contiguous_addr == HADDR_UNDEF) {
             H5Dclose(dataset);
             H5Fclose(file);
             cerr << "Cannot obtain the contiguous storage address." << endl;
             return 1;
         }
-        haddr_t cont_size = H5Dget_storage_size(dataset);
+        haddr_t contiguous_size = H5Dget_storage_size(dataset);
         // Need to check if fill value if cont_size.
-        cout << "#      cont_addr: " << cont_addr << endl;
-        cout << "#      cont_size: " << cont_size << endl;
+        cout << "#      contiguous_addr: " << contiguous_addr << endl;
+        cout << "#      contiguous_size: " << contiguous_size << endl;
     }
     else if (H5D_CHUNKED == data_layout)  {
 
@@ -98,7 +98,7 @@ main (int argc, char*argv[])
         int dataset_rank;
         int chunk_rank;
 
-        cout << "#        storage: chunked" << endl;
+        cout << "#              storage: chunked" << endl;
 
         /* Get filespace handle first. */
         filespace = H5Dget_space(dataset);   
@@ -131,7 +131,7 @@ main (int argc, char*argv[])
             hsize_t size = 0;
             hsize_t chunk_coords[chunk_rank];
 
-            H5Dget_chunk_info(dataset,filespace,chunk_index,chunk_coords,NULL,&file_offset,&size);
+            H5Dget_chunk_info(dataset,filespace,chunk_index,chunk_coords,nullptr,&file_offset,&size);
             cout << "#      chunk_index: " << chunk_index << endl;
             cout << "#      file_offset: " << file_offset << endl;
             cout << "#             size: " << size << " bytes" << endl;

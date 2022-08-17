@@ -1817,31 +1817,33 @@ void DmrppArray::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-void DmrppArray::mk_vlen_str_addrs(const std::string &ona_strs, vector<const &offset_size> &vlen_str_addrs)
+ons::ons(const std::string &ons_pair_str) {
+    const string colon(":");
+    size_t colon_pos = ons_pair_str.find(colon);
+
+    string offset_str = ons_pair_str.substr(0, colon_pos);
+    offset = stoull(offset_str);
+
+    string size_str = ons_pair_str.substr(colon_pos + 1);
+    size = stoull(size_str);
+}
+
+void DmrppArray::mk_vlen_str_addrs(const std::string &ons_str, vector<ons> &vlen_str_addrs)
 {
     const string comma(",");
     size_t last = 0;
     size_t next = 0;
 
-    while ((next = ona_strs.find(comma, last)) != string::npos) {
-        string ona_pair_str = ona_strs.substr(last, next-last);
-        vlen_str_addrs.push_back(std::move(offset_size(ona_pair_str)));
+    while ((next = ons_str.find(comma, last)) != string::npos) {
+        string ona_pair_str = ons_str.substr(last, next-last);
+        ons ons_pair(ona_pair_str);
+        vlen_str_addrs.push_back(ons_pair);
         last = next + 1;
     }
-    cout << ona_strs.substr(last) << endl;
+    cout << ons_str.substr(last) << endl;
 }
 
 
-offset_size::offset_size(const std::string &ona_par_str)
-{
-    const string colon(":");
-    size_t colon_pos = ona_par_str.find(colon);
 
-    string offset_str = ona_par_str.substr(0,colon_pos);
-    offset = stoull(offset_str);
-
-    string size_str = ona_par_str.substr(colon_pos + 1);
-    size = stoull(size_str);
-}
 
 } // namespace dmrpp

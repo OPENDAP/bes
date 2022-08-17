@@ -151,7 +151,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
 
     try {
         int numfilt = H5Pget_nfilters(plist_id);
-        VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
+        VERBOSE(cerr << "# Number of filters associated with dataset: " << numfilt << endl);
         string filters;
 
         for (int filter = 0; filter < numfilt; filter++) {
@@ -159,7 +159,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
             unsigned int flags, filter_info;
             H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts,
                                                       nullptr, 0, nullptr, &filter_info);
-            VERBOSE(cerr << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
+            VERBOSE(cerr << "# Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
                     filters.append("deflate ");
@@ -325,6 +325,131 @@ string get_hdf5_fill_value(hid_t dataset_id)
     }
 }
 
+
+flen_str_pad_type get_str_pad_type(const H5T_str_t str_pad){
+    flen_str_pad_type pad_type;
+    switch(str_pad){
+        case H5T_STR_SPACEPAD:
+            pad_type = dmrpp::space_pad;
+            break;
+
+        case H5T_STR_NULLTERM:
+            pad_type= dmrpp::null_term;
+            break;
+
+        case H5T_STR_NULLPAD:
+            pad_type= dmrpp::null_pad;
+            break;
+
+        default:
+            cerr << "ERROR: h5tget_strpad() failed, returned: " << str_pad << endl;
+            throw runtime_error("ERROR: h5tget_strpad() failed.");
+    }
+    return pad_type;
+}
+
+flen_str_pad_type get_pad_type(const hid_t dataset) {
+    hid_t h5_type = H5Dget_type(dataset);
+    if(h5_type < 0){
+        throw runtime_error("ERROR: H5Dget_type() failed.");
+    }
+    H5T_str_t str_pad = H5Tget_strpad(h5_type);
+    if(str_pad < 0) {
+        throw runtime_error("ERROR: H5Tget_strpad() failed.");
+    }
+    return get_str_pad_type(str_pad);
+}
+
+
+static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
+    if(da->type() != dods_array_c || da->var()->type() != dods_str_c)
+        return;
+}
+
+/**
+ *
+ * @param dataset_id
+ * @param btp
+ */
+void add_fixed_length_string_array_state(const hid_t dataset_id, BaseType *btp){
+
+    hid_t h5_type = H5Dget_type(dataset_id);
+    if (H5Tis_variable_str(h5_type) > 0 ){
+        cout << "# The dataset '" << btp->name() << "' is a variable length string array, skipping..." << endl;
+        return;
+    }
+
+    Type dap_type = btp->type();
+    if (dap_type == dods_array_c) {
+        cout << "# Dataset " << btp->name() << " is an Array." << endl;
+        auto array = dynamic_cast<DmrppArray *>(btp);
+        auto data_type = array->var()->type();
+
+        if(data_type == libdap::dods_str_c){
+            cout << "# The array template variable has type libdap::dods_str_c" << endl;
+            H5T_str_t str_pad = H5Tget_strpad(h5_type);
+            if(str_pad < 0){
+                throw runtime_error("ERROR: H5Tget_strpad() failed");
+            }
+            auto pad_type = get_pad_type(str_pad);
+            cout << "# pad_type:  " << pad_type << endl;
+            array->set_fixed_length_string_pad(pad_type);
+
+            auto type_size = H5Tget_size(h5_type);
+            cout << "# type_size:  " << type_size << endl;
+            array->set_fixed_string_length(type_size);
+        }
+    }
+}
+
+
+
+/**
+ *
+ * @param dataset
+ * @param btp
+ */
+static void add_string_array_info(const hid_t dataset, BaseType *btp){
+
+    Type dap_type = btp->type();
+    if(dap_type != dods_array_c){
+        // NOT AN ARRAY SKIPPING...
+        VERBOSE( cerr << "# Variable " << btp->name() << " is not a DAP Array. Skipping..." << endl);
+        return;
+    }
+
+    auto h5_dataset_type = H5Dget_type(dataset);
+    if(h5_dataset_type == H5I_INVALID_HID){
+        throw runtime_error("ERROR: H5Dget_type() failed for '" + btp->name() + "'");
+    }
+
+    auto h5_type_class = H5Tget_class(h5_dataset_type);
+    if(h5_type_class != H5T_STRING){
+        VERBOSE( cerr << "# H5Dataset " << btp->name() << " is not a String type (type: " << h5_type_class << "). Skipping..." << endl);
+        return;
+    }
+
+    hid_t dspace = H5Dget_space(dataset);
+    if (H5S_SCALAR == H5Sget_simple_extent_type(dspace)){
+        VERBOSE( cerr << "# H5Dataset " << btp->name() << " is a scalar type. Skipping..." << endl);
+        return;
+    }
+
+    auto dap_array = dynamic_cast<DmrppArray *>(btp);
+    if (dap_array->var()->type() == dods_str_c) {
+        if (H5Tis_variable_str(h5_dataset_type) > 0) {
+            VERBOSE( cerr << "# Found variable length string array: " << dap_array->name() << endl);
+            add_vlen_str_array_info( dataset, dap_array);
+        }
+        else {
+            VERBOSE( cerr << "# Found fixed length string array: " << dap_array->name() << endl);
+            add_fixed_length_string_array_state( dataset,  dap_array);
+        }
+    }
+}
+
+
+
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
  *
@@ -344,6 +469,14 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
  
     std::string byteOrder;
     H5T_order_t byte_order;
+
+    string type_name = btp->type_name();
+    Type dap_type = btp->type();
+    if (dap_type == dods_array_c) {
+        auto array = dynamic_cast<DmrppArray *>(btp);
+        type_name = array->var()->type_name();
+    }
+    VERBOSE(cerr << "# Processing dataset/variable: " << type_name << " " << btp->name() << endl);
 
     // Added support for HDF5 Fill Value. jhrg 4/22/22
     bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
@@ -385,14 +518,14 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
         switch (layout_type) {
 
             case H5D_CONTIGUOUS: { /* Contiguous storage */
-                VERBOSE(cerr << "Storage:   contiguous" << endl);
+                VERBOSE(cerr << "# Storage:   contiguous" << endl);
 
                 haddr_t cont_addr = H5Dget_offset(dataset);
                 hsize_t cont_size = H5Dget_storage_size(dataset);
 
-                VERBOSE(cerr << "     Addr: " << cont_addr << endl);
-                VERBOSE(cerr << "     Size: " << cont_size << endl);
-                VERBOSE(cerr << "byteOrder: " << byteOrder << endl);
+                VERBOSE(cerr << "#      Addr: " << cont_addr << endl);
+                VERBOSE(cerr << "#      Size: " << cont_size << endl);
+                VERBOSE(cerr << "# byteOrder: " << byteOrder << endl);
 
                 if (cont_size > 0 && dc) {
                     dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
@@ -406,8 +539,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                     throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
                 }
 
-                VERBOSE(cerr << "Storage:   chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is: " << num_chunks << endl);
+                VERBOSE(cerr << "# Storage: chunked." << endl);
+                VERBOSE(cerr << "# Number of chunks is: " << num_chunks << endl);
 
                 if (dc)
                     set_filter_information(dataset, dc);
@@ -434,7 +567,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                         throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
                     }
 
-                    VERBOSE(cerr << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
+                    VERBOSE(cerr << "# chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
                     if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
                 }
 
@@ -442,10 +575,10 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             }
 
             case H5D_COMPACT: { /* Compact storage */
-                VERBOSE(cerr << "Storage: compact" << endl);
+                VERBOSE(cerr << "# Storage: compact" << endl);
 
                 size_t comp_size = H5Dget_storage_size(dataset);
-                VERBOSE(cerr << "   Size: " << comp_size << endl);
+                VERBOSE(cerr << "#    Size: " << comp_size << endl);
 
                 if (comp_size == 0) {
                     throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
@@ -455,14 +588,19 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
 
                 Type dap_type = btp->type();
 
-                if (dap_type == dods_url_c || dap_type == dods_structure_c 
-                   || dap_type == dods_sequence_c || dap_type == dods_grid_c)
-                    throw BESInternalError("Only Array, string and numeric datatypes are supported for the compact storage.", __FILE__, __LINE__);
+                if (dap_type == dods_url_c 
+                    || dap_type == dods_structure_c 
+                    || dap_type == dods_sequence_c 
+                    || dap_type == dods_grid_c) {
+                    throw BESInternalError(
+                            "Only Array, string and numeric datatypes are supported for the compact storage.", __FILE__,
+                            __LINE__);
+                }
                 else {
                     dc->set_compact(true);
                     // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
                     // We know the length is 1 for a scalar string.
-                    size_t memRequired = 0;
+                    unsigned long long memRequired = 0;
                     if (dap_type == dods_str_c) 
                         memRequired = dsize;
                     else 
@@ -500,7 +638,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                             }
                             case dods_str_c: {
                                 if (H5Tis_variable_str(dtypeid) > 0) {
-                                    vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                    vector<string> finstrval;   // passed by reference to read_vlen_string
+                                    finstrval.push_back("");
                                     read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                     array->set_value(finstrval, (int)finstrval.size());
                                     array->set_read_p(true);
@@ -518,9 +657,14 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                                     values.resize(memRequired);
                                     get_data(dataset, reinterpret_cast<void *>(values.data()));
                                     string str(values.begin(), values.end());
-                                    vector<string> strings = {str};
+                                    vector<string> strings;
+                                    strings.push_back("");
                                     array->set_value(strings, (int)strings.size());
                                     array->set_read_p(true);
+
+
+
+
                                 }
                                 break;
                             }
@@ -555,7 +699,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
  
                                 auto str = dynamic_cast<libdap::Str*>(btp);
                                 if (H5Tis_variable_str(dtypeid) > 0) {
-                                    vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                    vector<string> finstrval;   // passed by reference to read_vlen_string
+                                    finstrval.push_back("");
                                     read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                     string vlstr=finstrval[0];
                                     str->set_value(vlstr);
@@ -595,6 +740,28 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     H5Dclose(dataset);
 }
 
+
+string get_type_decl(BaseType *btp){
+    stringstream type_decl;
+    if(btp->type() == libdap::dods_array_c){
+        auto array = dynamic_cast<DmrppArray *>(btp);
+        type_decl << array->var()->type_name() << " " << btp->FQN();
+        for(auto dim_itr = array->dim_begin(); dim_itr!=array->dim_end(); dim_itr++){
+            auto dim = *dim_itr;
+            type_decl << "[";
+            if(!dim.name.empty()){
+                type_decl << dim.name << "=";
+            }
+            type_decl << dim.size << "]";
+        }
+    }
+    else {
+        type_decl << btp->type_name() << " " << btp->FQN();
+    }
+    return type_decl.str();
+}
+
+
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
  *
@@ -604,12 +771,13 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
  */
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     // variables in the group
-    for (auto v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
+    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
-        D4Attributes *d4_attrs = (*v)->attributes();
+        D4Attributes *d4_attrs = (*btp)->attributes();
         if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + (*v)->name() + " but did not.",
+            throw BESInternalError("Expected to find an attribute table for " + (*btp)->name() + " but did not.",
                                    __FILE__, __LINE__);
 
         // Look for the full name path for this variable
@@ -629,8 +797,9 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
             else
-                FQN = (*v)->FQN();
-            BESDEBUG("dmrpp", "Working on: " << FQN << endl);
+                FQN = (*btp)->FQN();
+
+            VERBOSE(cerr << "# Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
             if (dataset < 0)
                 throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
@@ -644,19 +813,24 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // doesn't exist in the file _if_ there's no 'fullnamepath' because
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = (*v)->FQN();
-            BESDEBUG("dmrpp", "Working on: " << FQN << endl);
+            string FQN = (*btp)->FQN();
+            VERBOSE(cerr << "# Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
             if (dataset < 0)
                 continue;
         }
 
-        get_variable_chunk_info(dataset, *v);
+        VERBOSE(cerr << "# Building chunks for: " << get_type_decl(*btp) << endl);
+        get_variable_chunk_info(dataset, *btp);
+
+        VERBOSE(cerr << "# Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
+        add_string_array_info(dataset, *btp);
     }
 
     // all groups in the group
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g)
+    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
         get_chunks_for_all_variables(file, *g);
+    }
 }
 
 /**

@@ -1,5 +1,5 @@
 
-BUILD_FLAGS = -L$(prefix)/deps/lib -lhdf5 -I$(prefix)/deps/include
+BUILD_FLAGS = -L$(prefix)/deps/lib -lhdf5 -I$(prefix)/deps/include --std=c++11
 
 progs = h5_obj_addr_info \
 		obtain_vlstr_addr \

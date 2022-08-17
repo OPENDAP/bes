@@ -40,11 +40,20 @@ bool debug = false;
 
 bool is_str_type(hid_t);
 int obtain_str_info_data(hid_t,hid_t, int);
-int read_str_data(hid_t,vector<string>&strdata);
-int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
+void trim_fix_len_str_data(hid_t,vector<string>&strdata);
+int read_vlen_str(hid_t dset, unsigned long long nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
 int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
 string get_object_name(hid_t root_id, int dset_index);
-int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar);
+void increment_index(const vector<hsize_t> &shape, vector<unsigned long> &str_index);
+
+void read_fixed_length_str(
+        hid_t dset_id,
+        const vector<hsize_t> &shape,
+        hid_t dtype,
+        hid_t dspace,
+        hid_t mspace,
+        bool is_scalar,
+        vector<string> &result);
 
 
 /**
@@ -201,6 +210,13 @@ string get_object_name(hid_t root_id, int dset_index)
     return object_name;
 }
 
+string shwindcs(const vector<unsigned long> &index){
+    stringstream ss;
+    for(auto dim_index: index){
+        ss << "[" << dim_index << "]";
+    }
+    return ss.str();
+}
 
 /**
  *
@@ -243,7 +259,7 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
         shape.resize(ndims);
         step.resize(ndims);
 
-        if (H5Sget_simple_extent_dims(dspace,shape.data(),NULL) < 0) {
+        if (H5Sget_simple_extent_dims(dspace,shape.data(),nullptr) < 0) {
             cerr<<"ERROR: Cannot obtain dataspace dimension info. "<<endl;
             return -1;
         }
@@ -262,12 +278,12 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
         // ask for all of the data in the array.
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET, 
                                offset.data(), step.data(),
-                                shape.data(), NULL) < 0) {
+                                shape.data(), nullptr) < 0) {
             cerr << "ERROR: Cannot select hyperslab  " << endl;
             return -1;
         } 
    
-        if ((mspace = H5Screate_simple(ndims, shape.data(),NULL)) < 0) {
+        if ((mspace = H5Screate_simple(ndims, shape.data(),nullptr)) < 0) {
             cerr <<"ERROR: Cannot create the memory space " << endl;
             return -1;
         }
@@ -287,10 +303,29 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
        //     cerr << "ERROR: read_fixed_str failed " << endl;
        //     return -1;
        // }
-        if (read_fixed_length_str(dset_id, shape, dtype_id, dspace, mspace, is_scalar) < 0) {
-            cerr << "ERROR: read_fixed_length_str failed." << endl;
-            return -1;
+       vector<string> results;
+       read_fixed_length_str(dset_id, shape, dtype_id, dspace, mspace, is_scalar, results);
+
+
+
+
+        auto num_dims = shape.size();
+        vector<unsigned long> str_index;
+        for(auto dim:shape){
+            str_index.push_back(0);
         }
+
+        auto index = shape.size();
+        for(auto dim:shape)
+
+        cout << HR3 << endl;
+        int i=0;
+        for(auto s:results){
+            // cout << "####     results[" << i++ << "]: '" << s << "'" << endl;
+            cout << "####     str_index" << shwindcs(str_index) << ": '" << s << "'" << endl;
+            increment_index(shape,str_index);
+        }
+        cout << HR3 << endl;
     }
 
     if (!is_scalar)
@@ -313,10 +348,10 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
  * @param is_scalar
  * @return
  */
-int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar) {
+int read_vlen_str(hid_t dset, unsigned long long nelms, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar) {
 
-    vector<string> finstrval;
-    finstrval.resize(nelms);
+    vector<string> all_the_strings;
+    all_the_strings.resize(nelms);
 
     size_t ty_size = H5Tget_size(dtype);
     vector <char> strval;
@@ -333,39 +368,77 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
     }
 
     // For scalar, nelms is 1.
-    char*temp_bp = strval.data();
-    char*onestring = NULL;
+    char *temp_bp = strval.data();
+    char *onestring = nullptr;
     for (int i =0;i<nelms;i++) {
         onestring = *(char**)temp_bp;
-        if(onestring!=NULL ) 
-            finstrval[i] =string(onestring);
-        else // We will add a NULL if onestring is NULL.
-            finstrval[i]="";
-        temp_bp +=ty_size;
+        if(onestring)
+            all_the_strings.push_back(string(onestring));
+        else {
+            // We will add a NULL if onestring is NULL.
+
+            // all_the_strings[i]=""; // Original way
+
+            // I don't think that this evaluates to a NULL
+            // I think "" is an empty string, and the value of
+            // all_the_strings[i] is a string that has no characters, not a NULL.
+
+            all_the_strings.push_back(""); // add an empty string
+        }
+
+        temp_bp += ty_size;
     }
 
-    if (false == strval.empty()) {
+    if (!strval.empty()) {
         herr_t ret_vlen_claim;
-        if (true == is_scalar) 
-            ret_vlen_claim = H5Dvlen_reclaim(dtype,dspace,H5P_DEFAULT,(void*)strval.data());
-        else 
-            ret_vlen_claim = H5Dvlen_reclaim(dtype,mspace,H5P_DEFAULT,(void*)strval.data());
+        if (is_scalar) {
+            ret_vlen_claim = H5Dvlen_reclaim(dtype, dspace, H5P_DEFAULT, (void *) strval.data());
+        }
+        else {
+            ret_vlen_claim = H5Dvlen_reclaim(dtype, mspace, H5P_DEFAULT, (void *) strval.data());
+        }
         if (ret_vlen_claim < 0){
-            cerr<<" H5Dvlen_reclaim failed " <<endl;
-            return -1;
+            throw runtime_error("ERROR: H5Dvlen_reclaim() failed.");
         }
     }
 
-    // String data 
+    // String data
+    // @TODO This makes me think that variable length strings may be padded? is that a thing?
     cout << "Variable-length string data: "<<endl;
-    if(read_str_data(dtype, finstrval) <0) {
-        cerr << "Cannot read the string data successfully "<<endl;
-        return -1;
-    }
+    trim_fix_len_str_data(dtype, all_the_strings);
  
     return 0;
 }
 
+
+string show_vec(const string &name, const vector<unsigned long> &vec ){
+    stringstream ss;
+    for(unsigned i=0; i< vec.size(); i++)
+        ss << "##    " << name << "[" << i << "]: " << vec[i];
+
+   return ss.str();
+}
+
+
+void increment_index(const vector<unsigned long long> &shape, vector<unsigned long> &str_index)
+{
+    if(shape.size()==0 || shape.size() != str_index.size()){
+        throw runtime_error("Rank of 'shape' and rank of 'index' do not match.");
+    }
+    bool done = false;
+    auto dim_index = str_index.size()-1;
+
+    while(!done || dim_index>0){
+        auto next_i = (str_index[dim_index] + 1) % shape[dim_index];
+        str_index[dim_index] = next_i;
+        if(next_i == 0){
+            dim_index--;
+        }
+        else {
+            done = true;
+        }
+    }
+}
 
 /**
  * @brief Reads an Array of fixed lengths strings.
@@ -379,7 +452,14 @@ int read_vlen_str(hid_t dset, int nelms, hid_t dtype, hid_t dspace, hid_t mspace
  * dataset's data differently.
  * @return
  */
-int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape, hid_t dtype, hid_t dspace, hid_t mspace, bool is_scalar)
+void read_fixed_length_str(
+        hid_t dset_id,
+        const vector<hsize_t> &shape,
+        hid_t dtype,
+        hid_t dspace,
+        hid_t mspace,
+        bool is_scalar,
+        vector<string> &result)
 {
     cout << HR3 << endl << "# BEGIN: read_fixed_length_str()" <<  endl;
     cout << "# shape.size():  " << shape.size() << endl;
@@ -387,32 +467,24 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
     size_t type_size = H5Tget_size(dtype);
     cout << "# type_size:  " << type_size << endl;
 
-    // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    // I guessed this. Looking at the shape[] handed back by H5Sget_simple_extent_dims()
-    // There is always an extra dimension and the size of that dimension seems to be
-    // a reasonable candidate for the size of the fixed length strings in the array. - ndp 08/09/22
-    size_t fixed_str_length = shape.back();
-    cout << "# fixed_str_length: " << fixed_str_length  << endl;
-    // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-
     unsigned long long total_str_count=1;
-    for(unsigned int index=0; index < (shape.size()-1) ;index++){
-        total_str_count *= shape[index];
+    for(auto dim_size: shape){
+        total_str_count *= dim_size;
     }
     cout << "# total_str_count: " << total_str_count  << endl;
 
-    unsigned long long total_size = total_str_count * fixed_str_length * type_size;
-    cout << "# total_size: " << total_size  << " bytes" << endl;
+    unsigned long long total_size_bytes = total_str_count * type_size;
+    cout << "# total_size_bytes: " << total_size_bytes  << " bytes" << endl;
 
     vector <char> data;
-    data.resize(total_size);
+    data.resize(total_size_bytes);
     hid_t read_ret;
     if (is_scalar) {
         cout << "# The object is a scalar."  << endl;
         read_ret = H5Dread(dset_id, dtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void *) data.data());
         string scalar_value(data.begin(),data.end());
         cout << "# scalar_value: '" << scalar_value << "'" << endl;
-        return 0;
+        return;
     }
     else {
         // I think this call gets all the data in the array object and puts it into the vector<char> data.
@@ -421,10 +493,19 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
     }
 
     if (read_ret < 0) {
-        cerr << "ERROR: H5Dread failed " << endl;
-        return -1;
+        throw runtime_error("ERROR: H5Dread() failed.");
     }
 
+    for (unsigned long long current_str_index = 0; current_str_index < total_str_count; current_str_index++) {
+        string current_str(&(data[type_size * current_str_index]), type_size);
+        result.push_back(current_str);
+        // cout << "# result[" << result.size()-1 << "]: '" << result.back() << "'"  << endl;
+    }
+    cout << "# Trimming pad from fixed-size string data: "<<endl;
+    trim_fix_len_str_data(dtype, result);
+
+
+#if 0
     switch( shape.size()) {
         case 2:
         {
@@ -463,11 +544,12 @@ int read_fixed_length_str(hid_t dset_id, const vector<unsigned long long> &shape
         break;
 
     }
+#endif
+
     data.clear();
 
     cout << "# END: read_fixed_length_str()" << endl << HR3 << endl << "#" << endl;
 
-    return 0;
 }
 
 /**
@@ -531,10 +613,7 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
 
     // String data 
     cout << "# Fixed-size string data: "<<endl;
-    if (read_str_data(dtype, strdata) <0)  {
-        cerr << "Cannot read the string data successfully "<<endl;
-        return -1;
-    }
+    trim_fix_len_str_data(dtype, strdata);
 
     cout << "# strdata.size(): " << strdata.size() <<endl;
     i=0;
@@ -552,13 +631,13 @@ int read_fixed_str(hid_t dset_id, int nelems, hid_t dtype, hid_t dspace, hid_t m
  * @param pad_char
  * @return
  */
-int trim_string_padding(string &sdata, const char pad_char){
+void trim_string_padding(string &sdata, const char pad_char){
     // For space pad, we need to find the first non-space character
     // backward.
-    size_t pad_pos = string::npos;
+    size_t pad_pos;
     if (pad_char == ' ') {
         size_t last_not_pad_pos = sdata.find_last_not_of(pad_char);
-        if(last_not_pad_pos==string::npos) {
+        if( last_not_pad_pos == string::npos) {
             pad_pos = 0;
         }
         else {
@@ -566,22 +645,27 @@ int trim_string_padding(string &sdata, const char pad_char){
         }
     }
     else {
+        cout << "# Checking pad_pos..." << endl;
         pad_pos = sdata.find(pad_char);
     }
 
     if (pad_pos == string::npos) {
-        // I elided this error state return because I think it's a bug
-        // Basically if the fixed length string is full of valid string chars then
-        // there are no pad chars, and that's legit. - ndp
+        cout << "# pad_pos is string::npos" << endl;
+        // @TODO Review: I elided this error state return because I think it's a bug
+        //   Basically if the fixed length string is full of valid string chars then
+        //   there are no pad chars, and the resulting return value from find() would
+        //   be string::npos and that's a legitimate state of affairs. - ndp
+        //
         // cerr << "#  WaRNing:  String pad is not found. \n";
         // return -1;
     }
-
+    else {
+        cout << "# pad_pos: " << pad_pos << endl;
+    }
     if (pad_pos != 0) {
         sdata = sdata.substr(0, pad_pos);
     }
-
-    return 0;
+    
 }
 
 /**
@@ -590,7 +674,8 @@ int trim_string_padding(string &sdata, const char pad_char){
  * @param strdata
  * @return
  */
-int read_str_data(hid_t dtype, vector<string> & strdata) {
+void trim_fix_len_str_data(hid_t dtype, vector<string> &strdata) {
+
 
     // PAD will be removed in the trimmed output.
     // vector <string>trimmed_strdata;
@@ -602,19 +687,23 @@ int read_str_data(hid_t dtype, vector<string> & strdata) {
     // H5T_STR_SPACEPAD: 2
    
     H5T_str_t str_pad = H5Tget_strpad(dtype);
-    char pad_char = '\0'; // I think this can just be 0 instead of '\0' - ndp
-    if (str_pad == H5T_STR_SPACEPAD) 
-        pad_char = ' ';
-    else if (str_pad != H5T_STR_NULLTERM && str_pad != H5T_STR_NULLPAD) {
-        cerr<< "h5tget_strpad failed" <<endl;
-        return -1;
+    char pad_char;
+    switch(str_pad){
+        case H5T_STR_SPACEPAD:
+            pad_char = ' ';
+            break;
+            
+        case H5T_STR_NULLTERM:
+        case H5T_STR_NULLPAD:
+            pad_char = '\0'; // @TODO I think this can just be 0 instead of '\0' - ndp
+            break;
+            
+        default:
+            cerr << "ERROR: h5tget_strpad failed" <<endl;
+            throw runtime_error("ERROR: h5tget_strpad() failed.");
     }
 
-    int retval;
-    for(string &sdata:strdata){
-        retval = trim_string_padding(sdata,pad_char);
-        if(retval!=0)
-            return retval;
+    for(auto &sdata:strdata){
+        trim_string_padding(sdata,pad_char);
     }
-    return 0;
 }

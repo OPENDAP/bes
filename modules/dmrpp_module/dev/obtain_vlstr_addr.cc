@@ -93,17 +93,17 @@ int main(int argc, char *argv[]) {
 
     // Not checking errors, the wrong offset and size, errors will occur afterwards.
     char *t_ptr;
-    unsigned long long d_offset = strtoul(argv[2],&t_ptr,10);
-    unsigned long long d_size = strtoul(argv[3],&t_ptr,10);
+    long d_offset = strtol(argv[2],&t_ptr,10);
+    long d_size = strtol(argv[3],&t_ptr,10);
     
     FILE *fp;
-    int elems_size = VLS_TSIZE;
+    unsigned long long elems_size = VLS_TSIZE;
 
     // VL string size is 16 bytes, obtain this from HDF5 APIs
     // Add somewhere: use HDF5 API to obtain vlstr type size 
     // and check if the type size is 16.
-    int t_nelems = d_size/elems_size;
-    int numofread = 0;
+    auto t_nelems = d_size/elems_size;
+    unsigned long long  numofread = 0;
     
     vector<char> vls_dinfo_buf;
     vls_dinfo_buf.resize(t_nelems*elems_size);
@@ -112,10 +112,11 @@ int main(int argc, char *argv[]) {
     vls_dinfo.resize(t_nelems);
 
     // dataset offset comes from the HDF5 APIs.
-    if((fp= fopen(argv[1],"rb"))==NULL) {
+    if((fp= fopen(argv[1],"rb"))==nullptr) {
         printf("Error, Can't open file.");
         return -1;
     }
+
 
     if (fseek(fp,d_offset,SEEK_SET) !=0) {
        cout <<" fseek fails for the dataset offset "<<endl;
@@ -124,7 +125,7 @@ int main(int argc, char *argv[]) {
     }
 
     numofread = fread(&vls_dinfo[0],elems_size,t_nelems,fp);
-    printf("numofread %d\n",numofread);
+    printf("numofread %llu\n",numofread);
 
     if(numofread != t_nelems) {
        cout <<" fread fails to read the data  "<<endl;
@@ -137,12 +138,12 @@ int main(int argc, char *argv[]) {
     
     memcpy((void*)&vls_sdinfo_buf[0],(void*)&vls_dinfo[0],t_nelems*elems_size);
 
-cout<<"vls_sdinfo_buf size is "<<vls_sdinfo_buf.size()<<endl;
+    cout<<"vls_sdinfo_buf size is "<<vls_sdinfo_buf.size()<<endl;
 
     uint64_t seq_addr = 0;
     uint32_t seq_len = 0,seq_index = 0;
     vector<heap_obj_info_t> obj_info;
-    uint8_t* tp = (uint8_t *)&vls_sdinfo_buf[0];
+    auto *tp = (uint8_t *)&vls_sdinfo_buf[0];
     uint64_t tmp = 0;
 
     // Loop through all elements and decode 
