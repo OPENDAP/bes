@@ -86,8 +86,11 @@ private:
     std::string d_vlen_string_addrs;
 
 
+    bool is_variable_length_string_array;
+
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null | space" />
+    bool is_fixed_length_string_array;
     unsigned long long d_fixed_str_length;
     string_pad_type d_fixed_length_string_pad_type;
 
@@ -144,6 +147,8 @@ public:
     DmrppArray(const std::string &n, libdap::BaseType *v) :
             libdap::Array(n, v, true /*is dap4*/),
             DmrppCommon(),
+            is_variable_length_string_array(false),
+            is_fixed_length_string_array(false),
             d_fixed_str_length(0),
             d_fixed_length_string_pad_type(not_set)
             { }
@@ -151,6 +156,8 @@ public:
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
             libdap::Array(n, d, v, true),
             DmrppCommon(),
+            is_variable_length_string_array(false),
+            is_fixed_length_string_array(false),
             d_fixed_str_length(0),
             d_fixed_length_string_pad_type(not_set)
             { }
@@ -158,6 +165,8 @@ public:
     DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
             libdap::Array(n, v, true),
             DmrppCommon(dmz),
+            is_variable_length_string_array(false),
+            is_fixed_length_string_array(false),
             d_fixed_str_length(0),
             d_fixed_length_string_pad_type(not_set)
             { }
@@ -165,6 +174,8 @@ public:
     DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
             libdap::Array(n, d, v, true),
             DmrppCommon(dmz),
+            is_variable_length_string_array(false),
+            is_fixed_length_string_array(false),
             d_fixed_str_length(0),
             d_fixed_length_string_pad_type(not_set)
             { }
@@ -188,8 +199,6 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    bool is_variable_length_string_array;
-    bool is_fixed_length_string_array;
     /**
      * @brief Marks the array as a Fixed length string array, or not, depending on state
      * @param state
@@ -203,8 +212,8 @@ public:
         is_variable_length_string_array=state;
         is_fixed_length_string_array=!state;
     };
-    bool is_flsa(){ return is_fixed_length_string_array; }
-    bool is_vlsa(){ return is_variable_length_string_array; }
+    bool is_flsa() const{ return is_fixed_length_string_array; }
+    bool is_vlsa() const{ return is_variable_length_string_array; }
 
     void set_fixed_string_length(unsigned long long length){ d_fixed_str_length = length; }
 

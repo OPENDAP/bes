@@ -760,6 +760,7 @@ string get_type_decl(BaseType *btp){
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     // variables in the group
     for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+        VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
 
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
@@ -789,8 +790,9 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0)
+            if (dataset < 0) {
                 throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            }
 
         } else {
             // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
@@ -804,8 +806,10 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             string FQN = (*btp)->FQN();
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0)
-                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            if (dataset < 0) {
+               VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
+                // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            }
         }
 
         try {
@@ -819,6 +823,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             H5Dclose(dataset);
             throw;
         }
+        H5Dclose(dataset);
     }
 
     // all groups in the group
