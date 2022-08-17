@@ -108,7 +108,7 @@ extract_stare_index_array(Array *var, vector<STARE_ArrayIndexSpatialValue> &valu
         throw BESSyntaxUserError("STARE server function passed an invalid Index array (" + var->name()
         + " is type: " + var->var()->type_name() + ").", __FILE__, __LINE__);
 
-    values.resize(var->size());
+    values.resize(var->length());
     var->value((dods_uint64*)values.data());    // Extract the values of 'var' to 'values'
 }
 
