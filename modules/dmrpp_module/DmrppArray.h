@@ -55,7 +55,7 @@ namespace dmrpp {
 
     class SuperChunk;
 
-enum flen_str_pad_type { null_term, null_pad, space_pad };
+enum string_pad_type { not_set, null_term, null_pad, space_pad };
 
 struct ons {
     unsigned long long offset;
@@ -88,8 +88,9 @@ private:
 
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null | space" />
-    unsigned long long d_flen_str_length;
-    flen_str_pad_type d_flen_str_pad_type;
+    unsigned long long d_fixed_str_length;
+    string_pad_type d_fixed_length_string_pad_type;
+
 
     bool is_projected();
 
@@ -140,16 +141,33 @@ private:
             const vector<unsigned long long> &constrained_array_shape);
 
 public:
-    DmrppArray(const std::string &n, libdap::BaseType *v) : libdap::Array(n, v, true /*is dap4*/), DmrppCommon() { }
+    DmrppArray(const std::string &n, libdap::BaseType *v) :
+            libdap::Array(n, v, true /*is dap4*/),
+            DmrppCommon(),
+            d_fixed_str_length(0),
+            d_fixed_length_string_pad_type(not_set)
+            { }
 
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
-            libdap::Array(n, d, v, true), DmrppCommon() { }
+            libdap::Array(n, d, v, true),
+            DmrppCommon(),
+            d_fixed_str_length(0),
+            d_fixed_length_string_pad_type(not_set)
+            { }
 
     DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, v, true), DmrppCommon(dmz) { }
+            libdap::Array(n, v, true),
+            DmrppCommon(dmz),
+            d_fixed_str_length(0),
+            d_fixed_length_string_pad_type(not_set)
+            { }
 
     DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, d, v, true), DmrppCommon(dmz) { }
+            libdap::Array(n, d, v, true),
+            DmrppCommon(dmz),
+            d_fixed_str_length(0),
+            d_fixed_length_string_pad_type(not_set)
+            { }
 
     DmrppArray(const DmrppArray &) = default;
 
@@ -170,13 +188,31 @@ public:
 
     virtual void dump(ostream &strm) const;
 
-    void set_fixed_string_length(unsigned long long length){ d_flen_str_length = length; }
+    bool is_variable_length_string_array;
+    bool is_fixed_length_string_array;
+    /**
+     * @brief Marks the array as a Fixed length string array, or not, depending on state
+     * @param state
+     */
+    void set_is_flsa(bool state){
+        is_fixed_length_string_array=state;
+        is_variable_length_string_array=!state;
+    };
 
-    unsigned long long get_fixed_string_length(){ return d_flen_str_length; }
+    void set_is_vlsa(bool state){
+        is_variable_length_string_array=state;
+        is_fixed_length_string_array=!state;
+    };
+    bool is_flsa(){ return is_fixed_length_string_array; }
+    bool is_vlsa(){ return is_variable_length_string_array; }
 
-    void set_fixed_length_string_pad(const flen_str_pad_type pad){ d_flen_str_pad_type = pad; }
+    void set_fixed_string_length(unsigned long long length){ d_fixed_str_length = length; }
 
-    flen_str_pad_type get_fixed_length_string_pad(){ return d_flen_str_pad_type; }
+    unsigned long long get_fixed_string_length(){ return d_fixed_str_length; }
+
+    void set_fixed_length_string_pad(const string_pad_type pad){ d_fixed_length_string_pad_type = pad; }
+
+    string_pad_type get_fixed_length_string_pad(){ return d_fixed_length_string_pad_type; }
 
     void mk_vlen_str_addrs(const std::string &ons_str, vector<ons> &vlen_str_addrs);
 

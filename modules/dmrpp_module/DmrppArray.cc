@@ -1803,6 +1803,54 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                 throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
         }
     }
+    if(var()->type() == dods_str_c){
+        if(is_flsa()){
+            // <dmrpp:fStringArray string_length="##" pad="null | space" />
+
+            string element_name("dmrpp:FixedLengthStringArray");
+            string str_len_attr_name("string_length");
+            string pad_attr_name("pad");
+
+            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
+
+            stringstream strlen_str;
+            strlen_str << d_fixed_str_length;
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(), (const xmlChar *) strlen_str.str().c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
+
+            string pad_str;
+            if(d_fixed_length_string_pad_type==null_term || d_fixed_length_string_pad_type==null_pad){
+                pad_str = "null";
+            }
+            else if ( d_fixed_length_string_pad_type == space_pad){
+                pad_str = "space";
+            }
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad", (const xmlChar *) pad_str.c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
+
+
+            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+        }
+        else if(is_vlsa()){
+            string element_name("dmrpp:VariableLengthStringArray");
+            if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
+
+            if (xmlTextWriterWriteString(xml.get_writer(), (const xmlChar *) "offset[0]:size[0],...,offset[n]:size[n]") < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not write text into element");
+
+            if (xmlTextWriterEndElement(xml.get_writer()) < 0)
+                throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
+
+        }
+        else {
+            throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
+                                                  "contain variable length strings or fixed length strings.");
+        }
+    }
+
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }
