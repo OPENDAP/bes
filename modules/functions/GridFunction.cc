@@ -304,14 +304,6 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     dapResult->read();
 
     return dapResult;
-
-    //l_array->set_send_p(true);
-    //l_array->read();
-
-    //return l_array;
-
-    //throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
-    //return 0; //response.release();
 }
 
 /**
