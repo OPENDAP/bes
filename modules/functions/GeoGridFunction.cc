@@ -30,10 +30,16 @@
 #include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/D4RValue.h>
+#include <libdap/D4Maps.h>
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
+#include <libdap/DMR.h>
 #include <libdap/debug.h>
 #include <libdap/util.h>
+
+#include <BESDebug.h>
 
 #include "GeoGridFunction.h"
 #include "GridGeoConstraint.h"
@@ -43,6 +49,11 @@
 using namespace libdap;
 
 namespace functions {
+
+    string geogrid_info =
+            string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
+            "<function name=\"geogrid\" version=\"1.2\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#geogrid\">\n"+
+            "</function>";
 
 /** The geogrid function returns the part of a Grid that includes a
  geographically specified rectangle. The arguments to the function are the
@@ -79,16 +90,11 @@ namespace functions {
 
  @return The constrained and read Grid, ready to be sent. */
 void
-function_geogrid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
+function_dap2_geogrid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 {
-    string info =
-    string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n") +
-    "<function name=\"geogrid\" version=\"1.2\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#geogrid\">\n"+
-    "</function>";
-
     if (argc == 0) {
         Str *response = new Str("version");
-        response->set_value(info);
+        response->set_value(geogrid_info);
         *btpp = response;
         return ;
     }
@@ -200,7 +206,6 @@ function_geogrid(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     }
 }
 
-
 /**
  * The passed DDS parameter dds is evaluated to see if it contains Grid objects whose semantics allow them
  * to be operated on by function_geogrid()
@@ -212,24 +217,182 @@ bool GeoGridFunction::canOperateOn(DDS &dds)
     bool usable = false;
 
     // Go find all the Grid variables.
-	//vector<Grid *> *grids = new vector<Grid *>();
-	vector<Grid*> grids;
-	get_grids(dds, &grids);
+    //vector<Grid *> *grids = new vector<Grid *>();
+    vector<Grid*> grids;
+    get_grids(dds, &grids);
 
-	// Were there any?
+    // Were there any?
     if(!grids.empty()){
-    	// Apparently so...
+        // Apparently so...
 
-    	// See if any one of them looks like suitable GeoGrid
-    	vector<Grid *>::iterator git;
-    	for(git=grids.begin(); !usable && git!=grids.end() ; git++){
-    		Grid *grid = *git;
-    		usable = is_geo_grid(grid);
-    	}
+        // See if any one of them looks like suitable GeoGrid
+        vector<Grid *>::iterator git;
+        for(git=grids.begin(); !usable && git!=grids.end() ; git++){
+            Grid *grid = *git;
+            usable = is_geo_grid(grid);
+        }
     }
     //delete grids;
 
-	return usable;
+    return usable;
+}
+
+BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
+{
+    BESDEBUG("function", "function_dap4_geogrid()  BEGIN " << endl);
+
+    // There are two main forms of this function, one that takes a Grid and one
+    // that takes a Grid and two Arrays. The latter provides a way to explicitly
+    // tell the function which maps contain lat and lon data. The remaining
+    // arguments are the same for both versions, although that includes a
+    // varying argument list.
+
+    // Look at the types of the first three arguments to determine which of the
+    // two forms were used to call this function.
+    // Both forms require at least this many (5) args
+
+    // DAP4 function porting information: in place of 'argc' use 'args.size()'
+    if (args == 0 || args->size() < 5) {
+        Str *response = new Str("info");
+        response->set_value(geogrid_info);
+        // DAP4 function porting: return a BaseType* instead of using the value-result parameter
+        return response;
+    }
+
+
+    BaseType *a_btp = args->get_rvalue(0)->value(dmr);
+    Array *original_array = dynamic_cast < Array * >(a_btp);
+    if (!original_array) {
+        delete a_btp;
+        throw Error(malformed_expr,"The first argument to geogrid() must be a Dap4 array variable!");
+        //throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
+    }
+
+    // Duplicate the array; ResponseBuilder::send_data() will delete the variable
+    // after serializing it.
+    BaseType *btp = original_array->ptr_duplicate();
+    Array *l_array = dynamic_cast < Array * >(btp);
+    if (!l_array) {
+        delete btp;
+        throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
+    }
+
+    DBG(cerr << "array: past initialization code" << endl);
+
+    bool grid_lat_lon_form = false;
+
+    BaseType *lat_btp = args->get_rvalue(1)->value(dmr);
+    Array *l_lat = dynamic_cast < Array * >(lat_btp);
+    BaseType *lon_btp = args->get_rvalue(2)->value(dmr);
+    Array *l_lon = dynamic_cast < Array * >(lon_btp);
+
+    if (!l_lat) {
+        throw Error(malformed_expr,
+                    "When using the Grid, Lat, Lon form of geogrid() both the lat and lon maps must be given (lat map missing)!");
+    }
+    else if ( !l_lon ) {
+        throw Error(malformed_expr,
+                    "When using the Grid, Lat, Lon form of geogrid() both the lat and lon maps must be given (lon map missing)!");
+    }
+    else {
+        grid_lat_lon_form = true;
+
+        if (args->size() < 7) {
+            throw Error(malformed_expr,
+                        "Wrong number of arguments to geogrid() (expected at least 7 args). See geogrid() for more information.");
+        }
+    }
+
+    // Read the maps. Do this before calling parse_gse_expression(). Avoid
+    // reading the array until the constraints have been applied because it
+    // might be really large.
+    //
+
+    BESDEBUG("functions", "original_array: read_p: " << original_array->read_p() << endl);
+    BESDEBUG("functions", "l_array: read_p: " << l_array->read_p() << endl);
+
+    // Basic plan: For each map, set the send_p flag and read the map
+    D4Maps *d4_maps = l_array->maps();
+    D4Maps::D4MapsIter miter = d4_maps->map_begin();
+    while (miter != d4_maps->map_end()) {
+        D4Map *d4_map = (*miter);
+        Array *map = const_cast<Array *>(d4_map->array());
+        map->set_send_p(true);
+        map->read();
+        ++miter;
+    }
+
+    DBG(cerr << "array: past map read" << endl);
+
+    // argv[1..n] holds strings; each are little expressions to be parsed.
+    // When each expression is parsed, the parser makes a new instance of
+    // GSEClause. GSEClause checks to make sure the named map really exists
+    // in the Grid and that the range of values given makes sense.
+    vector < GSEClause * > clauses;
+    gse_arg *arg = new gse_arg(l_array); // unique_ptr here
+    for (unsigned int i = 1; i < args->size(); ++i) {
+        string relop = extract_string_argument(args->get_rvalue(i)->value(dmr));
+        parse_gse_expression(arg, args->get_rvalue(i)->value(dmr));
+        clauses.push_back(arg->get_gsec());
+    }
+    delete arg;
+    arg = 0;
+
+    apply_grid_selection_expressions(l_array, clauses);
+
+    DBG(cerr << "array: past gse application" << endl);
+
+    /*try {
+        // Build a GeoConstraint object. If there are no longitude/latitude
+        // maps then this constructor throws Error.
+        GridGeoConstraint gc(l_grid);
+
+        // This sets the bounding box and modifies the maps to match the
+        // notation of the box (0/359 or -180/179)
+        int box_index_offset = (grid_lat_lon_form) ? 3 : 1;
+        double top = extract_double_value(argv[box_index_offset]);
+        double left = extract_double_value(argv[box_index_offset + 1]);
+        double bottom = extract_double_value(argv[box_index_offset + 2]);
+        double right = extract_double_value(argv[box_index_offset + 3]);
+        gc.set_bounding_box(top, left, bottom, right);
+        DBG(cerr << "geogrid: past bounding box set" << endl);
+
+        // This also reads all of the data into the grid variable
+        gc.apply_constraint_to_data();
+        DBG(cerr << "geogrid: past apply constraint" << endl);
+
+        // In this function the l_grid pointer is the same as the pointer returned
+        // by this call. The caller of the function must free the pointer.
+        *btpp = gc.get_constrained_grid();
+        return;
+    }
+    catch (Error &e) {
+        throw e;
+    }
+    catch (exception & e) {
+        throw
+                InternalErr(string
+                                    ("A C++ exception was thrown from inside geogrid(): ")
+                            + e.what());
+    }
+*/
+
+    throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
+    return 0; //response.release();
+}
+
+
+/**
+* The passed DMR parameter dmr is evaluated to see if it contains DAP4 Arrays that conform with DAP2 Grid objects.
+*
+* @param dmr The DMR to be evaluated.
+*/
+bool GeoGridFunction::canOperateOn(DMR &dmr)
+{
+    vector<Array *> coverages;
+    get_coverages(dmr, &coverages);
+
+    return !coverages.empty();
 }
 
 } // namesspace libdap
