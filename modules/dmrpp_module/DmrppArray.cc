@@ -1846,8 +1846,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
         }
         else {
-            throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
-                                                  "contain variable length strings or fixed length strings.");
+            //throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
+            //                                      "contain variable length strings or fixed length strings.");
         }
     }
 
