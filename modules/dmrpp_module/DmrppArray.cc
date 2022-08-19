@@ -1846,11 +1846,12 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
         }
         else {
+            // @TODO What do here? Throwing the excpetion broke things.
+            //   Apparently there are situations where neither vlsa or flsa are true?
             //throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
             //                                      "contain variable length strings or fixed length strings.");
         }
     }
-
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }

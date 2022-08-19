@@ -84,15 +84,13 @@ private:
     //         <v>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</v>
     //     </dmrpp:vStringArray
     std::string d_vlen_ons_str;
-
-
-    bool is_variable_length_string_array;
+    bool is_variable_length_string_array = false;
 
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null | space" />
-    bool is_fixed_length_string_array;
-    unsigned long long d_fixed_str_length;
-    string_pad_type d_fixed_length_string_pad_type;
+    bool is_fixed_length_string_array = false;
+    unsigned long long d_fixed_str_length = 0;
+    string_pad_type d_fixed_length_string_pad_type = not_set;
 
 
     bool is_projected();
@@ -145,39 +143,19 @@ private:
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v) :
-            libdap::Array(n, v, true /*is dap4*/),
-            DmrppCommon(),
-            is_variable_length_string_array(false),
-            is_fixed_length_string_array(false),
-            d_fixed_str_length(0),
-            d_fixed_length_string_pad_type(not_set)
+            libdap::Array(n, v, true /*is dap4*/), DmrppCommon()
             { }
 
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
-            libdap::Array(n, d, v, true),
-            DmrppCommon(),
-            is_variable_length_string_array(false),
-            is_fixed_length_string_array(false),
-            d_fixed_str_length(0),
-            d_fixed_length_string_pad_type(not_set)
+            libdap::Array(n, d, v, true), DmrppCommon()
             { }
 
     DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, v, true),
-            DmrppCommon(dmz),
-            is_variable_length_string_array(false),
-            is_fixed_length_string_array(false),
-            d_fixed_str_length(0),
-            d_fixed_length_string_pad_type(not_set)
+            libdap::Array(n, v, true), DmrppCommon(dmz)
             { }
 
     DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, d, v, true),
-            DmrppCommon(dmz),
-            is_variable_length_string_array(false),
-            is_fixed_length_string_array(false),
-            d_fixed_str_length(0),
-            d_fixed_length_string_pad_type(not_set)
+            libdap::Array(n, d, v, true), DmrppCommon(dmz)
             { }
 
     DmrppArray(const DmrppArray &) = default;
