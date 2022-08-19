@@ -323,16 +323,16 @@ public:
 
     bool re_match(BESRegex &r, const string &s)
     {
-        DBG(cerr << plog << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
+        DBG(cerr << plog << "s.size(): " << s.size() << endl);
+        int pos = r.match(s.c_str(), s.size());
         DBG(cerr << plog << "r.match(s): " << pos << endl);
-        return pos > 0 && static_cast<unsigned>(pos) == s.length();
+        return pos > 0 && static_cast<unsigned>(pos) == s.size();
     }
 
     bool re_match_binary(BESRegex &r, const string &s)
     {
-        DBG(cerr << plog << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
+        DBG(cerr << plog << "s.size(): " << s.size() << endl);
+        int pos = r.match(s.c_str(), s.size());
         DBG(cerr << plog << "r.match(s): " << pos << endl);
         return pos > 0;
     }
@@ -658,13 +658,13 @@ public:
                 // this will incrementally add thr string rep of values to 'oss'
                 (*i)->print_val(oss, "", false /*print declaration */);
                 DBG(
-                    cerr << plog << "response_value (" << oss.str().length() << " chars): " << endl << oss.str() << endl
+                    cerr << plog << "response_value (" << oss.str().size() << " chars): " << endl << oss.str() << endl
                         << endl);
                 ++i;
             }
 
             DBG(
-                cerr << plog << "baseline ( " << baseline.length() << " chars): " << endl
+                cerr << plog << "baseline ( " << baseline.size() << " chars): " << endl
                     << baseline << endl);
 
             CPPUNIT_ASSERT(baseline == oss.str());
@@ -818,7 +818,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: ResponseBuilderTest has the following tests:" << endl;
             const std::vector<Test*> &tests = ResponseBuilderTest::suite()->getTests();
-            unsigned int prefix_len = ResponseBuilderTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = ResponseBuilderTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

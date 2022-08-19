@@ -178,10 +178,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testAbstractObjectMetadataRepresentation() - FoDapCovJsonTransform::transform(false) SUCCESS. Deleting DDS..." << endl);
@@ -240,10 +240,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result:" << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testAbstractObjectDataRepresentation() - FoDapCovJsonTransform::transform(true) SUCCESS. Deleting DDS..." << endl);
@@ -315,10 +315,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintAxes() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintAxes() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintAxes() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintAxes() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintAxes() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintAxes() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintAxes() - FoDapCovJsonTransform::printAxes() SUCCESS. Deleting DDS..." << endl);
@@ -389,10 +389,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintReference() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintReference() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintReference() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintReference() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintReference() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintReference() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintReference() - FoDapCovJsonTransform::printReference() SUCCESS. Deleting DDS..." << endl);
@@ -475,10 +475,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintDomain() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintDomain() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintDomain() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintDomain() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintDomain() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintDomain() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintDomain() - FoDapCovJsonTransform::printDomain() SUCCESS. Deleting DDS..." << endl);
@@ -552,10 +552,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintParameters() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintParameters() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintParameters() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintParameters() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintParameters() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintParameters() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintParameters() - FoDapCovJsonTransform::printParameters() SUCCESS. Deleting DDS..." << endl);
@@ -621,10 +621,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintRanges() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintRanges() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintRanges() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintRanges() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintRanges() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintRanges() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintRanges() - FoDapCovJsonTransform::printRanges() SUCCESS. Deleting DDS..." << endl);
@@ -690,10 +690,10 @@ public:
             DBG(cerr << "FoCovJsonTest::testPrintCoverage() - result: " << endl << endl << result << endl);
             DBG(cerr << "FoCovJsonTest::testPrintCoverage() - baseline.compare(result): " << baseline.compare(result) << endl);
 
-            DBG(cerr << "FoCovJsonTest::testPrintCoverage() - baseline length: " << baseline.length() << endl);
-            DBG(cerr << "FoCovJsonTest::testPrintCoverage() - result length: " << result.length() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintCoverage() - baseline length: " << baseline.size() << endl);
+            DBG(cerr << "FoCovJsonTest::testPrintCoverage() - result length: " << result.size() << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(cerr << "FoCovJsonTest::testPrintCoverage() - FoDapCovJsonTransform::printCoverage() SUCCESS. Deleting DDS..." << endl);
@@ -962,7 +962,7 @@ int main(int argc, char*argv[])
         case 'h': {     // Help - show test names
             std::cerr << "Usage: FoCovJsonTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = focovjson::FoCovJsonTest::suite()->getTests();
-            size_t prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
+            size_t prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").size();
 #if 0
             for (auto i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;

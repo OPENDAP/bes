@@ -152,7 +152,7 @@ BESRegex::match(const char *s, int len, int pos) const
     auto target = string(s+pos, len-pos);
     bool found = regex_search(target, match, d_exp);
     if (found)
-        return (int)match.length();
+        return (int)match.size();
     else
         return -1;
 #endif
@@ -170,11 +170,11 @@ BESRegex::match(const string &s) const
     smatch match;
     bool found = regex_search(s, match, d_exp);
     if (found)
-        return (int)match.length();
+        return (int)match.size();
     else
         return -1;
 #else
-    return match(s.c_str(), s.length(), 0);
+    return match(s.c_str(), s.size(), 0);
 #endif
 }
 
@@ -232,7 +232,7 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
     // regex headers that enforce c++14 rules. jhrg 12/2/21
     auto target = string(s+pos, len-pos);
     bool found = regex_search(target, match, d_exp);
-    matchlen = (int)match.length();
+    matchlen = (int)match.size();
     if (found)
         return (int)match.position();
     else
@@ -252,14 +252,14 @@ BESRegex::search(const string &s, int& matchlen) const
 #if USE_CPP_11_REGEX
     smatch match;
     bool found = regex_search(s, match, d_exp);
-    matchlen = (int)match.length();
+    matchlen = (int)match.size();
     if (found)
         return (int)match.position();
     else
         return -1;
 #else
     // search(const char *s, int len, int& matchlen, int pos) const
-    return search(s.c_str(), s.length(), matchlen, 0);
+    return search(s.c_str(), s.size(), matchlen, 0);
 #endif
 }
 

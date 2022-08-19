@@ -400,7 +400,7 @@ public:
     /**
      * Checks name, reads data, checks # of read bytes.
      */
-    void read_var_check_name_and_length(DmrppArray *array, string name, int length)
+    void read_var_check_name_and_size(DmrppArray *array, string name, int length)
     {
         BESDEBUG("dmrpp", __func__ << "() - array->name(): " << array->name() << " expected_name: " << name << endl);
         CPPUNIT_ASSERT(array->name() == name);
@@ -409,8 +409,8 @@ public:
 
         // Read the data
         array->read();
-        BESDEBUG("dmrpp", __func__ << "() - array->length(): " << array->length() << " expected_length: " << length << endl);
-        CPPUNIT_ASSERT(array->length() == length);
+        BESDEBUG("dmrpp", __func__ << "() - array->size(): " << array->size() << " expected_length: " << length << endl);
+        CPPUNIT_ASSERT(array->size() == length);
     }
 
     /**
@@ -438,8 +438,8 @@ public:
         try {
             // Read the variable and transfer the data
             DmrppArray *var = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(var, variable_name, array_length);
-            vector<dods_float32> values(var->length());
+            read_var_check_name_and_size(var, variable_name, array_length);
+            vector<dods_float32> values(var->size());
             var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
@@ -507,11 +507,11 @@ public:
             BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
+            BESDEBUG("dmrpp", __func__ << "() - length: " << var->size() << endl);
 
             // Read the variable and transfer the data
-            read_var_check_name_and_length(var, variable_name, array_length);
-            vector<dods_float32> values(var->length());
+            read_var_check_name_and_size(var, variable_name, array_length);
+            vector<dods_float32> values(var->size());
             var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
@@ -581,11 +581,11 @@ public:
             BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
+            BESDEBUG("dmrpp", __func__ << "() - length: " << var->size() << endl);
 
             // Read the variable and transfer the data
-            read_var_check_name_and_length(var, variable_name, array_length);
-            vector<dods_float32> values(var->length());
+            read_var_check_name_and_size(var, variable_name, array_length);
+            vector<dods_float32> values(var->size());
             var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
@@ -719,11 +719,11 @@ public:
             BESDEBUG("dmrpp", __func__ << "() - dim_stride: " << var->dimension_stride(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_stop:   " << var->dimension_stop(var->dim_begin()) << endl);
             BESDEBUG("dmrpp", __func__ << "() - dim_size:   " << var->dimension_size(var->dim_begin()) << endl);
-            BESDEBUG("dmrpp", __func__ << "() - length: " << var->length() << endl);
+            BESDEBUG("dmrpp", __func__ << "() - length: " << var->size() << endl);
 
             // Read the variable and transfer the data
-            read_var_check_name_and_length(var, variable_name, array_length);
-            vector<dods_float32> values(var->length());
+            read_var_check_name_and_size(var, variable_name, array_length);
+            vector<dods_float32> values(var->size());
             var->value(values.data());
 
             // Test data set is incrementally valued: Check Them All!
@@ -868,7 +868,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             std::cerr << "Usage: DmrppChunkedReadTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = dmrpp::DmrppChunkedReadTest::suite()->getTests();
-            unsigned int prefix_len = dmrpp::DmrppChunkedReadTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = dmrpp::DmrppChunkedReadTest::suite()->getName().append("::").size();
             for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
             }

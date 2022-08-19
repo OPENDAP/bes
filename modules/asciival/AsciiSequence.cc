@@ -79,7 +79,7 @@ AsciiSequence::~AsciiSequence()
 {
 }
 
-int AsciiSequence::length() const
+int AsciiSequence::size() const
 {
     return -1;
 }

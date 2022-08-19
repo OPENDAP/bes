@@ -571,8 +571,8 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     (*dt_inst_ptr).ndims = ndims;
     (*dt_inst_ptr).nelmts = nelmts;
     (*dt_inst_ptr).need = need;
-    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
-    (*dt_inst_ptr).name[dname.length()] = '\0';
+    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.size());
+    (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = (int)(size[j]);
 
@@ -729,8 +729,8 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
     (*dt_inst_ptr).ndims = ndims;
     (*dt_inst_ptr).nelmts = nelmts;
     (*dt_inst_ptr).need = need;
-    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
-    (*dt_inst_ptr).name[dname.length()] = '\0';
+    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.size());
+    (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = (int)(size[j]);
 
@@ -1260,7 +1260,7 @@ BaseType *Get_bt(const string &vname,
                 h5_ar.set_memneed(size);
                 h5_ar.set_numdim(ndim);
                 h5_ar.set_numelm(nelement);
-                h5_ar.set_length(nelement);
+                h5_ar.set_size(nelement);
                 h5_ar.d_type = H5Tget_class(dtype_base); 
 		if (h5_ar.d_type == H5T_NO_CLASS){
 		    throw InternalErr(__FILE__, __LINE__, "cannot return the datatype class identifier");

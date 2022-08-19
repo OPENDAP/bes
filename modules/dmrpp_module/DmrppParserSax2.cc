@@ -160,7 +160,7 @@ string DmrppParserSax2::get_attribute_val(const string &name, const xmlChar **at
 {
 	unsigned int index = 0;
 	for (int i = 0; i < num_attributes; ++i, index += 5) {
-		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.size()) == 0) {
 			return string((const char *)attributes[index+3],  (const char *)attributes[index+4]);
 		}
 	}
@@ -238,7 +238,7 @@ bool DmrppParserSax2::check_required_attribute(const string &name, const xmlChar
 {
 	unsigned int index = 0;
 	for (int i = 0; i < num_attributes; ++i, index += 5) {
-		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.size()) == 0) {
 			return true;
 		}
 	}
@@ -274,7 +274,7 @@ bool DmrppParserSax2::check_attribute(const string &name, const xmlChar **attrib
 {
 	unsigned int index = 0;
 	for (int i = 0; i < num_attributes; ++i, index += 5) {
-		if (strncmp(name.c_str(), (const char *)attributes[index], name.length()) == 0) {
+		if (strncmp(name.c_str(), (const char *)attributes[index], name.size()) == 0) {
 			return true;
 		}
 	}
@@ -451,7 +451,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     //    DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
 
     std::string data(char_data);
-    BESDEBUG(PARSER, prolog << "Read compact element text. size: " << data.size() << " length: " << data.length() << " value: '" << data << "'" << endl);
+    BESDEBUG(PARSER, prolog << "Read compact element text. size: " << data.size() << " length: " << data.size() << " value: '" << data << "'" << endl);
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(data);
 
@@ -1747,11 +1747,11 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 
     // Get the XML prolog line (looks like: <?xml ... ?> )
     getline(f, line);
-    if (line.length() == 0) throw BESInternalError(prolog + "ERROR - No input found when parsing the DMR++",__FILE__,__LINE__);
+    if (line.size() == 0) throw BESInternalError(prolog + "ERROR - No input found when parsing the DMR++",__FILE__,__LINE__);
 
     BESDEBUG(PARSER, prolog << "line: (" << line_num << "): " << endl << line << endl << endl);
 
-    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.length(), "stream");
+    context = xmlCreatePushParserCtxt(&dmrpp_sax_parser, this, line.c_str(), line.size(), "stream");
     context->validate = true;
     push_state(parser_start);
 
@@ -1797,7 +1797,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
  */
 void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
 {
-    intern(document.c_str(), document.length(), dest_dmr);
+    intern(document.c_str(), document.size(), dest_dmr);
 }
 
 /** Parse a DMR document stored in a char *buffer.

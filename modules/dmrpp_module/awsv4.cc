@@ -80,7 +80,7 @@ namespace AWSV4 {
         unsigned char hashOut[SHA256_DIGEST_LENGTH];
         SHA256_CTX sha256;
         SHA256_Init(&sha256);
-        SHA256_Update(&sha256, (const unsigned char *)str.c_str(), str.length());
+        SHA256_Update(&sha256, (const unsigned char *)str.c_str(), str.size());
         SHA256_Final(hashOut, &sha256);
 
         char outputBuffer[SHA256_DIGEST_STRING_LENGTH + 1];
@@ -244,8 +244,8 @@ namespace AWSV4 {
 
         const std::string k1 = AWS4 + secret;
         const std::string yyyymmdd = utc_yyyymmdd(request_date);
-        unsigned char* kDate = HMAC(EVP_sha256(), (const void *)k1.c_str(), k1.length(),
-                (const unsigned char *)yyyymmdd.c_str(), yyyymmdd.length(), md, &md_len);
+        unsigned char* kDate = HMAC(EVP_sha256(), (const void *)k1.c_str(), k1.size(),
+                (const unsigned char *)yyyymmdd.c_str(), yyyymmdd.size(), md, &md_len);
         if (!kDate)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
@@ -253,7 +253,7 @@ namespace AWSV4 {
         BESDEBUG(CREDS, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
-                                      (const unsigned char*)region.c_str(), region.length(), md, &md_len);
+                                      (const unsigned char*)region.c_str(), region.size(), md, &md_len);
         if (!kRegion)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
@@ -261,7 +261,7 @@ namespace AWSV4 {
         BESDEBUG(CREDS, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
-                        (const unsigned char*)service.c_str(), service.length(), md, &md_len);
+                        (const unsigned char*)service.c_str(), service.size(), md, &md_len);
         if (!kService)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
@@ -269,7 +269,7 @@ namespace AWSV4 {
         BESDEBUG(CREDS, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
-                        (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
+                        (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.size(), md, &md_len);
         if (!kSigning)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
@@ -277,7 +277,7 @@ namespace AWSV4 {
         BESDEBUG(CREDS, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
-                    (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
+                    (const unsigned char*)string_to_sign.c_str(), string_to_sign.size(), md, &md_len);
         if (!kSig)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 

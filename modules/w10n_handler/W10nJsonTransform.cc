@@ -347,7 +347,7 @@ void W10nJsonTransform::writeAttributes(ostream *strm, libdap::AttrTable &attr_t
     // Start the attributes block
     *strm << indent << "\"attributes\": [";
 
-//	if(attr_table.get_name().length()>0)
+//	if(attr_table.get_name().size()>0)
 //		*strm  << endl << child_indent << "{\"name\": \"name\", \"value\": \"" << attr_table.get_name() << "\"},";
 
 // Only do more if there are actually attributes in the table
@@ -369,7 +369,7 @@ void W10nJsonTransform::writeAttributes(ostream *strm, libdap::AttrTable &attr_t
                 *strm << child_indent << "{" << endl;
 
                 // If the table has a name, write it out as a json property.
-                if (atbl->get_name().length() > 0)
+                if (atbl->get_name().size() > 0)
                     *strm << child_indent + _indent_increment << "\"name\": \"" << atbl->get_name() << "\"," << endl;
 
                 // Recursive call for child attribute table.

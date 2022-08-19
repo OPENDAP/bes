@@ -88,9 +88,9 @@ ConnSocket::receive( char *inBuff, int inSize )
     if( _test_rec == 1 )
     {
 	_test_rec++ ;
-	string this_return = test_exp[0].substr( 8, test_exp[0].length() - 8 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	string this_return = test_exp[0].substr( 8, test_exp[0].size() - 8 ) ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 2 )
     {
@@ -103,24 +103,24 @@ ConnSocket::receive( char *inBuff, int inSize )
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[0].substr( 8, 5 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 4 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[0].substr( 13, 5 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 5 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[0].substr( 18, 4 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 6 )
     {
@@ -134,58 +134,58 @@ ConnSocket::receive( char *inBuff, int inSize )
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[2].substr( 8, 15 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 8 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = "0000000d" ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 9 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[3].substr( 0, 8 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 10 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[3].substr( 8, 15 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
     if( _test_rec == 11 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[3].substr( 23, 5 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	cout << "returning \"" << this_return << "\" of length " << this_return.length() << endl ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	cout << "returning \"" << this_return << "\" of length " << this_return.size() << endl ;
+	return this_return.size() ;
     }
     if( _test_rec == 12 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = test_exp[3].substr( 28, 24 ) ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	cout << "returning \"" << this_return << "\" of length " << this_return.length() << endl ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	cout << "returning \"" << this_return << "\" of length " << this_return.size() << endl ;
+	return this_return.size() ;
     }
     if( _test_rec == 13 )
     {
 	cout << "test receive " << _test_rec << endl ;
 	_test_rec++ ;
 	string this_return = "0000000d" ;
-	memcpy( inBuff, this_return.c_str(), this_return.length() ) ;
-	return this_return.length() ;
+	memcpy( inBuff, this_return.c_str(), this_return.size() ) ;
+	return this_return.size() ;
     }
 
     return 0 ;

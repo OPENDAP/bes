@@ -424,7 +424,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                     val += "\n" + attrs.get_attr(attr, attri);
                 }
                 if (attr_name != _FillValue) {
-                    stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.length(), val.c_str());
+                    stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.size(), val.c_str());
                 }
                 else {
                     BESDEBUG("fonc",
@@ -442,7 +442,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
 #if 0
                         attrs.append_attr(new_name_fillvalue,"String", val);
 #endif
-                        stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.length(), val.c_str());
+                        stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.size(), val.c_str());
                     }
                 }
 
@@ -733,7 +733,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                 }
 
                 if (d4_attr_name != _FillValue) {
-                    stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.length(), val.c_str());
+                    stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.size(), val.c_str());
                 }
                 else {
                     BESDEBUG("fonc",
@@ -751,7 +751,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
 #if 0
                         attrs.append_attr(new_name_fillvalue,"String", val);
 #endif
-                        stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.length(), val.c_str());
+                        stax = nc_put_att_text(ncid, varid, new_name_fillvalue.c_str(), val.size(), val.c_str());
                     }
                 }
 
@@ -798,7 +798,7 @@ void FONcAttributes::add_original_name(int ncid, int varid,
     if (var_name != orig) {
         string attr_name = FONC_ORIGINAL_NAME;
         int stax = nc_put_att_text(ncid, varid, attr_name.c_str(),
-                                   orig.length(), orig.c_str());
+                                   orig.size(), orig.c_str());
         if (stax != NC_NOERR) {
             string err = (string) "File out netcdf, "
                          + "failed to write change of name attribute for "
@@ -1020,7 +1020,7 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
             }
             string attr_name = attrs.get_name(attr);
             if (attr_name != _FillValue) {
-                stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.length(), val.c_str());
+                stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
             }
             else {
                 BESDEBUG("fonc",
@@ -1039,7 +1039,7 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
 #if 0
                     attrs.append_attr(var_attr_name_fillvalue,"String", val);
 #endif
-                    stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.length(), val.c_str());
+                    stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.size(), val.c_str());
                 }
             }
 
@@ -1354,7 +1354,7 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid,
                 }
 
                 if (var_attr_name != _FillValue) {
-                    stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.length(), val.c_str());
+                    stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
                 }
                 else {
                     BESDEBUG("fonc",
@@ -1372,7 +1372,7 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid,
 #if 0
                         attrs.append_attr(var_attr_name_fillvalue,"String", val);
 #endif
-                        stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.length(), val.c_str());
+                        stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.size(), val.c_str());
                     }
                 }
             }
@@ -1576,7 +1576,7 @@ switch (attrType) {
         }
         string attr_name = attrs.get_name(attr);
         if (attr_name != _FillValue) {
-            stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.length(), val.c_str());
+            stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
         } else {
             BESDEBUG("fonc",
                      "FONcAttributes::add_attributes_worker - Original attribute value is first character: "
@@ -1593,7 +1593,7 @@ switch (attrType) {
 #if 0
                 attrs.append_attr(var_attr_name_fillvalue,"String", val);
 #endif
-                stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.length(), val.c_str());
+                stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.size(), val.c_str());
             }
         }
 

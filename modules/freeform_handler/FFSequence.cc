@@ -150,7 +150,7 @@ bool FFSequence::read()
             if ((*p)->synthesized_p())
                 continue;
             if ((*p)->type() == dods_str_c)
-                endbyte += static_cast<FFStr&>(**p).length();
+                endbyte += static_cast<FFStr&>(**p).size();
             else
                 endbyte += (*p)->width();
 
@@ -223,7 +223,7 @@ void FFSequence::transform_to_dap4(D4Group *root, Constructor *container)
     dest->set_is_dap4(true);
 	dest->set_parent(container);
 
-    dest->set_length(-1);
+    dest->set_size(-1);
 
     return dest;
 #endif

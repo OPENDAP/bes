@@ -206,8 +206,8 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
     BESRegex *skip_regex = get_skip_regex();
     if( skip_regex ) {
         size_t match_length = 0;
-        match_length = skip_regex->match(source_url->str().c_str(), source_url->str().length());
-        if (match_length == source_url->str().length()) {
+        match_length = skip_regex->match(source_url->str().c_str(), source_url->str().size());
+        if (match_length == source_url->str().size()) {
             BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                        "no_redirects_regex_pattern [" << skip_regex->pattern() <<
                                     "][match_length=" << match_length << "] SKIPPING." << endl);
@@ -303,7 +303,7 @@ BESRegex *EffectiveUrlCache::get_skip_regex()
         bool found;
         string value;
         TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, value, found);
-        if(found && value.length()){
+        if(found && value.size()){
             BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY <<":  " << value << endl);
             d_skip_regex = new BESRegex(value.c_str());
         }

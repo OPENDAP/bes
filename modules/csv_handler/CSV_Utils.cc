@@ -71,6 +71,6 @@ CSV_Utils::split(const string &str, char delimiter, vector<string> &tokens) {
 void
 CSV_Utils::slim(string &str) {
     if (*(--str.end()) == '\"' and *str.begin() == '\"')
-        str = str.substr(1, str.length() - 2);
+        str = str.substr(1, str.size() - 2);
 }
 

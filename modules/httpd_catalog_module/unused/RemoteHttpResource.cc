@@ -78,7 +78,7 @@ RemoteHttpResource::RemoteHttpResource(const string &const_url)
 
     size_t file_index = url.find("file://");
     if(  file_index!=url.npos && file_index==0 && *url.rbegin()=='/'){
-        url = url.substr(0,url.length()-1);
+        url = url.substr(0,url.size()-1);
     }
 
     d_remoteResourceUrl = url;
@@ -360,9 +360,9 @@ void RemoteHttpResource::ingest_http_headers_and_type()
     const string colon_space = ": ";
     for (size_t i = 0; i < this->d_response_headers->size(); i++) {
         size_t colon_index = (*d_response_headers)[i].find(colon_space);
-        if((*d_response_headers)[i].length() && colon_index!=string::npos){ // no blank lines, no missing colons
+        if((*d_response_headers)[i].size() && colon_index!=string::npos){ // no blank lines, no missing colons
             string key = BESUtil::lowercase((*d_response_headers)[i].substr(0, colon_index));
-            string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
+            string value = (*d_response_headers)[i].substr(colon_index + colon_space.size());
             BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
             (*d_http_response_headers)[key] = value;
 

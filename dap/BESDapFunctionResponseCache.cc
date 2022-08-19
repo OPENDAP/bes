@@ -270,9 +270,9 @@ string BESDapFunctionResponseCache::get_resource_id(DDS *dds, const string &cons
 bool BESDapFunctionResponseCache::can_be_cached(DDS *dds, const string &constraint)
 {
     BESDEBUG(DEBUG_KEY, __FUNCTION__ << " constraint + dds->filename() length: "
-        << constraint.length() + dds->filename().size() << endl);
+        << constraint.size() + dds->filename().size() << endl);
 
-    return (constraint.length() + dds->filename().size() <= max_cacheable_ce_len);
+    return (constraint.size() + dds->filename().size() <= max_cacheable_ce_len);
 }
 
 /**

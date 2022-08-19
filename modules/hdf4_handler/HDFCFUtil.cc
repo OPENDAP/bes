@@ -777,11 +777,11 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
             it++;
         }
 
-        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) 
-            || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
+        if((radiance_scales_value.size()!=0 && radiance_offsets_value.size()!=0)
+            || (reflectance_scales_value.size()!=0 && reflectance_offsets_value.size()!=0))
             return true;
 		
-        if(scale_factor_value.length()!=0) 
+        if(scale_factor_value.size()!=0)
         {
             if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
                 return true;
@@ -1051,7 +1051,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
     // KY 2014-01-13
 
     
-    if(scale_factor_value.length()!=0) {
+    if(scale_factor_value.size()!=0) {
         if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
             if (orig_scale_value_float > 1 || orig_scale_value_double >1) {
 
@@ -1243,7 +1243,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
 
     // Rename scale_factor and add_offset attribute names. Otherwise, they will be 
     // misused by CF tools to generate wrong data values based on the CF scale and offset rule.
-    if(scale_factor_value.length()!=0)
+    if(scale_factor_value.size()!=0)
     {
         if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
         {
@@ -1258,7 +1258,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
     }
 
     // Change _FillValue datatype
-    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") 
+    if(true == changedtype && fillvalue.size()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64")
     {
         change_fvtype = true;
         at->del_attr("_FillValue");
@@ -1439,7 +1439,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
         // If the gridname_change_valid_range is true, call a special function to handle this.
         if (true == gridname_change_valid_range) 
             HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
-        else if(scale_factor_value.length()!=0) {
+        else if(scale_factor_value.size()!=0) {
 
             // We found MODIS products always scale to a smaller value. If somehow the original scale factor
             // is smaller than 1, the scale/offset should be the multiplication rule.(new_data =scale*(old_data-offset))
@@ -3319,7 +3319,7 @@ string HDFCFUtil::escattr(string s)
     size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
-        ind += DOUBLE_ESC.length();
+        ind += DOUBLE_ESC.size();
     }
 
     // escape " with backslash
@@ -3327,7 +3327,7 @@ string HDFCFUtil::escattr(string s)
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         //comment out the following line since it wastes the CPU operation.
         s.replace(ind, 1, ESCQUOTE);
-        ind += ESCQUOTE.length();
+        ind += ESCQUOTE.size();
     }
 #endif
 

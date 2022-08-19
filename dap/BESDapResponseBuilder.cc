@@ -343,7 +343,7 @@ void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &ex
         else {
             pos = closing_paren + 1;
             // exception?
-            if (pos < ce.length() && ce.at(pos) == ',') ++pos;
+            if (pos < ce.size() && ce.at(pos) == ',') ++pos;
         }
 
         first_paren = ce.find("(", pos);
@@ -670,7 +670,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 
         BESDEBUG(MODULE,prolog << "Sent AsyncRequestRejected" << endl);
     }
-    else if (get_async_accepted().length() != 0) {
+    else if (get_async_accepted().size() != 0) {
 
         /**
          * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
@@ -1532,7 +1532,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
  */
 bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 {
-    if (get_store_result().length() != 0) {
+    if (get_store_result().size() != 0) {
         string serviceUrl = get_store_result();
 
         D4AsyncUtil d4au;
@@ -1567,7 +1567,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
             return true;
         }
 
-        if (get_async_accepted().length() != 0) {
+        if (get_async_accepted().size() != 0) {
 
             /**
              * Client accepts async responses so, woot! lets store this thing and tell them where to find it.

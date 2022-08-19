@@ -182,7 +182,7 @@ CredentialsManager::get(shared_ptr<http::url> &url){
             std::string key = it->first;
             if (url->str().rfind(key, 0) == 0) {
                 // url starts with key
-                if (key.length() > best_key.length()) {
+                if (key.size() > best_key.size()) {
                     best_key = key;
                     best_match = it->second;
                 }
@@ -363,7 +363,7 @@ void CredentialsManager::load_credentials( ) {
     for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
         accessCredentials = acit->second;
         string url = accessCredentials->get(AccessCredentials::URL_KEY);
-        if(url.length()){
+        if(url.size()){
             theCM()->add(url,accessCredentials);
         }
         else {
@@ -415,11 +415,11 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     //env_bucket.assign(    get_env_value(CredentialsManager::ENV_BUCKET_KEY));
     env_url.assign(       get_env_value(CredentialsManager::ENV_URL_KEY));
 
-    if(env_url.length() &&
-            env_id.length() &&
-            env_access_key.length() &&
-            // env_bucket.length() &&
-            env_region.length() ){
+    if(env_url.size() &&
+            env_id.size() &&
+            env_access_key.size() &&
+            // env_bucket.size() &&
+            env_region.size() ){
         ac = new AccessCredentials();
         ac->add(AccessCredentials::URL_KEY, env_url);
         ac->add(AccessCredentials::ID_KEY, env_id);

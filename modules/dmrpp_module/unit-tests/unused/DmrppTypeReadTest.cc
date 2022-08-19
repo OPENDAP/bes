@@ -147,7 +147,7 @@ public:
         }
     }
 
-    void read_var_check_name_and_length(DmrppArray *array, string name, int length)
+    void read_var_check_name_and_size(DmrppArray *array, string name, int length)
     {
         BESDEBUG("dmrpp", "array->name(): " << array->name() << endl);
         CPPUNIT_ASSERT(array->name() == name);
@@ -156,8 +156,8 @@ public:
 
         // Read the data
         array->read();
-        BESDEBUG("dmrpp", "array->length(): " << array->length() << endl);
-        CPPUNIT_ASSERT(array->length() == length);
+        BESDEBUG("dmrpp", "array->size(): " << array->size() << endl);
+        CPPUNIT_ASSERT(array->size() == length);
     }
 
     void test_integer_scalar()
@@ -234,11 +234,11 @@ public:
             da->read();
 #endif
 
-            read_var_check_name_and_length(da, "d16_1", 2);
+            read_var_check_name_and_size(da, "d16_1", 2);
 
-            CPPUNIT_ASSERT(da->length() == 2);
+            CPPUNIT_ASSERT(da->size() == 2);
 
-            vector<dods_int16> v16(da->length());
+            vector<dods_int16> v16(da->size());
             da->value(v16.data());
             BESDEBUG("dmrpp", "v16[0]: " << v16[0] << ", v16[1]: " << v16[1] << endl);
             CPPUNIT_ASSERT(v16[0] == -32768);
@@ -247,8 +247,8 @@ public:
             ++v;    // next
             da = dynamic_cast<DmrppArray*>(*v);
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da, "d16_2", 4);
-            vector<dods_int16> v16_2(da->length());
+            read_var_check_name_and_size(da, "d16_2", 4);
+            vector<dods_int16> v16_2(da->size());
             da->value(v16_2.data());
 
             if (debug) copy(v16_2.begin(), v16_2.end(), ostream_iterator<dods_int16>(cerr, " "));
@@ -260,8 +260,8 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da, "d32_1", 8);
-            vector<dods_int32> v32(da->length());
+            read_var_check_name_and_size(da, "d32_1", 8);
+            vector<dods_int32> v32(da->size());
             da->value(v32.data());
 
             if (debug) copy(v32.begin(), v32.end(), ostream_iterator<dods_int32>(cerr, " "));
@@ -273,8 +273,8 @@ public:
             da = dynamic_cast<DmrppArray*>(*v);
 
             CPPUNIT_ASSERT(da);
-            read_var_check_name_and_length(da, "d32_2", 32);
-            vector<dods_int32> v32_2(da->length());
+            read_var_check_name_and_size(da, "d32_2", 32);
+            vector<dods_int32> v32_2(da->size());
             da->value(v32_2.data());
 
             if (debug) copy(v32_2.begin(), v32_2.end(), ostream_iterator<dods_int32>(cerr, " "));
@@ -352,9 +352,9 @@ public:
             // "Data Fields" contains a single Float32 var called temperature
             DmrppArray *temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
             CPPUNIT_ASSERT(temperature);
-            read_var_check_name_and_length(temperature, "temperature", 32);
+            read_var_check_name_and_size(temperature, "temperature", 32);
             {
-                vector<dods_float32> f32(temperature->length());
+                vector<dods_float32> f32(temperature->size());
                 temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
@@ -380,9 +380,9 @@ public:
             // "Data Fields" contains a single Float32 var called temperature
             temperature = dynamic_cast<DmrppArray*>(*grp_data_fields->var_begin());
             CPPUNIT_ASSERT(temperature);
-            read_var_check_name_and_length(temperature, "temperature", 32);
+            read_var_check_name_and_size(temperature, "temperature", 32);
             {
-                vector<dods_float32> f32(temperature->length());
+                vector<dods_float32> f32(temperature->size());
                 temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
@@ -487,9 +487,9 @@ public:
                 BESDEBUG("dmrpp", "Constrained array temperature" << ss.str() << endl);
             }
 
-            read_var_check_name_and_length(temperature, "temperature", 6);
+            read_var_check_name_and_size(temperature, "temperature", 6);
             {
-                vector<dods_float32> f32(temperature->length());
+                vector<dods_float32> f32(temperature->size());
                 temperature->value(f32.data());
                 BESDEBUG("dmrpp", "temperature[0]: " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 11);
@@ -534,9 +534,9 @@ public:
                 BESDEBUG("dmrpp", "Constrained array t2" << ss.str() << endl);
             }
 
-            read_var_check_name_and_length(t2, "temperature", 4);
+            read_var_check_name_and_size(t2, "temperature", 4);
             {
-                vector<dods_float32> f32(t2->length());
+                vector<dods_float32> f32(t2->size());
                 t2->value(f32.data());
                 BESDEBUG("dmrpp", "t2[0]:  " << f32[0] << endl);
                 CPPUNIT_ASSERT(f32[0] == 10);
@@ -586,8 +586,8 @@ public:
             // ######################################
             // Check COADSX variable
             DmrppArray *coadsx = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(coadsx, "COADSX", 180);
-            vector<dods_float64> coadsx_vals(coadsx->length());
+            read_var_check_name_and_size(coadsx, "COADSX", 180);
+            vector<dods_float64> coadsx_vals(coadsx->size());
             coadsx->value(coadsx_vals.data());
             // first element
             index = 0;
@@ -606,8 +606,8 @@ public:
             // Check COADSY variable
             vIter++;
             DmrppArray *coadsy = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(coadsy, "COADSY", 90);
-            vector<dods_float64> coadsy_vals(coadsy->length());
+            read_var_check_name_and_size(coadsy, "COADSY", 90);
+            vector<dods_float64> coadsy_vals(coadsy->size());
             coadsy->value(coadsy_vals.data());
             // first element
             index = 0;
@@ -626,8 +626,8 @@ public:
             // Check TIME variable
             vIter++;
             DmrppArray *time = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(time, "TIME", 12);
-            vector<dods_float64> time_vals(time->length());
+            read_var_check_name_and_size(time, "TIME", 12);
+            vector<dods_float64> time_vals(time->size());
             time->value(time_vals.data());
             // first element
             index = 0;
@@ -646,8 +646,8 @@ public:
             // Check SST variable
             vIter++;
             DmrppArray *sst = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(sst, "SST", 194400);
-            vector<dods_float32> sst_vals(sst->length());
+            read_var_check_name_and_size(sst, "SST", 194400);
+            vector<dods_float32> sst_vals(sst->size());
             sst->value(sst_vals.data());
 
             // check [0][0][0]
@@ -682,8 +682,8 @@ public:
             // Check AIRT variable
             vIter++;
             DmrppArray *airt = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(airt, "AIRT", 194400);
-            vector<dods_float32> airt_vals(airt->length());
+            read_var_check_name_and_size(airt, "AIRT", 194400);
+            vector<dods_float32> airt_vals(airt->size());
             airt->value(airt_vals.data());
 
             // check [0][0][0]
@@ -718,8 +718,8 @@ public:
             // Check UWND variable
             vIter++;
             DmrppArray *uwnd = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(uwnd, "UWND", 194400);
-            vector<dods_float32> uwnd_vals(uwnd->length());
+            read_var_check_name_and_size(uwnd, "UWND", 194400);
+            vector<dods_float32> uwnd_vals(uwnd->size());
             uwnd->value(uwnd_vals.data());
 
             // check [0][0][0]
@@ -761,8 +761,8 @@ public:
             // Check VWND variable
             vIter++;
             DmrppArray *vwnd = dynamic_cast<DmrppArray*>(*vIter);
-            read_var_check_name_and_length(vwnd, "VWND", 194400);
-            vector<dods_float32> vwnd_vals(vwnd->length());
+            read_var_check_name_and_size(vwnd, "VWND", 194400);
+            vector<dods_float32> vwnd_vals(vwnd->size());
             vwnd->value(vwnd_vals.data());
 
             // check [0][0][0]
@@ -836,16 +836,16 @@ public:
             sst->add_constraint(dimIter++, 0, 36, 179);
             CPPUNIT_ASSERT(dimIter == sst->dim_end());
             // Read constrained var
-            read_var_check_name_and_length(sst, "SST", 30);
+            read_var_check_name_and_size(sst, "SST", 30);
             // Grab the stuff
-            vector<dods_float32> sst_vals(sst->length());
+            vector<dods_float32> sst_vals(sst->size());
             sst->value(sst_vals.data());
             // Check the values against expected result
             dods_float32 sst_expected[] = { 13.43333, 12.61500, 15.27133, 13.46167, 15.03625, -1e+34, 27.77918,
                 28.75823, 26.95918, -1e+34, -1e+34, 28.91667, 26.78999, 23.47861, 25.63762, 11.00667, 10.79999,
                 12.37750, -1e+34, 11.34231, -1e+34, 26.57110, 27.13167, 25.05054, -1e+34, -1e+34, 28.27059, 29.01156,
                 26.86975, 27.83860 };
-            for (int i = 0; i < sst->length(); i++) {
+            for (int i = 0; i < sst->size(); i++) {
                 // fprintf(stderr,"%4.6f \n",sst_vals[i]);
                 BESDEBUG("dmrpp",
                     "sst_vals["<< i << "]: " << sst_vals[i] << " sst_expected[" << i << "]: " << sst_expected[i] << endl);
