@@ -363,6 +363,8 @@ string_pad_type get_pad_type(const hid_t dataset) {
 
 
 static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
+    string ons_str="0:26,26:35,35:873,873:5000";
+    da->set_ons_string(ons_str);
     da->set_is_vlsa(true);
 }
 

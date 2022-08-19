@@ -83,7 +83,7 @@ private:
     //     <dmrpp:vStringArray>
     //         <v>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</v>
     //     </dmrpp:vStringArray
-    std::string d_vlen_string_addrs;
+    std::string d_vlen_ons_str;
 
 
     bool is_variable_length_string_array;
@@ -223,8 +223,10 @@ public:
 
     string_pad_type get_fixed_length_string_pad(){ return d_fixed_length_string_pad_type; }
 
-    void mk_vlen_str_addrs(const std::string &ons_str, vector<ons> &vlen_str_addrs);
-
+    void set_ons_string(const std::string &ons_str);
+    void set_ons_string(const vector<ons> &ons_pairs);
+    std::string get_ons_string(){ return d_vlen_ons_str; };
+    void get_ons_objs(vector<ons> &ons_list);
 };
 
 /**

@@ -1876,20 +1876,50 @@ ons::ons(const std::string &ons_pair_str) {
     size = stoull(size_str);
 }
 
-void DmrppArray::mk_vlen_str_addrs(const std::string &ons_str, vector<ons> &vlen_str_addrs)
+
+void DmrppArray::set_ons_string(const std::string &ons_str)
+{
+    d_vlen_ons_str = ons_str;
+}
+
+void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
+{
+    stringstream ons_ss;
+    bool first = true;
+    for(auto &ons_pair: ons_pairs){
+        if(!first){
+            ons_ss << ",";
+        }
+        ons_ss << ons_pair.offset << ":" << ons_pair.size;
+    }
+    d_vlen_ons_str = ons_ss.str();
+}
+
+
+/**
+ * Ingests the (possibly long) ons (offset and size) string that itemizes every offset
+ * and size for the members of variable length string array and creates from the string
+ * offset:size pairs
+ * @param ons_str
+ * @param vlen_str_addrs
+ */
+void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
 {
     const string comma(",");
     size_t last = 0;
     size_t next = 0;
 
-    while ((next = ons_str.find(comma, last)) != string::npos) {
-        string ona_pair_str = ons_str.substr(last, next-last);
+    while ((next = d_vlen_ons_str.find(comma, last)) != string::npos) {
+        string ona_pair_str = d_vlen_ons_str.substr(last, next-last);
         ons ons_pair(ona_pair_str);
-        vlen_str_addrs.push_back(ons_pair);
+        ons_pairs.push_back(ons_pair);
         last = next + 1;
     }
-    cout << ons_str.substr(last) << endl;
+    // @TODO - Inspect this once we are doing the real implementation
+    //   and make sure the "tail" is handled correctly.
+    cout << d_vlen_ons_str.substr(last) << endl;
 }
+
 
 
 
