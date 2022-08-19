@@ -72,7 +72,7 @@ env:
     # GIT_UID travis-ci-opendap
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
-    - secure: "VArqBZEPauJderb2tNbv7RdKFZRtb97wpIpDUDWA0WEFEMNcymosjYV20tfbSL/lyGn6w+wWVfbqymhixCQqr8hJ1okDCR10lE2jzIFhn96/GdLrRseHmNRt+KivOZnOcLS2Yd3og+uUdlA4bgAp/WOt0nCxERg1Bf36mI5wtqc="
+    - secure: "dlULHE4qbXKEgqJZ0hiL7PcUqEcFaHzHE5GQbZ1v6wCyFujEvq34ayChOHuxZvrfNo64lCKjpHYs1Znq0m69dpkdSP3m0fv2rgLaqqTxD+ewgsYzmlKRA8jWuDx0WvV5IltS9KNdBj2Aj6wSsw5cqPkuRbYQlQCYj7GdqhAPlP8="
     # DOCKER_HUB_UID for travis
     - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
     # DOCKER_HUB_PSWD for travis
@@ -160,10 +160,10 @@ jobs:
         - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
           --env OS=centos7
           --env DIST=el7
-          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          --env LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY
           opendap/centos7_hyrax_builder:1.7 /root/travis/travis/build-rpm.sh
 
     - stage: build-and-package
@@ -176,10 +176,10 @@ jobs:
             --volume $TRAVIS_BUILD_DIR:/root/travis
             --env OS=centos-stream8
             --env DIST=el8
-            --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-            --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-            --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-            --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+            --env LIBDAP_RPM_VERSION
+            --env BES_BUILD_NUMBER
+            --env AWS_ACCESS_KEY_ID
+            --env AWS_SECRET_ACCESS_KEY
             opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
 
     - stage: build-and-package
