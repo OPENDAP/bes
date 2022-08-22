@@ -284,9 +284,9 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
 
             // Make sure the lengths match to be sure we're not gonna blow memory up
             NCML_ASSERT_MSG(pOutMap->length() == pProtoGridMap->length(),
-                "Expected the prototype and output maps to have same length() after transfer of constraints, but they were not so we can't copy the data!");
+                "Expected the prototype and output maps to have same size() after transfer of constraints, but they were not so we can't copy the data!");
 
-            // The dimensions will have been set up correctly now so length() is correct...
+            // The dimensions will have been set up correctly now so size() is correct...
             // We assume the pProtoGridMap matches at this point as well.
             // So we can use this call to copy from one vector to the other
             // so we don't use temp storage in between
@@ -420,11 +420,11 @@ void GridAggregationBase::copyProtoMapsIntoThisGrid(const Dimension& aggDim)
 
         // Make sure the lengths match to be sure we're not gonna blow memory up
         NCML_ASSERT_MSG(pOutMap->length() == pProtoGridMap->length(),
-            "Expected the prototype and output maps to have same length() "
+            "Expected the prototype and output maps to have same size() "
                 "after transfer of constraints, but they were not so we can't "
                 "copy the data!");
 
-        // The dimensions will have been set up correctly now so length() is correct...
+        // The dimensions will have been set up correctly now so size() is correct...
         // We assume the pProtoGridMap matches at this point as well.
         // So we can use this call to copy from one vector to the other
         // so we don't use temp storage in between

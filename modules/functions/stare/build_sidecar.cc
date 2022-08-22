@@ -179,7 +179,7 @@ void read_lat_lon_url(const string &data_url, const string &lat_name, const stri
 
         // Set the sizes and transfer the values from the 'url_lat/lon' to the
         // lat/lon vectors in 'c'
-        c->set_size(url_lat->length()); // This sets the sizes for all the vectors
+        c->set_size(url_lat->size()); // This sets the sizes for all the vectors
         url_lat->value(c->get_lat());
         url_lon->value(c->get_lon());
     }

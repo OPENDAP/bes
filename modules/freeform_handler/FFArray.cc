@@ -206,7 +206,7 @@ static void seq2vects(T * t, FFArray & array)
         int i = 0;
         Array::Dim_iter p = array.dim_begin();
         while (p != array.dim_end()) {
-            dimsz[i] = array.dimension_size(p);
+            dimsz[i] = array.dimension_length(p);
             ++i;
             ++p;
         }

@@ -251,16 +251,16 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // determine the max length of the strings
         size_t max_length = 0;
         for (int i = 0; i < array_length; i++) {
-            if (d_str_data[i].length() > max_length) {
-                max_length = d_str_data[i].length();
+            if (d_str_data[i].size() > max_length) {
+                max_length = d_str_data[i].size();
             }
         }
         max_length++;
 #endif
         size_t max_length = 0;
         for (int i = 0; i < array_length; i++) {
-            if (d_a->get_str()[i].length() > max_length) {
-                max_length = d_a->get_str()[i].length();
+            if (d_a->get_str()[i].size() > max_length) {
+                max_length = d_a->get_str()[i].size();
             }
         }
         max_length++;

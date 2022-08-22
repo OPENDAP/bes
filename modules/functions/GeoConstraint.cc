@@ -478,17 +478,17 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
         throw Error("This grid does not have Longitude as its rightmost dimension, the geogrid()\ndoes not support constraints that wrap around the edges of this type of grid.");
 
     DBG(cerr << "Constraint for the left half: " << get_longitude_index_left()
-        << ", " << get_lon_length() - 1 << endl);
+        << ", " << get_lon_size() - 1 << endl);
 
     // Build a constraint for the left part and get those values
     a.add_constraint(lon_dim, get_longitude_index_left(), 1,
-                     get_lon_length() - 1);
+                     get_lon_size() - 1);
     a.set_read_p(false);
     a.read();
     DBG2(a.print_val(stderr));
 
     // Save the left-hand data to local storage
-    int left_size = a.width(true);		// width() == length() * element size
+    int left_size = a.width(true);		// width() == size() * element size
     char *left_data = (char*)a.value();	// value() allocates and copies
 
     // Build a constraint for the 'right' part, which goes from the left edge
@@ -516,7 +516,7 @@ void GeoConstraint::reorder_data_longitude_axis(Array &a, Array::Dim_iter lon_di
     // These *_elements variables are actually elements * bytes/element since
     // memcpy() uses bytes.
     int elem_size = a.var()->width(true);
-    int left_row_size = (get_lon_length() - get_longitude_index_left()) * elem_size;
+    int left_row_size = (get_lon_size() - get_longitude_index_left()) * elem_size;
     int right_row_size = (get_longitude_index_right() + 1) * elem_size;
     int total_bytes_per_row = left_row_size + right_row_size;
 

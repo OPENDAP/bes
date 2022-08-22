@@ -89,7 +89,7 @@ FoInstanceJsonTransmitter::FoInstanceJsonTransmitter() : BESTransmitter()
         if (!found || FoInstanceJsonTransmitter::temp_dir.empty()) {
             FoInstanceJsonTransmitter::temp_dir = FO_JSON_TEMP_DIR;
         }
-        string::size_type len = FoInstanceJsonTransmitter::temp_dir.length();
+        string::size_type len = FoInstanceJsonTransmitter::temp_dir.size();
         if (FoInstanceJsonTransmitter::temp_dir[len - 1] == '/') {
             FoInstanceJsonTransmitter::temp_dir = FoInstanceJsonTransmitter::temp_dir.substr(0, len - 1);
         }

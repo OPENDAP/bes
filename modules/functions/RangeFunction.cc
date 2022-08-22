@@ -112,7 +112,7 @@ static double get_attribute_double_value(BaseType *var, vector<string> &attribut
             return get_attribute_double_value(dynamic_cast<Grid&>(*var).get_array(), attributes);
         else
             throw Error(malformed_expr,
-                    string("No COARDS/CF '") + values.substr(0, values.length() - 2)
+                    string("No COARDS/CF '") + values.substr(0, values.size() - 2)
                             + "' attribute was found for the variable '" + var->name() + "'.");
     }
 

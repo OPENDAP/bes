@@ -179,7 +179,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
             }
         }
         //trimming trailing space from compression (aka filter) string
-        filters = filters.substr(0, filters.length() - 1);
+        filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
     }
     catch (...) {

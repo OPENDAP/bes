@@ -198,11 +198,11 @@ CPLErr AbstractDataset::SetNativeCRS()
 CPLErr AbstractDataset::SetNativeCRS(string wktStr)
 {
     string crsNameWktStr(wktStr);
-    char s[wktStr.length()+1];
+    char s[wktStr.size()+1];
     strcpy(s,wktStr.c_str());
     char *crsName =  s;
 
-    if (!wktStr.length() && OGRERR_NONE == mo_NativeCRS.importFromWkt(&crsName))
+    if (!wktStr.size() && OGRERR_NONE == mo_NativeCRS.importFromWkt(&crsName))
         return CE_None;
 
     return CE_Failure;

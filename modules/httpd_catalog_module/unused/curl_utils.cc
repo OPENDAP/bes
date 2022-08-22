@@ -314,7 +314,7 @@ bool configureProxy(CURL *curl, const string &url)
         if (!HttpdCatalogUtils::NoProxyRegex.empty()) {
             BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
             libdap::BESRegex r(HttpdCatalogUtils::NoProxyRegex.c_str());
-            if (r.match(url.c_str(), url.length()) != -1) {
+            if (r.match(url.c_str(), url.size()) != -1) {
                 BESDEBUG(MODULE, prolog << "Found NoProxy match. BESRegex: " << HttpdCatalogUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }

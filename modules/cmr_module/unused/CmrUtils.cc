@@ -256,7 +256,7 @@ void CmrUtils::Get_type_from_disposition(const string &disp, string &type)
                     BESDEBUG(MODULE,
                             prolog << "Comparing disp filename " << filename << " against expr " << match.regex << endl);
                     BESRegex reg_expr(match.regex.c_str());
-                    if (reg_expr.match(filename.c_str(), filename.length()) == static_cast<int>(filename.length())) {
+                    if (reg_expr.match(filename.c_str(), filename.size()) == static_cast<int>(filename.size())) {
                         type = match.handler;
                         done = true;
                     }
@@ -314,7 +314,7 @@ void CmrUtils::Get_type_from_url(const string &url, string &type)
             BESDEBUG(MODULE,
                     prolog << "Comparing url " << url << " against type match expr " << match.regex << endl);
             BESRegex reg_expr(match.regex.c_str());
-            if (reg_expr.match(url.c_str(), url.length()) == static_cast<int>(url.length())) {
+            if (reg_expr.match(url.c_str(), url.size()) == static_cast<int>(url.size())) {
                 type = match.handler;
                 done = true;
                 BESDEBUG(MODULE, prolog << "MATCH   type: " << type << endl);
@@ -336,8 +336,8 @@ bool GatewayUtils::Is_Whitelisted(const std::string &url){
     std::vector<std::string>::const_iterator i = WhiteList.begin();
     std::vector<std::string>::const_iterator e = WhiteList.end();
     for (; i != e && !whitelisted; i++) {
-        if ((*i).length() <= url.length()) {
-            if (url.substr(0, (*i).length()) == (*i)) {
+        if ((*i).size() <= url.size()) {
+            if (url.substr(0, (*i).size()) == (*i)) {
                 whitelisted = true;
             }
         }

@@ -75,10 +75,10 @@ TemporaryFile::~TemporaryFile()
 TemporaryFile::TemporaryFile(const std::string &path_template)
 {
     //string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-    //vector<char> temp_file(path_template.length() + 1);
-    d_name.reserve(path_template.length() + 1);
+    //vector<char> temp_file(path_template.size() + 1);
+    d_name.reserve(path_template.size() + 1);
 
-    string::size_type len = path_template.copy(d_name.data(), path_template.length());
+    string::size_type len = path_template.copy(d_name.data(), path_template.size());
     d_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using

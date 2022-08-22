@@ -667,7 +667,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: ScaleUtilTest has the following tests:" << endl;
             const std::vector<Test*> &tests = ScaleUtilTest::suite()->getTests();
-            unsigned int prefix_len = ScaleUtilTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = ScaleUtilTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

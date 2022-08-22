@@ -72,7 +72,7 @@ class hdfistream_obj {          // base class for streams reading HDF objects
         return _index;
     } // return current position protected:
     void _init(const string filename = "") {
-        if (filename.length())
+        if (filename.size())
             _filename = filename;
         _file_id = _index = 0;
     }

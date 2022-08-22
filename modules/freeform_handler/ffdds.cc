@@ -203,7 +203,7 @@ void ff_read_descriptors(DDS &dds_table, const string &filename)
             switch (FFV_DATA_TYPE(var)) {
             case FFV_TEXT:
                 bt = new FFStr(cp, filename);
-                static_cast<FFStr&>(*bt).set_length(var->end_pos - var->start_pos + 1);
+                static_cast<FFStr&>(*bt).set_size(var->end_pos - var->start_pos + 1);
                 break;
 
             case FFV_INT8:

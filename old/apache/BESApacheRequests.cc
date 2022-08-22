@@ -42,7 +42,7 @@ BESApacheRequests::BESApacheRequests( const string &requests )
 {
     if( requests != "" )
     {
-	unsigned int len = requests.length() ;
+	unsigned int len = requests.size() ;
 	const char *request = requests.c_str() ;
 	if( request )
 	{

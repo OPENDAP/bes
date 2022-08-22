@@ -47,12 +47,12 @@ BESIndent::Indent()
 void
 BESIndent::UnIndent()
 {
-    if( _indent.length() == 0 )
+    if( _indent.size() == 0 )
 	return ;
-    if( _indent.length() == 4 )
+    if( _indent.size() == 4 )
 	_indent = "" ;
     else
-	_indent = _indent.substr( 0, _indent.length() - 4 ) ;
+	_indent = _indent.substr( 0, _indent.size() - 4 ) ;
 }
 
 void

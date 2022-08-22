@@ -215,7 +215,7 @@ hdfistream_sds::hdfistream_sds(const string filename):
 hdfistream_obj(filename)
 {
     _init();
-    if (_filename.length() != 0)        // if ctor specified a file to open
+    if (_filename.size() != 0)        // if ctor specified a file to open
         open(_filename.c_str());
     return;
 }
@@ -223,7 +223,7 @@ hdfistream_obj(filename)
 // check to see if stream has been positioned past last SDS in file
 bool hdfistream_sds::eos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nsds == 0)             // eos() is always true of there are no SDS's in file
         return true;
@@ -238,7 +238,7 @@ bool hdfistream_sds::eos(void) const
 // check to see if stream is positioned in front of the first SDS in file
 bool hdfistream_sds::bos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nsds == 0)
         return true;            // if there are no SDS's we still want to read file attrs so both eos() and bos() are true
@@ -252,7 +252,7 @@ bool hdfistream_sds::bos(void) const
 // open SDS
 bool hdfistream_sds::eo_attr(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eos() && !bos())        // if eos(), then always eo_attr()
         return true;
@@ -268,7 +268,7 @@ bool hdfistream_sds::eo_attr(void) const
 // open SDS
 bool hdfistream_sds::eo_dim(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eos())                  // if eos(), then always eo_dim()
         return true;
@@ -316,7 +316,7 @@ void hdfistream_sds::close(void)
 // position SDS array index to index'th SDS array (not necessarily index'th SDS)
 void hdfistream_sds::seek(int index)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr(index);           // seek to index'th SDS array
@@ -327,7 +327,7 @@ void hdfistream_sds::seek(int index)
 // position SDS array index to SDS array with name "name"
 void hdfistream_sds::seek(const char *name)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr(string(name));    // seek to index'th SDS array
@@ -338,7 +338,7 @@ void hdfistream_sds::seek(const char *name)
 // position SDS array index in front of first SDS array
 void hdfistream_sds::rewind(void)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any already open SDS
     _rewind();                  // seek to BOS
@@ -347,7 +347,7 @@ void hdfistream_sds::rewind(void)
 // position to next SDS array in file
 void hdfistream_sds::seek_next(void)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _seek_next_arr();           // seek to next SDS array
     if (!eos())                 // if not EOS, get SDS information
@@ -357,7 +357,7 @@ void hdfistream_sds::seek_next(void)
 // position to SDS array by ref
 void hdfistream_sds::seek_ref(int ref)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr_ref(ref);         // seek to SDS array by reference
@@ -402,7 +402,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
     hs.data = hdf_genvec();
     hs.name = string();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (bos())                  // if at BOS, advance to first SDS array
         seek(0);
@@ -497,7 +497,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
     hd.scale = hdf_genvec();
     hd.attrs = vector < hdf_attr > ();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (bos())                  // if at BOS, advance to first SDS array
         seek(0);
@@ -667,7 +667,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_attr & ha)
     ha.name = string();
     ha.values = hdf_genvec();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eo_attr())              // if positioned past last attribute, do nothing
         return *this;

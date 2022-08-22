@@ -142,7 +142,7 @@ bool GridGeoConstraint::build_lat_lon_maps()
                 d_latitude->read();
 
             set_lat(extract_double_array(d_latitude));   // throws Error
-            set_lat_length(d_latitude->length());
+            set_lat_size(d_latitude->length());
 
             set_lat_dim(d);
         }
@@ -158,7 +158,7 @@ bool GridGeoConstraint::build_lat_lon_maps()
                 d_longitude->read();
 
             set_lon(extract_double_array(d_longitude));
-            set_lon_length(d_longitude->length());
+            set_lon_size(d_longitude->length());
 
             set_lon_dim(d);
 
@@ -196,7 +196,7 @@ bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
                 d_latitude->read();
 
             set_lat(extract_double_array(d_latitude));   // throws Error
-            set_lat_length(d_latitude->length());
+            set_lat_size(d_latitude->length());
 
             set_lat_dim(d);
         }
@@ -209,7 +209,7 @@ bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
                 d_longitude->read();
 
             set_lon(extract_double_array(d_longitude));
-            set_lon_length(d_longitude->length());
+            set_lon_size(d_longitude->length());
 
             set_lon_dim(d);
 
@@ -316,7 +316,7 @@ void GridGeoConstraint::apply_constraint_to_data()
         // Now that the data are all in local storage alter the indices; the
         // left index has now been moved to 0, and the right index is now
         // at lon_vector_length-left+right.
-        set_longitude_index_right(get_lon_length() - get_longitude_index_left()
+        set_longitude_index_right(get_lon_size() - get_longitude_index_left()
                                   + get_longitude_index_right());
         set_longitude_index_left(0);
     }
@@ -327,7 +327,7 @@ void GridGeoConstraint::apply_constraint_to_data()
     // conditional transformation.
 
     // Do this _before_ applying the constraint since set_array_using_double()
-    // tests the array length using Vector::length() and that method returns
+    // tests the array length using Vector::size() and that method returns
     // the length _as constrained_. We want to move all of the longitude
     // values from d_lon back into the map, not just the number that will be
     // sent (although an optimization might do this, it's hard to imagine

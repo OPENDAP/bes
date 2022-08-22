@@ -18,7 +18,7 @@ using namespace libdap;
 
 bool HDFEOS2GeoCF1D::read()
 {
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     // Declaration of offset,count and step

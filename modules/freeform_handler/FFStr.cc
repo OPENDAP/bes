@@ -68,7 +68,7 @@ FFStr::read()
 
 	if (BufVal) { // Data in cache
         char *ptr = BufVal + BufPtr;
-        vector<char> TmpBuf(length() + 1);
+        vector<char> TmpBuf(size() + 1);
 
         // This code prunes both trailing and leading spaces from strings.
         // Spaces are often added to URLs in file server data sets since the
@@ -79,7 +79,7 @@ FFStr::read()
         int i, j, sLength;
 
         //remove trailing white space
-        for (i = length() - 1; i >= 0; i--)
+        for (i = size() - 1; i >= 0; i--)
             if (!isspace(*(ptr + i))) break;
 
         //remove leading white space
@@ -94,7 +94,7 @@ FFStr::read()
 		set_value(TmpBuf.data());
 		set_read_p(true);
 
-		BufPtr += length();
+		BufPtr += size();
 		return true;
 	}
 
