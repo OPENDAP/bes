@@ -50,10 +50,11 @@ class GridGeoConstraint : public GeoConstraint
 
 private:
     // Specific to a Grid
-    libdap::Grid *d_grid;               //< Constrain this Grid
+    libdap::Grid *d_grid = nullptr;               //< Constrain this Grid
 
-    libdap::Array *d_latitude;          //< A pointer to the Grid's latitude map
-    libdap::Array *d_longitude;         //< A pointer to the Grid's longitude map
+    libdap::Array *d_coverage = nullptr;          //< Constrain this Dap4 Array
+    libdap::Array *d_latitude = nullptr;          //< A pointer to the Grid's latitude map
+    libdap::Array *d_longitude = nullptr;         //< A pointer to the Grid's longitude map
 
     bool build_lat_lon_maps();
     bool build_lat_lon_maps(libdap::Array *lat, libdap::Array *lon);
@@ -67,6 +68,9 @@ public:
     //@{
     GridGeoConstraint(libdap::Grid *grid);
     GridGeoConstraint(libdap::Grid *grid, libdap::Array *lat, libdap::Array *lon);
+
+    GridGeoConstraint(libdap::Array *coverage);
+    GridGeoConstraint(libdap::Array *coverage, libdap::Array *lat, libdap::Array *lon);
     //@}
 
     virtual ~GridGeoConstraint()
@@ -77,6 +81,11 @@ public:
     virtual libdap::Grid *get_constrained_grid() const
     {
         return d_grid;
+    }
+
+    virtual libdap::Array *get_constrained_coverage() const
+    {
+        return d_coverage;
     }
 };
 

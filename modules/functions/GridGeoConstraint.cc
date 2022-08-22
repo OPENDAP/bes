@@ -37,6 +37,8 @@
 
 #include <libdap/Float64.h>
 #include <libdap/Grid.h>
+#include <libdap/Array.h>
+#include <libdap/D4Maps.h>
 #include <libdap/dods-datatypes.h>
 #include <libdap/Error.h>
 #include <libdap/InternalErr.h>
@@ -89,6 +91,37 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
         throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude maps are the rightmost dimensions (grid: " + grid->name() + ", 2).");
 }
 
+/** @brief Initialize GeoConstraint with an Array.
+
+    @param array Set the GeoConstraint to use this array variable. It is the
+    caller's responsibility to ensure that the value \e array is a valid Dap4
+    Array variable.
+ */
+GridGeoConstraint::GridGeoConstraint(Array *coverage)
+        : GeoConstraint(), d_coverage(coverage)
+{
+    if (!coverage->is_dap2_grid())
+        throw Error(string("The geogrid function cannot be applied to the array variable '")
+                    + coverage->name() + string("'."));
+
+    // Basic plan: For each map, look at each clause and set start and stop
+    // to be the intersection of the ranges in those clauses.
+    D4Maps *d4_maps = coverage->maps();
+
+    if (d4_maps->size() < 2
+        || d4_maps->size() > 3)
+        throw Error("The geogrid() function works only with Arrays of two or three dimensions.");
+/*
+    // Is this Array a geo-referenced grid? Throw Error if not.
+    if (!build_lat_lon_maps(coverage))
+        throw Error(string("The array '") + coverage->name()
+                    + "' does not have identifiable latitude/longitude map vectors.");
+
+    if (!lat_lon_dimensions_ok())
+        throw Error("The geogrid() function will only work when the Array's Longitude and Latitude maps are the rightmost dimensions (array: " + d_coverage->name() + ", 1).");*/
+}
+
+
 /** A private method called by the constructor that searches for latitude
     and longitude map vectors. This method returns false if either map
     cannot be found. It assumes that the d_grid and d_dds fields are set.
@@ -106,68 +139,90 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
     @return True if the maps are found, otherwise False */
 bool GridGeoConstraint::build_lat_lon_maps()
 {
-    Grid::Map_iter m = d_grid->map_begin();
+    if ( d_grid ) {
+        Grid::Map_iter m = d_grid->map_begin();
 
-    // Assume that a Grid is correct and thus has exactly as many maps as its
-    // array part has dimensions. Thus don't bother to test the Grid's array
-    // dimension iterator for '!= dim_end()'.
-    Array::Dim_iter d = d_grid->get_array()->dim_begin();
+        // Assume that a Grid is correct and thus has exactly as many maps as its
+        // array part has dimensions. Thus don't bother to test the Grid's array
+        // dimension iterator for '!= dim_end()'.
+        Array::Dim_iter d = d_grid->get_array()->dim_begin();
 
-    // The fields d_latitude and d_longitude may be initialized to null or they
-    // may already contain pointers to the maps to use. In the latter case,
-    // skip the heuristics used in this code. However, given that all this
-    // method does is find the lat/lon maps, if they are given in the ctor,
-    // This method will likely not be called at all.
-    while (m != d_grid->map_end() && (!d_latitude || !d_longitude)) {
-        string units_value = (*m)->get_attr_table().get_attr("units");
-        units_value = remove_quotes(units_value);
-        string map_name = (*m)->name();
+        // The fields d_latitude and d_longitude may be initialized to null or they
+        // may already contain pointers to the maps to use. In the latter case,
+        // skip the heuristics used in this code. However, given that all this
+        // method does is find the lat/lon maps, if they are given in the ctor,
+        // This method will likely not be called at all.
+        while (m != d_grid->map_end() && (!d_latitude || !d_longitude)) {
+            string units_value = (*m)->get_attr_table().get_attr("units");
+            units_value = remove_quotes(units_value);
+            string map_name = (*m)->name();
 
-        // The 'units' attribute must match exactly; the name only needs to
-        // match a prefix.
-        if (!d_latitude
-            && unit_or_name_match(get_coards_lat_units(), get_lat_names(),
-                                  units_value, map_name)) {
+            // The 'units' attribute must match exactly; the name only needs to
+            // match a prefix.
+            if (!d_latitude
+                && unit_or_name_match(get_coards_lat_units(), get_lat_names(),
+                                      units_value, map_name)) {
 
-            // Set both d_latitude (a pointer to the real map vector) and
-            // d_lat, a vector of the values represented as doubles. It's easier
-            // to work with d_lat, but it's d_latitude that needs to be set
-            // when constraining the grid. Also, record the grid variable's
-            // dimension iterator so that it's easier to set the Grid's Array
-            // (which also has to be constrained).
-            d_latitude = dynamic_cast < Array * >(*m);
-            if (!d_latitude)
-                throw InternalErr(__FILE__, __LINE__, "Expected an array.");
-            if (!d_latitude->read_p())
-                d_latitude->read();
+                // Set both d_latitude (a pointer to the real map vector) and
+                // d_lat, a vector of the values represented as doubles. It's easier
+                // to work with d_lat, but it's d_latitude that needs to be set
+                // when constraining the grid. Also, record the grid variable's
+                // dimension iterator so that it's easier to set the Grid's Array
+                // (which also has to be constrained).
+                d_latitude = dynamic_cast < Array * >(*m);
+                if (!d_latitude)
+                    throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+                if (!d_latitude->read_p())
+                    d_latitude->read();
 
-            set_lat(extract_double_array(d_latitude));   // throws Error
-            set_lat_length(d_latitude->length());
+                set_lat(extract_double_array(d_latitude));   // throws Error
+                set_lat_length(d_latitude->length());
 
-            set_lat_dim(d);
+                set_lat_dim(d);
+            }
+
+            if (!d_longitude        // && !units_value.empty()
+                && unit_or_name_match(get_coards_lon_units(), get_lon_names(),
+                                      units_value, map_name)) {
+
+                d_longitude = dynamic_cast < Array * >(*m);
+                if (!d_longitude)
+                    throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+                if (!d_longitude->read_p())
+                    d_longitude->read();
+
+                set_lon(extract_double_array(d_longitude));
+                set_lon_length(d_longitude->length());
+
+                set_lon_dim(d);
+
+                if (m + 1 == d_grid->map_end())
+                    set_longitude_rightmost(true);
+            }
+
+            ++m;
+            ++d;
         }
+    }
+    else {
 
-        if (!d_longitude        // && !units_value.empty()
-            && unit_or_name_match(get_coards_lon_units(), get_lon_names(),
-                                  units_value, map_name)) {
+        if ( !d_coverage->is_dap2_grid() )
+            throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
 
-            d_longitude = dynamic_cast < Array * >(*m);
-            if (!d_longitude)
-                throw InternalErr(__FILE__, __LINE__, "Expected an array.");
-            if (!d_longitude->read_p())
-                d_longitude->read();
-
-            set_lon(extract_double_array(d_longitude));
-            set_lon_length(d_longitude->length());
-
-            set_lon_dim(d);
-
-            if (m + 1 == d_grid->map_end())
-            	set_longitude_rightmost(true);
+        // Basic plan: For each map, look at each clause and set start and stop
+        // to be the intersection of the ranges in those clauses.
+        D4Maps *d4_maps = d_coverage->maps();
+        D4Maps::D4MapsIter miter = d4_maps->map_begin();
+        while (miter != d4_maps->map_end()) {
+            D4Map *d4_map = (*miter);
+            if (!d_latitude || !d_longitude) {
+                //string units_value = d4_map->get_attr_table().get_attr("units");
+                //units_value = remove_quotes(units_value);
+                //string map_name = (*d)->name();
+                break;
+            }
+            ++miter;
         }
-
-        ++m;
-        ++d;
     }
 
     return get_lat() && get_lon();

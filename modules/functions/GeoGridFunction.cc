@@ -286,21 +286,20 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
     BaseType *lon_btp = args->get_rvalue(2)->value(dmr);
     Array *l_lon = dynamic_cast < Array * >(lon_btp);
 
-    if (!l_lat) {
-        throw Error(malformed_expr,
-                    "When using the Grid, Lat, Lon form of geogrid() both the lat and lon maps must be given (lat map missing)!");
+    if (!l_lat) {    // If first argument is an array then second must be an array as well.
+        grid_lat_lon_form = false;
     }
-    else if ( !l_lon ) {
+    else if (!l_lon) {
         throw Error(malformed_expr,
                     "When using the Grid, Lat, Lon form of geogrid() both the lat and lon maps must be given (lon map missing)!");
     }
     else {
         grid_lat_lon_form = true;
+    }
 
-        if (args->size() < 7) {
+    if (grid_lat_lon_form && args->size() < 7) {
             throw Error(malformed_expr,
                         "Wrong number of arguments to geogrid() (expected at least 7 args). See geogrid() for more information.");
-        }
     }
 
     // Read the maps. Do this before calling parse_gse_expression(). Avoid
