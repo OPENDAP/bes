@@ -79,19 +79,19 @@ namespace base64 {
         static std::vector <u_int8_t> decode(const std::string &input) {
             char padCharacter = BASE64_PAD_CHARACTER;
 
-            if (input.length() % 4) //Sanity check
+            if (input.size() % 4) //Sanity check
                 throw std::runtime_error("Non-Valid base64!");
 
             size_t padding = 0;
-            if (input.length()) {
-                if (input[input.length() - 1] == padCharacter)
+            if (input.size()) {
+                if (input[input.size() - 1] == padCharacter)
                     padding++;
-                if (input[input.length() - 2] == padCharacter)
+                if (input[input.size() - 2] == padCharacter)
                     padding++;
             }
 
             std::vector <u_int8_t> decodedBytes;
-            decodedBytes.reserve(((input.length() / 4) * 3) - padding);
+            decodedBytes.reserve(((input.size() / 4) * 3) - padding);
 
             u_int32_t temp = 0;
 

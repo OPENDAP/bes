@@ -69,11 +69,11 @@ AccessCredentials::add(const string &key, const string &value) {
  */
 bool AccessCredentials::is_s3_cred() {
     if (!d_s3_tested) {
-        d_is_s3 = get(URL_KEY).length() > 0 &&
-                get(ID_KEY).length() > 0 &&
-                get(KEY_KEY).length() > 0 &&
-                get(REGION_KEY).length() > 0; //&&
-        //get(BUCKET_KEY).length()>0;
+        d_is_s3 = get(URL_KEY).size() > 0 &&
+                get(ID_KEY).size() > 0 &&
+                get(KEY_KEY).size() > 0 &&
+                get(REGION_KEY).size() > 0; //&&
+        //get(BUCKET_KEY).size()>0;
         d_s3_tested = true;
     }
     return d_is_s3;

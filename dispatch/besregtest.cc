@@ -106,13 +106,13 @@ int main(int argc, char **argv) {
         try {
             BESRegex reg_expr(reg.c_str());
             int result = reg_expr.match(inQuestion.c_str(),
-                    inQuestion.length());
+                    inQuestion.size());
             if (result != -1) {
-                if ((unsigned int)result == inQuestion.length()) {
+                if ((unsigned int)result == inQuestion.size()) {
                     cout << "expression \"" << reg << "\" matches exactly";
                 } else {
                     cout << "expression \"" << reg << "\" matches " << result
-                            << " characters out of " << inQuestion.length()
+                            << " characters out of " << inQuestion.size()
                             << " characters";
                 }
                 if (what == "type")
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
 
 bool break_includes(const string &listStr, string &err) {
     string::size_type str_begin = 0;
-    string::size_type str_end = listStr.length();
+    string::size_type str_end = listStr.size();
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
@@ -161,7 +161,7 @@ bool break_includes(const string &listStr, string &err) {
 
 bool break_types(const string &listStr, string &err) {
     string::size_type str_begin = 0;
-    string::size_type str_end = listStr.length();
+    string::size_type str_end = listStr.size();
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
@@ -184,7 +184,7 @@ bool break_types(const string &listStr, string &err) {
                 return false;
             } else {
                 string a_type = a_pair.substr(0, col);
-                string a_reg = a_pair.substr(col + 1, a_pair.length() - col);
+                string a_reg = a_pair.substr(col + 1, a_pair.size() - col);
                 expressions.insert(pair<string, string>(a_type, a_reg));
             }
         }

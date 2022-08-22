@@ -93,7 +93,7 @@ FoDapCovJsonTransmitter::FoDapCovJsonTransmitter() : BESTransmitter()
         if (!found || FoDapCovJsonTransmitter::temp_dir.empty()) {
             FoDapCovJsonTransmitter::temp_dir = FO_COVJSON_TEMP_DIR;
         }
-        string::size_type len = FoDapCovJsonTransmitter::temp_dir.length();
+        string::size_type len = FoDapCovJsonTransmitter::temp_dir.size();
         if (FoDapCovJsonTransmitter::temp_dir[len - 1] == '/') {
             FoDapCovJsonTransmitter::temp_dir = FoDapCovJsonTransmitter::temp_dir.substr(0, len - 1);
         }

@@ -141,7 +141,7 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
         else {
             fullpath = fullpath + "/" + rem.substr(0, slash);
             checking = validPath + "/" + rem.substr(0, slash);
-            rem = rem.substr(slash + 1, rem.length() - slash);
+            rem = rem.substr(slash + 1, rem.size() - slash);
         }
 
         BESDEBUG(W10N_DEBUG_KEY, "eval_resource_path() - fullpath: "<< fullpath << endl);
@@ -202,7 +202,7 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
 std::string escape_for_json(const std::string &input)
 {
     std::stringstream ss;
-    for (size_t i = 0; i < input.length(); ++i) {
+    for (size_t i = 0; i < input.size(); ++i) {
         if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
             ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unsigned(input[i]);
         }

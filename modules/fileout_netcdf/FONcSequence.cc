@@ -91,7 +91,7 @@ void FONcSequence::define(int ncid)
     // presence of the sequence, the name of the sequence, and that the
     // sequences has been elided.
     string val = (string) "The sequence " + _varname + " is a member of this dataset and has been elided.";
-    int stax = nc_put_att_text(ncid, NC_GLOBAL, _varname.c_str(), val.length(), val.c_str());
+    int stax = nc_put_att_text(ncid, NC_GLOBAL, _varname.c_str(), val.size(), val.c_str());
     if (stax != NC_NOERR) {
         string err = (string) "File out netcdf, " + "failed to write string attribute for sequence " + _varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);

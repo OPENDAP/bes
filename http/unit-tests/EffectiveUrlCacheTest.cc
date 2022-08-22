@@ -479,7 +479,7 @@ namespace http {
 
             amz_date << "Z";
 
-            if(debug) cout << "amz_date: " << amz_date.str() << " len: " << amz_date.str().length() << endl;
+            if(debug) cout << "amz_date: " << amz_date.str() << " len: " << amz_date.str().size() << endl;
             return amz_date.str();
         }
 #endif

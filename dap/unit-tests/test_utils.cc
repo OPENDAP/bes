@@ -82,16 +82,16 @@ void clean_cache_dir(const string &cache)
 #if 0
 bool re_match(BESRegex &r, const string &s)
 {
-    DBG(cerr << "s.length(): " << s.length() << endl);
-    int pos = r.match(s.c_str(), s.length());
+    DBG(cerr << "s.size(): " << s.size() << endl);
+    int pos = r.match(s.c_str(), s.size());
     DBG(cerr << "r.match(s): " << pos << endl);
-    return pos > 0 && static_cast<unsigned>(pos) == s.length();
+    return pos > 0 && static_cast<unsigned>(pos) == s.size();
 }
 
 bool re_match_binary(BESRegex &r, const string &s)
 {
-    DBG(cerr << "s.length(): " << s.length() << endl);
-    int pos = r.match(s.c_str(), s.length());
+    DBG(cerr << "s.size(): " << s.size() << endl);
+    int pos = r.match(s.c_str(), s.size());
     DBG(cerr << "r.match(s): " << pos << endl);
     return pos > 0;
 }

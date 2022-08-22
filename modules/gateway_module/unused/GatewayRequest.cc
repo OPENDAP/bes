@@ -83,7 +83,7 @@ GatewayRequest::make_request(const string &url, string &type)
     // Don't create the regex if the string is empty
     if (!GatewayUtils::NoProxyRegex.empty()) {
         BESRegex r(GatewayUtils::NoProxyRegex.c_str());
-        if (r.match(url.c_str(), url.length()) != -1) {
+        if (r.match(url.c_str(), url.size()) != -1) {
             BESDEBUG("gateway",
                 "Gateway found NoProxy match. BESRegex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
             configure_proxy = false;

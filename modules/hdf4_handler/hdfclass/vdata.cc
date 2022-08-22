@@ -136,7 +136,7 @@ void hdfistream_vdata::_seek(int32 ref) {
 hdfistream_vdata::hdfistream_vdata(const string filename) :
 	hdfistream_obj(filename) {
 	_init();
-	if (_filename.length() != 0) // if ctor specified a null filename
+	if (_filename.size() != 0) // if ctor specified a null filename
 		open(_filename.c_str());
 	return;
 }
@@ -229,7 +229,7 @@ bool hdfistream_vdata::setrecs(int32 begin, int32 end) {
 // check to see if stream is positioned past the last attribute in the
 // currently open Vdata
 bool hdfistream_vdata::eo_attr(void) const {
-	if (_filename.length() == 0) // no file open
+	if (_filename.size() == 0) // no file open
 		THROW(hcerr_invstream);
 	if (eos() && !bos()) // if eos(), then always eo_attr()
 		return true;
@@ -263,7 +263,7 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_attr & ha) {
 	ha.name = string();
 	ha.values = hdf_genvec();
 
-	if (_filename.length() == 0) // no file open
+	if (_filename.size() == 0) // no file open
 		THROW(hcerr_invstream);
 	if (eo_attr()) // if positioned past last attr, do nothing
 		return *this;

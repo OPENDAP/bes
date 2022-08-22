@@ -84,7 +84,7 @@ void log_error(BESError &e)
     time_t timer = time(NULL);
     ptm = gmtime(&timer);
     string now(asctime(ptm));
-    now = now.substr(0, now.length() - 1); // drop \n from end of string
+    now = now.substr(0, now.size() - 1); // drop \n from end of string
 #endif
 
     string error_name = "";

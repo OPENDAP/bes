@@ -231,7 +231,7 @@ static void write_file(const string &name, const string &buffer)
 	ofstream outfile(tmp_name.c_str(), std::ios_base::out);
 	if (outfile.is_open()) {
 		// write to outfile
-		outfile.write(buffer.data(), buffer.length());
+		outfile.write(buffer.data(), buffer.size());
 
 		outfile.close();
 	}

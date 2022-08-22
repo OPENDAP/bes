@@ -1759,7 +1759,7 @@ string get_cf_string_helper(string & s) {
     // Always start with _ if the first character is not a letter
     if (true == isdigit(s[0])) s.insert(0, insertString);
 
-    for (unsigned int i = 0; i < s.length(); i++)
+    for (unsigned int i = 0; i < s.size(); i++)
         if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
     return s;
 }

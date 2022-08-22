@@ -97,7 +97,7 @@ GeoTiffTransmitter::GeoTiffTransmitter() :  BESTransmitter()
         if (!found || GeoTiffTransmitter::temp_dir.empty()) {
             GeoTiffTransmitter::temp_dir = FONG_TEMP_DIR;
         }
-        string::size_type len = GeoTiffTransmitter::temp_dir.length();
+        string::size_type len = GeoTiffTransmitter::temp_dir.size();
         if (GeoTiffTransmitter::temp_dir[len - 1] == '/') {
             GeoTiffTransmitter::temp_dir = GeoTiffTransmitter::temp_dir.substr(0, len - 1);
         }
@@ -208,8 +208,8 @@ void GeoTiffTransmitter::send_data_as_geotiff(BESResponseObject *obj, BESDataHan
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
     string temp_file_name = GeoTiffTransmitter::temp_dir + '/' + "geotiffXXXXXX";
-    vector<char> temp_file(temp_file_name.length() + 1);
-    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.length());
+    vector<char> temp_file(temp_file_name.size() + 1);
+    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.size());
     temp_file[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using

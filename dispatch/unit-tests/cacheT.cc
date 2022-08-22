@@ -143,7 +143,7 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
     struct dirent *dit;
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, match_prefix.length(), match_prefix) == 0) contents[dirEntry] = dirEntry;
+        if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) contents[dirEntry] = dirEntry;
     }
 
     closedir(dip);
@@ -183,7 +183,7 @@ string show_cache(const string cache_dir, const string match_prefix)
     struct dirent *dit;
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, match_prefix.length(), match_prefix) == 0) {
+        if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) {
             oss << dirEntry << endl;
             contents[dirEntry] = dirEntry;
         }
@@ -552,7 +552,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: cacheT has the following tests:" << endl;
             const std::vector<Test*> &tests = cacheT::suite()->getTests();
-            unsigned int prefix_len = cacheT::suite()->getName().append("::").length();
+            unsigned int prefix_len = cacheT::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

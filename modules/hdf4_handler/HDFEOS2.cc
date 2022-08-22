@@ -3499,7 +3499,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
     {
         size_t pos = EOS2ObjName.rfind(modis_eq_scale_type);
         if(pos != string::npos && 
-          (pos== (EOS2ObjName.length()-modis_eq_scale_type.length())))
+          (pos== (EOS2ObjName.size()-modis_eq_scale_type.size())))
         {
             scaletype = MODIS_EQ_SCALE;
             return;
@@ -3509,7 +3509,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
         {
             pos = EOS2ObjName.rfind(modis_multi_scale_type[k]);
             if (pos !=string::npos && 
-               (pos== (EOS2ObjName.length()-modis_multi_scale_type[k].length())))
+               (pos== (EOS2ObjName.size()-modis_multi_scale_type[k].size())))
             {
                 scaletype = MODIS_MUL_SCALE;
                 return;
@@ -3520,7 +3520,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
         {
             pos = EOS2ObjName.rfind(modis_div_scale_type[k]);
             if (pos != string::npos && 
-                (pos==(EOS2ObjName.length()-modis_div_scale_type[k].length()))){
+                (pos==(EOS2ObjName.size()-modis_div_scale_type[k].size()))){
                 scaletype = MODIS_DIV_SCALE;
 
                 // We have a case that group 

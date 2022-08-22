@@ -118,7 +118,7 @@ bool FFD4Sequence::read()
             if ((*p)->synthesized_p())
                 continue;
             if ((*p)->type() == dods_str_c)
-                endbyte += static_cast<FFStr&>(**p).length();
+                endbyte += static_cast<FFStr&>(**p).size();
             else
                 endbyte += (*p)->width();
 

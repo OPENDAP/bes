@@ -186,9 +186,9 @@ public:
 
             da->read();
 
-            CPPUNIT_ASSERT(da->length() == 2);
+            CPPUNIT_ASSERT(da->size() == 2);
 
-            vector<dods_int16> v16(da->length());
+            vector<dods_int16> v16(da->size());
             da->value(v16.data());
             BESDEBUG("dmrpp", "v16[0]: " << v16[0] << ", v16[1]: " << v16[1] << endl);
             CPPUNIT_ASSERT(v16[0] == -32768);
@@ -202,9 +202,9 @@ public:
 
             da->read();
 
-            CPPUNIT_ASSERT(da->length() == 4);
+            CPPUNIT_ASSERT(da->size() == 4);
 
-            vector<dods_int16> v16_2(da->length());
+            vector<dods_int16> v16_2(da->size());
             da->value(v16_2.data());
 
             if (debug) copy(v16_2.begin(), v16_2.end(), ostream_iterator<dods_int16>(cerr, " "));
@@ -220,9 +220,9 @@ public:
 
             da->read();
 
-            CPPUNIT_ASSERT(da->length() == 8);
+            CPPUNIT_ASSERT(da->size() == 8);
 
-            vector<dods_int32> v32(da->length());
+            vector<dods_int32> v32(da->size());
             da->value(v32.data());
 
             if (debug) copy(v32.begin(), v32.end(), ostream_iterator<dods_int32>(cerr, " "));
@@ -238,9 +238,9 @@ public:
 
             da->read();
 
-            CPPUNIT_ASSERT(da->length() == 32);
+            CPPUNIT_ASSERT(da->size() == 32);
 
-            vector<dods_int32> v32_2(da->length());
+            vector<dods_int32> v32_2(da->size());
             da->value(v32_2.data());
 
             if (debug) copy(v32_2.begin(), v32_2.end(), ostream_iterator<dods_int32>(cerr, " "));

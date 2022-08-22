@@ -197,15 +197,15 @@ void set_array_using_double(Array * dest, double *src, int src_len)
         throw InternalErr(__FILE__, __LINE__,
                 "The function requires a DAP numeric-type array argument.");
 
-    // Test sizes. Note that Array::length() takes any constraint into account
+    // Test sizes. Note that Array::size() takes any constraint into account
     // when it returns the length. Even if this was removed, the 'helper'
     // function this uses calls Vector::val2buf() which uses Vector::width()
-    // which in turn uses length().
-    if (dest->length() != src_len)
+    // which in turn uses size().
+    if (dest->size() != src_len)
         throw InternalErr(__FILE__, __LINE__,
                 "The source and destination array sizes don't match ("
                 + long_to_string(src_len) + " versus "
-                + long_to_string(dest->length()) + ").");
+                + long_to_string(dest->size()) + ").");
 
     // The types of arguments that the CE Parser will build for numeric
     // constants are limited to Uint32, Int32 and Float64. See ce_expr.y.
@@ -246,7 +246,7 @@ void set_array_using_double(Array * dest, double *src, int src_len)
 template<typename DODS, typename T> T *extract_array_helper(Array *a) 
 {
   DBG(cerr << "Extracting array values..." << endl);
-  int length = a->length();
+  int length = a->size();
 
   DBG(cerr << "Allocating..." << length << endl);
   DODS *b = new DODS[length];
@@ -279,31 +279,31 @@ GF::Array *extract_gridfield_array(Array *a) {
     switch (a->var()->type()) {
     case dods_byte_c:
        gfa = new GF::Array(a->var()->name(), GF::INT);
-       gfa->shareIntData(extract_array_helper<dods_byte, int>(a), a->length());
+       gfa->shareIntData(extract_array_helper<dods_byte, int>(a), a->size());
        break;
     case dods_uint16_c:
        gfa = new GF::Array(a->var()->name(), GF::INT);
-       gfa->shareIntData(extract_array_helper<dods_uint16, int>(a), a->length());
+       gfa->shareIntData(extract_array_helper<dods_uint16, int>(a), a->size());
        break;
     case dods_int16_c:
        gfa = new GF::Array(a->var()->name(), GF::INT);
-       gfa->shareIntData(extract_array_helper<dods_int16, int>(a), a->length());
+       gfa->shareIntData(extract_array_helper<dods_int16, int>(a), a->size());
        break;
     case dods_uint32_c:
        gfa = new GF::Array(a->var()->name(), GF::INT);
-       gfa->shareIntData(extract_array_helper<dods_uint32, int>(a), a->length());
+       gfa->shareIntData(extract_array_helper<dods_uint32, int>(a), a->size());
        break;
     case dods_int32_c:
        gfa = new GF::Array(a->var()->name(), GF::INT);
-       gfa->shareIntData(extract_array_helper<dods_int32, int>(a), a->length());
+       gfa->shareIntData(extract_array_helper<dods_int32, int>(a), a->size());
        break;
     case dods_float32_c:
        gfa = new GF::Array(a->var()->name(), GF::FLOAT);
-       gfa->shareFloatData(extract_array_helper<dods_float32, float>(a), a->length());
+       gfa->shareFloatData(extract_array_helper<dods_float32, float>(a), a->size());
        break;
     case dods_float64_c:
        gfa = new GF::Array(a->var()->name(), GF::FLOAT);
-       gfa->shareFloatData(extract_array_helper<dods_float64, float>(a), a->length());
+       gfa->shareFloatData(extract_array_helper<dods_float64, float>(a), a->size());
        break;
     default:
         throw InternalErr(__FILE__, __LINE__,
@@ -406,7 +406,7 @@ T *extract_array(Array * a)
 
 template<class T> static double *extract_double_array_helper(Array * a)
 {
-    int length = a->length();
+    int length = a->size();
     // Could improve this using vector<T>. jhrg
     T *b = new T[length];
     a->value(b);
@@ -726,7 +726,7 @@ void function_miic_ex2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
     }
 
     // Now read the data values into C arrays the function can use. The length of the
-    // data is l_lat->length() and l_lon->length() resp. Use delete[] to release the
+    // data is l_lat->size() and l_lon->size() resp. Use delete[] to release the
     // storage. Also note that the Array* must be used to determine the number of
     // dimensions of the arrays - extract_double_array() returns a simple vector.
     l_lat->read();
@@ -740,13 +740,13 @@ void function_miic_ex2(int argc, BaseType *argv[], DDS &dds, BaseType **btpp)
     Structure *dest = new Structure("MODIS_Geo_information");
 
     Array *new_lat = new Array("MODIS_Latitude", new Float64("MODIS_Latitude"));
-    new_lat->append_dim(l_lat->length());
-    new_lat->set_value(lat, l_lat->length());
+    new_lat->append_dim(l_lat->size());
+    new_lat->set_value(lat, l_lat->size());
     dest->add_var(new_lat);
 
     Array *new_lon = new Array("MODIS_Longtude", new Float64("MODIS_Longtude"));
-    new_lon->append_dim(l_lon->length());
-    new_lon->set_value(lon, l_lon->length());
+    new_lon->append_dim(l_lon->size());
+    new_lon->set_value(lon, l_lon->size());
     dest->add_var(new_lon);
 
     *btpp = dest;
@@ -1087,7 +1087,7 @@ static double get_attribute_double_value(BaseType *var,
         if (var->type() == dods_grid_c)
             return get_attribute_double_value(dynamic_cast<Grid&>(*var).get_array(), attributes);
         else
-            throw Error(malformed_expr,string("No COARDS/CF '") + values.substr(0, values.length() - 2)
+            throw Error(malformed_expr,string("No COARDS/CF '") + values.substr(0, values.size() - 2)
                     + "' attribute was found for the variable '"
                     + var->name() + "'.");
     }
@@ -1215,7 +1215,7 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
              //source->set_send_p(true);
         source->read();
         data = extract_double_array(source);
-        int length = source->length();
+        int length = source->size();
         for (int i = 0; i < length; ++i)
             data[i] = data[i] * m + b;
 #if 0
@@ -1259,7 +1259,7 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
         data = extract_double_array(a);
 
         // Now scale the data.
-        int length = a->length();
+        int length = a->size();
         for (int i = 0; i < length; ++i)
             data[i] = data[i] * m + b;
 #if 0
@@ -1291,15 +1291,15 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
             a->read();
             switch(a->var()->type()) {
             case dods_byte_c: {
-                vector<dods_byte> v(a->length());
+                vector<dods_byte> v(a->size());
                 a->value(v.data());
                 static_cast<Array*>(*d)->set_value(v, v.size());
                 break;
             }
             case dods_float32_c: {
-                vector<dods_float32> v(a->length());
+                vector<dods_float32> v(a->size());
                 a->value(v.data());
-                static_cast<Array*>(*d)->set_value(v, a->length());
+                static_cast<Array*>(*d)->set_value(v, a->size());
                 break;
             }
             default:
@@ -1327,7 +1327,7 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
             source.read();
 
         data = extract_double_array(&source);
-        int length = source.length();
+        int length = source.size();
         int i = 0;
         while (i < length) {
             if (!use_missing || !double_eq(data[i], missing))
@@ -1356,7 +1356,7 @@ function_linear_scale(int argc, BaseType * argv[], DDS &, BaseType **btpp)
             source.read();
 
         data = extract_double_array(&source);
-        int length = source.length();
+        int length = source.size();
         for (int i = 0; i < length; ++i)
             data[i] = data[i] * m + b;
 

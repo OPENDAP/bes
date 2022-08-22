@@ -78,7 +78,7 @@ int PPTStreamBuf::sync()
     if (pptr() > pbase()) {
         ostringstream strm;
         strm << hex << setw(7) << setfill('0') << (unsigned int) (pptr() - pbase()) << "d";
-        write(d_fd, strm.str().c_str(), strm.str().length());
+        write(d_fd, strm.str().c_str(), strm.str().size());
 
         count += write(d_fd, d_buffer, pptr() - pbase());
         setp(d_buffer, d_buffer + d_bufsize);

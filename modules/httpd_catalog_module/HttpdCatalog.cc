@@ -160,7 +160,7 @@ HttpdCatalog::get_node(const string &ppath) const
     bes::CatalogNode *node;
 
     string path = ppath;
-    while(path.length()>0 && path[0]=='/')
+    while(path.size()>0 && path[0]=='/')
         path = path.substr(1);
 
     if(path.empty() || path=="/"){
@@ -233,7 +233,7 @@ string HttpdCatalog::path_to_access_url(const string &p) const
 
     string url = it->second;
 
-    string remote_relative_path = path.substr(collection.length()+1); // Broken here. HK-313 jhrg 1/24/19
+    string remote_relative_path = path.substr(collection.size()+1); // Broken here. HK-313 jhrg 1/24/19
     BESDEBUG(MODULE, prolog << "remote_relative_path: " << remote_relative_path << endl);
 
     string access_url;

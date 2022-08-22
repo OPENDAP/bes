@@ -125,7 +125,7 @@ name_in_kill_file(const string &name)
     }
 #endif
 
-    bool ret = dim_ptr->match(name.c_str(), name.length()) != -1;
+    bool ret = dim_ptr->match(name.c_str(), name.size()) != -1;
     return ret ;
 }
 
@@ -153,7 +153,7 @@ name_is_global(string &name)
 #endif
 
     downcase(name);
-    return global_ptr->match(name.c_str(), name.length()) != -1;
+    return global_ptr->match(name.c_str(), name.size()) != -1;
 }
 
 // write_global_attributes and write_attributes are almost the same except
@@ -454,7 +454,7 @@ write_usage_response(ostream &strm, DDS &dds, DAS &das,
 	strm << "<html><head><title>Dataset Information</title></head>"
 	     << "\n" << "<body>" << "\n" ;
 
-        if (global_attrs.length())
+        if (global_attrs.size())
 	{
 	    strm << global_attrs.c_str() << "\n" << "<hr>" << "\n" ;
         }
