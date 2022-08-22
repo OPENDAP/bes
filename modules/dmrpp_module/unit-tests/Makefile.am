@@ -96,7 +96,7 @@ $(CREDS_CONF):
 
 if CPPUNIT
 
-UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
+UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppCommonTest \
 DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest build_dmrpp_util_test \
 DmrppChunkOdometerTest
 
@@ -135,9 +135,10 @@ NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(LIBA
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
-DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+# Retired in favor of DMZ and DMZTest
+#DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
+#DmrppParserTest_SOURCES = DmrppParserTest.cc
+#DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

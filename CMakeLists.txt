@@ -654,7 +654,6 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
-    modules/dmrpp_module/unit-tests/DmrppParserTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
 	modules/dmrpp_module/build_dmrpp.cc
 	modules/dmrpp_module/build_dmrpp_util.cc
