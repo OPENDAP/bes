@@ -47,12 +47,15 @@
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "HttpNames.h"
+#include "url_impl.h"
 
 #include "DmrppMetadataStore.h"
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
-#include "DmrppParserSax2.h"
+// #include "DmrppParserSax2.h"
+#include "DMZ.h"
 
 #include "read_test_baseline.h"
 #include "test_config.h"
@@ -144,10 +147,11 @@ private:
             dmrpp->set_href(d_test_dmr_url->str());
 
             d_test_dmr = dmrpp;
-            DmrppParserSax2 dp;
+            DMZ dp(file_name);
             DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
             fstream in(file_name.c_str(), ios::in|ios::binary);
-            dp.intern(in, d_test_dmr);
+            dp.build_thin_dmr(d_test_dmr);
+            // dp.intern(in, d_test_dmr);
 
             DBG(cerr << prolog << "DMRpp Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);

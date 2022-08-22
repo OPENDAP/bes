@@ -78,7 +78,6 @@ std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 atomic_uint transfer_thread_counter(0);
 
 
-
 /**
  * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
  *
@@ -1673,6 +1672,132 @@ public:
 };
 ///@}
 
+
+unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
+{
+    try {
+        d_fixed_str_length = stoull(length_str);
+    }
+    catch(std::invalid_argument e){
+        stringstream err_msg;
+        err_msg << "The value of the length string could not be parsed. Message: " << e.what();
+        throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
+    }
+    return d_fixed_str_length;
+}
+
+
+
+
+std::string pad_type_to_str(string_pad_type pad, bool fail_on_not_set=false)
+{
+    string pad_str;
+    switch(pad){
+        case null_term:
+            pad_str = "null_term";
+            break;
+        case null_pad:
+            pad_str = "null_pad";
+            break;
+        case space_pad:
+            pad_str = "space_pad";
+            break;
+        case not_set:
+            pad_str = "not_set";
+            break;
+        default:
+            throw BESInternalError("ERROR: Unrecognized HDF5 String Padding Scheme!",__FILE__,__LINE__);
+            break;
+    }
+    return pad_str;
+}
+
+string_pad_type str_to_pad_type(const string &pad_str){
+    string_pad_type pad_type(not_set);
+    if(pad_str=="null_pad"){
+        pad_type = null_pad;
+    }
+    else if(pad_str=="null_term") {
+        pad_type = null_term;
+    }
+    else if (pad_str == "space_pad"){
+        pad_type = space_pad;
+    }
+    else if (pad_str == "not_set"){
+        pad_type = not_set;
+    }
+    else {
+        stringstream err_msg;
+        err_msg << "The value of the pad string was not recognized. pad_str: " << pad_str;
+        throw BESInternalError(err_msg.str(),__FILE__,__LINE__);
+    }
+    return pad_type;
+}
+
+
+string_pad_type DmrppArray::set_fixed_length_string_pad_type(const string &pad_str)
+{
+    d_fixed_length_string_pad_type = str_to_pad_type(pad_str);
+    return d_fixed_length_string_pad_type;
+}
+
+
+ons::ons(const std::string &ons_pair_str) {
+    const string colon(":");
+    size_t colon_pos = ons_pair_str.find(colon);
+
+    string offset_str = ons_pair_str.substr(0, colon_pos);
+    offset = stoull(offset_str);
+
+    string size_str = ons_pair_str.substr(colon_pos + 1);
+    size = stoull(size_str);
+}
+
+
+void DmrppArray::set_ons_string(const std::string &ons_str)
+{
+    d_vlen_ons_str = ons_str;
+}
+
+void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
+{
+    stringstream ons_ss;
+    bool first = true;
+    for(auto &ons_pair: ons_pairs){
+        if(!first){
+            ons_ss << ",";
+        }
+        ons_ss << ons_pair.offset << ":" << ons_pair.size;
+    }
+    d_vlen_ons_str = ons_ss.str();
+}
+
+
+/**
+ * Ingests the (possibly long) ons (offset and size) string that itemizes every offset
+ * and size for the members of variable length string array and creates from the string
+ * offset:size pairs
+ * @param ons_str
+ * @param vlen_str_addrs
+ */
+void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
+{
+    const string comma(",");
+    size_t last = 0;
+    size_t next = 0;
+
+    while ((next = d_vlen_ons_str.find(comma, last)) != string::npos) {
+        string ona_pair_str = d_vlen_ons_str.substr(last, next-last);
+        ons ons_pair(ona_pair_str);
+        ons_pairs.push_back(ons_pair);
+        last = next + 1;
+    }
+    // @TODO - Inspect this once we are doing the real implementation
+    //   and make sure the "tail" is handled correctly.
+    cout << d_vlen_ons_str.substr(last) << endl;
+}
+
+
 /**
  * @brief Shadow libdap::Array::print_dap4() - optionally prints DMR++ chunk information
  *
@@ -1805,7 +1930,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     }
     if(var()->type() == dods_str_c){
         if(is_flsa()){
-            // <dmrpp:fStringArray string_length="##" pad="null | space" />
+            // <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
 
             string element_name("dmrpp:FixedLengthStringArray");
             string str_len_attr_name("string_length");
@@ -1819,16 +1944,13 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) str_len_attr_name.c_str(), (const xmlChar *) strlen_str.str().c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'string_length'");
 
-            string pad_str;
-            if(d_fixed_length_string_pad_type==null_term || d_fixed_length_string_pad_type==null_pad){
-                pad_str = "null";
+            if(d_fixed_length_string_pad_type == not_set){
+                    throw BESInternalError("ERROR: Padding Scheme Has Not Been Set!",__FILE__,__LINE__);
             }
-            else if ( d_fixed_length_string_pad_type == space_pad){
-                pad_str = "space";
-            }
+            string pad_str = pad_type_to_str(d_fixed_length_string_pad_type);
+
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "pad", (const xmlChar *) pad_str.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for 'pad'");
-
 
             if (xmlTextWriterEndElement(xml.get_writer()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
@@ -1846,7 +1968,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
         }
         else {
-            // @TODO What do here? Throwing the excpetion broke things.
+            // @TODO What do here? Throwing this exception broke things.
             //   Apparently there are situations where neither vlsa or flsa are true?
             //throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
             //                                      "contain variable length strings or fixed length strings.");
@@ -1864,61 +1986,6 @@ void DmrppArray::dump(ostream &strm) const
     Array::dump(strm);
     strm << BESIndent::LMarg << "value: " << "----" << /*d_buf <<*/endl;
     BESIndent::UnIndent();
-}
-
-ons::ons(const std::string &ons_pair_str) {
-    const string colon(":");
-    size_t colon_pos = ons_pair_str.find(colon);
-
-    string offset_str = ons_pair_str.substr(0, colon_pos);
-    offset = stoull(offset_str);
-
-    string size_str = ons_pair_str.substr(colon_pos + 1);
-    size = stoull(size_str);
-}
-
-
-void DmrppArray::set_ons_string(const std::string &ons_str)
-{
-    d_vlen_ons_str = ons_str;
-}
-
-void DmrppArray::set_ons_string(const vector<ons> &ons_pairs)
-{
-    stringstream ons_ss;
-    bool first = true;
-    for(auto &ons_pair: ons_pairs){
-        if(!first){
-            ons_ss << ",";
-        }
-        ons_ss << ons_pair.offset << ":" << ons_pair.size;
-    }
-    d_vlen_ons_str = ons_ss.str();
-}
-
-
-/**
- * Ingests the (possibly long) ons (offset and size) string that itemizes every offset
- * and size for the members of variable length string array and creates from the string
- * offset:size pairs
- * @param ons_str
- * @param vlen_str_addrs
- */
-void DmrppArray::get_ons_objs(vector<ons> &ons_pairs)
-{
-    const string comma(",");
-    size_t last = 0;
-    size_t next = 0;
-
-    while ((next = d_vlen_ons_str.find(comma, last)) != string::npos) {
-        string ona_pair_str = d_vlen_ons_str.substr(last, next-last);
-        ons ons_pair(ona_pair_str);
-        ons_pairs.push_back(ons_pair);
-        last = next + 1;
-    }
-    // @TODO - Inspect this once we are doing the real implementation
-    //   and make sure the "tail" is handled correctly.
-    cout << d_vlen_ons_str.substr(last) << endl;
 }
 
 

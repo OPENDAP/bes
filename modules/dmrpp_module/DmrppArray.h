@@ -80,15 +80,13 @@ private:
     //void _duplicate(const DmrppArray &ts);
 
     // In the dmr++ XML:
-    //     <dmrpp:vStringArray>
-    //         <v>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</v>
-    //     </dmrpp:vStringArray
+    //   <dmrpp:vStringArray>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</dmrpp:vStringArray>
+
     std::string d_vlen_ons_str;
     bool is_variable_length_string_array = false;
 
     // In the dmr++ XML:
-    //     <dmrpp:fStringArray string_length="##" pad="null | space" />
-    bool is_fixed_length_string_array = false;
+    //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
     unsigned long long d_fixed_str_length = 0;
     string_pad_type d_fixed_length_string_pad_type = not_set;
 
@@ -182,24 +180,22 @@ public:
      * @param state
      */
     void set_is_flsa(bool state){
-        is_fixed_length_string_array=state;
         is_variable_length_string_array=!state;
     };
 
     void set_is_vlsa(bool state){
         is_variable_length_string_array=state;
-        is_fixed_length_string_array=!state;
     };
-    bool is_flsa() const{ return is_fixed_length_string_array; }
+    bool is_flsa() const{ return !is_variable_length_string_array; }
     bool is_vlsa() const{ return is_variable_length_string_array; }
 
-    void set_fixed_string_length(unsigned long long length){ d_fixed_str_length = length; }
-
-    unsigned long long get_fixed_string_length(){ return d_fixed_str_length; }
+    void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }
+    unsigned long long set_fixed_string_length(const string &length_str);
+    unsigned long long get_fixed_string_length() const { return d_fixed_str_length; }
 
     void set_fixed_length_string_pad(const string_pad_type pad){ d_fixed_length_string_pad_type = pad; }
-
-    string_pad_type get_fixed_length_string_pad(){ return d_fixed_length_string_pad_type; }
+    string_pad_type set_fixed_length_string_pad_type(const std::string &pad_str);
+    string_pad_type get_fixed_length_string_pad() const { return d_fixed_length_string_pad_type; }
 
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
