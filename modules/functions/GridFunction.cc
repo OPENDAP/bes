@@ -30,7 +30,7 @@
 #include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include <libdap/Structure.h>
+#include <libdap/D4Group.h>
 #include <libdap/D4RValue.h>
 #include <libdap/D4Maps.h>
 
@@ -282,11 +282,23 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     // values.
 
     // Build the return value(s) - this means make copies of the Map arrays
-    Structure *dapResult = new Structure("grid_result_unwrap");
+    D4Group *dapResult = new D4Group("grid_result_unwrap");
 
-    // Basic plan: Add the new array to the destination structure, and clear read_p flag.
+    // Basic plan: Add the new array to the destination D4Group, and clear read_p flag.
     l_array->set_read_p(false);
     dapResult->add_var_nocopy(l_array);
+
+    // Basic plan: Add D4Dimensions to the destination D4Group; copy all dims to the parent group.
+    D4Dimensions *grp_d4_dims = dapResult->dims();
+
+    Array *g_array = static_cast<Array *>(dapResult->find_var(l_array->name()));
+    // Basic plan: For each D4Dimension in the array, add it to the destination D4Group
+    Array::Dim_iter dim_i = g_array->dim_begin();
+    while (dim_i != g_array->dim_end()) {
+        D4Dimension *d4_dim = g_array->dimension_D4dim(dim_i);
+        grp_d4_dims->add_dim_nocopy(d4_dim);
+        ++dim_i;
+    }
 
     // Basic plan: For each map in the array, add it to the destination structure and clear the read_p flag
     d4_maps = l_array->maps();
