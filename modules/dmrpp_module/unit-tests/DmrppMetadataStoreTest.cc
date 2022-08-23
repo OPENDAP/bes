@@ -142,13 +142,12 @@ private:
             // Get a DMRpp to cache.
             string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
             string test_dmr_url_str = FILE_PROTOCOL;
-            test_dmr_url_str += "This/Is/a/Test.nc";
-            d_test_dmr_url = std::make_shared<http::url>(test_dmr_url_str);
+            test_dmr_url_str += "https://This/Is/A/Test.nc";
+            d_test_dmr_url = std::shared_ptr<http::url>(new http::url(test_dmr_url_str));
 
             auto *dmrpp = new DMRpp(&d_dmrpp_factory);
             dmrpp->set_href(d_test_dmr_url->str());
 
-            d_test_dmr = dmrpp;
             DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
             DMZ dmz(file_name);
             dmz.build_thin_dmr(dmrpp);
@@ -158,7 +157,15 @@ private:
             //dp.build_thin_dmr(d_test_dmr);
             // dp.intern(in, d_test_dmr);
 
-            DBG(cerr << prolog << "DMRpp Name: " << d_test_dmr->name() << endl);
+            DBG(cerr << prolog << "DMRpp Name: " << dmrpp->name() << endl);
+            if(debug){
+                string url("http://This/Is/A/Test/Path.nc");
+                libdap::XMLWriter xmlWriter;
+                dmrpp->print_dmrpp(xmlWriter,url,true,true);
+                cerr << xmlWriter.get_doc() << endl;
+            }
+
+            d_test_dmr = dmrpp;
             CPPUNIT_ASSERT(d_test_dmr);
         }
         catch (BESError &e) {
@@ -318,6 +325,7 @@ public:
 
             // Store it - this will work if the code is cleaning the cache.
             DmrppMetadataStore::StreamDMRpp write_the_dmrpp_response(d_test_dmr);
+
             bool stored = d_mds->store_dap_response(write_the_dmrpp_response, d_test_dmr->name() + ".dmrpp_r", d_test_dmr->name(), "DMRpp");
 
             CPPUNIT_ASSERT(stored);
@@ -334,6 +342,11 @@ public:
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
+            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
+            DBG(cerr << prolog << "# Stored Response (file: " << response_name << ")" << endl << stored_response << endl );
+            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
+            DBG(cerr << prolog << "# Baseline (file: " <<  baseline_name << ")" << endl << chunked_4d_dmrpp_baseline << endl );
+            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
 
             CPPUNIT_ASSERT(stored_response == chunked_4d_dmrpp_baseline);
         }

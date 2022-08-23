@@ -117,7 +117,7 @@ public:
     {
     }
 
-    virtual bool add_responses(libdap::DMR *dmrpp, const std::string &name);
+    bool add_responses(libdap::DMR *dmrpp, const std::string &name) override;
     virtual bool add_dmrpp_response(libdap::DMR *dmrpp, const std::string &name);
 
     virtual libdap::DMR *get_dmr_object(const string &name);
