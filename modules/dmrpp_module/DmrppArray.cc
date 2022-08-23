@@ -1930,7 +1930,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
         }
     }
     if(var()->type() == dods_str_c){
-        if(is_flsa()){
+        if(is_flsa() && DmrppCommon::d_print_chunks){
             // <dmrpp:FixedLengthStringArray string_length="##" pad="null_pad | null_term | space_pad" />
 
             string element_name("dmrpp:FixedLengthStringArray");
@@ -1956,7 +1956,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             if (xmlTextWriterEndElement(xml.get_writer()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
         }
-        else if(is_vlsa()){
+        else if(is_vlsa() && DmrppCommon::d_print_chunks){
             string element_name("dmrpp:VariableLengthStringArray");
             if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) element_name.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write " + element_name + " element");
@@ -1967,12 +1967,6 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             if (xmlTextWriterEndElement(xml.get_writer()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 
-        }
-        else {
-            // @TODO What do here? Throwing this exception broke things.
-            //   Apparently there are situations where neither vlsa or flsa are true?
-            //throw InternalErr(__FILE__, __LINE__, "ERROR: Internal State Failure. The array does not "
-            //                                      "contain variable length strings or fixed length strings.");
         }
     }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

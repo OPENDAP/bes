@@ -512,16 +512,16 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
         else if (is_eq(child.name(), "Map")) {
             process_map(dmr, group, array, child);
         }
-        else if (is_eq(child.name(), "dmrpp:FixedLengthStringArray")) {
+        else if (is_eq(child.name(), DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT)) {
             BESDEBUG(MODULE,"Variable has been marked as a FixedLengthStringArray" << endl);
             // <dmrpp:FixedLengthStringArray string_length="8" pad="null"/>
             array->set_is_flsa(true);
             for (xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute()) {
-                if (is_eq(attr.name(), "string_length")) {
+                if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR)) {
                     auto length = array->set_fixed_string_length(attr.value());
                     BESDEBUG(MODULE,"Fixed length string array string length: " << length << endl);
                 }
-                else if (is_eq(attr.name(), "pad")) {
+                else if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_PAD_ATTR)) {
                     string_pad_type pad = array->set_fixed_length_string_pad_type(attr.value());
                     BESDEBUG(MODULE,"Fixed length string array padding scheme: " << pad << endl);
                 }

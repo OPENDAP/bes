@@ -24,5 +24,6 @@
             <Value>1</Value>
         </Attribute>
         <dmrpp:compact>MDEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=</dmrpp:compact>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="null_term" />
     </String>
 </Dataset>
