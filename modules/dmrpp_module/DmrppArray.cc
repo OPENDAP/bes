@@ -78,6 +78,7 @@ std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 atomic_uint transfer_thread_counter(0);
 
 
+
 /**
  * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
  *

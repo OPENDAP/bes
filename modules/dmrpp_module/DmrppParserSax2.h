@@ -44,7 +44,7 @@
 #include "url_impl.h"
 #include "EffectiveUrlCache.h"
 
-//#define CRLF "\r\n"
+#define CRLF "\r\n"
 #define D4_PARSE_BUFF_SIZE 1048576
 
 namespace libdap {

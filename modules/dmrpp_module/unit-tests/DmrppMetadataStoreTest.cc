@@ -44,20 +44,15 @@
 #include <libdap/BaseTypeFactory.h>
 #include <libdap/D4BaseTypeFactory.h>
 
-#include <memory>
-
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
-#include "HttpNames.h"
-#include "url_impl.h"
 
 #include "DmrppMetadataStore.h"
 
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
-// #include "DmrppParserSax2.h"
-#include "DMZ.h"
+#include "DmrppParserSax2.h"
 
 #include "read_test_baseline.h"
 #include "test_config.h"
@@ -142,30 +137,19 @@ private:
             // Get a DMRpp to cache.
             string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
             string test_dmr_url_str = FILE_PROTOCOL;
-            test_dmr_url_str += "https://This/Is/A/Test.nc";
-            d_test_dmr_url = std::shared_ptr<http::url>(new http::url(test_dmr_url_str));
+            test_dmr_url_str += "This/Is/a/Test.nc";
+            d_test_dmr_url = shared_ptr<http::url>(new http::url(test_dmr_url_str));
 
-            auto *dmrpp = new DMRpp(&d_dmrpp_factory);
+            DMRpp *dmrpp = new DMRpp(&d_dmrpp_factory);
             dmrpp->set_href(d_test_dmr_url->str());
 
-            DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
-            DMZ dmz(file_name);
-            dmz.build_thin_dmr(dmrpp);
-            dmz.load_all_attributes(dmrpp);
-
-            //fstream in(file_name.c_str(), ios::in|ios::binary);
-            //dp.build_thin_dmr(d_test_dmr);
-            // dp.intern(in, d_test_dmr);
-
-            DBG(cerr << prolog << "DMRpp Name: " << dmrpp->name() << endl);
-            if(debug){
-                string url("http://This/Is/A/Test/Path.nc");
-                libdap::XMLWriter xmlWriter;
-                dmrpp->print_dmrpp(xmlWriter,url,true,true);
-                cerr << xmlWriter.get_doc() << endl;
-            }
-
             d_test_dmr = dmrpp;
+            DmrppParserSax2 dp;
+            DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
+            fstream in(file_name.c_str(), ios::in|ios::binary);
+            dp.intern(in, d_test_dmr);
+
+            DBG(cerr << prolog << "DMRpp Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);
         }
         catch (BESError &e) {
@@ -182,7 +166,7 @@ private:
 
 public:
     DmrppMetadataStoreTest() :
-        d_test_dmr(nullptr), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(nullptr)
+        d_test_dmr(0), d_mds_dir(string(TEST_BUILD_DIR).append(c_mds_name)), d_mds(0)
     {
     }
 
@@ -209,7 +193,7 @@ public:
     {
         DBG(cerr << prolog <<  "BEGIN" << endl);
 
-        delete d_test_dmr; d_test_dmr = nullptr;
+        delete d_test_dmr; d_test_dmr = 0;
 
         d_mds->delete_instance();
 
@@ -323,9 +307,8 @@ public:
         try {
             init_dmrpp_and_mds();
 
-            // Store it - this will work if the code is cleaning the cache.
+            // Store it - this will work if the the code is cleaning the cache.
             DmrppMetadataStore::StreamDMRpp write_the_dmrpp_response(d_test_dmr);
-
             bool stored = d_mds->store_dap_response(write_the_dmrpp_response, d_test_dmr->name() + ".dmrpp_r", d_test_dmr->name(), "DMRpp");
 
             CPPUNIT_ASSERT(stored);
@@ -342,11 +325,6 @@ public:
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
-            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
-            DBG(cerr << prolog << "# Stored Response (file: " << response_name << ")" << endl << stored_response << endl );
-            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
-            DBG(cerr << prolog << "# Baseline (file: " <<  baseline_name << ")" << endl << chunked_4d_dmrpp_baseline << endl );
-            DBG(cerr << prolog << "# ------------------------------------------------------------------------" << endl);
 
             CPPUNIT_ASSERT(stored_response == chunked_4d_dmrpp_baseline);
         }
