@@ -103,11 +103,12 @@ bool fits_handler::fits_read_attributes(DAS &das, const string &filename, string
             }
 
             {
-            	string com = "\"";
+            	string com ;
+            	//string com = "\"";
                 com.append(value);
                 com.append(" / ");
                 com.append(comment);
-                com.append("\"");
+                //com.append("\"");
                 at->append_attr(s_name, "String"/*type*/, com);
             }
 
