@@ -82,11 +82,6 @@ public:
     {
         return d_grid;
     }
-
-    virtual libdap::Array *get_constrained_coverage() const
-    {
-        return d_coverage;
-    }
 };
 
 } // namespace libdap

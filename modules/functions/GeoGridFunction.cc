@@ -36,7 +36,7 @@
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
-#include <libdap/D4RValue.h>
+#include <libdap/D4Group.h>
 #include <libdap/debug.h>
 #include <libdap/util.h>
 
@@ -260,7 +260,6 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
         return response;
     }
 
-
     BaseType *a_btp = args->get_rvalue(0)->value(dmr);
     Array *original_array = dynamic_cast < Array * >(a_btp);
     if (!original_array) {
@@ -334,7 +333,6 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
         vector < GSEClause * > clauses;
         gse_arg *arg = new gse_arg(l_array); // unique_ptr here
         for (unsigned int i = min_arg_count; i < args->size(); ++i) {
-            double op = extract_double_value(args->get_rvalue(i)->value(dmr));
             parse_gse_expression(arg, args->get_rvalue(i)->value(dmr));
             clauses.push_back(arg->get_gsec());
         }
@@ -343,8 +341,6 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
 
         apply_grid_selection_expressions(l_array, clauses);
     }
-
-
     DBG(cerr << "array: past gse application" << endl);
 
     try {
@@ -366,10 +362,43 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
         gc.apply_constraint_to_data();
         DBG(cerr << "geogrid: past apply constraint" << endl);
 
-        // In this function the l_grid pointer is the same as the pointer returned
-        // by this call. The caller of the function must free the pointer.
-        //*btpp = gc.get_constrained_coverage();
-        return 0;
+        // Build the return value(s) - this means make copies of the Map arrays
+        D4Group *dapResult = new D4Group("geogrid_result");
+
+        // Set this container's parent ot the root D4Group
+        dapResult->set_parent(dmr.root());
+
+        // Basic plan: Add the new array to the destination D4Group, and clear read_p flag.
+        l_array->set_read_p(false);
+        dapResult->add_var_nocopy(l_array);
+
+        // Basic plan: Add D4Dimensions to the destination D4Group; copy all dims to the parent group.
+        D4Dimensions *grp_d4_dims = dapResult->dims();
+
+        Array *g_array = dynamic_cast<Array *>(dapResult->find_var(l_array->name()));
+        // Basic plan: For each D4Dimension in the array, add it to the destination D4Group
+        Array::Dim_iter dim_i = g_array->dim_begin();
+        while (dim_i != g_array->dim_end()) {
+            D4Dimension *d4_dim = g_array->dimension_D4dim(dim_i);
+            grp_d4_dims->add_dim_nocopy(d4_dim);
+            ++dim_i;
+        }
+
+        // Basic plan: For each map in the array, add it to the destination structure and clear the read_p flag
+        d4_maps = l_array->maps();
+        miter = d4_maps->map_begin();
+        while (miter != d4_maps->map_end()) {
+            D4Map *d4_map = (*miter);
+            Array *map = const_cast<Array *>(d4_map->array());
+            map->set_read_p(false);
+            dapResult->add_var_nocopy(map);
+            ++miter;
+        }
+        // Basic plan: Mark the Group for sending and read the data.
+        dapResult->set_send_p(true);
+        dapResult->read();
+
+        return dapResult;
     }
     catch (Error &e) {
         throw e;
@@ -380,9 +409,6 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
                                     ("A C++ exception was thrown from inside geogrid(): ")
                             + e.what());
     }
-
-    /*throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
-    return 0; //response.release();*/
 }
 
 

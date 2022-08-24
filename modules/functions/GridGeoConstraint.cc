@@ -39,6 +39,7 @@
 #include <libdap/Grid.h>
 #include <libdap/Array.h>
 #include <libdap/D4Maps.h>
+#include <libdap/D4Dimensions.h>
 #include <libdap/dods-datatypes.h>
 #include <libdap/Error.h>
 #include <libdap/InternalErr.h>
@@ -425,9 +426,12 @@ void GridGeoConstraint::apply_constraint_to_data()
                                             get_latitude_index_bottom());
     }
     else {
-        d_coverage->add_constraint(get_lat_dim(),
+        d_coverage->dimension_D4dim(get_lat_dim())->set_constraint(get_latitude_index_top(),
+                                                                   1, get_latitude_index_bottom());
+        d_coverage->add_constraint(get_lat_dim(),d_coverage->dimension_D4dim(get_lat_dim()));
+        /*d_coverage->add_constraint(get_lat_dim(),
                                             get_latitude_index_top(), 1,
-                                            get_latitude_index_bottom());
+                                            get_latitude_index_bottom());*/
     }
     // Does the longitude constraint cross the edge of the longitude vector?
     // If so, reorder the grid's data (array), longitude map vector and the
@@ -479,9 +483,12 @@ void GridGeoConstraint::apply_constraint_to_data()
                                             1, get_longitude_index_right());
     }
     else {
-        d_coverage->add_constraint(get_lon_dim(),
+        d_coverage->dimension_D4dim(get_lon_dim())->set_constraint(get_longitude_index_left(),
+                                                                 1, get_longitude_index_right());
+        d_coverage->add_constraint(get_lon_dim(),d_coverage->dimension_D4dim(get_lon_dim()));
+        /*d_coverage->add_constraint(get_lon_dim(),
                                             get_longitude_index_left(),
-                                            1, get_longitude_index_right());
+                                            1, get_longitude_index_right());*/
     }
 
     // Transfer values from the local lat vector to the Grid's
