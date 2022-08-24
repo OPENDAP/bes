@@ -36,6 +36,7 @@
 #include <libdap/Error.h>
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
+#include <libdap/D4RValue.h>
 #include <libdap/debug.h>
 #include <libdap/util.h>
 
@@ -323,36 +324,41 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
 
     DBG(cerr << "array: past map read" << endl);
 
-    // argv[1..n] holds strings; each are little expressions to be parsed.
-    // When each expression is parsed, the parser makes a new instance of
-    // GSEClause. GSEClause checks to make sure the named map really exists
-    // in the Grid and that the range of values given makes sense.
-    vector < GSEClause * > clauses;
-    gse_arg *arg = new gse_arg(l_array); // unique_ptr here
-    for (unsigned int i = 1; i < args->size(); ++i) {
-        string relop = extract_string_argument(args->get_rvalue(i)->value(dmr));
-        parse_gse_expression(arg, args->get_rvalue(i)->value(dmr));
-        clauses.push_back(arg->get_gsec());
-    }
-    delete arg;
-    arg = 0;
+    // Look for Grid Selection Expressions tacked onto the end of the BB
+    // specification. If there are any, evaluate them before evaluating the BB.
+    unsigned int min_arg_count = (grid_lat_lon_form) ? 7 : 5;
 
-    apply_grid_selection_expressions(l_array, clauses);
+    if (args->size() > min_arg_count) {
+        // argv[5..n] holds strings; each are little Grid Selection Expressions
+        // to be parsed and evaluated.
+        vector < GSEClause * > clauses;
+        gse_arg *arg = new gse_arg(l_array); // unique_ptr here
+        for (unsigned int i = min_arg_count; i < args->size(); ++i) {
+            double op = extract_double_value(args->get_rvalue(i)->value(dmr));
+            parse_gse_expression(arg, args->get_rvalue(i)->value(dmr));
+            clauses.push_back(arg->get_gsec());
+        }
+        delete arg;
+        arg = 0;
+
+        apply_grid_selection_expressions(l_array, clauses);
+    }
+
 
     DBG(cerr << "array: past gse application" << endl);
 
-    /*try {
+    try {
         // Build a GeoConstraint object. If there are no longitude/latitude
         // maps then this constructor throws Error.
-        GridGeoConstraint gc(l_grid);
+        GridGeoConstraint gc(l_array);
 
         // This sets the bounding box and modifies the maps to match the
         // notation of the box (0/359 or -180/179)
         int box_index_offset = (grid_lat_lon_form) ? 3 : 1;
-        double top = extract_double_value(argv[box_index_offset]);
-        double left = extract_double_value(argv[box_index_offset + 1]);
-        double bottom = extract_double_value(argv[box_index_offset + 2]);
-        double right = extract_double_value(argv[box_index_offset + 3]);
+        double top = extract_double_value(args->get_rvalue(box_index_offset)->value(dmr));
+        double left = extract_double_value(args->get_rvalue(box_index_offset + 1)->value(dmr));
+        double bottom = extract_double_value(args->get_rvalue(box_index_offset + 2)->value(dmr));
+        double right = extract_double_value(args->get_rvalue(box_index_offset + 3)->value(dmr));
         gc.set_bounding_box(top, left, bottom, right);
         DBG(cerr << "geogrid: past bounding box set" << endl);
 
@@ -362,8 +368,8 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
 
         // In this function the l_grid pointer is the same as the pointer returned
         // by this call. The caller of the function must free the pointer.
-        *btpp = gc.get_constrained_grid();
-        return;
+        //*btpp = gc.get_constrained_coverage();
+        return 0;
     }
     catch (Error &e) {
         throw e;
@@ -374,10 +380,9 @@ BaseType *function_dap4_geogrid(D4RValueList *args, DMR &dmr)
                                     ("A C++ exception was thrown from inside geogrid(): ")
                             + e.what());
     }
-*/
 
-    throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
-    return 0; //response.release();
+    /*throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
+    return 0; //response.release();*/
 }
 
 

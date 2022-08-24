@@ -14,10 +14,11 @@
       <!-- %22 is a double quote and %3E is greater than -->
       <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
       <!-- bes:dap4constraint>/TIME[0];/COADSX[10:1:12];/COADSY[10:1:11];/SST[0][10:1:12][10:1:11]</bes:dap4constraint -->
-      <!-- bes:dap4constraint>/TIME[0];/COADSX[10:1:12];/COADSY[10:1:11];/SST[2:1:4][][]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/COADSX=[10:1:12];/COADSY=[10:1:11];/TIME;/COADSX;/COADSY;/SST[][][]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/COADSX=[10:1:12];/COADSY=[10:1:11];/SST[][][]</bes:dap4constraint -->
       <!-- bes:dap4constraint>/SST[0][10:1:12][10:1:11]</bes:dap4constraint -->
       <!-- bes:dap4constraint>/SST</bes:dap4constraint -->
-      <!-- bes:dap4function>grid(SST,%2245%3E%2FCOADSY%3E35%22,%22140%3E%2FCOADSX%3E120%22,%22%2FTIME=366%22)</bes:dap4function -->
+      <!-- bes:dap4function>grid(SST,%2245%3E%2FCOADSY%3E35%22,%22140%3E%2FCOADSX%3E120%22)</bes:dap4function -->
       <bes:dap4function>geogrid(SST,80,-40,10,-5)</bes:dap4function>
     </bes:container>
   </bes:define>

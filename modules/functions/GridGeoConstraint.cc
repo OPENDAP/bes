@@ -59,7 +59,7 @@ namespace functions {
     variable.
  */
 GridGeoConstraint::GridGeoConstraint(Grid *grid)
-        : GeoConstraint(), d_grid(grid), d_latitude(0), d_longitude(0)
+        : GeoConstraint(), d_grid(grid), d_coverage(0), d_latitude(0), d_longitude(0)
 {
     if (d_grid->get_array()->dimensions() < 2
         || d_grid->get_array()->dimensions() > 3)
@@ -75,7 +75,7 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid)
 }
 
 GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
-        : GeoConstraint(), d_grid(grid), d_latitude(0), d_longitude(0)
+        : GeoConstraint(), d_grid(grid), d_coverage(0), d_latitude(0), d_longitude(0)
 {
     if (d_grid->get_array()->dimensions() < 2
         || d_grid->get_array()->dimensions() > 3)
@@ -98,7 +98,7 @@ GridGeoConstraint::GridGeoConstraint(Grid *grid, Array *lat, Array *lon)
     Array variable.
  */
 GridGeoConstraint::GridGeoConstraint(Array *coverage)
-        : GeoConstraint(), d_coverage(coverage)
+        : GeoConstraint(), d_grid(0), d_coverage(coverage), d_latitude(0), d_longitude(0)
 {
     if (!coverage->is_dap2_grid())
         throw Error(string("The geogrid function cannot be applied to the array variable '")
@@ -111,14 +111,15 @@ GridGeoConstraint::GridGeoConstraint(Array *coverage)
     if (d4_maps->size() < 2
         || d4_maps->size() > 3)
         throw Error("The geogrid() function works only with Arrays of two or three dimensions.");
-/*
+
     // Is this Array a geo-referenced grid? Throw Error if not.
-    if (!build_lat_lon_maps(coverage))
+    if (!build_lat_lon_maps())
         throw Error(string("The array '") + coverage->name()
                     + "' does not have identifiable latitude/longitude map vectors.");
 
     if (!lat_lon_dimensions_ok())
-        throw Error("The geogrid() function will only work when the Array's Longitude and Latitude maps are the rightmost dimensions (array: " + d_coverage->name() + ", 1).");*/
+        throw Error("The geogrid() function will only work when the Array's Longitude and Latitude maps are the rightmost dimensions (array: " + d_coverage->name() + ", 1).");
+
 }
 
 
@@ -209,6 +210,11 @@ bool GridGeoConstraint::build_lat_lon_maps()
         if ( !d_coverage->is_dap2_grid() )
             throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
 
+        // Assume that a Array is correct and thus has exactly as many maps as its
+        // array part has dimensions. Thus don't bother to test the Grid's array
+        // dimension iterator for '!= dim_end()'.
+        Array::Dim_iter d = d_coverage->dim_begin();
+
         // Basic plan: For each map, look at each clause and set start and stop
         // to be the intersection of the ranges in those clauses.
         D4Maps *d4_maps = d_coverage->maps();
@@ -216,11 +222,54 @@ bool GridGeoConstraint::build_lat_lon_maps()
         while (miter != d4_maps->map_end()) {
             D4Map *d4_map = (*miter);
             if (!d_latitude || !d_longitude) {
-                //string units_value = d4_map->get_attr_table().get_attr("units");
-                //units_value = remove_quotes(units_value);
-                //string map_name = (*d)->name();
-                break;
+                string units_value = const_cast<Array *>(d4_map->array())->get_attr_table().get_attr("units");
+                units_value = remove_quotes(units_value);
+                string map_name = d4_map->name();
+
+                // The 'units' attribute must match exactly; the name only needs to
+                // match a prefix.
+                if (!d_latitude
+                    && unit_or_name_match(get_coards_lat_units(), get_lat_names(),
+                                          units_value, map_name)) {
+
+                    // Set both d_latitude (a pointer to the real map vector) and
+                    // d_lat, a vector of the values represented as doubles. It's easier
+                    // to work with d_lat, but it's d_latitude that needs to be set
+                    // when constraining the grid. Also, record the grid variable's
+                    // dimension iterator so that it's easier to set the Grid's Array
+                    // (which also has to be constrained).
+                    d_latitude = const_cast<Array *>(d4_map->array());
+                    if (!d_latitude)
+                        throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+                    if (!d_latitude->read_p())
+                        d_latitude->read();
+
+                    set_lat(extract_double_array(d_latitude));   // throws Error
+                    set_lat_length(d_latitude->length());
+
+                    set_lat_dim(d);
+                }
+
+                if (!d_longitude        // && !units_value.empty()
+                    && unit_or_name_match(get_coards_lon_units(), get_lon_names(),
+                                          units_value, map_name)) {
+
+                    d_longitude = const_cast<Array *>(d4_map->array());
+                    if (!d_longitude)
+                        throw InternalErr(__FILE__, __LINE__, "Expected an array.");
+                    if (!d_longitude->read_p())
+                        d_longitude->read();
+
+                    set_lon(extract_double_array(d_longitude));
+                    set_lon_length(d_longitude->length());
+
+                    set_lon_dim(d);
+
+                    if ((miter + 1) == d4_maps->map_end())
+                        set_longitude_rightmost(true);
+                }
             }
+            ++d;
             ++miter;
         }
     }
@@ -292,18 +341,39 @@ bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
 bool
 GridGeoConstraint::lat_lon_dimensions_ok()
 {
-    // get the last two map iterators
-    Grid::Map_riter rightmost = d_grid->map_rbegin();
-    Grid::Map_riter next_rightmost = rightmost + 1;
+    if ( d_grid ) {
+        // get the last two map iterators
+        Grid::Map_riter rightmost = d_grid->map_rbegin();
+        Grid::Map_riter next_rightmost = rightmost + 1;
 
-    if (*rightmost == d_longitude && *next_rightmost == d_latitude)
-        set_longitude_rightmost(true);
-    else if (*rightmost == d_latitude && *next_rightmost == d_longitude)
-        set_longitude_rightmost(false);
-    else
-        return false;
+        if (*rightmost == d_longitude && *next_rightmost == d_latitude)
+            set_longitude_rightmost(true);
+        else if (*rightmost == d_latitude && *next_rightmost == d_longitude)
+            set_longitude_rightmost(false);
+        else
+            return false;
 
-    return true;
+        return true;
+    }
+    else {
+        // get the last two map iterators
+        // Basic plan: For each map, look at each clause and set start and stop
+        // to be the intersection of the ranges in those clauses.
+        D4Maps *d4_maps = d_coverage->maps();
+        D4Maps::D4MapsIter miter = d4_maps->map_end() - 1;
+
+        D4Map *rightmost = (*miter--);
+        D4Map *next_rightmost = (*miter);
+
+        if (rightmost->array() == d_longitude && next_rightmost->array() == d_latitude)
+            set_longitude_rightmost(true);
+        else if (rightmost->array() == d_latitude && next_rightmost->array() == d_longitude)
+            set_longitude_rightmost(false);
+        else
+            return false;
+
+        return true;
+    }
 }
 
 /** Once the bounding box is set use this method to apply the constraint. This
@@ -348,10 +418,17 @@ void GridGeoConstraint::apply_constraint_to_data()
     // Constrain the lat vector and lat dim of the array
     d_latitude->add_constraint(fd, get_latitude_index_top(), 1,
                                get_latitude_index_bottom());
-    d_grid->get_array()->add_constraint(get_lat_dim(),
-                                        get_latitude_index_top(), 1,
-                                        get_latitude_index_bottom());
 
+    if (d_grid) {
+        d_grid->get_array()->add_constraint(get_lat_dim(),
+                                            get_latitude_index_top(), 1,
+                                            get_latitude_index_bottom());
+    }
+    else {
+        d_coverage->add_constraint(get_lat_dim(),
+                                            get_latitude_index_top(), 1,
+                                            get_latitude_index_bottom());
+    }
     // Does the longitude constraint cross the edge of the longitude vector?
     // If so, reorder the grid's data (array), longitude map vector and the
     // local vector of longitude data used for computation.
@@ -396,21 +473,36 @@ void GridGeoConstraint::apply_constraint_to_data()
     d_longitude->add_constraint(fd, get_longitude_index_left(), 1,
                                 get_longitude_index_right());
 
-    d_grid->get_array()->add_constraint(get_lon_dim(),
-                                        get_longitude_index_left(),
-                                        1, get_longitude_index_right());
+    if (d_grid) {
+        d_grid->get_array()->add_constraint(get_lon_dim(),
+                                            get_longitude_index_left(),
+                                            1, get_longitude_index_right());
+    }
+    else {
+        d_coverage->add_constraint(get_lon_dim(),
+                                            get_longitude_index_left(),
+                                            1, get_longitude_index_right());
+    }
 
     // Transfer values from the local lat vector to the Grid's
     // Here test the sense of the latitude vector and invert the vector if the
     // sense is 'inverted' so that the top is always the northern-most value
     if (get_latitude_sense() == inverted) {
-	DBG(cerr << "Inverted latitude sense" << endl);
-	transpose_vector(get_lat() + get_latitude_index_top(),
-		get_latitude_index_bottom() - get_latitude_index_top() + 1);
-	// Now read the Array data and flip the latitudes.
-	flip_latitude_within_array(*d_grid->get_array(),
-		get_latitude_index_bottom() - get_latitude_index_top() + 1,
-		get_longitude_index_right() - get_longitude_index_left() + 1);
+        DBG(cerr << "Inverted latitude sense" << endl);
+        transpose_vector(get_lat() + get_latitude_index_top(),
+            get_latitude_index_bottom() - get_latitude_index_top() + 1);
+
+        // Now read the Array data and flip the latitudes.
+        if (d_grid) {
+            flip_latitude_within_array(*d_grid->get_array(),
+                                       get_latitude_index_bottom() - get_latitude_index_top() + 1,
+                                       get_longitude_index_right() - get_longitude_index_left() + 1);
+        }
+        else {
+            flip_latitude_within_array(*d_coverage,
+                                       get_latitude_index_bottom() - get_latitude_index_top() + 1,
+                                       get_longitude_index_right() - get_longitude_index_left() + 1);
+        }
     }
 
     set_array_using_double(d_latitude, get_lat() + get_latitude_index_top(),
@@ -419,31 +511,59 @@ void GridGeoConstraint::apply_constraint_to_data()
     set_array_using_double(d_longitude, get_lon() + get_longitude_index_left(),
                            get_longitude_index_right() - get_longitude_index_left() + 1);
 
-    // Look for any non-lat/lon maps and make sure they are read correctly
-    Grid::Map_iter i = d_grid->map_begin();
-    Grid::Map_iter end = d_grid->map_end();
-    while (i != end) {
-	if (*i != d_latitude && *i != d_longitude) {
-	    if ((*i)->send_p()) {
-		DBG(cerr << "reading grid map: " << (*i)->name() << endl);
-		//(*i)->set_read_p(false);
-		(*i)->read();
-	    }
-	}
-	++i;
-    }
+    if (d_grid) {
+        // Look for any non-lat/lon maps and make sure they are read correctly
+        Grid::Map_iter i = d_grid->map_begin();
+        Grid::Map_iter end = d_grid->map_end();
+        while (i != end) {
+            if (*i != d_latitude && *i != d_longitude) {
+                if ((*i)->send_p()) {
+                    DBG(cerr << "reading grid map: " << (*i)->name() << endl);
+                    //(*i)->set_read_p(false);
+                    (*i)->read();
+                }
+            }
+            ++i;
+        }
+        // ... and then the Grid's array if it has been read.
+        if (get_array_data()) {
+            int size = d_grid->get_array()->val2buf(get_array_data());
 
-    // ... and then the Grid's array if it has been read.
-    if (get_array_data()) {
-        int size = d_grid->get_array()->val2buf(get_array_data());
+            if (size != get_array_data_size())
+                throw InternalErr(__FILE__, __LINE__, "Expected data size not copied to the Grid's buffer.");
 
-        if (size != get_array_data_size())
-            throw InternalErr(__FILE__, __LINE__, "Expected data size not copied to the Grid's buffer.");
-
-        d_grid->set_read_p(true);
+            d_grid->set_read_p(true);
+        } else {
+            d_grid->get_array()->read();
+        }
     }
     else {
-        d_grid->get_array()->read();
+        // Look for any non-lat/lon maps and make sure they are read correctly
+        D4Maps *d4_maps = d_coverage->maps();
+        D4Maps::D4MapsIter miter = d4_maps->map_begin();
+        while (miter != d4_maps->map_end()) {
+            D4Map *d4_map = (*miter);
+            Array *map = const_cast<Array *>(d4_map->array());
+
+            if (map != d_latitude && map != d_longitude) {
+                if (map->send_p()) {
+                    DBG(cerr << "reading grid map: " << map->name() << endl);
+                    map->read();
+                }
+            }
+            ++miter;
+        }
+        // ... and then the Array if it has been read.
+        if (get_array_data()) {
+            int size = d_coverage->val2buf(get_array_data());
+
+            if (size != get_array_data_size())
+                throw InternalErr(__FILE__, __LINE__, "Expected data size not copied to the Grid's buffer.");
+
+            d_coverage->set_read_p(true);
+        } else {
+            d_coverage->read();
+        }
     }
 }
 
