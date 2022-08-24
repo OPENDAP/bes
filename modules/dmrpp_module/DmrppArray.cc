@@ -1485,6 +1485,41 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
+string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type){
+    string value;
+    unsigned long long str_len = 0;
+    switch(pad_type){
+        case null_pad:
+        case null_term:
+        {
+            while(buf[str_len]!=0 && str_len < fixed_str_len){
+                str_len++;
+            }
+            BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
+
+            value = string(buf,str_len);
+            break;
+        }
+        case space_pad:
+        {
+            while(buf[str_len-1]!=' ' && str_len>0){
+                str_len--;
+            }
+            BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
+            value = string(buf,str_len);
+            break;
+        }
+        case not_set:
+        default:
+            // Do nothing.
+            BESDEBUG(MODULE, prolog << "pad_type: NOT_SET" << endl);
+            break;
+    }
+    BESDEBUG(MODULE, prolog << "value: " << value << endl);
+    return value;
+}
+
+
 /**
  * @brief Read data for the array
  *
@@ -1498,6 +1533,7 @@ void DmrppArray::read_contiguous_string()
  */
 bool DmrppArray::read()
 {
+    Type var_type = this->var()->type();
     // If the chunks are not loaded, load them now. NB: load_chunks()
     // reads data for HDF5 COMPACT storage, so read_p() will be true
     // (but it does not read any other data). Thus, call load_chunks()
@@ -1515,7 +1551,7 @@ bool DmrppArray::read()
     //  data file. Thus, the code for strings (and URLs) is a special case.
     //  Currently, we can process only arrays with one element. jhrg 3/3/22
 
-    if ((var()->type() == dods_str_c || var()->type() == dods_url_c)) {
+    if (false && (var_type == dods_str_c || var_type == dods_url_c)) {
         // FIXME Add support for both of these things once the DMR++ has the needed
         //  information. jhrg 3/3/22
         if (is_projected())
@@ -1550,10 +1586,34 @@ bool DmrppArray::read()
             read_chunks();
         }
     }
+    if ((var_type == dods_str_c || var_type == dods_url_c)) {
+        if (is_flsa()) {
+            BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
+            auto fs_len = get_fixed_string_length();
+            BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
+            auto pad_type = get_fixed_length_string_pad();
+            BESDEBUG(MODULE, prolog << "get_fixed_length_string_pad(): " << pad_type_to_str(pad_type) << endl);
+
+            auto buff = get_buf();
+            BESDEBUG(MODULE, prolog << "get_buf(): " << (void *) buff << endl);
+
+            char *begin = buff;
+            char *end = begin + length();
+            while (begin < end) {
+                string value = ingest_fixed_length_string(begin, fs_len, pad_type);
+                get_str().push_back(value);
+                begin += fs_len;
+            }
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
+            // @TODO Handle the variable length strings case here.
+            throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
+        }
+    }
 
     if (this->twiddle_bytes()) {
         int num = this->length();
-        Type var_type = this->var()->type();
 
         switch (var_type) {
             case dods_int16_c:
@@ -1690,7 +1750,7 @@ unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
 
 
 
-std::string pad_type_to_str(string_pad_type pad, bool fail_on_not_set=false)
+std::string DmrppArray::pad_type_to_str(string_pad_type pad)
 {
     string pad_str;
     switch(pad){

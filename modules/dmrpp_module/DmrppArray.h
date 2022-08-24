@@ -201,6 +201,8 @@ public:
     void set_ons_string(const vector<ons> &ons_pairs);
     std::string get_ons_string(){ return d_vlen_ons_str; };
     void get_ons_objs(vector<ons> &ons_list);
+
+    std::string pad_type_to_str(string_pad_type pad_type);
 };
 
 /**
