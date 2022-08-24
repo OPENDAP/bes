@@ -282,7 +282,10 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     // values.
 
     // Build the return value(s) - this means make copies of the Map arrays
-    D4Group *dapResult = new D4Group("grid_result_unwrap");
+    D4Group *dapResult = new D4Group("grid_result");
+
+    // Set this container's parent ot the root D4Group
+    dapResult->set_parent(dmr.root());
 
     // Basic plan: Add the new array to the destination D4Group, and clear read_p flag.
     l_array->set_read_p(false);
@@ -291,7 +294,7 @@ BaseType *function_dap4_grid(D4RValueList *args, DMR &dmr)
     // Basic plan: Add D4Dimensions to the destination D4Group; copy all dims to the parent group.
     D4Dimensions *grp_d4_dims = dapResult->dims();
 
-    Array *g_array = static_cast<Array *>(dapResult->find_var(l_array->name()));
+    Array *g_array = dynamic_cast<Array *>(dapResult->find_var(l_array->name()));
     // Basic plan: For each D4Dimension in the array, add it to the destination D4Group
     Array::Dim_iter dim_i = g_array->dim_begin();
     while (dim_i != g_array->dim_end()) {
