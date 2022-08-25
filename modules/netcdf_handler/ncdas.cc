@@ -121,7 +121,16 @@ static string print_attr(nc_type type, int loc, void *vals)
         }
 
     case NC_CHAR:
+    {
+        // Don't escape the special characters. 
+        // Special characters will be handled in libdap4.
+        // KY 2022-08-25
+#if 0
         return escattr(static_cast<const char*>(vals));
+#endif
+        string tmp_str = static_cast<const char*>(vals);
+        return tmp_str;
+    }
 
     case NC_STRING:
         gp.stringp = (char **) vals;

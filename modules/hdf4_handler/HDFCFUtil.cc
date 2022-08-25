@@ -570,6 +570,7 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                     // String fillvalue is always represented as /+octal numbers when its type is forced to
                     // change to string(check HFRHANDLER-223). So we have to retrieve it back.
+                    fillvalue = escattr_fvalue(fillvalue);
                     if(fillvalue.size() >1) {
 
                         long int fillvalue_int = 0;
@@ -584,16 +585,18 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                         // If somehow the fillvalue type is DFNT_CHAR or DFNT_UCHAR, and the size is 1,
                         // that means the fillvalue type is wrongly defined, we treat as a 8-bit integer number.
-                        // Note, the code will only assume the value ranges from 0 to 128.(JIRA HFRHANDLER-248).
+                        // Note, the code will only assume the value ranges from 0 to 255.(JIRA HFRHANDLER-248).
                         // KY 2014-04-24
                           
                         short fillvalue_int = fillvalue.at(0);
 
                         stringstream convert_str;
                         convert_str << fillvalue_int;
-                        if(fillvalue_int <0 || fillvalue_int >128)
+#if 0
+                        if(fillvalue_int <0 || fillvalue_int >255)
                             throw InternalErr(__FILE__,__LINE__,
-                            "If the fillvalue is a char type, the value must be between 0 and 128.");
+                            "If the fillvalue is a char type, the value must be between 0 and 255.");
+#endif
 
 
                         at->append_attr("_FillValue",var_type,convert_str.str());               
@@ -3308,9 +3311,11 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
 string HDFCFUtil::escattr(string s)
 {
+// We should not handle any special characters here. These will be handled by libdap4. Still leave the code here for the time being.
+// Eventually this function will be removed. KY 2022-08-25
+#if ESCAPE_STRING_ATTRIBUTES
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
-#if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
@@ -3329,8 +3334,21 @@ string HDFCFUtil::escattr(string s)
         s.replace(ind, 1, ESCQUOTE);
         ind += ESCQUOTE.size();
     }
+
+    size_t ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
+        s.replace(ind, 1, ESC + octstring(s[ind]));
+    }
 #endif
 
+    return s;
+}
+
+// This function is necessary since char is represented as string. For fillvalue, this has to be resumed. 
+string HDFCFUtil::escattr_fvalue(string s)
+{
+    const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
+    const string ESC = "\\";
     size_t ind = 0;
     while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
         s.replace(ind, 1, ESC + octstring(s[ind]));

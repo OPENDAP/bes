@@ -28,12 +28,12 @@ Attributes {
             String Mandatory "FALSE";
         }
         GranulePointer {
-            String Value "3B42.001003.5.HDF";
+            String Value "\"3B42.001003.5.HDF\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         ShortName {
-            String Value "Surface Rain from Geostationary Satellites C";
+            String Value "\"Surface Rain from Geostationary Satellites C\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -48,12 +48,12 @@ Attributes {
             String Mandatory "FALSE";
         }
         SpatialCoverageType {
-            String Value "Horizontal";
+            String Value "\"Horizontal\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         EllipsoidName {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -68,7 +68,7 @@ Attributes {
             String Mandatory "FALSE";
         }
         OrbitalModelName {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -153,47 +153,47 @@ Attributes {
             String Mandatory "FALSE";
         }
         LatitudeResolution {
-            String Value "1deg";
+            String Value "\"1deg\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         LongitudeResolution {
-            String Value "1deg";
+            String Value "\"1deg\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         GeographicCoordinateUnits {
-            String Value "Decimal Degrees";
+            String Value "\"Decimal Degrees\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         TemporalRangeType {
-            String Value "Continuous Range";
+            String Value "\"Continuous Range\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         QualityAssuranceParameterName {
-            String Value "ScienceQualityFlag";
+            String Value "\"ScienceQualityFlag\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         QualityAssuranceParameterValue {
-            String Value "NOT BEING INVESTIGATED";
+            String Value "\"NOT BEING INVESTIGATED\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         ReprocessingActual {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         BrowsePointer {
-            String Value "3B42_BR.001003.5.BRO";
+            String Value "\"3B42_BR.001003.5.BRO\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         ScienceContact {
-            String Value "George Huffman";
+            String Value "\"George Huffman\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -223,27 +223,27 @@ Attributes {
             String Mandatory "FALSE";
         }
         SensorAlignment {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         SensorAlignmentChannelOffsets {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         ScanPathModel {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         ScanPathModelParam {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         EphemerisFileID {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -260,7 +260,7 @@ Attributes {
             String Mandatory "FALSE";
         }
         AlgorithmVersion {
-            String Value "4.51";
+            String Value "\"4.51\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -270,7 +270,7 @@ Attributes {
             String Mandatory "FALSE";
         }
         ToolkitVersion {
-            String Value "5.7";
+            String Value "\"5.7\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -285,22 +285,22 @@ Attributes {
             String Mandatory "FALSE";
         }
         PercentOfBadOrMissingPixels {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         MaximumValidValueofChannel {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         MinimumValidValueofChannel {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         MinMaxUnits {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -320,27 +320,27 @@ Attributes {
             String Mandatory "FALSE";
         }
         AlgorithmID {
-            String Value "3B42m2";
+            String Value "\"3B42m2\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         DataAccuracy {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         InputFiles {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         DateOfGenerationOfInputFiles {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         DataCenterSourceOfInputFiles {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -355,12 +355,12 @@ Attributes {
             String Mandatory "FALSE";
         }
         SolarChannelGains {
-            String Value "(-9999.9,-9999.9,-9999.9,-9999.9)";
+            String Value "\"(-9999.9,-9999.9,-9999.9,-9999.9)\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         TMIRolloverCoef {
-            String Value "(-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9)";
+            String Value "\"(-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9)\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -430,27 +430,27 @@ Attributes {
             String Mandatory "FALSE";
         }
         LeapSecondsFlag {
-            String Value "Data_Location", "Error processing EOS attributes", "Error processing EOS attributes";
-            String PGE "Error processing EOS attributes";
+            String Value "Data_Location", "\"Error processing EOS attributes\"", "\"Error processing EOS attributes\"";
+            String PGE "\"Error processing EOS attributes\"";
             String Mandatory "FALSE";
         }
         RadarSiteName {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         RadarCity {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         RadarState {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         RadarCountry {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -520,12 +520,12 @@ Attributes {
             String Mandatory "FALSE";
         }
         RuntimeOptions {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
         AnomalyFlag {
-            String Value "NOT EMPTY";
+            String Value "\"NOT EMPTY\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }
@@ -540,7 +540,7 @@ Attributes {
             String Mandatory "FALSE";
         }
         TotalQualityCode {
-            String Value "NULL";
+            String Value "\"NULL\"";
             String Data_Location "PGE";
             String Mandatory "FALSE";
         }

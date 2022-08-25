@@ -3,7 +3,71 @@ Float32 Temperature[ZDim = 4][Latitude = 8] = {{0, 1, 2, 3, 4, 5, 6, 7},{8, 9, 1
 Float32 Level[ZDim = 4] = {0, 1, 2, 3};
 Float32 Longitude[Latitude = 8] = {0, 1, 2, 3, 4, 5, 6, 7};
 Float32 Pressure[ZDim = 4] = {0, 1, 2, 3};
-String StructMetadata_0 = "GROUP=SwathStructure\012\011GROUP=SWATH_1\012\011\011SwathName=\"Swath\"\012\011\011GROUP=Dimension\012\011\011\011OBJECT=Dimension_1\012\011\011\011\011DimensionName=\"ZDim\"\012\011\011\011\011Size=4\012\011\011\011END_OBJECT=Dimension_1\012\011\011\011OBJECT=Dimension_2\012\011\011\011\011DimensionName=\"NDim\"\012\011\011\011\011Size=8\012\011\011\011END_OBJECT=Dimension_2\012\011\011END_GROUP=Dimension\012\011\011GROUP=DimensionMap\012\011\011END_GROUP=DimensionMap\012\011\011GROUP=IndexDimensionMap\012\011\011END_GROUP=IndexDimensionMap\012\011\011GROUP=GeoField\012\011\011\011OBJECT=GeoField_1\012\011\011\011\011GeoFieldName=\"Level\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"ZDim\")\012\011\011\011\011MaxdimList=(\"ZDim\")\012\011\011\011END_OBJECT=GeoField_1\012\011\011\011OBJECT=GeoField_2\012\011\011\011\011GeoFieldName=\"Pressure\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"ZDim\")\012\011\011\011\011MaxdimList=(\"ZDim\")\012\011\011\011END_OBJECT=GeoField_2\012\011\011\011OBJECT=GeoField_3\012\011\011\011\011GeoFieldName=\"Latitude\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"NDim\")\012\011\011\011\011MaxdimList=(\"NDim\")\012\011\011\011END_OBJECT=GeoField_3\012\011\011\011OBJECT=GeoField_4\012\011\011\011\011GeoFieldName=\"Longitude\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"NDim\")\012\011\011\011\011MaxdimList=(\"NDim\")\012\011\011\011END_OBJECT=GeoField_4\012\011\011END_GROUP=GeoField\012\011\011GROUP=DataField\012\011\011\011OBJECT=DataField_1\012\011\011\011\011DataFieldName=\"Temperature\"\012\011\011\011\011DataType=H5T_NATIVE_FLOAT\012\011\011\011\011DimList=(\"ZDim\",\"NDim\")\012\011\011\011\011MaxdimList=(\"ZDim\",\"NDim\")\012\011\011\011END_OBJECT=DataField_1\012\011\011END_GROUP=DataField\012\011\011GROUP=ProfileField\012\011\011END_GROUP=ProfileField\012\011\011GROUP=MergedFields\012\011\011END_GROUP=MergedFields\012\011END_GROUP=SWATH_1\012END_GROUP=SwathStructure\012GROUP=GridStructure\012END_GROUP=GridStructure\012GROUP=PointStructure\012END_GROUP=PointStructure\012GROUP=ZaStructure\012END_GROUP=ZaStructure\012END\012";
+String StructMetadata_0 = "GROUP=SwathStructure
+	GROUP=SWATH_1
+		SwathName=\"Swath\"
+		GROUP=Dimension
+			OBJECT=Dimension_1
+				DimensionName=\"ZDim\"
+				Size=4
+			END_OBJECT=Dimension_1
+			OBJECT=Dimension_2
+				DimensionName=\"NDim\"
+				Size=8
+			END_OBJECT=Dimension_2
+		END_GROUP=Dimension
+		GROUP=DimensionMap
+		END_GROUP=DimensionMap
+		GROUP=IndexDimensionMap
+		END_GROUP=IndexDimensionMap
+		GROUP=GeoField
+			OBJECT=GeoField_1
+				GeoFieldName=\"Level\"
+				DataType=H5T_NATIVE_FLOAT
+				DimList=(\"ZDim\")
+				MaxdimList=(\"ZDim\")
+			END_OBJECT=GeoField_1
+			OBJECT=GeoField_2
+				GeoFieldName=\"Pressure\"
+				DataType=H5T_NATIVE_FLOAT
+				DimList=(\"ZDim\")
+				MaxdimList=(\"ZDim\")
+			END_OBJECT=GeoField_2
+			OBJECT=GeoField_3
+				GeoFieldName=\"Latitude\"
+				DataType=H5T_NATIVE_FLOAT
+				DimList=(\"NDim\")
+				MaxdimList=(\"NDim\")
+			END_OBJECT=GeoField_3
+			OBJECT=GeoField_4
+				GeoFieldName=\"Longitude\"
+				DataType=H5T_NATIVE_FLOAT
+				DimList=(\"NDim\")
+				MaxdimList=(\"NDim\")
+			END_OBJECT=GeoField_4
+		END_GROUP=GeoField
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=\"Temperature\"
+				DataType=H5T_NATIVE_FLOAT
+				DimList=(\"ZDim\",\"NDim\")
+				MaxdimList=(\"ZDim\",\"NDim\")
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=ProfileField
+		END_GROUP=ProfileField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=SWATH_1
+END_GROUP=SwathStructure
+GROUP=GridStructure
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+GROUP=ZaStructure
+END_GROUP=ZaStructure
+END
+";
 Float32 Latitude[Latitude = 8] = {0, 1, 2, 3, 4, 5, 6, 7};
 Int32 ZDim[ZDim = 4] = {0, 1, 2, 3};
 
