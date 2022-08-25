@@ -104,11 +104,18 @@ bool fits_handler::fits_read_attributes(DAS &das, const string &filename, string
 
             {
             	string com ;
+                // No need to add quote here. 
+                // libdap4 will add the quote when generating DAS. 
+                // KY 2022-08-25
+#if 0
             	//string com = "\"";
+#endif
                 com.append(value);
                 com.append(" / ");
                 com.append(comment);
+#if 0
                 //com.append("\"");
+#endif
                 at->append_attr(s_name, "String"/*type*/, com);
             }
 
