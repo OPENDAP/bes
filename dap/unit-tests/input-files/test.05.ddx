@@ -6,189 +6,189 @@ xsi:schemaLocation="http://www.dods.org/ns/DODS  http://dods.coas.oregonstate.ed
 
 	<Byte name="b">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Byte>
 
 	<Int32 name="i32">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Int32>
 
 	<UInt32 name="ui32">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</UInt32>
 
 	<Int16 name="i16">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Int16>
 
 	<UInt16 name="ui16">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</UInt16>
 
 	<Float32 name="f32">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Float32>
 
 	<Float64 name="f64">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Float64>
 
 	<String name="s">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</String>
 
 	<Url name="u">
 	    <Attribute name="Description" type="String">
-		    <value>&quot;A test byte&quot;</value>
+		    <value>A test byte</value>
 	    </Attribute>
 	    <Attribute name="units" type="String">
 		    <value>unknown</value>
 	    </Attribute>
 	    <Attribute name="Facility" type="Container">
 		    <Attribute name="PrincipleInvestigator" type="String">
-			    <value>&quot;Mark Abbott&quot;</value>
-			    <value>&quot;Ph.D&quot;</value>
+			    <value>Mark Abbott</value>
+			    <value>Ph.D</value>
 		    </Attribute>
 		    <Attribute name="DataCenter" type="String">
-			    <value>&quot;COAS Environmental Computer Facility&quot;</value>
+			    <value>COAS Environmental Computer Facility</value>
 		    </Attribute>
 		    <Attribute name="DrifterType" type="String">
-			    <value>&quot;MetOcean WOCE/OCM&quot;</value>
+			    <value>MetOcean WOCE/OCM</value>
 		    </Attribute>
 	    </Attribute>
 	</Url>

@@ -204,6 +204,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
 
+dnl Add tests for the special character excaping feature. One for DAP2 and one for DAP4
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_special_char_attr.h5_dap2_nc4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_special_char_attr.h5_dap4_nc4.bescmd)
+
 # Added tests for the 'max response size' feature that can be used to limit the size of the
 # data feed into the netcdf file builder.
 # AT_BESCMD_BESCONF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
