@@ -105,6 +105,7 @@ bool GDALRequestHandler::gdal_build_das(BESDataHandlerInterface & dhi)
         if (hDS == NULL)
             throw Error(string(CPLGetLastErrorMsg()));
 
+        BESDEBUG("gdal", "Data ACCESS in gdal_build_das: "<<filename << endl);
         gdal_read_dataset_attributes(*das, hDS);
 
         GDALClose(hDS);

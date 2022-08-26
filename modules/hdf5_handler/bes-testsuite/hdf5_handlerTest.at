@@ -716,6 +716,11 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
 # Test the case when a dimension has multiple hardlinks(HYRAX-588)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
+
+
+# Test special character handling
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_special_char_attr.h5.dmr.bescmd])
+#
 # This test will generate error message like 
 # "The shortest hardlink is not located under an ancestor group of all links.This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.
 # Please report this to support@opendap.org
@@ -749,6 +754,6 @@ AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.cfdmr.conf
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xpass])
 # and change to false
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf])
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf])
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])

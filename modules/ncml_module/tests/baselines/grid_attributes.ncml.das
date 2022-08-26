@@ -32,11 +32,16 @@ Attributes {
         Int16 missing_value 32766;
         Int16 _FillValue 32766;
         String long_name "Cloudiness Monthly Mean at Surface";
-        String dataset "COADS 1-degree Equatorial Enhanced\012AI";
-        String var_desc "Cloudiness\012C";
-        String level_desc "Surface\0120";
-        String statistic "Mean\012M";
-        String parent_stat "Individual Obs\012I";
+        String dataset "COADS 1-degree Equatorial Enhanced
+AI";
+        String var_desc "Cloudiness
+C";
+        String level_desc "Surface
+0";
+        String statistic "Mean
+M";
+        String parent_stat "Individual Obs
+I";
         Float32 add_offset 3276.50000;
         Float32 scale_factor 0.100000001;
     }
