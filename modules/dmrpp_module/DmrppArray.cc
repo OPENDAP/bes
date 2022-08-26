@@ -46,6 +46,7 @@
 #include <libdap/D4Attributes.h>
 #include <libdap/D4Maps.h>
 #include <libdap/D4Group.h>
+#include <libdap/Byte.h>
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -1496,13 +1497,13 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
                 str_len++;
             }
             BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
-
             value = string(buf,str_len);
             break;
         }
         case space_pad:
         {
-            while(buf[str_len-1]!=' ' && str_len>0){
+            str_len = fixed_str_len;
+            while( (buf[str_len-1]==' ' || buf[str_len-1]==0) && str_len>0){
                 str_len--;
             }
             BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
@@ -1531,6 +1532,8 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
  * @exception BESError Thrown when the data cannot be read, for a number of
  * reasons, including various network I/O issues.
  */
+#define HEX( x ) setw(2) << setfill('0') << hex << (int)( x )
+
 bool DmrppArray::read()
 {
     Type var_type = this->var()->type();
@@ -1573,32 +1576,82 @@ bool DmrppArray::read()
         return true;
     }
 
-    // Single chunk and 'contiguous' are the same for this code.
-
-    if (get_chunks_size() == 1) {
-        read_contiguous();    // Throws on various errors
-    }
-    else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected()) {
-            read_chunks_unconstrained();
-        }
-        else {
-            read_chunks();
-        }
-    }
+    BaseType *orig_proto;
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
             BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
             auto fs_len = get_fixed_string_length();
             BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
+
+            unsigned long long total_bytes = length() * fs_len;
+            BESDEBUG(MODULE, prolog << "total_bytes: " << total_bytes << endl);
+
+            auto template_var = prototype();
+            auto *tmp_proto  = new libdap::Byte(template_var->name());
+            orig_proto = set_prototype(tmp_proto);
+            tmp_proto->set_parent(this);
+        }
+    }
+
+
+    // Single chunk and 'contiguous' are the same for this code.
+
+    if (get_chunks_size() == 1) {
+        BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
+        read_contiguous();    // Throws on various errors
+    }
+    else {  // Handle the more complex case where the data is chunked.
+        if (!is_projected()) {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
+            read_chunks_unconstrained();
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+            read_chunks();
+        }
+    }
+    if ((var_type == dods_str_c || var_type == dods_url_c)) {
+        BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
+        BaseType *tmp_proto = set_prototype(orig_proto);
+        delete tmp_proto;
+
+        if (is_flsa()) {
+
+            BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
+            auto fs_len = get_fixed_string_length();
+            BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
             auto pad_type = get_fixed_length_string_pad();
-            BESDEBUG(MODULE, prolog << "get_fixed_length_string_pad(): " << pad_type_to_str(pad_type) << endl);
+            BESDEBUG(MODULE, prolog << "get_fixed_length_string_pad_str(): " << get_fixed_length_string_pad_str() << endl);
 
             auto buff = get_buf();
             BESDEBUG(MODULE, prolog << "get_buf(): " << (void *) buff << endl);
+            if(buff == nullptr){
+                throw BESInternalError("Failed to allocate byte buffer for reading string array data.",__FILE__,__LINE__);
+            }
 
+            unsigned long long num_bytes = length() * fs_len;
             char *begin = buff;
-            char *end = begin + length();
+            char *end = begin + num_bytes;
+            if(BESDebug::IsSet(MODULE)){
+                stringstream ss;
+                for(unsigned long long i=0; i<num_bytes; i+=fs_len){
+                    char *str_ptr = begin + i;
+                    if(i){ ss << ", ";}
+                    ss << "{";
+                    for(unsigned long long j=0; j<fs_len; j++){
+                        char this_char = *(str_ptr + j);
+                        if(j){ ss << ", ";}
+                        if(this_char>32 && this_char<126){
+                            ss << this_char;
+                        }
+                        else {
+                            ss << "0x" << std::hex << HEX(this_char) << std::dec;
+                        }
+                    }
+                    ss << "}";
+                }
+                BESDEBUG(MODULE, prolog << "Buffer contains: " << ss.str() << endl);
+            }
             while (begin < end) {
                 string value = ingest_fixed_length_string(begin, fs_len, pad_type);
                 get_str().push_back(value);
@@ -1607,8 +1660,18 @@ bool DmrppArray::read()
         }
         else {
             BESDEBUG(MODULE, prolog << "Processing Variable Length String Array data. SKIPPING..." << endl);
-            // @TODO Handle the variable length strings case here.
+#if 0 // @TODO Turn this on...
+            auto buff = get_buf();
+            vector<ons> ons_vec;
+            get_ons_objs(ons_vec);
+            for(ons ons_obj:ons_vec){
+                auto begin = buff +  ons_obj.offset;
+                string value(begin,ons_obj.size);
+                get_str().push_back(value);
+            }
+#else
             throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
+#endif
         }
     }
 

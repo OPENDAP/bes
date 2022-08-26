@@ -36,6 +36,8 @@ using namespace std;
 #define HR0 "###################################################################"
 
 
+#define prolog std::string("read_str_vars::").append(__func__).append("() - ")
+
 bool debug = false;
 
 bool is_str_type(hid_t);
@@ -210,7 +212,7 @@ string get_object_name(hid_t root_id, int dset_index)
     return object_name;
 }
 
-string shwindcs(const vector<unsigned long> &index){
+string show_indices(const vector<unsigned long> &index){
     stringstream ss;
     for(auto dim_index: index){
         ss << "[" << dim_index << "]";
@@ -306,23 +308,20 @@ int obtain_str_info_data(hid_t root_id, hid_t dset_id, int dset_index) {
        vector<string> results;
        read_fixed_length_str(dset_id, shape, dtype_id, dspace, mspace, is_scalar, results);
 
-
-
-
         auto num_dims = shape.size();
         vector<unsigned long> str_index;
         for(auto dim:shape){
             str_index.push_back(0);
         }
 
-        auto index = shape.size();
-        for(auto dim:shape)
+        //auto index = shape.size();
+        //for(auto dim:shape)
 
         cout << HR3 << endl;
         int i=0;
         for(auto s:results){
             // cout << "####     results[" << i++ << "]: '" << s << "'" << endl;
-            cout << "####     str_index" << shwindcs(str_index) << ": '" << s << "'" << endl;
+            cout << "####     str_index" << show_indices(str_index) << ": '" << s << "'" << endl;
             increment_index(shape,str_index);
         }
         cout << HR3 << endl;
@@ -422,22 +421,30 @@ string show_vec(const string &name, const vector<unsigned long> &vec ){
 
 void increment_index(const vector<unsigned long long> &shape, vector<unsigned long> &str_index)
 {
-    if(shape.size()==0 || shape.size() != str_index.size()){
+    //cerr << prolog << "BEGIN" << endl;
+    if(shape.empty() || shape.size() != str_index.size()){
         throw runtime_error("Rank of 'shape' and rank of 'index' do not match.");
     }
     bool done = false;
-    auto dim_index = str_index.size()-1;
+    auto dim_index = shape.size()-1;
+   // cerr << "# dim_index: " << dim_index << endl;
 
-    while(!done || dim_index>0){
-        auto next_i = (str_index[dim_index] + 1) % shape[dim_index];
-        str_index[dim_index] = next_i;
-        if(next_i == 0){
+    while(!done && dim_index>=0){
+        unsigned long long new_index = str_index[dim_index] + 1;
+        //cerr << "# new_index: " << new_index << endl;
+        auto next_index = new_index % shape[dim_index];
+        //cerr << "# next_index: " << next_index << endl;
+        str_index[dim_index] = next_index;
+        if(next_index == 0 && dim_index>0){
             dim_index--;
+            //cerr << "# dim_index: " << dim_index << endl;
         }
         else {
             done = true;
         }
     }
+    //cerr << prolog << "END" << endl;
+
 }
 
 /**

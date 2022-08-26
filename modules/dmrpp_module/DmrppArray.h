@@ -196,13 +196,14 @@ public:
     void set_fixed_length_string_pad(const string_pad_type pad){ d_fixed_length_string_pad_type = pad; }
     string_pad_type set_fixed_length_string_pad_type(const std::string &pad_str);
     string_pad_type get_fixed_length_string_pad() const { return d_fixed_length_string_pad_type; }
+    std::string get_fixed_length_string_pad_str() const { return pad_type_to_str(d_fixed_length_string_pad_type); }
 
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
     std::string get_ons_string(){ return d_vlen_ons_str; };
     void get_ons_objs(vector<ons> &ons_list);
 
-    std::string pad_type_to_str(string_pad_type pad_type);
+    static std::string pad_type_to_str(string_pad_type pad_type);
 };
 
 /**
