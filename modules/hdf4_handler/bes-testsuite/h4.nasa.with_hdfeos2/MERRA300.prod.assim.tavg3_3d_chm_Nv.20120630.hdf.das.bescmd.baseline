@@ -17,30 +17,30 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf";
+                    String VALUE "\"MERRA300.prod.assim.tavg3_3d_chm_Nv.20120630.hdf\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "V01";
+                    String VALUE "\"V01\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "0", "1", "2", "3", "4";
+                    String CLASS "\"0\"", "\"1\"", "\"2\"", "\"3\"", "\"4\"";
                     PARAMETERNAME {
-                        String CLASS "0", "1", "2", "3", "4";
+                        String CLASS "\"0\"", "\"1\"", "\"2\"", "\"3\"", "\"4\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1;
-                        String VALUE "MFXC", "MFYC", "UC", "VC", "DTRAIN";
+                        String VALUE "\"MFXC\"", "\"MFYC\"", "\"UC\"", "\"VC\"", "\"DTRAIN\"";
                     }
                     QAFLAGS {
-                        String CLASS "0", "1", "2", "3", "4";
+                        String CLASS "\"0\"", "\"1\"", "\"2\"", "\"3\"", "\"4\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1, 1, 1, 1, 1;
-                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed";
+                            String VALUE "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1, 1, 1, 1, 1;
-                            String VALUE "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly", "parameter is produced correctly";
+                            String VALUE "\"parameter is produced correctly\"", "\"parameter is produced correctly\"", "\"parameter is produced correctly\"", "\"parameter is produced correctly\"", "\"parameter is produced correctly\"";
                         }
                     }
                 }
@@ -48,26 +48,26 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MAT3NVCHM";
+                    String VALUE "\"MAT3NVCHM\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "5.2.0";
+                    String VALUE "\"5.2.0\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 VERTICALSPATIALDOMAIN {
                     VERTICALSPATIALDOMAINCONTAINER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         VERTICALSPATIALDOMAINTYPE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "Atmosphere Layer";
+                            String VALUE "\"Atmosphere Layer\"";
                         }
                         VERTICALSPATIALDOMAINVALUE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "72 levels";
+                            String VALUE "\"72 levels\"";
                         }
                     }
                 }
@@ -95,19 +95,19 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:00Z";
+                    String VALUE "\"00:00:00Z\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-06-30";
+                    String VALUE "\"2012-06-30\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:59Z";
+                    String VALUE "\"23:59:59Z\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-06-30";
+                    String VALUE "\"2012-06-30\"";
                 }
             }
         }
@@ -121,7 +121,7 @@ Attributes {
             }
             ParameterFormat {
                 Int32 NUM_VAL 1;
-                String VALUE "32-bit floating point";
+                String VALUE "\"32-bit floating point\"";
             }
             MissingValue {
                 Int32 NUM_VAL 1;

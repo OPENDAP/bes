@@ -10951,8 +10951,8 @@
             <Value>ISO19115 Structured Metadata Represented within HDF5</Value>
         </Attribute>
         <Attribute name="iso_19139_dataset_xml" type="String">
-            <Value>&lt;?xml version=\&quot;1.0\&quot;?&gt;
-&lt;gmd:DS_Series xsi:schemaLocation=\&quot;http://www.isotc211.org/2005/gmi http://cdn.earthdata.nasa.gov/iso/schema/1.0/ISO19115-2_EOS.xsd\&quot; xmlns:eos=\&quot;http://earthdata.nasa.gov/schema/eos\&quot; xmlns:gco=\&quot;http://www.isotc211.org/2005/gco\&quot; xmlns:gmd=\&quot;http://www.isotc211.org/2005/gmd\&quot; xmlns:gmi=\&quot;http://www.isotc211.org/2005/gmi\&quot; xmlns:gml=\&quot;http://www.opengis.net/gml/3.2\&quot; xmlns:gmx=\&quot;http://www.isotc211.org/2005/gmx\&quot; xmlns:gsr=\&quot;http://www.isotc211.org/2005/gsr\&quot; xmlns:gss=\&quot;http://www.isotc211.org/2005/gss\&quot; xmlns:gts=\&quot;http://www.isotc211.org/2005/gts\&quot; xmlns:srv=\&quot;http://www.isotc211.org/2005/srv\&quot; xmlns:xlink=\&quot;http://www.w3.org/1999/xlink\&quot; xmlns:xs=\&quot;http://www.w3.org/2001/XMLSchema\&quot; xmlns:xsi=\&quot;http://www.w3.org/2001/XMLSchema-instance\&quot;&gt;
+            <Value>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;gmd:DS_Series xsi:schemaLocation=&quot;http://www.isotc211.org/2005/gmi http://cdn.earthdata.nasa.gov/iso/schema/1.0/ISO19115-2_EOS.xsd&quot; xmlns:eos=&quot;http://earthdata.nasa.gov/schema/eos&quot; xmlns:gco=&quot;http://www.isotc211.org/2005/gco&quot; xmlns:gmd=&quot;http://www.isotc211.org/2005/gmd&quot; xmlns:gmi=&quot;http://www.isotc211.org/2005/gmi&quot; xmlns:gml=&quot;http://www.opengis.net/gml/3.2&quot; xmlns:gmx=&quot;http://www.isotc211.org/2005/gmx&quot; xmlns:gsr=&quot;http://www.isotc211.org/2005/gsr&quot; xmlns:gss=&quot;http://www.isotc211.org/2005/gss&quot; xmlns:gts=&quot;http://www.isotc211.org/2005/gts&quot; xmlns:srv=&quot;http://www.isotc211.org/2005/srv&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
   &lt;gmd:composedOf&gt;
     &lt;gmd:DS_DataSet&gt;
       &lt;gmd:has&gt;
@@ -10984,7 +10984,7 @@
                 &lt;/gmd:CI_Contact&gt;
               &lt;/gmd:contactInfo&gt;
               &lt;gmd:role&gt;
-                &lt;gmd:CI_RoleCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;pointOfContact\&quot;&gt;pointOfContact&lt;/gmd:CI_RoleCode&gt;
+                &lt;gmd:CI_RoleCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;pointOfContact&quot;&gt;pointOfContact&lt;/gmd:CI_RoleCode&gt;
               &lt;/gmd:role&gt;
             &lt;/gmd:CI_ResponsibleParty&gt;
           &lt;/gmd:contact&gt;
@@ -11010,7 +11010,7 @@
                         &lt;gco:DateTime&gt;2019-10-10T16:01:36.000000Z&lt;/gco:DateTime&gt;
                       &lt;/gmd:date&gt;
                       &lt;gmd:dateType&gt;
-                        &lt;gmd:CI_DateTypeCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode\&quot; codeListValue=\&quot;creation\&quot;&gt;creation&lt;/gmd:CI_DateTypeCode&gt;
+                        &lt;gmd:CI_DateTypeCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode&quot; codeListValue=&quot;creation&quot;&gt;creation&lt;/gmd:CI_DateTypeCode&gt;
                       &lt;/gmd:dateType&gt;
                     &lt;/gmd:CI_Date&gt;
                   &lt;/gmd:date&gt;
@@ -11050,7 +11050,7 @@
                 &lt;gco:CharacterString&gt;The ICESat-2 ATL13 standard data product contains along track surface height of inland water bodies. This product contains, for each beam, water surface height, slope, and rms aggregated into segments defined by approximately 100 signal photons. Also includes water surface slope and aspect between neighboring strong beams.&lt;/gco:CharacterString&gt;
               &lt;/gmd:abstract&gt;
               &lt;gmd:status&gt;
-                &lt;gmd:MD_ProgressCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode\&quot; codeListValue=\&quot;onGoing\&quot;&gt;onGoing&lt;/gmd:MD_ProgressCode&gt;
+                &lt;gmd:MD_ProgressCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode&quot; codeListValue=&quot;onGoing&quot;&gt;onGoing&lt;/gmd:MD_ProgressCode&gt;
               &lt;/gmd:status&gt;
               &lt;gmd:aggregationInfo&gt;
                 &lt;gmd:MD_AggregateInformation&gt;
@@ -11059,14 +11059,14 @@
                       &lt;gmd:title&gt;
                         &lt;gco:CharacterString&gt;ATL13&lt;/gco:CharacterString&gt;
                       &lt;/gmd:title&gt;
-                      &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
+                      &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
                       &lt;gmd:edition&gt;
                         &lt;gco:CharacterString&gt;002&lt;/gco:CharacterString&gt;
                       &lt;/gmd:edition&gt;
                     &lt;/gmd:CI_Citation&gt;
                   &lt;/gmd:aggregateDataSetName&gt;
                   &lt;gmd:associationType&gt;
-                    &lt;gmd:DS_AssociationTypeCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#DS_AssociationTypeCode\&quot; codeListValue=\&quot;largerWorkCitation\&quot;&gt;largerWorkCitation&lt;/gmd:DS_AssociationTypeCode&gt;
+                    &lt;gmd:DS_AssociationTypeCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#DS_AssociationTypeCode&quot; codeListValue=&quot;largerWorkCitation&quot;&gt;largerWorkCitation&lt;/gmd:DS_AssociationTypeCode&gt;
                   &lt;/gmd:associationType&gt;
                 &lt;/gmd:MD_AggregateInformation&gt;
               &lt;/gmd:aggregationInfo&gt;
@@ -11077,9 +11077,9 @@
                 &lt;gmd:MD_TopicCategoryCode&gt;geoscientificInformation&lt;/gmd:MD_TopicCategoryCode&gt;
               &lt;/gmd:topicCategory&gt;
              &lt;gmd:extent&gt;
-                &lt;gmd:EX_Extent id=\&quot;boundingExtent\&quot;&gt;
+                &lt;gmd:EX_Extent id=&quot;boundingExtent&quot;&gt;
                   &lt;gmd:geographicElement&gt;
-                    &lt;gmd:EX_GeographicDescription id=\&quot;Orbit\&quot;&gt;
+                    &lt;gmd:EX_GeographicDescription id=&quot;Orbit&quot;&gt;
                       &lt;gmd:geographicIdentifier&gt;
                         &lt;gmd:MD_Identifier&gt;
                           &lt;gmd:code&gt;
@@ -11096,7 +11096,7 @@
                     &lt;/gmd:EX_GeographicDescription&gt;
                   &lt;/gmd:geographicElement&gt;
                   &lt;gmd:geographicElement&gt;
-                    &lt;gmd:EX_GeographicDescription id=\&quot;OrbitCalculatedSpatialDomains0\&quot;&gt;
+                    &lt;gmd:EX_GeographicDescription id=&quot;OrbitCalculatedSpatialDomains0&quot;&gt;
                       &lt;gmd:geographicIdentifier&gt;
                         &lt;gmd:MD_Identifier&gt;
                           &lt;gmd:code&gt;
@@ -11113,7 +11113,7 @@
                     &lt;/gmd:EX_GeographicDescription&gt;
                   &lt;/gmd:geographicElement&gt;
                   &lt;gmd:geographicElement&gt;
-                    &lt;gmd:EX_GeographicDescription id=\&quot;OrbitCalculatedSpatialDomains1\&quot;&gt;
+                    &lt;gmd:EX_GeographicDescription id=&quot;OrbitCalculatedSpatialDomains1&quot;&gt;
                       &lt;gmd:geographicIdentifier&gt;
                         &lt;gmd:MD_Identifier&gt;
                           &lt;gmd:code&gt;
@@ -11129,7 +11129,7 @@
                       &lt;/gmd:geographicIdentifier&gt;
                     &lt;/gmd:EX_GeographicDescription&gt;
                   &lt;/gmd:geographicElement&gt;&lt;gmd:geographicElement&gt;
-                    &lt;gmd:EX_GeographicDescription id=\&quot;OrbitCalculatedSpatialDomains2\&quot;&gt;
+                    &lt;gmd:EX_GeographicDescription id=&quot;OrbitCalculatedSpatialDomains2&quot;&gt;
                       &lt;gmd:geographicIdentifier&gt;
                         &lt;gmd:MD_Identifier&gt;
                           &lt;gmd:code&gt;
@@ -11145,7 +11145,7 @@
                       &lt;/gmd:geographicIdentifier&gt;
                     &lt;/gmd:EX_GeographicDescription&gt;
                   &lt;/gmd:geographicElement&gt;&lt;gmd:geographicElement&gt;
-                    &lt;gmd:EX_GeographicDescription id=\&quot;OrbitCalculatedSpatialDomains3\&quot;&gt;
+                    &lt;gmd:EX_GeographicDescription id=&quot;OrbitCalculatedSpatialDomains3&quot;&gt;
                       &lt;gmd:geographicIdentifier&gt;
                         &lt;gmd:MD_Identifier&gt;
                           &lt;gmd:code&gt;
@@ -11163,7 +11163,7 @@
                   &lt;/gmd:geographicElement&gt;&lt;gmd:temporalElement&gt;
                     &lt;gmd:EX_TemporalExtent&gt;
                       &lt;gmd:extent&gt;
-                        &lt;gml:TimePeriod gml:id=\&quot;TIME_PERIOD_ID\&quot;&gt;
+                        &lt;gml:TimePeriod gml:id=&quot;TIME_PERIOD_ID&quot;&gt;
                           &lt;gml:beginPosition&gt;2019-03-30T21:22:41.000000Z&lt;/gml:beginPosition&gt;
                           &lt;gml:endPosition&gt;2019-03-31T03:39:51.000000Z&lt;/gml:endPosition&gt;
                         &lt;/gml:TimePeriod&gt;
@@ -11179,7 +11179,7 @@
               &lt;gmd:scope&gt;
                 &lt;gmd:DQ_Scope&gt;
                   &lt;gmd:level&gt;
-                    &lt;gmd:MD_ScopeCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode\&quot; codeListValue=\&quot;dataset\&quot;&gt;dataset&lt;/gmd:MD_ScopeCode&gt;
+                    &lt;gmd:MD_ScopeCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode&quot; codeListValue=&quot;dataset&quot;&gt;dataset&lt;/gmd:MD_ScopeCode&gt;
                   &lt;/gmd:level&gt;
                 &lt;/gmd:DQ_Scope&gt;
               &lt;/gmd:scope&gt;
@@ -11203,28 +11203,28 @@
       &lt;/gmd:has&gt;
     &lt;/gmd:DS_DataSet&gt;
   &lt;/gmd:composedOf&gt;
-  &lt;gmd:seriesMetadata gco:nilReason=\&quot;missing\&quot;/&gt;
+  &lt;gmd:seriesMetadata gco:nilReason=&quot;missing&quot;/&gt;
 &lt;/gmd:DS_Series&gt;
 </Value>
         </Attribute>
         <Attribute name="iso_19139_series_xml" type="String">
-            <Value>&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;
+            <Value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;gmd:DS_Series
-  xmlns:eos=\&quot;http://earthdata.nasa.gov/schema/eos\&quot;
-  xmlns:gco=\&quot;http://www.isotc211.org/2005/gco\&quot;
-  xmlns:gmd=\&quot;http://www.isotc211.org/2005/gmd\&quot;
-  xmlns:gmi=\&quot;http://www.isotc211.org/2005/gmi\&quot;
-  xmlns:gml=\&quot;http://www.opengis.net/gml/3.2\&quot;
-  xmlns:gmx=\&quot;http://www.isotc211.org/2005/gmx\&quot;
-  xmlns:gsr=\&quot;http://www.isotc211.org/2005/gsr\&quot;
-  xmlns:gss=\&quot;http://www.isotc211.org/2005/gss\&quot;
-  xmlns:gts=\&quot;http://www.isotc211.org/2005/gts\&quot;
-  xmlns:srv=\&quot;http://www.isotc211.org/2005/srv\&quot;
-  xmlns:xlink=\&quot;http://www.w3.org/1999/xlink\&quot;
-  xmlns:xs=\&quot;http://www.w3.org/2001/XMLSchema\&quot;
-  xmlns:xsi=\&quot;http://www.w3.org/2001/XMLSchema-instance\&quot;
-  xsi:schemaLocation=\&quot;http://www.isotc211.org/2005/gmi http://cdn.earthdata.nasa.gov/iso/schema/1.0/ISO19115-2_EOS.xsd\&quot;&gt;
-  &lt;gmd:composedOf gco:nilReason=\&quot;inapplicable\&quot;/&gt;
+  xmlns:eos=&quot;http://earthdata.nasa.gov/schema/eos&quot;
+  xmlns:gco=&quot;http://www.isotc211.org/2005/gco&quot;
+  xmlns:gmd=&quot;http://www.isotc211.org/2005/gmd&quot;
+  xmlns:gmi=&quot;http://www.isotc211.org/2005/gmi&quot;
+  xmlns:gml=&quot;http://www.opengis.net/gml/3.2&quot;
+  xmlns:gmx=&quot;http://www.isotc211.org/2005/gmx&quot;
+  xmlns:gsr=&quot;http://www.isotc211.org/2005/gsr&quot;
+  xmlns:gss=&quot;http://www.isotc211.org/2005/gss&quot;
+  xmlns:gts=&quot;http://www.isotc211.org/2005/gts&quot;
+  xmlns:srv=&quot;http://www.isotc211.org/2005/srv&quot;
+  xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;
+  xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+  xsi:schemaLocation=&quot;http://www.isotc211.org/2005/gmi http://cdn.earthdata.nasa.gov/iso/schema/1.0/ISO19115-2_EOS.xsd&quot;&gt;
+  &lt;gmd:composedOf gco:nilReason=&quot;inapplicable&quot;/&gt;
   &lt;gmd:seriesMetadata&gt;
     &lt;gmi:MI_Metadata&gt;
       &lt;gmd:fileIdentifier&gt;
@@ -11234,10 +11234,10 @@
         &lt;gco:CharacterString&gt;eng&lt;/gco:CharacterString&gt;
       &lt;/gmd:language&gt;
       &lt;gmd:characterSet&gt;
-        &lt;gmd:MD_CharacterSetCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode\&quot; codeListValue=\&quot;utf8\&quot;&gt;utf8&lt;/gmd:MD_CharacterSetCode&gt;
+        &lt;gmd:MD_CharacterSetCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode&quot; codeListValue=&quot;utf8&quot;&gt;utf8&lt;/gmd:MD_CharacterSetCode&gt;
       &lt;/gmd:characterSet&gt;
       &lt;gmd:hierarchyLevel&gt;
-        &lt;gmd:MD_ScopeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_ScopeCode\&quot; codeListValue=\&quot;series\&quot;&gt;series&lt;/gmd:MD_ScopeCode&gt;
+        &lt;gmd:MD_ScopeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_ScopeCode&quot; codeListValue=&quot;series&quot;&gt;series&lt;/gmd:MD_ScopeCode&gt;
       &lt;/gmd:hierarchyLevel&gt;
       &lt;gmd:contact&gt;
         &lt;gmd:CI_ResponsibleParty&gt;
@@ -11245,7 +11245,7 @@
             &lt;gco:CharacterString&gt;NSIDC DAAC &amp;gt; NASA National Snow and Ice Data Center Distributed Active Archive Center&lt;/gco:CharacterString&gt;
           &lt;/gmd:organisationName&gt;
           &lt;gmd:contactInfo&gt;
-            &lt;gmd:CI_Contact id=\&quot;NSIDC_DAAC_CONTACT_ID\&quot;&gt;
+            &lt;gmd:CI_Contact id=&quot;NSIDC_DAAC_CONTACT_ID&quot;&gt;
               &lt;gmd:phone&gt;
                 &lt;gmd:CI_Telephone&gt;
                   &lt;gmd:voice&gt;
@@ -11294,7 +11294,7 @@
             &lt;/gmd:CI_Contact&gt;
           &lt;/gmd:contactInfo&gt;
           &lt;gmd:role&gt;
-            &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;pointOfContact\&quot;&gt;pointOfContact&lt;/gmd:CI_RoleCode&gt;
+            &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;pointOfContact&quot;&gt;pointOfContact&lt;/gmd:CI_RoleCode&gt;
           &lt;/gmd:role&gt;
         &lt;/gmd:CI_ResponsibleParty&gt;
       &lt;/gmd:contact&gt;
@@ -11323,7 +11323,7 @@
                     &lt;gco:Date&gt;2016-06-09&lt;/gco:Date&gt;
                   &lt;/gmd:date&gt;
                   &lt;gmd:dateType&gt;
-                    &lt;gmd:CI_DateTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode\&quot; codeListValue=\&quot;revision\&quot;&gt;revision&lt;/gmd:CI_DateTypeCode&gt;
+                    &lt;gmd:CI_DateTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode&quot; codeListValue=&quot;revision&quot;&gt;revision&lt;/gmd:CI_DateTypeCode&gt;
                   &lt;/gmd:dateType&gt;
                 &lt;/gmd:CI_Date&gt;
               &lt;/gmd:date&gt;
@@ -11357,7 +11357,7 @@
                 &lt;gmd:MD_Identifier&gt;
                   &lt;!-- This field provides the Digital Object Identifier (DOI). --&gt;
                   &lt;gmd:code&gt;
-                    &lt;gmx:Anchor xlink:actuate=\&quot;onRequest\&quot; xlink:href=\&quot;http://dx.doi.org/10.5067/ATLAS/ATL13.002\&quot;&gt;doi:10.5067/ATLAS/ATL13.002&lt;/gmx:Anchor&gt;
+                    &lt;gmx:Anchor xlink:actuate=&quot;onRequest&quot; xlink:href=&quot;http://dx.doi.org/10.5067/ATLAS/ATL13.002&quot;&gt;doi:10.5067/ATLAS/ATL13.002&lt;/gmx:Anchor&gt;
                   &lt;/gmd:code&gt;
                   &lt;gmd:codeSpace&gt;
                     &lt;gco:CharacterString&gt;gov.nasa.esdis&lt;/gco:CharacterString&gt;
@@ -11373,7 +11373,7 @@
                     &lt;gco:CharacterString&gt;National Aeronautics and Space Administration (NASA)&lt;/gco:CharacterString&gt;
                   &lt;/gmd:organisationName&gt;
                   &lt;gmd:role&gt;
-                    &lt;gmd:CI_RoleCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;resourceProvider\&quot;&gt;resourceProvider&lt;/gmd:CI_RoleCode&gt;
+                    &lt;gmd:CI_RoleCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;resourceProvider&quot;&gt;resourceProvider&lt;/gmd:CI_RoleCode&gt;
                   &lt;/gmd:role&gt;
                 &lt;/gmd:CI_ResponsibleParty&gt;
               &lt;/gmd:citedResponsibleParty&gt;
@@ -11384,7 +11384,7 @@
                     &lt;gco:CharacterString&gt;GSFC I-SIPS &amp;gt; ICESat-2 Science Investigator-led Processing System&lt;/gco:CharacterString&gt;
                   &lt;/gmd:organisationName&gt;
                   &lt;gmd:role&gt;
-                    &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;originator\&quot;&gt;originator&lt;/gmd:CI_RoleCode&gt;
+                    &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;originator&quot;&gt;originator&lt;/gmd:CI_RoleCode&gt;
                   &lt;/gmd:role&gt;
                 &lt;/gmd:CI_ResponsibleParty&gt;
               &lt;/gmd:citedResponsibleParty&gt;
@@ -11405,7 +11405,7 @@
             &lt;gco:CharacterString&gt;The software that generates the ATL13 product was designed and implemented within the ICESat-2 Science Investigator-led Processing System at the NASA Goddard Space Flight Center in Greenbelt, Maryland.&lt;/gco:CharacterString&gt;
           &lt;/gmd:credit&gt;
           &lt;gmd:status&gt;
-            &lt;gmd:MD_ProgressCode codeList=\&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode\&quot; codeListValue=\&quot;onGoing\&quot;&gt;onGoing&lt;/gmd:MD_ProgressCode&gt;
+            &lt;gmd:MD_ProgressCode codeList=&quot;http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ProgressCode&quot; codeListValue=&quot;onGoing&quot;&gt;onGoing&lt;/gmd:MD_ProgressCode&gt;
           &lt;/gmd:status&gt;
           &lt;gmd:pointOfContact&gt;
             &lt;gmd:CI_ResponsibleParty&gt;
@@ -11413,9 +11413,9 @@
               &lt;gmd:organisationName&gt;
                 &lt;gco:CharacterString&gt;NSIDC DAAC &amp;gt; NASA National Snow and Ice Data Center Distributed Active Archive Center&lt;/gco:CharacterString&gt;
               &lt;/gmd:organisationName&gt;
-              &lt;gmd:contactInfo xlink:href=\&quot;#NSIDC_DAAC_CONTACT_ID\&quot;/&gt;
+              &lt;gmd:contactInfo xlink:href=&quot;#NSIDC_DAAC_CONTACT_ID&quot;/&gt;
               &lt;gmd:role&gt;
-                &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;distributor\&quot;&gt;distributor&lt;/gmd:CI_RoleCode&gt;
+                &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;distributor&quot;&gt;distributor&lt;/gmd:CI_RoleCode&gt;
               &lt;/gmd:role&gt;
             &lt;/gmd:CI_ResponsibleParty&gt;
           &lt;/gmd:pointOfContact&gt;
@@ -11450,22 +11450,22 @@
                 &lt;gco:CharacterString&gt;EARTH SCIENCE &amp;gt; TERRESTRIAL HYDROSPHERE &amp;gt; SURFACE WATER FEATURES &amp;gt; WETLANDS &amp;gt; NONE &amp;gt; NONE &amp;gt; NONE&lt;/gco:CharacterString&gt;
               &lt;/gmd:keyword&gt;
               &lt;gmd:type&gt;
-                &lt;gmd:MD_KeywordTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode\&quot; codeListValue=\&quot;theme\&quot;&gt;theme&lt;/gmd:MD_KeywordTypeCode&gt;
+                &lt;gmd:MD_KeywordTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode&quot; codeListValue=&quot;theme&quot;&gt;theme&lt;/gmd:MD_KeywordTypeCode&gt;
               &lt;/gmd:type&gt;
               &lt;gmd:thesaurusName&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;NASA/GCMD Science Keywords&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
                   &lt;gmd:citedResponsibleParty&gt;
-                    &lt;gmd:CI_ResponsibleParty id=\&quot;GCMD_USO_ID\&quot;&gt;
+                    &lt;gmd:CI_ResponsibleParty id=&quot;GCMD_USO_ID&quot;&gt;
                       &lt;gmd:organisationName&gt;
                         &lt;gco:CharacterString&gt;NASA Global Change Master Directory (GCMD) User Support Office&lt;/gco:CharacterString&gt;
                       &lt;/gmd:organisationName&gt;
                       &lt;gmd:contactInfo&gt;
                         &lt;gmd:CI_Contact&gt;
-                          &lt;gmd:phone gco:nilReason=\&quot;missing\&quot;/&gt;
+                          &lt;gmd:phone gco:nilReason=&quot;missing&quot;/&gt;
                           &lt;gmd:address&gt;
                             &lt;gmd:CI_Address&gt;
                               &lt;gmd:deliveryPoint&gt;
@@ -11506,7 +11506,7 @@
                                 &lt;gco:CharacterString&gt;Home Page&lt;/gco:CharacterString&gt;
                               &lt;/gmd:description&gt;
                               &lt;gmd:function&gt;
-                                &lt;gmd:CI_OnLineFunctionCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode\&quot; codeListValue=\&quot;information\&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
+                                &lt;gmd:CI_OnLineFunctionCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode&quot; codeListValue=&quot;information&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
                               &lt;/gmd:function&gt;
                             &lt;/gmd:CI_OnlineResource&gt;
                           &lt;/gmd:onlineResource&gt;
@@ -11516,18 +11516,18 @@
                         &lt;/gmd:CI_Contact&gt;
                       &lt;/gmd:contactInfo&gt;
                       &lt;gmd:role&gt;
-                        &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;custodian\&quot;&gt;custodian&lt;/gmd:CI_RoleCode&gt;
+                        &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;custodian&quot;&gt;custodian&lt;/gmd:CI_RoleCode&gt;
                       &lt;/gmd:role&gt;
                     &lt;/gmd:CI_ResponsibleParty&gt;
                   &lt;/gmd:citedResponsibleParty&gt;
                   &lt;gmd:citedResponsibleParty&gt;
-                    &lt;gmd:CI_ResponsibleParty id=\&quot;GCMD_KEYWORDS_ID\&quot;&gt;
+                    &lt;gmd:CI_ResponsibleParty id=&quot;GCMD_KEYWORDS_ID&quot;&gt;
                       &lt;gmd:organisationName&gt;
                         &lt;gco:CharacterString&gt;Global Change Master Directory (GCMD)&lt;/gco:CharacterString&gt;
                       &lt;/gmd:organisationName&gt;
                       &lt;gmd:contactInfo&gt;
                         &lt;gmd:CI_Contact&gt;
-                          &lt;gmd:phone gco:nilReason=\&quot;missing\&quot;/&gt;
+                          &lt;gmd:phone gco:nilReason=&quot;missing&quot;/&gt;
                           &lt;gmd:address&gt;
                             &lt;gmd:CI_Address&gt;
                               &lt;gmd:deliveryPoint&gt;
@@ -11568,7 +11568,7 @@
                                 &lt;gco:CharacterString&gt;This page describes the NASA GCMD Keywords, how to reference those keywords and provides download instructions.&lt;/gco:CharacterString&gt;
                               &lt;/gmd:description&gt;
                               &lt;gmd:function&gt;
-                                &lt;gmd:CI_OnLineFunctionCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode\&quot; codeListValue=\&quot;download\&quot;&gt;download&lt;/gmd:CI_OnLineFunctionCode&gt;
+                                &lt;gmd:CI_OnLineFunctionCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode&quot; codeListValue=&quot;download&quot;&gt;download&lt;/gmd:CI_OnLineFunctionCode&gt;
                               &lt;/gmd:function&gt;
                             &lt;/gmd:CI_OnlineResource&gt;
                           &lt;/gmd:onlineResource&gt;
@@ -11578,7 +11578,7 @@
                         &lt;/gmd:CI_Contact&gt;
                       &lt;/gmd:contactInfo&gt;
                       &lt;gmd:role&gt;
-                        &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;custodian\&quot;&gt;custodian&lt;/gmd:CI_RoleCode&gt;
+                        &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;custodian&quot;&gt;custodian&lt;/gmd:CI_RoleCode&gt;
                       &lt;/gmd:role&gt;
                     &lt;/gmd:CI_ResponsibleParty&gt;
                   &lt;/gmd:citedResponsibleParty&gt;
@@ -11592,16 +11592,16 @@
                 &lt;gco:CharacterString&gt;GEOGRAPHIC REGION &amp;gt; GLOBAL&lt;/gco:CharacterString&gt;
               &lt;/gmd:keyword&gt;
               &lt;gmd:type&gt;
-                &lt;gmd:MD_KeywordTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode\&quot; codeListValue=\&quot;place\&quot;&gt;place&lt;/gmd:MD_KeywordTypeCode&gt;
+                &lt;gmd:MD_KeywordTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode&quot; codeListValue=&quot;place&quot;&gt;place&lt;/gmd:MD_KeywordTypeCode&gt;
               &lt;/gmd:type&gt;
               &lt;gmd:thesaurusName&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;NASA/GCMD Location Keywords&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_USO_ID\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_KEYWORDS_ID\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_USO_ID&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_KEYWORDS_ID&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmd:thesaurusName&gt;
             &lt;/gmd:MD_Keywords&gt;
@@ -11612,16 +11612,16 @@
                 &lt;gco:CharacterString&gt;NASA/NSIDC_DAAC &amp;gt; NASA National Snow and Ice Data Center Distributed Active Archive Center&lt;/gco:CharacterString&gt;
               &lt;/gmd:keyword&gt;
               &lt;gmd:type&gt;
-                &lt;gmd:MD_KeywordTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode\&quot; codeListValue=\&quot;dataCenter\&quot;&gt;dataCenter&lt;/gmd:MD_KeywordTypeCode&gt;
+                &lt;gmd:MD_KeywordTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode&quot; codeListValue=&quot;dataCenter&quot;&gt;dataCenter&lt;/gmd:MD_KeywordTypeCode&gt;
               &lt;/gmd:type&gt;
               &lt;gmd:thesaurusName&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;NASA/GCMD Data Center Keywords&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_USO_ID\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_KEYWORDS_ID\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_USO_ID&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_KEYWORDS_ID&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmd:thesaurusName&gt;
             &lt;/gmd:MD_Keywords&gt;
@@ -11632,16 +11632,16 @@
                 &lt;gco:CharacterString&gt;Earth Observation Satellites &amp;gt; NASA Decadal Survey &amp;gt; ICESAT-2 &amp;gt; Ice, Cloud, and land Elevation Satellite-2&lt;/gco:CharacterString&gt;
               &lt;/gmd:keyword&gt;
               &lt;gmd:type&gt;
-                &lt;gmd:MD_KeywordTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode\&quot; codeListValue=\&quot;platform\&quot;&gt;platform&lt;/gmd:MD_KeywordTypeCode&gt;
+                &lt;gmd:MD_KeywordTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode&quot; codeListValue=&quot;platform&quot;&gt;platform&lt;/gmd:MD_KeywordTypeCode&gt;
               &lt;/gmd:type&gt;
               &lt;gmd:thesaurusName&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;NASA/GCMD Platform Keywords&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_USO_ID\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_KEYWORDS_ID\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_USO_ID&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_KEYWORDS_ID&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmd:thesaurusName&gt;
             &lt;/gmd:MD_Keywords&gt;
@@ -11652,16 +11652,16 @@
                 &lt;gco:CharacterString&gt;Earth Remote Sensing Instruments &amp;gt; Active Remote Sensing &amp;gt; Altimeters &amp;gt; Lidar/Laser Altimeters &amp;gt; ATLAS &amp;gt; Advanced Topographic Laser Altimeter System&lt;/gco:CharacterString&gt;
               &lt;/gmd:keyword&gt;
               &lt;gmd:type&gt;
-                &lt;gmd:MD_KeywordTypeCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode\&quot; codeListValue=\&quot;instrument\&quot;&gt;instrument&lt;/gmd:MD_KeywordTypeCode&gt;
+                &lt;gmd:MD_KeywordTypeCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode&quot; codeListValue=&quot;instrument&quot;&gt;instrument&lt;/gmd:MD_KeywordTypeCode&gt;
               &lt;/gmd:type&gt;
               &lt;gmd:thesaurusName&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;NASA/GCMD Instrument Keywords&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_USO_ID\&quot;/&gt;
-                  &lt;gmd:citedResponsibleParty xlink:href=\&quot;#GCMD_KEYWORDS_ID\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_USO_ID&quot;/&gt;
+                  &lt;gmd:citedResponsibleParty xlink:href=&quot;#GCMD_KEYWORDS_ID&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmd:thesaurusName&gt;
             &lt;/gmd:MD_Keywords&gt;
@@ -11680,7 +11680,7 @@
             &lt;gmd:MD_TopicCategoryCode&gt;geoscientificInformation&lt;/gmd:MD_TopicCategoryCode&gt;
           &lt;/gmd:topicCategory&gt;
           &lt;gmd:extent&gt;
-            &lt;gmd:EX_Extent id=\&quot;boundingExtent\&quot;&gt;
+            &lt;gmd:EX_Extent id=&quot;boundingExtent&quot;&gt;
               &lt;gmd:description&gt;
                 &lt;gco:CharacterString&gt;SpatialCoverageType=HORIZONTAL, SpatialGranuleSpatialRepresentation=ORBIT, TemporalRangeType=Continuous Range, TimeType=UTC&lt;/gco:CharacterString&gt;
               &lt;/gmd:description&gt;
@@ -11724,7 +11724,7 @@
               &lt;gmd:temporalElement&gt;
                 &lt;gmd:EX_TemporalExtent&gt;
                   &lt;gmd:extent&gt;
-                    &lt;gml:TimePeriod gml:id=\&quot;TimePeriod_ID_1\&quot;&gt;
+                    &lt;gml:TimePeriod gml:id=&quot;TimePeriod_ID_1&quot;&gt;
                       &lt;!-- ECS extracts RangeBeginningDate and RangeBeginningTime from here --&gt;
                       &lt;gml:beginPosition&gt;2005-01-01T00:00:00Z&lt;/gml:beginPosition&gt;
                       &lt;!-- ECS extracts RangeEndingDate and RangeEndingTime from here --&gt;
@@ -11740,21 +11740,21 @@
               &lt;gmd:code&gt;
                 &lt;gco:CharacterString&gt;3A&lt;/gco:CharacterString&gt;
               &lt;/gmd:code&gt;
-              &lt;gmd:description gco:nilReason=\&quot;missing\&quot;/&gt;
+              &lt;gmd:description gco:nilReason=&quot;missing&quot;/&gt;
             &lt;/gmd:MD_Identifier&gt;
           &lt;/gmd:processingLevel&gt;
         &lt;/gmd:MD_DataIdentification&gt;
       &lt;/gmd:identificationInfo&gt;
       &lt;gmd:contentInfo&gt;
         &lt;gmd:MD_ImageDescription&gt;
-          &lt;gmd:attributeDescription gco:nilReason=\&quot;missing\&quot;/&gt;
-          &lt;gmd:contentType gco:nilReason=\&quot;missing\&quot;/&gt;
+          &lt;gmd:attributeDescription gco:nilReason=&quot;missing&quot;/&gt;
+          &lt;gmd:contentType gco:nilReason=&quot;missing&quot;/&gt;
           &lt;gmd:processingLevelCode&gt;
             &lt;gmd:MD_Identifier&gt;
               &lt;gmd:code&gt;
                 &lt;gco:CharacterString&gt;3A&lt;/gco:CharacterString&gt;
               &lt;/gmd:code&gt;
-              &lt;gmd:description gco:nilReason=\&quot;missing\&quot;/&gt;
+              &lt;gmd:description gco:nilReason=&quot;missing&quot;/&gt;
             &lt;/gmd:MD_Identifier&gt;
           &lt;/gmd:processingLevelCode&gt;
         &lt;/gmd:MD_ImageDescription&gt;
@@ -11778,9 +11778,9 @@
                   &lt;gmd:organisationName&gt;
                     &lt;gco:CharacterString&gt;NSIDC DAAC &amp;gt; NASA National Snow and Ice Data Center Distributed Active Archive Center&lt;/gco:CharacterString&gt;
                   &lt;/gmd:organisationName&gt;
-                  &lt;gmd:contactInfo xlink:href=\&quot;#NSIDC_DAAC_CONTACT_ID\&quot;/&gt;
+                  &lt;gmd:contactInfo xlink:href=&quot;#NSIDC_DAAC_CONTACT_ID&quot;/&gt;
                   &lt;gmd:role&gt;
-                    &lt;gmd:CI_RoleCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode\&quot; codeListValue=\&quot;distributor\&quot;&gt;distributor&lt;/gmd:CI_RoleCode&gt;
+                    &lt;gmd:CI_RoleCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot; codeListValue=&quot;distributor&quot;&gt;distributor&lt;/gmd:CI_RoleCode&gt;
                   &lt;/gmd:role&gt;
                 &lt;/gmd:CI_ResponsibleParty&gt;
               &lt;/gmd:distributorContact&gt;
@@ -11798,7 +11798,7 @@
                         &lt;gco:CharacterString&gt;Data Product Description Page&lt;/gco:CharacterString&gt;
                       &lt;/gmd:description&gt;
                       &lt;gmd:function&gt;
-                        &lt;gmd:CI_OnLineFunctionCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode\&quot; codeListValue=\&quot;information\&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
+                        &lt;gmd:CI_OnLineFunctionCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode&quot; codeListValue=&quot;information&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
                       &lt;/gmd:function&gt;
                     &lt;/gmd:CI_OnlineResource&gt;
                   &lt;/gmd:onLine&gt;
@@ -11814,7 +11814,7 @@
                         &lt;gco:CharacterString&gt;Data Product Order Page&lt;/gco:CharacterString&gt;
                       &lt;/gmd:description&gt;
                       &lt;gmd:function&gt;
-                        &lt;gmd:CI_OnLineFunctionCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode\&quot; codeListValue=\&quot;order\&quot;&gt;order&lt;/gmd:CI_OnLineFunctionCode&gt;
+                        &lt;gmd:CI_OnLineFunctionCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode&quot; codeListValue=&quot;order&quot;&gt;order&lt;/gmd:CI_OnLineFunctionCode&gt;
                       &lt;/gmd:function&gt;
                     &lt;/gmd:CI_OnlineResource&gt;
                   &lt;/gmd:onLine&gt;
@@ -11830,7 +11830,7 @@
                         &lt;gco:CharacterString&gt;Digital Object Identifier URL&lt;/gco:CharacterString&gt;
                       &lt;/gmd:description&gt;
                       &lt;gmd:function&gt;
-                        &lt;gmd:CI_OnLineFunctionCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode\&quot; codeListValue=\&quot;information\&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
+                        &lt;gmd:CI_OnLineFunctionCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode&quot; codeListValue=&quot;information&quot;&gt;information&lt;/gmd:CI_OnLineFunctionCode&gt;
                       &lt;/gmd:function&gt;
                     &lt;/gmd:CI_OnlineResource&gt;
                   &lt;/gmd:onLine&gt;
@@ -11843,13 +11843,13 @@
       &lt;gmi:acquisitionInformation&gt;
         &lt;gmi:MI_AcquisitionInformation&gt;
           &lt;gmi:instrument&gt;
-            &lt;eos:EOS_Instrument id=\&quot;ATLAS_INSTRUMENT_ID\&quot;&gt;
+            &lt;eos:EOS_Instrument id=&quot;ATLAS_INSTRUMENT_ID&quot;&gt;
               &lt;gmi:citation&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;ATLAS &amp;gt; Advanced Topographic Laser Altimeter System&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmi:citation&gt;
               &lt;gmi:identifier&gt;
@@ -11868,7 +11868,7 @@
               &lt;gmi:description&gt;
                 &lt;gco:CharacterString&gt;ATLAS on ICESat-2 determines the range between the satellite and the Earth's surface by measuring the two-way time delay of short pulses of laser light that it transmits in six beams.  It is different from previous operational ice-sheet altimeters in that it is a photon-counting LIDAR.  ATLAS records a set of arrival times for individual photons, which are then analyzed to derive surface, vegetation, and cloud properties.  ATLAS has six beams arranged in three pairs, so that it samples each of three reference pair tracks with a pair of beams; ATLAS transmits pulses at 10 kHz, giving approximately one pulse every 0.7 m along track; ATLAS's expected pointing control will be better than 90 m RMS.&lt;/gco:CharacterString&gt;
               &lt;/gmi:description&gt;
-              &lt;gmi:mountedOn xlink:href=\&quot;#ICESAT_2_PLATFORM_ID\&quot;/&gt;
+              &lt;gmi:mountedOn xlink:href=&quot;#ICESAT_2_PLATFORM_ID&quot;/&gt;
             &lt;/eos:EOS_Instrument&gt;
           &lt;/gmi:instrument&gt;
           &lt;gmi:operation&gt;
@@ -11882,7 +11882,7 @@
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;ICESat-2 &amp;gt; Ice, Cloud, and land Elevation Satellite-2&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmi:citation&gt;
               &lt;gmi:identifier&gt;
@@ -11896,20 +11896,20 @@
                 &lt;/gmd:MD_Identifier&gt;
               &lt;/gmi:identifier&gt;
               &lt;gmi:status&gt;
-                &lt;gmd:MD_ProgressCode codeList=\&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_ProgressCode\&quot; codeListValue=\&quot;underDevelopment\&quot;&gt;underDevelopment&lt;/gmd:MD_ProgressCode&gt;
+                &lt;gmd:MD_ProgressCode codeList=&quot;http://cdn.earthdata.nasa.gov/iso/resources/Codelist/gmxCodelists.xml#MD_ProgressCode&quot; codeListValue=&quot;underDevelopment&quot;&gt;underDevelopment&lt;/gmd:MD_ProgressCode&gt;
               &lt;/gmi:status&gt;
-              &lt;gmi:parentOperation gco:nilReason=\&quot;inapplicable\&quot;/&gt;
-              &lt;gmi:platform xlink:href=\&quot;#ICESAT_2_PLATFORM_ID\&quot;/&gt;
+              &lt;gmi:parentOperation gco:nilReason=&quot;inapplicable&quot;/&gt;
+              &lt;gmi:platform xlink:href=&quot;#ICESAT_2_PLATFORM_ID&quot;/&gt;
             &lt;/gmi:MI_Operation&gt;
           &lt;/gmi:operation&gt;
           &lt;gmi:platform&gt;
-            &lt;eos:EOS_Platform id=\&quot;ICESAT_2_PLATFORM_ID\&quot;&gt;
+            &lt;eos:EOS_Platform id=&quot;ICESAT_2_PLATFORM_ID&quot;&gt;
               &lt;gmi:citation&gt;
                 &lt;gmd:CI_Citation&gt;
                   &lt;gmd:title&gt;
                     &lt;gco:CharacterString&gt;ICESat-2 &amp;gt; Ice, Cloud, and land Elevation Satellite-2&lt;/gco:CharacterString&gt;
                   &lt;/gmd:title&gt;
-                  &lt;gmd:date gco:nilReason=\&quot;unknown\&quot;/&gt;
+                  &lt;gmd:date gco:nilReason=&quot;unknown&quot;/&gt;
                 &lt;/gmd:CI_Citation&gt;
               &lt;/gmi:citation&gt;
               &lt;gmi:identifier&gt;
@@ -11925,7 +11925,7 @@
               &lt;gmi:description&gt;
                 &lt;gco:CharacterString&gt;Spacecraft&lt;/gco:CharacterString&gt;
               &lt;/gmi:description&gt;
-              &lt;gmi:instrument xlink:href=\&quot;#ATLAS_INSTRUMENT_ID\&quot;/&gt;
+              &lt;gmi:instrument xlink:href=&quot;#ATLAS_INSTRUMENT_ID&quot;/&gt;
             &lt;/eos:EOS_Platform&gt;
           &lt;/gmi:platform&gt;
         &lt;/gmi:MI_AcquisitionInformation&gt;
@@ -12302,228 +12302,228 @@
             <Value>ICESat-2 ATLAS L2A Global Geolocated Photon data products.</Value>
         </Attribute>
         <Attribute name="fileName" type="String">
-            <Value>ATL03_20190330212241_00250301_002_01.h5\000</Value>
-            <Value>ATL03_20190330212943_00250302_002_01.h5\000</Value>
-            <Value>ATL03_20190330213813_00250303_002_01.h5\000</Value>
-            <Value>ATL03_20190330214338_00250304_002_01.h5\000</Value>
-            <Value>ATL03_20190330214848_00250305_002_01.h5\000</Value>
-            <Value>ATL03_20190330215413_00250306_002_01.h5\000</Value>
-            <Value>ATL03_20190330220243_00250307_002_01.h5\000</Value>
-            <Value>ATL03_20190330220945_00250308_002_01.h5\000</Value>
-            <Value>ATL03_20190330221647_00250309_002_01.h5\000</Value>
-            <Value>ATL03_20190330222249_00250310_002_01.h5\000</Value>
-            <Value>ATL03_20190330223030_00250311_002_01.h5\000</Value>
-            <Value>ATL03_20190330223613_00250312_002_01.h5\000</Value>
-            <Value>ATL03_20190330224354_00250313_002_01.h5\000</Value>
-            <Value>ATL03_20190330224956_00250314_002_01.h5\000</Value>
-            <Value>ATL03_20190330225659_00260301_002_01.h5\000</Value>
-            <Value>ATL03_20190330230400_00260302_002_01.h5\000</Value>
-            <Value>ATL03_20190330231231_00260303_002_01.h5\000</Value>
-            <Value>ATL03_20190330231756_00260304_002_01.h5\000</Value>
-            <Value>ATL03_20190330232305_00260305_002_01.h5\000</Value>
-            <Value>ATL03_20190330232830_00260306_002_01.h5\000</Value>
-            <Value>ATL03_20190330233700_00260307_002_01.h5\000</Value>
-            <Value>ATL03_20190330234402_00260308_002_01.h5\000</Value>
-            <Value>ATL03_20190330235105_00260309_002_01.h5\000</Value>
-            <Value>ATL03_20190330235707_00260310_002_01.h5\000</Value>
-            <Value>ATL03_20190331000448_00260311_002_01.h5\000</Value>
-            <Value>ATL03_20190331001031_00260312_002_01.h5\000</Value>
-            <Value>ATL03_20190331001812_00260313_002_01.h5\000</Value>
-            <Value>ATL03_20190331002414_00260314_002_01.h5\000</Value>
-            <Value>ATL03_20190331003116_00270301_002_01.h5\000</Value>
-            <Value>ATL03_20190331003818_00270302_002_01.h5\000</Value>
-            <Value>ATL03_20190331004648_00270303_002_01.h5\000</Value>
-            <Value>ATL03_20190331005213_00270304_002_01.h5\000</Value>
-            <Value>ATL03_20190331005723_00270305_002_01.h5\000</Value>
-            <Value>ATL03_20190331010248_00270306_002_01.h5\000</Value>
-            <Value>ATL03_20190331011118_00270307_002_01.h5\000</Value>
-            <Value>ATL03_20190331011820_00270308_002_01.h5\000</Value>
-            <Value>ATL03_20190331012522_00270309_002_01.h5\000</Value>
-            <Value>ATL03_20190331013124_00270310_002_01.h5\000</Value>
-            <Value>ATL03_20190331015229_00270313_002_01.h5\000</Value>
-            <Value>ATL03_20190331015831_00270314_002_01.h5\000</Value>
-            <Value>ATL03_20190331020534_00280301_002_01.h5\000</Value>
-            <Value>ATL03_20190331021236_00280302_002_01.h5\000</Value>
-            <Value>ATL03_20190331022106_00280303_002_01.h5\000</Value>
-            <Value>ATL03_20190331022631_00280304_002_01.h5\000</Value>
-            <Value>ATL03_20190331023140_00280305_002_01.h5\000</Value>
-            <Value>ATL03_20190331023705_00280306_002_01.h5\000</Value>
-            <Value>ATL03_20190331024535_00280307_002_01.h5\000</Value>
-            <Value>ATL03_20190331025237_00280308_002_01.h5\000</Value>
-            <Value>ATL03_20190331025940_00280309_002_01.h5\000</Value>
-            <Value>ATL03_20190331030542_00280310_002_01.h5\000</Value>
-            <Value>ATL03_20190331031323_00280311_002_01.h5\000</Value>
-            <Value>ATL03_20190331031906_00280312_002_01.h5\000</Value>
-            <Value>ATL03_20190331032647_00280313_002_01.h5\000</Value>
-            <Value>ATL03_20190331033249_00280314_002_01.h5\000</Value>
+            <Value>ATL03_20190330212241_00250301_002_01.h5</Value>
+            <Value>ATL03_20190330212943_00250302_002_01.h5</Value>
+            <Value>ATL03_20190330213813_00250303_002_01.h5</Value>
+            <Value>ATL03_20190330214338_00250304_002_01.h5</Value>
+            <Value>ATL03_20190330214848_00250305_002_01.h5</Value>
+            <Value>ATL03_20190330215413_00250306_002_01.h5</Value>
+            <Value>ATL03_20190330220243_00250307_002_01.h5</Value>
+            <Value>ATL03_20190330220945_00250308_002_01.h5</Value>
+            <Value>ATL03_20190330221647_00250309_002_01.h5</Value>
+            <Value>ATL03_20190330222249_00250310_002_01.h5</Value>
+            <Value>ATL03_20190330223030_00250311_002_01.h5</Value>
+            <Value>ATL03_20190330223613_00250312_002_01.h5</Value>
+            <Value>ATL03_20190330224354_00250313_002_01.h5</Value>
+            <Value>ATL03_20190330224956_00250314_002_01.h5</Value>
+            <Value>ATL03_20190330225659_00260301_002_01.h5</Value>
+            <Value>ATL03_20190330230400_00260302_002_01.h5</Value>
+            <Value>ATL03_20190330231231_00260303_002_01.h5</Value>
+            <Value>ATL03_20190330231756_00260304_002_01.h5</Value>
+            <Value>ATL03_20190330232305_00260305_002_01.h5</Value>
+            <Value>ATL03_20190330232830_00260306_002_01.h5</Value>
+            <Value>ATL03_20190330233700_00260307_002_01.h5</Value>
+            <Value>ATL03_20190330234402_00260308_002_01.h5</Value>
+            <Value>ATL03_20190330235105_00260309_002_01.h5</Value>
+            <Value>ATL03_20190330235707_00260310_002_01.h5</Value>
+            <Value>ATL03_20190331000448_00260311_002_01.h5</Value>
+            <Value>ATL03_20190331001031_00260312_002_01.h5</Value>
+            <Value>ATL03_20190331001812_00260313_002_01.h5</Value>
+            <Value>ATL03_20190331002414_00260314_002_01.h5</Value>
+            <Value>ATL03_20190331003116_00270301_002_01.h5</Value>
+            <Value>ATL03_20190331003818_00270302_002_01.h5</Value>
+            <Value>ATL03_20190331004648_00270303_002_01.h5</Value>
+            <Value>ATL03_20190331005213_00270304_002_01.h5</Value>
+            <Value>ATL03_20190331005723_00270305_002_01.h5</Value>
+            <Value>ATL03_20190331010248_00270306_002_01.h5</Value>
+            <Value>ATL03_20190331011118_00270307_002_01.h5</Value>
+            <Value>ATL03_20190331011820_00270308_002_01.h5</Value>
+            <Value>ATL03_20190331012522_00270309_002_01.h5</Value>
+            <Value>ATL03_20190331013124_00270310_002_01.h5</Value>
+            <Value>ATL03_20190331015229_00270313_002_01.h5</Value>
+            <Value>ATL03_20190331015831_00270314_002_01.h5</Value>
+            <Value>ATL03_20190331020534_00280301_002_01.h5</Value>
+            <Value>ATL03_20190331021236_00280302_002_01.h5</Value>
+            <Value>ATL03_20190331022106_00280303_002_01.h5</Value>
+            <Value>ATL03_20190331022631_00280304_002_01.h5</Value>
+            <Value>ATL03_20190331023140_00280305_002_01.h5</Value>
+            <Value>ATL03_20190331023705_00280306_002_01.h5</Value>
+            <Value>ATL03_20190331024535_00280307_002_01.h5</Value>
+            <Value>ATL03_20190331025237_00280308_002_01.h5</Value>
+            <Value>ATL03_20190331025940_00280309_002_01.h5</Value>
+            <Value>ATL03_20190331030542_00280310_002_01.h5</Value>
+            <Value>ATL03_20190331031323_00280311_002_01.h5</Value>
+            <Value>ATL03_20190331031906_00280312_002_01.h5</Value>
+            <Value>ATL03_20190331032647_00280313_002_01.h5</Value>
+            <Value>ATL03_20190331033249_00280314_002_01.h5</Value>
         </Attribute>
         <Attribute name="shortName" type="String">
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
-            <Value>ATL03\000</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
+            <Value>ATL03</Value>
         </Attribute>
         <Attribute name="uuid" type="String">
-            <Value>f34f5823-616f-347b-b7fa-bb3289362b18\000</Value>
-            <Value>8a9832ec-34aa-33d5-b4db-6102a881ff31\000</Value>
-            <Value>9c2ca30e-1e94-39cd-9a8b-f6b05d3ecf89\000</Value>
-            <Value>69fb5303-07e6-389c-9deb-42c1f9762d76\000</Value>
-            <Value>ef98bb41-3bc2-3952-8390-8806a0bb7f18\000</Value>
-            <Value>b3c0622e-c55b-3a86-b9b6-d7cf82cfdf55\000</Value>
-            <Value>0b992cce-a046-3606-b134-69b1f9b1c6e5\000</Value>
-            <Value>00f4d9b0-9b93-37ed-af5b-37fdf6ac0d34\000</Value>
-            <Value>067e449f-5217-3f86-8b2c-d2556430cbf1\000</Value>
-            <Value>c52f64e1-e33f-3b03-888c-d96e016bc235\000</Value>
-            <Value>7ce5e63a-e148-32e6-95d0-5174bf1edafa\000</Value>
-            <Value>12b893fd-2309-326d-9d33-497813ecb41e\000</Value>
-            <Value>e6fcc4da-cd67-3a1d-ad1d-df26294467d6\000</Value>
-            <Value>34982645-ccbc-3ee0-9812-7dec0e8eed90\000</Value>
-            <Value>dd35b559-4b96-324b-8581-b12761aca854\000</Value>
-            <Value>793a4ef2-501f-3186-8707-ca7731f3bc69\000</Value>
-            <Value>260b84c5-099d-364b-bdea-29edfbbd64fb\000</Value>
-            <Value>8d9c3abc-cfe6-3d45-b5d2-77c1bbba433f\000</Value>
-            <Value>ca0f8be8-5086-3f60-906a-732da965ae87\000</Value>
-            <Value>de3dd443-38da-374c-8723-627db042b4c1\000</Value>
-            <Value>5866cfb7-2340-3142-a8bd-2aa4516ff181\000</Value>
-            <Value>0293c7f8-3e5b-302c-817b-f08fe83ed546\000</Value>
-            <Value>8f1ce9c8-ef7c-3f9a-b6d0-a9ed5fba9968\000</Value>
-            <Value>699d96a2-104b-3aae-b16e-bce5270092f0\000</Value>
-            <Value>605f292f-2397-3f4d-930f-a327c0c58d73\000</Value>
-            <Value>ec6cdac4-2bd8-3496-a470-bb04297a4214\000</Value>
-            <Value>f06419f1-8852-32ce-bb0e-c1a77fad4461\000</Value>
-            <Value>d630bad5-6881-3198-9941-fcca6374ece5\000</Value>
-            <Value>cf5036ac-2f68-3522-8d9d-c5e5445e93da\000</Value>
-            <Value>4d2dfc58-77a5-36ea-bf86-2164b071501b\000</Value>
-            <Value>1b47347c-8861-31ab-82d5-7b28f102589f\000</Value>
-            <Value>cd21892d-d8cd-3a76-9902-707b48e40bd2\000</Value>
-            <Value>e6af5e3e-6fe4-36c5-bad3-452552ed9aa0\000</Value>
-            <Value>4875658e-2770-36cf-bca7-77967dcc0748\000</Value>
-            <Value>b02ec6bd-a385-34eb-9610-683136d184af\000</Value>
-            <Value>0f0e8c60-8c35-3963-a8fb-02426e173659\000</Value>
-            <Value>a55ce1f4-0056-3202-b2b7-73ccbe396de0\000</Value>
-            <Value>108c2238-1837-301d-a986-f1eaf262fcc5\000</Value>
-            <Value>92bb7080-30c9-3016-ac5c-df70a0221e0c\000</Value>
-            <Value>94f5a23d-a381-360a-b70a-7d04a68047e5\000</Value>
-            <Value>9ff8a0c2-c8d8-3e1a-a8ff-e2070426f9ed\000</Value>
-            <Value>2541c4d3-c776-3bef-8c21-82928af9e263\000</Value>
-            <Value>161107f3-3309-36c9-abe8-c9b465733061\000</Value>
-            <Value>e12fb2c8-0e6e-35e8-8a1d-4a5bca885be3\000</Value>
-            <Value>7e6f82d8-b4f7-36a3-9095-3f188a9639b2\000</Value>
-            <Value>7b97e6e9-a74f-310e-81f2-a3f68c9ca5c6\000</Value>
-            <Value>d7b5725c-3625-3f90-a480-61e6d1b694c4\000</Value>
-            <Value>2c2a5497-9704-3f78-a1a7-2f4896d9df76\000</Value>
-            <Value>75a75757-c34c-3c30-a056-7ee9706c37aa\000</Value>
-            <Value>4d1ca203-ed48-3d55-a266-a6852757d3dc\000</Value>
-            <Value>fcfe0f80-0338-3a13-8857-08f623df42c6\000</Value>
-            <Value>07973915-6036-389c-8c08-ae068c122d10\000</Value>
-            <Value>42587338-5c10-35f9-a288-4f2027add651\000</Value>
-            <Value>a2bee768-64b9-30ac-97b5-576d0f7588e5\000</Value>
+            <Value>f34f5823-616f-347b-b7fa-bb3289362b18</Value>
+            <Value>8a9832ec-34aa-33d5-b4db-6102a881ff31</Value>
+            <Value>9c2ca30e-1e94-39cd-9a8b-f6b05d3ecf89</Value>
+            <Value>69fb5303-07e6-389c-9deb-42c1f9762d76</Value>
+            <Value>ef98bb41-3bc2-3952-8390-8806a0bb7f18</Value>
+            <Value>b3c0622e-c55b-3a86-b9b6-d7cf82cfdf55</Value>
+            <Value>0b992cce-a046-3606-b134-69b1f9b1c6e5</Value>
+            <Value>00f4d9b0-9b93-37ed-af5b-37fdf6ac0d34</Value>
+            <Value>067e449f-5217-3f86-8b2c-d2556430cbf1</Value>
+            <Value>c52f64e1-e33f-3b03-888c-d96e016bc235</Value>
+            <Value>7ce5e63a-e148-32e6-95d0-5174bf1edafa</Value>
+            <Value>12b893fd-2309-326d-9d33-497813ecb41e</Value>
+            <Value>e6fcc4da-cd67-3a1d-ad1d-df26294467d6</Value>
+            <Value>34982645-ccbc-3ee0-9812-7dec0e8eed90</Value>
+            <Value>dd35b559-4b96-324b-8581-b12761aca854</Value>
+            <Value>793a4ef2-501f-3186-8707-ca7731f3bc69</Value>
+            <Value>260b84c5-099d-364b-bdea-29edfbbd64fb</Value>
+            <Value>8d9c3abc-cfe6-3d45-b5d2-77c1bbba433f</Value>
+            <Value>ca0f8be8-5086-3f60-906a-732da965ae87</Value>
+            <Value>de3dd443-38da-374c-8723-627db042b4c1</Value>
+            <Value>5866cfb7-2340-3142-a8bd-2aa4516ff181</Value>
+            <Value>0293c7f8-3e5b-302c-817b-f08fe83ed546</Value>
+            <Value>8f1ce9c8-ef7c-3f9a-b6d0-a9ed5fba9968</Value>
+            <Value>699d96a2-104b-3aae-b16e-bce5270092f0</Value>
+            <Value>605f292f-2397-3f4d-930f-a327c0c58d73</Value>
+            <Value>ec6cdac4-2bd8-3496-a470-bb04297a4214</Value>
+            <Value>f06419f1-8852-32ce-bb0e-c1a77fad4461</Value>
+            <Value>d630bad5-6881-3198-9941-fcca6374ece5</Value>
+            <Value>cf5036ac-2f68-3522-8d9d-c5e5445e93da</Value>
+            <Value>4d2dfc58-77a5-36ea-bf86-2164b071501b</Value>
+            <Value>1b47347c-8861-31ab-82d5-7b28f102589f</Value>
+            <Value>cd21892d-d8cd-3a76-9902-707b48e40bd2</Value>
+            <Value>e6af5e3e-6fe4-36c5-bad3-452552ed9aa0</Value>
+            <Value>4875658e-2770-36cf-bca7-77967dcc0748</Value>
+            <Value>b02ec6bd-a385-34eb-9610-683136d184af</Value>
+            <Value>0f0e8c60-8c35-3963-a8fb-02426e173659</Value>
+            <Value>a55ce1f4-0056-3202-b2b7-73ccbe396de0</Value>
+            <Value>108c2238-1837-301d-a986-f1eaf262fcc5</Value>
+            <Value>92bb7080-30c9-3016-ac5c-df70a0221e0c</Value>
+            <Value>94f5a23d-a381-360a-b70a-7d04a68047e5</Value>
+            <Value>9ff8a0c2-c8d8-3e1a-a8ff-e2070426f9ed</Value>
+            <Value>2541c4d3-c776-3bef-8c21-82928af9e263</Value>
+            <Value>161107f3-3309-36c9-abe8-c9b465733061</Value>
+            <Value>e12fb2c8-0e6e-35e8-8a1d-4a5bca885be3</Value>
+            <Value>7e6f82d8-b4f7-36a3-9095-3f188a9639b2</Value>
+            <Value>7b97e6e9-a74f-310e-81f2-a3f68c9ca5c6</Value>
+            <Value>d7b5725c-3625-3f90-a480-61e6d1b694c4</Value>
+            <Value>2c2a5497-9704-3f78-a1a7-2f4896d9df76</Value>
+            <Value>75a75757-c34c-3c30-a056-7ee9706c37aa</Value>
+            <Value>4d1ca203-ed48-3d55-a266-a6852757d3dc</Value>
+            <Value>fcfe0f80-0338-3a13-8857-08f623df42c6</Value>
+            <Value>07973915-6036-389c-8c08-ae068c122d10</Value>
+            <Value>42587338-5c10-35f9-a288-4f2027add651</Value>
+            <Value>a2bee768-64b9-30ac-97b5-576d0f7588e5</Value>
         </Attribute>
         <Attribute name="version" type="String">
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
         </Attribute>
         <Attribute name="start_cycle" type="Int32">
             <Value>3</Value>
@@ -13100,28 +13100,28 @@
             <Value>SET_BY_PGE</Value>
         </Attribute>
         <Attribute name="fileName" type="String">
-            <Value>ATL09_20190330212241_00250301_002_01.h5\000</Value>
-            <Value>ATL09_20190330225659_00260301_002_01.h5\000</Value>
-            <Value>ATL09_20190331003116_00270301_002_01.h5\000</Value>
-            <Value>ATL09_20190331020534_00280301_002_01.h5\000</Value>
+            <Value>ATL09_20190330212241_00250301_002_01.h5</Value>
+            <Value>ATL09_20190330225659_00260301_002_01.h5</Value>
+            <Value>ATL09_20190331003116_00270301_002_01.h5</Value>
+            <Value>ATL09_20190331020534_00280301_002_01.h5</Value>
         </Attribute>
         <Attribute name="shortName" type="String">
-            <Value>ATL09\000</Value>
-            <Value>ATL09\000</Value>
-            <Value>ATL09\000</Value>
-            <Value>ATL09\000</Value>
+            <Value>ATL09</Value>
+            <Value>ATL09</Value>
+            <Value>ATL09</Value>
+            <Value>ATL09</Value>
         </Attribute>
         <Attribute name="uuid" type="String">
-            <Value>3babab8d-aed2-3e04-97bd-419bbb19349e\000</Value>
-            <Value>c12115d0-419d-31cd-8a0a-061a4f9d0468\000</Value>
-            <Value>6392363e-a4df-3048-a8dd-00b10a36b2c0\000</Value>
-            <Value>b20b3e5a-e0a5-37e2-a0e2-f80c9314dc48\000</Value>
+            <Value>3babab8d-aed2-3e04-97bd-419bbb19349e</Value>
+            <Value>c12115d0-419d-31cd-8a0a-061a4f9d0468</Value>
+            <Value>6392363e-a4df-3048-a8dd-00b10a36b2c0</Value>
+            <Value>b20b3e5a-e0a5-37e2-a0e2-f80c9314dc48</Value>
         </Attribute>
         <Attribute name="version" type="String">
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
-            <Value>002\000</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
+            <Value>002</Value>
         </Attribute>
         <Attribute name="start_cycle" type="Int32">
             <Value>3</Value>

@@ -116,7 +116,7 @@
             <Value>32767</Value>
         </Attribute>
         <Attribute name="comment" type="String">
-            <Value>\&quot;Final\&quot; version using Multi-Resolution Variational Analysis (MRVA) method for interpolation</Value>
+            <Value>&quot;Final&quot; version using Multi-Resolution Variational Analysis (MRVA) method for interpolation</Value>
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>lon lat</Value>
@@ -215,7 +215,7 @@
             <Value>lon lat</Value>
         </Attribute>
         <Attribute name="source" type="String">
-            <Value>GMT \&quot;grdlandmask\&quot;, ice flag from sea_ice_fraction data</Value>
+            <Value>GMT &quot;grdlandmask&quot;, ice flag from sea_ice_fraction data</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>mask</Value>
@@ -293,7 +293,7 @@
         <Value>created at nominal 4-day latency; replaced nrt (1-day latency) version.</Value>
     </Attribute>
     <Attribute name="comment" type="String">
-        <Value>MUR = \&quot;Multi-scale Ultra-high Reolution\&quot;</Value>
+        <Value>MUR = &quot;Multi-scale Ultra-high Reolution&quot;</Value>
     </Attribute>
     <Attribute name="license" type="String">
         <Value>These data are available free of charge under data policy of JPL PO.DAAC.</Value>
