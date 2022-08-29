@@ -526,7 +526,7 @@ void ValuesElement::setVectorVariableValuesFromTokens(NCMLParser& p, libdap::Bas
         " to be castable to class Array but it wasn't!!");
 
     // Make sure the Array length matches the number of tokens.
-    // Note that length() should be the product of dimension sizes since N-D arrays are flattened in row major order
+    // Note that size() should be the product of dimension sizes since N-D arrays are flattened in row major order
     if (pVecVar->length() > 0 && static_cast<unsigned int>(pVecVar->length()) != _tokens.size()) {
         stringstream msg;
         msg << "Dimension mismatch!  Variable name=" << pVecVar->name() << " has dimension product="

@@ -75,12 +75,12 @@ void UnixSocket::connect()
     // maximum path for struct sockaddr_un.sun_path is 108
     // get sure we will not exceed to max for creating sockets
     // 107 characters in pathname + '\0'
-    if (_tempSocket.length() > max_len - 1) {
+    if (_tempSocket.size() > max_len - 1) {
         string msg = "path to temporary unix socket ";
         msg += _tempSocket + " is too long";
         throw(BESInternalError(msg, __FILE__, __LINE__));
     }
-    if (_unixSocket.length() > max_len - 1) {
+    if (_unixSocket.size() > max_len - 1) {
         string msg = "path to unix socket ";
         msg += _unixSocket + " is too long";
         throw(BESInternalError(msg, __FILE__, __LINE__));

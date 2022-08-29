@@ -50,6 +50,7 @@
 #include <libdap/D4BaseTypeFactory.h>
 #include <libdap/debug.h>
 
+#include <BESDebug.h>
 #include "GDALTypes.h"
 
 using namespace libdap;
@@ -64,12 +65,17 @@ using namespace libdap;
 static void attach_str_attr_item(AttrTable *parent_table, const char *pszKey, const char *pszValue)
 {
     //string oQuotedValue;
+#if 0
     char *pszEscapedText = CPLEscapeString(pszValue, -1,
     CPLES_BackslashQuotable);
+#endif
 
-    parent_table->append_attr(pszKey, "String", pszEscapedText /*oQuotedValue*/);
+    //parent_table->append_attr(pszKey, "String", pszEscapedText /*oQuotedValue*/);
+    parent_table->append_attr(pszKey, "String", pszValue /*oQuotedValue*/);
 
+#if 0
     CPLFree(pszEscapedText);
+#endif
 }
 
 /************************************************************************/

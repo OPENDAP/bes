@@ -129,7 +129,7 @@ public:
         Array *a = static_cast<Array*>(btp);
 
         // and it has four elements
-        CPPUNIT_ASSERT(a->length() == 4);
+        CPPUNIT_ASSERT(a->size() == 4);
 
         // call it; the function reads the values of the array
         D4RValue rv(a);
@@ -166,7 +166,7 @@ public:
         for (DDS::Vars_iter i = four_var_2_dmr->root()->var_begin(), e = four_var_2_dmr->root()->var_end(); i != e;
             ++i) {
             CPPUNIT_ASSERT((*i)->type() == dods_array_c);
-            CPPUNIT_ASSERT(static_cast<Array&>(**i).length() == 8);
+            CPPUNIT_ASSERT(static_cast<Array&>(**i).size() == 8);
 
             arrays.push_back(*i);
         }
@@ -270,7 +270,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: Dap4_TabularFunctionTest has the following tests:" << endl;
             const std::vector<Test*> &tests = Dap4_TabularFunctionTest::suite()->getTests();
-            unsigned int prefix_len = Dap4_TabularFunctionTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = Dap4_TabularFunctionTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

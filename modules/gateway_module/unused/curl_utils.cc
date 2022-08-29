@@ -346,7 +346,7 @@ bool configureProxy(CURL *curl, const string &url) {
         if (!GatewayUtils::NoProxyRegex.empty()) {
             BESDEBUG( MODULE, prolog << "Found NoProxyRegex." << endl);
             BESRegex r(GatewayUtils::NoProxyRegex.c_str());
-            if (r.match(url.c_str(), url.length()) != -1) {
+            if (r.match(url.c_str(), url.size()) != -1) {
                 BESDEBUG( MODULE, prolog << "Found NoProxy match. BESRegex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }

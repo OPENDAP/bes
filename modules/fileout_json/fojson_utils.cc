@@ -40,7 +40,7 @@ namespace fojson {
 
 std::string escape_for_json(const std::string &input) {
     std::stringstream ss;
-    for (size_t i = 0; i < input.length(); ++i) {
+    for (size_t i = 0; i < input.size(); ++i) {
         if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
             ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unsigned(input[i]);
         } else {
@@ -100,7 +100,7 @@ std::string backslash_escape(std::string source, char char_to_escape){
 	std::string escaped_result = source;
 	if(source.find(char_to_escape) != string::npos ){
 		size_t found = 0;
-		for(size_t i=0; i< source.length() ; i++){
+		for(size_t i=0; i< source.size() ; i++){
 			if(source[i] == char_to_escape){
 				escaped_result.insert( i + found++, "\\");
 			}

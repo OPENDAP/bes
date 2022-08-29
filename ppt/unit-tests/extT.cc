@@ -223,7 +223,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             std::cerr << "Usage: extT has the following tests:" << std::endl;
             const std::vector<Test*> &tests = extT::suite()->getTests();
-            unsigned int prefix_len = extT::suite()->getName().append("::").length();
+            unsigned int prefix_len = extT::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
             }

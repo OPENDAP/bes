@@ -25,10 +25,10 @@
             <Value>Test string attribute values in a data handler.</Value>
         </Attribute>
         <Attribute name="test_backslash" type="String">
-            <Value>Escape a URL: http:\\/\\/machine\\/host\\/file.txt</Value>
+            <Value>Escape a URL: http:\/\/machine\/host\/file.txt</Value>
         </Attribute>
         <Attribute name="test_embedded_dquote" type="String">
-            <Value>Escape a double quote \\\&quot;json makes me happy\\\&quot;.</Value>
+            <Value>Escape a double quote \&quot;json makes me happy\&quot;.</Value>
         </Attribute>
         <Attribute name="test_null_value" type="String">
             <Value></Value>

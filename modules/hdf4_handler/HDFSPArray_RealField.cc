@@ -30,7 +30,7 @@ HDFSPArray_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_RealField read "<<endl);
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
     
     // Declare offset, count and step

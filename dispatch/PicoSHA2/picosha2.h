@@ -192,7 +192,7 @@ class hash256_one_by_one {
 
     template <typename RaIter>
     void process(RaIter first, RaIter last) {
-        add_to_data_length(std::distance(first, last));
+        add_to_data_size(std::distance(first, last));
         std::copy(first, last, std::back_inserter(buffer_));
         std::size_t i = 0;
         for (; i + 64 <= buffer_.size(); i += 64) {
@@ -217,7 +217,7 @@ class hash256_one_by_one {
             std::fill(temp + remains + 1, temp + 64 - 4, 0);
         }
 
-        write_data_bit_length(&(temp[56]));
+        write_data_bit_size(&(temp[56]));
         detail::hash256_block(h_, temp, temp + 64);
     }
 
@@ -232,7 +232,7 @@ class hash256_one_by_one {
     }
 
    private:
-    void add_to_data_length(word_t n) {
+    void add_to_data_size(word_t n) {
         word_t carry = 0;
         data_length_digits_[0] += n;
         for (std::size_t i = 0; i < 4; ++i) {
@@ -245,7 +245,7 @@ class hash256_one_by_one {
             }
         }
     }
-    void write_data_bit_length(byte_t* begin) {
+    void write_data_bit_size(byte_t* begin) {
         word_t data_bit_length_digits[4];
         std::copy(data_length_digits_, data_length_digits_ + 4,
                   data_bit_length_digits);

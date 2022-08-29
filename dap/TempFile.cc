@@ -185,8 +185,8 @@ string TempFile::create(const std::string &dir_name, const std::string &temp_fil
     string target_file = BESUtil::pathConcat(dir_name,file_template);
     BESDEBUG(MODULE, prolog << "target_file: " << target_file << endl);
 
-    char tmp_name[target_file.length() + 1];
-    std::string::size_type len = target_file.copy(tmp_name, target_file.length());
+    char tmp_name[target_file.size() + 1];
+    std::string::size_type len = target_file.copy(tmp_name, target_file.size());
     tmp_name[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using

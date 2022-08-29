@@ -411,7 +411,7 @@ namespace ngap {
             }
             else {
                 string key = BESUtil::lowercase(header.substr(0, colon_index));
-                string value = header.substr(colon_index + colon_space.length());
+                string value = header.substr(colon_index + colon_space.size());
                 BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
                 (*d_http_response_headers)[key] = value;
             }
@@ -505,7 +505,7 @@ namespace ngap {
         // Replace all occurrences of the dmr++ href attr key.
         int startIndex = 0;
         while ((startIndex = resource_content.find(template_str)) != -1) {
-            resource_content.erase(startIndex, template_str.length());
+            resource_content.erase(startIndex, template_str.size());
             resource_content.insert(startIndex, update_str);
             replace_count++;
         }

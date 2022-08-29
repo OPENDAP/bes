@@ -79,12 +79,12 @@ public:
     bool checkDimensionsMatch(const DimensionElement& rhs) const;
 
     const std::string& name() const;
-    const std::string& length() const
+    const std::string& size() const
     {
         return _length;
     }
 
-    /** Parsed version of length() */
+    /** Parsed version of size() */
     unsigned int getLengthNumeric() const;
     unsigned int getSize() const;
 

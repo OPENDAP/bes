@@ -32,7 +32,7 @@ HDFEOS2CFStrField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2CFStrField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();

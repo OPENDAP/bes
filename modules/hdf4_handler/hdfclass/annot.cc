@@ -179,7 +179,7 @@ hdfistream_annot::hdfistream_annot(const string filename):
 hdfistream_obj(filename)
 {
     _init(filename);
-    if (_filename.length() != 0)
+    if (_filename.size() != 0)
         open(_filename.c_str());
     return;
 }

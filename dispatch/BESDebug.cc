@@ -133,7 +133,7 @@ void BESDebug::SetUp(const string &values)
     while ((new_comma = values.find(',', comma + 1)) != string::npos) {
         string flagName = values.substr(comma + 1, new_comma - comma - 1);
         if (flagName[0] == '-') {
-            string newflag = flagName.substr(1, flagName.length() - 1);
+            string newflag = flagName.substr(1, flagName.size() - 1);
             BESDebug::Set(newflag, false);
         }
         else {
@@ -141,9 +141,9 @@ void BESDebug::SetUp(const string &values)
         }
         comma = new_comma;
     }
-    string flagName = values.substr(comma + 1, values.length() - comma - 1);
+    string flagName = values.substr(comma + 1, values.size() - comma - 1);
     if (flagName[0] == '-') {
-        string newflag = flagName.substr(1, flagName.length() - 1);
+        string newflag = flagName.substr(1, flagName.size() - 1);
         BESDebug::Set(newflag, false);
     }
     else {
@@ -205,7 +205,7 @@ string BESDebug::GetOptionsString()
             oss << (*i).first << ",";
         }
         string retval = oss.str();
-        return retval.erase(retval.length() - 1);
+        return retval.erase(retval.size() - 1);
     }
     else {
         return "";

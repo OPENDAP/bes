@@ -816,428 +816,428 @@
             <Dim name="/NAXIS0_HDU_2_IMAGE"/>
         </Int32>
         <Attribute name="XTENSION" type="String">
-            <Value>&quot;'ACOS_HSKP' / MLSO/ACOS HOUSEKEEPING EXTENSION&quot;</Value>
+            <Value>'ACOS_HSKP' / MLSO/ACOS HOUSEKEEPING EXTENSION</Value>
         </Attribute>
         <Attribute name="BITPIX" type="String">
-            <Value>&quot;32 / 4-BYTE INTEGERS OR FLOATS&quot;</Value>
+            <Value>32 / 4-BYTE INTEGERS OR FLOATS</Value>
         </Attribute>
         <Attribute name="NAXIS" type="String">
-            <Value>&quot;1 / NUMBER OF DIMENSIONS&quot;</Value>
+            <Value>1 / NUMBER OF DIMENSIONS</Value>
         </Attribute>
         <Attribute name="NAXIS1" type="String">
-            <Value>&quot;168 / SIZE OF DIMENSION # 1&quot;</Value>
+            <Value>168 / SIZE OF DIMENSION # 1</Value>
         </Attribute>
         <Attribute name="PCOUNT" type="String">
-            <Value>&quot;0 / EXTENSION PCOUNT&quot;</Value>
+            <Value>0 / EXTENSION PCOUNT</Value>
         </Attribute>
         <Attribute name="GCOUNT" type="String">
-            <Value>&quot;1 / EXTENSION GCOUNT&quot;</Value>
+            <Value>1 / EXTENSION GCOUNT</Value>
         </Attribute>
         <Attribute name="COMMENT" type="String">
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / &quot;</Value>
-            <Value>&quot; / DATA CONTAINS THE ACOS BINARY HEADER STRUCTURE.&quot;</Value>
-            <Value>&quot; / ALL FIELDS ARE 4 BYTES IN LENGTH: INTEGERS [I] OR FLOATING POINT [F].&quot;</Value>
-            <Value>&quot; / INDEX   0     [I]: VERSION: 0=DPM, 1=LOWK, 2=CHIP&quot;</Value>
-            <Value>&quot; / INDEX   1-  6 [I]: YEAR, MONTH, DAY, HOUR, MINUTES, SECOND.&quot;</Value>
-            <Value>&quot; / INDEX   7-  8 [I]: X-DIMENSION, Y-DIMENSION.  9-11: NSUM, EXPOSURE, GAIN&quot;</Value>
-            <Value>&quot; / INDEX  12- 13 [I]: OCCULTING DISK DIAMETER, TYPE OBSERVATION.&quot;</Value>
-            <Value>&quot; / INDEX  14     [F]: WAVELENGTH.&quot;</Value>
-            <Value>&quot; / INDEX  15- 17 [F]: P-ANGLE, B-ANGLE, L-ANGLE.&quot;</Value>
-            <Value>&quot; / INDEX  18- 19 [F]: RIGHT ASCENSION, DECLINATION.&quot;</Value>
-            <Value>&quot; / INDEX  20- 22 [F]: HOUR ANGLE, SOLAR ELEVATION, SOLAR AZIMUTH.&quot;</Value>
-            <Value>&quot; / INDEX  23- 24 [F]: AIRMASS, SOLAR RADIUS [ARCSEC].&quot;</Value>
-            <Value>&quot; / INDEX  25- 40 [F]: XSHIFT [ARCSEC] FOR IMAGE SUM.&quot;</Value>
-            <Value>&quot; / INDEX  41- 56 [F]: YSHIFT [ARCSEC] FOR IMAGE SUM.&quot;</Value>
-            <Value>&quot; / INDEX  57- 72 [F]: MEASURED DIAMETERS [ARCSEC] FOR IMAGE SUM.&quot;</Value>
-            <Value>&quot; / INDEX  73-104 [I]: POSITIONS OF ALL 32 OPTICAL DEVICES.&quot;</Value>
-            <Value>&quot; / INDEX 105-136 [I]: DRIVE REQUESTS FOR ALL 32 OPTICAL DEVICES.&quot;</Value>
-            <Value>&quot; / INDEX 137-152 [F]: ANALOG READINGS [INTERPRETED] [16].&quot;</Value>
-            <Value>&quot; / INDEX 153-160 [F]: LCVR [LIQUID CRYSTAL] MILLIVOLT READINGS [8].&quot;</Value>
-            <Value>&quot; / INDEX 161-166 [F]: MOTOR MICROMETER READINGS [6].&quot;</Value>
-            <Value>&quot; / INDEX 167     [I]: IMAGE BUFFER DESIGNATION.&quot;</Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / </Value>
+            <Value> / DATA CONTAINS THE ACOS BINARY HEADER STRUCTURE.</Value>
+            <Value> / ALL FIELDS ARE 4 BYTES IN LENGTH: INTEGERS [I] OR FLOATING POINT [F].</Value>
+            <Value> / INDEX   0     [I]: VERSION: 0=DPM, 1=LOWK, 2=CHIP</Value>
+            <Value> / INDEX   1-  6 [I]: YEAR, MONTH, DAY, HOUR, MINUTES, SECOND.</Value>
+            <Value> / INDEX   7-  8 [I]: X-DIMENSION, Y-DIMENSION.  9-11: NSUM, EXPOSURE, GAIN</Value>
+            <Value> / INDEX  12- 13 [I]: OCCULTING DISK DIAMETER, TYPE OBSERVATION.</Value>
+            <Value> / INDEX  14     [F]: WAVELENGTH.</Value>
+            <Value> / INDEX  15- 17 [F]: P-ANGLE, B-ANGLE, L-ANGLE.</Value>
+            <Value> / INDEX  18- 19 [F]: RIGHT ASCENSION, DECLINATION.</Value>
+            <Value> / INDEX  20- 22 [F]: HOUR ANGLE, SOLAR ELEVATION, SOLAR AZIMUTH.</Value>
+            <Value> / INDEX  23- 24 [F]: AIRMASS, SOLAR RADIUS [ARCSEC].</Value>
+            <Value> / INDEX  25- 40 [F]: XSHIFT [ARCSEC] FOR IMAGE SUM.</Value>
+            <Value> / INDEX  41- 56 [F]: YSHIFT [ARCSEC] FOR IMAGE SUM.</Value>
+            <Value> / INDEX  57- 72 [F]: MEASURED DIAMETERS [ARCSEC] FOR IMAGE SUM.</Value>
+            <Value> / INDEX  73-104 [I]: POSITIONS OF ALL 32 OPTICAL DEVICES.</Value>
+            <Value> / INDEX 105-136 [I]: DRIVE REQUESTS FOR ALL 32 OPTICAL DEVICES.</Value>
+            <Value> / INDEX 137-152 [F]: ANALOG READINGS [INTERPRETED] [16].</Value>
+            <Value> / INDEX 153-160 [F]: LCVR [LIQUID CRYSTAL] MILLIVOLT READINGS [8].</Value>
+            <Value> / INDEX 161-166 [F]: MOTOR MICROMETER READINGS [6].</Value>
+            <Value> / INDEX 167     [I]: IMAGE BUFFER DESIGNATION.</Value>
         </Attribute>
         <Attribute name="ORIGIN" type="String">
-            <Value>&quot;'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY&quot;</Value>
+            <Value>'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY</Value>
         </Attribute>
         <Attribute name="TELESCOP" type="String">
-            <Value>&quot;'CHIP    ' / CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER&quot;</Value>
+            <Value>'CHIP    ' / CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER</Value>
         </Attribute>
         <Attribute name="OBJECT" type="String">
-            <Value>&quot;'SUN     ' / SOURCE OBJECT&quot;</Value>
+            <Value>'SUN     ' / SOURCE OBJECT</Value>
         </Attribute>
         <Attribute name="TYPE-OBS" type="String">
-            <Value>&quot;'NEAR BLUE' / TYPE OF OBSERVATION [DESCRIPTION]&quot;</Value>
+            <Value>'NEAR BLUE' / TYPE OF OBSERVATION [DESCRIPTION]</Value>
         </Attribute>
         <Attribute name="DATE-OBS" type="String">
-            <Value>&quot;'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006&quot;</Value>
+            <Value>'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006</Value>
         </Attribute>
         <Attribute name="TIME-OBS" type="String">
-            <Value>&quot;'18:59:27' / OBSERVATION TIME: HH:MM:SS [UTC]&quot;</Value>
+            <Value>'18:59:27' / OBSERVATION TIME: HH:MM:SS [UTC]</Value>
         </Attribute>
         <Attribute name="XSHIFT00" type="String">
-            <Value>&quot;-4.4164 / XSHIFT [ 0] [PIXELS]&quot;</Value>
+            <Value>-4.4164 / XSHIFT [ 0] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT01" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 1] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 1] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT02" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 2] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 2] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT03" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 3] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 3] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT04" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 4] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 4] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT05" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 5] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 5] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT06" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 6] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 6] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT07" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 7] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 7] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT08" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 8] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 8] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT09" type="String">
-            <Value>&quot;0.0000 / XSHIFT [ 9] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [ 9] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT10" type="String">
-            <Value>&quot;0.0000 / XSHIFT [10] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [10] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT11" type="String">
-            <Value>&quot;0.0000 / XSHIFT [11] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [11] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT12" type="String">
-            <Value>&quot;0.0000 / XSHIFT [12] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [12] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT13" type="String">
-            <Value>&quot;0.0000 / XSHIFT [13] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [13] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT14" type="String">
-            <Value>&quot;0.0000 / XSHIFT [14] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [14] [PIXELS]</Value>
         </Attribute>
         <Attribute name="XSHIFT15" type="String">
-            <Value>&quot;0.0000 / XSHIFT [15] [PIXELS]&quot;</Value>
+            <Value>0.0000 / XSHIFT [15] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT00" type="String">
-            <Value>&quot;16.4994 / YSHIFT [ 0] [PIXELS]&quot;</Value>
+            <Value>16.4994 / YSHIFT [ 0] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT01" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 1] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 1] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT02" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 2] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 2] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT03" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 3] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 3] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT04" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 4] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 4] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT05" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 5] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 5] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT06" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 6] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 6] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT07" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 7] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 7] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT08" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 8] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 8] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT09" type="String">
-            <Value>&quot;0.0000 / YSHIFT [ 9] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [ 9] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT10" type="String">
-            <Value>&quot;0.0000 / YSHIFT [10] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [10] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT11" type="String">
-            <Value>&quot;0.0000 / YSHIFT [11] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [11] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT12" type="String">
-            <Value>&quot;0.0000 / YSHIFT [12] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [12] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT13" type="String">
-            <Value>&quot;0.0000 / YSHIFT [13] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [13] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT14" type="String">
-            <Value>&quot;0.0000 / YSHIFT [14] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [14] [PIXELS]</Value>
         </Attribute>
         <Attribute name="YSHIFT15" type="String">
-            <Value>&quot;0.0000 / YSHIFT [15] [PIXELS]&quot;</Value>
+            <Value>0.0000 / YSHIFT [15] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM00" type="String">
-            <Value>&quot;840.2936 / DIAM [ 0] [PIXELS]&quot;</Value>
+            <Value>840.2936 / DIAM [ 0] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM01" type="String">
-            <Value>&quot;0.0000 / DIAM [ 1] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 1] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM02" type="String">
-            <Value>&quot;0.0000 / DIAM [ 2] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 2] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM03" type="String">
-            <Value>&quot;0.0000 / DIAM [ 3] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 3] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM04" type="String">
-            <Value>&quot;0.0000 / DIAM [ 4] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 4] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM05" type="String">
-            <Value>&quot;0.0000 / DIAM [ 5] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 5] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM06" type="String">
-            <Value>&quot;0.0000 / DIAM [ 6] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 6] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM07" type="String">
-            <Value>&quot;0.0000 / DIAM [ 7] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 7] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM08" type="String">
-            <Value>&quot;0.0000 / DIAM [ 8] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 8] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM09" type="String">
-            <Value>&quot;0.0000 / DIAM [ 9] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [ 9] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM10" type="String">
-            <Value>&quot;0.0000 / DIAM [10] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [10] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM11" type="String">
-            <Value>&quot;0.0000 / DIAM [11] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [11] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM12" type="String">
-            <Value>&quot;0.0000 / DIAM [12] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [12] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM13" type="String">
-            <Value>&quot;0.0000 / DIAM [13] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [13] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM14" type="String">
-            <Value>&quot;0.0000 / DIAM [14] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [14] [PIXELS]</Value>
         </Attribute>
         <Attribute name="DIAM15" type="String">
-            <Value>&quot;0.0000 / DIAM [15] [PIXELS]&quot;</Value>
+            <Value>0.0000 / DIAM [15] [PIXELS]</Value>
         </Attribute>
         <Attribute name="OPTDEV00" type="String">
-            <Value>&quot;'FILTER STAGE' / OPTDEV00 NAME&quot;</Value>
+            <Value>'FILTER STAGE' / OPTDEV00 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV01" type="String">
-            <Value>&quot;'O2 STAGE' / OPTDEV01 NAME&quot;</Value>
+            <Value>'O2 STAGE' / OPTDEV01 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV02" type="String">
-            <Value>&quot;'CHIP COVER' / OPTDEV02 NAME&quot;</Value>
+            <Value>'CHIP COVER' / OPTDEV02 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV03" type="String">
-            <Value>&quot;'CHIP DIFFUSER' / OPTDEV03 NAME&quot;</Value>
+            <Value>'CHIP DIFFUSER' / OPTDEV03 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV04" type="String">
-            <Value>&quot;'CAMERA STROBE' / OPTDEV04 NAME&quot;</Value>
+            <Value>'CAMERA STROBE' / OPTDEV04 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV05" type="String">
-            <Value>&quot;'DPMON/LOWK O1-S/N' / OPTDEV05 NAME&quot;</Value>
+            <Value>'DPMON/LOWK O1-S/N' / OPTDEV05 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV06" type="String">
-            <Value>&quot;'DPMON/LOWK O1-E/W' / OPTDEV06 NAME&quot;</Value>
+            <Value>'DPMON/LOWK O1-E/W' / OPTDEV06 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV07" type="String">
-            <Value>&quot;'COVER   ' / OPTDEV07 NAME&quot;</Value>
+            <Value>'COVER   ' / OPTDEV07 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV08" type="String">
-            <Value>&quot;'POLARIZER STAGE' / OPTDEV08 NAME&quot;</Value>
+            <Value>'POLARIZER STAGE' / OPTDEV08 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV09" type="String">
-            <Value>&quot;'FILTER WHEEL' / OPTDEV09 NAME&quot;</Value>
+            <Value>'FILTER WHEEL' / OPTDEV09 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV10" type="String">
-            <Value>&quot;'POLARIZER WHEEL' / OPTDEV10 NAME&quot;</Value>
+            <Value>'POLARIZER WHEEL' / OPTDEV10 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV11" type="String">
-            <Value>&quot;'OBJECTIVE WHEEL' / OPTDEV11 NAME&quot;</Value>
+            <Value>'OBJECTIVE WHEEL' / OPTDEV11 NAME</Value>
         </Attribute>
         <Attribute name="OPTDEV12" type="String">
-            <Value>&quot;'OCCULTING WHEEL' / OPTDEV12 NAME&quot;</Value>
+            <Value>'OCCULTING WHEEL' / OPTDEV12 NAME</Value>
         </Attribute>
         <Attribute name="OPTPOS00" type="String">
-            <Value>&quot;'IN      ' / FILTER STAGE             POSITION&quot;</Value>
+            <Value>'IN      ' / FILTER STAGE             POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS01" type="String">
-            <Value>&quot;'DPMON   ' / O2 STAGE                 POSITION&quot;</Value>
+            <Value>'DPMON   ' / O2 STAGE                 POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS02" type="String">
-            <Value>&quot;'IN      ' / CHIP COVER               POSITION&quot;</Value>
+            <Value>'IN      ' / CHIP COVER               POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS03" type="String">
-            <Value>&quot;'OUT     ' / CHIP DIFFUSER            POSITION&quot;</Value>
+            <Value>'OUT     ' / CHIP DIFFUSER            POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS04" type="String">
-            <Value>&quot;'NONE    ' / CAMERA STROBE            POSITION&quot;</Value>
+            <Value>'NONE    ' / CAMERA STROBE            POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS05" type="String">
-            <Value>&quot;'?       ' / DPMON/LOWK O1-S/N        POSITION&quot;</Value>
+            <Value>'?       ' / DPMON/LOWK O1-S/N        POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS06" type="String">
-            <Value>&quot;'?       ' / DPMON/LOWK O1-E/W        POSITION&quot;</Value>
+            <Value>'?       ' / DPMON/LOWK O1-E/W        POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS07" type="String">
-            <Value>&quot;'UNKNOWN ' / COVER                    POSITION&quot;</Value>
+            <Value>'UNKNOWN ' / COVER                    POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS08" type="String">
-            <Value>&quot;'IN      ' / POLARIZER STAGE          POSITION&quot;</Value>
+            <Value>'IN      ' / POLARIZER STAGE          POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS09" type="String">
-            <Value>&quot;'DARK    ' / FILTER WHEEL             POSITION&quot;</Value>
+            <Value>'DARK    ' / FILTER WHEEL             POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS10" type="String">
-            <Value>&quot;'45      ' / POLARIZER WHEEL          POSITION&quot;</Value>
+            <Value>'45      ' / POLARIZER WHEEL          POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS11" type="String">
-            <Value>&quot;'CLEAR   ' / OBJECTIVE WHEEL          POSITION&quot;</Value>
+            <Value>'CLEAR   ' / OBJECTIVE WHEEL          POSITION</Value>
         </Attribute>
         <Attribute name="OPTPOS12" type="String">
-            <Value>&quot;'OUT_OF_RANGE' / OCCULTING WHEEL          POSITION&quot;</Value>
+            <Value>'OUT_OF_RANGE' / OCCULTING WHEEL          POSITION</Value>
         </Attribute>
         <Attribute name="OPTDRV00" type="String">
-            <Value>&quot;'STOP    ' / FILTER STAGE                DRIVE&quot;</Value>
+            <Value>'STOP    ' / FILTER STAGE                DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV01" type="String">
-            <Value>&quot;'STOP    ' / O2 STAGE                    DRIVE&quot;</Value>
+            <Value>'STOP    ' / O2 STAGE                    DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV02" type="String">
-            <Value>&quot;'STOP    ' / CHIP COVER                  DRIVE&quot;</Value>
+            <Value>'STOP    ' / CHIP COVER                  DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV03" type="String">
-            <Value>&quot;'STOP    ' / CHIP DIFFUSER               DRIVE&quot;</Value>
+            <Value>'STOP    ' / CHIP DIFFUSER               DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV04" type="String">
-            <Value>&quot;'?       ' / CAMERA STROBE               DRIVE&quot;</Value>
+            <Value>'?       ' / CAMERA STROBE               DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV05" type="String">
-            <Value>&quot;'STOP    ' / DPMON/LOWK O1-S/N           DRIVE&quot;</Value>
+            <Value>'STOP    ' / DPMON/LOWK O1-S/N           DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV06" type="String">
-            <Value>&quot;'STOP    ' / DPMON/LOWK O1-E/W           DRIVE&quot;</Value>
+            <Value>'STOP    ' / DPMON/LOWK O1-E/W           DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV07" type="String">
-            <Value>&quot;'STOP    ' / COVER                       DRIVE&quot;</Value>
+            <Value>'STOP    ' / COVER                       DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV08" type="String">
-            <Value>&quot;'STOP    ' / POLARIZER STAGE             DRIVE&quot;</Value>
+            <Value>'STOP    ' / POLARIZER STAGE             DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV09" type="String">
-            <Value>&quot;'STOP    ' / FILTER WHEEL                DRIVE&quot;</Value>
+            <Value>'STOP    ' / FILTER WHEEL                DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV10" type="String">
-            <Value>&quot;'STOP    ' / POLARIZER WHEEL             DRIVE&quot;</Value>
+            <Value>'STOP    ' / POLARIZER WHEEL             DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV11" type="String">
-            <Value>&quot;'STOP    ' / OBJECTIVE WHEEL             DRIVE&quot;</Value>
+            <Value>'STOP    ' / OBJECTIVE WHEEL             DRIVE</Value>
         </Attribute>
         <Attribute name="OPTDRV12" type="String">
-            <Value>&quot;'OUT_OF_RANGE' / OCCULTING WHEEL             DRIVE&quot;</Value>
+            <Value>'OUT_OF_RANGE' / OCCULTING WHEEL             DRIVE</Value>
         </Attribute>
         <Attribute name="ANALOG00" type="String">
-            <Value>&quot;17.5890 / DPMON/LOWK PLATE TEMP         (C)&quot;</Value>
+            <Value>17.5890 / DPMON/LOWK PLATE TEMP         (C)</Value>
         </Attribute>
         <Attribute name="ANALOG01" type="String">
-            <Value>&quot;17.2380 / DPMON/LOWK AIR TEMP           (C)&quot;</Value>
+            <Value>17.2380 / DPMON/LOWK AIR TEMP           (C)</Value>
         </Attribute>
         <Attribute name="ANALOG02" type="String">
-            <Value>&quot;41.6325 / DPMON/LOWK FILTER TEMP        (C)&quot;</Value>
+            <Value>41.6325 / DPMON/LOWK FILTER TEMP        (C)</Value>
         </Attribute>
         <Attribute name="ANALOG03" type="String">
-            <Value>&quot;-19.9680 / DPMON/LOWK SPARE TEMP         (C)&quot;</Value>
+            <Value>-19.9680 / DPMON/LOWK SPARE TEMP         (C)</Value>
         </Attribute>
         <Attribute name="ANALOG04" type="String">
-            <Value>&quot;5.0142 / LOWK PBS TEMP                 (C)&quot;</Value>
+            <Value>5.0142 / LOWK PBS TEMP                 (C)</Value>
         </Attribute>
         <Attribute name="ANALOG05" type="String">
-            <Value>&quot;5.0142 / LOWK MODULATOR TEMP           (C)&quot;</Value>
+            <Value>5.0142 / LOWK MODULATOR TEMP           (C)</Value>
         </Attribute>
         <Attribute name="ANALOG06" type="String">
-            <Value>&quot;-0.0049 / SKY TRANSMISSION            (ARB)&quot;</Value>
+            <Value>-0.0049 / SKY TRANSMISSION            (ARB)</Value>
         </Attribute>
         <Attribute name="ANALOG07" type="String">
-            <Value>&quot;-0.0146 / SPARE VOLTAGE                 (V)&quot;</Value>
+            <Value>-0.0146 / SPARE VOLTAGE                 (V)</Value>
         </Attribute>
         <Attribute name="ANALOG08" type="String">
-            <Value>&quot;34.5138 / CHIP FILTER TEMP              (C)&quot;</Value>
+            <Value>34.5138 / CHIP FILTER TEMP              (C)</Value>
         </Attribute>
         <Attribute name="ANALOG09" type="String">
-            <Value>&quot;21.8400 / CHIP PLATE TEMP               (C)&quot;</Value>
+            <Value>21.8400 / CHIP PLATE TEMP               (C)</Value>
         </Attribute>
         <Attribute name="ANALOG10" type="String">
-            <Value>&quot;22.2885 / CHIP AIR TEMP                 (C)&quot;</Value>
+            <Value>22.2885 / CHIP AIR TEMP                 (C)</Value>
         </Attribute>
         <Attribute name="ANALOG11" type="String">
-            <Value>&quot;9.3015 / CHIP DOME TEMP                (C)&quot;</Value>
+            <Value>9.3015 / CHIP DOME TEMP                (C)</Value>
         </Attribute>
         <Attribute name="ANALOG12" type="String">
-            <Value>&quot;0.0098 / GUIDER X ERROR              (ARB)&quot;</Value>
+            <Value>0.0098 / GUIDER X ERROR              (ARB)</Value>
         </Attribute>
         <Attribute name="ANALOG13" type="String">
-            <Value>&quot;0.8350 / GUIDER Y ERROR              (ARB)&quot;</Value>
+            <Value>0.8350 / GUIDER Y ERROR              (ARB)</Value>
         </Attribute>
         <Attribute name="ANALOG14" type="String">
-            <Value>&quot;0.0049 / O1 X ERROR                  (ARB)&quot;</Value>
+            <Value>0.0049 / O1 X ERROR                  (ARB)</Value>
         </Attribute>
         <Attribute name="ANALOG15" type="String">
-            <Value>&quot;0.0146 / O1 Y ERROR                  (ARB)&quot;</Value>
+            <Value>0.0146 / O1 Y ERROR                  (ARB)</Value>
         </Attribute>
         <Attribute name="LCVR00" type="String">
-            <Value>&quot;3694.0000 / CHIP FILTER STAGE 4           (V)&quot;</Value>
+            <Value>3694.0000 / CHIP FILTER STAGE 4           (V)</Value>
         </Attribute>
         <Attribute name="LCVR01" type="String">
-            <Value>&quot;1935.0000 / CHIP FILTER STAGE 3           (V)&quot;</Value>
+            <Value>1935.0000 / CHIP FILTER STAGE 3           (V)</Value>
         </Attribute>
         <Attribute name="LCVR02" type="String">
-            <Value>&quot;5897.0000 / CHIP FILTER STAGE 2           (V)&quot;</Value>
+            <Value>5897.0000 / CHIP FILTER STAGE 2           (V)</Value>
         </Attribute>
         <Attribute name="LCVR03" type="String">
-            <Value>&quot;2177.0000 / CHIP FILTER STAGE 1           (V)&quot;</Value>
+            <Value>2177.0000 / CHIP FILTER STAGE 1           (V)</Value>
         </Attribute>
         <Attribute name="LCVR04" type="String">
-            <Value>&quot;0.0000 / SPARE LCVR 3                  (V)&quot;</Value>
+            <Value>0.0000 / SPARE LCVR 3                  (V)</Value>
         </Attribute>
         <Attribute name="LCVR05" type="String">
-            <Value>&quot;0.0000 / SPARE LCVR 2                  (V)&quot;</Value>
+            <Value>0.0000 / SPARE LCVR 2                  (V)</Value>
         </Attribute>
         <Attribute name="LCVR06" type="String">
-            <Value>&quot;0.0000 / SPARE LCVR 1                  (V)&quot;</Value>
+            <Value>0.0000 / SPARE LCVR 1                  (V)</Value>
         </Attribute>
         <Attribute name="LCVR07" type="String">
-            <Value>&quot;0.0000 / LOWK MODULATOR STAGE 1        (V)&quot;</Value>
+            <Value>0.0000 / LOWK MODULATOR STAGE 1        (V)</Value>
         </Attribute>
         <Attribute name="MIC00" type="String">
-            <Value>&quot;0.0000 / CHIP CAMERA Z           (MICRONS)&quot;</Value>
+            <Value>0.0000 / CHIP CAMERA Z           (MICRONS)</Value>
         </Attribute>
         <Attribute name="MIC01" type="String">
-            <Value>&quot;0.0000 / CHIP O1 X               (MICRONS)&quot;</Value>
+            <Value>0.0000 / CHIP O1 X               (MICRONS)</Value>
         </Attribute>
         <Attribute name="MIC02" type="String">
-            <Value>&quot;0.0000 / CHIP O1 Y               (MICRONS)&quot;</Value>
+            <Value>0.0000 / CHIP O1 Y               (MICRONS)</Value>
         </Attribute>
         <Attribute name="MIC03" type="String">
-            <Value>&quot;0.0000 / DPMON/LOWK C1 X         (MICRONS)&quot;</Value>
+            <Value>0.0000 / DPMON/LOWK C1 X         (MICRONS)</Value>
         </Attribute>
         <Attribute name="MIC04" type="String">
-            <Value>&quot;0.0000 / DPMON/LOWK C1 Y         (MICRONS)&quot;</Value>
+            <Value>0.0000 / DPMON/LOWK C1 Y         (MICRONS)</Value>
         </Attribute>
         <Attribute name="MIC05" type="String">
-            <Value>&quot;0.0000 / DPMON/LOWK C1 Z         (MICRONS)&quot;</Value>
+            <Value>0.0000 / DPMON/LOWK C1 Z         (MICRONS)</Value>
         </Attribute>
         <Attribute name="BUFFER" type="String">
-            <Value>&quot;-277858840 / BUFFER NUMBER [LOWK]&quot;</Value>
+            <Value>-277858840 / BUFFER NUMBER [LOWK]</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             <Value>92e50eb7</Value>

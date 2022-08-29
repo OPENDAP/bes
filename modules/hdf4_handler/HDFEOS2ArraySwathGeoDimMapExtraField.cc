@@ -35,7 +35,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoDimMapExtraField read "<<endl);
 
-    if(length() == 0)        
+    if(length() == 0)
         return true;
 
     // Declare offset, count and step

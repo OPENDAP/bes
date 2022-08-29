@@ -92,7 +92,7 @@ JPEG2000Transmitter::JPEG2000Transmitter() :  BESTransmitter()
         if (!found || JPEG2000Transmitter::temp_dir.empty()) {
             JPEG2000Transmitter::temp_dir = JPEG2000_TEMP_DIR;
         }
-        string::size_type len = JPEG2000Transmitter::temp_dir.length();
+        string::size_type len = JPEG2000Transmitter::temp_dir.size();
         if (JPEG2000Transmitter::temp_dir[len - 1] == '/') {
             JPEG2000Transmitter::temp_dir = JPEG2000Transmitter::temp_dir.substr(0, len - 1);
         }
@@ -162,8 +162,8 @@ void JPEG2000Transmitter::send_data_as_jp2(BESResponseObject *obj, BESDataHandle
     // Huh? Put the template for the temp file name in a char array. Use vector<char>
     // to avoid using new/delete.
     string temp_file_name = JPEG2000Transmitter::temp_dir + '/' + "jp2XXXXXX";
-    vector<char> temp_file(temp_file_name.length() + 1);
-    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.length());
+    vector<char> temp_file(temp_file_name.size() + 1);
+    string::size_type len = temp_file_name.copy(temp_file.data(), temp_file_name.size());
     temp_file[len] = '\0';
 
     // cover the case where older versions of mkstemp() create the file using

@@ -31,7 +31,7 @@ HDFSPArrayAddCVField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArrayAddCVField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     // Declaration of offset,count and step

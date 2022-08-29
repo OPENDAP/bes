@@ -96,7 +96,7 @@ GeoTiffTransmitter::GeoTiffTransmitter() :  BESTransmitter()
         if (!found || GeoTiffTransmitter::temp_dir.empty()) {
             GeoTiffTransmitter::temp_dir = FONG_TEMP_DIR;
         }
-        string::size_type len = GeoTiffTransmitter::temp_dir.length();
+        string::size_type len = GeoTiffTransmitter::temp_dir.size();
         if (GeoTiffTransmitter::temp_dir[len - 1] == '/') {
             GeoTiffTransmitter::temp_dir = GeoTiffTransmitter::temp_dir.substr(0, len - 1);
         }
