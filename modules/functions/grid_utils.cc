@@ -201,6 +201,15 @@ void get_coverages(BaseType *bt, vector<Array *> *coverages)
             break;
         }
 
+        case dods_group_c: {
+            // It's a Group - but of what? Check each variable in the Group.
+            D4Group &g = static_cast<D4Group&>(*bt);
+            for (D4Group::Vars_iter i = g.var_begin(); i != g.var_begin(); i++) {
+                get_coverages(*i, coverages);
+            }
+            break;
+        }
+
         // Only an Array can be a Coverage in DAP4.
         default:
             break;
@@ -277,7 +286,7 @@ static void apply_grid_selection_expr(Array *coverage, GSEClause *clause)
 
     // Stride is always one.
     map->add_constraint(map->dim_begin(), start, 1, stop);
-    //coverage->add_constraint(coverage_dim, start, 1, stop);
+
     coverage->dimension_D4dim(coverage_dim)->set_constraint(start, 1, stop);
     coverage->add_constraint(coverage_dim,coverage->dimension_D4dim(coverage_dim));
 }
