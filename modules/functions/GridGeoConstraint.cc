@@ -123,6 +123,26 @@ GridGeoConstraint::GridGeoConstraint(Array *coverage)
 
 }
 
+    GridGeoConstraint::GridGeoConstraint(Array *coverage, Array *lat, Array *lon)
+            : GeoConstraint(), d_grid(0), d_coverage(coverage), d_latitude(0), d_longitude(0)
+    {
+
+        if (!coverage->is_dap2_grid())
+            throw Error(string("The geogrid function cannot be applied to the array variable '")
+                        + coverage->name() + string("'."));
+
+        if (d_coverage->dimensions() < 2
+            || d_coverage->dimensions() > 3)
+            throw Error("The geogrid() function works only with Arrays of two or three dimensions.");
+
+        // Is this Coverage a geo-referenced grid? Throw Error if not.
+        if (!build_lat_lon_maps(lat, lon))
+            throw Error(string("The grid '") + d_coverage->name()
+                        + "' does not have valid latitude/longitude map vectors.");
+
+        if (!lat_lon_dimensions_ok())
+            throw Error("The geogrid() function will only work when the Grid's Longitude and Latitude maps are the rightmost dimensions (grid: " + coverage->name() + ", 2).");
+    }
 
 /** A private method called by the constructor that searches for latitude
     and longitude map vectors. This method returns false if either map
@@ -287,43 +307,94 @@ bool GridGeoConstraint::build_lat_lon_maps()
     @return True if the maps are valid, otherwise False */
 bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
 {
-    Grid::Map_iter m = d_grid->map_begin();
+    if ( d_grid ) {
 
-    Array::Dim_iter d = d_grid->get_array()->dim_begin();
+        Grid::Map_iter m = d_grid->map_begin();
+        Array::Dim_iter d = d_grid->get_array()->dim_begin();
 
-    while (m != d_grid->map_end() && (!d_latitude || !d_longitude)) {
-	// Look for the Grid map that matches the variable passed as 'lat'
-	if (!d_latitude && *m == lat) {
+        while (m != d_grid->map_end() && (!d_latitude || !d_longitude)) {
+            // Look for the Grid map that matches the variable passed as 'lat'
+            if (!d_latitude && *m == lat) {
 
-            d_latitude = lat;
+                d_latitude = lat;
 
-            if (!d_latitude->read_p())
-                d_latitude->read();
+                if (!d_latitude->read_p())
+                    d_latitude->read();
 
-            set_lat(extract_double_array(d_latitude));   // throws Error
-            set_lat_length(d_latitude->length());
+                set_lat(extract_double_array(d_latitude));   // throws Error
+                set_lat_length(d_latitude->length());
 
-            set_lat_dim(d);
+                set_lat_dim(d);
+            }
+
+            if (!d_longitude && *m == lon) {
+
+                d_longitude = lon;
+
+                if (!d_longitude->read_p())
+                    d_longitude->read();
+
+                set_lon(extract_double_array(d_longitude));
+                set_lon_length(d_longitude->length());
+
+                set_lon_dim(d);
+
+                if (m + 1 == d_grid->map_end())
+                    set_longitude_rightmost(true);
+            }
+
+            ++m;
+            ++d;
         }
+    }
+    else {
+        if (!d_coverage->is_dap2_grid())
+            throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
 
-        if (!d_longitude && *m == lon) {
+        // Assume that an Array is correct and thus has exactly as many maps as its
+        // array part has dimensions. Thus don't bother to test the Grid's array
+        // dimension iterator for '!= dim_end()'.
+        Array::Dim_iter d = d_coverage->dim_begin();
 
-            d_longitude = lon;
+        // Basic plan: For each map, look at each clause and set start and stop
+        // to be the intersection of the ranges in those clauses.
+        D4Maps *d4_maps = d_coverage->maps();
+        D4Maps::D4MapsIter miter = d4_maps->map_begin();
+        while (miter != d4_maps->map_end()) {
+            D4Map *d4_map = (*miter);
+            Array *d4_map_array = const_cast<Array *>(d4_map->array());
 
-            if (!d_longitude->read_p())
-                d_longitude->read();
+            if (!d_latitude || !d_longitude) {
+                if (!d_latitude && d4_map_array == lat) {
+                    d_latitude = lat;
 
-            set_lon(extract_double_array(d_longitude));
-            set_lon_length(d_longitude->length());
+                    if (!d_latitude->read_p())
+                        d_latitude->read();
 
-            set_lon_dim(d);
+                    set_lat(extract_double_array(d_latitude));   // throws Error
+                    set_lat_length(d_latitude->length());
 
-            if (m + 1 == d_grid->map_end())
-            	set_longitude_rightmost(true);
+                    set_lat_dim(d);
+                }
+
+                if (!d_longitude && d4_map_array == lon) {
+                    d_longitude = lon;
+
+                    if (!d_longitude->read_p())
+                        d_longitude->read();
+
+                    set_lon(extract_double_array(d_longitude));
+                    set_lon_length(d_longitude->length());
+
+                    set_lon_dim(d);
+
+                    if (miter + 1 == d4_maps->map_end())
+                        set_longitude_rightmost(true);
+                }
+            }
+            ++d;
+            ++miter;
         }
-
-        ++m;
-        ++d;
     }
 
     return get_lat() && get_lon();
