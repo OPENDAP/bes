@@ -1,8 +1,24 @@
 netcdf test {
 dimensions:
-	Longitude = 1440 ;
 	Latitude = 720 ;
+	Longitude = 1440 ;
 variables:
+	float Latitude(Latitude) ;
+		Latitude:units = "degrees_north" ;
+		Latitude:scale_factor = 1.f ;
+		Latitude:add_offset = 0.f ;
+		Latitude:long_name = "Latitude" ;
+		Latitude:_CoordinateAxisType = "Lat" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/Latitude" ;
+	float Longitude(Longitude) ;
+		Longitude:units = "degrees_east" ;
+		Longitude:scale_factor = 1.f ;
+		Longitude:add_offset = 0.f ;
+		Longitude:long_name = "Longitude" ;
+		Longitude:_CoordinateAxisType = "Lon" ;
+		Longitude:origname = "Longitude" ;
+		Longitude:fullnamepath = "/Longitude" ;
 	short mask(Longitude, Latitude) ;
 		mask:long_name = "Bit Mask" ;
 		mask:coordinates = "Longitude Latitude" ;
@@ -111,22 +127,6 @@ variables:
 		soil_moisture_x_error:add_offset = 0.f ;
 		soil_moisture_x_error:origname = "soil_moisture_x_error" ;
 		soil_moisture_x_error:fullnamepath = "/soil_moisture_x_error" ;
-	float Latitude(Latitude) ;
-		Latitude:units = "degrees_north" ;
-		Latitude:scale_factor = 1.f ;
-		Latitude:add_offset = 0.f ;
-		Latitude:long_name = "Latitude" ;
-		Latitude:_CoordinateAxisType = "Lat" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/Latitude" ;
-	float Longitude(Longitude) ;
-		Longitude:units = "degrees_east" ;
-		Longitude:scale_factor = 1.f ;
-		Longitude:add_offset = 0.f ;
-		Longitude:long_name = "Longitude" ;
-		Longitude:_CoordinateAxisType = "Lon" ;
-		Longitude:origname = "Longitude" ;
-		Longitude:fullnamepath = "/Longitude" ;
 
 // global attributes:
 		:Conventions = "CF-1.0" ;

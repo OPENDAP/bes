@@ -1,8 +1,16 @@
 netcdf test {
 dimensions:
-	lon = 3600 ;
 	lat = 1800 ;
+	lon = 3600 ;
 variables:
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
+		lat:origname = "lat" ;
+		lat:fullnamepath = "/lat" ;
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+		lon:origname = "lon" ;
+		lon:fullnamepath = "/lon" ;
 	short HQprecipSource2(lon, lat) ;
 		HQprecipSource2:DimensionNames = "nlon,nlat" ;
 		HQprecipSource2:origname = "HQprecipSource2" ;
@@ -63,14 +71,6 @@ variables:
 		HQprecipSource1:DimensionNames = "nlon,nlat" ;
 		HQprecipSource1:origname = "HQprecipSource1" ;
 		HQprecipSource1:fullnamepath = "/HQprecipSource1" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
-		lat:origname = "lat" ;
-		lat:fullnamepath = "/lat" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-		lon:origname = "lon" ;
-		lon:fullnamepath = "/lon" ;
 
 // global attributes:
 		:FileHeader = "AlgorithmID=3IMERGHH;\nAlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;\nFileName=3IMERGH.201206080230.HDF;\nSatelliteName=MULTI;\nInstrumentName=MERGED;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time                                                                                                                                                                                                                                    removed date-time                                                                                                                                                                                                                                    3IMERGH_1.0                                                                                                                                                                                                                                                     ;\nStopGranuleDateTime=removed date-time                                                                                                                                                                                                                                    3IMERGH_1.0                                                                                                                                                                                                                                                     ;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=HALF_HOUR;\nProcessingSystem=;\nProductVersion=;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;

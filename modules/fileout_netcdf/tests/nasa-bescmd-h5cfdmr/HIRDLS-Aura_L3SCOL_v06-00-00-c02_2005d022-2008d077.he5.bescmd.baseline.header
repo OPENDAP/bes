@@ -1,11 +1,30 @@
 netcdf test {
 dimensions:
-	nTimes = 1151 ;
-	YDim = 73 ;
 	XDim = 180 ;
+	YDim = 73 ;
+	nTimes = 1151 ;
 	StructMetadata_0_len = 2594 ;
 	coremetadata_0_len = 7475 ;
 variables:
+	float XDim(XDim) ;
+		XDim:long_name = "longitude" ;
+		XDim:units = "degrees_east" ;
+		XDim:origname = "XDim" ;
+		XDim:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/XDim" ;
+		XDim:orig_dimname = "XDim" ;
+	float YDim(YDim) ;
+		YDim:long_name = "latitude" ;
+		YDim:units = "degrees_north" ;
+		YDim:origname = "YDim" ;
+		YDim:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/YDim" ;
+		YDim:orig_dimname = "YDim" ;
+	float nTimes(nTimes) ;
+		nTimes:_FillValue = -999.f ;
+		nTimes:missing_value = -999. ;
+		nTimes:units = "seconds since 1993-01-01" ;
+		nTimes:origname = "nTimes" ;
+		nTimes:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/nTimes" ;
+		nTimes:orig_dimname = "nTimes" ;
 	int Day(nTimes) ;
 		Day:_FillValue = -999 ;
 		Day:missing_value = -999 ;
@@ -84,25 +103,6 @@ variables:
 	char coremetadata_0(coremetadata_0_len) ;
 		coremetadata_0:origname = "coremetadata.0" ;
 		coremetadata_0:fullnamepath = "/HDFEOS INFORMATION/coremetadata.0" ;
-	float XDim(XDim) ;
-		XDim:long_name = "longitude" ;
-		XDim:units = "degrees_east" ;
-		XDim:origname = "XDim" ;
-		XDim:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/XDim" ;
-		XDim:orig_dimname = "XDim" ;
-	float YDim(YDim) ;
-		YDim:long_name = "latitude" ;
-		YDim:units = "degrees_north" ;
-		YDim:origname = "YDim" ;
-		YDim:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/YDim" ;
-		YDim:orig_dimname = "YDim" ;
-	float nTimes(nTimes) ;
-		nTimes:_FillValue = -999.f ;
-		nTimes:missing_value = -999. ;
-		nTimes:units = "seconds since 1993-01-01" ;
-		nTimes:origname = "nTimes" ;
-		nTimes:fullnamepath = "/HDFEOS/GRIDS/HIRDLS/nTimes" ;
-		nTimes:orig_dimname = "nTimes" ;
 
 // global attributes:
 		:CoreMetadata = "\nGROUP                  = INVENTORYMETADATA\n  GROUPTYPE            = MASTERGROUP\n\n  GROUP                  = ECSDATAGRANULE\n\n    OBJECT                 = REPROCESSINGPLANNED\n      NUM_VAL              = 1\n      VALUE                = \"Further update anticipated using enhanced PGE\"\n    END_OBJECT             = REPROCESSINGPLANNED\n\n    OBJECT                 = REPROCESSINGACTUAL\n      NUM_VAL              = 1\n      VALUE                = \"Reprocessed once\"\n    END_OBJECT             = REPROCESSINGACTUAL\n\n    OBJECT                 = LOCALGRANULEID\n      NUM_VAL              = 1\n      VALUE                = \"./HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5\"\n    END_OBJECT             = LOCALGRANULEID\n\n    OBJECT                 = DAYNIGHTFLAG\n      NUM_VAL              = 1\n      VALUE                = \"Day\"\n    END_OBJECT             = DAYNIGHTFLAG\n\n    OBJECT                 = PRODUCTIONDATETIME\n      NUM_VAL              = 1\n      VALUE                = \"removed date-time\"\n    END_OBJECT             = PRODUCTIONDATETIME\n\n    OBJECT                 = LOCALVERSIONID\n      NUM_VAL              = 1\n      VALUE                = \"6.00.00\"\n    END_OBJECT             = LOCALVERSIONID\n\n  END_GROUP              = ECSDATAGRANULE\n\n  GROUP                  = MEASUREDPARAMETER\n\n    OBJECT                 = MEASUREDPARAMETERCONTAINER\n      CLASS                = \"1\"\n\n      OBJECT                 = PARAMETERNAME\n        NUM_VAL              = 1\n        CLASS                = \"1\"\n        VALUE                = \"N2O (Day)\"\n      END_OBJECT             = PARAMETERNAME\n\n      GROUP                  = QAFLAGS\n        CLASS                = \"1\"\n\n        OBJECT                 = AUTOMATICQUALITYFLAG\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Suspect\"\n        END_OBJECT             = AUTOMATICQUALITYFLAG\n\n        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Process Terminated Normally - Check Science Quality Flag for Science Team quality assessment\"\n        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION\n\n        OBJECT                 = OPERATIONALQUALITYFLAG\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Not Investigated\"\n        END_OBJECT             = OPERATIONALQUALITYFLAG\n\n        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Q/A process has not yet been run\"\n        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION\n\n        OBJECT                 = SCIENCEQUALITYFLAG\n          NUM_VAL              = 1\n          VALUE                = \"Not Investigated\"\n          CLASS                = \"1\"\n        END_OBJECT             = SCIENCEQUALITYFLAG\n\n      END_GROUP              = QAFLAGS\n\n      GROUP                  = QASTATS\n        CLASS                = \"1\"\n\n        OBJECT                 = QAPERCENTMISSINGDATA\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = 0\n        END_OBJECT             = QAPERCENTMISSINGDATA\n\n        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = 0\n        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA\n\n      END_GROUP              = QASTATS\n\n    END_OBJECT             = MEASUREDPARAMETERCONTAINER\n\n  END_GROUP              = MEASUREDPARAMETER\n\n  GROUP                  = COLLECTIONDESCRIPTIONCLASS\n\n    OBJECT                 = SHORTNAME\n      NUM_VAL              = 1\n      VALUE                = \"HIR3SCOL\"\n    END_OBJECT             = SHORTNAME\n\n    OBJECT                 = VERSIONID\n      NUM_VAL              = 1\n      VALUE                = 6\n    END_OBJECT             = VERSIONID\n\n  END_GROUP              = COLLECTIONDESCRIPTIONCLASS\n\n  GROUP                  = INPUTGRANULE\n\n    OBJECT                 = INPUTPOINTER\n      NUM_VAL              = 1\n      VALUE                = \"See Production History File for this information\"\n    END_OBJECT             = INPUTPOINTER\n\n  END_GROUP              = INPUTGRANULE\n\n  GROUP                  = SPATIALDOMAINCONTAINER\n\n    GROUP                  = GRANULELOCALITY\n\n      OBJECT                 = LOCALITYVALUE\n        NUM_VAL              = 1\n        VALUE                = \"Global\"\n      END_OBJECT             = LOCALITYVALUE\n\n    END_GROUP              = GRANULELOCALITY\n\n    GROUP                  = VERTICALSPATIALDOMAIN\n\n      OBJECT                 = VERTICALSPATIALDOMAINCONTAINER\n        CLASS                = \"1\"\n\n        OBJECT                 = VERTICALSPATIALDOMAINTYPE\n          CLASS                = \"1\"\n          NUM_VAL              = 1\n          VALUE                = \"Atmosphere Layer\"\n        END_OBJECT             = VERTICALSPATIALDOMAINTYPE\n\n        OBJECT                 = VERTICALSPATIALDOMAINVALUE\n          CLASS                = \"1\"\n          NUM_VAL              = 1\n          VALUE                = \"Atmosphere Profile\"\n        END_OBJECT             = VERTICALSPATIALDOMAINVALUE\n\n      END_OBJECT             = VERTICALSPATIALDOMAINCONTAINER\n\n    END_GROUP              = VERTICALSPATIALDOMAIN\n\n    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER\n\n      GROUP                  = BOUNDINGRECTANGLE\n\n        OBJECT                 = WESTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -180.0\n        END_OBJECT             = WESTBOUNDINGCOORDINATE\n\n        OBJECT                 = NORTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 80.0\n        END_OBJECT             = NORTHBOUNDINGCOORDINATE\n\n        OBJECT                 = EASTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 180.0\n        END_OBJECT             = EASTBOUNDINGCOORDINATE\n\n        OBJECT                 = SOUTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -64.0\n        END_OBJECT             = SOUTHBOUNDINGCOORDINATE\n\n      END_GROUP              = BOUNDINGRECTANGLE\n\n    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER\n\n  END_GROUP              = SPATIALDOMAINCONTAINER\n\n  GROUP                  = RANGEDATETIME\n\n    OBJECT                 = RANGEBEGINNINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2005-01-22\"\n    END_OBJECT             = RANGEBEGINNINGDATE\n\n    OBJECT                 = RANGEBEGINNINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"00:00:00.00\"\n    END_OBJECT             = RANGEBEGINNINGTIME\n\n    OBJECT                 = RANGEENDINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2008-03-17\"\n    END_OBJECT             = RANGEENDINGDATE\n\n    OBJECT                 = RANGEENDINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"23:59:59.99\"\n    END_OBJECT             = RANGEENDINGTIME\n\n  END_GROUP              = RANGEDATETIME\n\n  GROUP                  = PGEVERSIONCLASS\n\n    OBJECT                 = PGEVERSION\n      NUM_VAL              = 1\n      VALUE                = \"L3PSTB16sc\"\n    END_OBJECT             = PGEVERSION\n\n  END_GROUP              = PGEVERSIONCLASS\n\nEND_GROUP              = INVENTORYMETADATA\n\nEND\n" ;

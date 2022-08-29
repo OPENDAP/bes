@@ -1,13 +1,35 @@
 netcdf test {
 dimensions:
-	nspecies = 5 ;
-	sddim = 12 ;
-	nlyrs = 28 ;
-	ntemps = 21 ;
-	nprf = 100 ;
 	nscan = 2962 ;
 	npixel = 221 ;
+	nlyrs = 28 ;
+	nprf = 100 ;
+	nspecies = 5 ;
+	ntemps = 21 ;
+	sddim = 12 ;
 variables:
+	float S1_Longitude(nscan, npixel) ;
+		S1_Longitude:DimensionNames = "nscan,npixel" ;
+		S1_Longitude:origname = "Longitude" ;
+		S1_Longitude:fullnamepath = "/S1/Longitude" ;
+		S1_Longitude:units = "degrees_east" ;
+		S1_Longitude:_FillValue = -9999.9f ;
+	float S1_Latitude(nscan, npixel) ;
+		S1_Latitude:DimensionNames = "nscan,npixel" ;
+		S1_Latitude:origname = "Latitude" ;
+		S1_Latitude:fullnamepath = "/S1/Latitude" ;
+		S1_Latitude:units = "degrees_north" ;
+		S1_Latitude:_FillValue = -9999.9f ;
+	int nlyrs(nlyrs) ;
+		nlyrs:units = "level" ;
+	int nprf(nprf) ;
+		nprf:units = "level" ;
+	int nspecies(nspecies) ;
+		nspecies:units = "level" ;
+	int ntemps(ntemps) ;
+		ntemps:units = "level" ;
+	int sddim(sddim) ;
+		sddim:units = "level" ;
 	ubyte GprofDHeadr_speciesDescription(nspecies, sddim) ;
 		GprofDHeadr_speciesDescription:DimensionNames = "nspecies,sddim" ;
 		GprofDHeadr_speciesDescription:_FillValue = 50UB ;
@@ -293,28 +315,6 @@ variables:
 		S1_profileNumber:origname = "profileNumber" ;
 		S1_profileNumber:fullnamepath = "/S1/profileNumber" ;
 		S1_profileNumber:coordinates = "S1_Longitude S1_Latitude nspecies" ;
-	float S1_Longitude(nscan, npixel) ;
-		S1_Longitude:DimensionNames = "nscan,npixel" ;
-		S1_Longitude:origname = "Longitude" ;
-		S1_Longitude:fullnamepath = "/S1/Longitude" ;
-		S1_Longitude:units = "degrees_east" ;
-		S1_Longitude:_FillValue = -9999.9f ;
-	float S1_Latitude(nscan, npixel) ;
-		S1_Latitude:DimensionNames = "nscan,npixel" ;
-		S1_Latitude:origname = "Latitude" ;
-		S1_Latitude:fullnamepath = "/S1/Latitude" ;
-		S1_Latitude:units = "degrees_north" ;
-		S1_Latitude:_FillValue = -9999.9f ;
-	int nlyrs(nlyrs) ;
-		nlyrs:units = "level" ;
-	int nprf(nprf) ;
-		nprf:units = "level" ;
-	int nspecies(nspecies) ;
-		nspecies:units = "level" ;
-	int ntemps(ntemps) ;
-		ntemps:units = "level" ;
-	int sddim(sddim) ;
-		sddim:units = "level" ;
 
 // global attributes:
 		:FileHeader = "DOI=10.5067/GPM/GMI/GPM/GPROF2A;\nAlgorithmID=2AGPROFGMI;\nAlgorithmVersion=S1V1-4.1406;\nFileName=2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=003195;\nNumberOfSwaths=1;\nNumberOfGrids=0;\nGranuleStart=SOUTHERNMOST_LATITUDE;\nTimeInterval=ORBIT;\nProcessingSystem=PPS;\nProductVersion=V03C;\nEmptyGranule=NOT_EMPTY;\nMissingData=0;\n" ;

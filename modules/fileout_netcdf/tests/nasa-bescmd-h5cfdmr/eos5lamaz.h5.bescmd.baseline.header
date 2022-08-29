@@ -7,6 +7,22 @@ dimensions:
 	CoreMetadata_0_len = 5161 ;
 	StructMetadata_0_len = 1844 ;
 variables:
+	double Northern_Hemisphere_lon(Northern_Hemisphere_YDim, Northern_Hemisphere_XDim) ;
+		Northern_Hemisphere_lon:units = "degrees_east" ;
+		Northern_Hemisphere_lon:valid_min = -180. ;
+		Northern_Hemisphere_lon:valid_max = 180. ;
+	double Northern_Hemisphere_lat(Northern_Hemisphere_YDim, Northern_Hemisphere_XDim) ;
+		Northern_Hemisphere_lat:units = "degrees_north" ;
+		Northern_Hemisphere_lat:valid_min = -90. ;
+		Northern_Hemisphere_lat:valid_max = 90. ;
+	double Southern_Hemisphere_lon(Southern_Hemisphere_YDim, Southern_Hemisphere_XDim) ;
+		Southern_Hemisphere_lon:units = "degrees_east" ;
+		Southern_Hemisphere_lon:valid_min = -180. ;
+		Southern_Hemisphere_lon:valid_max = 180. ;
+	double Southern_Hemisphere_lat(Southern_Hemisphere_YDim, Southern_Hemisphere_XDim) ;
+		Southern_Hemisphere_lat:units = "degrees_north" ;
+		Southern_Hemisphere_lat:valid_min = -90. ;
+		Southern_Hemisphere_lat:valid_max = 90. ;
 	ubyte Northern_Hemisphere_Flags_NorthernDaily(Northern_Hemisphere_YDim, Northern_Hemisphere_XDim) ;
 		Northern_Hemisphere_Flags_NorthernDaily:_FillValue = 255UB ;
 		Northern_Hemisphere_Flags_NorthernDaily:origname = "Flags_NorthernDaily" ;
@@ -79,22 +95,6 @@ variables:
 		Southern_Hemisphere_XDim:long_name = "x coordinate of projection " ;
 		Southern_Hemisphere_XDim:units = "meter" ;
 		Southern_Hemisphere_XDim:_CoordinateAxisType = "GeoX" ;
-	double Northern_Hemisphere_lon(Northern_Hemisphere_YDim, Northern_Hemisphere_XDim) ;
-		Northern_Hemisphere_lon:units = "degrees_east" ;
-		Northern_Hemisphere_lon:valid_min = -180. ;
-		Northern_Hemisphere_lon:valid_max = 180. ;
-	double Northern_Hemisphere_lat(Northern_Hemisphere_YDim, Northern_Hemisphere_XDim) ;
-		Northern_Hemisphere_lat:units = "degrees_north" ;
-		Northern_Hemisphere_lat:valid_min = -90. ;
-		Northern_Hemisphere_lat:valid_max = 90. ;
-	double Southern_Hemisphere_lon(Southern_Hemisphere_YDim, Southern_Hemisphere_XDim) ;
-		Southern_Hemisphere_lon:units = "degrees_east" ;
-		Southern_Hemisphere_lon:valid_min = -180. ;
-		Southern_Hemisphere_lon:valid_max = 180. ;
-	double Southern_Hemisphere_lat(Southern_Hemisphere_YDim, Southern_Hemisphere_XDim) ;
-		Southern_Hemisphere_lat:units = "degrees_north" ;
-		Southern_Hemisphere_lat:valid_min = -90. ;
-		Southern_Hemisphere_lat:valid_max = 90. ;
 
 // global attributes:
 		:CoreMetadata = "GROUP = INVENTORYMETADATA\n   GROUPTYPE = MASTERGROUP\n   GROUP = ECSDATAGRANULE\n      OBJECT = LOCALGRANULEID\n         NUM_VAL = 1\n         VALUE = \"AMSR_2_L3_DailySnow_P00_20160831.he5\"\n      END_OBJECT = LOCALGRANULEID\n      OBJECT = PRODUCTIONDATETIME\n         NUM_VAL = 1\n         VALUE = \"removed date-time\"\n      END_OBJECT = PRODUCTIONDATETIME\n   END_GROUP = ECSDATAGRANULE\n   GROUP = MEASUREDPARAMETER\n      OBJECT = MEASUREDPARAMETERCONTAINER\n         CLASS = \"1\"\n         OBJECT = PARAMETERNAME\n            NUM_VAL = 1\n            CLASS = \"1\"\n            VALUE = \"Snow Water Equivalent\"\n         END_OBJECT = PARAMETERNAME\n         GROUP = QASTATS\n            CLASS = \"1\"\n            OBJECT = QAPERCENTMISSINGDATA\n               NUM_VAL = 1\n               CLASS = \"1\"\n               VALUE = 45\n            END_OBJECT = QAPERCENTMISSINGDATA\n            OBJECT = QAPERCENTOUTOFBOUNDSDATA\n               NUM_VAL = 1\n               CLASS = \"1\"\n               VALUE = 0\n            END_OBJECT = QAPERCENTOUTOFBOUNDSDATA\n         END_GROUP = QASTATS\n      END_OBJECT = MEASUREDPARAMETERCONTAINER\n   END_GROUP = MEASUREDPARAMETER\n   GROUP = COLLECTIONDESCRIPTIONCLASS\n      OBJECT = SHORTNAME\n         NUM_VAL = 1\n         VALUE = \"A2_DySno_NRT\"\n      END_OBJECT = SHORTNAME\n      OBJECT = LONGNAME\n         NUM_VAL = 1\n         VALUE = \"NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids\"\n      END_OBJECT = LONGNAME\n      OBJECT = VERSIONID\n         NUM_VAL = 1\n         VALUE = \"0\"\n      END_OBJECT = VERSIONID\n      OBJECT = COLLECTIONDATATYPE\n         NUM_VAL = 1\n         VALUE = \"NEAR_REAL_TIME\"\n      END_OBJECT = COLLECTIONDATATYPE\n   END_GROUP = COLLECTIONDESCRIPTIONCLASS\n   GROUP = INPUTGRANULE\n      OBJECT = INPUTPOINTER\n         NUM_VAL = 8\n         VALUE = (\"GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5\",\n                  \"GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5\")\n      END_OBJECT = INPUTPOINTER\n   END_GROUP = INPUTGRANULE\n   GROUP = SPATIALDOMAINCONTAINER\n      GROUP = HORIZONTALSPATIALDOMAINCONTAINER\n         GROUP = BOUNDINGRECTANGLE\n            OBJECT = WESTBOUNDINGCOORDINATE\n               NUM_VAL = 1\n               VALUE = -180.0\n            END_OBJECT = WESTBOUNDINGCOORDINATE\n            OBJECT = NORTHBOUNDINGCOORDINATE\n               NUM_VAL = 1\n               VALUE = 90.0\n            END_OBJECT = NORTHBOUNDINGCOORDINATE\n            OBJECT = EASTBOUNDINGCOORDINATE\n               NUM_VAL = 1\n               VALUE = 180.0\n            END_OBJECT = EASTBOUNDINGCOORDINATE\n            OBJECT = SOUTHBOUNDINGCOORDINATE\n               NUM_VAL = 1\n               VALUE = -90.0\n            END_OBJECT = SOUTHBOUNDINGCOORDINATE\n         END_GROUP = BOUNDINGRECTANGLE\n      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER\n   END_GROUP = SPATIALDOMAINCONTAINER\n   GROUP = RANGEDATETIME\n      OBJECT = RANGEBEGINNINGDATE\n         NUM_VAL = 1\n         VALUE = \"2016-08-31\"\n      END_OBJECT = RANGEBEGINNINGDATE\n      OBJECT = RANGEBEGINNINGTIME\n         NUM_VAL = 1\n         VALUE = \"01:05:20.572041Z\"\n      END_OBJECT = RANGEBEGINNINGTIME\n      OBJECT = RANGEENDINGDATE\n         NUM_VAL = 1\n         VALUE = \"2016-08-31\"\n      END_OBJECT = RANGEENDINGDATE\n      OBJECT = RANGEENDINGTIME\n         NUM_VAL = 1\n         VALUE = \"13:19:19.335593Z\"\n      END_OBJECT = RANGEENDINGTIME\n   END_GROUP = RANGEDATETIME\n   GROUP = PGEVERSIONCLASS\n      OBJECT = PGEVERSION\n         NUM_VAL = 1\n         VALUE = \"00\"\n      END_OBJECT = PGEVERSION\n   END_GROUP = PGEVERSIONCLASS\n   GROUP = ADDITIONALATTRIBUTES\n       OBJECT = ADDITIONALATTRIBUTESCONTAINER\n         CLASS = \"1\"\n         OBJECT = ADDITIONALATTRIBUTENAME\n            CLASS = \"1\"\n            NUM_VAL = 1\n            VALUE = \"identifier_product_doi\"\n         END_OBJECT = ADDITIONALATTRIBUTENAME\n         GROUP = INFORMATIONCONTENT\n            CLASS = \"1\"\n            OBJECT = PARAMETERVALUE\n               NUM_VAL = 1\n               CLASS = \"1\"\n               VALUE = \"10.5067/AMSR2/A2_DySno_NRT\"\n            END_OBJECT = PARAMETERVALUE\n         END_GROUP = INFORMATIONCONTENT\n      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER\n      OBJECT = ADDITIONALATTRIBUTESCONTAINER\n         CLASS = \"2\"\n         OBJECT = ADDITIONALATTRIBUTENAME\n            CLASS = \"2\"\n            NUM_VAL = 1\n            VALUE = \"identifier_product_doi_authority\"\n         END_OBJECT = ADDITIONALATTRIBUTENAME\n         GROUP = INFORMATIONCONTENT\n            CLASS = \"2\"\n            OBJECT = PARAMETERVALUE\n               NUM_VAL = 1\n               CLASS = \"2\"\n               VALUE = \"http://dx.doi.org\"\n            END_OBJECT = PARAMETERVALUE\n         END_GROUP = INFORMATIONCONTENT\n      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER\n   END_GROUP = ADDITIONALATTRIBUTES\nEND_GROUP = INVENTORYMETADATA\nEND\n" ;
