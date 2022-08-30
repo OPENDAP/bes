@@ -49,6 +49,7 @@
 #include <libdap/Byte.h>
 
 #include "BESInternalError.h"
+#include "BESInternalFatalError.h"
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESStopWatch.h"
@@ -581,11 +582,12 @@ bool DmrppArray::is_projected()
 unsigned long long DmrppArray::get_size(bool constrained)
 {
     // number of array elements in the constrained array
-    unsigned long long size = 1;
+    unsigned long long asize = 1;
     for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
-        size *= dimension_size(dim, constrained);
+        auto dim_size =  dimension_size(dim, constrained);
+        asize *= dim_size;
     }
-    return size;
+    return asize;
 }
 
 /**
@@ -1496,7 +1498,7 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
             while(buf[str_len]!=0 && str_len < fixed_str_len){
                 str_len++;
             }
-            BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
+            BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
             value = string(buf,str_len);
             break;
         }
@@ -1506,7 +1508,7 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
             while( (buf[str_len-1]==' ' || buf[str_len-1]==0) && str_len>0){
                 str_len--;
             }
-            BESDEBUG(MODULE, prolog << "str_len: " << str_len << endl);
+            BESDEBUG(MODULE, prolog << DmrppArray::pad_type_to_str(pad_type) << " scheme. str_len: " << str_len << endl);
             value = string(buf,str_len);
             break;
         }
@@ -1516,10 +1518,158 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
             BESDEBUG(MODULE, prolog << "pad_type: NOT_SET" << endl);
             break;
     }
-    BESDEBUG(MODULE, prolog << "value: " << value << endl);
+    BESDEBUG(MODULE, prolog << "value: '" << value << "'" << endl);
     return value;
 }
 
+string dims_to_string(const vector<unsigned long long> dims){
+    stringstream ss;
+    for(auto dim: dims){
+        ss << "[" << dim << "]";
+    }
+    return ss.str();
+}
+
+std::string array_to_str(DmrppArray a, const string &banner)  {
+    stringstream msg;
+    msg << endl << "#  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" << endl;
+    msg << "# " << banner << endl;
+    msg << "# " << a.prototype()->type_name() << " " << a.name();
+
+    for(auto dim=a.dim_begin(); dim < a.dim_end(); dim++){
+        msg << "[";
+        if(!dim->name.empty()){
+            msg << dim->name << "=";
+        }
+        msg << dim->size << "]";
+    }
+    msg << endl;
+    msg << "# " << endl;
+    msg << "#           a->get_size(true): " << a.get_size(true) << " (The total number of elements in the array instance)" << endl;
+    msg << "#              a->width(true): " << a.width(true) << " (The number of bytes needed to hold the entire array - prot.width * num_elements)" << endl;
+    msg << "#             a->length(true): " << a.length() << " (The number of elements in the vector)" << endl;
+    msg << "# a->prototype()->width(true): " << a.prototype()->width() << " (Width of the template variable)" << endl;
+    msg << "#         a->dimensions(true): " << a.dimensions(true) << endl;
+    msg << "# a->chunk_dimension_sizes" << dims_to_string(a.get_chunk_dimension_sizes()) << endl;
+    msg << "#                 a->length(): " << a.length() << endl;
+    return msg.str();
+}
+
+#define HEX( x ) setw(2) << setfill('0') << hex << (int)( x )
+
+std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned long long fixed_string_len) {
+    stringstream ss;
+    for (unsigned long long i = 0; i < num_bytes; i += fixed_string_len) {
+        char *str_ptr = buff + i;
+        if (i) { ss << ", "; }
+        ss << "{";
+        for (unsigned long long j = 0; j < fixed_string_len; j++) {
+            char this_char = *(str_ptr + j);
+            if (j) { ss << ", "; }
+            if (this_char > 32 && this_char < 126) {
+                ss << this_char;
+            } else {
+                ss << "0x" << std::hex << HEX(this_char) << std::dec;
+            }
+        }
+        ss << "}";
+    }
+    return ss.str();
+}
+
+#if 1
+DmrppArray *get_transport_byte_array(DmrppArray &array){
+
+    //Type var_type;
+    //var_type = str_array.prototype()->type();
+
+    //if ((var_type == dods_str_c || var_type == dods_url_c)) {
+    //    throw BESInternalError("");
+    //}
+
+    if (array.is_flsa()) {
+        BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
+
+        auto *transport = dynamic_cast<DmrppArray *>(array.ptr_duplicate());
+        if(!transport){
+            throw BESInternalFatalError(prolog + "Server encountered internal state ambiguity. "
+                                                 "Expected valid DmrppArray pointer. Exiting.",
+                                                 __FILE__, __LINE__);
+        }
+
+        auto fs_len = transport->get_fixed_string_length();
+        BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
+
+        unsigned long long total_bytes = transport->length() * fs_len;
+        BESDEBUG(MODULE, prolog << "total_bytes: " << total_bytes << endl);
+
+        string banner("Source DmrppArray");
+        BESDEBUG(MODULE, prolog << array_to_str(*transport,banner) );
+
+        // Replace prototype
+        auto *tmp_proto  = new libdap::Byte(transport->prototype()->name());
+        transport->set_prototype(tmp_proto);
+        tmp_proto->set_parent(transport);
+
+        // Fiddle Chunk dimension sizes
+        auto cdim_sizes = transport->get_chunk_dimension_sizes();
+        BESDEBUG(MODULE, prolog << "original chunk_dimension_sizes.back(): " << dims_to_string(cdim_sizes) << endl);
+        auto new_last_cdim_size = cdim_sizes.back() * fs_len;
+        cdim_sizes.pop_back();
+        cdim_sizes.emplace_back(new_last_cdim_size);
+        BESDEBUG(MODULE, prolog << "New chunk_dimension_sizes" << dims_to_string(cdim_sizes) << endl);
+        //d_chunk_dimension_sizes.size();
+        transport->set_chunk_dimension_sizes(cdim_sizes);
+        BESDEBUG(MODULE, prolog << "Updated chunk_dimension_sizes" << dims_to_string(transport->get_chunk_dimension_sizes()) << endl);
+
+        unsigned long long chunk_index=0;
+        for(const auto &chunk: transport->get_immutable_chunks()){
+            auto cpia = chunk->get_position_in_array();
+            auto new_position = cpia.back() * fs_len;
+            cpia.pop_back();
+            cpia.emplace_back(new_position);
+            BESDEBUG(MODULE, prolog << "Chunk["<< chunk_index << "] new chunk_position_in_array" << dims_to_string(cpia) << endl);
+            chunk->set_position_in_array(cpia);
+            BESDEBUG(MODULE, prolog << "Chunk["<< chunk_index << "] UPDATED chunk_position_in_array" << dims_to_string(chunk->get_position_in_array()) << endl);
+            chunk_index++;
+        }
+
+        auto t_last_dim = transport->dim_end() - 1;
+        auto orig_last_array_dim_size = t_last_dim->size;
+
+        BESDEBUG(MODULE, prolog << "Orig last_dim->size: " << t_last_dim->size << endl);
+
+        t_last_dim->size = orig_last_array_dim_size * fs_len;
+        BESDEBUG(MODULE, prolog << "New last_dim->size: " << t_last_dim->size << endl);
+
+        t_last_dim->c_size = t_last_dim->size;
+        BESDEBUG(MODULE, prolog << "New last_dim->c_size: " << t_last_dim->c_size << endl);
+
+        t_last_dim->start = 0;
+        BESDEBUG(MODULE, prolog << "New last_dim->start: " << t_last_dim->start << endl);
+
+        t_last_dim->stop = t_last_dim->size - 1;
+        BESDEBUG(MODULE, prolog << "New last_dim->stop: " << t_last_dim->stop << endl);
+
+        t_last_dim->stride = 1;
+        BESDEBUG(MODULE, prolog << "New last_dim->stride: " << t_last_dim->stride << endl);
+
+        transport->set_length(total_bytes);
+        t_last_dim = transport->dim_end() - 1;
+        BESDEBUG(MODULE, prolog << "Updated last_dim->size: " << t_last_dim->size << endl);
+
+
+        banner = "New transport DmrppArray";
+        BESDEBUG(MODULE, prolog << array_to_str(*transport,banner) );
+        return transport;
+    }
+
+    return nullptr;
+}
+
+
+
+#endif
 
 /**
  * @brief Read data for the array
@@ -1532,7 +1682,6 @@ string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, s
  * @exception BESError Thrown when the data cannot be read, for a number of
  * reasons, including various network I/O issues.
  */
-#define HEX( x ) setw(2) << setfill('0') << hex << (int)( x )
 
 bool DmrppArray::read()
 {
@@ -1558,7 +1707,7 @@ bool DmrppArray::read()
         // FIXME Add support for both of these things once the DMR++ has the needed
         //  information. jhrg 3/3/22
         if (is_projected())
-            throw BESInternalError("Subsetting of Sting Arrays is not currently supported.", __FILE__, __LINE__);
+            throw BESInternalError("Subsetting of String Arrays is not currently supported.", __FILE__, __LINE__);
 
         if (length() != 1)
             throw BESInternalError("Only one dimensional String Arrays are currently supported.", __FILE__, __LINE__);
@@ -1576,85 +1725,75 @@ bool DmrppArray::read()
         return true;
     }
 
-    BaseType *orig_proto;
+    DmrppArray *array_to_read = this;
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
-            BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
-            auto fs_len = get_fixed_string_length();
-            BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
-
-            unsigned long long total_bytes = length() * fs_len;
-            BESDEBUG(MODULE, prolog << "total_bytes: " << total_bytes << endl);
-
-            auto template_var = prototype();
-            auto *tmp_proto  = new libdap::Byte(template_var->name());
-            orig_proto = set_prototype(tmp_proto);
-            tmp_proto->set_parent(this);
+            array_to_read = get_transport_byte_array(*this);
         }
     }
-
+    string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
+    BESDEBUG(MODULE, prolog << msg << endl);
 
     // Single chunk and 'contiguous' are the same for this code.
 
-    if (get_chunks_size() == 1) {
+    if (array_to_read->get_chunks_size() == 1) {
         BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-        read_contiguous();    // Throws on various errors
+        array_to_read->read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected()) {
+        if (!array_to_read->is_projected()) {
             BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-            read_chunks_unconstrained();
+            array_to_read->read_chunks_unconstrained();
         }
         else {
             BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
-            read_chunks();
+            array_to_read->read_chunks();
         }
     }
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
-        BaseType *tmp_proto = set_prototype(orig_proto);
-        delete tmp_proto;
+        if(array_to_read == this){
+            throw BESInternalFatalError(prolog + "Server encountered internal state ambiguity."
+                                                 "Expected byte transport array. Exiting.",
+                                        __FILE__, __LINE__);
+        }
 
         if (is_flsa()) {
+            string banner("AFTER READ");
+            {
+                unsigned long long num_bytes = length();
+                BESDEBUG(MODULE, prolog << array_to_str(*array_to_read,banner) );
+                BESDEBUG(MODULE, prolog << "Buffer contains: " << show_string_buff(array_to_read->get_buf(), num_bytes, sizeof(char)) << endl);
+            }
+
+           // auto &shape = this->shape();
+            //auto last = std::prev(shape.end());
+           // BESDEBUG(MODULE, prolog << "removing last dimension: " << (*last).name << "[" << (*last).size << "]" << endl);
+            //shape.erase(last);
 
             BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
+
             auto fs_len = get_fixed_string_length();
             BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
             auto pad_type = get_fixed_length_string_pad();
             BESDEBUG(MODULE, prolog << "get_fixed_length_string_pad_str(): " << get_fixed_length_string_pad_str() << endl);
 
-            auto buff = get_buf();
+            auto buff = array_to_read->get_buf();
             BESDEBUG(MODULE, prolog << "get_buf(): " << (void *) buff << endl);
             if(buff == nullptr){
                 throw BESInternalError("Failed to allocate byte buffer for reading string array data.",__FILE__,__LINE__);
             }
 
-            unsigned long long num_bytes = length() * fs_len;
-            char *begin = buff;
-            char *end = begin + num_bytes;
-            if(BESDebug::IsSet(MODULE)){
-                stringstream ss;
-                for(unsigned long long i=0; i<num_bytes; i+=fs_len){
-                    char *str_ptr = begin + i;
-                    if(i){ ss << ", ";}
-                    ss << "{";
-                    for(unsigned long long j=0; j<fs_len; j++){
-                        char this_char = *(str_ptr + j);
-                        if(j){ ss << ", ";}
-                        if(this_char>32 && this_char<126){
-                            ss << this_char;
-                        }
-                        else {
-                            ss << "0x" << std::hex << HEX(this_char) << std::dec;
-                        }
-                    }
-                    ss << "}";
-                }
-                BESDEBUG(MODULE, prolog << "Buffer contains: " << ss.str() << endl);
-            }
+            unsigned long long num_bytes = array_to_read->length();
+            BESDEBUG(MODULE, prolog << "Buffer contains: " << show_string_buff(buff, num_bytes, fs_len) << endl);
+
+
+            auto begin = buff;
+            char *end = buff + num_bytes;
             while (begin < end) {
                 string value = ingest_fixed_length_string(begin, fs_len, pad_type);
                 get_str().push_back(value);
+                BESDEBUG(MODULE, prolog << "Added String: '" << value << "'" << endl);
                 begin += fs_len;
             }
         }
@@ -1811,9 +1950,7 @@ unsigned long long DmrppArray::set_fixed_string_length(const string &length_str)
 }
 
 
-
-
-std::string DmrppArray::pad_type_to_str(string_pad_type pad)
+std::string pad_to_str(string_pad_type pad)
 {
     string pad_str;
     switch(pad){
@@ -1834,6 +1971,12 @@ std::string DmrppArray::pad_type_to_str(string_pad_type pad)
             break;
     }
     return pad_str;
+}
+
+
+std::string DmrppArray::pad_type_to_str(string_pad_type pad)
+{
+    return pad_to_str(pad);
 }
 
 string_pad_type str_to_pad_type(const string &pad_str){

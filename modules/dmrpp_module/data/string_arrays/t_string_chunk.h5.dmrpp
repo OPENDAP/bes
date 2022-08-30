@@ -22,6 +22,20 @@
         </dmrpp:chunks>
         <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
     </String>
+    <Byte name="array_1d_hack">
+        <Dim size="28"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="0">
+            <dmrpp:chunkDimensionSizes>14</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4341" nBytes="14" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4355" nBytes="14" chunkPositionInArray="[14,0]"/>
+        </dmrpp:chunks>
+    </Byte>
     <String name="array_2d">
         <Dim size="2"/>
         <Dim size="2"/>
