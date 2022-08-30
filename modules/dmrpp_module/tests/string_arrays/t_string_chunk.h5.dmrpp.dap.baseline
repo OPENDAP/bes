@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset
-    xmlns="http://xml.opendap.org/ns/DAP/4.0#"
-    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
-    dapVersion="4.0"
-    dmrVersion="1.0"
-    name="t_string_chunk.h5"
-    dmrpp:href="data/string_arrays/t_string_chunk.h5"
-    dmrpp:version="3.20.13">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_string_chunk.h5">
     <String name="array_1d">
         <Dim size="4"/>
         <Attribute name="value" type="String">
@@ -15,12 +8,9 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
-            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4341" nBytes="14" chunkPositionInArray="[0]"/>
-            <dmrpp:chunk offset="4355" nBytes="14" chunkPositionInArray="[2]"/>
-        </dmrpp:chunks>
-        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </String>
     <Byte name="array_1d_hacked_to_bytes">
         <Dim size="28"/>
@@ -30,11 +20,9 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="0">
-            <dmrpp:chunkDimensionSizes>14</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4341" nBytes="14" chunkPositionInArray="[0,0]"/>
-            <dmrpp:chunk offset="4355" nBytes="14" chunkPositionInArray="[14,0]"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </Byte>
     <String name="array_2d">
         <Dim size="2"/>
@@ -45,12 +33,9 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
-            <dmrpp:chunkDimensionSizes>2 1</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4369" nBytes="14" chunkPositionInArray="[0,0]"/>
-            <dmrpp:chunk offset="4383" nBytes="14" chunkPositionInArray="[0,1]"/>
-        </dmrpp:chunks>
-        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </String>
     <String name="array_special_case">
         <Dim size="1"/>
@@ -58,19 +43,17 @@
         <Attribute name="value" type="String">
             <Value>A</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
-            <dmrpp:chunkDimensionSizes>1 1</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="4397" nBytes="1" chunkPositionInArray="[0,0]"/>
-        </dmrpp:chunks>
-        <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </String>
     <String name="scalar">
         <Attribute name="value" type="String">
             <Value>Parting is such sweet sorrow.</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
-            <dmrpp:chunk offset="4312" nBytes="29"/>
-        </dmrpp:chunks>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
@@ -113,3 +96,11 @@ H5.EnableCheckNameClashing=true
         </Attribute>
     </Attribute>
 </Dataset>
+
+The data:
+String array_1d[4] = {"Parting", "is so", "swe", ""};
+Byte array_1d_hacked_to_bytes[28] = {80, 97, 114, 116, 105, 110, 103, 105, 115, 32, 115, 111, 32, 32, 115, 119, 101, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+String array_2d[2][2] = {{"Parting", "is so"},{"swe", ""}};
+String array_special_case[1][1] = {{"A"}};
+String scalar = "Parting is such sweet sorrow.`";
+
