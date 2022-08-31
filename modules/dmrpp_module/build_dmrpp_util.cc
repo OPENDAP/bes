@@ -670,7 +670,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                     }
                 }
                 else {
-                    switch (dap_type) {
+                    switch (dap_type)
+                    {
                         case dods_byte_c:
                         case dods_char_c:
                         case dods_int8_c:
@@ -691,7 +692,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
 
                         }
 
-                        case dods_str_c: {
+                        case dods_str_c:
+                        {
 
                             auto str = dynamic_cast<libdap::Str *>(btp);
                             if (H5Tis_variable_str(dtypeid) > 0) {
@@ -716,7 +718,6 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                         default:
                             throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                     }
-
                 }
             }
             break;

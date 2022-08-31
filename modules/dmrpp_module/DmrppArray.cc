@@ -1733,6 +1733,8 @@ DmrppArray *get_as_byte_array(DmrppArray &array){
         BESDEBUG(MODULE, prolog << "Updated chunk_dimension_sizes"
                                 << dims_to_string(byte_array_proxy->get_chunk_dimension_sizes()) << endl);
     }
+
+    // Fiddle Each chunk's chunk_position_in_array to reflect the change in array element count
     unsigned long long chunk_index = 0;
     for(const auto &chunk: byte_array_proxy->get_immutable_chunks()){
         auto cpia = chunk->get_position_in_array();
@@ -1931,6 +1933,11 @@ bool DmrppArray::read()
             throw BESInternalError("Arrays of variable length strings are not yet supported.",__FILE__,__LINE__);
 #endif
         }
+        if(array_to_read != this) {
+            delete array_to_read;
+            array_to_read = nullptr;
+        }
+
     }
 
     if (this->twiddle_bytes()) {

@@ -299,6 +299,9 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
 
 # Arrays of String tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_str_dset.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_chunk.h5.dmrpp.dap])
+# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_compact.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 
