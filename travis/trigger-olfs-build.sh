@@ -36,7 +36,7 @@ cat bes-snapshot >&2
 git commit -am \
 "bes: Triggering OLFS build for snapshot production.
 Build Version Matrix:
-  ${BES_SNAPSHOT}
+${BES_SNAPSHOT}
 ";
 
 
