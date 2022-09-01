@@ -31,5 +31,13 @@ echo "${BES_SNAPSHOT}" >> bes-snapshot
 
 cat bes-snapshot >&2
 
-git commit -am "${BES_SNAPSHOT} - Triggering OLFS build for snapshots.";
+# Bounding the commit message with the " character allows use to include
+# new line stuff for easy commit message readability later.
+git commit -am \
+"bes: Triggering OLFS build for snapshot production.
+Build Version Matrix:
+  ${BES_SNAPSHOT}
+";
+
+
 git push https://$GIT_UID:$GIT_PSWD@github.com/OPENDAP/olfs --all;
