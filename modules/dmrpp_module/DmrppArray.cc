@@ -1890,6 +1890,7 @@ bool DmrppArray::read()
     DmrppArray *array_to_read = this;
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
+            // For fixed length string we use a proxy array of Byte to retrieve the data.
             array_to_read = get_as_byte_array(*this);
         }
     }
