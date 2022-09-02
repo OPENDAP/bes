@@ -473,8 +473,8 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     H5T_order_t byte_order;
 
     string type_name = btp->type_name();
-    Type dap_type = btp->type();
-    if (dap_type == dods_array_c) {
+
+    if (btp->type() == dods_array_c) {
         auto array = dynamic_cast<DmrppArray *>(btp);
         type_name = array->var()->type_name();
     }
