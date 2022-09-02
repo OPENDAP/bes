@@ -9,7 +9,7 @@ CLEANFILES = bes.conf bes.log bes_serial.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice \
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3)  $(TESTSUITE_S3).at atlocal.in \
 bes.conf.in bes_serial.conf.in $(srcdir)/package.m4
 
