@@ -36,6 +36,7 @@
 #include <cstring>
 #include <cassert>
 #include <cerrno>
+#include <iomanip>
 
 #include <pthread.h>
 #include <cmath>
@@ -1555,7 +1556,7 @@ std::string array_to_str(DmrppArray a, const string &banner)  {
     return msg.str();
 }
 
-#define HEX( x ) setw(2) << setfill('0') << hex << (int)( x )
+#define HEX( x ) std::setw(2) << std::setfill('0') << std::hex << (int)( x )
 
 std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned long long fixed_string_len) {
     stringstream ss;
