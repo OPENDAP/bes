@@ -69,68 +69,68 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "AMSR_E_L3_SeaIce6km_V11_20050118.hdf";
+                    String VALUE "\"AMSR_E_L3_SeaIce6km_V11_20050118.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-07-02T09:59:35Z";
+                    String VALUE "\"2009-07-02T09:59:35Z\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "reprocessed once";
+                    String VALUE "\"reprocessed once\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
                         Int32 NUM_VAL 1;
-                        String CLASS "1";
-                        String VALUE "Sea Ice Parameters";
+                        String CLASS "\"1\"";
+                        String VALUE "\"Sea Ice Parameters\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Program Execution Completed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Program Execution Completed\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Not Investigated";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Not Investigated\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Currently not used";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Currently not used\"";
                         }
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Not Investigated";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Not Investigated\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Currently not used";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Currently not used\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
@@ -139,7 +139,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "AE_SI6";
+                    String VALUE "\"AE_SI6\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -149,7 +149,7 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 29;
-                    String VALUE "AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180116_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180206_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180255_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180345_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180434_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180523_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180613_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180702_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180752_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180841_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501180931_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181020_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181109_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181159_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181248_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181338_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181427_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181517_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181606_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181656_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181745_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181834_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501181924_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501182013_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501182103_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501182152_D.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501182242_A.hdf", "AMSR_E_L2A_BrightnessTemperatures_V10_200501182331_D.hdf";
+                    String VALUE "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180027_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180116_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180206_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180255_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180345_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180434_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180523_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180613_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180702_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180752_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180841_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501180931_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181020_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181109_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181159_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181248_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181338_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181427_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181517_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181606_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181656_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181745_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181834_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501181924_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501182013_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501182103_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501182152_D.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501182242_A.hdf\"", "\"AMSR_E_L2A_BrightnessTemperatures_V10_200501182331_D.hdf\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -177,25 +177,25 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2005-01-18";
+                    String VALUE "\"2005-01-18\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:27:15.30Z";
+                    String VALUE "\"00:27:15.30Z\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2005-01-19";
+                    String VALUE "\"2005-01-19\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:21:30.03Z";
+                    String VALUE "\"00:21:30.03Z\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "11";
+                    String VALUE "\"11\"";
                 }
             }
         }

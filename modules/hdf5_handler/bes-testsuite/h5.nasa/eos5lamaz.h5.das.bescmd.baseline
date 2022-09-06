@@ -132,31 +132,31 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "AMSR_2_L3_DailySnow_P00_20160831.he5";
+                    String VALUE "\"AMSR_2_L3_DailySnow_P00_20160831.he5\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2016-08-31T15:42:53Z";
+                    String VALUE "\"2016-08-31T15:42:53Z\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
                         Int32 NUM_VAL 1;
-                        String CLASS "1";
-                        String VALUE "Snow Water Equivalent";
+                        String CLASS "\"1\"";
+                        String VALUE "\"Snow Water Equivalent\"";
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 45;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
@@ -165,25 +165,25 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "A2_DySno_NRT";
+                    String VALUE "\"A2_DySno_NRT\"";
                 }
                 LONGNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids";
+                    String VALUE "\"NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "0";
+                    String VALUE "\"0\"";
                 }
                 COLLECTIONDATATYPE {
                     Int32 NUM_VAL 1;
-                    String VALUE "NEAR_REAL_TIME";
+                    String VALUE "\"NEAR_REAL_TIME\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 8;
-                    String VALUE "GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5", "GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5", "GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5", "GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5", "GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5", "GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5", "GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5", "GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5";
+                    String VALUE "\"GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5\"", "\"GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -211,41 +211,41 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2016-08-31";
+                    String VALUE "\"2016-08-31\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "01:05:20.572041Z";
+                    String VALUE "\"01:05:20.572041Z\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2016-08-31";
+                    String VALUE "\"2016-08-31\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "13:19:19.335593Z";
+                    String VALUE "\"13:19:19.335593Z\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "00";
+                    String VALUE "\"00\"";
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2";
+                    String CLASS "\"1\"", "\"2\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2";
+                        String CLASS "\"1\"", "\"2\"";
                         Int32 NUM_VAL 1, 1;
-                        String VALUE "identifier_product_doi", "identifier_product_doi_authority";
+                        String VALUE "\"identifier_product_doi\"", "\"identifier_product_doi_authority\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2";
+                        String CLASS "\"1\"", "\"2\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
-                            String VALUE "10.5067/AMSR2/A2_DySno_NRT", "http://dx.doi.org";
+                            String CLASS "\"1\"", "\"2\"";
+                            String VALUE "\"10.5067/AMSR2/A2_DySno_NRT\"", "\"http://dx.doi.org\"";
                         }
                     }
                 }

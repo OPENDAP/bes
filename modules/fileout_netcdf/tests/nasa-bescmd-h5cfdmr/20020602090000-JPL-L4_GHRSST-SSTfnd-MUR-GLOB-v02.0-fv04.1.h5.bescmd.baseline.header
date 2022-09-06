@@ -1,9 +1,37 @@
 netcdf test {
 dimensions:
-	time = 1 ;
 	lat = 17999 ;
 	lon = 36000 ;
+	time = 1 ;
 variables:
+	float lat(lat) ;
+		lat:long_name = "latitude" ;
+		lat:standard_name = "latitude" ;
+		lat:axis = "Y" ;
+		lat:units = "degrees_north" ;
+		lat:valid_min = -90.f ;
+		lat:valid_max = 90.f ;
+		lat:comment = "none" ;
+		lat:origname = "lat" ;
+		lat:fullnamepath = "/lat" ;
+	float lon(lon) ;
+		lon:long_name = "longitude" ;
+		lon:standard_name = "longitude" ;
+		lon:axis = "X" ;
+		lon:units = "degrees_east" ;
+		lon:valid_min = -180.f ;
+		lon:valid_max = 180.f ;
+		lon:comment = "none" ;
+		lon:origname = "lon" ;
+		lon:fullnamepath = "/lon" ;
+	int time(time) ;
+		time:long_name = "reference time of sst field" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:units = "seconds since removed date-time" ;
+		time:comment = "Nominal time of analyzed fields" ;
+		time:origname = "time" ;
+		time:fullnamepath = "/time" ;
 	short analysed_sst(time, lat, lon) ;
 		analysed_sst:long_name = "analysed sea surface temperature" ;
 		analysed_sst:standard_name = "sea_surface_foundation_temperature" ;
@@ -57,34 +85,6 @@ variables:
 		sea_ice_fraction:coordinates = "lon lat" ;
 		sea_ice_fraction:origname = "sea_ice_fraction" ;
 		sea_ice_fraction:fullnamepath = "/sea_ice_fraction" ;
-	float lat(lat) ;
-		lat:long_name = "latitude" ;
-		lat:standard_name = "latitude" ;
-		lat:axis = "Y" ;
-		lat:units = "degrees_north" ;
-		lat:valid_min = -90.f ;
-		lat:valid_max = 90.f ;
-		lat:comment = "none" ;
-		lat:origname = "lat" ;
-		lat:fullnamepath = "/lat" ;
-	float lon(lon) ;
-		lon:long_name = "longitude" ;
-		lon:standard_name = "longitude" ;
-		lon:axis = "X" ;
-		lon:units = "degrees_east" ;
-		lon:valid_min = -180.f ;
-		lon:valid_max = 180.f ;
-		lon:comment = "none" ;
-		lon:origname = "lon" ;
-		lon:fullnamepath = "/lon" ;
-	int time(time) ;
-		time:long_name = "reference time of sst field" ;
-		time:standard_name = "time" ;
-		time:axis = "T" ;
-		time:units = "seconds since removed date-time" ;
-		time:comment = "Nominal time of analyzed fields" ;
-		time:origname = "time" ;
-		time:fullnamepath = "/time" ;
 
 // global attributes:
 		:Conventions = "CF-1.5" ;

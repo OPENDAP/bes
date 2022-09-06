@@ -1522,7 +1522,7 @@ variables:
 		RetrievalHeader_warn_level:Minimum = 0b ;
 		RetrievalHeader_warn_level:Maximum = 20b ;
 		RetrievalHeader_warn_level:Shape = "Retrieval_Array" ;
-		RetrievalHeader_warn_level:Description = "Value predicted by modeling indicating the likely quality of the retrieval result:  0 - \'Very high quality\', \\342\\200\\246 ,19 - \'Very low quality\'" ;
+		RetrievalHeader_warn_level:Description = "Value predicted by modeling indicating the likely quality of the retrieval result:  0 - \'Very high quality\', … ,19 - \'Very low quality\'" ;
 		RetrievalHeader_warn_level:Type = "Signed8" ;
 		RetrievalHeader_warn_level:origname = "warn_level" ;
 		RetrievalHeader_warn_level:fullnamepath = "/RetrievalHeader/warn_level" ;

@@ -5,6 +5,10 @@ dimensions:
 	dim1 = 3 ;
 	dim2 = 256 ;
 variables:
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
 	float l3m_data(lat, lon) ;
 		l3m_data:Scaling = "linear" ;
 		l3m_data:Scaling_Equation = "(Slope*l3m_data) + Intercept = Parameter value" ;
@@ -20,10 +24,6 @@ variables:
 	ubyte palette(dim1, dim2) ;
 		palette:origname = "palette" ;
 		palette:fullnamepath = "/palette" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
 
 // global attributes:
 		:Product_Name = "Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg" ;

@@ -29,7 +29,8 @@ valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/
 valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5.bescmd >nasa_cfdmr_test.nc
 
 valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.h5.bescmd >nasa_cfdmr_test.nc
-valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5.bescmd >nasa_cfdmr_test.nc
+#Turn off this test because of "out of memeory" issue in a limited testing linux box
+#valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5.bescmd >nasa_cfdmr_test.nc
 valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5.bescmd >nasa_cfdmr_test.nc
 valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5.bescmd >nasa_cfdmr_test.nc
 valgrind besstandalone -c tests/bes.nc4.cfdmr.conf -i tests/nasa-bescmd-h5cfdmr/DeepBlue-SeaWiFS-1.0_L3_20100101_v002-20110527T191319Z.h5.bescmd >nasa_cfdmr_test.nc

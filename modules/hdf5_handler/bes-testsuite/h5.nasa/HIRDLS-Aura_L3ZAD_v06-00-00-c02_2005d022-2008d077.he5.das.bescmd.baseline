@@ -165,75 +165,75 @@ Attributes {
             ECSDATAGRANULE {
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "Further update anticipated using enhanced PGE";
+                    String VALUE "\"Further update anticipated using enhanced PGE\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "Reprocessed once";
+                    String VALUE "\"Reprocessed once\"";
                 }
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "./HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5";
+                    String VALUE "\"./HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Day";
+                    String VALUE "\"Day\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2011-08-19T19:42:44.000Z";
+                    String VALUE "\"2011-08-19T19:42:44.000Z\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "6.00.00";
+                    String VALUE "\"6.00.00\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
                         Int32 NUM_VAL 1;
-                        String CLASS "1";
-                        String VALUE "NO2  (Day)";
+                        String CLASS "\"1\"";
+                        String VALUE "\"NO2  (Day)\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Suspect";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Suspect\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally - Check Science Quality Flag for Science Team quality assessment";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally - Check Science Quality Flag for Science Team quality assessment\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Not Investigated";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Not Investigated\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Q/A process has not yet been run";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Q/A process has not yet been run\"";
                         }
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Not Investigated";
-                            String CLASS "1";
+                            String VALUE "\"Not Investigated\"";
+                            String CLASS "\"1\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
@@ -242,7 +242,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "HIR3ZAD";
+                    String VALUE "\"HIR3ZAD\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -252,28 +252,28 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 1;
-                    String VALUE "See Production History File for this information";
+                    String VALUE "\"See Production History File for this information\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
                 VERTICALSPATIALDOMAIN {
                     VERTICALSPATIALDOMAINCONTAINER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         VERTICALSPATIALDOMAINTYPE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "Atmosphere Layer";
+                            String VALUE "\"Atmosphere Layer\"";
                         }
                         VERTICALSPATIALDOMAINVALUE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "Atmosphere Profile";
+                            String VALUE "\"Atmosphere Profile\"";
                         }
                     }
                 }
@@ -301,25 +301,25 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2005-01-22";
+                    String VALUE "\"2005-01-22\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:00.00";
+                    String VALUE "\"00:00:00.00\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2008-03-17";
+                    String VALUE "\"2008-03-17\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:59.00";
+                    String VALUE "\"23:59:59.00\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "L3PSTB17za";
+                    String VALUE "\"L3PSTB17za\"";
                 }
             }
         }

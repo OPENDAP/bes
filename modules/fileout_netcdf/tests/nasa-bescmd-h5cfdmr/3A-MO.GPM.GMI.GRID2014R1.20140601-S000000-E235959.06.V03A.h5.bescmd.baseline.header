@@ -1,9 +1,17 @@
 netcdf test {
 dimensions:
-	nlon = 1440 ;
 	nlat = 720 ;
 	nlayer = 28 ;
+	nlon = 1440 ;
 variables:
+	float nlat(nlat) ;
+		nlat:units = "degrees_north" ;
+	float nlayer(nlayer) ;
+		nlayer:units = "km" ;
+		nlayer:axis = "Z" ;
+		nlayer:positive = "up" ;
+	float nlon(nlon) ;
+		nlon:units = "degrees_east" ;
 	float fractionQuality2(nlon, nlat) ;
 		fractionQuality2:DimensionNames = "nlon,nlat" ;
 		fractionQuality2:Units = "percent" ;
@@ -107,14 +115,6 @@ variables:
 		latentHeat:origname = "latentHeat" ;
 		latentHeat:fullnamepath = "/Grid/latentHeat" ;
 		latentHeat:_FillValue = -9999.9f ;
-	float nlat(nlat) ;
-		nlat:units = "degrees_north" ;
-	float nlayer(nlayer) ;
-		nlayer:units = "km" ;
-		nlayer:axis = "Z" ;
-		nlayer:positive = "up" ;
-	float nlon(nlon) ;
-		nlon:units = "degrees_east" ;
 
 // global attributes:
 		:FileHeader = "DOI=10.5067/GPM/GMI/MONTH/3A;\nAlgorithmID=3GPROF;\nAlgorithmVersion=GRID2014R1;\nFileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=MONTH;\nProcessingSystem=PPS;\nProductVersion=V03A;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;

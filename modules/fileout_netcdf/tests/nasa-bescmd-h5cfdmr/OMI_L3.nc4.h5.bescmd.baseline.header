@@ -3,6 +3,16 @@ dimensions:
 	OMI_Column_Amount_O3_lat = 720 ;
 	OMI_Column_Amount_O3_lon = 1440 ;
 variables:
+	double OMI_Column_Amount_O3_lat(OMI_Column_Amount_O3_lat) ;
+		OMI_Column_Amount_O3_lat:long_name = "latitude " ;
+		OMI_Column_Amount_O3_lat:units = "degrees_north " ;
+		OMI_Column_Amount_O3_lat:origname = "lat" ;
+		OMI_Column_Amount_O3_lat:fullnamepath = "/OMI_Column_Amount_O3/lat" ;
+	double OMI_Column_Amount_O3_lon(OMI_Column_Amount_O3_lon) ;
+		OMI_Column_Amount_O3_lon:long_name = "longitude " ;
+		OMI_Column_Amount_O3_lon:units = "degrees_east " ;
+		OMI_Column_Amount_O3_lon:origname = "lon" ;
+		OMI_Column_Amount_O3_lon:fullnamepath = "/OMI_Column_Amount_O3/lon" ;
 	float OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3(OMI_Column_Amount_O3_lat, OMI_Column_Amount_O3_lon) ;
 		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:_FillValue = -1.267651e+30f ;
 		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:Units = "DU" ;
@@ -36,16 +46,6 @@ variables:
 		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:Units = "NoUnits" ;
 		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:origname = "UVAerosolIndex" ;
 		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:fullnamepath = "/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex" ;
-	double OMI_Column_Amount_O3_lat(OMI_Column_Amount_O3_lat) ;
-		OMI_Column_Amount_O3_lat:long_name = "latitude " ;
-		OMI_Column_Amount_O3_lat:units = "degrees_north " ;
-		OMI_Column_Amount_O3_lat:origname = "lat" ;
-		OMI_Column_Amount_O3_lat:fullnamepath = "/OMI_Column_Amount_O3/lat" ;
-	double OMI_Column_Amount_O3_lon(OMI_Column_Amount_O3_lon) ;
-		OMI_Column_Amount_O3_lon:long_name = "longitude " ;
-		OMI_Column_Amount_O3_lon:units = "degrees_east " ;
-		OMI_Column_Amount_O3_lon:origname = "lon" ;
-		OMI_Column_Amount_O3_lon:fullnamepath = "/OMI_Column_Amount_O3/lon" ;
 
 // global attributes:
 		:OrbitNumber = 7510, 7511, 7512, 7513, 7514, 7515, 7516, 7517, 7518, 7519, 7520, 7521, 7522, 7523, 7524, 7525, 7526, 7527, 7528, 7529, 7530, 7531, 7532, 7533, 7534, 7535, 7536, 7537, 7538, 7539, 7540, 7541, 7542, 7543, 7544, 7545, 7546, 7547, 7548, 7549, 7550, 7551, 7552, 7553, 7554 ;

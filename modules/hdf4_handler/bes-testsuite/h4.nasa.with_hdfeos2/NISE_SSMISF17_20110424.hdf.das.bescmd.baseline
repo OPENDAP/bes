@@ -37,29 +37,29 @@ Attributes {
             ECSDATAGRANULE {
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "no further update anticipated";
+                    String VALUE "\"no further update anticipated\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "processed once";
+                    String VALUE "\"processed once\"";
                 }
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "NISE_SSMISF17_20110424.HDFEOS";
+                    String VALUE "\"NISE_SSMISF17_20110424.HDFEOS\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2011-04-24T13:57:59.00Z";
+                    String VALUE "\"2011-04-24T13:57:59.00Z\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "NISE-109";
+                    String VALUE "\"NISE-109\"";
                 }
             }
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "NISE";
+                    String VALUE "\"NISE\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -91,63 +91,63 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:00.00Z";
+                    String VALUE "\"00:00:00.00Z\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:00.00Z";
+                    String VALUE "\"00:00:00.00Z\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2011-04-24";
+                    String VALUE "\"2011-04-24\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2011-04-25";
+                    String VALUE "\"2011-04-25\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "NISE-109";
+                    String VALUE "\"NISE-109\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Extent";
+                        String VALUE "\"Extent\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "currently not used";
+                            String CLASS "\"1\"";
+                            String VALUE "\"currently not used\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "currently not used";
+                            String CLASS "\"1\"";
+                            String VALUE "\"currently not used\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }

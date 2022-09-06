@@ -263,36 +263,36 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "CER_ES8_TRMM-PFM_Edition2_025021.20000229";
+                    String VALUE "\"CER_ES8_TRMM-PFM_Edition2_025021.20000229\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "Clib-20030529 TK5.2.7 HDF-4.1r3 HDFEOS- 2.4v1 SW442 ANC442";
+                    String VALUE "\"Clib-20030529 TK5.2.7 HDF-4.1r3 HDFEOS- 2.4v1 SW442 ANC442\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2003-06-06T19:52:41.000Z";
+                    String VALUE "\"2003-06-06T19:52:41.000Z\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "GranuleParameters";
+                        String VALUE "\"GranuleParameters\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Refer to Log Files";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Refer to Log Files\"";
                         }
                     }
                 }
@@ -300,7 +300,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "CCES8_AB";
+                    String VALUE "\"CCES8_AB\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -310,9 +310,9 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 800;
-                    String VALUE "/CERES/erbelike/data/out_comp/data/inv/CER_ES8B_TRMM-PFM_Edition2_025021.20000229", "/CERES/erbelike/rcf/mcf/CCES8_AB.mcf", "/CERES/instrument/data/out_comp/CER_PRES8_TRMM-PFM_Edition1_021016.20000229", "/CERES/erbelike/data/ancillary/static/NIISCOLD.19980904", "
-          /CERES/erbelike/data/ancillary/static/NIPSC.19991123", "/CERES/erbelike/data/ancillary/dynamic/CER_SNOW_CERES_NSIDC_022019.200002", "/CERES/erbelike/data/ancillary/static/BIISW02.19980130", "/CERES/erbelike/data/ancillary/static/BIILWWN.19980130", "
-          /CERES/lib/data/ceres_SI_PFM_day.20020328", "/CERES/lib/data/ceres_SI_PFM_night.20020328";
+                    String VALUE "\"/CERES/erbelike/data/out_comp/data/inv/CER_ES8B_TRMM-PFM_Edition2_025021.20000229\"", "\"/CERES/erbelike/rcf/mcf/CCES8_AB.mcf\"", "\"/CERES/instrument/data/out_comp/CER_PRES8_TRMM-PFM_Edition1_021016.20000229\"", "\"/CERES/erbelike/data/ancillary/static/NIISCOLD.19980904\"", "\"
+          /CERES/erbelike/data/ancillary/static/NIPSC.19991123\"", "\"/CERES/erbelike/data/ancillary/dynamic/CER_SNOW_CERES_NSIDC_022019.200002\"", "\"/CERES/erbelike/data/ancillary/static/BIISW02.19980130\"", "\"/CERES/erbelike/data/ancillary/static/BIILWWN.19980130\"", "\"
+          /CERES/lib/data/ceres_SI_PFM_day.20020328\"", "\"/CERES/lib/data/ceres_SI_PFM_night.20020328\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -340,62 +340,62 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:55.537574";
+                    String VALUE "\"00:00:55.537574\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:56.983171";
+                    String VALUE "\"23:59:56.983171\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2000-02-29";
+                    String VALUE "\"2000-02-29\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2000-02-29";
+                    String VALUE "\"2000-02-29\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "025021";
+                    String VALUE "\"025021\"";
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "CERPGEName", "SamplingStrategy", "ProductionStrategy", "CERDataDateYear", "CERDataDateMonth", "CERDataDateDay", "ES8_ProductionDate", "NumOfCrosstrackRecords", "NumOfRAPSRecords", "NumOfAlongtrackRecords", "NumOfTransitionalRecords", "Software_SCCR_Number", "Data_SCCR_Number", "NumberInputFiles";
+                        String VALUE "\"CERPGEName\"", "\"SamplingStrategy\"", "\"ProductionStrategy\"", "\"CERDataDateYear\"", "\"CERDataDateMonth\"", "\"CERDataDateDay\"", "\"ES8_ProductionDate\"", "\"NumOfCrosstrackRecords\"", "\"NumOfRAPSRecords\"", "\"NumOfAlongtrackRecords\"", "\"NumOfTransitionalRecords\"", "\"Software_SCCR_Number\"", "\"Data_SCCR_Number\"", "\"NumberInputFiles\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
-                            String VALUE "CER2.2P1", "TRMM-PFM", "Edition2", "2000", "02", "29", "2003-06-06T19:49:46.759000Z", "12729", "0", "0", "0", "442", "442", "10";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
+                            String VALUE "\"CER2.2P1\"", "\"TRMM-PFM\"", "\"Edition2\"", "\"2000\"", "\"02\"", "\"29\"", "\"2003-06-06T19:49:46.759000Z\"", "\"12729\"", "\"0\"", "\"0\"", "\"0\"", "\"442\"", "\"442\"", "\"10\"";
                         }
                     }
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1", "2", "3";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"";
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1", "2", "3";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"";
                         Int32 NUM_VAL 1, 1, 1;
-                        String VALUE "TRMM", "TRMM", "TRMM";
+                        String VALUE "\"TRMM\"", "\"TRMM\"", "\"TRMM\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1", "2", "3";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"";
                         Int32 NUM_VAL 1, 1, 1;
-                        String VALUE "PFM", "PFM", "PFM";
+                        String VALUE "\"PFM\"", "\"PFM\"", "\"PFM\"";
                     }
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1", "2", "3";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"";
                         Int32 NUM_VAL 1, 1, 1;
-                        String VALUE "Total Detector", "Shortwave Detector", "Window Detector";
+                        String VALUE "\"Total Detector\"", "\"Shortwave Detector\"", "\"Window Detector\"";
                     }
                 }
             }
@@ -422,7 +422,7 @@ Attributes {
             }
             CERPRODUCTIONDATETIME {
                 Int32 NUM_VAL 1;
-                String VALUE "2003-06-06T15:52:41";
+                String VALUE "\"2003-06-06T15:52:41\"";
             }
             NUMBEROFRECORDS {
                 Int32 NUM_VAL 1;
@@ -430,7 +430,7 @@ Attributes {
             }
             PRODUCTGENERATIONLOC {
                 Int32 NUM_VAL 1;
-                String VALUE "NASA Langley Research Center, HOST - samantha2 OS - IRIX64";
+                String VALUE "\"NASA Langley Research Center, HOST - samantha2 OS - IRIX64\"";
             }
         }
     }

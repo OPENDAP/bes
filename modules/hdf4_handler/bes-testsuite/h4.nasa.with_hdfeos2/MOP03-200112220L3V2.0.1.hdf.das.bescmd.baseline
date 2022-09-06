@@ -243,61 +243,61 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP03-20011222-L3V2.0.1.hdf";
+                    String VALUE "\"MOP03-20011222-L3V2.0.1.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-02-20T01:24:57.000Z";
+                    String VALUE "\"2009-02-20T01:24:57.000Z\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Unknown";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Unknown\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTCLOUDCOVER {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Carbon Monoxide";
+                        String VALUE "\"Carbon Monoxide\"";
                     }
                 }
             }
@@ -308,13 +308,13 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP03";
+                    String VALUE "\"MOP03\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 3;
-                    String VALUE "/project/mopitt_new/users/mastersd/sips_area/p0/Staging/L3/20011222/M2/MOP02-20011222-L2V8.0.2.val.hdf";
+                    String VALUE "\"/project/mopitt_new/users/mastersd/sips_area/p0/Staging/L3/20011222/M2/MOP02-20011222-L2V8.0.2.val.hdf\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -341,32 +341,32 @@ Attributes {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
             }
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2001-12-22";
+                    String VALUE "\"2001-12-22\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:58.891";
+                    String VALUE "\"23:59:58.891\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2001-12-22";
+                    String VALUE "\"2001-12-22\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:07.026";
+                    String VALUE "\"00:00:07.026\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "2.0.1";
+                    String VALUE "\"2.0.1\"";
                 }
             }
         }

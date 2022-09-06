@@ -993,80 +993,80 @@ Attributes {
             ECSDATAGRANULE {
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "further update anticipated using enhanced PGE";
+                    String VALUE "\"further update anticipated using enhanced PGE\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "processed once";
+                    String VALUE "\"processed once\"";
                 }
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "./HIRDLS2ALL_v06-00-00-c03_2008d001.he5";
+                    String VALUE "\"./HIRDLS2ALL_v06-00-00-c03_2008d001.he5\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Both";
+                    String VALUE "\"Both\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2011-06-15T00:57:09.000Z";
+                    String VALUE "\"2011-06-15T00:57:09.000Z\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "6.00.00";
+                    String VALUE "\"6.00.00\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                     PARAMETERNAME {
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
-                        String VALUE "Atmospheric Pressure", "Temperature Profile", "Water Vapor", "Chlorofluorocarbon-11", "Chlorofluorocarbon-12", "Ozone", "Nitric Acid", "Dinitrogen Pentoxide", "Nitrous Oxide", "Chlorine Nitrate", "Nitrogen Dioxide", "Methane", "12.20 Micron Aerosol Extinction", "Potential Temperature", "Geopotential Height";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
+                        String VALUE "\"Atmospheric Pressure\"", "\"Temperature Profile\"", "\"Water Vapor\"", "\"Chlorofluorocarbon-11\"", "\"Chlorofluorocarbon-12\"", "\"Ozone\"", "\"Nitric Acid\"", "\"Dinitrogen Pentoxide\"", "\"Nitrous Oxide\"", "\"Chlorine Nitrate\"", "\"Nitrogen Dioxide\"", "\"Methane\"", "\"12.20 Micron Aerosol Extinction\"", "\"Potential Temperature\"", "\"Geopotential Height\"";
                     }
                     QAFLAGS {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
-                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
+                            String VALUE "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
-                            String VALUE "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality", "Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
+                            String VALUE "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
-                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
+                            String VALUE "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
-                            String VALUE "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions", "Data believed to be good, but there may be isolated exceptions";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
+                            String VALUE "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"", "\"Data believed to be good, but there may be isolated exceptions\"";
                         }
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String VALUE "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed", "Passed";
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                            String VALUE "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"", "\"Passed\"";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String VALUE "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality", "Check HIRDLS Data Description and Quality document for more information on the quality";
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                            String VALUE "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"", "\"Check HIRDLS Data Description and Quality document for more information on the quality\"";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                             Int32 VALUE 0, 0, 100, 50, 50, 26, 50, 100, 100, 100, 100, 100, 0, 0, 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                             Int32 VALUE 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 95, 0;
                         }
                     }
@@ -1075,7 +1075,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "HIRDLS2";
+                    String VALUE "\"HIRDLS2\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -1085,28 +1085,28 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 1;
-                    String VALUE "See Production History File for this information";
+                    String VALUE "\"See Production History File for this information\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
                 VERTICALSPATIALDOMAIN {
                     VERTICALSPATIALDOMAINCONTAINER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         VERTICALSPATIALDOMAINTYPE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "Atmosphere Layer";
+                            String VALUE "\"Atmosphere Layer\"";
                         }
                         VERTICALSPATIALDOMAINVALUE {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 NUM_VAL 1;
-                            String VALUE "Atmosphere Profile";
+                            String VALUE "\"Atmosphere Profile\"";
                         }
                     }
                 }
@@ -1134,25 +1134,25 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2008-01-01";
+                    String VALUE "\"2008-01-01\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:09.58";
+                    String VALUE "\"00:00:09.58\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2008-01-01";
+                    String VALUE "\"2008-01-01\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:48.24";
+                    String VALUE "\"23:59:48.24\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "V1.33.0";
+                    String VALUE "\"V1.33.0\"";
                 }
             }
         }
