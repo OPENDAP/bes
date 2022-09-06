@@ -248,8 +248,10 @@ public:
 
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
     void set_chunk_dimension_sizes(const std::vector<unsigned long long> &chunk_dims) {
+        d_chunk_dimension_sizes.clear();
+        //d_chunk_dimension_sizes.resize(chunk_dims.size());
         for (auto chunk_dim : chunk_dims) {
-            d_chunk_dimension_sizes.push_back(chunk_dim);
+            d_chunk_dimension_sizes.emplace_back(chunk_dim);
         }
     }
 

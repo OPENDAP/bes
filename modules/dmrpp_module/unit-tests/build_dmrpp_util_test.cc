@@ -273,9 +273,29 @@ public:
         CPPUNIT_ASSERT_MESSAGE(string(__func__).append(": Expected -99"),
                                get_fill_value_test_helper(fill_value_chunks_file, "/chunks_all_fill", __func__) == "-99");
     }
+    void vector_init_test() {
+
+        vector<string> t1 = {""};
+        cout << "# t1.size() " << t1.size() << endl;
+        CPPUNIT_ASSERT(t1.size()==1);
+
+        for(auto s:t1){
+            cout << "#   t1[]: '" << s << "'" << endl;
+        }
+
+        vector<string> t2;
+        t2.push_back("");
+        cout << "# t2.size() " << t2.size() << endl;
+        CPPUNIT_ASSERT(t2.size()==1);
+        for(auto s:t2){
+            cout << "#   t2[]: '" << s << "'" << endl;
+        }
+
+    }
 
     CPPUNIT_TEST_SUITE(build_dmrpp_util_test);
 
+        CPPUNIT_TEST(vector_init_test);
         CPPUNIT_TEST(file_and_dmr_test);
 
         CPPUNIT_TEST_EXCEPTION(is_hdf5_fill_value_defined_test_bad_dataset_id, BESInternalError);

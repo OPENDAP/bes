@@ -54,6 +54,15 @@ class XMLWriter;
 namespace dmrpp {
 
     class SuperChunk;
+
+enum string_pad_type { not_set, null_term, null_pad, space_pad };
+
+struct ons {
+    unsigned long long offset;
+    unsigned long long size;
+    ons(const std::string &ons_pair_str);
+};
+
 /**
  * @brief Extend libdap::Array so that a handler can read data using a DMR++ file.
  *
@@ -69,6 +78,18 @@ class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
 
 private:
     //void _duplicate(const DmrppArray &ts);
+
+    // In the dmr++ XML:
+    //   <dmrpp:vStringArray>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</dmrpp:vStringArray>
+
+    std::string d_vlen_ons_str;
+    bool is_variable_length_string_array = false;
+
+    // In the dmr++ XML:
+    //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
+    unsigned long long d_fixed_str_length = 0;
+    string_pad_type d_fixed_length_string_pad_type = not_set;
+
 
     bool is_projected();
 
@@ -119,16 +140,21 @@ private:
             const vector<unsigned long long> &constrained_array_shape);
 
 public:
-    DmrppArray(const std::string &n, libdap::BaseType *v) : libdap::Array(n, v, true /*is dap4*/), DmrppCommon() { }
+    DmrppArray(const std::string &n, libdap::BaseType *v) :
+            libdap::Array(n, v, true /*is dap4*/), DmrppCommon()
+            { }
 
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
-            libdap::Array(n, d, v, true), DmrppCommon() { }
+            libdap::Array(n, d, v, true), DmrppCommon()
+            { }
 
     DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, v, true), DmrppCommon(dmz) { }
+            libdap::Array(n, v, true), DmrppCommon(dmz)
+            { }
 
     DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, d, v, true), DmrppCommon(dmz) { }
+            libdap::Array(n, d, v, true), DmrppCommon(dmz)
+            { }
 
     DmrppArray(const DmrppArray &) = default;
 
@@ -148,6 +174,36 @@ public:
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
     virtual void dump(ostream &strm) const;
+
+    /**
+     * @brief Marks the array as a Fixed length string array, or not, depending on state
+     * @param state
+     */
+    void set_is_flsa(bool state){
+        is_variable_length_string_array=!state;
+    };
+
+    void set_is_vlsa(bool state){
+        is_variable_length_string_array=state;
+    };
+    bool is_flsa() const{ return !is_variable_length_string_array; }
+    bool is_vlsa() const{ return is_variable_length_string_array; }
+
+    void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }
+    unsigned long long set_fixed_string_length(const string &length_str);
+    unsigned long long get_fixed_string_length() const { return d_fixed_str_length; }
+
+    void set_fixed_length_string_pad(const string_pad_type pad){ d_fixed_length_string_pad_type = pad; }
+    string_pad_type set_fixed_length_string_pad_type(const std::string &pad_str);
+    string_pad_type get_fixed_length_string_pad() const { return d_fixed_length_string_pad_type; }
+    std::string get_fixed_length_string_pad_str() const { return pad_type_to_str(d_fixed_length_string_pad_type); }
+
+    void set_ons_string(const std::string &ons_str);
+    void set_ons_string(const vector<ons> &ons_pairs);
+    std::string get_ons_string(){ return d_vlen_ons_str; };
+    void get_ons_objs(vector<ons> &ons_list);
+
+    static std::string pad_type_to_str(string_pad_type pad_type);
 };
 
 /**
@@ -194,7 +250,7 @@ struct one_child_chunk_args_new {
 };
 
 
-bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
+bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
 
 } // namespace dmrpp
 
