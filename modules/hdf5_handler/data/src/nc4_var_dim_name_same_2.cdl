@@ -1,0 +1,15 @@
+netcdf t_group_atomic {
+dimensions:
+        dim1 = 2 ;
+        dim1_r = 2;
+        pre = 3;
+variables:
+        float pre(dim1_r,pre);
+        float dim1_r(dim1_r);
+        float dim1(dim1_r);
+data:
+        pre   = 999.0,999.2,999.4,999.6,999.8,1000.0;
+        dim1_r = 1.0,2.0;
+        dim1 = 3.0,4.0;
+
+}

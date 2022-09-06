@@ -535,6 +535,10 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
 
+#nc var dim name same 
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dmr.bescmd])
+
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_2dll.h5.dmr.bescmd])
