@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="S-MODE_PFC_OC2108A_adcp_os75nb.h5">
+    <Dimension name="time" size="4564"/>
+    <Dimension name="depth" size="60"/>
+    <Dimension name="trajectory" size="1"/>
+    <Float64 name="zonal_velocity_component">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Zonal velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>5.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-5.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_x_velocity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="status_flag">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Editing flags of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>7.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Float64">
+            <Value>0.</Value>
+            <Value>1.</Value>
+            <Value>2.</Value>
+            <Value>3.</Value>
+            <Value>4.</Value>
+            <Value>5.</Value>
+            <Value>6.</Value>
+            <Value>7.</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>good bin_bad percent_good_bad bin_and_percent_good_bad range_bad range_and_bin_bad range_and_percent_good_bad range_and_percent_good_and_bin_bad</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>status_flag</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="time">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Time of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>days since 1950-01-01T00:00:00Z</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>coordinate</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="meridional_velocity_component">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Meridional velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>5.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-5.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_y_velocity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="amplitude">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Received signal strength of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="heading">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship heading of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_course</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="trajectory">
+        <Dim name="/trajectory"/>
+        <Attribute name="standard_name" type="String">
+            <Value>trajectory</Value>
+        </Attribute>
+        <Attribute name="cf_role" type="String">
+            <Value>trajectory_id</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="longitude">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="latitude">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="transducer_temperature">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Transducer temperature of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>30.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_C</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="ship_meridional_velocity_component">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship meridional velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_speed_wrt_ground</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="ship_zonal_velocity_component">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Ship zonal velocity component of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-10.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>platform_speed_wrt_ground</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m s-1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>physicalMeasurement</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="number_of_pings">
+        <Dim name="/time"/>
+        <Attribute name="long_name" type="String">
+            <Value>Number of pings averaged per ensemble of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="depth">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Depth of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>1000.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>down</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>depth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>coordinate</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="percent_good">
+        <Dim name="/time"/>
+        <Dim name="/depth"/>
+        <Attribute name="long_name" type="String">
+            <Value>Percent of good pings of ADCP measurement</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>100.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>longitude latitude depth time</Value>
+        </Attribute>
+        <Attribute name="coverage_content_type" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>nan</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="DOI" type="String">
+        <Value>10.5067/SMODE-RVADC</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>S-MODE Shipboard Acoustic Doppler Current Pofiler Measurements from R/V Oceanus</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>S-MODE Shipboard Acoustic Doppler Current Pofiler Measurements from R/V Oceanus</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>EARTH SCIENCE &gt; OCEANS &gt; OCEAN TEMPERATURE &gt; TEMPERATURE PROFILES, EARTH SCIENCE &gt; OCEANS &gt; OCEAN CIRCULATION &gt; CURRENT VELOCITY, EARTH SCIENCE &gt; OCEANS &gt; OCEAN CIRCULATION &gt; OCEAN CURRENTS &gt; CURRENT PROFILES</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.8, ACDD-1.3</Value>
+    </Attribute>
+    <Attribute name="uuid" type="String">
+        <Value>781dbd63-cac7-42c1-9774-d3a2cc494212</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>gov.nasa</Value>
+    </Attribute>
+    <Attribute name="featureType" type="String">
+        <Value>trajectoryProfile</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>Trajectory</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>TBD</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>In Situ Ocean-based Platforms &gt; SHIPS &gt; RV Oceanus</Value>
+    </Attribute>
+    <Attribute name="platform_vocabulary" type="String">
+        <Value>GCMD platform keywords</Value>
+    </Attribute>
+    <Attribute name="instrument" type="String">
+        <Value>In Situ/Laboratory Instruments &gt; Profilers/Sounders &gt; Acoustic Sounders &gt; &gt; ADCP</Value>
+    </Attribute>
+    <Attribute name="instrument_vocabulary" type="String">
+        <Value>GCMD instrument keywords</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L2</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>CF Standard Name Table v72</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value></Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>Issued under Creative Commons CC BY 4.0: https://creativecommons.org/licenses/by/4.0/</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="metadata_link" type="String">
+        <Value>https://doi.org/10.5067/SMODE-RVADC</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>Andrey Shcherbina</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>shcher@uw.edu</Value>
+    </Attribute>
+    <Attribute name="creator_type" type="String">
+        <Value>person</Value>
+    </Attribute>
+    <Attribute name="creator_institution" type="String">
+        <Value>UWA/</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>UWA/</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Sub-Mesoscale Ocean Dynamics Experiment (S-MODE)</Value>
+    </Attribute>
+    <Attribute name="program" type="String">
+        <Value>NASA Earth Venture Suborbital-3 (EVS-3)</Value>
+    </Attribute>
+    <Attribute name="contributor_name" type="String">
+        <Value>Frederick Bingham</Value>
+    </Attribute>
+    <Attribute name="contributor_role" type="String">
+        <Value>Project Data Manager</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>Physical Oceanography Distributed Active Archive Center, Jet Propulsion Laboratory, NASA</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>podaac@podaac.jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>https://podaac.jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_type" type="String">
+        <Value>institution</Value>
+    </Attribute>
+    <Attribute name="publisher_institution" type="String">
+        <Value>NASA/JPL/PODAAC</Value>
+    </Attribute>
+    <Attribute name="sea_name" type="String">
+        <Value>Pacific</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="Float64">
+        <Value>37.093449999999997</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="Float64">
+        <Value>44.656325000000002</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="String">
+        <Value>0.1</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="String">
+        <Value>0.1</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_min" type="Float64">
+        <Value>28.930000305175781</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_max" type="Float64">
+        <Value>972.989990234375</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_resolution" type="String">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_units" type="String">
+        <Value>m</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_positive" type="String">
+        <Value>down</Value>
+    </Attribute>
+    <Attribute name="CODAS_variables" type="String">
+        <Value>
+Variables in this CODAS short-form Netcdf file are intended for most end-user
+scientific analysis and display purposes. For additional information see
+the CODAS_processing_note global attribute and the attributes of each
+of the variables.
+
+
+============= =================================================================
+time          Time at the end of the ensemble, days from start of year.
+lon, lat      Longitude, Latitude from GPS at the end of the ensemble.
+u,v           Ocean zonal and meridional velocity component profiles.
+uship, vship  Zonal and meridional velocity components of the ship.
+heading       Mean ship heading during the ensemble.
+depth         Bin centers in nominal meters (no sound speed profile correction).
+tr_temp       ADCP transducer temperature.
+pg            Percent Good pings for u, v averaging after editing.
+pflag         Profile Flags based on editing, used to mask u, v.
+amp           Received signal strength in ADCP-specific units; no correction
+              for spreading or attenuation.
+============= =================================================================
+
+</Value>
+    </Attribute>
+    <Attribute name="CODAS_processing_note" type="String">
+        <Value>
+CODAS processing note:
+======================
+
+Overview
+--------
+The CODAS database is a specialized storage format designed for
+shipboard ADCP data.  &quot;CODAS processing&quot; uses this format to hold
+averaged shipboard ADCP velocities and other variables, during the
+stages of data processing.  The CODAS database stores velocity
+profiles relative to the ship as east and north components along with
+position, ship speed, heading, and other variables. The netCDF *short*
+form contains ocean velocities relative to earth, time, position,
+transducer temperature, and ship heading; these are designed to be
+&quot;ready for immediate use&quot;.  The netCDF *long* form is just a dump of
+the entire CODAS database.  Some variables are no longer used, and all
+have names derived from their original CODAS names, dating back to the
+late 1980's.
+
+Post-processing
+---------------
+CODAS post-processing, i.e. that which occurs after the single-ping
+profiles have been vector-averaged and loaded into the CODAS database,
+includes editing (using automated algorithms and manual tools),
+rotation and scaling of the measured velocities, and application of a
+time-varying heading correction.  Additional algorithms developed more
+recently include translation of the GPS positions to the transducer
+location, and averaging of ship's speed over the times of valid pings
+when Percent Good is reduced. Such post-processing is needed prior to
+submission of &quot;processed ADCP data&quot; to JASADCP or other archives.
+
+Full CODAS processing
+---------------------
+Whenever single-ping data have been recorded, full CODAS processing
+provides the best end product.
+
+Full CODAS processing starts with the single-ping velocities in beam
+coordinates.  Based on the transducer orientation relative to the
+hull, the beam velocities are transformed to horizontal, vertical, and
+&quot;error velocity&quot; components.  Using a reliable heading (typically from
+the ship's gyro compass), the velocities in ship coordinates are
+rotated into earth coordinates.
+
+Pings are grouped into an &quot;ensemble&quot; (usually 2-5 minutes duration)
+and undergo a suite of automated editing algorithms (removal of
+acoustic interference; identification of the bottom; editing based on
+thresholds; and specialized editing that targets CTD wire interference
+and &quot;weak, biased profiles&quot;.  The ensemble of single-ping velocities
+is then averaged using an iterative reference layer averaging scheme.
+Each ensemble is approximated as a single function of depth, with a
+zero-average over a reference layer plus a reference layer velocity
+for each ping.  Adding the average of the single-ping reference layer
+velocities to the function of depth yields the ensemble-average
+velocity profile.  These averaged profiles, along with ancillary
+measurements, are written to disk, and subsequently loaded into the
+CODAS database. Everything after this stage is &quot;post-processing&quot;.
+
+note (time):
+------------
+Time is stored in the database using UTC Year, Month, Day, Hour,
+Minute, Seconds.  Floating point time &quot;Decimal Day&quot; is the floating
+point interval in days since the start of the year, usually the year
+of the first day of the cruise.
+
+
+note (heading):
+---------------
+CODAS processing uses heading from a reliable device, and (if
+available) uses a time-dependent correction by an accurate heading
+device.  The reliable heading device is typically a gyro compass (for
+example, the Bridge gyro).  Accurate heading devices can be POSMV,
+Seapath, Phins, Hydrins, MAHRS, or various Ashtech devices; this
+varies with the technology of the time.  It is always confusing to
+keep track of the sign of the heading correction.  Headings are written
+degrees, positive clockwise. setting up some variables:
+
+X = transducer angle (CONFIG1_heading_bias)
+    positive clockwise (beam 3 angle relative to ship)
+G = Reliable heading (gyrocompass)
+A = Accurate heading
+dh = G - A = time-dependent heading correction (ANCIL2_watrk_hd_misalign)
+
+Rotation of the measured velocities into the correct coordinate system
+amounts to (u+i*v)*(exp(i*theta)) where theta is the sum of the
+corrected heading and the transducer angle.
+
+theta = X + (G - dh) = X + G - dh
+
+
+Watertrack and Bottomtrack calibrations give an indication of the
+residual angle offset to apply, for example if mean and median of the
+phase are all 0.5 (then R=0.5).  Using the &quot;rotate&quot; command,
+the value of R is added to &quot;ANCIL2_watrk_hd_misalign&quot;.
+
+new_dh = dh + R
+
+Therefore the total angle used in rotation is
+
+new_theta = X + G - dh_new
+          = X + G - (dh + R)
+          = (X - R) + (G - dh)
+
+The new estimate of the transducer angle is: X - R
+ANCIL2_watrk_hd_misalign contains: dh + R
+
+====================================================
+
+Profile flags
+-------------
+Profile editing flags are provided for each depth cell:
+
+binary    decimal    below    Percent
+value     value      bottom   Good       bin
+-------+----------+--------+----------+-------+
+000         0
+001         1                            bad
+010         2                  bad
+011         3                  bad       bad
+100         4         bad
+101         5         bad                bad
+110         6         bad      bad
+111         7         bad      bad       bad
+-------+----------+--------+----------+-------+
+</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>2022-01-28T09:04:03Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2021-10-19T20:09:37Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2021-11-08T18:04:45Z</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="Float64">
+        <Value>-125.58129444444444</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="Float64">
+        <Value>-122.39238055555555</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="acknowledgement" type="String">
+        <Value>This work is a contribution to the S-MODE project, an EVS-3 Investigation awarded under NASA Research Announcement NNH17ZDA001N-EVS3 and NASA grant 80NSSC19K1256 to Woods Hole Oceanographic Institution.</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>SMODE_LX_SHIPBOARD_ADCP_V1</Value>
+    </Attribute>
+</Dataset>
