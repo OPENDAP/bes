@@ -7,19 +7,33 @@
 
 set -e
 
-echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build"
-
-LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`;
-echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}"
-
-# Compute the BES snapshot record.
-BES_SNAPSHOT="bes-`cat bes_VERSION` `date \"+%FT%T%z\"`"
-echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
-
-git clone --depth 1 https://github.com/OPENDAP/olfs
 git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
+echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build" >&2
+
+LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`
+echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}" >&2
+
+export libdap_version=$(echo LIBDAP4_SNAPSHOT | grep libdap | awk '{print $1;}' | sed "s/libdap4-//g" )
+echo "libdap_version: ${libdap_version}" >&2
+
+export bes_version=$(cat ./bes_VERSION)
+echo "bes_version: ${bes_version}" >&2
+
+export time_now=$(date "+%FT%T%z")
+echo "time_now: ${time_now}" >&2
+
+# Build the BES snapshot record.
+BES_SNAPSHOT="bes-${bes_version} ${time_now}"
+echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
+
+echo "Tagging bes with version: ${bes_version}"
+git tag -m "bes-${bes_version}" -a "${bes_version}"
+git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/bes.git" "${bes_version}"
+
+# Now do the work to trigger the OLFS TravisCI build.
+git clone --depth 1 https://github.com/OPENDAP/olfs
 cd olfs
 git checkout master
 
@@ -39,5 +53,4 @@ Build Version Matrix:
 ${BES_SNAPSHOT}
 ";
 
-
-git push https://$GIT_UID:$GIT_PSWD@github.com/OPENDAP/olfs --all;
+git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/olfs.git" --all;
