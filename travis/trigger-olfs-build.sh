@@ -12,10 +12,10 @@ git config --global user.email "npotter@opendap.org"
 
 echo "New snapshot of BES pushed. Triggering a OLFS build" >&2
 
-LIBDAP4_SNAPSHOT=`cat ./libdap4-snapshot`
+LIBDAP4_SNAPSHOT=$(cat ./libdap4-snapshot)
 echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}" >&2
 
-export libdap_version=$(echo LIBDAP4_SNAPSHOT | grep libdap | awk '{print $1;}' | sed "s/libdap4-//g" )
+export libdap_version=$(echo "${LIBDAP4_SNAPSHOT}" | grep libdap | awk '{print $1;}' | sed "s/libdap4-//g" )
 echo "libdap_version: ${libdap_version}" >&2
 
 export bes_version=$(cat ./bes_VERSION)
