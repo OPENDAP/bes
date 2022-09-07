@@ -10,9 +10,9 @@ set -e
 git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
-echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build" >&2
+echo "New snapshot of BES pushed. Triggering a OLFS build" >&2
 
-LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`
+LIBDAP4_SNAPSHOT=`cat ./libdap4-snapshot`
 echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}" >&2
 
 export libdap_version=$(echo LIBDAP4_SNAPSHOT | grep libdap | awk '{print $1;}' | sed "s/libdap4-//g" )
