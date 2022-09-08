@@ -473,6 +473,10 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
 
+#nc var dim name same
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dmr.bescmd])
+
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_2dll.h5.dmr.bescmd])
@@ -642,6 +646,10 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
+
+#netcdf4 var and dim share the same name
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bescmd])
 
 #HYRAX-588, check the handling of hardlinks
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])

@@ -76,9 +76,9 @@ typedef struct {
 
 bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,std::vector<link_info_t>&);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
-void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
 
 
 string get_hardlink_dmr(hid_t, const std::string &);
