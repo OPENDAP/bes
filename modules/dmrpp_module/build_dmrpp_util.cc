@@ -419,34 +419,37 @@ static void add_string_array_info(const hid_t dataset, BaseType *btp){
         VERBOSE( cerr << prolog << "Variable " << btp->name() << " is not a DAP Array. Skipping..." << endl);
         return;
     }
+    auto dap_array = dynamic_cast<DmrppArray *>(btp);
+    if (dap_array->var()->type() != dods_str_c) {
+        // NOT A STRING ARRAY SKIPPING...
+        VERBOSE( cerr << prolog << "Variable " << dap_array->name() << " is an Array of " << dap_array->var()->type_name() << " not String. Skipping..." << endl);
+        return;
+    }
 
     auto h5_dataset_type = H5Dget_type(dataset);
     if(h5_dataset_type == H5I_INVALID_HID){
-        throw runtime_error("ERROR: H5Dget_type() failed for '" + btp->name() + "'");
+        throw runtime_error("ERROR: H5Dget_type() failed for variable '" + dap_array->name() + "'");
     }
 
     auto h5_type_class = H5Tget_class(h5_dataset_type);
     if(h5_type_class != H5T_STRING){
-        VERBOSE( cerr << prolog << "H5Dataset " << btp->name() << " is not a String type (type: " << h5_type_class << "). Skipping..." << endl);
+        VERBOSE( cerr << prolog << "H5Dataset " << dap_array->name() << " is not a String type (type: " << h5_type_class << "). Skipping..." << endl);
         return;
     }
 
     hid_t dspace = H5Dget_space(dataset);
     if (H5S_SCALAR == H5Sget_simple_extent_type(dspace)){
-        VERBOSE( cerr << prolog << "H5Dataset " << btp->name() << " is a scalar type. Skipping..." << endl);
+        VERBOSE( cerr << prolog << "H5Dataset " << dap_array->name() << " is a scalar type. Skipping..." << endl);
         return;
     }
 
-    auto dap_array = dynamic_cast<DmrppArray *>(btp);
-    if (dap_array->var()->type() == dods_str_c) {
-        if (H5Tis_variable_str(h5_dataset_type) > 0) {
-            VERBOSE( cerr << prolog << "Found variable length string array: " << dap_array->name() << endl);
-            add_vlen_str_array_info( dataset, dap_array);
-        }
-        else {
-            VERBOSE( cerr << prolog << "Found fixed length string array: " << dap_array->name() << endl);
-            add_fixed_length_string_array_state( dataset,  dap_array);
-        }
+    if (H5Tis_variable_str(h5_dataset_type) > 0) {
+        VERBOSE( cerr << prolog << "Found variable length string array: " << dap_array->name() << endl);
+        add_vlen_str_array_info( dataset, dap_array);
+    }
+    else {
+        VERBOSE( cerr << prolog << "Found fixed length string array: " << dap_array->name() << endl);
+        add_fixed_length_string_array_state( dataset,  dap_array);
     }
 }
 
@@ -513,8 +516,6 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
 
     int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
-    size_t dsize = H5Tget_size(dtypeid);
-
     /* layout_type:  1 contiguous 2 chunk 3 compact */
     switch (layout_type) {
 
@@ -528,7 +529,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             VERBOSE(cerr << prolog << "     Size: " << cont_size << endl);
             VERBOSE(cerr << prolog << "byteOrder: " << byteOrder << endl);
 
-            if (cont_size > 0 && dc) {
+            if (cont_size > 0) {
                 dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
             }
             break;
@@ -537,14 +538,13 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
             hsize_t num_chunks = 0;
             herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
             if (status < 0) {
-                throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
+                throw BESInternalError("Could not get the number of chunks for variable "+ btp->name(), __FILE__, __LINE__);
             }
 
             VERBOSE(cerr << prolog << "Storage: chunked." << endl);
             VERBOSE(cerr << prolog << "Number of chunks is: " << num_chunks << endl);
 
-            if (dc)
-                set_filter_information(dataset, dc);
+            set_filter_information(dataset, dc);
 
             // Get chunking information: rank and dimensions
             vector<hsize_t> chunk_dims(dataset_rank);
@@ -554,7 +554,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                         "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
                         __LINE__);
 
-            if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
+            dc->set_chunk_dimension_sizes(chunk_dims);
 
             for (unsigned int i = 0; i < num_chunks; ++i) {
                 vector<hsize_t> chunk_coords(dataset_rank);
@@ -569,7 +569,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                 }
 
                 VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-                if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
+                dc->add_chunk(byteOrder, size, addr, chunk_coords);
             }
 
             break;
@@ -578,6 +578,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
         case H5D_COMPACT: { /* Compact storage */
             VERBOSE(cerr << prolog << "Storage: compact" << endl);
 
+            size_t dsize = H5Tget_size(dtypeid);
             size_t comp_size = H5Dget_storage_size(dataset);
             VERBOSE(cerr << prolog << "   Size: " << comp_size << endl);
 
@@ -640,6 +641,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                         case dods_str_c: {
                             if (H5Tis_variable_str(dtypeid) > 0) {
                                 vector<string> finstrval;   // passed by reference to read_vlen_string
+                                // @TODO Why push an empty string into the first array position? WHY?
                                 finstrval.push_back("");
                                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                 array->set_value(finstrval, (int) finstrval.size());
@@ -658,6 +660,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                                 get_data(dataset, reinterpret_cast<void *>(values.data()));
                                 string str(values.begin(), values.end());
                                 vector<string> strings;
+                                // @TODO Why push an empty string into the first array position? WHY?
                                 strings.push_back("");
                                 array->set_value(strings, (int) strings.size());
                                 array->set_read_p(true);
@@ -698,6 +701,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
                             auto str = dynamic_cast<libdap::Str *>(btp);
                             if (H5Tis_variable_str(dtypeid) > 0) {
                                 vector<string> finstrval;   // passed by reference to read_vlen_string
+                                // @TODO Why push an empty string into the first array position? WHY?
                                 finstrval.push_back("");
                                 read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
                                 string vlstr = finstrval[0];
