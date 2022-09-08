@@ -635,7 +635,6 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
     size_t dsize = H5Tget_size(dtypeid);
     size_t comp_size = H5Dget_storage_size(dataset);
     VERBOSE(cerr << prolog << "   Size: " << comp_size << endl);
-
     if (comp_size == 0) {
         throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
     }
