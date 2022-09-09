@@ -646,6 +646,233 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     }
 }
 
+H5D_layout_t get_h5_storage_layout(hid_t dataset){
+    H5D_layout_t layout_type;
+    hid_t plist_id = create_h5plist(dataset);
+    try {
+        layout_type = H5Pget_layout(plist_id);
+    }
+    catch(...){
+        H5Pclose(plist_id);
+        throw;
+    }
+    return layout_type;
+}
+
+void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
+{
+
+    // The variable is a scalar, not an array
+
+    VERBOSE(cerr << prolog << "Processing scalar dariable. Storage: compact" << endl);
+    vector<uint8_t> values;
+
+    hid_t dtypeid = H5Dget_type(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
+
+    auto type_size = H5Tget_size(dtypeid);
+    VERBOSE(cerr << prolog << "   H5Tget_size(): " << type_size << " (The size of the datatype in bytes)" << endl);
+
+    size_t compact_storage_size = H5Dget_storage_size(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_storage_size(): " << compact_storage_size << " (The amount of storage space, in bytes, or 0.)" << endl);
+    if (compact_storage_size == 0) {
+        throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+    }
+
+    Type dap_type = btp->type();
+    unsigned long long memRequired = 0;
+    if (dap_type == dods_str_c)
+        // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
+        // We know the length is 1 for a scalar string.
+        memRequired = type_size;
+    else
+        memRequired = btp->length() * type_size;
+
+    // For variable length string, the storage size and the datatype size is not the same.
+    // And we don't need to know then since it is a variable length string.
+    if (H5Tis_variable_str(dtypeid) == 0) {
+        if (compact_storage_size != memRequired)
+            throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__,
+                                   __LINE__);
+    }
+
+    switch (dap_type)
+    {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_float32_c:
+        case dods_float64_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        {
+            values.resize(memRequired);
+            get_data(dataset, reinterpret_cast<void *>(values.data()));
+            btp->set_read_p(true);
+            btp->val2buf(reinterpret_cast<void *>(values.data()));
+            break;
+        }
+
+        case dods_url_c:
+        case dods_str_c:
+        {
+            auto str = dynamic_cast<libdap::Str *>(btp);
+            if (H5Tis_variable_str(dtypeid) > 0) {
+                vector<string> finstrval;   // passed by reference to read_vlen_string
+                // @TODO Why push an empty string into the first array position? WHY?
+                finstrval.push_back("");
+                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                string vlstr = finstrval[0];
+                str->set_value(vlstr);
+                str->set_read_p(true);
+            }
+            else {
+                // A single string for scalar.
+                values.resize(memRequired);
+                get_data(dataset, reinterpret_cast<void *>(values.data()));
+                string fstr(values.begin(), values.end());
+                str->set_value(fstr);
+                str->set_read_p(true);
+            }
+            break;
+        }
+
+        default:
+            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
+    }
+}
+
+
+void proto_flsa_compact(hid_t dataset, BaseType *btp){
+    add_string_array_info(dataset, btp);
+    auto pad_type = get_pad_type(dataset);
+    VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
+
+    hid_t h5_type = H5Dget_type(dataset);
+    // Since this is a fixed length string, the H5Tget_size() returns the
+    // length in characters (i.e. bytes) of the fixed length string
+    auto fls_length = H5Tget_size(h5_type);
+    VERBOSE( cerr << prolog << "fls_length:  " << fls_length << endl);
+
+    auto memRequired = btp->length_ll() * fls_length;
+
+    vector<char> raw_values;
+    raw_values.resize(memRequired);
+    get_data(dataset, reinterpret_cast<void *>(raw_values.data()));
+
+    char *str_start = raw_values.data();
+    vector<string> fls_values;
+    while(fls_values.size() < btp->length_ll()){
+        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+        fls_values.emplace_back(aValue);
+        str_start += fls_length;
+    }
+    auto array = toDA(btp);
+    array->set_value(fls_values, (int) fls_values.size());
+    array->set_read_p(true);
+
+}
+
+void process_compact_layout_array(hid_t dataset, BaseType *btp) {
+
+    VERBOSE(cerr << prolog << "BEGIN (" << btp->type_name() << " " << btp->name() << ")" << endl);
+    vector<uint8_t> values;
+
+    hid_t dtypeid = H5Dget_type(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
+
+    auto type_size = H5Tget_size(dtypeid);
+    VERBOSE(cerr << prolog << "   H5Tget_size(): " << type_size << " (The size of the datatype in bytes)" << endl);
+
+    size_t compact_storage_size = H5Dget_storage_size(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_storage_size(): " << compact_storage_size << " (The amount of storage space, in bytes, or 0.)" << endl);
+    if (compact_storage_size == 0) {
+        throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+    }
+
+    Type dap_type = btp->type();
+    unsigned long long memRequired = 0;
+    if (dap_type == dods_str_c)
+        // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
+        // We know the length is 1 for a scalar string.
+        memRequired = type_size;
+    else
+        memRequired = btp->length() * type_size;
+
+    // For variable length string, the storage size and the datatype size is not the same.
+    // And we don't need to know then since it is a variable length string.
+    if (H5Tis_variable_str(dtypeid) == 0) {
+        if (compact_storage_size != memRequired)
+            throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__,
+                                   __LINE__);
+    }
+
+    auto array = toDA(btp);
+    switch (array->var()->type()) {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_float32_c:
+        case dods_float64_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        {
+            values.resize(memRequired);
+            get_data(dataset, reinterpret_cast<void *>(values.data()));
+            array->set_read_p(true);
+            array->val2buf(reinterpret_cast<void *>(values.data()));
+            break;
+
+        }
+        case dods_url_c:
+        case dods_str_c:
+        {
+            if (H5Tis_variable_str(dtypeid) > 0) {
+                vector<string> finstrval;   // passed by reference to read_vlen_string
+                // @TODO Why push an empty string into the first array position? WHY?
+                finstrval.push_back("");
+                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                array->set_value(finstrval, (int) finstrval.size());
+                array->set_read_p(true);
+            }
+            else {
+                // For this case, the Array is really a single string - check for that
+                // with the following assert - but is an Array because the string data
+                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
+                // a string and load that into a vector<string> (which will be a vector
+                // of length one). Set that as the value of the Array. Really, this
+                // value could be stored as a scalar, but that's complicated and client
+                // software might be expecting an array, so better to handle it this way.
+                // jhrg 9/17/20
+                assert(array->length() == 1);
+                values.resize(memRequired);
+                get_data(dataset, reinterpret_cast<void *>(values.data()));
+                string str(values.begin(), values.end());
+                vector<string> strings;
+                // @TODO Why push an empty string into the first array position? WHY?
+                strings.push_back("");
+                array->set_value(strings, (int) strings.size());
+                array->set_read_p(true);
+            }
+            break;
+        }
+
+        default:
+            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
+    }
+}
+
+
 /**
  * Processes a variable whose data is stored in the H5D_COMPACT storage layout.
  * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
@@ -653,158 +880,41 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
  */
 void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
 
-    VERBOSE(cerr << prolog << "Storage: compact" << endl);
-
-    hid_t dtypeid = H5Dget_type(dataset);
-
-    size_t dsize = H5Tget_size(dtypeid);
-    size_t comp_size = H5Dget_storage_size(dataset);
-    VERBOSE(cerr << prolog << "   Size: " << comp_size << endl);
-    if (comp_size == 0) {
-        throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
-    }
-
-    vector<uint8_t> values;
+    VERBOSE(cerr << prolog << "Processing Compact Storage Layout Dariable" << endl);
+    // -         -        -       -      -     -    -   -  - -:- -  -   -    -     -      -       -        -         -
+    // This next block is all the QC stuff "sanitize your inputs"
+    //
+    auto dc = toDC(btp); // throws if no match
 
     Type dap_type = btp->type();
-
     if ( dap_type == dods_structure_c
-        || dap_type == dods_sequence_c
-        || dap_type == dods_grid_c) {
-        throw BESInternalError(
-                "Only Array, string and numeric datatypes are supported for the compact storage.", __FILE__,
-                __LINE__);
-    } else {
-        auto dc = toDC(btp);
-        dc->set_compact(true);
-        // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
-        // We know the length is 1 for a scalar string.
-        unsigned long long memRequired = 0;
-        if (dap_type == dods_str_c)
-            memRequired = dsize;
-        else
-            memRequired = btp->length() * dsize;
+         || dap_type == dods_sequence_c
+         || dap_type == dods_grid_c) {
+        stringstream msg;
+        msg << "The variable " << btp->FQN() << " is an instance of " << btp->type_name() << ", and utilizes ";
+        msg << "the hdf5 compact storage layout (H5D_COMPACT). ";
+        msg << "Only arrays of string and numeric data types are supported for the compact storage layout.";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
 
-        // For variable length string, the storage size and the datatype size is not the same.
-        // And we don't need to know then since it is a variable length string.
-        if (H5Tis_variable_str(dtypeid) == 0) {
-            if (comp_size != memRequired)
-                throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__,
-                                       __LINE__);
-        }
+    auto layout_type = get_h5_storage_layout(dataset);
+    if (layout_type != H5D_COMPACT)
+        throw BESInternalError(string("ERROR: The dataset is not stored with compact layout."), __FILE__, __LINE__);
 
-        if (dap_type == dods_array_c) {
+    // -         -        -       -      -     -    -   -  - -:- -  -   -    -     -      -       -        -         -
+    // Now the QC stuff is finished, so we go to work on the compact layout variable.
+    //
 
-            auto array = toDA(btp);
-            switch (array->var()->type()) {
-                case dods_byte_c:
-                case dods_char_c:
-                case dods_int8_c:
-                case dods_uint8_c:
-                case dods_int16_c:
-                case dods_uint16_c:
-                case dods_int32_c:
-                case dods_uint32_c:
-                case dods_float32_c:
-                case dods_float64_c:
-                case dods_int64_c:
-                case dods_uint64_c: {
-                    values.resize(memRequired);
-                    get_data(dataset, reinterpret_cast<void *>(values.data()));
-                    array->set_read_p(true);
-                    array->val2buf(reinterpret_cast<void *>(values.data()));
-                    break;
+    dc->set_compact(true);
 
-                }
-                case dods_url_c:
-                case dods_str_c: {
-                    if (H5Tis_variable_str(dtypeid) > 0) {
-                        vector<string> finstrval;   // passed by reference to read_vlen_string
-                        // @TODO Why push an empty string into the first array position? WHY?
-                        finstrval.push_back("");
-                        read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                        array->set_value(finstrval, (int) finstrval.size());
-                        array->set_read_p(true);
-                    } else {
-                        // For this case, the Array is really a single string - check for that
-                        // with the following assert - but is an Array because the string data
-                        // is stored as an array of chars (hello, FORTRAN). Read the chars, make
-                        // a string and load that into a vector<string> (which will be a vector
-                        // of length one). Set that as the value of the Array. Really, this
-                        // value could be stored as a scalar, but that's complicated and client
-                        // software might be expecting an array, so better to handle it this way.
-                        // jhrg 9/17/20
-                        assert(array->length() == 1);
-                        values.resize(memRequired);
-                        get_data(dataset, reinterpret_cast<void *>(values.data()));
-                        string str(values.begin(), values.end());
-                        vector<string> strings;
-                        // @TODO Why push an empty string into the first array position? WHY?
-                        strings.push_back("");
-                        array->set_value(strings, (int) strings.size());
-                        array->set_read_p(true);
-                    }
-                    break;
-                }
-
-                default:
-                    throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
-            }
-        }
-        else {
-            // The variable is a scalar, not an array
-            switch (dap_type)
-            {
-                case dods_byte_c:
-                case dods_char_c:
-                case dods_int8_c:
-                case dods_uint8_c:
-                case dods_int16_c:
-                case dods_uint16_c:
-                case dods_int32_c:
-                case dods_uint32_c:
-                case dods_float32_c:
-                case dods_float64_c:
-                case dods_int64_c:
-                case dods_uint64_c:
-                {
-                    values.resize(memRequired);
-                    get_data(dataset, reinterpret_cast<void *>(values.data()));
-                    btp->set_read_p(true);
-                    btp->val2buf(reinterpret_cast<void *>(values.data()));
-                    break;
-                }
-
-                case dods_url_c:
-                case dods_str_c:
-                {
-                    auto str = dynamic_cast<libdap::Str *>(btp);
-                    if (H5Tis_variable_str(dtypeid) > 0) {
-                        vector<string> finstrval;   // passed by reference to read_vlen_string
-                        // @TODO Why push an empty string into the first array position? WHY?
-                        finstrval.push_back("");
-                        read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                        string vlstr = finstrval[0];
-                        str->set_value(vlstr);
-                        str->set_read_p(true);
-                    }
-                    else {
-                        // A single string for scalar.
-                        values.resize(memRequired);
-                        get_data(dataset, reinterpret_cast<void *>(values.data()));
-                        string fstr(values.begin(), values.end());
-                        str->set_value(fstr);
-                        str->set_read_p(true);
-                    }
-                    break;
-                }
-
-                default:
-                    throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
-            }
-        }
+    if (dap_type == dods_array_c) {
+        process_compact_layout_array(dataset, btp);
+    }
+    else {
+        process_compact_layout_scalar(dataset, btp);
     }
 }
+
 
 /**
  * Adds hdf5 FillValue information (if any)to the passed variable btp
