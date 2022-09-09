@@ -278,7 +278,6 @@ void GMFile::Remove_Unneeded_Objects()  {
                 string temp_vname_removed = temp_vname.substr(nc4_non_coord_size,temp_vname.size()-nc4_non_coord_size);
                 string temp_v_fullpath_removed = temp_vpath + temp_vname_removed;
                 nc4_sdimv_dv_path.insert(temp_v_fullpath_removed);
-                //nc4_non_coord_set.insert((*irv)->name.substr(nc4_non_coord_size,(*irv)->name.size()-nc4_non_coord_size));
             }
             
         }
