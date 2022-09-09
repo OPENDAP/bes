@@ -60,7 +60,7 @@ namespace build_dmrpp_util {
 
 bool is_hdf5_fill_value_defined(hid_t dataset_id);
 string get_value_as_string(hid_t h5_type_id, vector<char> &value);
-string get_hdf5_fill_value(hid_t dataset_id);
+string get_hdf5_fill_value_str(hid_t dataset_id);
 
 class build_dmrpp_util_test : public CppUnit::TestFixture {
 private:
@@ -229,7 +229,7 @@ public:
 
     static string get_fill_value_test_helper(hid_t h5_file, const string &dataset_name, const string &function_name) {
         hid_t dataset = H5Dopen2(h5_file, dataset_name.c_str(), H5P_DEFAULT);
-        string str_value = get_hdf5_fill_value(dataset);
+        string str_value = get_hdf5_fill_value_str(dataset);
         DBG(cerr << function_name << " fill value: " << str_value << endl);
         return str_value;
     }
