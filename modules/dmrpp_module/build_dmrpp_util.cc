@@ -229,6 +229,8 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }
+        H5Pclose(plist_id);
+
         //trimming trailing space from compression (aka filter) string
         filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
@@ -237,7 +239,6 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
         H5Pclose(plist_id);
         throw;
     }
-    H5Pclose(plist_id);
 }
 
 
@@ -614,12 +615,12 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
     hid_t plist_id = create_h5plist(dataset);
     try {
         chunk_rank = H5Pget_chunk(plist_id, dataset_rank, chunk_dims.data());
+        H5Pclose(plist_id);
     }
     catch (...) {
         H5Pclose(plist_id);
         throw;
     }
-    H5Pclose(plist_id);
 
     if (chunk_rank != dataset_rank)
         throw BESNotFoundError(
@@ -848,12 +849,12 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     uint8_t layout_type = 0;
     try {
         layout_type = H5Pget_layout(plist_id);
+        H5Pclose(plist_id);
     }
     catch (...) {
         H5Pclose(plist_id);
         throw;
     }
-    H5Pclose(plist_id);
 
     switch (layout_type) {
         case H5D_CONTIGUOUS: { /* Contiguous Storage Layout */
@@ -971,12 +972,12 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
             VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
             add_string_array_info(dataset, *btp);
+            H5Dclose(dataset);
         }
         catch (...) {
             H5Dclose(dataset);
             throw;
         }
-        H5Dclose(dataset);
     }
 
     // all groups in the group
@@ -995,7 +996,9 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0) {
-        throw BESNotFoundError(string("Error: HDF5 file '").append(h5_file_name).append("' cannot be opened."), __FILE__, __LINE__);
+        stringstream msg;
+        msg << "Error: HDF5 file '" << h5_file_name << "' cannot be opened." << endl;
+        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
 
     // iterate over all the variables in the DMR
