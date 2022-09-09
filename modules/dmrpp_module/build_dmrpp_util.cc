@@ -106,9 +106,14 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
-string h5_filter_name(int type) {
+/**
+ * Converts the H5Z_filter_t to a readable string.
+ * @param filter_type an H5Z_filter_t representing the filter_type
+ * @return
+ */
+string h5_filter_name(H5Z_filter_t filter_type) {
     string name;
-    switch(type) {
+    switch(filter_type) {
         case H5Z_FILTER_NONE:
             name = "H5Z_FILTER_NONE";
             break;
@@ -132,10 +137,9 @@ string h5_filter_name(int type) {
             break;
         default:
         {
-            ostringstream oss("ERROR! Unknown HDF5 FILTER! type: ", std::ios::ate);
-            oss << type;
-            name = oss.str();
-            break;
+            ostringstream oss("ERROR! Unknown HDF5 FILTER (H5Z_filter_t) type: ", std::ios::ate);
+            oss << filter_type;
+            throw BESInternalError(oss.str(),__FILE__,__LINE__);
         }
     }
     return name;
@@ -149,10 +153,44 @@ string h5_filter_name(int type) {
 hid_t create_h5plist(hid_t dataset){
     hid_t plist_id;
     // Get creation properties list
-    if ( (plist_id = H5Dget_create_plist(dataset)) < 0 )
+    plist_id = H5Dget_create_plist(dataset);
+    if ( plist_id < 0 )
         throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
     return plist_id;
 }
+
+/**
+ * Safely converts the BaseType pointer btp to a DmrppCommon pointer.
+ * @param btp
+ * @return
+ */
+DmrppCommon *toDC(BaseType *btp){
+    auto *dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        stringstream msg;
+        msg << "ERROR: Expected a BaseType that was also a DmrppCommon instance.";
+        msg << "(variable_name: "<< ((btp)?btp->name():"unknown") << ").";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    return dc;
+}
+
+/**
+ * Safely converts the BaseType pointer btp to a DmrppCommon pointer.
+ * @param btp
+ * @return
+ */
+DmrppArray *toDA(BaseType *btp){
+    auto *da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        stringstream msg;
+        msg << "ERROR: Expected a BaseType that was also a DmrppArray instance.";
+        msg << "(variable_name: "<< ((btp)?btp->name():"unknown") << ").";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    return da;
+}
+
 
 /**
  * @brief Set compression info
@@ -360,16 +398,19 @@ string_pad_type convert_h5_str_pad_type(const H5T_str_t str_pad){
             break;
 
         case H5T_STR_NULLTERM:
-            pad_type= dmrpp::null_term;
+            pad_type = dmrpp::null_term;
             break;
 
         case H5T_STR_NULLPAD:
-            pad_type= dmrpp::null_pad;
+            pad_type = dmrpp::null_pad;
             break;
 
         default:
-            cerr << "ERROR: h5tget_strpad() failed, returned: " << str_pad << endl;
-            throw runtime_error("ERROR: h5tget_strpad() failed.");
+        {
+            stringstream msg;
+            msg << "ERROR: Received unrecognized value for H5T_str_t: " << str_pad << endl;
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
     }
     return pad_type;
 }
@@ -395,7 +436,7 @@ string_pad_type get_pad_type(const hid_t dataset) {
 
 
 /**
- * THIS IS A DUMMY FUNCTION AND NOT AN ACTUAL IMPLMENTATION
+ * @brief @TODO THIS IS A DUMMY FUNCTION AND NOT AN ACTUAL IMPLEMENTATION
  * @param dataset
  * @param da
  */
@@ -407,44 +448,43 @@ static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
 
 
 /**
+ * Adds the fixed length string array information to the array variable array_var. If the array_var is not an
+ * array is not an array of strings, or if the string array is not a fixed length string array (i.e. it's a variable
+ * length string array) the this method is a no-op, nothing is done.
  *
- * @param dataset_id
- * @param btp
+ * @param dataset_id The hdf5 dataset reference for this dataset
+ * @param array_var A point to the corresponding DmrppArray into which the information will be added.
  */
-void add_fixed_length_string_array_state(const hid_t dataset_id, BaseType *btp){
+void add_fixed_length_string_array_state(const hid_t dataset_id, DmrppArray *array_var){
 
     hid_t h5_type = H5Dget_type(dataset_id);
     if (H5Tis_variable_str(h5_type) > 0 ){
-        cout << "# The dataset '" << btp->name() << "' is a variable length string array, skipping..." << endl;
+        cout << "# The dataset '" << array_var->name() << "' is a variable length string array, skipping..." << endl;
         return;
     }
-    VERBOSE( cerr << prolog << "Variable " << btp->name() << " is not a DAP Array. Skipping..." << endl);
 
-    Type dap_type = btp->type();
-    if (dap_type == dods_array_c) {
-        VERBOSE( cerr << prolog << "The Dataset " << btp->name() << " is an Array." << endl);
-        auto array = dynamic_cast<DmrppArray *>(btp);
-        auto data_type = array->var()->type();
+    VERBOSE( cerr << prolog << "Processing the array dariable:  " << array_var->name() << endl);
+    auto data_type = array_var->var()->type();
 
-        if(data_type == libdap::dods_str_c){
-            VERBOSE( cerr << prolog << "The array template variable has type libdap::dods_str_c" << endl);
+    if(data_type == libdap::dods_str_c){
+        VERBOSE( cerr << prolog << "The array template variable has type libdap::dods_str_c" << endl);
 
-            array->set_is_flsa(true);
+        array_var->set_is_flsa(true);
 
-            auto pad_type = get_pad_type(dataset_id);
-            VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
-            array->set_fixed_length_string_pad(pad_type);
+        auto pad_type = get_pad_type(dataset_id);
+        VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
+        array_var->set_fixed_length_string_pad(pad_type);
 
-            auto type_size = H5Tget_size(h5_type);
-            VERBOSE( cerr << prolog << "type_size:  " << type_size << endl);
-            array->set_fixed_string_length(type_size);
-        }
+        auto type_size = H5Tget_size(h5_type);
+        VERBOSE( cerr << prolog << "type_size:  " << type_size << endl);
+        array_var->set_fixed_string_length(type_size);
     }
 }
 
 
 
 /**
+ * Adds special String array state to the passed BaseType variable.
  *
  * @param dataset
  * @param btp
@@ -457,7 +497,7 @@ static void add_string_array_info(const hid_t dataset, BaseType *btp){
         VERBOSE( cerr << prolog << "Variable " << btp->name() << " is not a DAP Array. Skipping..." << endl);
         return;
     }
-    auto dap_array = dynamic_cast<DmrppArray *>(btp);
+    auto dap_array = toDA(btp);
     if (dap_array->var()->type() != dods_str_c) {
         // NOT A STRING ARRAY SKIPPING...
         VERBOSE( cerr << prolog << "Variable " << dap_array->name() << " is an Array of " << dap_array->var()->type_name() << " not String. Skipping..." << endl);
@@ -516,22 +556,6 @@ string byte_order_str(hid_t dataset){
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
     return byte_order_string;
-}
-
-/**
- * Safely converts the BaseType pointer btp to a DmrppCommon pointer.
- * @param btp
- * @return
- */
-DmrppCommon *toDC(BaseType *btp){
-    auto *dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        stringstream msg;
-        msg << "ERROR: Expected a BaseType that was also a DmrppCommon instance.";
-        msg << "(variable_name: "<< ((btp)?btp->name():"unknown") << ").";
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    return dc;
 }
 
 
@@ -643,8 +667,7 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
 
     Type dap_type = btp->type();
 
-    if (dap_type == dods_url_c
-        || dap_type == dods_structure_c
+    if ( dap_type == dods_structure_c
         || dap_type == dods_sequence_c
         || dap_type == dods_grid_c) {
         throw BESInternalError(
@@ -671,7 +694,7 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
 
         if (dap_type == dods_array_c) {
 
-            auto array = dynamic_cast<DmrppArray *>(btp);
+            auto array = toDA(btp);
             switch (array->var()->type()) {
                 case dods_byte_c:
                 case dods_char_c:
@@ -692,6 +715,7 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
                     break;
 
                 }
+                case dods_url_c:
                 case dods_str_c: {
                     if (H5Tis_variable_str(dtypeid) > 0) {
                         vector<string> finstrval;   // passed by reference to read_vlen_string
@@ -727,6 +751,7 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
             }
         }
         else {
+            // The variable is a scalar, not an array
             switch (dap_type)
             {
                 case dods_byte_c:
@@ -740,18 +765,18 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
                 case dods_float32_c:
                 case dods_float64_c:
                 case dods_int64_c:
-                case dods_uint64_c: {
+                case dods_uint64_c:
+                {
                     values.resize(memRequired);
                     get_data(dataset, reinterpret_cast<void *>(values.data()));
                     btp->set_read_p(true);
                     btp->val2buf(reinterpret_cast<void *>(values.data()));
                     break;
-
                 }
 
+                case dods_url_c:
                 case dods_str_c:
                 {
-
                     auto str = dynamic_cast<libdap::Str *>(btp);
                     if (H5Tis_variable_str(dtypeid) > 0) {
                         vector<string> finstrval;   // passed by reference to read_vlen_string
@@ -769,10 +794,10 @@ void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
                         string fstr(values.begin(), values.end());
                         str->set_value(fstr);
                         str->set_read_p(true);
-
                     }
                     break;
                 }
+
                 default:
                     throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
             }
@@ -811,7 +836,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
     if(verbose) {
         string type_name = btp->type_name();
         if (btp->type() == dods_array_c) {
-            auto array = dynamic_cast<DmrppArray *>(btp);
+            auto array = toDA(btp);
             type_name = array->var()->type_name();
         }
         cerr << prolog << "Processing dataset/variable: " << type_name << " " << btp->name() << endl;
@@ -859,7 +884,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
 string get_type_decl(BaseType *btp){
     stringstream type_decl;
     if(btp->type() == libdap::dods_array_c){
-        auto array = dynamic_cast<DmrppArray *>(btp);
+        auto array = toDA(btp);
         type_decl << array->var()->type_name() << " " << btp->FQN();
         for(auto dim_itr = array->dim_begin(); dim_itr!=array->dim_end(); dim_itr++){
             auto dim = *dim_itr;
