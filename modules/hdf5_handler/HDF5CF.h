@@ -1051,6 +1051,7 @@ private:
     std::string gp_latname;
     std::string gp_lonname;
     std::set<std::string> grp_cv_paths;
+    std::set<std::string> nc4_sdimv_dv_path;
     std::vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
     //"map<string,string>dimcvars_2dlatlon"
 #if 0

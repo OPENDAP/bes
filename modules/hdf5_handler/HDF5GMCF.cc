@@ -268,26 +268,35 @@ void GMFile::Remove_Unneeded_Objects()  {
             Remove_OMPSNPP_InputPointers();
     }
     if((General_Product == this->product_type) && (GENERAL_DIMSCALE == this->gproduct_pattern)) {
-        set<string> nc4_non_coord_set;
         string nc4_non_coord="_nc4_non_coord_";
         size_t nc4_non_coord_size= nc4_non_coord.size();
         for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            if((*irv)->name.find(nc4_non_coord)==0) 
-                nc4_non_coord_set.insert((*irv)->name.substr(nc4_non_coord_size,(*irv)->name.size()-nc4_non_coord_size));
+            if((*irv)->name.find(nc4_non_coord)==0) {
+                // Here we need to store the path
+                string temp_vname = HDF5CFUtil::obtain_string_after_lastslash((*irv)->fullpath);
+                string temp_vpath = HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+                string temp_vname_removed = temp_vname.substr(nc4_non_coord_size,temp_vname.size()-nc4_non_coord_size);
+                string temp_v_fullpath_removed = temp_vpath + temp_vname_removed;
+                nc4_sdimv_dv_path.insert(temp_v_fullpath_removed);
+            }
             
         }
 
-        for (auto irv = this->vars.begin(); irv != this->vars.end();) {
-            if(nc4_non_coord_set.find((*irv)->name)!=nc4_non_coord_set.end()){
-                delete(*irv);
-                irv=this->vars.erase(irv);
+        if(nc4_sdimv_dv_path.empty()==false)
+            this->have_nc4_non_coord = true;
+ 
+
+        if (true == this->have_nc4_non_coord) {
+            for (auto irv = this->vars.begin(); irv != this->vars.end();) {
+                if(nc4_sdimv_dv_path.find((*irv)->fullpath)!=nc4_sdimv_dv_path.end()){
+                    delete(*irv);
+                    irv=this->vars.erase(irv);
+                }
+                else 
+                    ++irv;
             }
-            else 
-                ++irv;
         }
 
-        if(nc4_non_coord_set.empty()==false)
-            this->have_nc4_non_coord = true;
     }
     else if(GPM_L3_New == this->product_type) {
         for (auto irg = this->groups.begin();  irg != this->groups.end(); ) {
@@ -3320,9 +3329,13 @@ void GMFile::Handle_CVar_Dimscale_General_Product()  {
 
     // Add other missing coordinate variables.
     for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
-        auto GMcvar = new GMCVar();
-        Create_Missing_CV(GMcvar,*irs);
-        this->cvars.push_back(GMcvar);
+        if ((this->have_nc4_non_coord == false) ||
+            (nc4_sdimv_dv_path.find(*irs) == nc4_sdimv_dv_path.end())) { 
+            
+            auto GMcvar = new GMCVar();
+            Create_Missing_CV(GMcvar,*irs);
+            this->cvars.push_back(GMcvar);
+        }
     }
 
 
@@ -6858,14 +6871,27 @@ void GMFile::Rename_NC4_NonCoordVars() {
         string nc4_non_coord="_nc4_non_coord_";
         size_t nc4_non_coord_size= nc4_non_coord.size();
         for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
-            if((*irv)->name.find(nc4_non_coord)==0)
-                (*irv)->newname = (*irv)->newname.substr(nc4_non_coord_size,(*irv)->newname.size()-nc4_non_coord_size);
+            if((*irv)->name.find(nc4_non_coord)==0) {
+                size_t rm_str_pos = (*irv)->newname.find(nc4_non_coord);
+                if (rm_str_pos == string::npos) 
+                    throw4((*irv)->name," variable's new name ",(*irv)->newname, "doesn't contain nc4_non_coord");
+                else {
+                    string var_new_first_part;
+                    if (rm_str_pos !=0) 
+                        var_new_first_part = (*irv)->newname.substr(0,rm_str_pos);
+                    string var_new_second_part = (*irv)->newname.substr(rm_str_pos+nc4_non_coord_size);
+                    (*irv)->newname = var_new_first_part + var_new_second_part;
+                }
+            }
         }
  
+        // Coordinate variables should never contain "_nc4_non_coord_"
+#if 0
         for (auto ircv = this->cvars.begin(); ircv != this->cvars.end();++ircv) {
             if((*ircv)->name.find(nc4_non_coord)==0)
                 (*ircv)->newname = (*ircv)->newname.substr(nc4_non_coord_size,(*ircv)->newname.size()-nc4_non_coord_size);
         }
+#endif
     }
  
 }
