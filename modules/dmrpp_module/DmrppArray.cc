@@ -1489,7 +1489,8 @@ void DmrppArray::read_contiguous_string()
     set_read_p(true);
 }
 
-string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type){
+string DmrppArray::ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type)
+{
     string value;
     unsigned long long str_len = 0;
     switch(pad_type){
@@ -1811,7 +1812,7 @@ void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data)
         auto begin = buff;
         char *end = buff + num_bytes;
         while (begin < end) {
-            string value = ingest_fixed_length_string(begin, fstr_len, pad_type);
+            string value = DmrppArray::ingest_fixed_length_string(begin, fstr_len, pad_type);
             flsa.get_str().push_back(value);
             BESDEBUG(MODULE, prolog << "Added String: '" << value << "'" << endl);
             begin += fstr_len;

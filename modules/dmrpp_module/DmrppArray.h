@@ -158,11 +158,11 @@ public:
 
     DmrppArray(const DmrppArray &) = default;
 
-    virtual ~DmrppArray() = default;
+    ~DmrppArray() override = default;
 
     DmrppArray &operator=(const DmrppArray &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate() { return new DmrppArray(*this); }
+    libdap::BaseType *ptr_duplicate() override { return new DmrppArray(*this); }
 
     bool read() override;
     void set_send_p(bool state) override;
@@ -171,9 +171,9 @@ public:
 
     virtual std::vector<unsigned long long> get_shape(bool constrained);
 
-    virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
+    void print_dap4(libdap::XMLWriter &writer, bool constrained = false) override;
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 
     /**
      * @brief Marks the array as a Fixed length string array, or not, depending on state
@@ -204,6 +204,7 @@ public:
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
+    static string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
 };
 
 /**
