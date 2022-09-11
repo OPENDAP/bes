@@ -25,6 +25,7 @@
 #include <sstream>
 #include <memory>
 #include <iterator>
+#include <unordered_set>
 
 #include <cstdlib>
 
@@ -1034,6 +1035,44 @@ string get_type_decl(BaseType *btp){
  * to process all the variables in the DMR
  */
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+
+    // netCDF-4 variable can share the same name as a pure dimension name. 
+    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
+    // distinguish the variable name from the correponding dimension name when storing in the HDF5. 
+    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
+    // When obtaining this variable's information, we need to use the real HDF5 variable name.
+    // KY 2022-09-11
+    // When the above case occurs, a dimension name of this group must share with a variable name.
+    // So we will find these variables and put them into an unodered set. 
+
+    unordered_set<string> nc4_non_coord_candidate;
+
+    // First obtain  dimension names.
+    unordered_set<string> dimname_list;
+    D4Dimensions *grp_dims = group->dims();
+    
+    if (grp_dims) {
+        for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) 
+            dimname_list.insert((*di)->name());
+    }
+
+    if (dimname_list.empty() == false) {
+        // Then find the nc4_non_coord candidate variables,
+        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+            if (dimname_list.find((*btp)->name())!=dimname_list.end())   
+                nc4_non_coord_candidate.insert((*btp)->name());
+        }
+    }
+
+#if 0
+    if (nc4_non_coord_candidate.empty() == false) {
+        for ( auto it = nc4_non_coord_candidate.begin(); it !=nc4_non_coord_candidate.end();++it)
+cerr<<"nc4_non_coord "<<(*it) <<endl;
+    } 
+    else 
+cerr<<"No nc4_non_coord_candidate "<<endl;
+#endif
+
     // variables in the group
     for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
         VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
@@ -1056,7 +1095,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         // It's not an error if a DAP variable in a DMR from the hdf5 handler
         // doesn't exist in the file _if_ there's no 'fullnamepath' because
         // that variable was synthesized (likely for CF compliance)
-        hid_t dataset;
+        hid_t dataset = -1;
         if (attr) {
             string FQN;
             if (attr->num_values() == 1)
@@ -1080,12 +1119,29 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
             string FQN = (*btp)->FQN();
+            string name = (*btp)->name();
+            if (nc4_non_coord_candidate.empty() == false) {
+                if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
+                    string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
+                    size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
+                    string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+                    dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
+#if 0
+cerr<<"real_path_candidate is "<< real_path_candidate <<endl;
+                    if (string::npos != last_fslash_pos)
+                        ret_str=s.substr(0,last_fslash_pos+1);
+#endif
+
+                }
+            }
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
-            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0) {
-               VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
-                // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
-                continue;
+            if (dataset < 0)  {
+                dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+                if (dataset < 0) {
+                   VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
+                    // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                    continue;
+                }
             }
         }
 
