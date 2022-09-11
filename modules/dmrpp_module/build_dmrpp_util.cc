@@ -426,11 +426,15 @@ string_pad_type convert_h5_str_pad_type(const H5T_str_t str_pad){
 string_pad_type get_pad_type(const hid_t dataset) {
     hid_t h5_type = H5Dget_type(dataset);
     if(h5_type < 0){
-        throw runtime_error("ERROR: H5Dget_type() failed.");
+        stringstream msg;
+        msg << "ERROR: H5Dget_type() failed. returned: " << h5_type;
+        throw BESInternalError(msg.str(),__FILE__, __LINE__);
     }
     H5T_str_t str_pad = H5Tget_strpad(h5_type);
     if(str_pad < 0) {
-        throw runtime_error("ERROR: H5Tget_strpad() failed.");
+        stringstream msg;
+        msg << "ERROR: H5Tget_strpad() failed. returned: " << str_pad;
+        throw BESInternalError(msg.str(),__FILE__, __LINE__);
     }
     return convert_h5_str_pad_type(str_pad);
 }
@@ -507,7 +511,8 @@ static void add_string_array_info(const hid_t dataset, BaseType *btp){
 
     auto h5_dataset_type = H5Dget_type(dataset);
     if(h5_dataset_type == H5I_INVALID_HID){
-        throw runtime_error("ERROR: H5Dget_type() failed for variable '" + dap_array->name() + "'");
+        throw BESInternalError("ERROR: H5Dget_type() failed for variable '" + dap_array->name() + "'",
+                               __FILE__, __LINE__);
     }
 
     auto h5_type_class = H5Tget_class(h5_dataset_type);
@@ -749,11 +754,15 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
 
 
 void proto_flsa_compact(hid_t dataset, BaseType *btp){
+
     add_string_array_info(dataset, btp);
+
     auto pad_type = get_pad_type(dataset);
     VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
 
-    hid_t h5_type = H5Dget_type(dataset);
+    auto h5_type = H5Dget_type(dataset);
+    VERBOSE( cerr << prolog << "H5Dget_type():  " << h5_type << endl);
+
     // Since this is a fixed length string, the H5Tget_size() returns the
     // length in characters (i.e. bytes) of the fixed length string
     auto fls_length = H5Tget_size(h5_type);
@@ -764,7 +773,9 @@ void proto_flsa_compact(hid_t dataset, BaseType *btp){
     vector<char> raw_values;
     raw_values.resize(memRequired);
     get_data(dataset, reinterpret_cast<void *>(raw_values.data()));
-
+    auto array = toDA(btp);
+    array->val2buf(raw_values.data());
+    /*
     char *str_start = raw_values.data();
     vector<string> fls_values;
     while(fls_values.size() < btp->length_ll()){
@@ -774,6 +785,8 @@ void proto_flsa_compact(hid_t dataset, BaseType *btp){
     }
     auto array = toDA(btp);
     array->set_value(fls_values, (int) fls_values.size());
+    */
+
     array->set_read_p(true);
 
 }
