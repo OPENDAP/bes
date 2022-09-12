@@ -173,10 +173,10 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                     << endl);
 
                 vector <char>t_fpn;
-                t_fpn.resize(full_path_name.length()+1);
+                t_fpn.resize(full_path_name.size()+1);
                 copy(full_path_name.begin(),full_path_name.end(),t_fpn.begin());
 
-                t_fpn[full_path_name.length()] = '\0';
+                t_fpn[full_path_name.size()] = '\0';
 
                 hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
                 if (cgroup < 0){

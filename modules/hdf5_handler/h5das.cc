@@ -731,7 +731,7 @@ void add_group_structure_info(DAS & das, const char *gname, const char *oname, b
     }
     else {
         full_path.replace(0, 1, "HDF5_ROOT_GROUP.");
-        full_path = full_path.substr(0, full_path.length() - 1);
+        full_path = full_path.substr(0, full_path.size() - 1);
     }
 
     BESDEBUG("h5", full_path << endl);

@@ -570,6 +570,7 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                     // String fillvalue is always represented as /+octal numbers when its type is forced to
                     // change to string(check HFRHANDLER-223). So we have to retrieve it back.
+                    fillvalue = escattr_fvalue(fillvalue);
                     if(fillvalue.size() >1) {
 
                         long int fillvalue_int = 0;
@@ -584,16 +585,18 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                         // If somehow the fillvalue type is DFNT_CHAR or DFNT_UCHAR, and the size is 1,
                         // that means the fillvalue type is wrongly defined, we treat as a 8-bit integer number.
-                        // Note, the code will only assume the value ranges from 0 to 128.(JIRA HFRHANDLER-248).
+                        // Note, the code will only assume the value ranges from 0 to 255.(JIRA HFRHANDLER-248).
                         // KY 2014-04-24
                           
                         short fillvalue_int = fillvalue.at(0);
 
                         stringstream convert_str;
                         convert_str << fillvalue_int;
-                        if(fillvalue_int <0 || fillvalue_int >128)
+#if 0
+                        if(fillvalue_int <0 || fillvalue_int >255)
                             throw InternalErr(__FILE__,__LINE__,
-                            "If the fillvalue is a char type, the value must be between 0 and 128.");
+                            "If the fillvalue is a char type, the value must be between 0 and 255.");
+#endif
 
 
                         at->append_attr("_FillValue",var_type,convert_str.str());               
@@ -777,11 +780,11 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
             it++;
         }
 
-        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) 
-            || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
+        if((radiance_scales_value.size()!=0 && radiance_offsets_value.size()!=0)
+            || (reflectance_scales_value.size()!=0 && reflectance_offsets_value.size()!=0))
             return true;
 		
-        if(scale_factor_value.length()!=0) 
+        if(scale_factor_value.size()!=0)
         {
             if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
                 return true;
@@ -1051,7 +1054,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
     // KY 2014-01-13
 
     
-    if(scale_factor_value.length()!=0) {
+    if(scale_factor_value.size()!=0) {
         if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
             if (orig_scale_value_float > 1 || orig_scale_value_double >1) {
 
@@ -1243,7 +1246,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
 
     // Rename scale_factor and add_offset attribute names. Otherwise, they will be 
     // misused by CF tools to generate wrong data values based on the CF scale and offset rule.
-    if(scale_factor_value.length()!=0)
+    if(scale_factor_value.size()!=0)
     {
         if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
         {
@@ -1258,7 +1261,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
     }
 
     // Change _FillValue datatype
-    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") 
+    if(true == changedtype && fillvalue.size()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64")
     {
         change_fvtype = true;
         at->del_attr("_FillValue");
@@ -1439,7 +1442,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
         // If the gridname_change_valid_range is true, call a special function to handle this.
         if (true == gridname_change_valid_range) 
             HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
-        else if(scale_factor_value.length()!=0) {
+        else if(scale_factor_value.size()!=0) {
 
             // We found MODIS products always scale to a smaller value. If somehow the original scale factor
             // is smaller than 1, the scale/offset should be the multiplication rule.(new_data =scale*(old_data-offset))
@@ -3308,9 +3311,11 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
 string HDFCFUtil::escattr(string s)
 {
+// We should not handle any special characters here. These will be handled by libdap4. Still leave the code here for the time being.
+// Eventually this function will be removed. KY 2022-08-25
+#if ESCAPE_STRING_ATTRIBUTES
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
-#if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
@@ -3319,7 +3324,7 @@ string HDFCFUtil::escattr(string s)
     size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
-        ind += DOUBLE_ESC.length();
+        ind += DOUBLE_ESC.size();
     }
 
     // escape " with backslash
@@ -3327,10 +3332,23 @@ string HDFCFUtil::escattr(string s)
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         //comment out the following line since it wastes the CPU operation.
         s.replace(ind, 1, ESCQUOTE);
-        ind += ESCQUOTE.length();
+        ind += ESCQUOTE.size();
+    }
+
+    size_t ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
+        s.replace(ind, 1, ESC + octstring(s[ind]));
     }
 #endif
 
+    return s;
+}
+
+// This function is necessary since char is represented as string. For fillvalue, this has to be resumed. 
+string HDFCFUtil::escattr_fvalue(string s)
+{
+    const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
+    const string ESC = "\\";
     size_t ind = 0;
     while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
         s.replace(ind, 1, ESC + octstring(s[ind]));

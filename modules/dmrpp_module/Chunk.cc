@@ -209,17 +209,20 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  *
  * @note Stolen from the HDF5 library and hacked to fit.
  *
- * @param dest Write the 'inflated' data here
+ * @param destp A value-result parameter (pointer to a pointer) of the 'inflated' data 
  * @param dest_len Size of the destination buffer
  * @param src Compressed data
  * @param src_len Size of the compressed data
+ * @return The number of bytes of the inflated data
  */
-void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long long src_len) {
+unsigned long long inflate(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len) {
+
     /* Sanity check */
     assert(src_len > 0);
     assert(src);
     assert(dest_len > 0);
-    assert(dest);
+    assert(destp);
+    assert(*destp);
 
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
@@ -228,8 +231,12 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
     memset(&z_strm, 0, sizeof(z_strm));
     z_strm.next_in = (Bytef *) src;
     z_strm.avail_in = src_len;
-    z_strm.next_out = (Bytef *) dest;
+    z_strm.next_out = (Bytef *) (*destp);
     z_strm.avail_out = dest_len;
+
+    size_t nalloc = dest_len;
+
+    char *outbuf = *destp;
 
     /* Initialize the decompression routines */
     if (Z_OK != inflateInit(&z_strm))
@@ -255,34 +262,32 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
             throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
-            /* If we're not done and just ran out of buffer space, it's an error.
-             * The HDF5 library code would extend the buffer as-needed, but for
-             * this handler, we should always know the size of the decompressed chunk.
-             */
+            // If we're not done and just ran out of buffer space, we need to extend the buffer.
+            // We may encounter this case when the deflate filter is used twice. KY 2022-08-03
             if (0 == z_strm.avail_out) {
-                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
-#if 0
-                /* Here's how to extend the buffer if needed. This might be useful some day... */
-                void *new_outbuf; /* Pointer to new output buffer */
 
                 /* Allocate a buffer twice as big */
+                size_t outbuf_size = nalloc;
                 nalloc *= 2;
-                if (NULL == (new_outbuf = H5MM_realloc(outbuf, nalloc))) {
-                    (void) inflateEnd(&z_strm);
-                    HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, 0, "memory allocation failed for inflate decompression")
-                } /* end if */
+                char *new_outbuf = new char[nalloc];
+                memcpy((void*)new_outbuf,(void*)outbuf,outbuf_size);
+                delete[] outbuf;
                 outbuf = new_outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
                 z_strm.next_out = (unsigned char*) outbuf + z_strm.total_out;
                 z_strm.avail_out = (uInt) (nalloc - z_strm.total_out);
-#endif
+
             } /* end if */
         } /* end else */
     } while (true /* status == Z_OK */);    // Exit via the break statement after the call to inflate(). jhrg 11/8/21
 
+    *destp = outbuf;
+    outbuf = nullptr;
     /* Finish decompressing the stream */
     (void) inflateEnd(&z_strm);
+
+    return z_strm.total_out;
 }
 
 // #define this to enable the duff's device loop unrolling code.
@@ -387,7 +392,7 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
 static void split_by_comma(const string &s, vector<unsigned long long> &res)
 {
     const string delimiter = ",";
-    const size_t delim_len = delimiter.length();
+    const size_t delim_len = delimiter.size();
 
     size_t pos_start = 0, pos_end;
 
@@ -407,14 +412,14 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
 
     // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
     // [1] is a minimal 'position in array' string.
-    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
+    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.size() < 3)
         throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
 
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
     try {
-        split_by_comma(pia.substr(1, pia.length() - 2), cpia_vect);
+        split_by_comma(pia.substr(1, pia.size() - 2), cpia_vect);
     }
     catch(const std::invalid_argument &e) {
         throw BESInternalError(string("while parsing a DMR++, chunk position string illegal character(s): ").append(e.what()), __FILE__, __LINE__);
@@ -516,10 +521,10 @@ void Chunk::add_tracking_query_param() {
     string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
 
     BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
-    int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+    int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
     if(match_result>=0) {
         auto match_length = (unsigned int) match_result;
-        if (match_length == d_data_url->str().length()) {
+        if (match_length == d_data_url->str().size()) {
             BESDEBUG(MODULE,
                      prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
             add_tracking = true;;
@@ -530,10 +535,10 @@ void Chunk::add_tracking_query_param() {
         // All S3 buckets, path style URL
         string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
         BESRegex s3_path_regex(s3_path_regex_str.c_str());
-        match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+        match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
         if(match_result>=0) {
             auto match_length = (unsigned int) match_result;
-            if (match_length == d_data_url->str().length()) {
+            if (match_length == d_data_url->str().size()) {
                 BESDEBUG(MODULE,
                          prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
                 add_tracking = true;;
@@ -612,23 +617,124 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
+    // We need to check if the filters that include the deflate filters are contiguous.
+    // That is: the filters must be something like "deflate deflate deflate" instead of "deflate other_filter deflate"
+
+    bool is_1st_deflate = true;
+    unsigned cur_deflate_index = 0;
+    unsigned num_deflate = 0;
+
+    for (unsigned i = 0; i<filter_array.size(); i++) {
+
+        if (filter_array[i] == "deflate") {
+            if (is_1st_deflate == true) {
+                cur_deflate_index = i;
+                is_1st_deflate = false;
+            }
+            else if (i != (cur_deflate_index+1)) {
+                throw BESInternalError("The deflate filters must be adjacent to each other",
+                                       __FILE__, __LINE__);
+            }
+            else 
+                cur_deflate_index = i;
+            num_deflate++;
+        }
+
+    }
+
+    // If there are >1 deflate filters applied, we want to localize the handling of the compressed data  in this function.
+    unsigned deflate_index = 0;
+    unsigned long long out_buf_size = 0;
+    unsigned long long in_buf_size = 0;
+    char**destp = nullptr;
+    char* dest_deflate = nullptr;
+    char* tmp_dest = nullptr;
+
+    bool ignore_rest_deflate = false;
+
     for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i) {
+
         string filter = *i;
 
         if (filter == "deflate") {
-            char *dest = new char[chunk_size];
-            try {
-                inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
-                // This replaces (and deletes) the original read_buffer with dest.
-#if DMRPP_USE_SUPER_CHUNKS
-                set_read_buffer(dest, chunk_size, chunk_size, true);
-#else
-                set_rbuf(dest, chunk_size);
+
+            // Here we find that the deflate filter is applied twice. 
+            // Note: we find one GHRSST file is using the deflate twice, 
+            // However, for one chunk the deflate filter only applies once. 
+            // The returned decompressed size of this chunk is equal to
+            // the chunk size. So we have to skip the second "inflate" of this chunk by
+            // checking if the inflated size is equal to the chunk size. KY 2022-08-07
+
+            if (num_deflate > 1 && !ignore_rest_deflate) {
+
+                dest_deflate = new char[chunk_size];
+                try {
+                    destp = &dest_deflate;
+                    if (deflate_index == 0) {
+                        // First inflate, receive the buffer and the corresponding info from
+                        // the BES, save the inflated buffer into a tmp. buffer.
+                        out_buf_size = inflate(destp, chunk_size, get_rbuf(), get_rbuf_size());
+                        tmp_dest = *destp;
+                    }
+                    else {
+                        // Obtain the buffer and the size locally starting from the second inflate.
+                        // Remember to release the tmp_buf memory.
+#if 0
+                        tmp_buf = tmp_dest;
+                        out_buf_size = inflate(destp, chunk_size, tmp_buf, in_buf_size);
+                        tmp_dest = *destp;
+                        delete[] tmp_buf;
 #endif
+                        out_buf_size = inflate(destp, chunk_size, tmp_dest, in_buf_size);
+                        delete[] tmp_dest;
+                        tmp_dest = *destp;
+
+                    }
+                    deflate_index ++;
+                    in_buf_size = out_buf_size;
+#if DMRPP_USE_SUPER_CHUNKS
+                    // This is the last deflate filter, output the buffer.
+                    if (in_buf_size == chunk_size)
+                        ignore_rest_deflate = true;
+                    if (ignore_rest_deflate || deflate_index == num_deflate) {
+                        char* newdest = *destp;
+                        set_read_buffer(newdest, chunk_size, chunk_size, true);
+                    }
+ 
+#else
+                set_rbuf(dest_deflate, chunk_size);
+#endif
+
+                }
+                catch (...) {
+                    delete[] dest_deflate;
+                    delete[] tmp_dest;
+                    throw;
+                }
+ 
+
             }
-            catch (...) {
-                delete[] dest;
-                throw;
+            else if(num_deflate == 1) {
+                // The following is the same code as before. We need to use the double pointer
+                // to pass the buffer. KY 2022-08-07
+                dest_deflate = new char[chunk_size];
+                destp = &dest_deflate;
+                try {
+                    if (inflate(destp, chunk_size, get_rbuf(), get_rbuf_size()) ==0) {
+                        throw BESError("inflate size should be greater than 0", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+                    }
+                    // This replaces (and deletes) the original read_buffer with dest.
+#if DMRPP_USE_SUPER_CHUNKS
+                    char* new_dest=*destp;
+                    set_read_buffer(new_dest, chunk_size, chunk_size, true);
+#else
+                    set_rbuf(dest_deflate, chunk_size);
+#endif
+                }
+                catch (...) {
+                    delete[] dest_deflate;
+                    throw;
+                }
             }
         }// end filter is deflate
         else if (filter == "shuffle"){

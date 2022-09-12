@@ -120,7 +120,7 @@ static void set_array_using_double_helper(Array * a, double *src, int src_len)
 template<typename DODS, typename T>
 static T *extract_array_helper(Array *a)
 {
-    int length = a->length();
+    int length = a->size();
 
     DBG(cerr << "Allocating..." << length << endl);
     DODS *b = new DODS[length];
@@ -165,31 +165,31 @@ static GF::Array *extract_gridfield_array(Array *a) {
     switch (a->var()->type()) {
         case dods_byte_c:
             gfa = new GF::Array(a->var()->name(), GF::INT);
-            gfa->shareIntData(extract_array_helper<dods_byte, int>(a), a->length());
+            gfa->shareIntData(extract_array_helper<dods_byte, int>(a), a->size());
             break;
         case dods_uint16_c:
             gfa = new GF::Array(a->var()->name(), GF::INT);
-            gfa->shareIntData(extract_array_helper<dods_uint16, int>(a), a->length());
+            gfa->shareIntData(extract_array_helper<dods_uint16, int>(a), a->size());
             break;
         case dods_int16_c:
             gfa = new GF::Array(a->var()->name(), GF::INT);
-            gfa->shareIntData(extract_array_helper<dods_int16, int>(a), a->length());
+            gfa->shareIntData(extract_array_helper<dods_int16, int>(a), a->size());
             break;
         case dods_uint32_c:
             gfa = new GF::Array(a->var()->name(), GF::INT);
-            gfa->shareIntData(extract_array_helper<dods_uint32, int>(a), a->length());
+            gfa->shareIntData(extract_array_helper<dods_uint32, int>(a), a->size());
             break;
         case dods_int32_c:
             gfa = new GF::Array(a->var()->name(), GF::INT);
-            gfa->shareIntData(extract_array_helper<dods_int32, int>(a), a->length());
+            gfa->shareIntData(extract_array_helper<dods_int32, int>(a), a->size());
             break;
         case dods_float32_c:
             gfa = new GF::Array(a->var()->name(), GF::FLOAT);
-            gfa->shareFloatData(extract_array_helper<dods_float32, float>(a), a->length());
+            gfa->shareFloatData(extract_array_helper<dods_float32, float>(a), a->size());
             break;
         case dods_float64_c:
             gfa = new GF::Array(a->var()->name(), GF::FLOAT);
-            gfa->shareFloatData(extract_array_helper<dods_float64, float>(a), a->length());
+            gfa->shareFloatData(extract_array_helper<dods_float64, float>(a), a->size());
             break;
         default:
             throw InternalErr(__FILE__, __LINE__, "Unknown DDS type encountered when converting to gridfields array");
@@ -398,7 +398,7 @@ static double get_attribute_double_value(BaseType *var, vector<string> &attribut
             return get_attribute_double_value(dynamic_cast<Grid&>(*var).get_array(), attributes);
         else
             throw Error(malformed_expr,
-                    string("No COARDS/CF '") + values.substr(0, values.length() - 2)
+                    string("No COARDS/CF '") + values.substr(0, values.size() - 2)
                             + "' attribute was found for the variable '" + var->name() + "'.");
     }
 
@@ -732,8 +732,8 @@ function_ugrid_restrict(int argc, BaseType * argv[], DDS &dds, BaseType **btpp)
                 Nodes->append_dim(node1.size(),"tris");
                 Nodes->reserve_value_capacity(3*node1.size());
                 Nodes->set_value_slice_from_row_major_vector(*Node1,0);
-                Nodes->set_value_slice_from_row_major_vector(*Node2,Node1->length());
-                Nodes->set_value_slice_from_row_major_vector(*Node3,Node1->length()+Node2->length());
+                Nodes->set_value_slice_from_row_major_vector(*Node2,Node1->size());
+                Nodes->set_value_slice_from_row_major_vector(*Node3,Node1->size()+Node2->size());
                 AttrTable &arrattr1 = arr->get_attr_table();
                 Nodes->set_attr_table(arrattr1);
                 construct->add_var_nocopy(Nodes);

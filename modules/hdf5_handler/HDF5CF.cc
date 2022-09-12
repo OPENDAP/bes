@@ -1532,7 +1532,7 @@ string File::get_CF_string(string s)
     // Always start with _ if the first character is not a letter
     if (true == isdigit(s[0])) s.insert(0, insertString);
 
-    for (unsigned int i = 0; i < s.length(); i++)
+    for (unsigned int i = 0; i < s.size(); i++)
         if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
 
     return s;
@@ -2367,7 +2367,7 @@ void File::add_ignored_info_obj_header()
     ignored_msg +=
         " \n The HDF5 datasets(variables in the CF term) and attributes that have the following datatypes are ignored: \n";
     ignored_msg +=
-        " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable length(excluding variable length string),";
+        " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable size(excluding variable length string),";
     ignored_msg += " HDF5 reference, HDF5 enum, HDF5 opaque , HDF5 bitfield, HDF5 Array and HDF5 Time datatypes.\n";
 
     ignored_msg +=
@@ -2400,7 +2400,7 @@ File:: add_ignored_info_obj_dtype_header() {
     // Add ignored datatype header.
     ignored_msg += " \n Variables and attributes ignored due to the unsupported datatypes. \n";
     ignored_msg += " In general, the unsupported datatypes include: \n";
-    ignored_msg += " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable length(excluding variable length string),";
+    ignored_msg += " Signed and unsigned 64-bit integers, HDF5 compound, HDF5 variable size(excluding variable length string),";
     ignored_msg += " HDF5 reference, HDF5 enum, HDF5 opaque , HDF5 bitfield, HDF5 Array and HDF5 Time datatypes.\n";
 
 }

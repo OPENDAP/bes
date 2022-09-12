@@ -33,9 +33,11 @@
 #include <curl/curl.h>
 
 #include <libdap/BaseType.h>
+#include <libdap/Str.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
+
 
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
@@ -51,6 +53,7 @@
 #include "DmrppCommon.h"
 #include "Chunk.h"
 #include "byteswap_compat.h"
+#include "Base64.h"
 
 using namespace std;
 using namespace libdap;
@@ -148,7 +151,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
             strVal = chunk_dims.substr(0, strPos);
             // TODO stoull (CDS uses uint64_t) jhrg 5/2/22
             d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
-            chunk_dims.erase(0, strPos + space.length());
+            chunk_dims.erase(0, strPos + space.size());
         }
     }
 
@@ -476,6 +479,55 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
     if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
+    // print scalar value for compact storage.
+    if (DmrppCommon::d_print_chunks && is_compact_layout() && bt.read_p())  {
+
+        switch (bt.type()) {
+            case dods_byte_c:
+            case dods_char_c:
+            case dods_int8_c:
+            case dods_uint8_c:
+            case dods_int16_c:
+            case dods_uint16_c:
+            case dods_int32_c:
+            case dods_uint32_c:
+            case dods_int64_c:
+            case dods_uint64_c:
+
+            case dods_enum_c:
+
+            case dods_float32_c:
+            case dods_float64_c: {
+                u_int8_t *values = 0;
+                try {
+                    size_t size = bt.buf2val(reinterpret_cast<void **>(&values));
+                    string encoded = base64::Base64::encode(values, size);
+                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+                break;
+            }
+
+            case dods_str_c: {
+                
+                auto str = dynamic_cast<libdap::Str*>(this); 
+                string str_val = str->value();
+                string encoded = base64::Base64::encode(reinterpret_cast<const u_int8_t *>(str_val.c_str()), str_val.size());
+                print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+ 
+                break;
+            }
+
+            default:
+                throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+        }
+
+
+    }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + bt.type_name() + " element");
 }

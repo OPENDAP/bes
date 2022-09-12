@@ -358,7 +358,7 @@ int main(int argc, char *argv[]) {
             case 'h': {     // help - show test names
                 cerr << "Usage: checkT has the following tests:" << endl;
                 const std::vector<Test *> &tests = checkT::suite()->getTests();
-                unsigned int prefix_len = checkT::suite()->getName().append("::").length();
+                unsigned int prefix_len = checkT::suite()->getName().append("::").size();
                 for (auto test: tests) {
                     cerr << test->getName().replace(0, prefix_len, "") << endl;
                 }

@@ -188,6 +188,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_wrong_fvalue_type_dap4_all_nocf.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_s_c.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/fill_some_chunks_s_c_c.dmrpp.bescmd)
  
 dnl Add response that checks the empty expression constraint
 dnl The whole file is supposed to convert to netCDF
@@ -200,6 +203,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd
 
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
+
+dnl Add tests for the special character excaping feature. One for DAP2 and one for DAP4
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_special_char_attr.h5_dap2_nc4.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_special_char_attr.h5_dap4_nc4.bescmd)
 
 # Added tests for the 'max response size' feature that can be used to limit the size of the
 # data feed into the netcdf file builder.

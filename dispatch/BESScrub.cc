@@ -55,7 +55,7 @@ using std::unique_ptr;
 bool
 BESScrub::command_line_arg_ok( const string &arg )
 {
-    if( arg.length() > 255 )
+    if( arg.size() > 255 )
 	return false ;
 
     return true ;
@@ -91,16 +91,16 @@ BESScrub::size_ok(unsigned int sz, unsigned int nelem)
 bool
 BESScrub::pathname_ok(const string &path, bool strict)
 {
-    if (path.length() > 255)
+    if (path.size() > 255)
         return false;
 
     if (strict) {
         const BESRegex name("[[:alpha:][:digit:]_./-]+");
-        return name.match(path) == static_cast<int>(path.length());
+        return name.match(path) == static_cast<int>(path.size());
     }
     else {
         const BESRegex name("[:print:]+");
-        return name.match(path) == static_cast<int>(path.length());
+        return name.match(path) == static_cast<int>(path.size());
     }
 
 #if 0
@@ -108,7 +108,7 @@ BESScrub::pathname_ok(const string &path, bool strict)
     if (!strict)
         name = "[:print:]+";
         
-    string::size_type len = path.length() ;
+    string::size_type len = path.size() ;
     int ret = name.match( path.c_str(), len ) ;
     if( ret != static_cast<int>(len) )
         return false ;

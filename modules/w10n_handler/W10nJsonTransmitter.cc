@@ -103,7 +103,7 @@ W10nJsonTransmitter::W10nJsonTransmitter() :
         if (!found || W10nJsonTransmitter::temp_dir.empty()) {
             W10nJsonTransmitter::temp_dir = W10N_JSON_TEMP_DIR;
         }
-        string::size_type len = W10nJsonTransmitter::temp_dir.length();
+        string::size_type len = W10nJsonTransmitter::temp_dir.size();
         if (W10nJsonTransmitter::temp_dir[len - 1] == '/') {
             W10nJsonTransmitter::temp_dir = W10nJsonTransmitter::temp_dir.substr(0, len - 1);
         }
@@ -303,7 +303,7 @@ void W10nJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerIn
 
     string varName = getProjectedVariableName(ce);
 
-    if (varName.length() == 0) {
+    if (varName.size() == 0) {
         BESDEBUG(W10N_DEBUG_KEY, "W10nJsonTransmitter::send_metadata() - Sending w10n meta response for DDS" << endl);
         ft.sendW10nMetaForDDS();
     }

@@ -1029,7 +1029,7 @@ int main(int argc, char *argv[])
             case 'p': // TCP port
             {
                 string port_num = optarg;
-                for (unsigned int i = 0; i < port_num.length(); i++) {
+                for (unsigned int i = 0; i < port_num.size(); i++) {
                     if (!isdigit(port_num[i])) {
                         cout << "The specified port contains non-digit " << "characters: " << port_num << endl;
                         return 1;

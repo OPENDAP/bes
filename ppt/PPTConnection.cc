@@ -147,7 +147,7 @@ void PPTConnection::sendChunk(const string &buffer, map<string, string> &extensi
 	if (extensions.size()) {
 		sendExtensions(extensions);
 	}
-	strm << hex << setw(7) << setfill('0') << buffer.length() << "d";
+	strm << hex << setw(7) << setfill('0') << buffer.size() << "d";
 	if (!buffer.empty()) {
 		strm << buffer;
 	}
@@ -175,7 +175,7 @@ void PPTConnection::sendExtensions(map<string, string> &extensions)
 			estrm << ";";
 		}
 		string xstr = estrm.str();
-		strm << hex << setw(7) << setfill('0') << xstr.length() << "x" << xstr;
+		strm << hex << setw(7) << setfill('0') << xstr.size() << "x" << xstr;
 		string toSend = strm.str();
 		send(toSend);
 	}
@@ -190,7 +190,7 @@ void PPTConnection::sendExtensions(map<string, string> &extensions)
 void PPTConnection::send(const string &buffer)
 {
 	BESDEBUG(MODULE, prolog << "Sending " << buffer << endl);
-	_mySock->send(buffer, 0, buffer.length());
+	_mySock->send(buffer, 0, buffer.size());
 
 #if 0
 	// was calling fsync() which is not defined for sockets. There might be some
@@ -382,7 +382,7 @@ void PPTConnection::read_extensions(map<string, string> &extensions, const strin
 	while (!done) {
 		string::size_type semi = xstr.find(';', index);
 		if (semi == string::npos) {
-			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index) + ", missing semicolon";
+			string err = "malformed extensions " + xstr.substr(index, xstr.size() - index) + ", missing semicolon";
 			throw BESInternalError(err, __FILE__, __LINE__);
 		}
 		string::size_type eq = xstr.find('=', index);
@@ -392,7 +392,7 @@ void PPTConnection::read_extensions(map<string, string> &extensions, const strin
 			extensions[var] = "";
 		}
 		else if (eq == semi - 1) {
-			string err = "malformed extensions " + xstr.substr(index, xstr.length() - index)
+			string err = "malformed extensions " + xstr.substr(index, xstr.size() - index)
 					+ ", missing value after =";
 			throw BESInternalError(err, __FILE__, __LINE__);
 		}
@@ -402,7 +402,7 @@ void PPTConnection::read_extensions(map<string, string> &extensions, const strin
 			extensions[var] = val;
 		}
 		index = semi + 1;
-		if (index >= xstr.length()) {
+		if (index >= xstr.size()) {
 			done = true;
 		}
 	}

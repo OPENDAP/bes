@@ -17,11 +17,11 @@
     <Attribute name="_2__________________________" type="Container"/>
     <Array name="_3__________________________">
         <Attribute name="origname" type="String">
-            <value>3~!@#%^&amp;*()-+={}[]\|:;&quot;`
+            <value>3~!@#%^&amp;*()-+={}[]\|:;&quot;`\013
 	</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
-            <value>/3~!@#%^&amp;*()-+={}[]\|:;&quot;`
+            <value>/3~!@#%^&amp;*()-+={}[]\|:;&quot;`\013
 	</value>
         </Attribute>
         <Int32/>

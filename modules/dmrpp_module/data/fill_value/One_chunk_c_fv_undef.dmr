@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_undef_c.h5">
+    <Int32 name="chunk_normal_fv_undef">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <Attribute name="origname" type="String">
+            <Value>chunk_normal_fv_undef</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/chunk_normal_fv_undef</Value>
+        </Attribute>
+    </Int32>
+</Dataset>

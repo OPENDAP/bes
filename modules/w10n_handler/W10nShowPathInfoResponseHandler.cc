@@ -155,7 +155,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool isData = false;
 
     // If the valid path is an empty string then we KNOW it's not a dataset
-    if (validPath.length() != 0) {
+    if (validPath.size() != 0) {
 
         // Get the catalog entry.
         BESCatalogEntry *entry = 0;

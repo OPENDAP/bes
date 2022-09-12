@@ -32,7 +32,7 @@ HDFSPArrayMissGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArrayMissGeoField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
     // Declaration of offset,count and step
     vector<int>offset;

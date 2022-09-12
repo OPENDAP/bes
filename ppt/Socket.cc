@@ -89,7 +89,7 @@ void Socket::close()
 void Socket::send(const string &str, int start, int end)
 {
 	string send_str = str.substr(start, end);
-	int bytes_written = write(_socket, send_str.c_str(), send_str.length());
+	int bytes_written = write(_socket, send_str.c_str(), send_str.size());
 	if (bytes_written == -1) {
 		string err("socket failure, writing on stream socket");
 		const char* error_info = strerror(errno);

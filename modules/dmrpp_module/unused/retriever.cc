@@ -393,7 +393,7 @@ void parse_dmrpp(const string &dmrpp_filename_url){
         target_file = target_resource.getCacheFileName();
     }
     else if(target_file_url.rfind(file_protocol,0)==0){
-        target_file = target_file_url.substr(file_protocol.length());
+        target_file = target_file_url.substr(file_protocol.size());
     }
     else {
         target_file_url = file_protocol + target_file_url;

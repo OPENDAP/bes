@@ -329,7 +329,7 @@ void RemoteHttpResource::setType(const vector<string> *resp_hdrs)
             string colon_space = ": ";
             int index = hdr_line.find(colon_space);
             string hdr_name = hdr_line.substr(0, index);
-            string hdr_value = hdr_line.substr(index + colon_space.length());
+            string hdr_value = hdr_line.substr(index + colon_space.size());
 
             BESDEBUG(MODULE,
                      prolog << "hdr_name: '" << hdr_name << "'   hdr_value: '" <<hdr_value << "' "<< endl);

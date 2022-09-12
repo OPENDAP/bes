@@ -392,7 +392,7 @@ public:
             if (!no_proxy_regex.empty()) {
                 BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
                 BESRegex r(no_proxy_regex.c_str());
-                if (r.match(target_url.c_str(), target_url.length()) != -1) {
+                if (r.match(target_url.c_str(), target_url.size()) != -1) {
                     BESDEBUG(MODULE,
                              prolog << "Found NoProxy match. BESRegex: " << no_proxy_regex << "; Url: " << target_url
                                     << endl);
@@ -488,7 +488,7 @@ public:
             if (!no_proxy_regex.empty()) {
                 BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
                 BESRegex r(no_proxy_regex.c_str());
-                if (r.match(target_url.c_str(), target_url.length()) != -1) {
+                if (r.match(target_url.c_str(), target_url.size()) != -1) {
                     BESDEBUG(MODULE,
                              prolog << "Found NoProxy match. BESRegex: " << no_proxy_regex << "; Url: " << target_url
                                     << endl);

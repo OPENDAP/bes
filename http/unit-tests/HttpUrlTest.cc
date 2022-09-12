@@ -244,7 +244,7 @@ public:
 
             source_url = now_template_url;
             size_t index = source_url.find(amz_date_template);
-            source_url.erase(index,amz_date_template.length());
+            source_url.erase(index,amz_date_template.size());
             source_url.insert(index,x_amz_date);
             http::url now_url(source_url);
             if(debug) cerr << prolog << "now_url: " << now_url.str() << endl;

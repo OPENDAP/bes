@@ -457,10 +457,10 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
         }
     }
 
-    if (target.length() > 254) {
+    if (target.size() > 254) {
         ostringstream msg;
         msg << prolog << "Cache filename is longer than 254 characters (name length: ";
-        msg << target.length() << ", name: " << target;
+        msg << target.size() << ", name: " << target;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
@@ -820,7 +820,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     // start with the matching prefix
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0 && dirEntry != d_cache_info) {
+        if (dirEntry.compare(0, d_prefix.size(), d_prefix) == 0 && dirEntry != d_cache_info) {
             files.push_back(d_cache_dir + "/" + dirEntry);
         }
     }

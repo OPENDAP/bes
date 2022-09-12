@@ -343,7 +343,7 @@ bool configureProxy(CURL *curl, const string &url) {
         if (!ngap::NgapUtils::NoProxyRegex.empty()) {
             BESDEBUG(MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
             libdap::BESRegex r(ngap::NgapUtils::NoProxyRegex.c_str());
-            if (r.match(url.c_str(), url.length()) != -1) {
+            if (r.match(url.c_str(), url.size()) != -1) {
                 BESDEBUG(MODULE, prolog << "Found NoProxy match. BESRegex: " << ngap::NgapUtils::NoProxyRegex
                                                                                        << "; Url: " << url << endl);
                 using_proxy = false;

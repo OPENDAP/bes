@@ -5,13 +5,13 @@ Attributes {
         String libdap "libdap-3.20.9";
         String configuration "
 # TheBESKeys::get_as_config()
-AllowedHosts=^https?:\/\/
-BES.Catalog.catalog.Exclude=^\..*;
+AllowedHosts=^https?:\\/\\/
+BES.Catalog.catalog.Exclude=^\\..*;
 BES.Catalog.catalog.FollowSymLinks=Yes
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.RootDirectory=/Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/data/fill_value
-BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
-BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;
 BES.Container.Persistence=strict
 BES.Data.RootDirectory=/dev/null
 BES.DefaultResponseMethod=POST

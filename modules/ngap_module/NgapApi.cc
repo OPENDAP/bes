@@ -117,7 +117,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         msg << provider_index << ") expected 0.";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    provider_index += string(NGAP_PROVIDERS_KEY).length();
+    provider_index += string(NGAP_PROVIDERS_KEY).size();
 
     bool use_collection_concept_id = false;
     size_t collection_index  = r_path.find(NGAP_COLLECTIONS_KEY);
@@ -142,7 +142,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string provider = r_path.substr(provider_index,collection_index - provider_index);
-    collection_index += use_collection_concept_id?string(NGAP_CONCEPTS_KEY).length():string(NGAP_COLLECTIONS_KEY).length();
+    collection_index += use_collection_concept_id?string(NGAP_CONCEPTS_KEY).size():string(NGAP_COLLECTIONS_KEY).size();
 
 
     size_t granule_index  = r_path.find(NGAP_GRANULES_KEY);
@@ -160,7 +160,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string collection = r_path.substr(collection_index,granule_index - collection_index);
-    granule_index += string(NGAP_GRANULES_KEY).length();
+    granule_index += string(NGAP_GRANULES_KEY).size();
 
     // The granule value is the path terminus so it's every thing after the key
     string granule = r_path.substr(granule_index);
@@ -241,7 +241,7 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     // This is now the beginning of the collection_concept_id value.
-    size_t collections_index =  collections_key_index + string(NGAP_COLLECTIONS_KEY).length();
+    size_t collections_index =  collections_key_index + string(NGAP_COLLECTIONS_KEY).size();
 
     size_t granules_key_index  = r_path.find(NGAP_GRANULES_KEY);
     if(granules_key_index == string::npos){
@@ -260,7 +260,7 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
         msg << granules_key_index << ") expected at least " << collections_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    size_t granules_index =  granules_key_index + string(NGAP_GRANULES_KEY).length();
+    size_t granules_index =  granules_key_index + string(NGAP_GRANULES_KEY).size();
     // The granule_name value is the path terminus so it's every thing after the key
     string granule_name = r_path.substr(granules_index);
 

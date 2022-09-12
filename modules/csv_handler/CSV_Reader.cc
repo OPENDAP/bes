@@ -102,10 +102,10 @@ CSV_Reader::get(vector<string> &row) {
     // add a function to test for a comment line. jhrg 3/11/21
     do {
         getline(*_stream_in, line);
-        // when we reach EOF, line.length() is zero and that condition
+        // when we reach EOF, line.size() is zero and that condition
         // (i.e., when row is zero in CSV_Utils::split() below) signals
         // EOF to this handler. jhrg 3/11/21
-    } while(!_stream_in->eof() && (line.length() == 0 || line[0] == '#'));
+    } while(!_stream_in->eof() && (line.size() == 0 || line[0] == '#'));
 
     CSV_Utils::split(line, ',', row);
     _row_number++;

@@ -238,19 +238,19 @@ public:
         d_lon = lon;
     }
 
-    int get_lat_length() const
+    int get_lat_size() const
     {
         return d_lat_length;
     }
-    int get_lon_length() const
+    int get_lon_size() const
     {
         return d_lon_length;
     }
-    void set_lat_length(int len)
+    void set_lat_size(int len)
     {
         d_lat_length = len;
     }
-    void set_lon_length(int len)
+    void set_lon_size(int len)
     {
         d_lon_length = len;
     }

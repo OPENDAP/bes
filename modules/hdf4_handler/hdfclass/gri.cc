@@ -116,7 +116,7 @@ hdfistream_gri::hdfistream_gri(const string filename):hdfistream_obj
     (filename)
 {
     _init();
-    if (_filename.length() != 0)
+    if (_filename.size() != 0)
         open(_filename.c_str());
     return;
 }
@@ -154,7 +154,7 @@ void hdfistream_gri::close(void)
 // position to the stream to the index'th image
 void hdfistream_gri::seek(int index)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_ri();
     _index = index;
@@ -166,7 +166,7 @@ void hdfistream_gri::seek(int index)
 // position GRI stream to RI with name "name"
 void hdfistream_gri::seek(const char *name)
 {
-    if (_filename.length() == 0)        // no open file
+    if (_filename.size() == 0)        // no open file
         THROW(hcerr_invstream);
     int32 index = GRnametoindex(_gr_id, (char *) name);
     seek(index);
@@ -175,7 +175,7 @@ void hdfistream_gri::seek(const char *name)
 // position GRI stream to RI with reference "ref"
 void hdfistream_gri::seek_ref(int ref)
 {
-    if (_filename.length() == 0)        // no open file
+    if (_filename.size() == 0)        // no open file
         THROW(hcerr_invstream);
     int32 index = GRreftoindex(_gr_id, ref);
     seek(index);
@@ -184,7 +184,7 @@ void hdfistream_gri::seek_ref(int ref)
 // position GRI index in front of first RI
 void hdfistream_gri::rewind(void)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_ri();                // close any already open RI's
     _rewind();                  // seek to BOS
@@ -194,7 +194,7 @@ void hdfistream_gri::rewind(void)
 // the first RI in the file
 bool hdfistream_gri::bos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nri == 0)
         return false;
@@ -208,7 +208,7 @@ bool hdfistream_gri::bos(void) const
 // past the last RI in the file
 bool hdfistream_gri::eos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nri == 0)
         return true;
@@ -224,7 +224,7 @@ bool hdfistream_gri::eos(void) const
 // attribute in the currently open RI
 bool hdfistream_gri::eo_attr(void) const
 {
-    if (_filename.length() == 0)
+    if (_filename.size() == 0)
         THROW(hcerr_invstream);
     if (eos())
         return true;
@@ -251,7 +251,7 @@ void hdfistream_gri::setinterlace(int32 interlace_mode)
 // in the currently open RI
 bool hdfistream_gri::eo_pal(void) const
 {
-    if (_filename.length() == 0)
+    if (_filename.size() == 0)
         THROW(hcerr_invstream);
     if (eos())
         return true;
@@ -299,7 +299,7 @@ void hdfistream_gri::setslab(vector < int >start, vector < int >edge,
 // read a single RI
 hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream); // is this the right thing to throw?
     // delete any prevous data in hr
     hr.palettes = vector < hdf_palette > ();
@@ -407,7 +407,7 @@ hdfistream_gri & hdfistream_gri::operator>>(vector < hdf_gri > &hrv)
 // load attribute currently positioned at
 hdfistream_gri & hdfistream_gri::operator>>(hdf_attr & ha)
 {
-    if (_filename.length() == 0)
+    if (_filename.size() == 0)
         THROW(hcerr_invstream);
     if (eo_attr())
         return *this;
@@ -468,7 +468,7 @@ hdfistream_gri & hdfistream_gri::operator>>(vector < hdf_attr > &hav)
 
 hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eo_pal())               // if positioned past last dimension, do nothing
         return *this;

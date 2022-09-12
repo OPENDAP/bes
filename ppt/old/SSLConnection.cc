@@ -80,7 +80,7 @@ SSLConnection::send( const string &buf )
 {
     if( _connected )
     {
-	int len = SSL_write( _connection, (void *)buf.c_str(), buf.length() ) ;
+	int len = SSL_write( _connection, (void *)buf.c_str(), buf.size() ) ;
 	if( len <= 0 )
 	{
 	    string msg = "FAILED to write to SSL connection\n" ;

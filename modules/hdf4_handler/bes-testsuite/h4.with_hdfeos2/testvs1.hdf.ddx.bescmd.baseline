@@ -72,12 +72,12 @@
     </Attribute>
     <Attribute name="Vdata_DFNT_CHAR8" type="Container">
         <Attribute name="Vdata_field_Field_DFNT_CHAR8" type="String">
-            <value>\000\001\377\177\200</value>
+            <value></value>
         </Attribute>
     </Attribute>
     <Attribute name="Vdata_DFNT_UCHAR8" type="Container">
         <Attribute name="Vdata_field_Field_DFNT_UCHAR8" type="String">
-            <value>\000\001\377</value>
+            <value></value>
         </Attribute>
     </Attribute>
     <blob href="cid:"/>

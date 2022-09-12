@@ -85,7 +85,7 @@ bool CSV_Header::populate(vector<string> *headerinfo) const {
     for (; it != et; it++) {
         string headerinfo_s = (*it);
         CSV_Utils::slim(headerinfo_s);
-        string::size_type headerinfo_l = headerinfo_s.length();
+        string::size_type headerinfo_l = headerinfo_s.size();
 
         // lastPos = headerinfo_s.find_first_of( "<" ) ; not used. jg 3/25/11
         lastPos = headerinfo_s.find_first_of("<", 0);

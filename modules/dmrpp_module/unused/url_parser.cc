@@ -44,7 +44,7 @@ void url_parser::parse(const string &url_s) {
               ptr_fun<int, int>(tolower)); // protocol is icase
     if (prot_i == url_s.end())
         return;
-    advance(prot_i, prot_end.length());
+    advance(prot_i, prot_end.size());
     string::const_iterator path_i = find(prot_i, url_s.end(), '/');
     host_.reserve(distance(prot_i, path_i));
     transform(prot_i, path_i,

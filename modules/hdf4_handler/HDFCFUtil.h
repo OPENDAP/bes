@@ -77,6 +77,7 @@ struct HDFCFUtil
     /// use this characters to make the attribute easy to read. Escaping these characters in the attributes
     /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
     static std::string escattr(std::string  s);
+    static std::string escattr_fvalue(std::string  s);
 
 
     /// From a string separated by a separator to a list of string,
