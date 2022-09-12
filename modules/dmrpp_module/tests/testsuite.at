@@ -39,6 +39,8 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dods])
 
+dnl Check netCDF's var name = dimension name handling
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_var_dim_name_same.h5.dap])
 
 dnl Read chunked data
 
