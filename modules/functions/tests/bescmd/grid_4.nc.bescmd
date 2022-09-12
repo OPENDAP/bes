@@ -18,8 +18,8 @@
       <!-- bes:dap4constraint>/COADSX=[10:1:12];/COADSY=[10:1:11];/SST[][][]</bes:dap4constraint -->
       <!-- bes:dap4constraint>/SST[0][10:1:12][10:1:11]</bes:dap4constraint -->
       <!-- bes:dap4constraint>/SST</bes:dap4constraint -->
-      <bes:dap4function>grid(%2FSST,%2252%3E%2FCOADSY%3E30%22,%22182%3E%2FCOADSX%3E178%22)</bes:dap4function>
-      <!-- bes:dap4function>geogrid(SST,51,179,31,-179)</bes:dap4function -->
+      <!-- bes:dap4function>grid(%2FSST,%2252%3E%2FCOADSY%3E30%22,%22182%3E%2FCOADSX%3E178%22)</bes:dap4function -->
+      <bes:dap4function>geogrid(SST,51,179,31,-179)</bes:dap4function>
     </bes:container>
   </bes:define>
   
