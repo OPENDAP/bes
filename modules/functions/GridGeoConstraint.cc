@@ -224,10 +224,6 @@ bool GridGeoConstraint::build_lat_lon_maps()
         }
     }
     else {
-<<<<<<< HEAD
-
-=======
->>>>>>> 9a7005b3d4a2057a8ef49fcbb28b2e3c2c66a651
         if ( !d_coverage->is_dap2_grid() )
             throw InternalErr(__FILE__, __LINE__, "Expected an Array.");
 
@@ -322,12 +318,7 @@ bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
                     d_latitude->read();
 
                 set_lat(extract_double_array(d_latitude));   // throws Error
-<<<<<<< HEAD
                 set_lat_size(d_latitude->length());
-=======
-                set_lat_length(d_latitude->length());
->>>>>>> 9a7005b3d4a2057a8ef49fcbb28b2e3c2c66a651
-
                 set_lat_dim(d);
             }
 
@@ -339,12 +330,7 @@ bool GridGeoConstraint::build_lat_lon_maps(Array *lat, Array *lon)
                     d_longitude->read();
 
                 set_lon(extract_double_array(d_longitude));
-<<<<<<< HEAD
                 set_lon_size(d_longitude->length());
-=======
-                set_lon_length(d_longitude->length());
->>>>>>> 9a7005b3d4a2057a8ef49fcbb28b2e3c2c66a651
-
                 set_lon_dim(d);
 
                 if (m + 1 == d_grid->map_end())
