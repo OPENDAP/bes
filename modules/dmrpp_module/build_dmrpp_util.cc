@@ -1064,14 +1064,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         }
     }
 
-#if 0
-    if (nc4_non_coord_candidate.empty() == false) {
-        for ( auto it = nc4_non_coord_candidate.begin(); it !=nc4_non_coord_candidate.end();++it)
-cerr<<"nc4_non_coord "<<(*it) <<endl;
-    } 
-    else 
-cerr<<"No nc4_non_coord_candidate "<<endl;
-#endif
 
     // variables in the group
     for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
@@ -1119,21 +1111,13 @@ cerr<<"No nc4_non_coord_candidate "<<endl;
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
             string FQN = (*btp)->FQN();
-            string name = (*btp)->name();
-            if (nc4_non_coord_candidate.empty() == false) {
-                if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
-                    string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
-                    size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
-                    string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
-                    dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
-#if 0
-cerr<<"real_path_candidate is "<< real_path_candidate <<endl;
-                    if (string::npos != last_fslash_pos)
-                        ret_str=s.substr(0,last_fslash_pos+1);
-#endif
-
-                }
+            if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
+                size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
+                string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+                dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
             }
+            
             VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
             if (dataset < 0)  {
                 dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
