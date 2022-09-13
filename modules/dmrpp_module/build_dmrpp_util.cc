@@ -754,7 +754,7 @@ void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
 }
 
 
-void proto_flsa_compact(hid_t dataset, BaseType *btp){
+void process_compact_flsa(hid_t dataset, BaseType *btp){
 
     add_string_array_info(dataset, btp);
 
@@ -771,25 +771,12 @@ void proto_flsa_compact(hid_t dataset, BaseType *btp){
 
     auto memRequired = btp->length_ll() * fls_length;
 
-    vector<char> raw_values;
-    raw_values.resize(memRequired);
-    get_data(dataset, reinterpret_cast<void *>(raw_values.data()));
-    auto array = toDA(btp);
-    array->val2buf(raw_values.data());
-    /*
-    char *str_start = raw_values.data();
-    vector<string> fls_values;
-    while(fls_values.size() < btp->length_ll()){
-        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
-        fls_values.emplace_back(aValue);
-        str_start += fls_length;
-    }
-    auto array = toDA(btp);
-    array->set_value(fls_values, (int) fls_values.size());
-    */
 
+    auto array = toDA(btp);
+    auto &string_buf = array->compact_str_buffer();
+    string_buf.resize(memRequired);
+    get_data(dataset, reinterpret_cast<void *>(string_buf.data()));
     array->set_read_p(true);
-
 }
 
 void process_compact_layout_array(hid_t dataset, BaseType *btp) {
@@ -852,6 +839,7 @@ void process_compact_layout_array(hid_t dataset, BaseType *btp) {
         case dods_str_c:
         {
             if (H5Tis_variable_str(dtypeid) > 0) {
+                // Variable length string case.
                 vector<string> finstrval;   // passed by reference to read_vlen_string
                 // @TODO Why push an empty string into the first array position? WHY?
                 finstrval.push_back("");
@@ -860,23 +848,8 @@ void process_compact_layout_array(hid_t dataset, BaseType *btp) {
                 array->set_read_p(true);
             }
             else {
-                // For this case, the Array is really a single string - check for that
-                // with the following assert - but is an Array because the string data
-                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
-                // a string and load that into a vector<string> (which will be a vector
-                // of length one). Set that as the value of the Array. Really, this
-                // value could be stored as a scalar, but that's complicated and client
-                // software might be expecting an array, so better to handle it this way.
-                // jhrg 9/17/20
-                assert(array->length() == 1);
-                values.resize(memRequired);
-                get_data(dataset, reinterpret_cast<void *>(values.data()));
-                string str(values.begin(), values.end());
-                vector<string> strings;
-                // @TODO Why push an empty string into the first array position? WHY?
-                strings.push_back("");
-                array->set_value(strings, (int) strings.size());
-                array->set_read_p(true);
+                // Fixed length string case.
+                process_compact_flsa(dataset, btp);
             }
             break;
         }
