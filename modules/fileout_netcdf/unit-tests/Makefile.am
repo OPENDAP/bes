@@ -53,7 +53,7 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = HistoryUtilsTest
+UNIT_TESTS = HistoryUtilsTest D4ToolsTest
 else
 UNIT_TESTS =
 
@@ -71,3 +71,6 @@ LDFLAGS = -static
 
 HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
 HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
+
+D4ToolsTest_SOURCES = D4ToolsTest.cc
+D4ToolsTest_LDADD = ../d4_tools.o $(LIBADD)
