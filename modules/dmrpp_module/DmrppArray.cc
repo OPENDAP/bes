@@ -1895,9 +1895,10 @@ bool DmrppArray::read()
             array_to_read = get_as_byte_array(*this);
         }
     }
-    string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
-    BESDEBUG(MODULE, prolog << msg << endl);
-
+    if(BESDebug::IsSet(MODULE)) {
+        string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
+        BESDEBUG(MODULE, prolog << msg << endl);
+    }
     // Single chunk and 'contiguous' are the same for this code.
 
     if (array_to_read->get_chunks_size() == 1) {
@@ -2285,7 +2286,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
             case dods_float32_c:
             case dods_float64_c: {
-                u_int8_t *values = 0;
+                uint8_t *values = nullptr;
                 try {
                     size_t size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
@@ -2300,15 +2301,31 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             }
 
             case dods_str_c:
-            case dods_url_c: {
-                string *values = 0;
+            case dods_url_c:
+            {
+#if 1
+                uint8_t *values = nullptr;
+                buf2val(reinterpret_cast<void **>(&values));
+                try {
+                    // discard the return value of buf2val()
+                    auto size = buf2val(reinterpret_cast<void **>(&values));
+                    string encoded = base64::Base64::encode(values, size);
+                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+#else
+                string *values = nullptr;
                 try {
                     // discard the return value of buf2val()
                     buf2val(reinterpret_cast<void **>(&values));
                     string str;
                     for (int i = 0; i < length(); ++i) {
                         str = (*(static_cast<string *> (values) + i));
-                        string encoded = base64::Base64::encode(reinterpret_cast<const u_int8_t *>(str.c_str()), str.size());
+                        string encoded = base64::Base64::encode(reinterpret_cast<const uint8_t *>(str.c_str()), str.size());
                         print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
                     }
                     delete[] values;
@@ -2317,6 +2334,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                     delete[] values;
                     throw;
                 }
+#endif
                 break;
             }
 
@@ -2379,7 +2397,34 @@ void DmrppArray::dump(ostream &strm) const
 }
 
 
+unsigned int DmrppArray::buf2val(void **val){
 
+    if (!val) {
+        throw BESInternalError("NULL pointer encountered.", __FILE__, __LINE__);
+    }
+    if ( var()->type()==dods_str_c  ||  var()->type()==dods_url_c ) {
+
+        auto str_buf = compact_str_buffer();
+        auto buf_size = str_buf.size();
+        if (str_buf.empty()) {
+            stringstream msg;
+            msg << prolog << "Logic error: called when cardinal type data buffer was empty!";
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+        if (!*val) {
+            *val = new char[buf_size];
+        }
+        memcpy(*val, str_buf.data(), buf_size);
+        return buf_size;
+    }
+
+    return Vector::buf2val(val);
+
+
+
+
+
+}
 
 
 } // namespace dmrpp

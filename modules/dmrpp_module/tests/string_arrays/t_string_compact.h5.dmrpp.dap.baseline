@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_string_compact.h5">
+    <String name="array_1d">
+        <Dim size="4"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="array_2d">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="array_special_case">
+        <Dim size="1"/>
+        <Dim size="1"/>
+        <Attribute name="value" type="String">
+            <Value>A</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="scalar">
+        <Attribute name="value" type="String">
+            <Value>Parting is such sweet sorrow.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -M -f /path_removed/data/string_arrays/t_string_compact.h5 -r /path_removed/data/string_arrays/t_string_compact.h5.dmr</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+String array_1d[4] = {"Parting", "is so", "swe", ""};
+String array_2d[2][2] = {{"Parting", "is so"},{"swe", ""}};
+String array_special_case[1][1] = {{"A"}};
+String scalar = "Parting is such sweet sorrow.";
+

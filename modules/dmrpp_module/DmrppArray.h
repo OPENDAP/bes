@@ -89,7 +89,7 @@ private:
     //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
     unsigned long long d_fixed_str_length = 0;
     string_pad_type d_fixed_length_string_pad_type = not_set;
-
+    vector<u_int8_t> d_compact_str_buf;
 
     bool is_projected();
 
@@ -205,6 +205,11 @@ public:
 
     static std::string pad_type_to_str(string_pad_type pad_type);
     static string ingest_fixed_length_string(char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
+
+
+    unsigned int buf2val(void **val) override;
+    vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
+
 };
 
 /**

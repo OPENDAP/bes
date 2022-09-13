@@ -970,11 +970,28 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
          
             std::string str(decoded.begin(), decoded.end());
             if (btp->type() == dods_array_c) {
-                auto *st = static_cast<DmrppArray *>(btp);
-                // Although val2buf() takes a void*, for DAP Str and Url types, it casts
-                // that to std::string*. jhrg 11/4/21
-                st->val2buf(&str);
-                st->set_read_p(true);
+                auto *array = dynamic_cast<DmrppArray *>(btp);
+                if(!array){
+                    throw BESInternalError("Internal state error. Object claims to be array but is not.",__FILE__,__LINE__);
+                }
+                if(array->is_flsa()){
+                    // It's an array of Fixed Length Strings
+                    auto fls_length = array->get_fixed_string_length();
+                    auto pad_type = array->get_fixed_length_string_pad();
+                    auto str_start = reinterpret_cast<char *>(decoded.data());
+                    vector<string> fls_values;
+                    while(fls_values.size() < btp->length_ll()){
+                        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+                        fls_values.emplace_back(aValue);
+                        str_start += fls_length;
+                    }
+                    array->set_value(fls_values, (int) fls_values.size());
+                    array->set_read_p(true);
+                }
+                else {
+                    // It's an array of Variable Length Strings
+                    throw BESInternalError("Variable Length Strings are not yet supported.",__FILE__,__LINE__);
+                }
             }
             else {// Scalar
                 if(btp->type() == dods_str_c) {
@@ -994,6 +1011,18 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         default:
             throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
+        case dods_null_c:
+            break;
+        case dods_structure_c:
+            break;
+        case dods_sequence_c:
+            break;
+        case dods_grid_c:
+            break;
+        case dods_opaque_c:
+            break;
+        case dods_group_c:
+            break;
     }
 }
 

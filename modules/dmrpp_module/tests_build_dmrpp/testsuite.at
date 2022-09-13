@@ -8,9 +8,9 @@ m4_include([build_dmrpp_macros.m4])
 ################################################################################
 # Test arrays of fixed length strings
 #
-# AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_cont.h5])
-# AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_chunked.h5])
-# AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_cont.h5])
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_chunk.h5])
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
 
 
 ################################################################################
