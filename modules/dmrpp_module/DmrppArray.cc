@@ -1579,100 +1579,6 @@ std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned 
     return ss.str();
 }
 
-#if 0
-DmrppArray *get_as_byte_array(DmrppArray &array){
-
-    //Type var_type;
-    //var_type = str_array.prototype()->type();
-
-    //if ((var_type == dods_str_c || var_type == dods_url_c)) {
-    //    throw BESInternalError("");
-    //}
-
-
-    if (array.is_flsa()) {
-        BESDEBUG(MODULE, prolog << "Processing Fixed Length String Array data." << endl);
-
-        auto *transport = dynamic_cast<DmrppArray *>(array.ptr_duplicate());
-        if(!transport){
-            throw BESInternalFatalError(prolog + "Server encountered internal state ambiguity. "
-                                                 "Expected valid DmrppArray pointer. Exiting.",
-                                                 __FILE__, __LINE__);
-        }
-
-        auto fs_len = transport->get_fixed_string_length();
-        BESDEBUG(MODULE, prolog << "get_fixed_string_length(): " << fs_len << endl);
-
-        unsigned long long total_bytes = transport->length() * fs_len;
-        BESDEBUG(MODULE, prolog << "total_bytes: " << total_bytes << endl);
-
-        string banner("Source DmrppArray");
-        BESDEBUG(MODULE, prolog << array_to_str(*transport,banner) );
-
-        // Replace prototype
-        auto *tmp_proto  = new libdap::Byte(transport->prototype()->name());
-        transport->set_prototype(tmp_proto);
-        tmp_proto->set_parent(transport);
-
-        // Fiddle Chunk dimension sizes
-        auto cdim_sizes = transport->get_chunk_dimension_sizes();
-        BESDEBUG(MODULE, prolog << "original chunk_dimension_sizes.back(): " << dims_to_string(cdim_sizes) << endl);
-
-        auto new_last_cdim_size = cdim_sizes.back() * fs_len;
-        cdim_sizes.pop_back();
-        cdim_sizes.emplace_back(new_last_cdim_size);
-        BESDEBUG(MODULE, prolog << "New chunk_dimension_sizes" << dims_to_string(cdim_sizes) << endl);
-
-        transport->set_chunk_dimension_sizes(cdim_sizes);
-        BESDEBUG(MODULE, prolog << "Updated chunk_dimension_sizes" << dims_to_string(transport->get_chunk_dimension_sizes()) << endl);
-
-        unsigned long long chunk_index = 0;
-        for(const auto &chunk: transport->get_immutable_chunks()){
-            auto cpia = chunk->get_position_in_array();
-            auto new_position = cpia.back() * fs_len;
-            cpia.pop_back();
-            cpia.emplace_back(new_position);
-            BESDEBUG(MODULE, prolog << "Chunk["<< chunk_index << "] new chunk_position_in_array" << dims_to_string(cpia) << endl);
-            chunk->set_position_in_array(cpia);
-            BESDEBUG(MODULE, prolog << "Chunk["<< chunk_index << "] UPDATED chunk_position_in_array" << dims_to_string(chunk->get_position_in_array()) << endl);
-            chunk_index++;
-        }
-
-        auto t_last_dim = transport->dim_end() - 1;
-        auto orig_last_array_dim_size = t_last_dim->size;
-
-        BESDEBUG(MODULE, prolog << "Orig last_dim->size: " << t_last_dim->size << endl);
-
-        t_last_dim->size = orig_last_array_dim_size * fs_len;
-        BESDEBUG(MODULE, prolog << "New last_dim->size: " << t_last_dim->size << endl);
-
-        t_last_dim->c_size = t_last_dim->size;
-        BESDEBUG(MODULE, prolog << "New last_dim->c_size: " << t_last_dim->c_size << endl);
-
-        t_last_dim->start = 0;
-        BESDEBUG(MODULE, prolog << "New last_dim->start: " << t_last_dim->start << endl);
-
-        t_last_dim->stop = t_last_dim->size - 1;
-        BESDEBUG(MODULE, prolog << "New last_dim->stop: " << t_last_dim->stop << endl);
-
-        t_last_dim->stride = 1;
-        BESDEBUG(MODULE, prolog << "New last_dim->stride: " << t_last_dim->stride << endl);
-
-        transport->set_length(total_bytes);
-        t_last_dim = transport->dim_end() - 1;
-        BESDEBUG(MODULE, prolog << "Updated last_dim->size: " << t_last_dim->size << endl);
-
-
-        banner = "New transport DmrppArray";
-        BESDEBUG(MODULE, prolog << array_to_str(*transport,banner) );
-        return transport;
-    }
-
-    return nullptr;
-}
-
-#else
-
 /**
  * Takes the passed array and construsts a DmrppArray of bytes
  * the should be able to read all of the data for the array into the
@@ -1782,8 +1688,6 @@ DmrppArray *get_as_byte_array(DmrppArray &array){
     return byte_array_proxy;
 
 }
-
-#endif
 
 /**
  * Reads the string data for the fixed length string array flsa from the
@@ -2288,7 +2192,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             case dods_float64_c: {
                 uint8_t *values = nullptr;
                 try {
-                    size_t size = buf2val(reinterpret_cast<void **>(&values));
+                    auto size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
                     print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
                     delete[] values;
@@ -2303,11 +2207,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
             case dods_str_c:
             case dods_url_c:
             {
-#if 1
                 uint8_t *values = nullptr;
-                buf2val(reinterpret_cast<void **>(&values));
                 try {
-                    // discard the return value of buf2val()
                     auto size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
                     print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
@@ -2317,24 +2218,6 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                     delete[] values;
                     throw;
                 }
-#else
-                string *values = nullptr;
-                try {
-                    // discard the return value of buf2val()
-                    buf2val(reinterpret_cast<void **>(&values));
-                    string str;
-                    for (int i = 0; i < length(); ++i) {
-                        str = (*(static_cast<string *> (values) + i));
-                        string encoded = base64::Base64::encode(reinterpret_cast<const uint8_t *>(str.c_str()), str.size());
-                        print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
-                    }
-                    delete[] values;
-                }
-                catch (...) {
-                    delete[] values;
-                    throw;
-                }
-#endif
                 break;
             }
 
