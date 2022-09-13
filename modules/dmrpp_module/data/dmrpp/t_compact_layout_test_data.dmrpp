@@ -191,7 +191,7 @@
             <Value>1</Value>
         </Attribute>
         <dmrpp:compact>MjAxOC0xMi0yOFQwMjowNzozOC43MTMwMDBa</dmrpp:compact>
-        <dmrpp:FixedLengthStringArray string_length="80" pad="null_term" />
+        <dmrpp:FixedLengthStringArray string_length="27" pad="null_term" />
     </String>
 
 </Dataset>
