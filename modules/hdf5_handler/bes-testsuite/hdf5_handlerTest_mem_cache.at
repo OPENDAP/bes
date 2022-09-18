@@ -114,7 +114,7 @@ AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 -i $1 > $2|| true], [], [stdout], [stderr])
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
 AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
 AT_CLEANUP])
@@ -141,7 +141,7 @@ m4_define([AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST],
 ])
 
 m4_define([AT_BESCMD_RESPONSE_TEST_OS],
-[_AT_BESCMD_TEST_OS([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.mem_cache/$1.baseline])
+[_AT_BESCMD_TEST_OS([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.mem_cache_cf/$1.baseline])
 ])
 
 
