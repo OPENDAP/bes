@@ -819,7 +819,10 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
             }
 #endif
-            at->append_attr(attr->getNewName(), "String", tempstring);
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
+                at->append_attr(attr->getNewName(), "String", tempstring,true);
+            else 
+                at->append_attr(attr->getNewName(), "String", tempstring);
         }
     }
 }
@@ -1367,6 +1370,8 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
                 }
 #endif
                 d4_attr->add_value(tempstring);
+                if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
+                    d4_attr->set_utf8_str_flag(true);
             }
         }
     }
