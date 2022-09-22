@@ -2163,6 +2163,18 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
     BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl); 
 
+    bool is_utf8_str = false;
+
+    // Note: We don't need to handle DAP4 here since the utf8 flag for DAP4 can be set before coming to this function
+    // See h5dmr.cc around the line 956.
+    if (is_dap4 == false) {
+        H5T_cset_t c_set_type = H5Tget_cset(ty_id);
+        if (c_set_type < 0)
+            throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
+        if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1))
+            is_utf8_str = true;
+    }
+
     hid_t temp_space_id = H5Aget_space(attr_id);
     BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
     if(temp_space_id <0) {
@@ -2198,8 +2210,12 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
             string tempstring(onestring);
             if(true == is_dap4)
                 d4_attr->add_value(tempstring);
-	    else 
+	    else {
+                if (is_utf8_str)
+                    d2_attr->append_attr(attr_inst_ptr->name,"String",tempstring,true);
+                else 
 		    d2_attr->append_attr(attr_inst_ptr->name,"String",tempstring);
+            }
         }
 
         temp_bp +=H5Tget_size(ty_id);

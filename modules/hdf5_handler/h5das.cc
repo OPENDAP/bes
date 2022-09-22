@@ -349,65 +349,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         }
 
         // We have to handle variable length string differently. 
-        if (H5Tis_variable_str(ty_id)) {
-
+        if (H5Tis_variable_str(ty_id)) 
             write_vlen_str_attrs(attr_id,ty_id,&attr_inst,nullptr,attr_table_ptr,false);
-
-#if 0
-            BESDEBUG("h5", "attribute name " << attr_name <<endl);
-            BESDEBUG("h5", "attribute size " <<attr_inst.need <<endl);
-            BESDEBUG("h5", "attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
-
-            hid_t temp_space_id = H5Aget_space(attr_id);
-            BESDEBUG("h5",
-                "attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
-            if (temp_space_id < 0) {
-                H5Tclose(ty_id);
-                H5Aclose(attr_id);
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-
-            }
-
-            // Variable length string attribute values only store pointers of the actual string value.
-            temp_buf.resize((size_t) attr_inst.need);
-
-            if (H5Aread(attr_id, ty_id, temp_buf.data()) < 0) {
-                H5Sclose(temp_space_id);
-                H5Tclose(ty_id);
-                H5Aclose(attr_id);
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
-
-            char *temp_bp;
-            temp_bp = temp_buf.data();
-            char* onestring;
-            for (unsigned int temp_i = 0; temp_i < attr_inst.nelmts; temp_i++) {
-
-                // This line will assure that we get the real variable length string value.
-                onestring = *(char **) temp_bp;
-
-                // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-                if (onestring != nullptr) {
-                    string tempstring(onestring);
-                    attr_table_ptr->append_attr(attr_name, dap_type, tempstring);
-                }
-
-                // going to the next value.
-                temp_bp += H5Tget_size(ty_id);
-            }
-            if (temp_buf.empty() != true) {
-                // Reclaim any VL memory if necessary.
-                herr_t ret_vlen_claim;
-                ret_vlen_claim = H5Dvlen_reclaim(ty_id, temp_space_id, H5P_DEFAULT, temp_buf.data());
-                if(ret_vlen_claim < 0) {
-                    H5Sclose(temp_space_id);
-                    throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
-                }
-                temp_buf.clear();
-            }
-            H5Sclose(temp_space_id);
-#endif
-        }
         else {
             vector<char> value;
             value.resize(attr_inst.need);
@@ -425,7 +368,10 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, value.data());
                     if (print_rep.c_str() != nullptr) {
-                        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+                        if (is_utf8_str)
+                            attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str(),true);
+                        else  
+                            attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
                     }
                 }
 
@@ -451,7 +397,11 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 for (hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index++) {
                     print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
                     if (print_rep.c_str() != nullptr) {
-                        attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+                        if (is_utf8_str) 
+                            attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str(),true);
+                        else 
+                            attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
+
                         tempvalue = tempvalue + elesize;
 
                         BESDEBUG("h5", "tempvalue=" << tempvalue << "elesize=" << elesize << endl);
