@@ -16,7 +16,7 @@ noinst_DATA = bes.conf bes.default.conf bes.ignore.conf bes.cfdmr.conf \
 bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf
 
 CLEANFILES = bes.conf bes.default.conf bes.ignore.conf bes.cfdmr.conf \
-bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false_dap2dmr.conf
+bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in		\
 $(srcdir)/package.m4 h5.cf h5.cf.ignore h5.default h5.cf.dmr h5.nasa bes.conf.in \
