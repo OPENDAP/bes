@@ -551,12 +551,14 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
             // This will get the DDS, either by building it or from the cache
             get_dds_with_attributes(dataset_name, "", &dds);
 
-            dmr->set_factory(new D4BaseTypeFactory);
+            D4BaseTypeFactory MyD4TypeFactory;
+            dmr->set_factory(&MyD4TypeFactory);
             dmr->build_using_dds(dds);
 #else
             // This version builds a DDS only to build the resulting DMR. The DDS is
             // not cached. It does look in the DDS cache, just in case...
-            dmr->set_factory(new D4BaseTypeFactory);
+            D4BaseTypeFactory MyD4TypeFactory;                                                              
+            dmr->set_factory(&MyD4TypeFactory);
 
             DDS *dds_ptr = 0;
             if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {

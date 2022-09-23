@@ -1,10 +1,16 @@
 netcdf test {
 dimensions:
-	nWavelDiagnostic = 5 ;
-	lat = 720 ;
 	lon = 1440 ;
+	lat = 720 ;
+	nWavelDiagnostic = 5 ;
 	StructMetadata_0_len = 4636 ;
 variables:
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
+	int nWavelDiagnostic(nWavelDiagnostic) ;
+		nWavelDiagnostic:units = "level" ;
 	short AbsorbingAerosolOpticalThicknessMW(nWavelDiagnostic, lat, lon) ;
 		AbsorbingAerosolOpticalThicknessMW:_FillValue = -32767s ;
 		AbsorbingAerosolOpticalThicknessMW:units = "NoUnits" ;
@@ -151,12 +157,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
-	int nWavelDiagnostic(nWavelDiagnostic) ;
-		nWavelDiagnostic:units = "level" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.OrbitNumber = 40305, 40306, 40307, 40308, 40309, 40310, 40311, 40312, 40313, 40314, 40315, 40316, 40317, 40318, 40319, 40320, 40321, 40322, 40323, 40324, 40325, 40326, 40327, 40328, 40329, 40330, 40331, 40332, 40333, 40334, 40335, 40336, 40337, 40338, 40339, 40340, 40341, 40342, 40343, 40344, 40345, 40346, 40347, 40348 ;

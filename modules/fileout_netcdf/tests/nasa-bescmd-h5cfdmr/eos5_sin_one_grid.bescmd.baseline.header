@@ -4,6 +4,10 @@ dimensions:
 	XDim = 1200 ;
 	StructMetadata_0_len = 3203 ;
 variables:
+	double lon(YDim, XDim) ;
+		lon:units = "degrees_east" ;
+	double lat(YDim, XDim) ;
+		lat:units = "degrees_north" ;
 	short RelativeAzimuth(YDim, XDim) ;
 		RelativeAzimuth:_FillValue = 0s ;
 		RelativeAzimuth:long_name = "Relative_azimuth" ;
@@ -219,10 +223,6 @@ variables:
 		XDim:long_name = "x coordinate of projection " ;
 		XDim:units = "meter" ;
 		XDim:_CoordinateAxisType = "GeoX" ;
-	double lon(YDim, XDim) ;
-		lon:units = "degrees_east" ;
-	double lat(YDim, XDim) ;
-		lat:units = "degrees_north" ;
 
 // global attributes:
 		:GRingLatitude = -30.060828, -19.942433, -19.883099, -30. ;

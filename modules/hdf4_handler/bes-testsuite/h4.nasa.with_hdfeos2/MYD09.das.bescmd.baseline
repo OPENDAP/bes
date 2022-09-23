@@ -876,91 +876,91 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MYD09.A2019003.2040.006.2019005020913.hdf";
+                    String VALUE "\"MYD09.A2019003.2040.006.2019005020913.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2019-01-05T02:09:13.000Z";
+                    String VALUE "\"2019-01-05T02:09:13.000Z\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Day";
+                    String VALUE "\"Day\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "reprocessed";
+                    String VALUE "\"reprocessed\"";
                 }
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "further update is anticipated";
+                    String VALUE "\"further update is anticipated\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Not Investigated";
-                            String CLASS "1";
+                            String VALUE "\"Not Investigated\"";
+                            String CLASS "\"1\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Always 'Passed'.";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Always 'Passed'.\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua for the product Science Quality status.";
-                            String CLASS "1";
+                            String VALUE "\"See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua for the product Science Quality status.\"";
+                            String CLASS "\"1\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 2;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MODIS Atmos Corrected Surf Refl";
+                        String VALUE "\"MODIS Atmos Corrected Surf Refl\"";
                     }
                 }
             }
             ORBITCALCULATEDSPATIALDOMAIN {
                 ORBITCALCULATEDSPATIALDOMAINCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     EQUATORCROSSINGDATE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "2019-01-03";
+                        String VALUE "\"2019-01-03\"";
                     }
                     EQUATORCROSSINGTIME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "21:20:46.144634";
+                        String VALUE "\"21:20:46.144634\"";
                     }
                     ORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 88666;
                     }
                     EQUATORCROSSINGLONGITUDE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Float64 VALUE 63.7083382082782;
                     }
@@ -973,45 +973,45 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MYD09";
+                    String VALUE "\"MYD09\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 75;
-                    String VALUE "gdas1.PGrbF00.190103.18z", "gdas1.PGrbF00.190104.00z", "MYD02PCQKM.A2019003.2040.006.2019004170150.hdf", "MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf", "MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf", "MYD03.A2019003.2040.006.2019004162253.hdf", "
-          MYD35_L2.A2019003.2040.006.2019004163133.hdf";
+                    String VALUE "\"gdas1.PGrbF00.190103.18z\"", "\"gdas1.PGrbF00.190104.00z\"", "\"MYD02PCQKM.A2019003.2040.006.2019004170150.hdf\"", "\"MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf\"", "\"MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf\"", "\"MYD03.A2019003.2040.006.2019004162253.hdf\"", "\"
+          MYD35_L2.A2019003.2040.006.2019004163133.hdf\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 HORIZONTALSPATIALDOMAINCONTAINER {
                     GPOLYGON {
                         GPOLYGONCONTAINER {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             GRINGPOINT {
-                                String CLASS "1";
+                                String CLASS "\"1\"";
                                 GRINGPOINTLONGITUDE {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE -98.5237623615703, -122.850628653365, -131.876160780343, -100.731496143619;
                                 }
                                 GRINGPOINTLATITUDE {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE 32.2896394803434, 28.8233206294747, 45.7674150696915, 50.568369947233;
                                 }
                                 GRINGPOINTSEQUENCENO {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE 1, 2, 3, 4;
                                 }
                             }
                             GRING {
-                                String CLASS "1";
+                                String CLASS "\"1\"";
                                 EXCLUSIONGRINGFLAG {
                                     Int32 NUM_VAL 1;
-                                    String CLASS "1";
-                                    String VALUE "N";
+                                    String CLASS "\"1\"";
+                                    String VALUE "\"N\"";
                                 }
                             }
                         }
@@ -1021,83 +1021,83 @@ Attributes {
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2019-01-03";
+                    String VALUE "\"2019-01-03\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "20:45:00.000000";
+                    String VALUE "\"20:45:00.000000\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2019-01-03";
+                    String VALUE "\"2019-01-03\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "20:40:00.000000";
+                    String VALUE "\"20:40:00.000000\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "6.3.16";
+                    String VALUE "\"6.3.16\"";
                 }
             }
             ANCILLARYINPUTGRANULE {
                 ANCILLARYINPUTGRANULECONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ANCILLARYINPUTPOINTER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MYD03.A2019003.2040.006.2019004162253.hdf";
+                        String VALUE "\"MYD03.A2019003.2040.006.2019004162253.hdf\"";
                     }
                     ANCILLARYINPUTTYPE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Geolocation";
+                        String VALUE "\"Geolocation\"";
                     }
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Aqua";
+                        String VALUE "\"Aqua\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MODIS";
+                        String VALUE "\"MODIS\"";
                     }
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MODIS";
+                        String VALUE "\"MODIS\"";
                     }
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"", "\"16\"", "\"17\"", "\"18\"", "\"19\"", "\"20\"", "\"21\"", "\"23\"", "\"24\"", "\"22\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"", "\"16\"", "\"17\"", "\"18\"", "\"19\"", "\"20\"", "\"21\"", "\"23\"", "\"24\"", "\"22\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "QAPERCENTPOOROUTPUT250MBAND1", "QAPERCENTPOOROUTPUT250MBAND2", "QAPERCENTPOOROUTPUT500MBAND1", "QAPERCENTPOOROUTPUT500MBAND2", "QAPERCENTPOOROUTPUT500MBAND3", "QAPERCENTPOOROUTPUT500MBAND4", "QAPERCENTPOOROUTPUT500MBAND5", "QAPERCENTPOOROUTPUT500MBAND6", "QAPERCENTPOOROUTPUT500MBAND7", "QAPERCENTPOOROUTPUT1KMBAND1", "QAPERCENTPOOROUTPUT1KMBAND2", "QAPERCENTPOOROUTPUT1KMBAND3", "QAPERCENTPOOROUTPUT1KMBAND4", "QAPERCENTPOOROUTPUT1KMBAND5", "QAPERCENTPOOROUTPUT1KMBAND6", "QAPERCENTPOOROUTPUT1KMBAND7", "GRANULENUMBER", "identifier_product_doi", "identifier_product_doi_authority", "PROCESSVERSION";
+                        String VALUE "\"QAPERCENTGOODQUALITY\"", "\"QAPERCENTOTHERQUALITY\"", "\"QAPERCENTNOTPRODUCEDCLOUD\"", "\"QAPERCENTNOTPRODUCEDOTHER\"", "\"QAPERCENTPOOROUTPUT250MBAND1\"", "\"QAPERCENTPOOROUTPUT250MBAND2\"", "\"QAPERCENTPOOROUTPUT500MBAND1\"", "\"QAPERCENTPOOROUTPUT500MBAND2\"", "\"QAPERCENTPOOROUTPUT500MBAND3\"", "\"QAPERCENTPOOROUTPUT500MBAND4\"", "\"QAPERCENTPOOROUTPUT500MBAND5\"", "\"QAPERCENTPOOROUTPUT500MBAND6\"", "\"QAPERCENTPOOROUTPUT500MBAND7\"", "\"QAPERCENTPOOROUTPUT1KMBAND1\"", "\"QAPERCENTPOOROUTPUT1KMBAND2\"", "\"QAPERCENTPOOROUTPUT1KMBAND3\"", "\"QAPERCENTPOOROUTPUT1KMBAND4\"", "\"QAPERCENTPOOROUTPUT1KMBAND5\"", "\"QAPERCENTPOOROUTPUT1KMBAND6\"", "\"QAPERCENTPOOROUTPUT1KMBAND7\"", "\"GRANULENUMBER\"", "\"identifier_product_doi\"", "\"identifier_product_doi_authority\"", "\"PROCESSVERSION\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"", "\"16\"", "\"17\"", "\"18\"", "\"19\"", "\"20\"", "\"21\"", "\"23\"", "\"24\"", "\"22\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
-                            String VALUE "72", "4", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "250", "10.5067/MODIS/MYD09.006", "http://dx.doi.org", "6.3.16";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"", "\"16\"", "\"17\"", "\"18\"", "\"19\"", "\"20\"", "\"21\"", "\"23\"", "\"24\"", "\"22\"";
+                            String VALUE "\"72\"", "\"4\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"250\"", "\"10.5067/MODIS/MYD09.006\"", "\"http://dx.doi.org\"", "\"6.3.16\"";
                         }
                     }
                 }
             }
             LOCALVERSIONID {
                 Int32 NUM_VAL 1;
-                String VALUE "6.3.16";
+                String VALUE "\"6.3.16\"";
             }
         }
     }
@@ -1106,40 +1106,40 @@ Attributes {
             String GROUPTYPE "MASTERGROUP";
             ALGORITHMPACKAGEACCEPTANCEDATE {
                 Int32 NUM_VAL 1;
-                String VALUE "1998-01-01";
+                String VALUE "\"1998-01-01\"";
             }
             ALGORITHMPACKAGEMATURITYCODE {
                 Int32 NUM_VAL 1;
-                String VALUE "pre-launch";
+                String VALUE "\"pre-launch\"";
             }
             ALGORITHMPACKAGENAME {
                 Int32 NUM_VAL 1;
-                String VALUE "MOD09 L2";
+                String VALUE "\"MOD09 L2\"";
             }
             ALGORITHMPACKAGEVERSION {
                 Int32 NUM_VAL 1;
-                String VALUE "version 4";
+                String VALUE "\"version 4\"";
             }
             SYSTEMFILENAME {
                 Int32 NUM_VAL 75;
-                String VALUE "gdas1.PGrbF00.190103.18z", "gdas1.PGrbF00.190104.00z", "MYD02PCQKM.A2019003.2040.006.2019004170150.hdf", "MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf", "MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf", "MYD03.A2019003.2040.006.2019004162253.hdf", "
-        MYD35_L2.A2019003.2040.006.2019004163133.hdf";
+                String VALUE "\"gdas1.PGrbF00.190103.18z\"", "\"gdas1.PGrbF00.190104.00z\"", "\"MYD02PCQKM.A2019003.2040.006.2019004170150.hdf\"", "\"MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf\"", "\"MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf\"", "\"MYD03.A2019003.2040.006.2019004162253.hdf\"", "\"
+        MYD35_L2.A2019003.2040.006.2019004163133.hdf\"";
             }
             ANCILLARYSYSTEMFILENAME {
                 Int32 NUM_VAL 75;
-                String VALUE "MYD03.A2019003.2040.006.2019004162253.hdf";
+                String VALUE "\"MYD03.A2019003.2040.006.2019004162253.hdf\"";
             }
             LONGNAME {
                 Int32 NUM_VAL 1;
-                String VALUE "MODIS/Aqua Atmospherically Corrected Surface Reflectance 5-Min L2 Swath 250m, 500m, 1km";
+                String VALUE "\"MODIS/Aqua Atmospherically Corrected Surface Reflectance 5-Min L2 Swath 250m, 500m, 1km\"";
             }
             PROCESSINGCENTER {
                 Int32 NUM_VAL 1;
-                String VALUE "MODAPS";
+                String VALUE "\"MODAPS\"";
             }
             SPSOPARAMETERS {
                 Int32 NUM_VAL 1;
-                String VALUE "2015";
+                String VALUE "\"2015\"";
             }
             QUALITYCLASSPERCENTAGE1KMBAND1 {
                 Int32 NUM_VAL 16;
@@ -1207,11 +1207,11 @@ Attributes {
             }
             ADJACENCYCORRECTIONATTEMPTED {
                 Int32 NUM_VAL 1;
-                String VALUE "no";
+                String VALUE "\"no\"";
             }
             ATMOSPHERICCORRECTIONATTEMPTED {
                 Int32 NUM_VAL 1;
-                String VALUE "yes";
+                String VALUE "\"yes\"";
             }
             NORTHBOUNDINGCOORDINATE {
                 Int32 NUM_VAL 1;
@@ -1231,7 +1231,7 @@ Attributes {
             }
             BRDFCORRECTIONATTEMPTED {
                 Int32 NUM_VAL 1;
-                String VALUE "no";
+                String VALUE "\"no\"";
             }
             INSTRUMENTSCANSPROCESSED {
                 Int32 NUM_VAL 1;
@@ -1243,7 +1243,7 @@ Attributes {
             }
             SEAPROCESSED {
                 Int32 NUM_VAL 1;
-                String VALUE "yes";
+                String VALUE "\"yes\"";
             }
             SCIABNORM {
                 Int32 NUM_VAL 1;
@@ -1263,15 +1263,15 @@ Attributes {
             }
             DESCRREVISION {
                 Int32 NUM_VAL 1;
-                String VALUE "6.0";
+                String VALUE "\"6.0\"";
             }
             PRODUCTIONHISTORY {
                 Int32 NUM_VAL 1;
-                String VALUE "PGE11:6.3.16;PGE128:6.0.17;PGE02:6.1.37.25;PGE01:6.0.27";
+                String VALUE "\"PGE11:6.3.16;PGE128:6.0.17;PGE02:6.1.37.25;PGE01:6.0.27\"";
             }
             PROCESSINGENVIRONMENT {
                 Int32 NUM_VAL 1;
-                String VALUE "Linux minion7043 3.10.0-862.11.6.el7.x86_64 #1 SMP Tue Aug 14 21:49:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux";
+                String VALUE "\"Linux minion7043 3.10.0-862.11.6.el7.x86_64 #1 SMP Tue Aug 14 21:49:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux\"";
             }
         }
     }

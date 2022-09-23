@@ -535,6 +535,17 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
 
+#nc var dim name same 
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dmr.bescmd])
+
+
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_2dll.h5.dmr.bescmd])
@@ -701,9 +712,13 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 
+#netcdf4 var and dim share the same name
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bescmd])
+
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
-# This tests that the DDS used as an argument to a function does contain attributes.
+# In this test, the DDS is used as an argument to a function that does contain attributes.
 # ky 11/1/19
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
@@ -754,6 +769,6 @@ AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.cfdmr.conf
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xpass])
 # and change to false
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf], [xfail])
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf], [xfail])

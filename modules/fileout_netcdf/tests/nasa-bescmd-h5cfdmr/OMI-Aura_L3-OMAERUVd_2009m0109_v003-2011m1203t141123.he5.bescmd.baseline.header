@@ -1,9 +1,13 @@
 netcdf test {
 dimensions:
-	lat = 180 ;
 	lon = 360 ;
+	lat = 180 ;
 	StructMetadata_0_len = 2491 ;
 variables:
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
 	float FinalAerosolAbsOpticalDepth388(lat, lon) ;
 		FinalAerosolAbsOpticalDepth388:_FillValue = -1.267651e+30f ;
 		FinalAerosolAbsOpticalDepth388:units = "NoUnits" ;
@@ -84,10 +88,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.OrbitNumber = 23849, 23850, 23851, 23852, 23853, 23854, 23855, 23856, 23857, 23858, 23859, 23860, 23861, 23862, 23863, 23864, 23865, 23866, 23867, 23868, 23869, 23870, 23871, 23872, 23873, 23874, 23875, 23876, 23877, 23878, 23879, 23880, 23881, 23882, 23883, 23884, 23885, 23886, 23887, 23888, 23889, 23890, 23891, 23892, 23893 ;

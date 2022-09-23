@@ -1619,7 +1619,7 @@
             <Value>Scalar</Value>
         </Attribute>
         <Attribute name="Description" type="String">
-            <Value>Actual number of reported retrievals with a \&quot;Good\&quot; quality flag</Value>
+            <Value>Actual number of reported retrievals with a &quot;Good&quot; quality flag</Value>
         </Attribute>
         <Attribute name="Type" type="String">
             <Value>Signed32</Value>
@@ -2889,7 +2889,7 @@
             <Value>Retrieval_Array</Value>
         </Attribute>
         <Attribute name="Description" type="String">
-            <Value>Cloud flag derived from IMAP-DOAS algorithm:  -2 - 'Measurement unusable', -1 - 'Did not converge', 0 - \&quot;Definitely cloudy', 1 - 'Probably cloudy', 2 - 'Probably clear', 3 - 'Very clear', all other values undefined.</Value>
+            <Value>Cloud flag derived from IMAP-DOAS algorithm:  -2 - 'Measurement unusable', -1 - 'Did not converge', 0 - &quot;Definitely cloudy', 1 - 'Probably cloudy', 2 - 'Probably clear', 3 - 'Very clear', all other values undefined.</Value>
         </Attribute>
         <Attribute name="Type" type="String">
             <Value>Signed8</Value>

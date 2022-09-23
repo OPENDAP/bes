@@ -1,9 +1,13 @@
 netcdf test {
 dimensions:
-	lat = 720 ;
 	lon = 1440 ;
+	lat = 720 ;
 	StructMetadata_0_len = 4042 ;
 variables:
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
 	float ColumnAmountO3(lat, lon) ;
 		ColumnAmountO3:_FillValue = -1.267651e+30f ;
 		ColumnAmountO3:units = "DU" ;
@@ -151,10 +155,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.OrbitNumber = 39679, 39680, 39681, 39682, 39683, 39684, 39685, 39686, 39687, 39688, 39689, 39690, 39691, 39692, 39693, 39694, 39695, 39696, 39697, 39698, 39699, 39700, 39701, 39702, 39703, 39704, 39705, 39706, 39707, 39708, 39709, 39710, 39711, 39712, 39713, 39714, 39715, 39716, 39717, 39718, 39719, 39720, 39721, 39722 ;

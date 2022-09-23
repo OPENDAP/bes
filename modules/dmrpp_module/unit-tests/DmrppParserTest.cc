@@ -32,10 +32,10 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <libdap/DMR.h>
+#include "libdap/DMR.h"
 
-#include <TheBESKeys.h>
-#include <BESDebug.h>
+#include "TheBESKeys.h"
+#include "BESDebug.h"
 
 #include "DmrppArray.h"
 #include "DmrppByte.h"

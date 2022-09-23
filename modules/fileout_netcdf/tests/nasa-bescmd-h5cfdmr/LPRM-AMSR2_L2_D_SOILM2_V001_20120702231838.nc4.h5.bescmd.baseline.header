@@ -3,6 +3,18 @@ dimensions:
 	nscan = 2015 ;
 	npix = 243 ;
 variables:
+	float Latitude(nscan, npix) ;
+		Latitude:units = "degrees_north" ;
+		Latitude:long_name = "Latitude" ;
+		Latitude:_CoordinateAxisType = "Lat" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/Latitude" ;
+	float Longitude(nscan, npix) ;
+		Longitude:units = "degrees_east" ;
+		Longitude:long_name = "Longitude" ;
+		Longitude:_CoordinateAxisType = "Lon" ;
+		Longitude:origname = "Longitude" ;
+		Longitude:fullnamepath = "/Longitude" ;
 	short res_c2(nscan, npix) ;
 		res_c2:long_name = "Residual error at 7.3 GHz" ;
 		res_c2:units = "Kelvin" ;
@@ -139,18 +151,6 @@ variables:
 		soil_moisture_x_error:add_offset = 0.f ;
 		soil_moisture_x_error:origname = "soil_moisture_x_error" ;
 		soil_moisture_x_error:fullnamepath = "/soil_moisture_x_error" ;
-	float Latitude(nscan, npix) ;
-		Latitude:units = "degrees_north" ;
-		Latitude:long_name = "Latitude" ;
-		Latitude:_CoordinateAxisType = "Lat" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/Latitude" ;
-	float Longitude(nscan, npix) ;
-		Longitude:units = "degrees_east" ;
-		Longitude:long_name = "Longitude" ;
-		Longitude:_CoordinateAxisType = "Lon" ;
-		Longitude:origname = "Longitude" ;
-		Longitude:fullnamepath = "/Longitude" ;
 
 // global attributes:
 		:Conventions = "CF-1.0" ;

@@ -426,7 +426,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                 }
 
                 try {
-                    read_objects(par_grp, full_path_name, fname,dset_id);
+                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale);
                 }
                 catch(...) {
                     H5Dclose(dset_id);
@@ -580,7 +580,9 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects(DMR & dmr, D4Group *d4_grp, 
 /////                            const string & varname, 
-/////                            const string & filename,const hid_t dset_id) 
+/////                            const string & filename,
+/////                            const hid_t dset_id,
+/////                            bool use_dimscale) 
 ///// fills in information of a dataset (name, data type, data space) into the dap4 
 ///// group. 
 ///// This is a wrapper function that calls functions to read atomic types and structure.
@@ -590,18 +592,19 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
 ////     \param dset_id HDF5 dataset id.
+/////    \param use_dimscale boolean that indicates if dimscale is used.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id)
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
-        read_objects_structure(d4_grp, varname, filename,dset_id);
+        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale);
         break;
 
     case H5T_ARRAY:
@@ -609,7 +612,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
         throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
     
     default:
-        read_objects_base_type(d4_grp,varname, filename,dset_id);
+        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale);
         break;
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
@@ -621,7 +624,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 /////////////////////////////////////////////////////////////////////////////// 
 ///// \fn read_objects_base_type(DMR & dmr, D4Group *d4_grp, 
 /////                            const string & varname, 
-/////                            const string & filename,const hid_t dset_id) 
+/////                            const string & filename,const hid_t dset_id, bool use_dimscale) 
 ///// fills in information of a dataset (name, data type, data space) with HDF5 atomic datatypes into the dap4 
 ///// group. 
 ///// 
@@ -630,6 +633,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
 ////     \param dset_id HDF5 dataset id.
+/////    \param use_dimscale boolean that indicates if dimscale is used.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -638,11 +642,17 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 //read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 void
 read_objects_base_type(D4Group * d4_grp,const string & varname,
-                       const string & filename,hid_t dset_id)
+                       const string & filename,hid_t dset_id, bool use_dimscale)
 {
 
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
+    if (use_dimscale) {
+        const string nc4_non_coord="_nc4_non_coord_";
+        size_t nc4_non_coord_size= nc4_non_coord.size();
+        if (newvarname.find(nc4_non_coord) == 0)
+            newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
+    }
 
     // Get a base type. It should be an HDF5 atomic datatype
     // datatype. 
@@ -749,7 +759,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn read_objects_structure(DMR & dmr,D4Group *d4_grp,const string & varname,
-///                  const string & filename,hid_t dset_id)
+///                  const string & filename,hid_t dset_id, bool use_dimscale)
 /// fills in information of a structure dataset (name, data type, data space)
 /// into a DAP4 group. HDF5 compound datatype will map to DAP structure.
 /// 
@@ -758,14 +768,21 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 ///    \param varname Absolute name of structure
 ///    \param filename The HDF5 file  name that maps to the DDS dataset name.
 ///    \param dset_id HDF5 dataset ID
+///    \param use_dimscale boolean that indicates if dimscale is used.
 ///    \throw error a string of error message to the dods interface.
 ///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
-                       const string & filename,hid_t dset_id)
+                       const string & filename,hid_t dset_id,bool use_dimscale)
 {
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
+    if (use_dimscale) {
+        const string nc4_non_coord="_nc4_non_coord_";
+        size_t nc4_non_coord_size= nc4_non_coord.size();
+        if (newvarname.find(nc4_non_coord) == 0)
+            newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
+    }
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);

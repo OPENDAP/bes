@@ -41,6 +41,8 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
+#include "DmrppNames.h"
+
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -495,7 +497,7 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
     // Transform the scalar to an array
-    auto *array = static_cast<Array*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
+    auto *array = static_cast<DmrppArray*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
     array->set_is_dap4(true);
     array->add_var_nocopy(btp);
 
@@ -509,6 +511,22 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
         }
         else if (is_eq(child.name(), "Map")) {
             process_map(dmr, group, array, child);
+        }
+        else if (is_eq(child.name(), DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT)) {
+            BESDEBUG(MODULE,"Variable has been marked as a " << DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT << endl);
+            // <dmrpp:FixedLengthStringArray string_length="8" pad="null"/>
+            array->set_is_flsa(true);
+            for (xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute()) {
+                if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR)) {
+                    auto length = array->set_fixed_string_length(attr.value());
+                    BESDEBUG(MODULE,"Fixed length string array string length: " << length << endl);
+                }
+                else if (is_eq(attr.name(), DMRPP_FIXED_LENGTH_STRING_PAD_ATTR)) {
+                    string_pad_type pad = array->set_fixed_length_string_pad_type(attr.value());
+                    BESDEBUG(MODULE,"Fixed length string array padding scheme: " << pad << " (" <<
+                        array->get_fixed_length_string_pad_str() << ")" << endl);
+                }
+            }
         }
     }
 
@@ -952,11 +970,28 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
          
             std::string str(decoded.begin(), decoded.end());
             if (btp->type() == dods_array_c) {
-                auto *st = static_cast<DmrppArray *>(btp);
-                // Although val2buf() takes a void*, for DAP Str and Url types, it casts
-                // that to std::string*. jhrg 11/4/21
-                st->val2buf(&str);
-                st->set_read_p(true);
+                auto *array = dynamic_cast<DmrppArray *>(btp);
+                if(!array){
+                    throw BESInternalError("Internal state error. Object claims to be array but is not.",__FILE__,__LINE__);
+                }
+                if(array->is_flsa()){
+                    // It's an array of Fixed Length Strings
+                    auto fls_length = array->get_fixed_string_length();
+                    auto pad_type = array->get_fixed_length_string_pad();
+                    auto str_start = reinterpret_cast<char *>(decoded.data());
+                    vector<string> fls_values;
+                    while(fls_values.size() < btp->length_ll()){
+                        string aValue = DmrppArray::ingest_fixed_length_string(str_start,fls_length, pad_type);
+                        fls_values.emplace_back(aValue);
+                        str_start += fls_length;
+                    }
+                    array->set_value(fls_values, (int) fls_values.size());
+                    array->set_read_p(true);
+                }
+                else {
+                    // It's an array of Variable Length Strings
+                    throw BESInternalError("Variable Length Strings are not yet supported.",__FILE__,__LINE__);
+                }
             }
             else {// Scalar
                 if(btp->type() == dods_str_c) {
@@ -976,6 +1011,18 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         default:
             throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
+        case dods_null_c:
+            break;
+        case dods_structure_c:
+            break;
+        case dods_sequence_c:
+            break;
+        case dods_grid_c:
+            break;
+        case dods_opaque_c:
+            break;
+        case dods_group_c:
+            break;
     }
 }
 

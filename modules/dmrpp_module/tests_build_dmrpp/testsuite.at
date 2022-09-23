@@ -6,6 +6,14 @@ AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
 m4_include([build_dmrpp_macros.m4])
 
 ################################################################################
+# Test arrays of fixed length strings
+#
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_cont.h5])
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_chunk.h5])
+AT_BUILD_DMRPP_M([modules/dmrpp_module/data/string_arrays/t_string_compact.h5])
+
+
+################################################################################
 # Test get_dmrpp using command line options
 #
 AT_GET_DMRPP_3_20([simple test 1], [chunked_oneD.h5], [simple_test_1.baseline])

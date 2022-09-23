@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_var_dim_name_same.h5">
+    <Dimension name="dim1_r" size="2"/>
+    <Float32 name="dim1_r">
+        <Dim name="/dim1_r"/>
+        <Attribute name="origname" type="String">
+            <Value>dim1_r</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/dim1_r</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="dim1">
+        <Dim name="/dim1_r"/>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_dim1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_dim1</Value>
+        </Attribute>
+        <Map name="/dim1_r"/>
+    </Float32>
+</Dataset>

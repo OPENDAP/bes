@@ -1,11 +1,17 @@
 netcdf test {
 dimensions:
-	rows = 2160 ;
 	columns = 4320 ;
-	rgb = 3 ;
 	eightbitcolor = 256 ;
+	rgb = 3 ;
+	rows = 2160 ;
 	palette_len = 2 ;
 variables:
+	float columns(columns) ;
+		columns:units = "degrees_east" ;
+	float eightbitcolor(eightbitcolor) ;
+	float rgb(rgb) ;
+	float rows(rows) ;
+		rows:units = "degrees_north" ;
 	float geophysical_data_chlor_a(rows, columns) ;
 		geophysical_data_chlor_a:long_name = "Chlorophyll Concentration, OC4 Algorithm" ;
 		geophysical_data_chlor_a:units = "mg m^-3" ;
@@ -24,12 +30,6 @@ variables:
 	char palette(rgb, eightbitcolor, palette_len) ;
 		palette:origname = "palette" ;
 		palette:fullnamepath = "/palette" ;
-	float columns(columns) ;
-		columns:units = "degrees_east" ;
-	float eightbitcolor(eightbitcolor) ;
-	float rgb(rgb) ;
-	float rows(rows) ;
-		rows:units = "degrees_north" ;
 
 // global attributes:
 		:product_name = "S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc" ;

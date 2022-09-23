@@ -3,6 +3,20 @@ dimensions:
 	Latitude = 180 ;
 	Longitude = 360 ;
 variables:
+	float Latitude(Latitude) ;
+		Latitude:valid_range = -90.f, 90.f ;
+		Latitude:_FillValue = -1.267651e+30f ;
+		Latitude:long_name = "Geodetic Latitude" ;
+		Latitude:units = "degrees_north" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/Latitude" ;
+	float Longitude(Longitude) ;
+		Longitude:valid_range = -180.f, 180.f ;
+		Longitude:_FillValue = -1.267651e+30f ;
+		Longitude:long_name = "Geodetic Longitude" ;
+		Longitude:units = "degrees_east" ;
+		Longitude:origname = "Longitude" ;
+		Longitude:fullnamepath = "/Longitude" ;
 	float ColumnAmountO3(Latitude, Longitude) ;
 		ColumnAmountO3:long_name = "Best Total Ozone Solution" ;
 		ColumnAmountO3:units = "DU" ;
@@ -70,20 +84,6 @@ variables:
 		ViewingZenithAngle:units = "degrees" ;
 		ViewingZenithAngle:origname = "ViewingZenithAngle" ;
 		ViewingZenithAngle:fullnamepath = "/ViewingZenithAngle" ;
-	float Latitude(Latitude) ;
-		Latitude:valid_range = -90.f, 90.f ;
-		Latitude:_FillValue = -1.267651e+30f ;
-		Latitude:long_name = "Geodetic Latitude" ;
-		Latitude:units = "degrees_north" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/Latitude" ;
-	float Longitude(Longitude) ;
-		Longitude:valid_range = -180.f, 180.f ;
-		Longitude:_FillValue = -1.267651e+30f ;
-		Longitude:long_name = "Geodetic Longitude" ;
-		Longitude:units = "degrees_east" ;
-		Longitude:origname = "Longitude" ;
-		Longitude:fullnamepath = "/Longitude" ;
 
 // global attributes:
 		:DATA_QUALITY = 0s ;
