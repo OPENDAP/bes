@@ -57,6 +57,7 @@
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
 #include "HDF5Structure.h"
+#include "HDF5RequestHandler.h"
 
 // The HDF5CFUtil.h includes the utility function obtain_string_after_lastslash.
 #include "HDF5CFUtil.h"
@@ -946,9 +947,19 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         // Create the DAP4 attribute mapped from HDF5
         auto d4_attr = new D4Attribute(attr_name,dap4_attr_type);
 
+        if (dap4_attr_type == attr_str_c) {
+            
+            H5T_cset_t c_set_type = H5Tget_cset(ty_id);
+            if (c_set_type < 0)
+                throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == 1)) 
+                d4_attr->set_utf8_str_flag(true);
+        }
+
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id))  
             write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,nullptr,true);
+       
         else {
 
             vector<char> value;
