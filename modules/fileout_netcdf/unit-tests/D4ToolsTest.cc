@@ -34,6 +34,7 @@
 #include <libdap/Byte.h>
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
+#include <libdap/D4Attributes.h>
 
 #include "d4_tools.h"
 
@@ -59,8 +60,11 @@ public:
     ~D4ToolsTest() = default;
 
     // is_dap4_projected(libdap::BaseType *var, vector<BaseType *> &inv)
+    /**
+     * basic variable test - true
+     * tests if dap4 variables returns true
+     */
     void test_is_dap4_projected_int8(){
-        //Int8 b8("b8");
         Int8 b8("b8");
         vector<BaseType *> inv;
         CPPUNIT_ASSERT(is_dap4_projected(&b8, inv));
@@ -68,6 +72,10 @@ public:
         CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
     }
 
+    /**
+     * basic variable test - false
+     * tests if non-dap4 variables returns false
+     */
     void test_is_dap4_projected_byte(){
         Byte b8("b8");
         vector<BaseType *> inv;
@@ -75,6 +83,10 @@ public:
         CPPUNIT_ASSERT(inv.size() == 0);
     }
 
+    /**
+     * array variable test - true
+     * tests if array containing dap4 vars returns true
+     */
     void test_is_dap4_projected_array(){
         Int8 b8("b8");
         Array a4("b8", &b8);
@@ -84,6 +96,22 @@ public:
         CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
     }
 
+    /**
+     * array variable test - false
+     * test if array containing dap4 vars returns false
+     */
+     void test_is_dap4_projected_array_byte(){
+         Byte b8("b8");
+         Array a4("b8", &b8);
+         vector<BaseType *> inv;
+         CPPUNIT_ASSERT(is_dap4_projected(&a4, inv) == false);
+         CPPUNIT_ASSERT(inv.size() == 0);
+     }
+
+    /**
+     * struct variable test - true
+     * test if struct containing dap4 vars returns true
+     */
     void test_is_dap4_projected_struct(){
         Structure s2("s2");
         Array *a4 = new Array("b8", new Int8("b8"));
@@ -94,7 +122,24 @@ public:
         CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
     }
 
-    void test_is_dap4_projected_dds1(){
+    /**
+     * struct variable test - false
+     * test if struct containing dap4 vars returns false
+     */
+    void test_is_dap4_projected_struct_byte(){
+        Structure s2("s2");
+        Array *a4 = new Array("b8", new Byte("b8"));
+        s2.add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&s2, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
+    /**
+     * DDS variable test - true
+     * test if DDS containing dap4 vars returns true
+     */
+    void test_is_dap4_projected_dds(){
         BaseTypeFactory f;
         DDS *dds = new DDS(&f);
         Array *a4 = new Array("b8", new Int8("b8"));
@@ -106,14 +151,167 @@ public:
         CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
     }
 
+    /**
+     * DDS variable test - false
+     * test if DDS containing dap4 vars returns false
+     */
+    void test_is_dap4_projected_dds_byte(){
+        BaseTypeFactory f;
+        DDS *dds = new DDS(&f);
+        Array *a4 = new Array("b8", new Byte("b8"));
+        a4->set_send_p(true);
+        dds->add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(dds, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
+    /**
+     * basic variable attribute test - true
+     * test if a basic var with dap4 attribute returns true
+     */
+    void test_is_dap4_projected_attr_true(){
+        Byte b8("b8");
+        D4Attribute* d4a = new D4Attribute("a4", attr_int8_c);
+        b8.attributes()->add_attribute(d4a);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&b8, inv));
+        CPPUNIT_ASSERT(inv.size() == 1);
+    }
+
+    /**
+    * basic variable attribute test - false
+    * test if a basic var with dap4 attribute returns false
+    */
+    void test_is_dap4_projected_attr_false(){
+        Byte b8("b8");
+        D4Attribute* d4a = new D4Attribute("a4", attr_byte_c);
+        b8.attributes()->add_attribute(d4a);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&b8, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
+    /**
+    * array attribute test - true
+    * test if an array with dap4 attribute returns true
+    */
+    void test_is_dap4_projected_attr_array_true(){
+        Byte b8("b8");
+        Array a4("b8", &b8);
+        D4Attribute* d4a = new D4Attribute("a4", attr_int8_c);
+        a4.attributes()->add_attribute(d4a);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&a4, inv));
+        CPPUNIT_ASSERT(inv.size() == 1);
+        CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
+    }
+
+    /**
+    * array attribute test - false
+    * test if an array with dap4 attribute returns false
+    */
+    void test_is_dap4_projected_attr_array_false(){
+        Byte b8("b8");
+        Array a4("b8", &b8);
+        D4Attribute* d4a = new D4Attribute("a4", attr_byte_c);
+        a4.attributes()->add_attribute(d4a);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&a4, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
+    /**
+    * struct attribute test - true
+    * test if a struct with dap4 attribute returns true
+    */
+    void test_is_dap4_projected_attr_struct_true(){
+        Structure s2("s2");
+        Array *a4 = new Array("b8", new Byte("b8"));
+        D4Attribute* d4a = new D4Attribute("a4", attr_int8_c);
+        a4->attributes()->add_attribute(d4a);
+        s2.add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&s2, inv));
+        CPPUNIT_ASSERT(inv.size() == 1);
+        CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
+    }
+
+    /**
+    * struct attribute test - false
+    * test if a struct with dap4 attribute returns false
+    */
+    void test_is_dap4_projected_attr_struct_false(){
+        Structure s2("s2");
+        Array *a4 = new Array("b8", new Byte("b8"));
+        D4Attribute* d4a = new D4Attribute("a4", attr_byte_c);
+        a4->attributes()->add_attribute(d4a);
+        s2.add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(&s2, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
+    /**
+    * DDS attribute test - true
+    * test if a DDS with dap4 attribute returns true
+    */
+    void test_is_dap4_projected_attr_dds_true(){
+        BaseTypeFactory f;
+        DDS *dds = new DDS(&f);
+        Array *a4 = new Array("b8", new Byte("b8"));
+        a4->set_send_p(true);
+        D4Attribute* d4a = new D4Attribute("a4", attr_int8_c);
+        a4->attributes()->add_attribute(d4a);
+        dds->add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(dds, inv));
+        CPPUNIT_ASSERT(inv.size() == 1);
+        CPPUNIT_ASSERT(inv.at(0)->name() == "b8");
+    }
+
+    /**
+    * DDS attribute test - false
+    * test if a DDS with dap4 attribute returns false
+    */
+    void test_is_dap4_projected_attr_dds_false(){
+        BaseTypeFactory f;
+        DDS *dds = new DDS(&f);
+        Array *a4 = new Array("b8", new Byte("b8"));
+        a4->set_send_p(true);
+        D4Attribute* d4a = new D4Attribute("a4", attr_byte_c);
+        a4->attributes()->add_attribute(d4a);
+        dds->add_var_nocopy(a4);
+        vector<BaseType *> inv;
+        CPPUNIT_ASSERT(is_dap4_projected(dds, inv) == false);
+        CPPUNIT_ASSERT(inv.size() == 0);
+    }
+
     CPPUNIT_TEST_SUITE( D4ToolsTest );
 
     CPPUNIT_TEST(test_is_dap4_projected_int8);
     CPPUNIT_TEST(test_is_dap4_projected_byte);
-    CPPUNIT_TEST(test_is_dap4_projected_array);
-    CPPUNIT_TEST(test_is_dap4_projected_struct);
 
-    CPPUNIT_TEST(test_is_dap4_projected_dds1);
+    CPPUNIT_TEST(test_is_dap4_projected_array);
+    CPPUNIT_TEST(test_is_dap4_projected_array_byte);
+
+    CPPUNIT_TEST(test_is_dap4_projected_struct);
+    CPPUNIT_TEST(test_is_dap4_projected_struct_byte);
+
+    CPPUNIT_TEST(test_is_dap4_projected_dds);
+    CPPUNIT_TEST(test_is_dap4_projected_dds_byte);
+
+    CPPUNIT_TEST(test_is_dap4_projected_attr_true);
+    CPPUNIT_TEST(test_is_dap4_projected_attr_false);
+
+    CPPUNIT_TEST(test_is_dap4_projected_attr_array_true);
+    CPPUNIT_TEST(test_is_dap4_projected_attr_array_false);
+
+    CPPUNIT_TEST(test_is_dap4_projected_attr_struct_true);
+    CPPUNIT_TEST(test_is_dap4_projected_attr_struct_false);
+
+    CPPUNIT_TEST(test_is_dap4_projected_attr_dds_true);
+    CPPUNIT_TEST(test_is_dap4_projected_attr_dds_false);
 
     CPPUNIT_TEST_SUITE_END();
 };
