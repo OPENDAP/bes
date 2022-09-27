@@ -924,6 +924,10 @@ public:
     /// Update the coordinate attribute to include path and also flatten
     void Add_Path_Coord_Attr();
 
+    /// Update the Bounds attribute to follow the CF conventions
+    void Update_Bounds_Attr();
+   
+
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag() override
     {

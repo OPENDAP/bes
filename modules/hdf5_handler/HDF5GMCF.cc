@@ -357,14 +357,7 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
     File::Retrieve_H5_Supported_Attr_Values();
 
     //Coordinate variable attributes 
-    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
-        if ((*ircv)->cvartype != CV_NONLATLON_MISS){
-            for (auto ira = (*ircv)->attrs.begin();
-                 ira != (*ircv)->attrs.end(); ++ira) {
-                Retrieve_H5_Attr_Value(*ira,(*ircv)->fullpath);
-            }
-        }
-    }
+    Retrieve_H5_CVar_Supported_Attr_Values();
 
     // Special variable attributes
     for (auto irspv = this->spvars.begin(); irspv != this->spvars.end(); ++irspv) {
@@ -6934,8 +6927,35 @@ void GMFile::Add_Path_Coord_Attr() {
     }
 }
 
+void GMFile::Update_Bounds_Attr() {
+
+    BESDEBUG("h5", "GMFile::Coming to Add_Path_Coor_Attr()"<<endl);
+    for (auto &var:this->vars) {
+        for (auto &attr:var->attrs) {
+            if (attr->name == "bounds") {
+                string bnd_values = Retrieve_Str_Attr_Value(attr,var->fullpath);
+                HDF5CFUtil::cha_co(bnd_values,var->fullpath);
+                bnd_values = get_CF_string(bnd_values);
+                Replace_Var_Str_Attr(var,"bounds",bnd_values);
+                break;
+            }
+        }
+    }
+
+    for (auto &var:this->cvars) {
+        for (auto &attr:var->attrs) {
+            if (attr->name == "bounds") {
+                string bnd_values = Retrieve_Str_Attr_Value(attr,var->fullpath);
+                HDF5CFUtil::cha_co(bnd_values,var->fullpath);
+                bnd_values = get_CF_string(bnd_values);
+                Replace_Var_Str_Attr(var,"bounds",bnd_values);
+                break;
+            }
+        }
+    }
 
 
+}
 
 // We will create some temporary coordinate variables. The resource allocoated
 // for these variables need to be released.

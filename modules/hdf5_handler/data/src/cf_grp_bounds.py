@@ -35,17 +35,31 @@ lon_bounds = np.concatenate((lon_bounds_1,lon_bounds_2))
 print (lon_bounds)
 print (lon_array)
 
+# ************  PRESSURE  ***********
+pre_array = np.arange (999,1001,dtype=np.float32) 
+pre_bounds_1 = np.arange(998.5,1000.5,dtype=np.float32) 
+pre_bounds_2 = np.arange(999.5,1001.5,dtype=np.float32)
+#np.concatenate requires the arrays to be concatenated must be supplied as tuples.
+pre_bounds = np.concatenate((pre_bounds_1,pre_bounds_2))
+
 
 file = h5py.File ("t_cf_latlon_bounds.h5", 'w')
-grp = file.create_group("LatLon")
+grp = file.create_group("Geo")
 lat = grp.create_dataset ('lat', data=lat_array)
 lat.attrs["bounds"] = "/Bounds/lat_bounds"
 lon = grp.create_dataset ('lon', data=lon_array)
 lon.attrs["bounds"] = "lon_bounds"
 
 grp2 = file.create_group("Bounds")
-lat_bounds = grp2.create_dataset ('lat_bounds',data = lat_bounds)
-lon_bounds = file.create_dataset ('lon_bounds',data = lon_bounds)
+lat_bnd = grp2.create_dataset ('lat_bounds',data = lat_bounds)
+#longitude's bound is under the same group of longitude.
+lon_bnd = grp.create_dataset ('lon_bounds',data = lon_bounds)
+
+#Height, use relative path.
+grp3 = grp.create_group("Vertical")
+pre = grp3.create_dataset('pre',data=pre_array)
+pre.attrs["bounds"] = "../../pre_bounds"
+pre_bnd = file.create_dataset("pre_bounds",data = pre_bounds)
 
 file.close()
 
