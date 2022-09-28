@@ -1245,7 +1245,7 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
 void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, vector<size_t>&s_pos) {
 
 
-    //s_pos holds all the positions thact sub occurs within the temp_str
+    //s_pos holds all the positions that relpath appears within the temp_str
 
     size_t pos = temp_str.find(relpath, 0);
     while(pos != string::npos)
