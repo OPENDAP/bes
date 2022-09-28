@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:href="file:///NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:version="3.20.13-117">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:href="/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:version="3.20.13-117">
     <Dimension name="obs" size="183815"/>
     <Dimension name="Epoch_Time_strlen" size="8"/>
     <Dimension name="profile" size="950"/>
