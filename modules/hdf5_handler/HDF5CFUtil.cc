@@ -1240,10 +1240,12 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     return sum;
 }
 
+// Supposed string temp_str contains several relpath, Obtain all the positions of relpath in temp_str.
+// The positions are stored in a vector of size_t and returns.
 void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, vector<size_t>&s_pos) {
 
 
-    //vector<size_t> positions; // holds all the positions that sub occurs within str
+    //s_pos holds all the positions that relpath appears within the temp_str
 
     size_t pos = temp_str.find(relpath, 0);
     while(pos != string::npos)
@@ -1260,6 +1262,7 @@ void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, 
 
 }
 
+
 void HDF5CFUtil::cha_co(string &co,const string & vpath) {
 
     string sep="/";
@@ -1272,9 +1275,11 @@ void HDF5CFUtil::cha_co(string &co,const string & vpath) {
                 get_relpath_pos(vpath,sep,var_sep_pos);
                 vector<size_t>co_rp_sep_pos;
                 get_relpath_pos(co,rp_sep,co_rp_sep_pos);
+                // We only support when "../" is at position 0. 
                 if(co_rp_sep_pos[0]==0) {
                     // Obtain the '../' position at co 
                     if(co_rp_sep_pos.size() <var_sep_pos.size()) {
+                        // We obtain the suffix of CO and the path from vpath.
                         size_t var_prefix_pos=var_sep_pos[var_sep_pos.size()-co_rp_sep_pos.size()-1];
                         string var_prefix=vpath.substr(1,var_prefix_pos);
                         string co_suffix = co.substr(co_rp_sep_pos[co_rp_sep_pos.size()-1]+rp_sep.size());

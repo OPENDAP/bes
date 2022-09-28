@@ -483,6 +483,10 @@ AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dmr.bescmd])
 
+#cf bound
+AT_BESCMD_RESPONSE_TEST([t_cf_latlon_bounds.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_bounds.h5.das.bescmd])
+
 
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
