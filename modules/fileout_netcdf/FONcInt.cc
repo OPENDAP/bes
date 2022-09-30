@@ -107,7 +107,7 @@ FONcInt::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
-    if( !_defined )
+    if( !d_defined )
     {
         if(is_dap4) {                                                                                       
             D4Attributes *d4_attrs = _bt->attributes();                                                     
@@ -119,11 +119,11 @@ FONcInt::define( int ncid )
         }
 
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _bt , isNetCDF4_ENHANCED(), is_dap4) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-	_defined = true ;
+        d_defined = true ;
     }
 }
 
@@ -137,7 +137,7 @@ FONcInt::define( int ncid )
 void
 FONcInt::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcInt::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcInt::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     int stax = 0;
 
@@ -151,24 +151,24 @@ FONcInt::write( int ncid )
         _bt->buf2val( (void**)&sdata ) ;
          BESDEBUG( "fonc", "FONcInt::write for short value " << *sdata << endl ) ;
         int temps = (int)(*sdata);
-        stax = nc_put_var1_int( ncid, _varid, var_index, &temps ) ;
+        stax = nc_put_var1_int(ncid, d_varid, var_index, &temps ) ;
         delete sdata;
     }
     else {
          int *data = new int ;
         _bt->buf2val( (void**)&data ) ;
-         stax = nc_put_var1_int( ncid, _varid, var_index, data ) ;
+         stax = nc_put_var1_int(ncid, d_varid, var_index, data ) ;
          delete data;
     }
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write int data for "
-		     + _varname ;
+                 + "Failed to write int data for "
+                 + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     
-    BESDEBUG( "fonc", "FONcInt::done write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcInt::done write for var " << d_varname << endl ) ;
 }
 
 /** @brief returns the name of the DAP Int32 or UInt32

@@ -68,7 +68,7 @@ void
 FONcByte::define(int ncid) {
     FONcBaseType::define(ncid);
 
-    if (!_defined) {
+    if (!d_defined) {
         if (is_dap4) {
             D4Attributes *d4_attrs = _b->attributes();
             updateD4AttrType(d4_attrs, NC_UBYTE);
@@ -78,10 +78,10 @@ FONcByte::define(int ncid) {
             updateAttrType(attrs, NC_UBYTE);
         }
 
-        FONcAttributes::add_variable_attributes(ncid, _varid, _b, isNetCDF4_ENHANCED(), is_dap4);
-        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, _b, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
 
-        _defined = true;
+        d_defined = true;
     }
 }
 
@@ -96,7 +96,7 @@ FONcByte::define(int ncid) {
  */
 void
 FONcByte::write(int ncid) {
-    BESDEBUG("fonc", "FOncByte::write for var " << _varname << endl);
+    BESDEBUG("fonc", "FOncByte::write for var " << d_varname << endl);
 
     if (is_dap4)
         _b->intern_data();
@@ -108,9 +108,9 @@ FONcByte::write(int ncid) {
     // memory used in this case is too small to warrant any more optimization.
     unsigned char data = _b->value();
     size_t var_index[] = {0};
-    int stax = nc_put_var1_uchar(ncid, _varid, var_index, &data);
+    int stax = nc_put_var1_uchar(ncid, d_varid, var_index, &data);
     if (stax != NC_NOERR) {
-        string err = string("fileout.netcdf - Failed to write byte data for ") + _varname;
+        string err = string("fileout.netcdf - Failed to write byte data for ") + d_varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 }

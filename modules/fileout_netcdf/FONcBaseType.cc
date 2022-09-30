@@ -41,8 +41,8 @@ using namespace libdap;
 
 void FONcBaseType::convert(const vector<string> embed, bool _dap4, bool dap4_group)
 {
-    _embed = embed;
-    _varname = name();
+    d_embed = embed;
+    d_varname = name();
     is_dap4_group = dap4_group;
     is_dap4 = _dap4;
 }
@@ -59,21 +59,21 @@ void FONcBaseType::convert(const vector<string> embed, bool _dap4, bool dap4_gro
  */
 void FONcBaseType::define(int ncid)
 {
-    if (!_defined) {
-        _varname = FONcUtils::gen_name(_embed, _varname, _orig_varname);
-        BESDEBUG("fonc", "FONcBaseType::define - defining '" << _varname << "'" << endl);
-        int stax = nc_def_var(ncid, _varname.c_str(), type(), 0, nullptr, &_varid);
+    if (!d_defined) {
+        d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
+        BESDEBUG("fonc", "FONcBaseType::define - defining '" << d_varname << "'" << endl);
+        int stax = nc_def_var(ncid, d_varname.c_str(), type(), 0, nullptr, &d_varid);
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to define variable " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to define variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
-        stax = nc_def_var_fill(ncid, _varid, NC_NOFILL, NULL );
+        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("fonc", "FONcBaseType::define - done defining " << _varname << endl);
+        BESDEBUG("fonc", "FONcBaseType::define - done defining " << d_varname << endl);
     }
 }
 
@@ -92,7 +92,7 @@ nc_type FONcBaseType::type()
  */
 void FONcBaseType::clear_embedded()
 {
-    _embed.clear();
+    d_embed.clear();
 }
 
 /** @brief Identifies variable with use of NetCDF4 features

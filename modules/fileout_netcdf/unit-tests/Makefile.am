@@ -15,7 +15,7 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-inconsistent-missing-override
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 

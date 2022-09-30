@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
-    <setContext name="dap_format">dap2</setContext>
-    <setContainer name="c" space="catalog">/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc.dmrpp</setContainer>
+<request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]" >
+  <bes:setContext name="xdap_accept">4.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+
+  <setContainer name="c" space="catalog">/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc.dmrpp</setContainer>
     <define name="d">
       <container name="c" >
-	<dap4constraint></dap4constraint>
+	<dap4constraint>Epoch_Time</dap4constraint>
       </container>
     </define>
     <get type="dap" definition="d"/>

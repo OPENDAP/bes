@@ -103,8 +103,8 @@ FONcGrid::~FONcGrid()
  */
 void FONcGrid::define(int ncid)
 {
-    if (!_defined) {
-        BESDEBUG("fonc", "FOncGrid::define - defining grid " << _varname << endl);
+    if (!d_defined) {
+        BESDEBUG("fonc", "FOncGrid::define - defining grid " << d_varname << endl);
 
         for (auto map: _maps)
             map->define(ncid);
@@ -113,9 +113,9 @@ void FONcGrid::define(int ncid)
         if (_arr)
             _arr->define(ncid);
 
-        _defined = true;
+        d_defined = true;
 
-        BESDEBUG("fonc", "FOncGrid::define - done defining grid " << _varname << endl);
+        BESDEBUG("fonc", "FOncGrid::define - done defining grid " << d_varname << endl);
     }
 }
 
@@ -140,8 +140,8 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
     FONcGrid::InGrid = true;
     FONcBaseType::convert(embed, _dap4, is_dap4_group);
     BESDEBUG("fonc", "FONcGrid:: version: '" << _ncVersion << "'" << endl);
-    _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
-    BESDEBUG("fonc", "FONcGrid::convert - converting grid " << _varname << endl);
+    d_varname = FONcUtils::gen_name(embed, d_varname, d_orig_varname);
+    BESDEBUG("fonc", "FONcGrid::convert - converting grid " << d_varname << endl);
 
     // A grid has maps, which are single dimnension arrays, and an array
     // with one dimension for each map.
@@ -155,7 +155,7 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
 
             Array *map = dynamic_cast<Array *>((*mi));
             if (!map) {
-                string err = (string) "file out netcdf, grid " + _varname + " map is not an array";
+                string err = (string) "file out netcdf, grid " + d_varname + " map is not an array";
                 throw BESInternalError(err, __FILE__, __LINE__);
             }
 
@@ -182,7 +182,7 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
                 // the list of grids sharing this map and set the embedded
                 // name to empty, just using the name of the map.
                 map_found->incref();
-                map_found->add_grid(_varname);
+                map_found->add_grid(d_varname);
                 map_found->clear_embedded();
             }
             _maps.push_back(map_found);
@@ -197,10 +197,10 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
         _arr->setVersion(_ncVersion);
         _arr->setNC4DataModel(_nc4_datamodel);
 
-        _arr->convert(_embed, _dap4,is_dap4_group);
+        _arr->convert(d_embed, _dap4, is_dap4_group);
     }
 
-    BESDEBUG("fonc", "FONcGrid::convert - done converting grid " << _varname << endl);
+    BESDEBUG("fonc", "FONcGrid::convert - done converting grid " << d_varname << endl);
     FONcGrid::InGrid = false;
 }
 
@@ -215,7 +215,7 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
  */
 void FONcGrid::write(int ncid)
 {
-    BESDEBUG("fonc", "FOncGrid::define - writing grid " << _varname << endl);
+    BESDEBUG("fonc", "FOncGrid::define - writing grid " << d_varname << endl);
 
     // FONcBaseType instances are added only if the corresponding DAP variable
     // should be sent. See Hyrax-282. jhrg 11/3/16
@@ -230,9 +230,9 @@ void FONcGrid::write(int ncid)
     if (_arr)
         _arr->write(ncid);
 
-    _defined = true;
+    d_defined = true;
 
-    BESDEBUG("fonc", "FOncGrid::define - done writing grid " << _varname << endl);
+    BESDEBUG("fonc", "FOncGrid::define - done writing grid " << d_varname << endl);
 }
 
 /** @brief returns the name of the DAP Grid

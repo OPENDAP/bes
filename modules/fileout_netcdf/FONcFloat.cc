@@ -81,7 +81,7 @@ FONcFloat::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
-    if( !_defined )
+    if( !d_defined )
     {
         if(is_dap4) {                                                                                       
             D4Attributes *d4_attrs = _f->attributes();                                                     
@@ -93,11 +93,11 @@ FONcFloat::define( int ncid )
         }
 
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _f,isNetCDF4_ENHANCED() ,is_dap4) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _f, isNetCDF4_ENHANCED() , is_dap4) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-	_defined = true ;
+        d_defined = true ;
     }
 }
 
@@ -113,7 +113,7 @@ FONcFloat::define( int ncid )
 void
 FONcFloat::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcFloat::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcFloat::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     float *data = new float ;
 
@@ -123,17 +123,17 @@ FONcFloat::write( int ncid )
         _f->intern_data(*get_eval(), *get_dds());
 
     _f->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_float( ncid, _varid, var_index, data ) ;
+    int stax = nc_put_var1_float(ncid, d_varid, var_index, data ) ;
     ncopts = NC_VERBOSE ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write float data for "
-		     + _varname ;
+                 + "Failed to write float data for "
+                 + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;
-    BESDEBUG( "fonc", "FONcFloat::done write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcFloat::done write for var " << d_varname << endl ) ;
 }
 
 /** @brief returns the name of the DAP Float32

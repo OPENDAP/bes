@@ -59,11 +59,11 @@ class ConstraintEvaluator;
  */
 class FONcBaseType: public BESObj {
 protected:
-    int _varid;
-    std::string _varname;
-    std::string _orig_varname;
-    std::vector<std::string> _embed;
-    bool _defined;
+    int d_varid = 0;
+    std::string d_varname;
+    std::string d_orig_varname;
+    std::vector<std::string> d_embed;
+    bool d_defined;
     std::string _ncVersion;
     std::string _nc4_datamodel;
     bool is_dap4;
@@ -74,10 +74,10 @@ protected:
     libdap::DDS *d_dds;
     libdap::ConstraintEvaluator *d_eval;
 
-    FONcBaseType() : _varid(0), _defined(false), is_dap4(false), is_dap4_group(false), d_dds(nullptr), d_eval(nullptr) { }
+    FONcBaseType() : d_defined(false), is_dap4(false), is_dap4_group(false), d_dds(nullptr), d_eval(nullptr) { }
 
 public:
-    virtual ~FONcBaseType() = default; // { }
+    ~FONcBaseType() override = default;
 
     libdap::DDS *get_dds() const {return d_dds;}
     void set_dds(libdap::DDS *dds) {d_dds = dds;}
@@ -92,7 +92,7 @@ public:
     virtual std::string name() = 0;
     virtual nc_type type();
     virtual void clear_embedded();
-    virtual int varid() const { return _varid; }
+    virtual int varid() const { return d_varid; }
 
     virtual void dump(std::ostream &strm) const = 0;
 
