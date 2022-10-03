@@ -80,7 +80,7 @@ FONcInt8::define( int ncid )
     if( !d_defined )
     {
 
-        if(is_dap4) {                                                                                       
+        if(d_is_dap4) {
             D4Attributes *d4_attrs = _b->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_BYTE);   
         }
@@ -89,7 +89,7 @@ FONcInt8::define( int ncid )
             updateAttrType(attrs,NC_BYTE); 
         }
 
-	FONcAttributes::add_variable_attributes(ncid, d_varid, _b, isNetCDF4_ENHANCED(), is_dap4 ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _b, isNetCDF4_ENHANCED(), d_is_dap4 ) ;
 	FONcAttributes::add_original_name(ncid, d_varid,
                                       d_varname, d_orig_varname ) ;
 
@@ -114,7 +114,7 @@ FONcInt8::write( int ncid )
     //char *data = new char ;
     signed char data_value[1];
 
-    if (is_dap4)
+    if (d_is_dap4)
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());

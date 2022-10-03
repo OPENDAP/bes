@@ -37,9 +37,6 @@
 
 #include <netcdf.h>
 
-#include <libdap/AttrTable.h>
-#include <libdap/D4Attributes.h>
-
 #include "FONcBaseType.h"
 
 class FONcDim;
@@ -103,7 +100,7 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
-    FONcDim * find_dim(std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
+    FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
 
     void write_for_nc4_types(int ncid);
 
@@ -112,14 +109,16 @@ private:
 
 public:
     explicit FONcArray(libdap::BaseType *b);
-    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rds_nums);
+    FONcArray(libdap::BaseType *b, const std::vector<int>&dim_ids, const std::vector<bool>&use_dim_ids,
+              const std::vector<int>&rds_nums);
     ~FONcArray() override;
 
     virtual void convert(std::vector<std::string> embed, bool _dap4=false, bool is_dap4_group=false) override;
     virtual void define(int ncid) override;
-    virtual void write(int ncid)override ;
+    virtual void write(int ncid) override;
 
     std::string name() override;
+
     virtual libdap::Array *array()
     {
         return d_a;

@@ -108,7 +108,7 @@ void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
             bool is_classic_model = true;
             if(true == isNetCDF4_ENHANCED())
                 is_classic_model = false;
-            FONcBaseType *fbt = FONcUtils::convert(bt,this->_ncVersion,is_classic_model);
+            FONcBaseType *fbt = FONcUtils::convert(bt, this->d_ncVersion, is_classic_model);
             //fbt->setVersion(this->_ncVersion);
             //if(true == isNetCDF4())
             //    fbt->setNC4DataModel(this->_nc4_datamodel);

@@ -36,9 +36,10 @@
 #include <netcdf.h>
 
 #include <libdap/Array.h>
+#include <libdap/AttrTable.h>
+#include <libdap/D4Attributes.h>
 
 #include <BESInternalError.h>
-#include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
 #include "FONcRequestHandler.h" // For access to the handler's keys
@@ -112,21 +113,6 @@ FONcArray::~FONcArray() {
     for (auto &map: d_grid_maps) {
         map->decref();
     }
-#if refactor
-    // Added jhrg 8/28/13
-    vector<FONcDim *>::iterator d = d_dims.begin();
-    while (d != d_dims.end()) {
-        (*d)->decref();
-        ++d;
-    }
-
-    // Added jhrg 8/28/13
-    vector<FONcMap *>::iterator i = d_grid_maps.begin();
-    while (i != d_grid_maps.end()) {
-        (*i)->decref();
-        ++i;
-    }
-#endif
 }
 
 /** @brief Converts the DAP Array to a FONcArray
@@ -243,7 +229,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // order to define the variable for the netCDF file, we need to read
         // string data long before we actually write it out. Kind of a drag,
         // but not the end of the world. jhrg 5/18/21
-        if (is_dap4)
+        if (d_is_dap4)
             d_a->intern_data();
         else
             d_a->intern_data(*get_eval(), *get_dds());
@@ -316,13 +302,13 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     // Notice: DAP4 doesn't have Grid and the d_dont_use_it=true causes some
     // variables not written to the  netCDF-4 file with group hierarchy.
     // So need to have the if check. KY 2021-06-21
-    if(is_dap4 == false) {
+    if(d_is_dap4 == false) {
         if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
             // is it already in there?
-            FONcMap *map = FONcGrid::InMaps(d_a);
+            const FONcMap *map = FONcGrid::InMaps(d_a);
             if (!map) {
                 // This memory is/was leaked. jhrg 8/28/13
-                FONcMap *new_map = new FONcMap(this);
+               auto new_map = new FONcMap(this);
                 d_grid_maps.push_back(new_map);        // save it here so we can free it later. jhrg 8/28/13
                 FONcGrid::Maps.push_back(new_map);
             }
@@ -349,10 +335,10 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
  * the size is different
  */
 FONcDim *
-FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ignore_size) {
+FONcArray::find_dim(const vector<string> &embed, const string &name, int size, bool ignore_size) {
     string oname;
     string ename = FONcUtils::gen_name(embed, name, oname);
-    FONcDim *ret_dim = 0;
+    FONcDim *ret_dim = nullptr;
     vector<FONcDim *>::iterator i = FONcArray::Dimensions.begin();
     vector<FONcDim *>::iterator e = FONcArray::Dimensions.end();
     for (; i != e && !ret_dim; i++) {
@@ -373,6 +359,7 @@ FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ig
             }
         }
     }
+
     if (!ret_dim) {
         ret_dim = new FONcDim(name, size);
         FONcArray::Dimensions.push_back(ret_dim);
@@ -380,6 +367,7 @@ FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ig
     else {
         ret_dim->incref();
     }
+
     return ret_dim;
 }
 
@@ -430,7 +418,6 @@ void FONcArray::define(int ncid) {
             for (; i != e; i++) {
                 FONcDim *fd = *i;
                 fd->define(ncid);
-                //d_dim_ids.at(dimnum) = fd->dimid();
                 d_dim_ids[dimnum] = fd->dimid();
                 BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
                 dimnum++;
@@ -460,7 +447,7 @@ void FONcArray::define(int ncid) {
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << _ncVersion << endl);
+        BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
             if (FONcRequestHandler::chunk_size == 0)
@@ -499,7 +486,7 @@ void FONcArray::define(int ncid) {
         }
 
         // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
-        if (is_dap4) {
+        if (d_is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
             updateD4AttrType(d4_attrs, d_array_type);
         }
@@ -509,7 +496,7 @@ void FONcArray::define(int ncid) {
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
-        FONcAttributes::add_variable_attributes(ncid, d_varid, d_a, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, d_a, isNetCDF4_ENHANCED(), d_is_dap4);
         FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
         d_defined = true;
     }
@@ -531,7 +518,7 @@ void FONcArray::define(int ncid) {
  * @param ncid The ID of the open netCDF file.
  */
 void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
-    if (is_dap4)
+    if (d_is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
@@ -635,6 +622,7 @@ void FONcArray::write(int ncid) {
 
             // write out the string
             int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(), d_a_str[element].c_str());
+
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -656,6 +644,8 @@ void FONcArray::write(int ncid) {
                 }
             }
         }
+
+        // TODO write data here
 
         d_a->get_str().clear();
     }
@@ -680,7 +670,7 @@ void FONcArray::write(int ncid) {
                 // detects the original variable was of type Byte and typecasts
                 // each data value to a short.
                 if (element_type == libdap::dods_byte_c || element_type == libdap::dods_uint8_c) {
-                    if (is_dap4)
+                    if (d_is_dap4)
                         d_a->intern_data();
                     else
                         d_a->intern_data(*get_eval(), *get_dds());
@@ -729,7 +719,7 @@ void FONcArray::write(int ncid) {
                 }
 
                 if (element_type == libdap::dods_uint16_c) {
-                    if (is_dap4)
+                    if (d_is_dap4)
                         d_a->intern_data();
                     else
                         d_a->intern_data(*get_eval(), *get_dds());
@@ -811,7 +801,7 @@ void FONcArray::dump(ostream &strm) const {
  */
 void FONcArray::write_for_nc4_types(int ncid) {
 
-    is_dap4 = true;
+    d_is_dap4 = true;
 
     // create array to hold data hyperslab
     // DAP2 only supports unsigned BYTE. So here

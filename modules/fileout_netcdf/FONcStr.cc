@@ -86,7 +86,7 @@ void FONcStr::define(int ncid)
         d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
         _data = new string;
 
-        if (is_dap4)
+        if (d_is_dap4)
             _str->intern_data();
         else
             _str->intern_data(*get_eval(), *get_dds());
@@ -97,7 +97,7 @@ void FONcStr::define(int ncid)
         string dimname;
 
         // For DAP4, we need to ensure the dimension name is unique.
-        if(is_dap4_group == true) {
+        if(d_is_dap4_group == true) {
             ostringstream dim_suffix_strm;
             dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
             FONcDim::DimNameNum++;
@@ -121,7 +121,7 @@ void FONcStr::define(int ncid)
 
         d_defined = true;
 
-        FONcAttributes::add_variable_attributes(ncid, d_varid, _str, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, _str, isNetCDF4_ENHANCED(), d_is_dap4);
         FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
 
         BESDEBUG("fonc", "FONcStr::define - done defining " << d_varname << endl);
