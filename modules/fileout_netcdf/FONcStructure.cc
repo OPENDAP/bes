@@ -108,7 +108,7 @@ void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
             bool is_classic_model = true;
             if(true == isNetCDF4_ENHANCED())
                 is_classic_model = false;
-            FONcBaseType *fbt = FONcUtils::convert(bt,this->_ncVersion,is_classic_model);
+            FONcBaseType *fbt = FONcUtils::convert(bt, this->d_ncVersion, is_classic_model);
             //fbt->setVersion(this->_ncVersion);
             //if(true == isNetCDF4())
             //    fbt->setNC4DataModel(this->_nc4_datamodel);
@@ -135,8 +135,8 @@ void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
  */
 void FONcStructure::define(int ncid)
 {
-    if (!_defined) {
-        BESDEBUG("fonc", "FONcStructure::define - defining " << _varname << endl);
+    if (!d_defined) {
+        BESDEBUG("fonc", "FONcStructure::define - defining " << d_varname << endl);
         vector<FONcBaseType *>::const_iterator i = _vars.begin();
         vector<FONcBaseType *>::const_iterator e = _vars.end();
         for (; i != e; i++) {
@@ -145,9 +145,9 @@ void FONcStructure::define(int ncid)
             fbt->define(ncid);
         }
 
-        _defined = true;
+        d_defined = true;
 
-        BESDEBUG("fonc", "FONcStructure::define - done defining " << _varname << endl);
+        BESDEBUG("fonc", "FONcStructure::define - done defining " << d_varname << endl);
     }
 }
 
@@ -160,7 +160,7 @@ void FONcStructure::define(int ncid)
  */
 void FONcStructure::write(int ncid)
 {
-    BESDEBUG("fonc", "FONcStructure::write - writing " << _varname << endl);
+    BESDEBUG("fonc", "FONcStructure::write - writing " << d_varname << endl);
     vector<FONcBaseType *>::const_iterator i = _vars.begin();
     vector<FONcBaseType *>::const_iterator e = _vars.end();
     for (; i != e; i++) {
@@ -172,7 +172,7 @@ void FONcStructure::write(int ncid)
         fbt->write(ncid);
         nc_sync(ncid);
     }
-    BESDEBUG("fonc", "FONcStructure::define - done writing " << _varname << endl);
+    BESDEBUG("fonc", "FONcStructure::define - done writing " << d_varname << endl);
 }
 
 /** @brief Returns the name of the structure

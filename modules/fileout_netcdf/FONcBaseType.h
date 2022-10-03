@@ -59,25 +59,25 @@ class ConstraintEvaluator;
  */
 class FONcBaseType: public BESObj {
 protected:
-    int _varid;
-    std::string _varname;
-    std::string _orig_varname;
-    std::vector<std::string> _embed;
-    bool _defined;
-    std::string _ncVersion;
-    std::string _nc4_datamodel;
-    bool is_dap4;
+    int d_varid = 0;
+    std::string d_varname;
+    std::string d_orig_varname;
+    std::vector<std::string> d_embed;
+    bool d_defined = false;
+    std::string d_ncVersion;
+    std::string d_nc4_datamodel;
+    bool d_is_dap4 = false;
 
     //This is to handle the name clashing of dimension names of string type
-    bool is_dap4_group;
+    bool d_is_dap4_group = false;
 
-    libdap::DDS *d_dds;
-    libdap::ConstraintEvaluator *d_eval;
+    libdap::DDS *d_dds = nullptr;
+    libdap::ConstraintEvaluator *d_eval = nullptr;
 
-    FONcBaseType() : _varid(0), _defined(false), is_dap4(false), is_dap4_group(false), d_dds(nullptr), d_eval(nullptr) { }
+    FONcBaseType() = default;
 
 public:
-    virtual ~FONcBaseType() = default; // { }
+    ~FONcBaseType() override = default;
 
     libdap::DDS *get_dds() const {return d_dds;}
     void set_dds(libdap::DDS *dds) {d_dds = dds;}
@@ -92,15 +92,15 @@ public:
     virtual std::string name() = 0;
     virtual nc_type type();
     virtual void clear_embedded();
-    virtual int varid() const { return _varid; }
+    virtual int varid() const { return d_varid; }
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 
     virtual void setVersion(const std::string &version);
     virtual void setNC4DataModel(const string &nc4_datamodel);
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
-    virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
+    virtual void set_is_dap4(bool set_dap4) { d_is_dap4 = set_dap4;}
     virtual libdap::AttrType getAttrType(nc_type t);
     virtual D4AttributeType getD4AttrType(nc_type t);
     virtual void updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t);

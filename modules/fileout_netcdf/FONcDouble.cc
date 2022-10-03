@@ -69,9 +69,9 @@ void
 FONcDouble::define(int ncid) {
     FONcBaseType::define(ncid);
 
-    if (!_defined) {
+    if (!d_defined) {
 
-        if (is_dap4) {
+        if (d_is_dap4) {
             D4Attributes *d4_attrs = _f->attributes();
             updateD4AttrType(d4_attrs, NC_DOUBLE);
         }
@@ -80,10 +80,10 @@ FONcDouble::define(int ncid) {
             updateAttrType(attrs, NC_DOUBLE);
         }
 
-        FONcAttributes::add_variable_attributes(ncid, _varid, _f, isNetCDF4_ENHANCED(), is_dap4);
-        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, _f, isNetCDF4_ENHANCED(), d_is_dap4);
+        FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
 
-        _defined = true;
+        d_defined = true;
     }
 }
 
@@ -96,24 +96,24 @@ FONcDouble::define(int ncid) {
  */
 void
 FONcDouble::write(int ncid) {
-    BESDEBUG("fonc", "FONcDouble::write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcDouble::write for var " << d_varname << endl);
 
-    if (is_dap4)
+    if (d_is_dap4)
         _f->intern_data();
     else
         _f->intern_data(*get_eval(), *get_dds());
 
     double data = _f->value();
     size_t var_index[] = {0};
-    int stax = nc_put_var1_double(ncid, _varid, var_index, &data);
+    int stax = nc_put_var1_double(ncid, d_varid, var_index, &data);
     if (stax != NC_NOERR) {
         string err = (string) "fileout.netcdf - "
                      + "Failed to write double data for "
-                     + _varname;
+                     + d_varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 
-    BESDEBUG("fonc", "FONcDouble::done write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcDouble::done write for var " << d_varname << endl);
 }
 
 /** @brief dumps information about this object for debugging purposes

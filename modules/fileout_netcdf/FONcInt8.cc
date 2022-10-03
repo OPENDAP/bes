@@ -77,10 +77,10 @@ FONcInt8::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
-    if( !_defined )
+    if( !d_defined )
     {
 
-        if(is_dap4) {                                                                                       
+        if(d_is_dap4) {
             D4Attributes *d4_attrs = _b->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_BYTE);   
         }
@@ -89,11 +89,11 @@ FONcInt8::define( int ncid )
             updateAttrType(attrs,NC_BYTE); 
         }
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _b, isNetCDF4_ENHANCED(), d_is_dap4 ) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-	_defined = true ;
+        d_defined = true ;
     }
 }
 
@@ -109,12 +109,12 @@ FONcInt8::define( int ncid )
 void
 FONcInt8::write( int ncid )
 {
-    BESDEBUG( "fonc", "FOncInt8::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FOncInt8::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     //char *data = new char ;
     signed char data_value[1];
 
-    if (is_dap4)
+    if (d_is_dap4)
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());
@@ -122,12 +122,12 @@ FONcInt8::write( int ncid )
     data_value[0] = _b->value();
     
     //_b->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_schar(ncid, _varid, var_index, data_value ) ;
+    int stax = nc_put_var1_schar(ncid, d_varid, var_index, data_value ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write byte data for "
-		     + _varname ;
+                 + "Failed to write byte data for "
+                 + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     //delete data ;
