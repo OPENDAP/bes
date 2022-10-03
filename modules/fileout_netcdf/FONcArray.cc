@@ -602,12 +602,21 @@ void FONcArray::write(int ncid) {
         // that code needs to know that actual length of the individual strings in the
         // array. jhrg 6/4/21
 
+        // More info: In FONcArray::convert() for arrays of NC_CHAR, even though the
+        // libdap::Array variable has M dimension (e.g., 2) d_ndims will be M+1. The
+        // additional dimension is there because each character is actually a string,
+        // so the code needs to store both the character and a null terminator. This
+        // might be a mistake in the data model - using String for CHAR might not be
+        // the best plan. Right now, it's what we have. jhrg 10/3/22
+
         vector<size_t> var_count(d_ndims);
         vector<size_t> var_start(d_ndims);
         int dim = 0;
         for (dim = 0; dim < d_ndims; dim++) {
             // the count for each of the dimensions will always be 1 except
-            // for the string length dimension
+            // for the string length dimension.
+            // The size of the last dimension (var_count[d_ndims-1]) is set
+            // separately for each element below. jhrg 10/3/22
             var_count[dim] = 1;
 
             // the start for each of the dimensions will start at 0. We will
