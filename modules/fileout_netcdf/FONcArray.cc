@@ -806,7 +806,7 @@ void FONcArray::write_equal_length_string_array(int ncid) {
     auto const &d_a_str = d_a->get_str();
 
     vector<char> text_data;
-    text_data.reserve(d_a_str.size() * d_a_str[0].size() * 2);
+    text_data.reserve(d_a_str.size() * (d_a_str[0].size() + 1));
     for (auto &str: d_a_str) {
         for (auto c: str)
             text_data.emplace_back(c);
@@ -817,7 +817,7 @@ void FONcArray::write_equal_length_string_array(int ncid) {
         var_start[dim] = 0;
     }
     for (int dim = 0; dim < d_ndims; dim++) {
-        var_start[dim] = 0;
+        var_count[dim] = d_dim_sizes[dim];
     }
     var_count[d_ndims - 1] = d_a_str[0].size() + 1;
 
