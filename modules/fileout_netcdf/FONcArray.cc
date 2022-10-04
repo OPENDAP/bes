@@ -574,6 +574,22 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 #endif
 }
 
+/**
+ * @brief Are all of the strngs the same length?
+ * @param the_array_strings
+ * @return True if the strings are the same length
+ */
+static bool optimize_array(vector<string> &the_array_strings)
+{
+    size_t string_length = the_array_strings[0].size();
+    // use if ( std::all_of(foo.begin(), foo.end(), [](int i){return i%2;}) )
+    for(auto const &s: the_array_strings) {
+        if (s.size() != string_length)
+            return false;
+    }
+    return true;
+}
+
 /** @brief Write the array out to the netcdf file
  *
  * Once the array is defined, the values of the array can be written out
@@ -609,6 +625,10 @@ void FONcArray::write(int ncid) {
         // might be a mistake in the data model - using String for CHAR might not be
         // the best plan. Right now, it's what we have. jhrg 10/3/22
 
+        // Can we optimize for a special case where all strings are the same length?
+        // jhrg 10/3/22
+
+        return true;
         vector<size_t> var_count(d_ndims);
         vector<size_t> var_start(d_ndims);
         int dim = 0;
