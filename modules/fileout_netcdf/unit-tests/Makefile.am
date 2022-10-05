@@ -73,4 +73,4 @@ HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
 HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
 
 FONcArrayTest_SOURCES = FONcArrayTest.cc
-FONcArrayTest_LDADD = $(LIBADD) ../.libs/libfonc_module.a
+FONcArrayTest_LDADD = ../.libs/libfonc_module.a $(LIBADD)
