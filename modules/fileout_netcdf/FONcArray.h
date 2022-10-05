@@ -102,10 +102,16 @@ private:
 
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
 
-    void write_for_nc4_types(int ncid);
-
     // Used in write()
+    void write_for_nc4_types(int ncid);
+    void write_for_nc3_types(int ncid);
     void write_nc_variable(int ncid, nc_type var_type);
+    static bool equal_length(vector<string> &the_strings);
+    void write_string_array(int ncid);
+    void write_equal_length_string_array(int ncid);
+
+    FONcArray() = default;      // Used in some unit tests
+    friend class FONcArrayTest;
 
 public:
     explicit FONcArray(libdap::BaseType *b);
@@ -119,10 +125,7 @@ public:
 
     std::string name() override;
 
-    virtual libdap::Array *array()
-    {
-        return d_a;
-    }
+    virtual libdap::Array *array() { return d_a; }
 
     virtual void dump(std::ostream &strm) const override;
     // The below line is not necessary. Still keep it here for the future use.

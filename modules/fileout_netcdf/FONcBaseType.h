@@ -74,9 +74,8 @@ protected:
     libdap::DDS *d_dds = nullptr;
     libdap::ConstraintEvaluator *d_eval = nullptr;
 
-    FONcBaseType() = default;
-
 public:
+    FONcBaseType() = default;
     ~FONcBaseType() override = default;
 
     libdap::DDS *get_dds() const {return d_dds;}
@@ -85,11 +84,22 @@ public:
     libdap::ConstraintEvaluator *get_eval() const {return d_eval;}
     void set_eval(libdap::ConstraintEvaluator *eval) {d_eval = eval;}
 
-    virtual void convert(std::vector<std::string> embed, bool is_dap4= false, bool is_dap4_group=false);
+    // I made this change to see how hard it would be to refactor a virtual
+    // method that used parameters with default (prohibited) values. jhrg 10/3/22
+    void convert(std::vector<std::string> embed) {
+        convert(embed, false, false);
+    }
+    void convert(std::vector<std::string> embed, bool is_dap4) {
+        convert(embed, is_dap4, false);
+    }
+    virtual void convert(std::vector<std::string> embed, bool is_dap4, bool is_dap4_group);
+
     virtual void define(int ncid);
+
     virtual void write(int ncid) = 0;
 
     virtual std::string name() = 0;
+
     virtual nc_type type();
     virtual void clear_embedded();
     virtual int varid() const { return d_varid; }

@@ -55,6 +55,7 @@ using namespace libdap;
 // This controls whether variables' data values are deleted as soon
 // as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
+#define STRING_ARRAY_OPT 1
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -574,7 +575,23 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 #endif
 }
 
-/** @brief Write the array out to the netcdf file
+/**
+ * @brief Are all of the strings the same length?
+ * @param the_array_strings
+ * @return True if the strings are the same length
+ */
+bool FONcArray::equal_length(vector<string> &the_strings)
+{
+    size_t length = the_strings[0].size();
+    if ( std::all_of(the_strings.begin()+1, the_strings.end(),
+                     [length](string &s){return s.size() == length;}) )
+        return true;
+    else
+        return false;
+}
+
+/**
+ * @brief Write the array out to the netcdf file
  *
  * Once the array is defined, the values of the array can be written out
  * as well.
@@ -597,159 +614,231 @@ void FONcArray::write(int ncid) {
     // classic and enhanced data models;
     // 2. All the other types, written for the enhanced data model
     // 3. All the other types, written for the classic data model
+
     if (d_array_type == NC_CHAR) {
         // Note that String data are not read here but in FONcArray::convert() because
         // that code needs to know that actual length of the individual strings in the
         // array. jhrg 6/4/21
 
-        vector<size_t> var_count(d_ndims);
-        vector<size_t> var_start(d_ndims);
-        int dim = 0;
-        for (dim = 0; dim < d_ndims; dim++) {
-            // the count for each of the dimensions will always be 1 except
-            // for the string length dimension
-            var_count[dim] = 1;
+        // More info: In FONcArray::convert() for arrays of NC_CHAR, even though the
+        // libdap::Array variable has M dimension (e.g., 2) d_ndims will be M+1. The
+        // additional dimension is there because each character is actually a string,
+        // so the code needs to store both the character and a null terminator. This
+        // might be a mistake in the data model - using String for CHAR might not be
+        // the best plan. Right now, it's what we have. jhrg 10/3/22
 
-            // the start for each of the dimensions will start at 0. We will
-            // bump this up in the while loop below
-            var_start[dim] = 0;
+        // Can we optimize for a special case where all strings are the same length?
+        // jhrg 10/3/22
+        if (equal_length(d_a->get_str())) {
+#if STRING_ARRAY_OPT
+            write_equal_length_string_array(ncid);
+#else
+            write_string_array(ncid);
+#endif
         }
-
-        auto const &d_a_str = d_a->get_str();
-        for (int element = 0; element < d_nelements; element++) {
-            var_count[d_ndims - 1] = d_a_str[element].size() + 1;
-            var_start[d_ndims - 1] = 0;
-
-            // write out the string
-            int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(), d_a_str[element].c_str());
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-
-            // bump up the start.
-            if (element + 1 < d_nelements) {
-                bool done = false;
-                dim = d_ndims - 2;
-                while (!done) {
-                    var_start[dim] = var_start[dim] + 1;
-                    if (var_start[dim] == d_dim_sizes[dim]) {
-                        var_start[dim] = 0;
-                        dim--;
-                    }
-                    else {
-                        done = true;
-                    }
-                }
-            }
+        else {
+            write_string_array(ncid);
         }
-
-        // TODO write data here
-
-        d_a->get_str().clear();
     }
-    // If we support the netCDF-4 enhanced model, the unsigned integer
-    // can be directly mapped to the netcdf-4 unsigned integer.
     else if (isNetCDF4_ENHANCED()) {
+        // If we support the netCDF-4 enhanced model, the unsigned integer
+        // can be directly mapped to the netcdf-4 unsigned integer.
         write_for_nc4_types(ncid);
     }
     else {
-        libdap::Type element_type = d_a->var()->type();
-        // create array to hold data hyperslab
-        switch (d_array_type) {
-            case NC_BYTE:
-            case NC_FLOAT:
-            case NC_DOUBLE:
-                write_nc_variable(ncid, d_array_type);
-                break;
-
-            case NC_SHORT:
-                // Given Byte/UInt8 will always be unsigned they must map
-                // to a NetCDF type that will support unsigned bytes.  This
-                // detects the original variable was of type Byte and typecasts
-                // each data value to a short.
-                if (element_type == libdap::dods_byte_c || element_type == libdap::dods_uint8_c) {
-                    if (d_is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-
-                    // There's no practical way to get rid of the value copy, be here we
-                    // read directly from libdap::Array object's memory.
-                    vector<short> data(d_nelements);
-                    for (int d_i = 0; d_i < d_nelements; d_i++)
-                        data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
-
-                    int stax = nc_put_var_short(ncid, d_varid, data.data());
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of shorts for " + d_varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-
-                    // Once we've written an array, reclaim its space _unless_ it is a Grid map.
-                    // It might be shared and other code here expects it to be resident in memory.
-                    // jhrg 6/4/21
-                    if (!FONcGrid::InMaps(d_a))
-                        d_a->clear_local_data();
-                }
-                else {
-                    write_nc_variable(ncid, NC_SHORT);
-                }
-                break;
-
-            case NC_INT:
-                // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
-                // jhrg 6/15/20
-                if (element_type == libdap::dods_int64_c || element_type == libdap::dods_uint64_c) {
-                    // We should not be here. The server configuration is wrong since the netcdf classic
-                    // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
-                    // classic model). Tell the user and the SA.
-                    string msg;
-                    if (FONcRequestHandler::classic_model == false) {
-                        msg = "You asked for one or more 64-bit integer values returned using a netCDF3 file. "
-                              "Try asking for netCDF4 enhanced and/or contact the server administrator.";
-                    }
-                    else {
-                        msg = "You asked for one or more 64-bit integer values, but either returned using a netCDF3 file or "
-                              "from a server that is configured to use the 'classic' netCDF data model with netCDF4. "
-                              "Try netCDF4 and/or contact the server administrator.";
-                    }
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-
-                if (element_type == libdap::dods_uint16_c) {
-                    if (d_is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-
-                    vector<int> data(d_nelements);
-                    for (int d_i = 0; d_i < d_nelements; d_i++)
-                        data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
-
-                    int stax = nc_put_var_int(ncid, d_varid, data.data());
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of ints for " + d_varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-
-                    if (!FONcGrid::InMaps(d_a))
-                        d_a->clear_local_data();
-                }
-                else {
-                    write_nc_variable(ncid, NC_INT);
-                }
-                break;
-
-            default:
-                throw BESInternalError("Failed to transform array of unknown type in file out netcdf (2)",
-                                       __FILE__, __LINE__);
-        } // switch(d_array_type)
+        write_for_nc3_types(ncid);
     }
 
     BESDEBUG("fonc", "FONcArray::write() END  var: " << d_varname << "[" << d_nelements << "]" << endl);
 }
+
+void FONcArray::write_for_nc3_types(int ncid) {
+    Type element_type = d_a->var()->type();
+    // create array to hold data hyperslab
+    switch (d_array_type) {
+        case NC_BYTE:
+        case NC_FLOAT:
+        case NC_DOUBLE:
+            write_nc_variable(ncid, d_array_type);
+            break;
+
+        case NC_SHORT:
+            // Given Byte/UInt8 will always be unsigned they must map
+            // to a NetCDF type that will support unsigned bytes.  This
+            // detects the original variable was of type Byte and typecasts
+            // each data value to a short.
+            if (element_type == dods_byte_c || element_type == dods_uint8_c) {
+                if (d_is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
+
+                // There's no practical way to get rid of the value copy, be here we
+                // read directly from libdap::Array object's memory.
+                vector<short> data(d_nelements);
+                for (int d_i = 0; d_i < d_nelements; d_i++)
+                    data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
+
+                int stax = nc_put_var_short(ncid, d_varid, data.data());
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of shorts for " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+
+                // Once we've written an array, reclaim its space _unless_ it is a Grid map.
+                // It might be shared and other code here expects it to be resident in memory.
+                // jhrg 6/4/21
+                if (!FONcGrid::InMaps(d_a))
+                    d_a->clear_local_data();
+            }
+            else {
+                write_nc_variable(ncid, NC_SHORT);
+            }
+            break;
+
+        case NC_INT:
+            // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
+            // jhrg 6/15/20
+            if (element_type == dods_int64_c || element_type == dods_uint64_c) {
+                // We should not be here. The server configuration is wrong since the netcdf classic
+                // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
+                // classic model). Tell the user and the SA.
+                string msg;
+                if (FONcRequestHandler::classic_model == false) {
+                    msg = "You asked for one or more 64-bit integer values returned using a netCDF3 file. "
+                          "Try asking for netCDF4 enhanced and/or contact the server administrator.";
+                }
+                else {
+                    msg = "You asked for one or more 64-bit integer values, but either returned using a netCDF3 file or "
+                          "from a server that is configured to use the 'classic' netCDF data model with netCDF4. "
+                          "Try netCDF4 and/or contact the server administrator.";
+                }
+                throw BESInternalError(msg, __FILE__, __LINE__);
+            }
+
+            if (element_type == dods_uint16_c) {
+                if (d_is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
+
+                vector<int> data(d_nelements);
+                for (int d_i = 0; d_i < d_nelements; d_i++)
+                    data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
+
+                int stax = nc_put_var_int(ncid, d_varid, data.data());
+                if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - Failed to create array of ints for " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+
+                if (!FONcGrid::InMaps(d_a))
+                    d_a->clear_local_data();
+            }
+            else {
+                write_nc_variable(ncid, NC_INT);
+            }
+            break;
+
+        default:
+            throw BESInternalError("Failed to transform array of unknown type in file out netcdf (2)",
+                                   __FILE__, __LINE__);
+    }
+}
+
+/**
+ * @note This may not work for 'ragged arrays' of strings.
+ * @param ncid
+ */
+void FONcArray::write_string_array(int ncid) {
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    int dim = 0;
+    for (dim = 0; dim < d_ndims; dim++) {
+        // the count for each of the dimensions will always be 1 except
+        // for the string length dimension.
+        // The size of the last dimension (var_count[d_ndims-1]) is set
+        // separately for each element below. jhrg 10/3/22
+        var_count[dim] = 1;
+
+        // the start for each of the dimensions will start at 0. We will
+        // bump this up in the while loop below
+        var_start[dim] = 0;
+    }
+
+    auto const &d_a_str = d_a->get_str();
+    for (int element = 0; element < d_nelements; element++) {
+        var_count[d_ndims - 1] = d_a_str[element].size() + 1;
+        var_start[d_ndims - 1] = 0;
+
+        // write out the string
+        int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
+                                    d_a_str[element].c_str());
+
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+
+        // bump up the start.
+        if (element + 1 < d_nelements) {
+            bool done = false;
+            dim = d_ndims - 2;
+            while (!done) {
+                var_start[dim] = var_start[dim] + 1;
+                if (var_start[dim] == d_dim_sizes[dim]) {
+                    var_start[dim] = 0;
+                    dim--;
+                }
+                else {
+                    done = true;
+                }
+            }
+        }
+    }
+
+    d_a->get_str().clear();
+}
+
+/**
+ * @brief Take an n-dim array of string and treat it as a n+1 dim array of string
+ * Each string of the n+1 dim array is a single character. The strings
+ * are C-style strings (null-terminated). The field d_ndims is already
+ * set to n+1 when the server runs this method.
+ * @param ncid
+ */
+void FONcArray::write_equal_length_string_array(int ncid) {
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    // The flattened n-dim array as a vector of strings, row major order
+    auto const &d_a_str = d_a->get_str();
+
+    vector<char> text_data;
+    text_data.reserve(d_a_str.size() * (d_a_str[0].size() + 1));
+    for (auto &str: d_a_str) {
+        for (auto c: str)
+            text_data.emplace_back(c);
+        text_data.emplace_back('\0');
+    }
+
+    for (int dim = 0; dim < d_ndims; dim++) {
+        var_start[dim] = 0;
+    }
+    for (int dim = 0; dim < d_ndims; dim++) {
+        var_count[dim] = d_dim_sizes[dim];
+    }
+    var_count[d_ndims - 1] = d_a_str[0].size() + 1;
+
+    int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(), text_data.data());
+
+    if (stax != NC_NOERR) {
+        string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
+
+    d_a->get_str().clear();
+}
+
 
 /** @brief returns the name of the DAP Array
  *
