@@ -55,6 +55,7 @@ using namespace libdap;
 // This controls whether variables' data values are deleted as soon
 // as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
+#define STRING_ARRAY_OPT 1
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -629,8 +630,11 @@ void FONcArray::write(int ncid) {
         // Can we optimize for a special case where all strings are the same length?
         // jhrg 10/3/22
         if (equal_length(d_a->get_str())) {
+#if STRING_ARRAY_OPT
             write_equal_length_string_array(ncid);
-            //write_string_array(ncid);
+#else
+            write_string_array(ncid);
+#endif
         }
         else {
             write_string_array(ncid);
@@ -742,6 +746,10 @@ void FONcArray::write_for_nc3_types(int ncid) {
     }
 }
 
+/**
+ * @note This may not work for 'ragged arrays' of strings.
+ * @param ncid
+ */
 void FONcArray::write_string_array(int ncid) {
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
