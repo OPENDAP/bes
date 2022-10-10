@@ -2,23 +2,19 @@
   "type": "Coverage",
   "domain": {
     "type" : "Domain",
-    "domainType": "Grid",
+    "domainType": "Point",
     "axes": {
       "x": {
-        "values": []
-        "bounds": []
+        "values": [-123.458]
       },
       "y": {
-        "values": []
-        "bounds": []
+        "values": [38.048]
       },
       "z": {
-        "values": []
-        "bounds": []
+        "values": [1.5]
       },
       "t": {
-        "values": []
-        "bounds": []
+        "values": ["2015-03-25T22:20:17Z"]
       }
     },
     "referencing": [{
@@ -41,10 +37,11 @@
         "cs": {
           "csAxes": [{
             "name": {
-              "en": "height"
+              "en": "depth"
             },
+            "direction": "down",
             "units": {
-              "symbol": "km"
+              "symbol": "m"
             }
           }]
         }
@@ -52,35 +49,59 @@
     }]
   },
   "parameters": {
-    "temp": {
+    "sal": {
       "type": "Parameter",
       "description": {
-        "en": "temperature of observation"
+        "en": "Salinity"
       },
       "unit": {
         "label": {
-          "en": "Kelvin"
+          "en": "0.001"
         },
         "symbol": {
-          "value": "Kelvin",
+          "value": "0.001",
           "type": "http://www.opengis.net/def/uom/UCUM/"
         }
       },
       "observedProperty": {
-        "id": "http://vocab.nerc.ac.uk/standard_name/temperature/",
+        "id": "http://vocab.nerc.ac.uk/standard_name/sea_water_salinity/",
         "label": {
-          "en": "temperature of observation"
+          "en": "Salinity"
+        }
+      }
+    },
+    "temp": {
+      "type": "Parameter",
+      "description": {
+        "en": "Temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "degree_Celsius"
+        },
+        "symbol": {
+          "value": "degree_Celsius",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/sea_water_temperature/",
+        "label": {
+          "en": "Temperature"
         }
       }
     }
   },
   "ranges": {
+    "sal": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "values": [33]
+    },
     "temp": {
       "type": "NdArray",
       "dataType": "float", 
-      "axisNames": ["t", "z", "y", "x"],
-      "shape": [2, 2, 3, 6],
-      "values": []
+      "values": [13]
     }
   }
 }

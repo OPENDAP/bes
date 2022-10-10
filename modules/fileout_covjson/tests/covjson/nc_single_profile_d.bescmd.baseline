@@ -1,0 +1,111 @@
+{
+  "type": "Coverage",
+  "domain": {
+    "type" : "Domain",
+    "domainType": "VerticalProfile",
+    "axes": {
+      "x": {
+        "values": [-123.56]
+      },
+      "y": {
+        "values": [38.06]
+      },
+      "z": {
+        "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      },
+      "t": {
+        "values": ["2015-03-25T22:20:38Z"]
+      }
+    },
+    "referencing": [{
+      "coordinates": ["t"],
+      "system": {
+        "type": "TemporalRS",
+        "calendar": "Gregorian"
+      }
+    },
+    {
+      "coordinates": ["x", "y"],
+      "system": {
+        "type": "GeographicCRS",
+      }
+    },
+    {
+      "coordinates": ["z"],
+      "system": {
+        "type": "VerticalCRS",
+        "cs": {
+          "csAxes": [{
+            "name": {
+              "en": "depth"
+            },
+            "direction": "down",
+            "units": {
+              "symbol": "m"
+            }
+          }]
+        }
+      }
+    }]
+  },
+  "parameters": {
+    "sal": {
+      "type": "Parameter",
+      "description": {
+        "en": "Salinity"
+      },
+      "unit": {
+        "label": {
+          "en": "0.001"
+        },
+        "symbol": {
+          "value": "0.001",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/sea_water_salinity/",
+        "label": {
+          "en": "Salinity"
+        }
+      }
+    },
+    "temp": {
+      "type": "Parameter",
+      "description": {
+        "en": "Temperature"
+      },
+      "unit": {
+        "label": {
+          "en": "degree_Celsius"
+        },
+        "symbol": {
+          "value": "degree_Celsius",
+          "type": "http://www.opengis.net/def/uom/UCUM/"
+        }
+      },
+      "observedProperty": {
+        "id": "http://vocab.nerc.ac.uk/standard_name/sea_water_temperature/",
+        "label": {
+          "en": "Temperature"
+        }
+      }
+    }
+  },
+  "ranges": {
+    "sal": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["z"],
+      "shape": [10],
+      "values": [33.4328, 33.1801, 33.891, 33.3544, 33.7765, 33.1015, 33.0325, 33.8124, 33.2357, 33.5644]
+    },
+    "temp": {
+      "type": "NdArray",
+      "dataType": "float", 
+      "axisNames": ["z"],
+      "shape": [10],
+      "values": [13.4737, 13.7006, 13.5882, 13.6591, 13.6801, 13.7293, 13.3468, 13.2907, 13.0798, 13.632]
+    }
+  }
+}
