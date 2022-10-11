@@ -133,18 +133,18 @@ private:
     bool err_msg_set = false;
 #endif
 
-    bool is_cf_grid_mapping_var(libdap::BaseType *v);
+    bool is_cf_grid_mapping_var(libdap::BaseType *v) const;
 
-    bool is_supported_vars_by_type(libdap::BaseType*v);
-    void handle_axisVars_array(libdap::BaseType*v,axisVar & this_axisVar, const string &val);
+    bool is_supported_vars_by_type(libdap::BaseType*v) const;
+    void handle_axisVars_array(libdap::BaseType*v,axisVar & this_axisVar) ;
     void set_axisVar(libdap::BaseType*v,const string &val);
     bool is_simple_dsg(DSGType dsg);
     bool is_simple_dsg_common();
-    DSGType is_single_point();
-    DSGType is_point_series();
-    DSGType is_single_profile();
+    DSGType is_single_point () const;
+    DSGType is_point_series () const;
+    DSGType is_single_profile () const;
     bool is_valid_single_point_par_var(libdap::BaseType*);
-    bool is_fake_coor_vars(libdap::Array*);
+    bool is_fake_coor_vars(libdap::Array*) const;
     bool is_valid_array_dsg_par_var(libdap::Array*);
     bool is_valid_dsg_par_var(libdap::BaseType *);
     bool obtain_valid_dsg_par_vars(libdap::DDS *);
@@ -205,7 +205,7 @@ private:
 
     // Different types need to be handled differently. Eventually the getAttributes() listed above becomes
     // the wrapper of the functions declared below.
-    void getAttributes_simple_cf_geographic_dsg(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+    void getAttributes_simple_cf_geographic_dsg(std::ostream *strm, libdap::AttrTable &attr_table, const std::string& name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
     
@@ -294,7 +294,7 @@ private:
      * @param indent Indent the output so humans can make sense of it
      * @param sendData true: send data; false: send metadata
      */
-    void transformAtomic(ostream *strm, libdap::BaseType *bt, std::string indent, bool sendData);
+    void transformAtomic(ostream *strm, libdap::BaseType *bt, const std::string& indent, bool sendData);
 #if 0
     //void transformAtomic(libdap::BaseType *bt, std::string indent, bool sendData);
 #endif
