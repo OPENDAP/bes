@@ -139,13 +139,13 @@ private:
     void handle_axisVars_array(libdap::BaseType*v,axisVar & this_axisVar) ;
     void set_axisVar(libdap::BaseType*v,const string &val);
     bool is_simple_dsg(DSGType dsg);
-    bool is_simple_dsg_common();
+    bool is_simple_dsg_common() const;
     DSGType is_single_point () const;
     DSGType is_point_series () const;
     DSGType is_single_profile () const;
-    bool is_valid_single_point_par_var(libdap::BaseType*);
+    bool is_valid_single_point_par_var(libdap::BaseType*) const;
     bool is_fake_coor_vars(libdap::Array*) const;
-    bool is_valid_array_dsg_par_var(libdap::Array*);
+    bool is_valid_array_dsg_par_var(libdap::Array*) const;
     bool is_valid_dsg_par_var(libdap::BaseType *);
     bool obtain_valid_dsg_par_vars(libdap::DDS *);
     bool check_update_simple_dsg(libdap::DDS *);

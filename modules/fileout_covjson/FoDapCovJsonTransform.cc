@@ -1795,7 +1795,6 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
         currParameter = parameters[parameterCount - 1];
         if (sendData) {
             currParameter->values += "\"values\": [";
-            //currParameter->values += pstrm.str();
             if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
                 // Strings need to be escaped to be included in a CovJSON object.
                 const auto s = dynamic_cast<libdap::Str *>(b);
@@ -1806,8 +1805,6 @@ void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, 
             else {
                 ostringstream otemp;
                 b->print_val(otemp, "", false);
-                //newAxis->values += otemp.str();
- 
                 currParameter->values += otemp.str();
             }
             currParameter->values += "]";
@@ -1977,14 +1974,12 @@ else if(cf_profile)
                         string cf_attr_name = "axis";
                         string attr_name = attrs.get_name(di);
                         unsigned int num_vals = attrs.get_attr_num(di);
-                        if (num_vals == 1) {
-                            if (cf_attr_name == attr_name) {
-                                string val = attrs.get_attr(di,0);
-                                set_axisVar(v,val);
+                        if (num_vals == 1 && cf_attr_name == attr_name) {
+                            string val = attrs.get_attr(di,0);
+                            set_axisVar(v,val);
 #if 0
 //cerr<<"val is "<<val << endl;
 #endif
-                            }
                         }
                     }
                 }
@@ -2066,7 +2061,7 @@ DSGType FoDapCovJsonTransform::is_single_profile() const {
 
 }
 
-bool FoDapCovJsonTransform::is_simple_dsg_common() {
+bool FoDapCovJsonTransform::is_simple_dsg_common() const {
 
     bool ret_value = true;
     if (axisVar_x.name =="" || axisVar_y.name == "") 
@@ -2201,7 +2196,7 @@ bool FoDapCovJsonTransform::is_fake_coor_vars(libdap::Array *d_a) const{
 
 }
 
-bool FoDapCovJsonTransform::is_valid_single_point_par_var(libdap::BaseType *v) {
+bool FoDapCovJsonTransform::is_valid_single_point_par_var(libdap::BaseType *v) const {
 
     bool ret_value = true;
     if (v->name() == axisVar_x.name || v->name() == axisVar_y.name ||
@@ -2212,7 +2207,7 @@ bool FoDapCovJsonTransform::is_valid_single_point_par_var(libdap::BaseType *v) {
     return ret_value;
 }
 
-bool FoDapCovJsonTransform::is_valid_array_dsg_par_var(libdap::Array *d_a) {
+bool FoDapCovJsonTransform::is_valid_array_dsg_par_var(libdap::Array *d_a) const {
 
     bool ret_value = false;
 
