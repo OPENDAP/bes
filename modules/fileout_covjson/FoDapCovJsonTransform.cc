@@ -10,7 +10,10 @@
 // Author: Riley Rimer <rrimer@oregonstate.edu>
 //
 // Adapted from the File Out JSON module implemented by Nathan Potter
-//
+// Author: Kent Yang <myang6@hdfgroup.org> 2022-10
+// Note from KY: Make the module correctly generate simple grid,point,
+//               point series and vertical profile coverage.
+//               Also the original testsuite is completely replaced.
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
@@ -54,6 +57,12 @@ using std::istringstream;
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <libdap/Sequence.h>
+#include <libdap/Byte.h>
+#include <libdap/UInt16.h>
+#include <libdap/Int16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Int32.h>
+#include <libdap/Float32.h>
 #include <libdap/Float64.h>
 #include <libdap/Str.h>
 #include <libdap/Url.h>
@@ -91,15 +100,36 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
     
 #endif
 
+    bool ret_value = false;
     if(true == is_simple_cf_geographic) {
         domainType = "Grid";   
-        return true;
+        ret_value = true;
     }
-    else 
-        return false;
+    else {
+        
+        ret_value = true;
+        switch (dsg_type) {
+        case SPOINT: {
+            domainType = "Point";
+            break;
+        }
+        case POINTS: {
+            domainType = "PointSeries";
+            break;
+        }
+        case PROFILE: {
+            domainType = "VerticalProfile";
+            break;
+        }
+        default:
+            ret_value = false;
+        }
+    }
+
+    return ret_value;
     
     // The following code is commented out for the time being. 
-    // We currently only support the simple CF geographic projection for the time being.  
+    // We only support the simple CF geographic projection, point, pointSeries, vertical profile for the time being.  
     // We will enhance this module to support the other cases in the new tickets.
     // KY 2022-06-10
 #if 0
@@ -345,10 +375,9 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         // *strm << "\"length\": \"" << length << "\"" << endl << endl;
 
         bool handle_axis_t_here = true;
-        if(!is_simple_cf_geographic  && currAxis->name.compare("t") == 0)
+        if(is_simple_cf_geographic==false && dsg_type == UNSUPPORTED_DSG  && currAxis->name.compare("t") == 0)
             handle_axis_t_here = false;
         if (handle_axis_t_here) {
-        //if (currAxis->name.compare("t") != 0) {
             if (sendData) {
                 currAxis->values += "\"values\": [";
                 unsigned int indx = 0;
@@ -357,7 +386,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
                 ostringstream astrm;
                 bool is_time_axis_for_sgeo = false;
-                if(is_simple_cf_geographic && currAxis->name.compare("t") == 0)
+                if((is_simple_cf_geographic || dsg_type != UNSUPPORTED_DSG) && currAxis->name.compare("t") == 0)
                     is_time_axis_for_sgeo = true;
 
 
@@ -365,8 +394,9 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 currAxis->values += astrm.str();
 
                 currAxis->values += "]";
-
+#if 0
 //cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
+#endif
                 if (length != indx) {
                     BESDEBUG(FoDapCovJsonTransform_debug_key,
                         "covjsonSimpleTypeArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
@@ -384,7 +414,9 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         struct Parameter *currParameter;
         currParameter = parameters[parameterCount - 1];
 
-//cerr<<"Parameter name is "<< currParameter->name<<endl;
+#if 0
+cerr<<"Parameter name is "<< currParameter->name<<endl;
+#endif
         int numDim = a->dimensions(true);
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
@@ -407,13 +439,11 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             otemp << shape[i];
             istringstream (otemp.str());
             istringstream (otemp.str()) >> tempVal;
-//cerr<<"tempVal is "<<tempVal <<endl;
             shapeVals.push_back(tempVal);
 
             // t may only have 1 value: the origin timestamp
             // DANGER: t may not yet be defined
-            if((i == 0) && tExists && is_simple_cf_geographic == false) {
-            //if((i == 0) && tExists) {
+            if((i == 0) && tExists && is_simple_cf_geographic == false && dsg_type == UNSUPPORTED_DSG) {
                 currParameter->shape += "1";
             }
             else {
@@ -476,10 +506,9 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
         long length = focovjson::computeConstrainedShape(a, &shape);
 
         bool handle_axis_t_here = true;
-        if(!is_simple_cf_geographic  && currAxis->name.compare("t") == 0)
+        if(is_simple_cf_geographic==false && dsg_type == UNSUPPORTED_DSG  && currAxis->name.compare("t") == 0)
             handle_axis_t_here = false;
         if (handle_axis_t_here) {
-        //if (currAxis->name.compare("t") != 0) {
             if (sendData) {
                 currAxis->values += "\"values\": ";
                 unsigned int indx = 0;
@@ -530,7 +559,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
 
             // t may only have 1 value: the origin timestamp
             // DANGER: t may not yet be defined
-            if((i == 0) && tExists && is_simple_cf_geographic == false) {
+            if((i == 0) && tExists && is_simple_cf_geographic == false && dsg_type == UNSUPPORTED_DSG) {
             //if((i == 0) && tExists) {
                 currParameter->shape += "1";
             }
@@ -615,176 +644,174 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     //*strm << "\"attr_tableName\": \"" << name << "\"" << endl;
 
     
-  if(is_simple_cf_geographic) {
-        getAttributes_simple_cf_geographic(strm,attr_table,name,axisRetrieved,parameterRetrieved);
-
-  }
-  else {
-    // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
-    // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
-    if((name.compare("lon") == 0) || (name.compare("LON") == 0)
-        || (name.compare("longitude") == 0) || (name.compare("LONGITUDE") == 0)
-        || (name.compare("COADSX") == 0)) {
-
-        // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
-
-        if(!xExists) {
-            xExists = true;
-            isAxis = true;
-            currAxisName = "x";
-        }
-    }
-    else if((name.compare("lat") == 0) || (name.compare("LAT") == 0)
-        || (name.compare("latitude") == 0) || (name.compare("LATITUDE") == 0)
-        || (name.compare("COADSY") == 0)) {
-
-        // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
-
-        if(!yExists) {
-            yExists = true;
-            isAxis = true;
-            currAxisName = "y";
-        }
-    }
-    else if((name.compare("lev") == 0) || (name.compare("LEV") == 0)
-        || (name.compare("height") == 0) || (name.compare("HEIGHT") == 0)
-        || (name.compare("depth") == 0) || (name.compare("DEPTH") == 0)
-        || (name.compare("pres") == 0) || (name.compare("PRES") == 0)) {
-
-        // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
-
-        if(!zExists) {
-            zExists = true;
-            isAxis = true;
-            currAxisName = "z";
-        }
-    }
-    else if((name.compare("time") == 0) || (name.compare("TIME") == 0)) {
-
-        // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
-
-        if(!tExists) {
-            tExists = true;
-            isAxis = true;
-            currAxisName = "t";
-        }
-    }
+    if (is_simple_cf_geographic || dsg_type!=UNSUPPORTED_DSG) 
+        getAttributes_simple_cf_geographic_dsg(strm,attr_table,name,axisRetrieved,parameterRetrieved);
     else {
-        isParam = true;
-    }
-
-    // Only do more if there are actually attributes in the table
-    if(attr_table.get_size() != 0) {
-        libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
-        libdap::AttrTable::Attr_iter end = attr_table.attr_end();
-
-        for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
-            // FOR TESTING AND DEBUGGING PURPOSES 
-            // attr_table.print(*strm);
-
-            switch (attr_table.get_attr_type(at_iter)) {
-            case libdap::Attr_container: {
-                libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
-                // Recursive call for child attribute table
-                getAttributes(strm, *atbl, name, axisRetrieved, parameterRetrieved);
-                break;
-            }
-            default: {
-                vector<string> *values = attr_table.get_attr_vector(at_iter);
-
-                for(vector<string>::size_type i = 0; i < values->size(); i++) {
-                    string currName = attr_table.get_name(at_iter);
-                    string currValue = (*values)[i];
-
-                    // FOR TESTING AND DEBUGGING PURPOSES
-                    //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
-
-                    // From Climate and Forecast (CF) Conventions:
-                    // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
-
-                    // We continue to support the use of the units and long_name attributes as defined in COARDS.
-                    // We extend COARDS by adding the optional standard_name attribute which is used to provide unique
-                    // identifiers for variables. This is important for data exchange since one cannot necessarily
-                    // identify a particular variable based on the name assigned to it by the institution that provided
-                    // the data.
-
-                    // The standard_name attribute can be used to identify variables that contain coordinate data. But since it is an
-                    // optional attribute, applications that implement these standards must continue to be able to identify coordinate
-                    // types based on the COARDS conventions.
-
-                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
-                    if(currName.compare("units") == 0) {
-                        currUnit = currValue;
-
-                        if(isAxis) {
-                            if(currAxisName.compare("t") == 0) {
-                                currAxisTimeOrigin = currValue;
-                            }
-                        }
-                    }
-
-                    // Per Jon Blower:
-                    // observedProperty->label comes from:
-                    //    - The CF long_name, if it exists
-                    //    - If not, the CF standard_name, perhaps with underscores removed
-                    //    - If the standard_name doesn’t exist, use the variable ID
-                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
-                    else if(currName.compare("long_name") == 0) {
-                        currLongName = currValue;
-                    }
-                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#standard-name
-                    else if(currName.compare("standard_name") == 0) {
-                        currStandardName = currValue;
-                    }
-                }
-
-                break;
-            }
+        // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
+        // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
+        if((name.compare("lon") == 0) || (name.compare("LON") == 0)
+            || (name.compare("longitude") == 0) || (name.compare("LONGITUDE") == 0)
+            || (name.compare("COADSX") == 0)) {
+    
+            // FOR TESTING AND DEBUGGING PURPOSES
+            // *strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
+    
+            if(!xExists) {
+                xExists = true;
+                isAxis = true;
+                currAxisName = "x";
             }
         }
-    }
-
-    if(isAxis) {
-        // If we're dealing with the time axis, capture the time origin 
-        // timestamp value with the appropriate formatting for printing.
-        // @TODO See https://covjson.org/spec/#temporal-reference-systems
-        if(currAxisName.compare("t") == 0) {
-            addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
+        else if((name.compare("lat") == 0) || (name.compare("LAT") == 0)
+            || (name.compare("latitude") == 0) || (name.compare("LATITUDE") == 0)
+            || (name.compare("COADSY") == 0)) {
+    
+            // FOR TESTING AND DEBUGGING PURPOSES
+            //*strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
+    
+            if(!yExists) {
+                yExists = true;
+                isAxis = true;
+                currAxisName = "y";
+            }
+        }
+        else if((name.compare("lev") == 0) || (name.compare("LEV") == 0)
+            || (name.compare("height") == 0) || (name.compare("HEIGHT") == 0)
+            || (name.compare("depth") == 0) || (name.compare("DEPTH") == 0)
+            || (name.compare("pres") == 0) || (name.compare("PRES") == 0)) {
+    
+            // FOR TESTING AND DEBUGGING PURPOSES
+            // *strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
+    
+            if(!zExists) {
+                zExists = true;
+                isAxis = true;
+                currAxisName = "z";
+            }
+        }
+        else if((name.compare("time") == 0) || (name.compare("TIME") == 0)) {
+    
+            // FOR TESTING AND DEBUGGING PURPOSES
+            // *strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
+    
+            if(!tExists) {
+                tExists = true;
+                isAxis = true;
+                currAxisName = "t";
+            }
         }
         else {
-//cerr<<"addAxis 1 "<<endl;
-            addAxis(currAxisName, "");
+            isParam = true;
         }
-//cerr<<"currAxisName is "<<currAxisName <<endl;
-//cerr<<"currUnit is "<<currUnit <<endl;
-
-        // See https://covjson.org/spec/#projected-coordinate-reference-systems
-        // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
-        // The ProjectedCRS may imply the 2-D lat/lon. If the variable name is the same as the axis name, and the lat/lon
-        // are 1-D, this is a geographic system.
-        if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
-            (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
-            coordRefType = "ProjectedCRS";
+    
+        // Only do more if there are actually attributes in the table
+        if(attr_table.get_size() != 0) {
+            libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
+            libdap::AttrTable::Attr_iter end = attr_table.attr_end();
+    
+            for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+                // FOR TESTING AND DEBUGGING PURPOSES 
+                // attr_table.print(*strm);
+    
+                switch (attr_table.get_attr_type(at_iter)) {
+                case libdap::Attr_container: {
+                    libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
+                    // Recursive call for child attribute table
+                    getAttributes(strm, *atbl, name, axisRetrieved, parameterRetrieved);
+                    break;
+                }
+                default: {
+                    vector<string> *values = attr_table.get_attr_vector(at_iter);
+    
+                    for(vector<string>::size_type i = 0; i < values->size(); i++) {
+                        string currName = attr_table.get_name(at_iter);
+                        string currValue = (*values)[i];
+    
+                        // FOR TESTING AND DEBUGGING PURPOSES
+                        //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
+    
+                        // From Climate and Forecast (CF) Conventions:
+                        // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
+    
+                        // We continue to support the use of the units and long_name attributes as defined in COARDS.
+                        // We extend COARDS by adding the optional standard_name attribute which is used to provide unique
+                        // identifiers for variables. This is important for data exchange since one cannot necessarily
+                        // identify a particular variable based on the name assigned to it by the institution that provided
+                        // the data.
+    
+                        // The standard_name attribute can be used to identify variables that contain coordinate data. But since it is an
+                        // optional attribute, applications that implement these standards must continue to be able to identify coordinate
+                        // types based on the COARDS conventions.
+    
+                        // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
+                        if(currName.compare("units") == 0) {
+                            currUnit = currValue;
+                            if(isAxis) {
+                                if(currAxisName.compare("t") == 0) {
+                                    currAxisTimeOrigin = currValue;
+                                }
+                            }
+                        }
+    
+                        // Per Jon Blower:
+                        // observedProperty->label comes from:
+                        //    - The CF long_name, if it exists
+                        //    - If not, the CF standard_name, perhaps with underscores removed
+                        //    - If the standard_name doesn’t exist, use the variable ID
+                        // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
+                        else if(currName.compare("long_name") == 0) {
+                            currLongName = currValue;
+                        }
+                        // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#standard-name
+                        else if(currName.compare("standard_name") == 0) {
+                            currStandardName = currValue;
+                        }
+                    }
+    
+                    break;
+                }
+                }
+            }
         }
-
-        *axisRetrieved = true;
+    
+        if(isAxis) {
+            // If we're dealing with the time axis, capture the time origin 
+            // timestamp value with the appropriate formatting for printing.
+            // @TODO See https://covjson.org/spec/#temporal-reference-systems
+            if(currAxisName.compare("t") == 0) {
+                addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
+            }
+            else {
+                addAxis(currAxisName, "");
+            }
+#if 0
+    //cerr<<"currAxisName is "<<currAxisName <<endl;
+    //cerr<<"currUnit is "<<currUnit <<endl;
+#endif
+    
+            // See https://covjson.org/spec/#projected-coordinate-reference-systems
+            // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
+            // The ProjectedCRS may imply the 2-D lat/lon. If the variable name is the same as the axis name, and the lat/lon
+            // are 1-D, this is a geographic system.
+            if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
+                (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
+                coordRefType = "ProjectedCRS";
+            }
+    
+            *axisRetrieved = true;
+        }
+        else if(isParam) {
+            addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
+            *parameterRetrieved = true;
+        }
+        else {
+            // Do nothing
+        }
     }
-    else if(isParam) {
-        addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
-        *parameterRetrieved = true;
-    }
-    else {
-        // Do nothing
-    }
-  }
 }
 
 void FoDapCovJsonTransform::
-    getAttributes_simple_cf_geographic(ostream *strm, libdap::AttrTable &attr_table, string name,
+    getAttributes_simple_cf_geographic_dsg(ostream *strm, libdap::AttrTable &attr_table, const string& name,
     bool *axisRetrieved, bool *parameterRetrieved)
 {
     string currAxisName;
@@ -803,7 +830,7 @@ void FoDapCovJsonTransform::
     
     if(axisVar_x.name == name) {
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
+        //*strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
 
         if(!xExists) {
             xExists = true;
@@ -813,7 +840,7 @@ void FoDapCovJsonTransform::
     }
     else if(axisVar_y.name == name) {
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
+        //*strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
 
         if(!yExists) {
             yExists = true;
@@ -823,7 +850,7 @@ void FoDapCovJsonTransform::
     }
     else if(axisVar_z.name == name) {
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
+        //*strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
 
         if(!zExists) {
             zExists = true;
@@ -833,7 +860,7 @@ void FoDapCovJsonTransform::
     }
     else if(axisVar_t.name == name) {
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
+        //*strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
 
         if(!tExists) {
             tExists = true;
@@ -864,7 +891,7 @@ void FoDapCovJsonTransform::
             case libdap::Attr_container: {
                 libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
                 // Recursive call for child attribute table
-                getAttributes_simple_cf_geographic(strm, *atbl, name, axisRetrieved, parameterRetrieved);
+                getAttributes_simple_cf_geographic_dsg(strm, *atbl, name, axisRetrieved, parameterRetrieved);
                 break;
             }
             default: {
@@ -907,6 +934,20 @@ void FoDapCovJsonTransform::
                     else if(currName.compare("standard_name") == 0) {
                         currStandardName = currValue;
                     }
+                    
+                }
+
+                if (axisVar_z.name == name) {// We need to check if the attribute "positive" exists.
+
+                    for(vector<string>::size_type i = 0; i < values->size(); i++) {
+                        string currName = attr_table.get_name(at_iter);
+                        if (currName == "positive") {
+                            string currValue = (*values)[i];
+                            axis_z_direction = currValue;
+                            break;
+                        }
+                    }
+
                 }
 
                 break;
@@ -917,10 +958,16 @@ void FoDapCovJsonTransform::
 
     if(isAxis) {
         addAxis(currAxisName, "");
+#if 0
 //cerr<<"currAxisName is "<<currAxisName <<endl;
 //cerr<<"currUnit is "<<currUnit <<endl;
-        if(currAxisName.compare("t") == 0)
+#endif
+        if (currAxisName.compare("t") == 0)
             axis_t_units = currUnit;
+        if (currAxisName.compare("z") == 0) {
+             axis_z_standardName=currStandardName;
+             axis_z_units = currUnit;
+        }
         *axisRetrieved = true;
     }
     else if(isParam) {
@@ -932,8 +979,6 @@ void FoDapCovJsonTransform::
     }
   
 }
-
-
 
 
 string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) 
@@ -1035,7 +1080,7 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing LEAF: " << v->name() << endl);
 
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "Processing LEAF: " <<  v->name() << endl;
+        //*strm << "Processing LEAF: " <<  v->name() << endl;
 
         transform(strm, v, indent + _indent_increment, sendData);
     }
@@ -1046,7 +1091,7 @@ void FoDapCovJsonTransform::transformNodeWorker(ostream *strm, vector<libdap::Ba
         BESDEBUG(FoDapCovJsonTransform_debug_key, "Processing NODE: " << v->name() << endl);
 
         // FOR TESTING AND DEBUGGING PURPOSES
-        // *strm << "Processing NODE: " <<  v->name() << endl;
+        //*strm << "Processing NODE: " <<  v->name() << endl;
 
         transform(strm, v, indent + _indent_increment, sendData);
     }
@@ -1254,6 +1299,9 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
 {
     string child_indent1 = indent + _indent_increment;
     string child_indent2 = child_indent1 + _indent_increment;
+    string child_indent3 = child_indent2 + _indent_increment;
+    string child_indent4 = child_indent3 + _indent_increment;
+    string child_indent5 = child_indent4 + _indent_increment;
     string coordVars;
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing REFERENCES" << endl);
@@ -1269,7 +1317,7 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
         coordVars += "\"y\"";
     }
 
-    if(zExists) {
+    if(zExists && !is_simple_cf_geographic && (dsg_type == UNSUPPORTED_DSG)) {
         if(!coordVars.empty()) {
             coordVars += ", ";
         }
@@ -1303,18 +1351,47 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     else {
         if(xExists && yExists && zExists) {
             // 3-Dimensional Geographic Coordinate Reference System (lat/lon/height): http://www.opengis.net/def/crs/EPSG/0/4979
-            if(!is_simple_cf_geographic)
+            if(!is_simple_cf_geographic &&(dsg_type == UNSUPPORTED_DSG))
                *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/4979\"" << endl;
         }
         else {
             // 2-Dimensional Geographic Coordinate Reference System (lat/lon): http://www.opengis.net/def/crs/OGC/1.3/CRS84
-            if(!is_simple_cf_geographic)
+            if(!is_simple_cf_geographic && (dsg_type==UNSUPPORTED_DSG))
                *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
         }
     }
 
     *strm << child_indent1 << "}" << endl;
-    *strm << indent << "}]" << endl;
+
+    if (zExists && (is_simple_cf_geographic || dsg_type != UNSUPPORTED_DSG)) {
+        *strm << indent << "}," << endl;
+        *strm << indent << "{" << endl;
+        *strm << child_indent1 << "\"coordinates\": [" << "\"z\"]," << endl;
+        *strm << child_indent1 << "\"system\": {" << endl;
+        *strm << child_indent2 << "\"type\": \"" <<"VerticalCRS" << "\"," << endl;
+        *strm << child_indent2 << "\"cs\": {" << endl;
+        *strm << child_indent3 << "\"csAxes\": [{" << endl;
+        *strm << child_indent4 << "\"name\": {" << endl;
+        if (axis_z_standardName =="") 
+            *strm << child_indent5 << "\"en\": \"" << axisVar_z.name << "\"" << endl;
+        else 
+            *strm << child_indent5 << "\"en\": \"" << axis_z_standardName << "\"" << endl;
+        *strm << child_indent4 << "}," << endl;
+        if (axis_z_direction !="") 
+            *strm << child_indent4 << "\"direction\": \"" << axis_z_direction << "\","<<endl;
+        if (axis_z_units !="") {
+            *strm << child_indent4 << "\"units\": {" << endl;
+            *strm << child_indent5 << "\"symbol\": \"" << axis_z_units << "\"" << endl;
+            *strm << child_indent4 << "}" << endl;
+        }
+        *strm << child_indent3 <<"}]"<<endl;
+        *strm << child_indent2 <<"}"<<endl;
+        *strm << child_indent1 <<"}"<<endl;
+        *strm << indent <<"}]"<<endl;
+    }
+    else 
+        *strm << indent << "}]" << endl;
+    
 }
 
 void FoDapCovJsonTransform::printParameters(ostream *strm, string indent)
@@ -1452,8 +1529,21 @@ void FoDapCovJsonTransform::printRanges(ostream *strm, string indent)
         *strm << child_indent1 << "\"" << parameters[i]->name << "\": {" << endl;
         *strm << child_indent2 << "\"type\": \"NdArray\"," << endl;
         *strm << child_indent2 << "\"dataType\": \"" << dataType << "\", " << endl;
-        *strm << child_indent2 << "\"axisNames\": [" << axisNames << "]," << endl;
-        *strm << child_indent2 << parameters[i]->shape << endl;
+
+        // For discrete examples axisNames and shape may not need to be printed.
+        // For point, no axis and shape,
+        // For pointseries, axisNames: t
+        // For vertical Profile, axisNames: z
+        // For parameters that don't have shape, don't print shape.
+        if (dsg_type !=SPOINT) {
+            if (dsg_type == POINTS) 
+                axisNames = "\"t\"";
+            else if (dsg_type == PROFILE)
+                axisNames = "\"z\"";
+            *strm << child_indent2 << "\"axisNames\": [" << axisNames << "]," << endl;
+            if (parameters[i]->shape!="")
+                *strm << child_indent2 << parameters[i]->shape << endl;
+        }
         *strm << child_indent2 << parameters[i]->values << endl;
 
         if(i == parameterCount - 1) {
@@ -1491,14 +1581,698 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
-  if(FoCovJsonRequestHandler::get_simple_geo()) {
-    // Sort the variables into two sets
-    vi = dds->var_begin();
-    ve = dds->var_end();
+    // Check if CF discrete Sample Geometries
+    bool is_simple_discrete = check_update_simple_dsg(dds);
+   
+    // Check simple grid
+    if (is_simple_discrete == false && FoCovJsonRequestHandler::get_simple_geo()) 
+        check_update_simple_geo(dds, sendData);
 
-    // Kent: We need to do pre-processing to handle more grid GES DISC stuff.
+    // Read through the source DDS leaves and nodes, extract all axes and
+    // parameter data, and store that data as Axis and Parameters
+    transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
+
+    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+    BESUtil::conditional_timeout_cancel();
+
+    // Print the Coverage data to stream as CoverageJSON
+    printCoverageJSON(strm, indent, testOverride);
+}
+
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
+{
+    switch(bt->type()) {
+    // Handle the atomic types - that's easy!
+    case libdap::dods_byte_c:
+    case libdap::dods_int16_c:
+    case libdap::dods_uint16_c:
+    case libdap::dods_int32_c:
+    case libdap::dods_uint32_c:
+    case libdap::dods_float32_c:
+    case libdap::dods_float64_c:
+    case libdap::dods_str_c:
+    case libdap::dods_url_c:
+        transformAtomic(strm, bt, indent, sendData);
+        break;
+
+    case libdap::dods_structure_c:
+        transform(strm, (libdap::Structure *) bt, indent, sendData);
+        break;
+
+    case libdap::dods_grid_c:
+        transform(strm, (libdap::Grid *) bt, indent, sendData);
+        break;
+
+    case libdap::dods_sequence_c:
+        transform(strm, (libdap::Sequence *) bt, indent, sendData);
+        break;
+
+    case libdap::dods_array_c:
+        transform(strm, (libdap::Array *) bt, indent, sendData);
+        break;
+
+    case libdap::dods_int8_c:
+    case libdap::dods_uint8_c:
+    case libdap::dods_int64_c:
+    case libdap::dods_uint64_c:
+    case libdap::dods_enum_c:
+    case libdap::dods_group_c: {
+        string s = (string) "File out COVJSON, DAP4 types not yet supported.";
+        throw BESInternalError(s, __FILE__, __LINE__);
+        break;
+    }
+
+    default: {
+        string s = (string) "File out COVJSON, Unrecognized type.";
+        throw BESInternalError(s, __FILE__, __LINE__);
+        break;
+    }
+    }
+}
+
+#if 0
+void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, const string& indent, bool sendData)
+{
+    string childindent = indent + _indent_increment;
+    struct Axis *newAxis = new Axis;
+cerr<<"b name is "<<b->name() <<endl;
+
+    // Why assigning the name as "test" and why assigning the string type value? KY 2022-01-18
+    newAxis->name = "test";
+    if(sendData) {
+        newAxis->values += "\"values\": [";
+        if(b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
+            libdap::Str *strVar = (libdap::Str *) b;
+            string tmpString = strVar->value();
+            newAxis->values += "\"";
+            newAxis->values += focovjson::escape_for_covjson(tmpString);
+            newAxis->values += "\"";
+        }
+        else {
+            ostringstream otemp;
+            istringstream itemp;
+            int tempVal = 0;
+            b->print_val(otemp, "", false);
+            istringstream (otemp.str());
+            istringstream (otemp.str()) >> tempVal;
+            newAxis->values += otemp.str();
+        }
+        newAxis->values += "]";
+    }
+    else {
+        newAxis->values += "\"values\": []";
+    }
+
+    axes.push_back(newAxis);
+    axisCount++;
+}
+#endif
+
+void FoDapCovJsonTransform::transformAtomic(ostream *strm, libdap::BaseType *b, const string& indent, bool sendData) {
+
+    string childindent = indent + _indent_increment;
+    bool axisRetrieved = false;
+    bool parameterRetrieved = false;
+ 
+    getAttributes(strm, b->get_attr_table(), b->name(), &axisRetrieved, &parameterRetrieved);
+
+    if((axisRetrieved == true) && (parameterRetrieved == false)) {
+        struct Axis *currAxis;
+        currAxis = axes[axisCount - 1];
+
+        if (sendData) {
+            currAxis->values += "\"values\": [";
+
+            bool is_cf_time_axis = false;
+            if ((is_simple_cf_geographic || dsg_type != UNSUPPORTED_DSG) && currAxis->name.compare("t") == 0)
+                is_cf_time_axis = true;
+
+            if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
+                // Strings need to be escaped to be included in a CovJSON object.
+                const auto s = dynamic_cast<libdap::Str *>(b);
+                string val = s->value();
+                currAxis->values +="\"" + focovjson::escape_for_covjson(val) + "\"";
+
+            }
+            else if (is_cf_time_axis) {
+
+                // We need to convert CF time to greg time.
+                string axis_t_value;
+                std::ostringstream tmp_stream; 
+                long long tmp_value = 0;
+                switch (b->type()) {
+                case libdap::dods_byte_c: {
+                    const auto tmp_byte = dynamic_cast<libdap::Byte *>(b);
+                    tmp_value = (long long) (tmp_byte->value());
+                    break;
+                }
+
+                case libdap::dods_uint16_c:  {
+                    const auto tmp_uint16 = dynamic_cast<libdap::UInt16 *>(b);
+                    tmp_value = (long long) (tmp_uint16->value());
+                    break;
+                }
+
+                case libdap::dods_int16_c: {
+                    const auto tmp_int16 = dynamic_cast<libdap::Int16 *>(b);
+                    tmp_value = (long long) (tmp_int16->value());
+                    break;
+                }
+
+                case libdap::dods_uint32_c: {
+                    const auto tmp_uint32 = dynamic_cast<libdap::UInt32 *>(b);
+                    tmp_value = (long long) (tmp_uint32->value());
+                    break;
+                }
+
+                case libdap::dods_int32_c: {
+                    const auto tmp_int32 = dynamic_cast<libdap::Int32 *>(b);
+                    tmp_value = (long long) (tmp_int32->value());
+                    break;
+                }
+
+                case libdap::dods_float32_c: {
+                    // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
+                    const auto tmp_float32 = dynamic_cast<libdap::Float32 *>(b);
+                    tmp_value = (long long) (tmp_float32->value());
+                    break;
+                }
+
+                case libdap::dods_float64_c: {
+                    // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
+                    const auto tmp_float64 = dynamic_cast<libdap::Float64 *>(b);
+                    tmp_value = (long long) (tmp_float64->value());
+                    break;
+                }
+
+                default:
+                    throw BESInternalError("Attempt to extract CF time information from an invalid source", __FILE__, __LINE__);
+                }
+
+                axis_t_value = cf_time_to_greg(tmp_value);
+   
+                currAxis->values += "\"" + focovjson::escape_for_covjson(axis_t_value) + "\"";
+            }
+            else {
+                ostringstream otemp;
+                b->print_val(otemp, "", false);
+                currAxis->values += otemp.str();
+            }
+            currAxis->values += "]";
+#if 0
+//cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
+#endif
+        }
+        else {
+                currAxis->values += "\"values\": []";
+        }
+    }
+
+    // If we are dealing with a Parameter
+    else if(axisRetrieved == false && parameterRetrieved == true) {
+        struct Parameter *currParameter;
+        currParameter = parameters[parameterCount - 1];
+        if (sendData) {
+            currParameter->values += "\"values\": [";
+            if (b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
+                // Strings need to be escaped to be included in a CovJSON object.
+                const auto s = dynamic_cast<libdap::Str *>(b);
+                string val = s->value();
+                currParameter->values +="\"" + focovjson::escape_for_covjson(val) + "\"";
+
+            }
+            else {
+                ostringstream otemp;
+                b->print_val(otemp, "", false);
+                currParameter->values += otemp.str();
+            }
+            currParameter->values += "]";
+
+        }
+        else {
+            currParameter->values += "\"values\": []";
+        }
+    }
+
+}
+
+void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string indent, bool sendData)
+{
+    BESDEBUG(FoDapCovJsonTransform_debug_key,
+        "FoCovJsonTransform::transform() - Processing Array. " << " a->type(): " << a->type() << " a->var()->type(): " << a->var()->type() << endl);
+#if 0
+//cerr<<"transform a name is "<<a->name() <<endl;
+#endif
+    switch(a->var()->type()) {
+    // Handle the atomic types - that's easy!
+    case libdap::dods_byte_c:
+        covjsonSimpleTypeArray<libdap::dods_byte>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_int16_c:
+        covjsonSimpleTypeArray<libdap::dods_int16>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_uint16_c:
+        covjsonSimpleTypeArray<libdap::dods_uint16>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_int32_c:
+        covjsonSimpleTypeArray<libdap::dods_int32>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_uint32_c:
+        covjsonSimpleTypeArray<libdap::dods_uint32>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_float32_c:
+        covjsonSimpleTypeArray<libdap::dods_float32>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_float64_c:
+        covjsonSimpleTypeArray<libdap::dods_float64>(strm, a, indent, sendData);
+        break;
+
+    case libdap::dods_str_c: {
+        covjsonStringArray(strm, a, indent, sendData);
+        break;
+    }
+
+    case libdap::dods_url_c: {
+        covjsonStringArray(strm, a, indent, sendData);
+        break;
+    }
+
+    case libdap::dods_structure_c:
+        throw BESInternalError("File out COVJSON, Arrays of Structure objects not a supported return type.", __FILE__, __LINE__);
+
+    case libdap::dods_grid_c:
+        throw BESInternalError("File out COVJSON, Arrays of Grid objects not a supported return type.", __FILE__, __LINE__);
+
+    case libdap::dods_sequence_c:
+        throw BESInternalError("File out COVJSON, Arrays of Sequence objects not a supported return type.", __FILE__, __LINE__);
+
+    case libdap::dods_array_c:
+        throw BESInternalError("File out COVJSON, Arrays of Array objects not a supported return type.", __FILE__, __LINE__);
+
+    case libdap::dods_int8_c:
+    case libdap::dods_uint8_c:
+    case libdap::dods_int64_c:
+    case libdap::dods_uint64_c:
+    case libdap::dods_enum_c:
+    case libdap::dods_group_c:
+        throw BESInternalError("File out COVJSON, DAP4 types not yet supported.", __FILE__, __LINE__);
+
+    default:
+        throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
+    }
+}
+
+bool FoDapCovJsonTransform::check_update_simple_dsg(libdap::DDS *dds) {
+
+    bool ret_value = false;
+    DSGType sDC_candidate = UNSUPPORTED_DSG;
+
+    libdap::AttrTable &globals = dds->get_attr_table();
+    auto i = globals.attr_begin();
+    auto e = globals.attr_end();
+    for (; i != e; i++) {
+        if (globals.get_attr_type(i) == libdap::Attr_container) {
+            string attr_name = globals.get_name(i);
+            if (BESUtil::endsWith(attr_name, "_GLOBAL")) {
+                libdap::AttrTable *container = globals.get_attr_table(i);
+                auto ci = container->attr_begin();
+                auto ce = container->attr_end();
+                bool find_featureType = false;
+                for (; ci != ce; ci++) {
+                    if (container->get_attr_type(ci) == libdap::Attr_string) {
+                        string c_attr_name = container->get_name(ci);
+                        if (c_attr_name == "featureType") {
+                            string attr_val = container->get_attr(ci,0);
+                            if (attr_val == "point") 
+                                sDC_candidate = SPOINT;
+                            else if (attr_val == "timeSeries")
+                                sDC_candidate = POINTS;
+                            else if (attr_val == "profile")
+                                sDC_candidate = PROFILE;
+                            find_featureType = true;
+                            break;
+                        } 
+                    }
+                }
+                if (find_featureType)
+                    break;
+                
+            }
+        }
+        else if (globals.get_attr_type(i) == libdap::Attr_string) {
+            string attr_name = globals.get_name(i);
+            // If following CF conventions
+            if (attr_name == "featureType") {
+                string attr_val = globals.get_attr(i,0);
+                if (attr_val == "point") 
+                    sDC_candidate = SPOINT;
+                else if (attr_val == "timeSeries")
+                    sDC_candidate = POINTS;
+                else if (attr_val == "profile")
+                    sDC_candidate = PROFILE;
+                break;
+            } 
+        }
+    }
+
+#if 0
+if (cf_point)
+    cerr<<"point "<<endl;
+else if(cf_timeSeries)
+    cerr<<"timeSeries "<<endl;
+else if(cf_profile)
+    cerr<<"Profile "<<endl;
+#endif
+
+
+    if (sDC_candidate != UNSUPPORTED_DSG) {
+
+        libdap::DDS::Vars_iter vi = dds->var_begin();
+        libdap::DDS::Vars_iter ve = dds->var_end();
+        for(; vi != ve; vi++) {
+            if ((*vi)->send_p()) {
+                libdap::BaseType *v = *vi;
+                if (is_supported_vars_by_type(v) == false)
+                    continue;
+                libdap::AttrTable &attrs = v->get_attr_table();
+                unsigned int num_attrs = attrs.get_size();
+#if 0
+//cerr<<"var name is "<<v->name() <<endl;
+//cerr<<"num_attrs is "<<num_attrs <<endl;
+#endif
+                if (num_attrs) {
+                    libdap::AttrTable::Attr_iter di = attrs.attr_begin();
+                    libdap::AttrTable::Attr_iter de = attrs.attr_end();
+                    for (; di != de; di++) {
+                        string cf_attr_name = "axis";
+                        string attr_name = attrs.get_name(di);
+                        unsigned int num_vals = attrs.get_attr_num(di);
+                        if (num_vals == 1 && cf_attr_name == attr_name) {
+                            string val = attrs.get_attr(di,0);
+                            set_axisVar(v,val);
+#if 0
+//cerr<<"val is "<<val << endl;
+#endif
+                        }
+                    }
+                }
+            }
+        }
+
+        if (is_simple_dsg(sDC_candidate)) {
+#if 0
+//cerr<<"simple dsg "<<endl;
+#endif
+            ret_value = obtain_valid_dsg_par_vars(dds);
+        }
+    }
+
+#if 0
+cerr<<"axisVar_x.name is "<<axisVar_x.name <<endl;
+cerr<<"axisVar_x.dim_name is "<<axisVar_x.dim_name <<endl;
+cerr<<"axisVar_x.dim_size is "<<axisVar_x.dim_size <<endl;
+cerr<<"axisVar_x.bound_name is "<<axisVar_x.bound_name <<endl;
+
+cerr<<"axisVar_y.name is "<<axisVar_y.name <<endl;
+cerr<<"axisVar_y.dim_name is "<<axisVar_y.dim_name <<endl;
+cerr<<"axisVar_y.dim_size is "<<axisVar_y.dim_size <<endl;
+cerr<<"axisVar_y.bound_name is "<<axisVar_y.bound_name <<endl;
+
+cerr<<"axisVar_z.name is "<<axisVar_z.name <<endl;
+cerr<<"axisVar_z.dim_name is "<<axisVar_z.dim_name <<endl;
+cerr<<"axisVar_z.dim_size is "<<axisVar_z.dim_size <<endl;
+cerr<<"axisVar_z.bound_name is "<<axisVar_z.bound_name <<endl;
+
+cerr<<"axisVar_t.name is "<<axisVar_t.name <<endl;
+cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
+cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
+cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
+#endif
+
+    return ret_value;
+}
+
+bool FoDapCovJsonTransform::is_simple_dsg(DSGType dsg) {
+
+    if (dsg == SPOINT) 
+       dsg_type = is_single_point();
+    else if (dsg == POINTS)
+       dsg_type = is_point_series(); 
+    else if (dsg == PROFILE)
+       dsg_type = is_single_profile();
+    return (dsg_type != UNSUPPORTED_DSG);
+}
+
+DSGType FoDapCovJsonTransform::is_single_point() const {
+
+    DSGType ret_dsg = SPOINT;
+    if ((axisVar_z.name !="" && axisVar_z.dim_size >1) ||
+        (axisVar_t.name !="" && axisVar_t.dim_size >1)) 
+        ret_dsg = UNSUPPORTED_DSG;
+    return ret_dsg;
+
+}
+
+DSGType FoDapCovJsonTransform::is_point_series() const {
+
+    DSGType ret_dsg = POINTS;
+    if ((axisVar_z.name !="" && axisVar_z.dim_size >1) ||
+        (axisVar_t.name =="" )) 
+        ret_dsg = UNSUPPORTED_DSG;
+    return ret_dsg;
+
+}
+
+
+DSGType FoDapCovJsonTransform::is_single_profile() const {
+
+    DSGType ret_dsg = PROFILE;
+    if ((axisVar_t.name !="" && axisVar_t.dim_size >1) ||
+        (axisVar_z.name =="" )) 
+        ret_dsg = UNSUPPORTED_DSG;
+    return ret_dsg;
+
+}
+
+bool FoDapCovJsonTransform::is_simple_dsg_common() const {
+
+    bool ret_value = true;
+    if (axisVar_x.name =="" || axisVar_y.name == "") 
+        ret_value = false;
+    else if (axisVar_x.dim_size >1 || axisVar_y.dim_size >1)
+        ret_value = false;
+     
+    return ret_value;
+
+}
+
+
+// Only support array and atomic scalar datatypes.
+bool FoDapCovJsonTransform::is_supported_vars_by_type(libdap::BaseType*v) const{
+
+    bool ret_value = false;
+    libdap::Type type = v->type();
+    if (type  == libdap::dods_array_c) 
+        type = v->var()->type();
+    switch (type) {
+    case libdap::dods_byte_c:
+    case libdap::dods_int16_c:
+    case libdap::dods_uint16_c:
+    case libdap::dods_int32_c:
+    case libdap::dods_uint32_c:
+    case libdap::dods_float32_c:
+    case libdap::dods_float64_c:
+    case libdap::dods_str_c:
+    case libdap::dods_url_c:
+        ret_value = true;
+        break;
+    default:
+        break;
+    }
+    return ret_value;
+}
+
+void FoDapCovJsonTransform::handle_axisVars_array(libdap::BaseType*v,axisVar & this_axisVar) {
+
+    auto d_a = dynamic_cast<libdap::Array *>(v);
+    if (d_a !=nullptr) {
+
+        int d_ndims = d_a->dimensions();
+
+        if (d_ndims == 1) {
+
+            libdap::Array::Dim_iter di = d_a->dim_begin();
+            this_axisVar.dim_size = d_a->dimension_size(di, true);
+            this_axisVar.name = d_a->name();
+            this_axisVar.dim_name = d_a->dimension_name(di);
+
+        }
+    }
+
+}
+void FoDapCovJsonTransform::set_axisVar(libdap::BaseType*v,const string &val) {
+
+    // Here we assume the libdap datatype is either array of atomic datatypes
+    // or just atomic datatypes. is_supported_vars_by_type() should be called 
+    // beforehand. 
+    if (val == "X") {
+        if (v->type() == libdap::dods_array_c) 
+            handle_axisVars_array(v,axisVar_x);
+        else {
+            axisVar_x.name = v->name();
+            axisVar_x.dim_size = 0;
+        }
+    }
+    else if (val == "Y") {
+        if (v->type() == libdap::dods_array_c) 
+            handle_axisVars_array(v,axisVar_y);
+        else {
+            axisVar_y.name = v->name();
+            axisVar_y.dim_size = 0;
+        }
+    }
+    else if (val == "Z") {
+        if (v->type() == libdap::dods_array_c) 
+            handle_axisVars_array(v,axisVar_z);
+        else {
+            axisVar_z.name = v->name();
+            axisVar_z.dim_size = 0;
+        }
+    }
+    else if (val == "T") {
+        if (v->type() == libdap::dods_array_c) 
+            handle_axisVars_array(v,axisVar_t);
+        else {
+            axisVar_t.name = v->name();
+            axisVar_t.dim_size = 0;
+        }
+    }
+}
+
+bool FoDapCovJsonTransform::is_cf_grid_mapping_var(libdap::BaseType *v) const {
+
+    bool ret_value = false;
+    libdap::AttrTable attr_table = v->get_attr_table();
+
+    if (attr_table.get_size() != 0) {
+
+        libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
+        libdap::AttrTable::Attr_iter end = attr_table.attr_end();
+
+        for (libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+
+            if (attr_table.get_attr_type(at_iter) == libdap::Attr_string && 
+                attr_table.get_name(at_iter) == "grid_mapping_name") {
+                ret_value = true;
+                break;
+            }
+        }
+    }
+
+    return ret_value;
+}
+
+bool FoDapCovJsonTransform::is_fake_coor_vars(libdap::Array *d_a) const{
+
+    bool ret_value = false;
+
+    if (d_a->dimensions() == 1) {
+        libdap::Array::Dim_iter i = d_a->dim_begin();
+        string dim_name = d_a->dimension_name(i);
+        if (dim_name == d_a->name()) {
+            libdap::AttrTable attr_table = d_a->get_attr_table();
+            if (attr_table.get_size() == 0)
+                ret_value = true;
+        }
+    }
+    return ret_value;
+
+}
+
+bool FoDapCovJsonTransform::is_valid_single_point_par_var(libdap::BaseType *v) const {
+
+    bool ret_value = true;
+    if (v->name() == axisVar_x.name || v->name() == axisVar_y.name ||
+        v->name() == axisVar_z.name || v->name() == axisVar_t.name ||
+        is_cf_grid_mapping_var(v))
+        ret_value = false;
+
+    return ret_value;
+}
+
+bool FoDapCovJsonTransform::is_valid_array_dsg_par_var(libdap::Array *d_a) const {
+
+    bool ret_value = false;
+
+    if (d_a->dimensions() == 1) {
+
+        libdap::Array::Dim_iter i = d_a->dim_begin();
+        int dim_size = d_a->dimension_size(i);
+        string dim_name = d_a->dimension_name(i);
+        bool fake_coor = is_fake_coor_vars(d_a);
+        bool real_coor = false;
+        if (d_a->name() == axisVar_t.name || d_a->name() == axisVar_z.name || d_a->name() == axisVar_x.name || d_a->name() == axisVar_y.name)
+            real_coor = true;
+        if (real_coor == false && fake_coor == false) {
+            if ((dsg_type == SPOINT) 
+                ||(dsg_type == POINTS && dim_name == axisVar_t.dim_name && dim_size == axisVar_t.dim_size) 
+                ||(dsg_type == PROFILE && dim_name == axisVar_z.dim_name && dim_size == axisVar_z.dim_size)) 
+                ret_value = true;
+        }
+    }
+    return ret_value;
+}
+
+bool FoDapCovJsonTransform::is_valid_dsg_par_var(libdap::BaseType *v) {
+
+    bool ret_value = true;
+    if (v->type() != libdap::dods_array_c) { // Scalar
+        // Parameter variables for timeseries and profile should have dimensions
+        if (dsg_type != SPOINT) 
+            ret_value = false;
+        else  
+            ret_value = is_valid_single_point_par_var(v);
+    }
+    else {// Array
+        // Single point parameter vars can be 1 element array. 
+        auto d_a = dynamic_cast<libdap::Array *>(v);
+        ret_value = is_valid_array_dsg_par_var(d_a);
+    }
+
+    return ret_value;
+}
+
+bool FoDapCovJsonTransform::obtain_valid_dsg_par_vars(libdap::DDS *dds) {
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+    for(; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            if (is_supported_vars_by_type(v) == false)
+                continue;
+            else if (is_valid_dsg_par_var(v) == true) 
+                par_vars.push_back(v->name());
+        }
+    }
+    return (par_vars.empty()==false);
+}
+
+
+
+void FoDapCovJsonTransform::check_update_simple_geo(libdap::DDS *dds,bool sendData) {
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+ 
     // First search CF units from 1-D array. 
-    
     bool has_axis_var_x = false;
     short axis_var_x_count = 0;
     bool has_axis_var_y = false;
@@ -1509,8 +2283,10 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
     short axis_var_t_count = 0;
 
     string units_name ="units";
-    for(; vi != ve; vi++) {
+    for (; vi != ve; vi++) {
+#if 0
 //cerr<<"coming to the loop  " <<endl;
+#endif 
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1519,9 +2295,13 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
+#if 0
 //cerr<<"d_ndims is "<< d_ndims <<endl;
+#endif
                 if(d_ndims == 1) {
+#if 0
 //cerr<<"d_a name is "<<d_a->name() <<endl;
+#endif
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
                     if (num_attrs) {
@@ -1529,7 +2309,9 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
+#if 0
 //cerr<<"attr_name is "<<attr_name <<endl;
+#endif
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -1598,7 +2380,6 @@ cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
 #endif
 
                                     has_axis_var_t = check_add_axis(d_a,val,unit_candidates,axisVar_t,true);
-                                    // STOP
                                     if (true == has_axis_var_t) {
                                         axis_var_t_count++;
                                         if (axis_var_t_count == 2)
@@ -1692,8 +2473,9 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
         is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
 
         if(true == is_simple_cf_geographic) {
-
+#if 0
 //cerr<<"this is a simple CF geographic grid we can handle" <<endl;
+#endif
             // We should handle the bound value
             // ignore 1-D bound dimension variable, 
             // Retrieve the values of the 2-D bound variable, 
@@ -1720,181 +2502,15 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
         }
 
     }
-    }
-
-    // Read through the source DDS leaves and nodes, extract all axes and
-    // parameter data, and store that data as Axis and Parameters
-    transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
-
-    // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
-    BESUtil::conditional_timeout_cancel();
-
-    // Print the Coverage data to stream as CoverageJSON
-    printCoverageJSON(strm, indent, testOverride);
-}
-
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::BaseType *bt, string indent, bool sendData)
-{
-    switch(bt->type()) {
-    // Handle the atomic types - that's easy!
-    case libdap::dods_byte_c:
-    case libdap::dods_int16_c:
-    case libdap::dods_uint16_c:
-    case libdap::dods_int32_c:
-    case libdap::dods_uint32_c:
-    case libdap::dods_float32_c:
-    case libdap::dods_float64_c:
-    case libdap::dods_str_c:
-    case libdap::dods_url_c:
-        transformAtomic(bt, indent, sendData);
-        break;
-
-    case libdap::dods_structure_c:
-        transform(strm, (libdap::Structure *) bt, indent, sendData);
-        break;
-
-    case libdap::dods_grid_c:
-        transform(strm, (libdap::Grid *) bt, indent, sendData);
-        break;
-
-    case libdap::dods_sequence_c:
-        transform(strm, (libdap::Sequence *) bt, indent, sendData);
-        break;
-
-    case libdap::dods_array_c:
-        transform(strm, (libdap::Array *) bt, indent, sendData);
-        break;
-
-    case libdap::dods_int8_c:
-    case libdap::dods_uint8_c:
-    case libdap::dods_int64_c:
-    case libdap::dods_uint64_c:
-    case libdap::dods_enum_c:
-    case libdap::dods_group_c: {
-        string s = (string) "File out COVJSON, DAP4 types not yet supported.";
-        throw BESInternalError(s, __FILE__, __LINE__);
-        break;
-    }
-
-    default: {
-        string s = (string) "File out COVJSON, Unrecognized type.";
-        throw BESInternalError(s, __FILE__, __LINE__);
-        break;
-    }
-    }
-}
-
-void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, bool sendData)
-{
-    string childindent = indent + _indent_increment;
-    struct Axis *newAxis = new Axis;
-
-    // Why assigning the name as "test" and why assigning the string type value? KY 2022-01-18
-    newAxis->name = "test";
-    if(sendData) {
-        newAxis->values += "\"values\": [";
-        if(b->type() == libdap::dods_str_c || b->type() == libdap::dods_url_c) {
-            libdap::Str *strVar = (libdap::Str *) b;
-            string tmpString = strVar->value();
-            newAxis->values += "\"";
-            newAxis->values += focovjson::escape_for_covjson(tmpString);
-            newAxis->values += "\"";
-        }
-        else {
-            ostringstream otemp;
-            istringstream itemp;
-            int tempVal = 0;
-            b->print_val(otemp, "", false);
-            istringstream (otemp.str());
-            istringstream (otemp.str()) >> tempVal;
-            newAxis->values += otemp.str();
-        }
-        newAxis->values += "]";
-    }
-    else {
-        newAxis->values += "\"values\": []";
-    }
-
-    axes.push_back(newAxis);
-    axisCount++;
-}
-
-void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string indent, bool sendData)
-{
-    BESDEBUG(FoDapCovJsonTransform_debug_key,
-        "FoCovJsonTransform::transform() - Processing Array. " << " a->type(): " << a->type() << " a->var()->type(): " << a->var()->type() << endl);
-
-    switch(a->var()->type()) {
-    // Handle the atomic types - that's easy!
-    case libdap::dods_byte_c:
-        covjsonSimpleTypeArray<libdap::dods_byte>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_int16_c:
-        covjsonSimpleTypeArray<libdap::dods_int16>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_uint16_c:
-        covjsonSimpleTypeArray<libdap::dods_uint16>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_int32_c:
-        covjsonSimpleTypeArray<libdap::dods_int32>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_uint32_c:
-        covjsonSimpleTypeArray<libdap::dods_uint32>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_float32_c:
-        covjsonSimpleTypeArray<libdap::dods_float32>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_float64_c:
-        covjsonSimpleTypeArray<libdap::dods_float64>(strm, a, indent, sendData);
-        break;
-
-    case libdap::dods_str_c: {
-        covjsonStringArray(strm, a, indent, sendData);
-        break;
-    }
-
-    case libdap::dods_url_c: {
-        covjsonStringArray(strm, a, indent, sendData);
-        break;
-    }
-
-    case libdap::dods_structure_c:
-        throw BESInternalError("File out COVJSON, Arrays of Structure objects not a supported return type.", __FILE__, __LINE__);
-
-    case libdap::dods_grid_c:
-        throw BESInternalError("File out COVJSON, Arrays of Grid objects not a supported return type.", __FILE__, __LINE__);
-
-    case libdap::dods_sequence_c:
-        throw BESInternalError("File out COVJSON, Arrays of Sequence objects not a supported return type.", __FILE__, __LINE__);
-
-    case libdap::dods_array_c:
-        throw BESInternalError("File out COVJSON, Arrays of Array objects not a supported return type.", __FILE__, __LINE__);
-
-    case libdap::dods_int8_c:
-    case libdap::dods_uint8_c:
-    case libdap::dods_int64_c:
-    case libdap::dods_uint64_c:
-    case libdap::dods_enum_c:
-    case libdap::dods_group_c:
-        throw BESInternalError("File out COVJSON, DAP4 types not yet supported.", __FILE__, __LINE__);
-
-    default:
-        throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
-    }
 }
 
 bool FoDapCovJsonTransform::check_add_axis(libdap::Array *d_a,const string & unit_value, const vector<string> & CF_unit_values, axisVar & this_axisVar, bool is_t_axis) {
 
     bool ret_value = false;
     for (unsigned i = 0; i < CF_unit_values.size(); i++) {
+#if 0
 //cerr<<"CF_unit_values "<<CF_unit_values[i] << endl;
+#endif
         bool is_cf_units = false;
         if(is_t_axis == false) {
             if((unit_value.size() == CF_unit_values[i].size() || unit_value.size() == (CF_unit_values[i].size() +1)) && unit_value.compare(0,CF_unit_values[i].size(),CF_unit_values[i])==0) 
@@ -1933,7 +2549,9 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
     libdap::DDS::Vars_iter ve = dds->var_end();
  
     for(; vi != ve; vi++) {
+#if 0
 //cerr<<"coming to the loop  " <<endl;
+#endif
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1942,7 +2560,9 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
+#if 0
 //cerr<<"d_ndims is "<< d_ndims <<endl;
+#endif
                 if(d_ndims == 1) {
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
@@ -1951,7 +2571,9 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
+#if 0
 //cerr<<"attr_name is "<<attr_name <<endl;
+#endif
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -2066,7 +2688,9 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
         libdap::DDS::Vars_iter ve = dds->var_end();
      
         for(; vi != ve; vi++) {
+#if 0
 //    cerr<<"In worker: coming to the loop  " <<endl;
+#endif
             if((*vi)->send_p()) {
                 libdap::BaseType *v = *vi;
                 libdap::Type type = v->type();
@@ -2075,7 +2699,9 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
                 if(type == libdap::dods_array_c) {
                     libdap::Array * td_a = dynamic_cast<libdap::Array *>(v);
                     int d_ndims = td_a->dimensions();
+#if 0
 //    cerr<<"In worker: d_ndims is "<< d_ndims <<endl;
+#endif
                     if(d_ndims == 2) {
                         string tmp_bnd_dim_name;
                         int bound_dim_size = 0;
@@ -2086,7 +2712,9 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
                             if(dim_count == 1) {
                                 bound_dim_size = td_a->dimension_size(di, true);
                                 tmp_bnd_dim_name = td_a->dimension_name(di);
+#if 0
 //cerr<<"tmp_bnd_dim_name is "<<tmp_bnd_dim_name <<endl;
+#endif
                             }
                             dim_count++;
                         }
@@ -2095,7 +2723,9 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
                         if((bound_dim_size == 2) && (td_a->name() == bnd_name)) {
                             d_a = td_a;
                             bnd_dim_name = tmp_bnd_dim_name;
+#if 0
 //cerr<<"bnd_dim_name is "<<bnd_dim_name <<endl;
+#endif
                             break;
                         }
                     }
@@ -2110,7 +2740,9 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
 
 bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count ) {
 
+#if 0
 //cerr<<"coming to obtain_valid_vars "<<endl;
+#endif
     bool ret_value = true;
     std::vector<std::string> temp_x_y_vars;
     std::vector<std::string> temp_x_y_z_vars;
@@ -2161,7 +2793,9 @@ bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z
                        // a non-conform > 1D var appears except the "bound" variables.
                        if(non_xyzt_dim || axis_x_count >1 || axis_y_count >1 || axis_z_count >1 || axis_t_count >1) {
                           supported_var = false;
+#if 0
 //cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
+#endif
                           if (FoCovJsonRequestHandler::get_may_ignore_z_axis() == false) { 
                               if(d_a->name()!=axisVar_x.bound_name && d_a->name()!=axisVar_y.bound_name &&
                                  d_a->name()!=axisVar_z.bound_name && d_a->name()!=axisVar_t.bound_name)
@@ -2188,7 +2822,9 @@ bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z
             }
         }
     }
+#if 0
 //cerr<<"obtain: after loop "<<endl;
+#endif
 
     if (ret_value == true) {
     if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
@@ -2247,7 +2883,9 @@ cerr<<"axis_var_t_count: "<<axis_var_t_count <<endl;
     }
     }
     else {
+#if 0
 //cerr<<"coming to strict mode "<<endl;
+#endif
         if(axis_var_z_count >1 || axis_var_t_count >1) 
             ret_value = false;
         else {
@@ -2296,7 +2934,9 @@ std::string FoDapCovJsonTransform::cf_time_to_greg(long long time_val) {
     else if(cf_time.compare(0,6,"second") == 0)
         time_unit_length = 3;
 
+#if 0
 //cerr<<"time_unit_length is "<<time_unit_length <<endl;        
+#endif
 
     // Remove any commonly found words from the origin timestamp
     vector<string> subStrs = { "days", "day", "hours", "hour", "minutes", "minute",
@@ -2305,7 +2945,9 @@ std::string FoDapCovJsonTransform::cf_time_to_greg(long long time_val) {
     for(unsigned int i = 0; i < subStrs.size(); i++)
         focovjson::removeSubstring(cf_time, subStrs[i]);
 
+#if 0
 //cerr<<"cf_time stripped is "<<cf_time <<endl;
+#endif
 
     // Separate the date from the hms.
     size_t cf_time_space_pos = cf_time.find(' ');
@@ -2410,9 +3052,11 @@ cerr<<"time_val is "<<time_val <<endl;
   else if (time_unit_length == 3)
         t_ycf_2 = t_ycf_1 + time_val;
 
-
+#if 0
   //time_t t_ycf_2 = t_ycf_1 + 86340;
 //cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
+#endif
+
   struct tm *t_new_ycf;
   struct tm temp_new_ycf;
   // The use of localtime() is to calcuate the time based on the CF time unit.
@@ -2437,7 +3081,7 @@ cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
         t_new_ycf->tm_year--;
         t_new_ycf->tm_mon = 12;
     }
-   // Now, we need to change the time from int to string.
+    // Now, we need to change the time from int to string.
     string covjson_mon = (t_new_ycf->tm_mon<10)?
                          ("0"+to_string(t_new_ycf->tm_mon)):
                           to_string(t_new_ycf->tm_mon);

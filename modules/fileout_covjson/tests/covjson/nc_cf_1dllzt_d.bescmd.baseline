@@ -29,9 +29,25 @@
       }
     },
     {
-      "coordinates": ["x", "y", "z"],
+      "coordinates": ["x", "y"],
       "system": {
         "type": "GeographicCRS",
+      }
+    },
+    {
+      "coordinates": ["z"],
+      "system": {
+        "type": "VerticalCRS",
+        "cs": {
+          "csAxes": [{
+            "name": {
+              "en": "height"
+            },
+            "units": {
+              "symbol": "km"
+            }
+          }]
+        }
       }
     }]
   },
