@@ -1,0 +1,67 @@
+netcdf test {
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.invocation = "/Users/myang6/work/opendap/hyrax-842/bes/modules/dmrpp_module/.libs/build_dmrpp -f grid_1_3d_xyz_aug.h5 -r eos5_grid.dmr -M" ;
+		:history = "removed date-timex eos5_grid.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"eos5_grid.dmrpp\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: GeoGrid {
+      dimensions:
+      	XDim = 8 ;
+      	YDim = 4 ;
+      	ZDim = 2 ;
+      variables:
+      	float XDim(XDim) ;
+      		XDim:long_name = "longitude" ;
+      		XDim:units = "degrees_east" ;
+      		XDim:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/XDim" ;
+      	float YDim(YDim) ;
+      		YDim:long_name = "latitude" ;
+      		YDim:units = "degrees_north" ;
+      		YDim:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/YDim" ;
+      	float ZDim(ZDim) ;
+      		ZDim:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/ZDim" ;
+
+      group: Data_Fields {
+        variables:
+        	float Latitude(YDim) ;
+        		Latitude:units = "degrees_north" ;
+        		Latitude:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/Latitude" ;
+        	float Longitude(XDim) ;
+        		Longitude:units = "degrees_east" ;
+        		Longitude:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/Longitude" ;
+        	float Pressure(ZDim) ;
+        		Pressure:units = "hPa" ;
+        		Pressure:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/Pressure" ;
+        	float Temperature(ZDim, YDim, XDim) ;
+        		Temperature:units = "K" ;
+        		Temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/Temperature" ;
+        } // group Data_Fields
+      } // group GeoGrid
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 1218 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.13" ;
+  } // group HDFEOS_INFORMATION
+}

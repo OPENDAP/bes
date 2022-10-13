@@ -11,7 +11,6 @@
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/nc4_multi_dscales.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/nc4_multi_dscales.h5.dds.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/atl03.h5.das.bescmd
-besstandalone -c bes-testsuite/bes.cfdmr.conf.cov -i bes-testsuite/h5.cf/t_cf_1dll.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.cfdmr.conf.cov -i bes-testsuite/h5.cf/t_cf_2dll.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.cfdmr.conf.cov -i bes-testsuite/h5.cf/t_cf_2dllz.h5.dmr.bescmd
 #besstandalone -d"cerr,all" -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/atl08.h5.dmr.bescmd
@@ -92,4 +91,6 @@ besstandalone -c bes-testsuite/bes.cfdmr.conf.cov -i bes-testsuite/h5.cf/t_cf_1d
 #besstandalone -c tests/bes.conf -i tests/covjson/coads_climatology_abstract_object_METADATA.bescmd 
 #besstandalone -c tests/bes.conf -i tests/covjson/fnoc1_abstract_object_DATA.bescmd 
 
-
+besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/grid_1_3d_xyz_aug.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/za_1_3d_yztd_aug.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/swath_1_2d_xyz.h5.dmr.bescmd
