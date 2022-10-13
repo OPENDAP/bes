@@ -1132,7 +1132,7 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
 
 void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath, short flag) {
 
-    D4Attribute *d4_attr = new D4Attribute("fullnamepath",attr_str_c);
+    auto d4_attr = new D4Attribute("fullnamepath",attr_str_c);
     d4_attr->add_value(varpath);
     if(0 == flag) // D4group
         d4g->attributes()->add_attribute_nocopy(d4_attr);
