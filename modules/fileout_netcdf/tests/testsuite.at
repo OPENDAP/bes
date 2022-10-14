@@ -102,6 +102,7 @@ AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/t_string.0.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.1.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_wrong_fvalue_type_all_classic.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_wrong_fvalue_type_all_classic_dap4.h5.bescmd)
 dnl Tests that require handlers other than dapreader
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/hdf4.0.bescmd)
