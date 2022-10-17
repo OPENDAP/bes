@@ -213,10 +213,8 @@ D4AttributeType FONcBaseType::getD4AttrType(nc_type nct)
     D4AttributeType atype = attr_null_c;
     switch (nct) {
         case NC_BYTE:
-            if (isNetCDF4_ENHANCED())
-                atype = attr_int8_c;
-            else
-                atype = attr_int16_c;
+            // netCDF-classic also supports 8-bit signed integer
+            atype = attr_int8_c;
             break;
         case NC_SHORT:
             atype = attr_int16_c;
