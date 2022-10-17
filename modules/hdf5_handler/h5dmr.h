@@ -79,10 +79,9 @@ bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, c
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
-
-
 string get_hardlink_dmr(hid_t, const std::string &);
 void get_softlink(libdap::D4Group* par_grp, hid_t,  const std::string &, int,size_t);
 void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const std::string & full_path, libdap::BaseType* d4b,libdap::Structure * d4s,int flag);
-
+string read_struct_metadata(hid_t s_file_id);
+int get_strmetadata_num(const string & meta_str);
 #endif
