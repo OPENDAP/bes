@@ -74,14 +74,23 @@ typedef struct {
 #endif
 
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,std::vector<link_info_t>&);
+bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&);
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
-void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+
+
 string get_hardlink_dmr(hid_t, const std::string &);
 void get_softlink(libdap::D4Group* par_grp, hid_t,  const std::string &, int,size_t);
 void map_h5_dset_hardlink_to_d4(hid_t h5_objid,const std::string & full_path, libdap::BaseType* d4b,libdap::Structure * d4s,int flag);
+
+/// A function that maps HDF5 attributes to DAP4
+void map_h5_attrs_to_dap4(hid_t oid,libdap::D4Group* d4g, libdap::BaseType* d4b, libdap::Structure * d4s,int flag);
+
+/// A function that maps HDF5 object full path as an attribute to DAP4
+void map_h5_varpath_to_dap4_attr(libdap::D4Group* d4g,libdap::BaseType* d4b,libdap::Structure * d4s,const std::string &,short flag);
 string read_struct_metadata(hid_t s_file_id);
 int get_strmetadata_num(const string & meta_str);
+
 #endif

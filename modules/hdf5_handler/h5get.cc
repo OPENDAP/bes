@@ -806,7 +806,6 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
             // Save the dimension names.We Only need to provide the dimension name(not the full path).
             // We still need the dimension name fullpath for distinguishing the different dimension that
             // has the same dimension name but in the different path
-            // TODO; pure dimension doesn't work for all cases. See https://jira.hdfgroup.org/browse/HFVHANDLER-340
             (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
             (*dt_inst_ptr).dimnames_path.push_back(dname);
 #if 0
@@ -2451,6 +2450,22 @@ std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) 
         }       
     }
     return ret_str;
-
     
 }
+
+// change a non-alphanumeric character to an underscore(_)
+string handle_string_special_characters(string &s) {
+
+    if ("" == s) return s;
+    string insertString(1, '_');
+    
+    // Always start with _ if the first character is not a letter
+    if (true == isdigit(s[0])) s.insert(0, insertString);
+    
+    for (unsigned int i = 0; i < s.size(); i++)
+        if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
+
+    return s;
+
+}
+

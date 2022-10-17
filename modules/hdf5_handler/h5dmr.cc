@@ -72,9 +72,6 @@ HDF5PathFinder obj_paths;
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
 
-/// A function that map HDF5 attributes to DAP4
-void map_h5_attrs_to_dap4(hid_t oid,D4Group* d4g,BaseType* d4b,Structure * d4s,int flag);
-
 #if 0
 //////////////////////////////////////////////////////////////////////////////////////////
 /// bool depth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname)
@@ -319,7 +316,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls )
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -427,7 +424,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                 }
 
                 try {
-                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale);
+                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5);
                 }
                 catch(...) {
                     H5Dclose(dset_id);
@@ -459,6 +456,12 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
    
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
     map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
+    // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
+    // It only increases the dmr file size. So comment out for now.  KY 2022-10-13
+#if 0
+    if (is_eos5)
+        map_h5_varpath_to_dap4_attr(par_grp,nullptr,nullptr,gname,0);
+#endif
 
     // Then HDF5 child groups
     for (hsize_t i = 0; i < nelems; i++) {
@@ -541,13 +544,16 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
             if (oid == "") {
                 try {
+
+                    if (is_eos5)
+                        grp_name = handle_string_special_characters(grp_name);
                     auto tem_d4_cgroup = new D4Group(grp_name);
 
                     // Add this new DAP4 group 
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,hdf5_hls);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -579,33 +585,34 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
-///// \fn read_objects(DMR & dmr, D4Group *d4_grp, 
+///// \fn read_objects( D4Group *d4_grp, 
 /////                            const string & varname, 
 /////                            const string & filename,
 /////                            const hid_t dset_id,
-/////                            bool use_dimscale) 
+/////                            bool use_dimscale
+/////                            bool is_eos5) 
 ///// fills in information of a dataset (name, data type, data space) into the dap4 
 ///// group. 
 ///// This is a wrapper function that calls functions to read atomic types and structure.
 ///// 
-/////    \param dmr reference to DMR 
 /////    \param d4_group DAP4 group
 /////    \param varname Absolute name of an HDF5 dataset.  
 /////    \param filename The HDF5 dataset name that maps to the DDS dataset name. 
 ////     \param dset_id HDF5 dataset id.
 /////    \param use_dimscale boolean that indicates if dimscale is used.
+/////    \param is_eos5 boolean that indicates if this is an HDF-EOS5 file.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale)
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
-        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale);
+        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5);
         break;
 
     case H5T_ARRAY:
@@ -613,7 +620,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
         throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
     
     default:
-        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale);
+        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5);
         break;
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
@@ -643,7 +650,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 //read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 void
 read_objects_base_type(D4Group * d4_grp,const string & varname,
-                       const string & filename,hid_t dset_id, bool use_dimscale)
+                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5)
 {
 
     // Obtain the relative path of the variable name under the leaf group
@@ -654,6 +661,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         if (newvarname.find(nc4_non_coord) == 0)
             newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
     }
+    if (is_eos5) 
+        newvarname = handle_string_special_characters(newvarname);
 
     // Get a base type. It should be an HDF5 atomic datatype
     // datatype. 
@@ -676,6 +685,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
             // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
             map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
+            if (is_eos5)
+                map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
         }
         delete bt; 
         bt = nullptr;
@@ -744,6 +755,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 
         // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
         map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
+        if (is_eos5)
+            map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
 #if 0
         // Test the attribute
         D4Attribute *test_attr = new D4Attribute("DAP4_test",attr_str_c);
@@ -759,22 +772,22 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn read_objects_structure(DMR & dmr,D4Group *d4_grp,const string & varname,
-///                  const string & filename,hid_t dset_id, bool use_dimscale)
+/// \fn read_objects_structure(D4Group *d4_grp,const string & varname,
+///                  const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5)
 /// fills in information of a structure dataset (name, data type, data space)
 /// into a DAP4 group. HDF5 compound datatype will map to DAP structure.
 /// 
-///    \param dmr DMR for the HDF5 objects. 
 ///    \param d4_grp DAP4 group
 ///    \param varname Absolute name of structure
 ///    \param filename The HDF5 file  name that maps to the DDS dataset name.
 ///    \param dset_id HDF5 dataset ID
 ///    \param use_dimscale boolean that indicates if dimscale is used.
+///    \param is_eos5 boolean that indicates if this is an HDF-EOS5 file.
 ///    \throw error a string of error message to the dods interface.
 ///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
-                       const string & filename,hid_t dset_id,bool use_dimscale)
+                       const string & filename,hid_t dset_id,bool use_dimscale, bool is_eos5)
 {
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
@@ -784,6 +797,9 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
         if (newvarname.find(nc4_non_coord) == 0)
             newvarname = newvarname.substr(nc4_non_coord_size,newvarname.size()-nc4_non_coord_size);
     }
+    if (is_eos5) 
+        newvarname = handle_string_special_characters(newvarname);
+
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);
@@ -846,7 +862,10 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
 
             // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
             map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
-
+            if (is_eos5)
+                map_h5_varpath_to_dap4_attr(nullptr,new_var,nullptr,varname,1);
+ 
+            
             // Add this var to DAP4 group
             if(new_var) 
                 d4_grp->add_var_nocopy(new_var);
@@ -857,6 +876,10 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             structure->set_is_dap4(true);
             map_h5_attrs_to_dap4(dset_id,nullptr,nullptr,structure,2);
             map_h5_dset_hardlink_to_d4(dset_id,varname,nullptr,structure,2);
+            if (is_eos5)
+                map_h5_varpath_to_dap4_attr(nullptr,nullptr,structure,varname,2);
+ 
+
             if(structure) 
                 d4_grp->add_var_nocopy(structure);
         }
@@ -1092,7 +1115,44 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     }
 
 }
- 
+//////////////////////////////////////////////////////////////////////////////// 
+///// \fn map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath,short flag)
+///// Map HDF5 the variable full path to a DAP4 attribute 
+///// 
+/////    \param d4g DAP4 group if the object is group, flag must be 0 if d4_grp is not nullptr.
+/////    \param d4b DAP BaseType if the object is dataset and the datatype of the object is atomic datatype.  
+/////               The flag must be 1 if d4b is not nullptr.
+/////    \param d4s DAP Structure if the object is dataset and the datatype of the object is compound. 
+/////               The flag must be 2 if d4s is not nullptr.
+/////    \param varpath the fullpath of the object name.
+////     \param flag flag to determine what kind of objects to map. The value must be 0,1 or 2.
+/////    \throw error a string of error message to the dap interface. 
+/////////////////////////////////////////////////////////////////////////////////
+//
+
+void map_h5_varpath_to_dap4_attr(D4Group* d4g,BaseType* d4b,Structure * d4s,const string & varpath, short flag) {
+
+    auto d4_attr = new D4Attribute("fullnamepath",attr_str_c);
+    d4_attr->add_value(varpath);
+    if(0 == flag) // D4group
+        d4g->attributes()->add_attribute_nocopy(d4_attr);
+    else if (1 == flag) // HDF5 dataset with atomic datatypes 
+        d4b->attributes()->add_attribute_nocopy(d4_attr);
+    else if ( 2 == flag) // HDF5 dataset with compound datatype
+        d4s->attributes()->add_attribute_nocopy(d4_attr);
+    else {
+        stringstream sflag;
+        sflag << flag;
+        string msg ="The add_dap4_attr flag has to be either 0,1 or 2.";
+        msg+="The current flag is "+sflag.str();
+        delete d4_attr;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    return;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_softlink(D4Group* par_grp, hid_t h5obj_id, const string & oname, int index,size_t val_size)
 /// will put softlink information into DAP4.

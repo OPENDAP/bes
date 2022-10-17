@@ -74,4 +74,5 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
+std::string handle_string_special_characters(std::string &s);
 #endif                          //_H5GET_H
