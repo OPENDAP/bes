@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -34,7 +34,7 @@ using namespace std;
 // using namespace gateway;
 
 
-namespace ngap {
+namespace s3 {
     /** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of GatewayContainerStorage with the given name.
@@ -42,12 +42,12 @@ namespace ngap {
  * @param n name of this persistent store
  * @see GatewayContainer
  */
-    NgapContainerStorage::NgapContainerStorage(const string &n) :
+    S3ContainerStorage::S3ContainerStorage(const string &n) :
             BESContainerStorageVolatile(n)
     {
     }
 
-    NgapContainerStorage::~NgapContainerStorage()
+    S3ContainerStorage::~S3ContainerStorage()
     {
     }
 
@@ -58,9 +58,9 @@ namespace ngap {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void NgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
+    void S3ContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
     {
-        BESContainer *c = new NgapContainer(s_name, r_name, type);
+        BESContainer *c = new S3Container(s_name, r_name, type);
         BESContainerStorageVolatile::add_container(c);
     }
 
@@ -71,12 +71,12 @@ namespace ngap {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void NgapContainerStorage::dump(ostream &strm) const
+    void S3ContainerStorage::dump(ostream &strm) const
     {
-        strm << BESIndent::LMarg << "NgapContainerStorage::dump - (" << (void *) this << ")" << endl;
+        strm << BESIndent::LMarg << "S3ContainerStorage::dump - (" << (void *) this << ")" << endl;
         BESIndent::Indent();
         BESContainerStorageVolatile::dump(strm);
         BESIndent::UnIndent();
     }
 
-} // namespace ngap
+} // namespace s3

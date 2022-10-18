@@ -28,9 +28,9 @@ libs3_reader_la_SOURCES = $(S3_SRC) $(S3_HDR)
 libs3_reader_la_LDFLAGS = -avoid-version -module
 libs3_reader_la_LIBADD = $(LIBADD)
 
-S3_SRC =  S3RequestHandler.cc S3Module.cc S3Container.cc S3ContainerStorage.cc S3Api.cc
+S3_SRC =  S3RequestHandler.cc S3Module.cc S3Container.cc S3ContainerStorage.cc
 
-S3_HDR =  S3Names.h S3RequestHandler.h S3Module.h S3Container.h S3ContainerStorage.h S3Api.h
+S3_HDR =  S3Names.h S3RequestHandler.h S3Module.h S3Container.h S3ContainerStorage.h
 
 EXTRA_DIST = s3.conf.in data
 

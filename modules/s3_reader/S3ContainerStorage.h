@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -23,14 +23,14 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef NgapContainerStorage_h_
-#define NgapContainerStorage_h_ 1
+#ifndef S3ContainerStorage_h_
+#define S3ContainerStorage_h_ 1
 
 #include "BESContainerStorageVolatile.h"
 
 class BESCatalogUtils;
 
-namespace ngap {
+namespace s3 {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -42,16 +42,16 @@ namespace ngap {
  * @see BESContainerStorageVolatile
  * @see GatewayContainer
  */
-class NgapContainerStorage: public BESContainerStorageVolatile {
+class S3ContainerStorage: public BESContainerStorageVolatile {
 public:
-    NgapContainerStorage(const std::string &n);
-    virtual ~NgapContainerStorage();
+    S3ContainerStorage(const std::string &n);
+    virtual ~S3ContainerStorage();
 
     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
 
     virtual void dump(std::ostream &strm) const;
 };
 
-} // namespace ngap
+} // namespace s3
 
-#endif // NgapContainerStorage_h_
+#endif // S3ContainerStorage_h_

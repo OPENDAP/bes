@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -23,8 +23,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef NgapContainer_h_
-#define NgapContainer_h_ 1
+#ifndef S3Container_h_
+#define S3Container_h_ 1
 
 #include <string>
 #include <ostream>
@@ -33,22 +33,22 @@
 #include "RemoteResource.h"
 
 
-namespace ngap {
+namespace s3 {
 
 
 
 /** @brief Container representing a remote request
  *
- * The real name of a NgapContainer is the actual remote request. When the
+ * The real name of a S3Container is the actual remote request. When the
  * access method is called the remote request is made, the response
  * saved to file if successful, and the target response returned as the real
  * container that a data handler would then open.
  *
- * @see NgapContainerStorage
+ * @see S3ContainerStorage
  */
 enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-class NgapContainer: public BESContainer {
+class S3Container: public BESContainer {
 
 private:
     http::RemoteResource *d_dmrpp_rresource;
@@ -62,23 +62,23 @@ private:
 
 
 protected:
-    void _duplicate(NgapContainer &copy_to);
+    void _duplicate(S3Container &copy_to);
 
-    NgapContainer() :
+    S3Container() :
             BESContainer(), d_dmrpp_rresource(nullptr)
     {
     }
 
 public:
-    NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    S3Container(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
-    NgapContainer(const NgapContainer &copy_from);
+    S3Container(const S3Container &copy_from);
 
     // void get_granule_path(const std::string &path) const ;
 
     static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
 
-    virtual ~NgapContainer();
+    virtual ~S3Container();
 
     virtual BESContainer * ptr_duplicate();
 
@@ -89,6 +89,6 @@ public:
     virtual void dump(std::ostream &strm) const;
 };
 
-} // namespace ngap
+} // namespace s3
 
-#endif // NgapContainer_h_
+#endif // S3Container_h_

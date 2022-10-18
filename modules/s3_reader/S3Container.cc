@@ -1,8 +1,8 @@
-// NgapContainer.cc
+// S3Container.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -44,27 +44,25 @@
 #include "url_impl.h"
 
 #include "S3Container.h"
-#include "S3Api.h"
 #include "S3Names.h"
 
-#define prolog std::string("NgapContainer::").append(__func__).append("() - ")
+#define prolog std::string("S3Container::").append(__func__).append("() - ")
 
 using namespace std;
-using namespace bes;
 
-namespace ngap {
+namespace s3 {
 
-/** @brief Creates an instances of NgapContainer with symbolic name and real
+/** @brief Creates an instances of S3Container with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
  *
  * @param sym_name symbolic name representing this remote container
- * @param real_name The NGAP restified path.
+ * @param real_name The S3 restified path.
  * @throws BESSyntaxUserError if the url does not validate
- * @see NgapUtils
+ * @see S3Utils
  */
-NgapContainer::NgapContainer(const string &sym_name,
+S3Container::S3Container(const string &sym_name,
                              const string &real_name,
                              const string &type) :
         BESContainer(sym_name, real_name, type),
@@ -73,36 +71,34 @@ NgapContainer::NgapContainer(const string &sym_name,
 }
 
 
-void NgapContainer::initialize()
+void S3Container::initialize()
 {
-    BESDEBUG(MODULE, prolog << "BEGIN (obj_addr: "<< (void *) this << ")" << endl);
     BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
     BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
     BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
 
     bool found;
 
-    NgapApi ngap_api;
     if (get_container_type().empty())
-        set_container_type("ngap");
+        set_container_type("S3");
 
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
-    string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
+#if 0
+    string data_access_url = S3_api.convert_S3_resty_path_to_data_access_url(get_real_name(), uid);
 
     set_real_name(data_access_url);
-// Because we know the name is really a URL, then we know the "relative_name" is meaningless
-// So we set it to be the same as "name"
-    set_relative_name(data_access_url);
-    BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
-
+#endif
+    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
+    // So we set it to be the same as "name"
+    set_relative_name(get_real_name());
 }
 
 /**
  * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
  */
-NgapContainer::NgapContainer(const NgapContainer &copy_from) :
+S3Container::S3Container(const S3Container &copy_from) :
         BESContainer(copy_from),
         d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
@@ -116,7 +112,7 @@ NgapContainer::NgapContainer(const NgapContainer &copy_from) :
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
 }
 
-void NgapContainer::_duplicate(NgapContainer &copy_to) {
+void S3Container::_duplicate(S3Container &copy_to) {
     if (copy_to.d_dmrpp_rresource) {
         string err = (string) "The Container has already been accessed, "
                      + "can not duplicate this resource.";
@@ -128,14 +124,14 @@ void NgapContainer::_duplicate(NgapContainer &copy_to) {
 }
 
 BESContainer *
-NgapContainer::ptr_duplicate() {
-    NgapContainer *container = new NgapContainer;
+S3Container::ptr_duplicate() {
+    S3Container *container = new S3Container;
     _duplicate(*container);
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
     return container;
 }
 
-NgapContainer::~NgapContainer() {
+S3Container::~S3Container() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
     if (d_dmrpp_rresource) {
         release();
@@ -150,10 +146,10 @@ NgapContainer::~NgapContainer() {
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string NgapContainer::access() {
+string S3Container::access() {
     BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
 
-    // Since this the ngap we know that the real_name is a URL.
+    // Since this the S3 we know that the real_name is a URL.
     string data_access_url_str = get_real_name();
 
     // And we know that the dmr++ file should "right next to it" (side-car)
@@ -182,7 +178,7 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
 
     string type = get_container_type();
-    if (type == "ngap")
+    if (type == "S3")
         type = "";
 
     if (!d_dmrpp_rresource) {
@@ -215,7 +211,7 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
-    return cachedResource;    // this should return the dmr++ file name from the NgapCache
+    return cachedResource;    // this should return the dmr++ file name from the S3Cache
 }
 
 
@@ -225,7 +221,7 @@ string NgapContainer::access() {
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool NgapContainer::release() {
+bool S3Container::release() {
     // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
     //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
     if (d_dmrpp_rresource) {
@@ -234,7 +230,7 @@ bool NgapContainer::release() {
         d_dmrpp_rresource = 0;
     }
 
-    BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
+    BESDEBUG(MODULE, prolog << "Done releasing S3 response" << endl);
     return true;
 }
 
@@ -245,8 +241,8 @@ bool NgapContainer::release() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void NgapContainer::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "NgapContainer::dump - (" << (void *) this
+void S3Container::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "S3Container::dump - (" << (void *) this
          << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
@@ -274,15 +270,15 @@ void NgapContainer::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-bool NgapContainer::inject_data_url(){
+bool S3Container::inject_data_url(){
     bool result = false;
     bool found;
     string key_value;
-    TheBESKeys::TheKeys()->get_value(NGAP_INJECT_DATA_URL_KEY, key_value, found);
+    TheBESKeys::TheKeys()->get_value(S3_INJECT_DATA_URL_KEY, key_value, found);
     if (found && key_value == "true") {
         result = true;
     }
-    BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
+    BESDEBUG(MODULE, prolog << "S3_INJECT_DATA_URL_KEY(" << S3_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }
 }

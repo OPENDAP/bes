@@ -1,8 +1,8 @@
-// NgapContainer.cc
+// S3Container.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -33,48 +33,39 @@
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
-#include <BESTextInfo.h>
-#include "BESDapNames.h"
-#include "BESDataDDSResponse.h"
-#include "BESDDSResponse.h"
-#include "BESDASResponse.h"
-#include <BESConstraintFuncs.h>
+
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
 
 #include "S3RequestHandler.h"
 #include "S3Names.h"
 
-using std::endl;
-using std::map;
-using std::list;
+using namespace std;
 using namespace libdap;
-using namespace ngap;
+using namespace s3;
 
-NgapRequestHandler::NgapRequestHandler(const string &name) :
+S3RequestHandler::S3RequestHandler(const string &name) :
         BESRequestHandler(name)
 {
-    add_method(VERS_RESPONSE, NgapRequestHandler::ngap_build_vers);
-    add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
+    add_method(VERS_RESPONSE, S3RequestHandler::S3_build_vers);
+    add_method(HELP_RESPONSE, S3RequestHandler::S3_build_help);
 }
 
-NgapRequestHandler::~NgapRequestHandler()
+S3RequestHandler::~S3RequestHandler()
 {
 }
 
-bool NgapRequestHandler::ngap_build_vers(BESDataHandlerInterface &dhi)
+bool S3RequestHandler::S3_build_vers(BESDataHandlerInterface &dhi)
 {
     bool ret = true;
     BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
-#if 0
-    info->add_module(PACKAGE_NAME, PACKAGE_VERSION);
-#endif
+
     info->add_module(MODULE_NAME, MODULE_VERSION);
     return ret;
 }
 
-bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
+bool S3RequestHandler::S3_build_help(BESDataHandlerInterface &dhi)
 {
     bool ret = true;
     BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
@@ -85,26 +76,23 @@ bool NgapRequestHandler::ngap_build_help(BESDataHandlerInterface &dhi)
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;
-#if 0
-    attrs["name"] = PACKAGE_NAME;
-    attrs["version"] = PACKAGE_VERSION;
-#endif
+
     list<string> services;
-    BESServiceRegistry::TheRegistry()->services_handled(NGAP_NAME, services);
+    BESServiceRegistry::TheRegistry()->services_handled(S3_NAME, services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;
     }
     info->begin_tag("module", &attrs);
-    //info->add_data_from_file( "Ngap.Help", "Ngap Help" ) ;
+
     info->end_tag("module");
 
     return ret;
 }
 
-void NgapRequestHandler::dump(ostream &strm) const
+void S3RequestHandler::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "NgapRequestHandler::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "S3RequestHandler::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESRequestHandler::dump(strm);
     BESIndent::UnIndent();

@@ -1,8 +1,6 @@
-// NgapContainer.cc
-
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -26,27 +24,27 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef I_NgapRequestHandler_H
-#define I_NgapRequestHandler_H
+#ifndef I_S3RequestHandler_H
+#define I_S3RequestHandler_H
 
 #include <string>
 #include <ostream>
 
 #include "BESRequestHandler.h"
 
-namespace ngap {
+namespace s3 {
 
-    class NgapRequestHandler: public BESRequestHandler {
+    class S3RequestHandler: public BESRequestHandler {
     public:
-        NgapRequestHandler(const std::string &name);
-        virtual ~NgapRequestHandler(void);
+        S3RequestHandler(const std::string &name);
+        virtual ~S3RequestHandler(void);
 
         virtual void dump(std::ostream &strm) const;
 
-        static bool ngap_build_vers(BESDataHandlerInterface &dhi);
-        static bool ngap_build_help(BESDataHandlerInterface &dhi);
+        static bool S3_build_vers(BESDataHandlerInterface &dhi);
+        static bool S3_build_help(BESDataHandlerInterface &dhi);
     };
 
-} // namespace ngap
+} // namespace s3
 
-#endif // NgapRequestHandler.h
+#endif // S3RequestHandler.h

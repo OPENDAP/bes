@@ -1,8 +1,8 @@
-// NgapContainer.cc
+// S3Container.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -26,25 +26,26 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef E_NgapNames_H
-#define E_NgapNames_H 1
+#ifndef E_S3Names_H
+#define E_S3Names_H 1
 
-#define NGAP_NAME "ngap"
+// FIXME Remove the unused or unneeded names. jhrg 10/18/22
 
+#define S3_NAME "S3"
 
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define MISSING_DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
-#define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"
-#define NGAP_CMR_HOSTNAME_KEY "NGAP.cmr_host_url"
-#define NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY "NGAP.cmr_search_endpoint_path"
+#define S3_INJECT_DATA_URL_KEY "S3.inject_data_urls"
+#define S3_CMR_HOSTNAME_KEY "S3.cmr_host_url"
+#define S3_CMR_SEARCH_ENDPOINT_PATH_KEY "S3.cmr_search_endpoint_path"
 
-#define MODULE NGAP_NAME
+#define MODULE S3_NAME
 
 
-#define NGAP_PROVIDERS_KEY "/providers/"
-#define NGAP_COLLECTIONS_KEY "/collections/"
-#define NGAP_CONCEPTS_KEY "/concepts/"
-#define NGAP_GRANULES_KEY "/granules/"
+#define S3_PROVIDERS_KEY "/providers/"
+#define S3_COLLECTIONS_KEY "/collections/"
+#define S3_CONCEPTS_KEY "/concepts/"
+#define S3_GRANULES_KEY "/granules/"
 
 #define DEFAULT_CMR_ENDPOINT_URL "https://cmr.earthdata.nasa.gov"
 #define DEFAULT_CMR_SEARCH_ENDPOINT_PATH "/search/granules.umm_json_v1_4"
@@ -61,4 +62,4 @@
 #define INGEST_TIME_KEY "GET ingest_time"
 
 
-#endif // E_NgapNames_H
+#endif // E_S3Names_H

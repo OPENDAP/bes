@@ -1,8 +1,8 @@
-// NgapContainer.cc
+// S3Container.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of S3_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2020 OPeNDAP, Inc.
@@ -25,33 +25,31 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+//      jhrg      James Gallagher <jgallagher@opendap.org>
 
-#ifndef I_NgapModule_H
-#define I_NgapModule_H 1
+#ifndef I_S3Module_H
+#define I_S3Module_H 1
 
 #include <string>
 #include <ostream>
 
 #include "BESAbstractModule.h"
 
-namespace ngap {
+namespace s3 {
 
-    class NgapModule: public BESAbstractModule {
-    public:
-        NgapModule()
-        {
-        }
+class S3Module : public BESAbstractModule {
+public:
+    S3Module() = default;
 
-        virtual ~NgapModule()
-        {
-        }
+    ~S3Module() = default;
 
-        virtual void initialize(const std::string &modname);
-        virtual void terminate(const std::string &modname);
+    virtual void initialize(const std::string &modname);
 
-        virtual void dump(std::ostream &strm) const;
-    };
+    virtual void terminate(const std::string &modname);
 
-} //namespace ngap
+    void dump(std::ostream &strm) const override;
+};
 
-#endif // I_NgapModule_H
+} //namespace s3
+
+#endif // I_S3Module_H
