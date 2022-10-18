@@ -36,6 +36,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -1512,6 +1514,15 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 bool use_dimscale = false;
                 if (true == _default_handle_dimension)
                     use_dimscale = check_dimscale(fileid);
+
+                eos5_dim_info_t eos5_dim_info;
+                if (is_eos5 && !use_dimscale) 
+                    obtain_eos5_var_dims(fileid,eos5_dim_info);
+                    //obtain_eos5_var_dims(fileid,eos5_var_dims);
+                unordered_map<string,vector<string>> eos5_var_dims = eos5_dim_info.varpath_to_dims;
+//unordered_map<string,vector<string>> eos5_grp_dims = eos5_dim_info.grppath_to_dims;
+
+
                 dmr->set_name(name_path(filename));
                 dmr->set_filename(name_path(filename));
 
@@ -1529,7 +1540,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 // KY 2021-11-15
                 vector<link_info_t> hdf5_hls;
  
-                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls);
+                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_var_dims);
 #if 0
                 BESDEBUG("h5", "build_dmr - before obtain dimensions"<< endl);
                 D4Dimensions *root_dims = root_grp->dims();
