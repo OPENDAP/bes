@@ -52,7 +52,8 @@ using namespace std;
 
 namespace s3 {
 
-/** @brief Creates an instances of S3Container with symbolic name and real
+/**
+ * @brief Creates an instances of S3Container with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
@@ -62,63 +63,59 @@ namespace s3 {
  * @throws BESSyntaxUserError if the url does not validate
  * @see S3Utils
  */
-S3Container::S3Container(const string &sym_name,
-                             const string &real_name,
-                             const string &type) :
-        BESContainer(sym_name, real_name, type),
-        d_dmrpp_rresource(nullptr) {
+S3Container::S3Container(const string &sym_name, const string &real_name, const string &type) :
+        BESContainer(sym_name, real_name, type)
+{
     initialize();
 }
 
-
 void S3Container::initialize()
 {
-    BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
-    BESDEBUG(MODULE, prolog << "real_name: "<< get_real_name() << endl);
-    BESDEBUG(MODULE, prolog << "type: "<< get_container_type() << endl);
-
-    bool found;
+    BESDEBUG(MODULE, prolog << "sym_name: " << get_symbolic_name() << endl);
+    BESDEBUG(MODULE, prolog << "real_name: " << get_real_name() << endl);
+    BESDEBUG(MODULE, prolog << "type: " << get_container_type() << endl);
 
     if (get_container_type().empty())
-        set_container_type("S3");
+        set_container_type("s3");
 
+    bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
-#if 0
-    string data_access_url = S3_api.convert_S3_resty_path_to_data_access_url(get_real_name(), uid);
-
-    set_real_name(data_access_url);
-#endif
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
     set_relative_name(get_real_name());
 }
 
-/**
- * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
- */
-S3Container::S3Container(const S3Container &copy_from) :
-        BESContainer(copy_from),
-        d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
-    BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
-    // we can not make a copy of this container once the request has
-    // been made
-    if (d_dmrpp_rresource) {
-        string err = (string) "The Container has already been accessed, "
-                     + "can not create a copy of this container.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+bool S3Container::inject_data_url()
+{
+    bool result = false;
+    bool found;
+    string key_value;
+    TheBESKeys::TheKeys()->get_value(S3_INJECT_DATA_URL_KEY, key_value, found);
+    if (found && key_value == "true") {
+        result = true;
     }
-    BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
+    BESDEBUG(MODULE, prolog << "S3_INJECT_DATA_URL_KEY(" << S3_INJECT_DATA_URL_KEY << "): " << result << endl);
+    return result;
 }
 
-void S3Container::_duplicate(S3Container &copy_to) {
-    if (copy_to.d_dmrpp_rresource) {
-        string err = (string) "The Container has already been accessed, "
-                     + "can not duplicate this resource.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+S3Container::S3Container(const S3Container &copy_from) : BESContainer(copy_from)
+{
+    // cannot make a copy of this container once the request has been made
+    if (copy_from.d_dmrpp_rresource) {
+        throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.",
+                               __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
+
+    d_dmrpp_rresource = copy_from.d_dmrpp_rresource;
+}
+
+void S3Container::_duplicate(S3Container &copy_to)
+{
+    if (d_dmrpp_rresource) {
+        throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.",
+                               __FILE__, __LINE__);
+    }
+
     copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
     BESContainer::_duplicate(copy_to);
 }
@@ -127,28 +124,24 @@ BESContainer *
 S3Container::ptr_duplicate() {
     S3Container *container = new S3Container;
     _duplicate(*container);
-    BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
+
     return container;
 }
 
-S3Container::~S3Container() {
-    BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
+S3Container::~S3Container()
+{
     if (d_dmrpp_rresource) {
         release();
     }
-    BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
-
-
 
 /** @brief access the remote target response by making the remote request
  *
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string S3Container::access() {
-    BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
-
+string S3Container::access()
+{
     // Since this the S3 we know that the real_name is a URL.
     string data_access_url_str = get_real_name();
 
@@ -162,75 +155,77 @@ string S3Container::access() {
     BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
     BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
 
-    string href="href=\"";
-    string trusted_url_hack="\" dmrpp:trust=\"true\"";
+    string href = "href=\"";
+    string trusted_url_hack = "\" dmrpp:trust=\"true\"";
 
     string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
     BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
 
     string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
+    BESDEBUG(MODULE,
+             prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
 
     string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
     BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
 
     string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
+    BESDEBUG(MODULE,
+             prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
 
     string type = get_container_type();
-    if (type == "S3")
+    if (type == "s3")
         type = "";
 
     if (!d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
-        map<string,string> content_filters;
+        map<string, string> content_filters;
         if (inject_data_url()) {
-            content_filters.insert(pair<string,string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-            content_filters.insert(pair<string,string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+            content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
+            content_filters.insert(
+                    pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
         }
         shared_ptr<http::url> dmrpp_url(new http::url(dmrpp_url_str, true));
+
         {
             d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                besTimer.start("DMR++ retrieval: "+ dmrpp_url->str());
+            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+                besTimer.start("DMR++ retrieval: " + dmrpp_url->str());
             }
             d_dmrpp_rresource->retrieveResource(content_filters);
         }
+
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
     }
 
-    // TODO This file should be read locked before leaving this method.
-    //  10/8/21 I think the RemoteResource should do that. jhrg
     string cachedResource = d_dmrpp_rresource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
     type = d_dmrpp_rresource->getType();
     set_container_type(type);
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-    BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
-    BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
+    BESDEBUG(MODULE,
+             prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
 
     return cachedResource;    // this should return the dmr++ file name from the S3Cache
 }
 
-
-/** @brief release the resources
+/**
+ * @brief release the resources
  *
  * Release the resource
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool S3Container::release() {
-    // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
-    //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
+bool S3Container::release()
+{
+    // RemoteResource destructor releases the lock on this cached object. jhrg 10/18/22
     if (d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_dmrpp_rresource;
-        d_dmrpp_rresource = 0;
+        d_dmrpp_rresource = nullptr;
     }
 
-    BESDEBUG(MODULE, prolog << "Done releasing S3 response" << endl);
     return true;
 }
 
@@ -241,7 +236,8 @@ bool S3Container::release() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void S3Container::dump(ostream &strm) const {
+void S3Container::dump(ostream &strm) const
+{
     strm << BESIndent::LMarg << "S3Container::dump - (" << (void *) this
          << ")" << endl;
     BESIndent::Indent();
@@ -261,24 +257,15 @@ void S3Container::dump(ostream &strm) const {
                 strm << BESIndent::LMarg << hdr_line << endl;
             }
             BESIndent::UnIndent();
-        } else {
+        }
+        else {
             strm << "none" << endl;
         }
-    } else {
+    }
+    else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
     BESIndent::UnIndent();
 }
 
-bool S3Container::inject_data_url(){
-    bool result = false;
-    bool found;
-    string key_value;
-    TheBESKeys::TheKeys()->get_value(S3_INJECT_DATA_URL_KEY, key_value, found);
-    if (found && key_value == "true") {
-        result = true;
-    }
-    BESDEBUG(MODULE, prolog << "S3_INJECT_DATA_URL_KEY(" << S3_INJECT_DATA_URL_KEY << "): " << result << endl);
-    return result;
-}
-}
+}   // namespace s3
