@@ -30,7 +30,7 @@
 
 class BESCatalogUtils;
 
-namespace s3 {
+namespace S3 {
 
 /** @brief implementation of BESContainerStorageVolatile that represents a
  * list of remote requests
@@ -52,6 +52,6 @@ public:
     void dump(std::ostream &strm) const override;
 };
 
-} // namespace s3
+} // namespace S3
 
 #endif // S3ContainerStorage_h_

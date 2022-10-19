@@ -38,7 +38,7 @@
 #define MISSING_DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
 
 // This is the name of a BES Key used by the module to control whether the software
-// tries to substiture values for the above two 'keys.'
+// tries to substitute values for the above two 'keys.'
 #define S3_INJECT_DATA_URL_KEY "S3.inject_data_urls"
 
 #endif // E_S3Names_H

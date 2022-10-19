@@ -37,7 +37,7 @@
 #include "S3ContainerStorage.h"
 
 using namespace std;
-using namespace s3;
+using namespace S3;
 
 void S3Module::initialize(const string &modname)
 {

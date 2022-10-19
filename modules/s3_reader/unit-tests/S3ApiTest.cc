@@ -344,7 +344,7 @@ public:
         bool is_expired;
 
 
-        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+        signed_url_str = "https://ghrcw-protected.S3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
               "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
               "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"

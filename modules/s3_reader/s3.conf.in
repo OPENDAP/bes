@@ -1,8 +1,8 @@
 BES.Include=dap.conf
 
 
-BES.modules+=s3
-BES.module.s3=@bes_modules_dir@/libs3_module.so
+BES.modules+=S3
+BES.module.S3=@bes_modules_dir@/libs3_module.so
 
 # Inject Data URLs into the dmr++ documents.
 S3.inject_data_urls=true

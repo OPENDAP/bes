@@ -32,7 +32,7 @@
 
 using namespace std;
 
-namespace s3 {
+namespace S3 {
 /** @brief create an instance of this persistent store with the given name.
 *
 * Creates an instances of GatewayContainerStorage with the given name.
@@ -72,4 +72,4 @@ void S3ContainerStorage::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-} // namespace s3
+} // namespace S3

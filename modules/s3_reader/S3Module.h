@@ -35,7 +35,7 @@
 
 #include "BESAbstractModule.h"
 
-namespace s3 {
+namespace S3 {
 
 class S3Module : public BESAbstractModule {
 public:
@@ -50,6 +50,6 @@ public:
     void dump(std::ostream &strm) const override;
 };
 
-} //namespace s3
+} //namespace S3
 
 #endif // I_S3Module_H

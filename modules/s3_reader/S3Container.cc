@@ -48,7 +48,7 @@
 
 using namespace std;
 
-namespace s3 {
+namespace S3 {
 
 void S3Container::_duplicate(S3Container &copy_to)
 {
@@ -68,7 +68,7 @@ void S3Container::initialize()
     BESDEBUG(MODULE, prolog << "type: " << get_container_type() << endl);
 
     if (get_container_type().empty())
-        set_container_type("s3");
+        set_container_type("S3");
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -95,23 +95,10 @@ S3Container::S3Container(const string &sym_name, const string &real_name, const 
     initialize();
 }
 
-#if 0
-S3Container::S3Container(const S3Container &copy_from) : BESContainer(copy_from)
-{
-    // we cannot make a copy of this container once the request has been made
-    if (copy_from.d_dmrpp_rresource) {
-        throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.",
-                               __FILE__, __LINE__);
-    }
-
-    d_dmrpp_rresource = copy_from.d_dmrpp_rresource;
-}
-#endif
-
 BESContainer *
 S3Container::ptr_duplicate()
 {
-     auto container = new S3Container;
+    auto container = new S3Container;
     _duplicate(*container);
     return container;
 }
@@ -131,6 +118,9 @@ S3Container::~S3Container()
 string S3Container::access()
 {
     // TODO What if this wasn't the assumption? jhrg 10/18/22
+
+    // TODO Improve this because it's called multiple times and should check to see if
+    //  there is a cached object already. jhrg 10/19/22
 
     // Since this is S3 we know that the real_name is a URL.
     string data_access_url_str = get_real_name();
@@ -262,4 +252,4 @@ void S3Container::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-} // s3 namespace
+} // S3 namespace
