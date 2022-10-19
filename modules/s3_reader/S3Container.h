@@ -32,10 +32,7 @@
 #include "BESContainer.h"
 #include "RemoteResource.h"
 
-
 namespace s3 {
-
-
 
 /** @brief Container representing a remote request
  *
@@ -46,47 +43,28 @@ namespace s3 {
  *
  * @see S3ContainerStorage
  */
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
 class S3Container: public BESContainer {
 
-private:
-    http::RemoteResource *d_dmrpp_rresource;
+    http::RemoteResource *d_dmrpp_rresource = nullptr;
 
-    // std::vector<std::string> d_collections;
-    // std::vector<std::string> d_facets;
-
-    virtual void initialize();
-
-    bool inject_data_url();
-
-
-protected:
+    void initialize();
     void _duplicate(S3Container &copy_to);
 
-    S3Container() :
-            BESContainer(), d_dmrpp_rresource(nullptr)
-    {
-    }
-
 public:
+    S3Container() : BESContainer() { }
     S3Container(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    S3Container(const S3Container &copy_from) = delete;
+    S3Container& operator=(const S3Container& other) = delete;
 
-    S3Container(const S3Container &copy_from);
+    ~S3Container() override;
 
-    // void get_granule_path(const std::string &path) const ;
+    // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
+    BESContainer *ptr_duplicate() override;
+    std::string access() override;
+    bool release() override;
 
-    static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
-
-    virtual ~S3Container();
-
-    virtual BESContainer * ptr_duplicate();
-
-    virtual std::string access();
-
-    virtual bool release();
-
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace s3

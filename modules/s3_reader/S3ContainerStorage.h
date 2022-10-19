@@ -44,12 +44,12 @@ namespace s3 {
  */
 class S3ContainerStorage: public BESContainerStorageVolatile {
 public:
-    S3ContainerStorage(const std::string &n);
-    virtual ~S3ContainerStorage();
+    explicit S3ContainerStorage(const std::string &n);
+    ~S3ContainerStorage() override = default;
 
-    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+    void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace s3

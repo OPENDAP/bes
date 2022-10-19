@@ -35,6 +35,7 @@
 #include <BESVersionInfo.h>
 
 #include <BESServiceRegistry.h>
+#include <TheBESKeys.h>
 #include <BESUtil.h>
 
 #include "S3RequestHandler.h"
@@ -44,31 +45,28 @@ using namespace std;
 using namespace libdap;
 using namespace s3;
 
-S3RequestHandler::S3RequestHandler(const string &name) :
-        BESRequestHandler(name)
+bool S3RequestHandler::d_inject_data_url;
+
+S3RequestHandler::S3RequestHandler(const string &name) : BESRequestHandler(name)
 {
     add_method(VERS_RESPONSE, S3RequestHandler::S3_build_vers);
     add_method(HELP_RESPONSE, S3RequestHandler::S3_build_help);
-}
 
-S3RequestHandler::~S3RequestHandler()
-{
+    d_inject_data_url = TheBESKeys::TheKeys()->read_bool_key(S3_INJECT_DATA_URL_KEY, false);
 }
 
 bool S3RequestHandler::S3_build_vers(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
-    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESVersionInfo instance");
 
     info->add_module(MODULE_NAME, MODULE_VERSION);
-    return ret;
+    return true;
 }
 
 bool S3RequestHandler::S3_build_help(BESDataHandlerInterface &dhi)
 {
-    bool ret = true;
-    BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw InternalErr(__FILE__, __LINE__, "Expected a BESInfo instance");
 
     // This is an example. If you had a help file you could load it like
@@ -79,7 +77,7 @@ bool S3RequestHandler::S3_build_help(BESDataHandlerInterface &dhi)
 
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(S3_NAME, services);
-    if (services.size() > 0) {
+    if (!services.empty()) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;
     }
@@ -87,7 +85,7 @@ bool S3RequestHandler::S3_build_help(BESDataHandlerInterface &dhi)
 
     info->end_tag("module");
 
-    return ret;
+    return true;
 }
 
 void S3RequestHandler::dump(ostream &strm) const

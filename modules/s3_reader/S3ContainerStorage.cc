@@ -31,25 +31,18 @@
 #include "S3Container.h"
 
 using namespace std;
-// using namespace gateway;
-
 
 namespace s3 {
-    /** @brief create an instance of this persistent store with the given name.
- *
- * Creates an instances of GatewayContainerStorage with the given name.
- *
- * @param n name of this persistent store
- * @see GatewayContainer
- */
-    S3ContainerStorage::S3ContainerStorage(const string &n) :
-            BESContainerStorageVolatile(n)
-    {
-    }
-
-    S3ContainerStorage::~S3ContainerStorage()
-    {
-    }
+/** @brief create an instance of this persistent store with the given name.
+*
+* Creates an instances of GatewayContainerStorage with the given name.
+*
+* @param n name of this persistent store
+* @see GatewayContainer
+*/
+S3ContainerStorage::S3ContainerStorage(const string &n) : BESContainerStorageVolatile(n)
+{
+}
 
 /** @brief adds a container with the provided information
  *
@@ -58,11 +51,11 @@ namespace s3 {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void S3ContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
-    {
-        BESContainer *c = new S3Container(s_name, r_name, type);
-        BESContainerStorageVolatile::add_container(c);
-    }
+void S3ContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
+{
+    auto c = new S3Container(s_name, r_name, type);
+    BESContainerStorageVolatile::add_container(c);
+}
 
 /** @brief dumps information about this object
  *
@@ -71,12 +64,12 @@ namespace s3 {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void S3ContainerStorage::dump(ostream &strm) const
-    {
-        strm << BESIndent::LMarg << "S3ContainerStorage::dump - (" << (void *) this << ")" << endl;
-        BESIndent::Indent();
-        BESContainerStorageVolatile::dump(strm);
-        BESIndent::UnIndent();
-    }
+void S3ContainerStorage::dump(ostream &strm) const
+{
+    strm << BESIndent::LMarg << "S3ContainerStorage::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    BESContainerStorageVolatile::dump(strm);
+    BESIndent::UnIndent();
+}
 
 } // namespace s3

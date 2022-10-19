@@ -29,37 +29,16 @@
 #ifndef E_S3Names_H
 #define E_S3Names_H 1
 
-// FIXME Remove the unused or unneeded names. jhrg 10/18/22
+#define S3_NAME "S3"    // Used when the handler is added to the services registry
+#define MODULE S3_NAME  // Used for BESDEBUG calls
 
-#define S3_NAME "S3"
-
+// These are text that can appear in a DMR++. This text is replaces with an actual
+// URL to some data.
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define MISSING_DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"
+
+// This is the name of a BES Key used by the module to control whether the software
+// tries to substiture values for the above two 'keys.'
 #define S3_INJECT_DATA_URL_KEY "S3.inject_data_urls"
-#define S3_CMR_HOSTNAME_KEY "S3.cmr_host_url"
-#define S3_CMR_SEARCH_ENDPOINT_PATH_KEY "S3.cmr_search_endpoint_path"
-
-#define MODULE S3_NAME
-
-
-#define S3_PROVIDERS_KEY "/providers/"
-#define S3_COLLECTIONS_KEY "/collections/"
-#define S3_CONCEPTS_KEY "/concepts/"
-#define S3_GRANULES_KEY "/granules/"
-
-#define DEFAULT_CMR_ENDPOINT_URL "https://cmr.earthdata.nasa.gov"
-#define DEFAULT_CMR_SEARCH_ENDPOINT_PATH "/search/granules.umm_json_v1_4"
-#define CMR_PROVIDER "provider"
-#define CMR_ENTRY_TITLE "entry_title"
-#define CMR_COLLECTION_CONCEPT_ID "collection_concept_id"
-#define CMR_GRANULE_UR "granule_ur"
-#define CMR_URL_TYPE_GET_DATA "GET DATA"
-
-#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
-#define AWS_DATE_HEADER_KEY "X-Amz-Date"
-#define AWS_DATE_FORMAT "%Y%m%dT%H%MS"
-#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
-#define INGEST_TIME_KEY "GET ingest_time"
-
 
 #endif // E_S3Names_H
