@@ -166,7 +166,7 @@ curl_slist *aws_sign_request_url(shared_ptr<http::url> &target_url, curl_slist *
                         credentials->get(AccessCredentials::ID_KEY),
                         credentials->get(AccessCredentials::KEY_KEY),
                         credentials->get(AccessCredentials::REGION_KEY),
-                        "s3");
+                        "S3");
 
         // passing nullptr for the first call allocates the curl_slist
         // The following code builds the slist that holds the headers. This slist is freed

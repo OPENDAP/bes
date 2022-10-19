@@ -151,14 +151,14 @@ AM_COND_IF([WITH_NGAP],
     [AC_MSG_NOTICE([Building support for the NGAP Module])],
     [AC_MSG_NOTICE([Disabled support for the NGAP Module])])
 
-dnl Build S3 support by default or if the user provides --with-s3. Do not build the
-dnl module if the user supplies --without-s3 or --with-s3=no. jhrg 10/18/22
+dnl Build S3 support by default or if the user provides --with-S3. Do not build the
+dnl module if the user supplies --without-S3 or --with-S3=no. jhrg 10/18/22
 
-AC_ARG_WITH([s3],
-    AS_HELP_STRING([--without-s3],
-    [Disable support for the S3 service, no s3_reader. (Built by default)])
+AC_ARG_WITH([S3],
+    AS_HELP_STRING([--without-S3],
+    [Disable support for the S3 service, no S3_reader. (Built by default)])
 )
-AM_CONDITIONAL([BUILD_S3], [test "x$with_s3" != "xno"])
+AM_CONDITIONAL([BUILD_S3], [test "x$with_S3" != "xno"])
 AM_COND_IF([BUILD_S3],
     [AC_MSG_NOTICE([Building support for the S3 Module])],
     [AC_MSG_NOTICE([Disabled support for the S3 Module])])
@@ -943,7 +943,7 @@ AM_COND_IF([BUILD_HDF5], [OPTIONAL_FEATURES="hdf5 $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
 AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
-AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="s3_reader $OPTIONAL_FEATURES"])
+AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="S3_reader $OPTIONAL_FEATURES"])
 
 AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
 
@@ -1071,10 +1071,10 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/ngap_module/tests/atlocal
     modules/ngap_module/unit-tests/Makefile
     
-    modules/s3_reader/Makefile
-    modules/s3_reader/tests/Makefile
-    modules/s3_reader/tests/atlocal
-    modules/s3_reader/unit-tests/Makefile
+    modules/S3_reader/Makefile
+    modules/S3_reader/tests/Makefile
+    modules/S3_reader/tests/atlocal
+    modules/S3_reader/unit-tests/Makefile
 
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile
@@ -1197,7 +1197,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/S3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])

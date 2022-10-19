@@ -409,7 +409,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::ID_KEY),
                             credentials->get(AccessCredentials::KEY_KEY),
                             credentials->get(AccessCredentials::REGION_KEY),
-                            "s3");
+                            "S3");
 
 
             handle->d_request_headers = curl::append_http_header((curl_slist *)0, "Authorization", auth_header);

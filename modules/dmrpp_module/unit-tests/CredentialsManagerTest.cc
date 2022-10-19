@@ -142,8 +142,8 @@ public:
                 " AccessCredentials. Expected: "<< expected << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-            shared_ptr<http::url> cloudydap_dataset_url(new http::url("https://s3.amazonaws.com/cloudydap/samples/d_int.h5"));
-            shared_ptr<http::url> cloudyopendap_dataset_url(new http::url("https://s3.amazonaws.com/cloudyopendap/samples/d_int.h5"));
+            shared_ptr<http::url> cloudydap_dataset_url(new http::url("https://S3.amazonaws.com/cloudydap/samples/d_int.h5"));
+            shared_ptr<http::url> cloudyopendap_dataset_url(new http::url("https://S3.amazonaws.com/cloudyopendap/samples/d_int.h5"));
             shared_ptr<http::url> someother_dataset_url(new http::url("https://ssotherone.org/opendap/data/fnoc1.nc"));
             AccessCredentials *ac;
             string url, id, key, region, bucket;
@@ -158,7 +158,7 @@ public:
 
             ac = CredentialsManager::theCM()->get(cloudydap_dataset_url);
             CPPUNIT_ASSERT( ac);
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://s3.amazonaws.com/cloudydap/");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://S3.amazonaws.com/cloudydap/");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == "foo");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwecqwedqwed");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "us-east-1");
@@ -173,7 +173,7 @@ public:
             */
             ac = CredentialsManager::theCM()->get(cloudyopendap_dataset_url);
             CPPUNIT_ASSERT( ac);
-            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://s3.amazonaws.com/cloudyopendap/");
+            CPPUNIT_ASSERT( ac->get(AccessCredentials::URL_KEY) == "https://S3.amazonaws.com/cloudyopendap/");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::ID_KEY) == "bar");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::KEY_KEY) == "qwedjhgvewqwedqwed");
             CPPUNIT_ASSERT( ac->get(AccessCredentials::REGION_KEY) == "nirvana-west-0");
@@ -233,7 +233,7 @@ public:
         string id("Frank Morgan");
         string region("oz-east-1");
         string bucket("emerald_city");
-        string url("https://s3.amazonaws.com/emerald_city");
+        string url("https://S3.amazonaws.com/emerald_city");
         string some_dataset_url(url+"data/fnoc1.nc");
 
         setenv(CredentialsManager::ENV_ID_KEY, id.c_str(), true);
@@ -263,7 +263,7 @@ public:
         string key("Ihadasecretthingforthewickedwitchofthewest");
         string region("oz-east-1");
         string bucket("emerald_city");
-        string base_url("https://s3.amazonaws.com/emerald_city/");
+        string base_url("https://S3.amazonaws.com/emerald_city/");
         shared_ptr<http::url> some_dataset_url(new http::url(base_url+"data/fnoc1.nc"));
 
         setenv(CredentialsManager::ENV_ID_KEY,     id.c_str(), true);
@@ -311,7 +311,7 @@ public:
                      << CredentialsManager::theCM()->size() << " AccessCredentials. Expected:" << expected << endl;
             CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == expected);
 
-            shared_ptr<http::url> target_url(new http::url("https://s3.us-west-2.amazonaws.com"));
+            shared_ptr<http::url> target_url(new http::url("https://S3.us-west-2.amazonaws.com"));
             AccessCredentials *ac = CredentialsManager::theCM()->get(target_url);
             CPPUNIT_ASSERT( ac );
 

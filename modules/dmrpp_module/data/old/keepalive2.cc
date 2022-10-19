@@ -837,7 +837,7 @@ int main(int argc, char **argv) {
 
     bool use_pthreads = false;
 
-    url = "https://s3.amazonaws.com/opendap.test/MVI_1803.MOV";
+    url = "https://S3.amazonaws.com/opendap.test/MVI_1803.MOV";
     file_size = 1647477620;
     shard_count=10000;
     reuse_curl_easy_handles=false;

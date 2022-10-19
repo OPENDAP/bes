@@ -142,10 +142,10 @@ public:
             target_url = shared_ptr<http::url>(new http::url("http://test.opendap.wrong.org/opendap/data/nc/fnoc1.nc"));
             CPPUNIT_ASSERT(!can_access(prolog, target_url));
 
-            target_url = shared_ptr<http::url>(new http::url("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
+            target_url = shared_ptr<http::url>(new http::url("https://S3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
             CPPUNIT_ASSERT(can_access(prolog, target_url));
 
-            target_url = shared_ptr<http::url>(new http::url("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
+            target_url = shared_ptr<http::url>(new http::url("http://S3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
             CPPUNIT_ASSERT(!can_access(prolog, target_url));
 
             target_url = shared_ptr<http::url>(new http::url("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
@@ -158,7 +158,7 @@ public:
             target_url = shared_ptr<http::url>(new http::url(turl_str));
             CPPUNIT_ASSERT(can_access(prolog, target_url));
 
-            string ghrc_uat_s3 = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss/rssmif16d__7/f16_ssmis_20200512v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4AWSMOOMOO0200901%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200901T153129Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXAWSMOOMOOMOOMOOKHf6ew%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=10e80b9876AWSMOOMOOMOOOO9f26174bca4fab";
+            string ghrc_uat_s3 = "https://ghrcwuat-protected.S3.us-west-2.amazonaws.com/rss/rssmif16d__7/f16_ssmis_20200512v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4AWSMOOMOO0200901%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200901T153129Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXAWSMOOMOOMOOMOOKHf6ew%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=10e80b9876AWSMOOMOOMOOOO9f26174bca4fab";
             target_url = shared_ptr<http::url>(new http::url(ghrc_uat_s3));
             CPPUNIT_ASSERT(can_access(prolog, target_url));
 
@@ -246,12 +246,12 @@ public:
             if(debug) cerr << endl;
         }
         try {
-            auto target_url = shared_ptr<http::url>(new http::url("s3://cloudydap/airs/somefile.nc"));
+            auto target_url = shared_ptr<http::url>(new http::url("S3://cloudydap/airs/somefile.nc"));
             can_access(prolog, target_url);
-            CPPUNIT_FAIL("Bad (s3://) URL should have thrown a BESInternalError!");
+            CPPUNIT_FAIL("Bad (S3://) URL should have thrown a BESInternalError!");
         }
         catch(BESInternalError &berr){
-            CPPUNIT_ASSERT("Bad (s3://) URL Failed as expected.");
+            CPPUNIT_ASSERT("Bad (S3://) URL Failed as expected.");
             if(debug) cerr << endl;
         }
         try {

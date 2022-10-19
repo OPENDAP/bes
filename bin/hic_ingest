@@ -226,7 +226,7 @@ function qc_inputs(){
     echo "woot" >  /tmp/foo
     
     # List Bucket Test
-    aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+    aws_cmd="aws S3 ls S3://$s3_bucket_name --profile $s3_profile_name";
     if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
     $aws_cmd ${dev_null}
     aws_status=$?
@@ -236,7 +236,7 @@ function qc_inputs(){
     fi
 
     # Write To Bucket Test
-    aws_cmd="aws s3 cp  --profile $s3_profile_name ${0} s3://$s3_bucket_name/hic_ingest";
+    aws_cmd="aws S3 cp  --profile $s3_profile_name ${0} S3://$s3_bucket_name/hic_ingest";
     if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
     $aws_cmd ${dev_null}
     aws_status=$?
@@ -248,7 +248,7 @@ function qc_inputs(){
     # We already tested list, but in verbose mode this shows the new bucket contents.
     if [ ${verbose} -eq 1 ]; then 
         # List Bucket Test
-        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        aws_cmd="aws S3 ls S3://$s3_bucket_name --profile $s3_profile_name";
         echo "{$0} aws command: '${aws_cmd}'";
         $aws_cmd ${dev_null}
         aws_status=$?
@@ -260,7 +260,7 @@ function qc_inputs(){
     fi
 
     # Delete Item From Bucket Test
-    aws_cmd="aws s3 rm  --profile $s3_profile_name s3://$s3_bucket_name/hic_ingest";
+    aws_cmd="aws S3 rm  --profile $s3_profile_name S3://$s3_bucket_name/hic_ingest";
     if [ ${verbose} -eq 1 ]; then echo "{$0} aws command: '${aws_cmd}'"; fi
     $aws_cmd ${dev_null}
     aws_status=$?
@@ -272,7 +272,7 @@ function qc_inputs(){
     # We already tested list, but in verbose mode this shows the new bucket contents.
     if [ ${verbose} -eq 1 ]; then 
         # List Bucket Test
-        aws_cmd="aws s3 ls s3://$s3_bucket_name --profile $s3_profile_name";
+        aws_cmd="aws S3 ls S3://$s3_bucket_name --profile $s3_profile_name";
         echo "{$0} aws command: '${aws_cmd}'";
         $aws_cmd ${dev_null}
         aws_status=$?
@@ -470,7 +470,7 @@ do
     else 
         # We want this file.
         
-        aws_s3_url="s3://${s3_bucket_name}/${logical_path}"
+        aws_s3_url="S3://${s3_bucket_name}/${logical_path}"
         dmr_s3_url="https://s3.amazonaws.com/${s3_bucket_name}/${logical_path}"
         
         last_modified_time=`TZ=UTC date -r $afile +"%Y-%m-%dT%H:%M:%SZ"`
@@ -505,7 +505,7 @@ do
         fi
         
         # This is the command that will copy the file to the S3 bucket.
-        aws_cmd="aws s3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} --profile ${s3_profile_name} ${aws_s3_url}"  
+        aws_cmd="aws S3 cp ${DRY_RUN} ${make_aws_object_public} ${afile} --profile ${s3_profile_name} ${aws_s3_url}"
         aws_status=0;
         if [ ${verbose} -eq 1 ]; then echo "${0} aws_cmd: ${aws_cmd}"; fi
         $aws_cmd

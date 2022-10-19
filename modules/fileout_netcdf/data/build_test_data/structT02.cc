@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
         Structure s1("s1");
         Structure s2("s2");
-        Structure s3("s3");
+        Structure s3("S3");
 
         Byte b("byte");
         b.set_value(28);
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         dds->add_var(&s1);
 
         build_dods_response(&dds, "./structT02.dods");
-        // apply CE "s1.ui16,s1.s2.str,s1.s2.s3.i32"
+        // apply CE "s1.ui16,s1.s2.str,s1.s2.S3.i32"
 
         delete dds;
     }

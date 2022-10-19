@@ -50,7 +50,7 @@ jobs:
         run: make rpm --jobs=$jobs
 
       # $HOME is /github/home
-      - name: upload to s3
+      - name: upload to S3
         run: |
           yum install -y awscli
           aws s3 cp $HOME/rpmbuild/RPMS s3://opendap.github.actions.build --recursive

@@ -255,13 +255,13 @@ bool file_is_secured(const string &filename) {
  * of the credentials.
  * The map of maps is accomplished by the following formatting:
  *
- * cloudydap=url:https://s3.amazonaws.com/cloudydap/
+ * cloudydap=url:https://S3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------
  * cloudydap+=key:**************************
  * cloudydap+=region:us-east-1
  * cloudydap+=bucket:cloudydap
  *
- * cloudyopendap=url:https://s3.amazonaws.com/cloudyopendap/
+ * cloudyopendap=url:https://S3.amazonaws.com/cloudyopendap/
  * cloudyopendap+=id:---------------------------
  * cloudyopendap+=key:**************************
  * cloudyopendap+=region:us-east-1

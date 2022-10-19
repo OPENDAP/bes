@@ -209,7 +209,7 @@ S3_DATA_FILES="./s3_${s3_bucket_name}_data_files.txt"
 # mk_file_list() 
 #
 # Creates a list of all the files in or below data_root the AWS CLI. The output
-# of "aws s3 ls --recursive bucket_name" is written to S3_ALL_FILES. Once the 
+# of "aws S3 ls --recursive bucket_name" is written to S3_ALL_FILES. Once the
 # list ahs been created the regex (either default or supplied with 
 # the -r option) is applied to the list and the matching files collected as 
 # S3_DATA_FILES 
@@ -242,7 +242,7 @@ function mk_file_list_from_s3() {
         if test -n "$verbose"
         then
             dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-            echo "# Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+            echo "# Found ${dataset_count} suitable data files in S3 bucket: ${s3_bucket_name}";
         fi
     fi 
 }
@@ -264,7 +264,7 @@ function mk_dmrpp_from_s3_list() {
 
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
-        s3_url="https://${s3_bucket_name}.s3.${s3_bucket_region}.amazonaws.com/${relative_filename}";
+        s3_url="https://${s3_bucket_name}.S3.${s3_bucket_region}.amazonaws.com/${relative_filename}";
 
         data_file="${data_root}/${relative_filename}";
         target_file="${target_dir}/${relative_filename}.dmrpp";
@@ -301,9 +301,9 @@ function mk_dmrpp_from_s3_list() {
         timer=;
 	    #set -x
         if test -n "$verbose"; then
-            time -p aws s3 cp ${aws_quiet} "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+            time -p aws s3 cp ${aws_quiet} "S3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         else
-            aws s3 cp ${aws_quiet} "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+            aws s3 cp ${aws_quiet} "S3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         fi
         status=$?
         if [ ${status} -ne 0 ]

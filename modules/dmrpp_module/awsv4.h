@@ -89,7 +89,7 @@ const std::string calculate_signature(const std::time_t &request_date,
 // The whole enchilada. Added jhrg 11/25/19
 const std::string compute_awsv4_signature(std::shared_ptr<http::url> &uri_str, const std::time_t &request_date,
                                           const std::string &public_key, const std::string &secret_key,
-                                          const std::string &region, const std::string &service = "s3");
+                                          const std::string &region, const std::string &service = "S3");
 }
 
 #endif

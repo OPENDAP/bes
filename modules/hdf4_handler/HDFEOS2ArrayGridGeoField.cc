@@ -2169,10 +2169,10 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
             latlon.resize(nelms); //double[180*xdim*ydim];
             //int s1=start[0]+1, e1=s1+count[0]*step[0];
             //int s2=start[1],   e2=s2+count[1]*step[1];
-            //int s3=start[2],   e3=s3+count[2]*step[2];
+            //int S3=start[2],   e3=S3+count[2]*step[2];
             //int s1=start[0]+1; 
             //int s2=start[1];  
-            //int s3=start[2]; 
+            //int S3=start[2];
 
 
             npts =0;
