@@ -29,7 +29,7 @@
 #ifndef E_S3Names_H
 #define E_S3Names_H 1
 
-#define S3_NAME "S3"    // Used when the handler is added to the services registry
+#define S3_NAME "s3"    // Used when the handler is added to the services registry
 #define MODULE S3_NAME  // Used for BESDEBUG calls
 
 // These are text that can appear in a DMR++. This text is replaces with an actual
