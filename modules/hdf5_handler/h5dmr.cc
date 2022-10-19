@@ -327,7 +327,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,unordered_map<string, vector<string>>& varpath_to_dims)
+//bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,unordered_map<string, vector<string>>& varpath_to_dims)
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -435,7 +436,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                 }
 
                 try {
-                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,varpath_to_dims);
+                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info.varpath_to_dims);
                 }
                 catch(...) {
                     H5Dclose(dset_id);
@@ -467,6 +468,30 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
    
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
     map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
+
+    // For HDF-EOS5 files, We also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
+    if (is_eos5 && !use_dimscale) {
+
+        unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
+        vector<string> dim_names;
+        string par_grp_name = string(gname);
+        if (par_grp_name.size()>1)
+            par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
+cout <<"par_grp_name is "<<par_grp_name <<endl;
+        bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
+        if (is_eos5_dims) {
+            vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
+            D4Dimensions *d4_dims = par_grp->dims();
+            for (unsigned grp_dim_idx = 0; grp_dim_idx<dim_names.size();grp_dim_idx++) {
+                D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
+                if (d4_dim == nullptr) {
+                    d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
+                    d4_dims->add_dim_nocopy(d4_dim);
+                }
+            }
+        }
+
+    }
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
     // It only increases the dmr file size. So comment out for now.  KY 2022-10-13
 #if 0
@@ -564,7 +589,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,varpath_to_dims);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -616,7 +641,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, unordered_map<string, vector<string>>& varpath_to_dims)
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, const unordered_map<string, vector<string>>& varpath_to_dims)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
@@ -661,7 +686,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 //read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 void
 read_objects_base_type(D4Group * d4_grp,const string & varname,
-                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5,unordered_map<string, vector<string>>& varpath_to_dims)
+                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5,const unordered_map<string, vector<string>>& varpath_to_dims)
 {
 
     // Obtain the relative path of the variable name under the leaf group
@@ -768,10 +793,10 @@ for (const auto & dname:dim_names)
         BaseType* new_var = nullptr;
         try {
             if (is_eos5_dims) {
-vector<string>test_dim_path = varpath_to_dims[varname];
+vector<string>test_dim_path = varpath_to_dims.at(varname);
 for (const auto &td:test_dim_path)
 cout<<"dimpath final "<<td<<endl;
-                new_var = ar->h5dims_transform_to_dap4(d4_grp,varpath_to_dims[varname]);
+                new_var = ar->h5dims_transform_to_dap4(d4_grp,varpath_to_dims.at(varname));
             }
             else {
  for (const auto td:dt_inst.dimnames_path)
@@ -824,7 +849,7 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
 ///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
-                       const string & filename,hid_t dset_id,bool use_dimscale, bool is_eos5, unordered_map<string, vector<string>>& varpath_to_dims)
+                       const string & filename,hid_t dset_id,bool use_dimscale, bool is_eos5, const unordered_map<string, vector<string>>& varpath_to_dims)
 {
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
@@ -1630,11 +1655,11 @@ int get_strmetadata_num(const string & meta_str) {
     }
 }
 
-//void obtain_eos5_var_dims(hid_t fileid, unordered_map<string, vector<string>>& varpath_to_dims) {
-void obtain_eos5_var_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
+//void obtain_eos5_dims(hid_t fileid, unordered_map<string, vector<string>>& varpath_to_dims) {
+void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     unordered_map<string, vector<string>> varpath_to_dims;
-    unordered_map<string, vector<string>> grppath_to_dims;
+    unordered_map<string, vector<HE5Dim>> grppath_to_dims;
 
     string st_str = read_struct_metadata(fileid);
 //    cout <<"str_metadata is "<<str_metadata <<endl;
@@ -1692,14 +1717,17 @@ for (auto it:varpath_to_dims) {
        
 for (auto it:grppath_to_dims) {
     cout<<"grp path is "<<it.first <<endl; 
-    for (auto sit:it.second)
-        cout<<"grp dimension name is "<<sit <<endl; 
+    for (auto sit:it.second) {
+        cout<<"grp dimension name is "<<sit.name<<endl; 
+        cout<<"grp dimension size is "<<sit.size<<endl; 
+    }
 }   
 
 eos5_dim_info.varpath_to_dims = varpath_to_dims;
+eos5_dim_info.grppath_to_dims = grppath_to_dims;
 }
 
-void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, unordered_map<string, vector<string>>& grppath_to_dims, HE5_TYPE e5_type) {
+void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
 
     string eos_name_prefix = "/HDFEOS/";
     string eos5_grp_path;
@@ -1721,16 +1749,20 @@ void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, u
 
     for (const auto & eos5dim:dim_list) {
         cout << "EOS5 Dim Name=" << eos5dim.name << endl;
+        cout << "EOS5 Dim Size=" << eos5dim.size << endl;
     }
 
-    vector <string> grp_dimnames;
+    vector <HE5Dim> grp_dims;
     for (const auto &eos5dim:dim_list) {  
+        HE5Dim eos5_dimp;
         string new_eos5dim_name = eos5dim.name;
         string dim_fpath = eos5_grp_path +"/" + handle_string_special_characters(new_eos5dim_name);
-        grp_dimnames.push_back(dim_fpath); 
+        eos5_dimp.name = dim_fpath;
+        eos5_dimp.size = eos5dim.size;
+        grp_dims.push_back(eos5_dimp); 
     }
 
-    pair<string,vector<string>> gtod = make_pair(eos5_grp_path,grp_dimnames);
+    pair<string,vector<HE5Dim>> gtod = make_pair(eos5_grp_path,grp_dims);
     grppath_to_dims.insert(gtod);
 
           
@@ -1817,3 +1849,15 @@ bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<
     }
     return ret_value;
 } 
+
+bool obtain_eos5_grp_dim(const string & varname, const unordered_map<string, vector<HE5Dim>>& grppath_to_dims, vector<string> & dimnames) {
+
+    bool ret_value = false;
+    unordered_map<string,vector<HE5Dim>>::const_iterator vit = grppath_to_dims.find(varname);
+    if (vit != grppath_to_dims.end()){
+        for (auto sit:vit->second)
+            dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit.name));
+        ret_value = true;
+    }
+    return ret_value;
+}

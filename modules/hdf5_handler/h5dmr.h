@@ -79,8 +79,9 @@ enum class HE5_TYPE {SW,GD,ZA};
 
 typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
-    std::unordered_map<std::string,std::vector<std::string>> grppath_to_dims;
+    std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
 } eos5_dim_info_t;
+
 #if 0
 typedef struct {
     int varpath_to_dims;
@@ -88,11 +89,12 @@ typedef struct {
 } eos5_dim_info_t;
 #endif
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, std::unordered_map<std::string, std::vector<std::string>>& );
+bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, const eos5_dim_info_t & );
+//#bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, std::unordered_map<std::string, std::vector<std::string>>& );
 
-void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,std::unordered_map<std::string, std::vector<std::string>>&);
-void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, std::unordered_map<std::string, std::vector<std::string>>&);
-void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,const std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
 
 string get_hardlink_dmr(hid_t, const std::string &);
 void get_softlink(libdap::D4Group* par_grp, hid_t,  const std::string &, int,size_t);
@@ -107,9 +109,10 @@ void map_h5_varpath_to_dap4_attr(libdap::D4Group* d4g,libdap::BaseType* d4b,libd
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
 int get_strmetadata_num(const string & meta_str);
-void obtain_eos5_var_dims(hid_t fileid, eos5_dim_info_t &);
-//void obtain_eos5_var_dims(hid_t fileid, std::unordered_map<std::string, std::vector<std::string>>&);
+void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &);
+//void obtain_eos5_dims(hid_t fileid, std::unordered_map<std::string, std::vector<std::string>>&);
 void build_var_dim_path(const std::string & eos5_obj_name, std::vector<HE5Var> var_list, std::unordered_map<std::string, std::vector<std::string>>& varpath_to_dims, HE5_TYPE eos5_type, bool is_geo);
-void build_grp_dim_path(const std::string & eos5_obj_name, std::vector<HE5Dim> dim_list, std::unordered_map<std::string, std::vector<std::string>>& grppath_to_dims, HE5_TYPE eos5_type);
+void build_grp_dim_path(const std::string & eos5_obj_name, std::vector<HE5Dim> dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
+bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
 #endif
