@@ -6,6 +6,10 @@ m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
 AT_BESCMD_RESPONSE_TEST([s3/1A.GPM.GMI.V03B.h5.dmrpp.bescmd])
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([s3/1A.GPM.GMI.V03B.h5.dmrpp.dap.bescmd])
+
+AT_BESCMD_NETCDF_RESPONSE_TEST([s3/1A.GPM.GMI.V03B.h5.dmrpp.nc4.bescmd])
+
 
 # Test setting the NGAP Container - these tests don't include a <get> directive.
 # Only the container is set. jhrg 3/11/20
