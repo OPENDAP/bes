@@ -34,16 +34,23 @@
 
 namespace s3 {
 
-    class S3RequestHandler: public BESRequestHandler {
-    public:
-        S3RequestHandler(const std::string &name);
-        virtual ~S3RequestHandler(void);
+class S3RequestHandler : public BESRequestHandler {
 
-        virtual void dump(std::ostream &strm) const;
 
-        static bool S3_build_vers(BESDataHandlerInterface &dhi);
-        static bool S3_build_help(BESDataHandlerInterface &dhi);
-    };
+public:
+    explicit S3RequestHandler(const std::string &name);
+
+    ~S3RequestHandler() override = default;
+
+    void dump(std::ostream &strm) const override;
+
+    static bool S3_build_vers(BESDataHandlerInterface &dhi);
+
+    static bool S3_build_help(BESDataHandlerInterface &dhi);
+
+    // Key values
+    static bool d_inject_data_url;
+};
 
 } // namespace s3
 

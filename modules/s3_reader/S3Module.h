@@ -41,11 +41,11 @@ class S3Module : public BESAbstractModule {
 public:
     S3Module() = default;
 
-    ~S3Module() = default;
+    ~S3Module() override = default;
 
-    virtual void initialize(const std::string &modname);
+    void initialize(const std::string &modname) override;
 
-    virtual void terminate(const std::string &modname);
+    void terminate(const std::string &modname) override;
 
     void dump(std::ostream &strm) const override;
 };

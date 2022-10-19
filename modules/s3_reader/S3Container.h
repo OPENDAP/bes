@@ -43,29 +43,25 @@ namespace s3 {
  *
  * @see S3ContainerStorage
  */
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
 class S3Container: public BESContainer {
 
     http::RemoteResource *d_dmrpp_rresource = nullptr;
 
-    virtual void initialize();
-    bool inject_data_url();
-
-protected:
+    void initialize();
     void _duplicate(S3Container &copy_to);
 
 public:
     S3Container() : BESContainer() { }
     S3Container(const std::string &sym_name, const std::string &real_name, const std::string &type);
-    S3Container(const S3Container &copy_from);
 
-    static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
+    S3Container(const S3Container &copy_from) = delete;
+    S3Container& operator=(const S3Container& other) = delete;
 
     ~S3Container() override;
 
-    BESContainer * ptr_duplicate() override;
-
+    // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
+    BESContainer *ptr_duplicate() override;
     std::string access() override;
 
     bool release() override;
