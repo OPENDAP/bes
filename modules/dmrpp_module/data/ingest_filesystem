@@ -22,7 +22,7 @@
 #
 # You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #
-#data_root="/home/centos/hyrax/build/share/hyrax/S3/cloudydap";
+#data_root="/home/centos/hyrax/build/share/hyrax/s3/cloudydap";
 #target_dir="/home/centos/hyrax/build/share/hyrax/dmrpp_from_filesystem";
 data_root=`pwd`;
 target_dir=`pwd`;
@@ -32,7 +32,7 @@ target_dir=`pwd`;
 # TODO - can we make this read the conf file to get the regex info?
 dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
 
-# dmrpp_url_base="https://S3.amazonaws.com/cloudydap";
+# dmrpp_url_base="https://s3.amazonaws.com/cloudydap";
 
 ALL_FILES="./all_files.txt";
 DATA_FILES="./data_files.txt";

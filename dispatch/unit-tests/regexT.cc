@@ -212,9 +212,9 @@ public:
         test_regex_times(simple_regex, "The answer.", "the answer");
 
         // This is a complex regex.
-        string  s3_path_regex_str = R"(^https?:\/\/S3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
-        string test1 = "https://S3-us-east-1.amazonaws.com/aa.a/etc";
-        string test2 = "https://S3-us-west-1.amazonaws.com/aa.a/etc";
+        string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+        string test1 = "https://s3-us-east-1.amazonaws.com/aa.a/etc";
+        string test2 = "https://s3-us-west-1.amazonaws.com/aa.a/etc";
 
         DBG(cerr << "Using a complex regex:" << endl);
         test_regex_times(s3_path_regex_str, test1, test2);

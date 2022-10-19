@@ -157,7 +157,7 @@ namespace http {
             string expected_value;
             string value;
 
-            url = "https://ghrcw-protected.S3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+            url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
                   "A-userid=hyrax"
                   "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
                   "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
@@ -180,7 +180,7 @@ namespace http {
             CPPUNIT_ASSERT( value == expected_value );
 
             value = target_url.host();
-            expected_value = "ghrcw-protected.S3.us-west-2.amazonaws.com";
+            expected_value = "ghrcw-protected.s3.us-west-2.amazonaws.com";
             if(debug) cerr << prolog << "target_url.host(): " << value << " expected: " << expected_value << endl;
             CPPUNIT_ASSERT( value == expected_value );
 
@@ -256,7 +256,7 @@ namespace http {
             string expected_value;
             string value;
 
-            url = "https://d1sd4up8kynpk2.cloudfront.net/S3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+            url = "https://d1sd4up8kynpk2.cloudfront.net/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
                   "RequestId=yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ=="
                   "&Expires=1592946176";
 
@@ -273,7 +273,7 @@ namespace http {
             CPPUNIT_ASSERT( value == expected_value );
 
             value = target_url.path();
-            expected_value = "/S3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc";
+            expected_value = "/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc";
             if(debug) cerr << prolog << "target_url.path(): " << value << " expected: " << expected_value << endl;
             CPPUNIT_ASSERT( value == expected_value );
 

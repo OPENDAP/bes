@@ -234,17 +234,12 @@ void S3Container::dump(ostream &strm) const
         if (hdrs) {
             strm << endl;
             BESIndent::Indent();
-            for (auto &hdr: *hdrs) {
-                strm << BESIndent::LMarg << hdr << endl;
-            }
-#if 0
             vector<string>::const_iterator i = hdrs->begin();
             vector<string>::const_iterator e = hdrs->end();
             for (; i != e; i++) {
                 string hdr_line = (*i);
                 strm << BESIndent::LMarg << hdr_line << endl;
             }
-#endif
             BESIndent::UnIndent();
         }
         else {

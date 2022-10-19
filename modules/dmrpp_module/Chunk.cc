@@ -517,8 +517,8 @@ void Chunk::add_tracking_query_param() {
 
     // All S3 buckets, virtual host style URL
     // Simpler regex that's likely equivalent:
-    // ^https?:\/\/[a-z0-9]([-.a-z0-9]){1,61}[a-z0-9]\.S3[-.]us-(east|west)-[12])?\.amazonaws\.com\/.*$
-    string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.S3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
+    // ^https?:\/\/[a-z0-9]([-.a-z0-9]){1,61}[a-z0-9]\.s3[-.]us-(east|west)-[12])?\.amazonaws\.com\/.*$
+    string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
 
     BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
     int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
@@ -533,7 +533,7 @@ void Chunk::add_tracking_query_param() {
 
     if(!add_tracking){
         // All S3 buckets, path style URL
-        string  s3_path_regex_str = R"(^https?:\/\/S3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+        string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
         BESRegex s3_path_regex(s3_path_regex_str.c_str());
         match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().size());
         if(match_result>=0) {

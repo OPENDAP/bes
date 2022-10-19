@@ -1573,7 +1573,7 @@ function main() {
     # and if it is we adjust the INPUT_DATA_FILE and go out and get the
     # object from S3.
     local s3_granule=
-    if [[ "${INPUT_DATA_FILE}" =~ ^S3:\/\/.* ]]; then
+    if [[ "${INPUT_DATA_FILE}" =~ ^s3:\/\/.* ]]; then
         s3_granule="${INPUT_DATA_FILE}"
         echo "# Detected S3 URL as data input: ${s3_granule}" >&2
 
@@ -1597,7 +1597,7 @@ function main() {
 
         echo "# Copying S3 object to: ${s3_local_file}" >&2
 
-        aws S3 cp ${s3_granule} ${s3_local_file}
+        aws s3 cp ${s3_granule} ${s3_local_file}
         status=$?
         if test $status -ne 0; then
             echo "ERROR - Failed to acquire S3 object. (status: $status) Exiting..." >&2
@@ -1693,7 +1693,7 @@ function main() {
         s3_dmrpp="${s3_granule}.dmrpp"
         echo "# Uploading dmr++ file (${OUTPUT_FILE}) to: ${s3_dmrpp}" >&2
         set +e
-        aws S3 cp "${OUTPUT_FILE}" "${s3_dmrpp}"
+        aws s3 cp "${OUTPUT_FILE}" "${s3_dmrpp}"
         status=$?
         if test $status -ne 0; then
             echo "ERROR - Failed to upload ${s3_dmrpp} to S3. Exiting..." >&2
@@ -1703,7 +1703,7 @@ function main() {
         if test -n "${s3_local_side_car_missing_file}" && test -s "${s3_local_side_car_missing_file}"; then
             local s3_missing_file="${s3_granule}.missing"
             echo "# Uploading missing data file (${s3_local_side_car_missing_file}) to: ${s3_missing_file}" >&2
-            aws S3 cp "${s3_local_side_car_missing_file}" "${s3_missing_file}"
+            aws s3 cp "${s3_local_side_car_missing_file}" "${s3_missing_file}"
             status=$?
             if test $status != 0; then
                 echo "ERROR - Failed to upload ${s3_missing_file} to S3. Exiting..." >&2

@@ -240,7 +240,7 @@ namespace http {
 
                 string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f1"
                                     "6_ssmis_20040107v7.nc";
-                string eurl_str = "https://ghrcwuat-protected.S3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssm"
+                string eurl_str = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssm"
                                   "is_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=A"
                                   "SIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z"
                                   "&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1O"
@@ -331,8 +331,8 @@ namespace http {
                 EffectiveUrlCache::TheCache()->d_enabled = true;
 
                 shared_ptr<http::url> thing1(new http::url("https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc"));
-                string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/S3";
-                string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.S3.us-west-2.amazonaws.com/";
+                string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/";
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1->str() << endl;
                 auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
@@ -374,8 +374,8 @@ namespace http {
                 shared_ptr<http::url> thing1(
                         new http::url("https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
                                 "sds/staged/ATL03_20200714235814_03000802_003_01.h5"));
-                string thing1_out_of_region_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/S3";
-                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.S3.us-west-2.amazonaws.com/public/";
+                string thing1_out_of_region_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1->str() << endl;
                 auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);

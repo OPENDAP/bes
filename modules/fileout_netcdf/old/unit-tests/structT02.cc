@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
         Structure s1("s1");
         Structure s2("s2");
-        Structure s3("S3");
+        Structure s3("s3");
 
         Byte b("byte");
         b.set_value(28);
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
         BESDataHandlerInterface dhi;
         ofstream fstrm("./structT02.nc", ios::out | ios::trunc);
         dhi.set_output_stream(&fstrm);
-        dhi.data[POST_CONSTRAINT] = "s1.ui16,s1.s2.str,s1.s2.S3.i32";
+        dhi.data[POST_CONSTRAINT] = "s1.ui16,s1.s2.str,s1.s2.s3.i32";
 
         ConstraintEvaluator eval;
         send_data(dds, eval, dhi);

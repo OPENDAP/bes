@@ -35,8 +35,8 @@ jobs:
               sudo cp libdap-*.tar.gz $HOME/package
               sudo cp libdap-*.tar.gz $HOME/package/libdap-snapshot.tar.gz;
 
-          - name: upload to S3
-            run: aws S3 cp $HOME/package S3://opendap.github.actions.build --recursive
+          - name: upload to s3
+            run: aws s3 cp $HOME/package s3://opendap.github.actions.build --recursive
 
             env:
               AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ID }}

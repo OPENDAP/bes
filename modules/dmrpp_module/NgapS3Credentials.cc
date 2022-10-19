@@ -48,7 +48,7 @@ const string NgapS3Credentials::AWS_SESSION_TOKEN = "aws_session_token";
 const string NgapS3Credentials::AWS_TOKEN_EXPIRATION = "aws_token_expiration";
 const string NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY = "NGAP.S3.distribution.endpoint.url";
 const string NgapS3Credentials::BES_CONF_REFRESH_KEY = "NGAP.S3.refresh.margin";
-const string NgapS3Credentials::BES_CONF_URL_BASE = "NGAP.S3.url.base";
+const string NgapS3Credentials::BES_CONF_URL_BASE = "NGAP.s3.url.base";
 
 
 bool NgapS3Credentials::is_s3_cred() { return true; }

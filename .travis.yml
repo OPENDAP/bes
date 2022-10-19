@@ -79,7 +79,7 @@ env:
     - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-    - CMAC_URL="https://S3.amazonaws.com/cloudydap/"
+    - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
     - CMAC_REGION="us-east-1"
     - CMAC_BUCKET="cloudydap"
 
@@ -88,9 +88,9 @@ before_install:
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-  - aws S3 cp S3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
+  - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
-  - aws S3 cp S3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
+  - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
   - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
 
@@ -273,7 +273,7 @@ before_deploy:
 # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
   # Push all build results to our S3 bucket
-  - provider: S3
+  - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build

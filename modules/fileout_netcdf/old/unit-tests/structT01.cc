@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
         Structure s1("s1");
         Structure s2("s2");
-        Structure s3("S3");
+        Structure s3("s3");
 
         Byte b("byte");
         b.set_value(28);
