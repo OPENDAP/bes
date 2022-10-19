@@ -32,7 +32,7 @@
 #include "BESContainer.h"
 #include "RemoteResource.h"
 
-namespace S3 {
+namespace s3 {
 
 /** @brief Container representing a remote request
  *
@@ -69,6 +69,6 @@ public:
     void dump(std::ostream &strm) const override;
 };
 
-} // namespace S3
+} // namespace s3
 
 #endif // S3Container_h_

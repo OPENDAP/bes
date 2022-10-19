@@ -48,7 +48,7 @@
 
 using namespace std;
 
-namespace S3 {
+namespace s3 {
 
 void S3Container::_duplicate(S3Container &copy_to)
 {
@@ -68,7 +68,7 @@ void S3Container::initialize()
     BESDEBUG(MODULE, prolog << "type: " << get_container_type() << endl);
 
     if (get_container_type().empty())
-        set_container_type("S3");
+        set_container_type(S3_NAME);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -151,7 +151,7 @@ string S3Container::access()
 
     string type = get_container_type();
     // 'type' will be set below, just be the code returns. jhrg 10/18/22
-    if (type == "S3")
+    if (type == S3_NAME)
         type = "";
 
     if (!d_dmrpp_rresource) {
@@ -252,4 +252,4 @@ void S3Container::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-} // S3 namespace
+} // s3 namespace

@@ -5,4 +5,4 @@ BES.modules+=s3
 BES.module.s3=@bes_modules_dir@/libs3_module.so
 
 # Inject Data URLs into the dmr++ documents.
-S3.inject_data_urls=true
+s3.inject_data_urls=true

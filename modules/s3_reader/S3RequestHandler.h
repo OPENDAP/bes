@@ -32,7 +32,7 @@
 
 #include "BESRequestHandler.h"
 
-namespace S3 {
+namespace s3 {
 
 class S3RequestHandler : public BESRequestHandler {
 
@@ -52,6 +52,6 @@ public:
     static bool d_inject_data_url;
 };
 
-} // namespace S3
+} // namespace s3
 
 #endif // S3RequestHandler.h

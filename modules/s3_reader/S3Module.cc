@@ -37,11 +37,11 @@
 #include "S3ContainerStorage.h"
 
 using namespace std;
-using namespace S3;
+using namespace s3;
 
 void S3Module::initialize(const string &modname)
 {
-    BESDEBUG(modname, "Initializing S3 Module " << modname << endl);
+    BESDEBUG(modname, "Initializing s3 Module " << modname << endl);
 
     BESRequestHandlerList::TheList()->add_handler(modname, new S3RequestHandler(modname));
 
@@ -49,14 +49,14 @@ void S3Module::initialize(const string &modname)
 
     BESDebug::Register(modname);
 
-    BESDEBUG(modname, "Done Initializing S3 Module " << modname << endl);
+    BESDEBUG(modname, "Done Initializing s3 Module " << modname << endl);
 }
 
 void S3Module::terminate(const string &modname)
 {
-    BESDEBUG(modname, "Cleaning S3 module " << modname << endl);
+    BESDEBUG(modname, "Cleaning s3 module " << modname << endl);
 
-    BESDEBUG(modname, "Done Cleaning S3 module " << modname << endl);
+    BESDEBUG(modname, "Done Cleaning s3 module " << modname << endl);
 }
 
 void S3Module::dump(ostream &strm) const

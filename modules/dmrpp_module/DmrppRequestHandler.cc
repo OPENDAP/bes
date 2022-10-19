@@ -316,8 +316,10 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
  */
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
+#ifndef NDEBUG
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+#endif
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
