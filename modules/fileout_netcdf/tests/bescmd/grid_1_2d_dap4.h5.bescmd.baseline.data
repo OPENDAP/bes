@@ -1,0 +1,81 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex grid_1_2d.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"grid_1_2d.h5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: GeoGrid {
+      dimensions:
+      	XDim = 8 ;
+      	YDim = 4 ;
+
+      group: Data_Fields {
+        variables:
+        	float temperature(YDim, XDim) ;
+        		temperature:units = "K" ;
+        		temperature:fullnamepath = "/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature" ;
+        data:
+
+         temperature =
+  10, 10, 10, 10, 10, 10, 10, 10,
+  11, 11, 11, 11, 11, 11, 11, 11,
+  12, 12, 12, 12, 12, 12, 12, 12,
+  13, 13, 13, 13, 13, 13, 13, 13 ;
+        } // group Data_Fields
+      } // group GeoGrid
+    } // group GRIDS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.13" ;
+  data:
+
+   StructMetadata_0 = "GROUP=SwathStructure\n",
+    "END_GROUP=SwathStructure\n",
+    "GROUP=GridStructure\n",
+    "\tGROUP=GRID_1\n",
+    "\t\tGridName=\"GeoGrid\"\n",
+    "\t\tXDim=8\n",
+    "\t\tYDim=4\n",
+    "\t\tUpperLeftPointMtrs=(0.000000,4000000.000000)\n",
+    "\t\tLowerRightMtrs=(8000000.000000,0.000000)\n",
+    "\t\tProjection=HE5_GCTP_GEO\n",
+    "\t\tGROUP=Dimension\n",
+    "\t\tEND_GROUP=Dimension\n",
+    "\t\tGROUP=DataField\n",
+    "\t\t\tOBJECT=DataField_1\n",
+    "\t\t\t\tDataFieldName=\"temperature\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\t\tMaxdimList=(\"YDim\",\"XDim\")\n",
+    "\t\t\tEND_OBJECT=DataField_1\n",
+    "\t\tEND_GROUP=DataField\n",
+    "\t\tGROUP=MergedFields\n",
+    "\t\tEND_GROUP=MergedFields\n",
+    "\tEND_GROUP=GRID_1\n",
+    "END_GROUP=GridStructure\n",
+    "GROUP=PointStructure\n",
+    "END_GROUP=PointStructure\n",
+    "GROUP=ZaStructure\n",
+    "END_GROUP=ZaStructure\n",
+    "END\n",
+    "" ;
+  } // group HDFEOS_INFORMATION
+}

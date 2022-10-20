@@ -477,7 +477,9 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
         string par_grp_name = string(gname);
         if (par_grp_name.size()>1)
             par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
+#if 0
 cout <<"par_grp_name is "<<par_grp_name <<endl;
+#endif
         bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
         if (is_eos5_dims) {
             vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
@@ -773,9 +775,11 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             // We search if there are dimension names. If yes, add them here.
             vector<string> dim_names;
             is_eos5_dims = obtain_eos5_dim(varname,varpath_to_dims,dim_names);
+#if 0
 cout<<"final varname is "<<varname <<endl;
 for (const auto & dname:dim_names)
     cout<<"dname is "<<dname<<endl;
+#endif
             
                        
             // For DAP4, no need to add dimension if no dimension name
@@ -793,14 +797,18 @@ for (const auto & dname:dim_names)
         BaseType* new_var = nullptr;
         try {
             if (is_eos5_dims) {
+#if 0
 vector<string>test_dim_path = varpath_to_dims.at(varname);
 for (const auto &td:test_dim_path)
 cout<<"dimpath final "<<td<<endl;
+#endif
                 new_var = ar->h5dims_transform_to_dap4(d4_grp,varpath_to_dims.at(varname));
             }
             else {
+#if 0
  for (const auto td:dt_inst.dimnames_path)
 cout<<"dimpath final non-eos5 "<<td<<endl;
+#endif
                 new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
             }
         }
@@ -1709,6 +1717,20 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     for (const auto &sw:p.swath_list) 
       build_var_dim_path(sw.name,sw.geo_var_list,varpath_to_dims,HE5_TYPE::SW,true);
 
+    for (const auto &gd:p.grid_list) 
+      build_grp_dim_path(gd.name,gd.dim_list,grppath_to_dims,HE5_TYPE::GD);
+
+    for (const auto &gd:p.grid_list) 
+      build_var_dim_path(gd.name,gd.data_var_list,varpath_to_dims,HE5_TYPE::GD,false);
+
+    for (const auto &za:p.za_list) 
+      build_grp_dim_path(za.name,za.dim_list,grppath_to_dims,HE5_TYPE::ZA);
+
+    for (const auto &za:p.za_list) 
+      build_var_dim_path(za.name,za.data_var_list,varpath_to_dims,HE5_TYPE::ZA,false);
+
+
+#if 0
 for (auto it:varpath_to_dims) {
     cout<<"var path is "<<it.first <<endl; 
     for (auto sit:it.second)
@@ -1722,9 +1744,10 @@ for (auto it:grppath_to_dims) {
         cout<<"grp dimension size is "<<sit.size<<endl; 
     }
 }   
+#endif 
 
-eos5_dim_info.varpath_to_dims = varpath_to_dims;
-eos5_dim_info.grppath_to_dims = grppath_to_dims;
+    eos5_dim_info.varpath_to_dims = varpath_to_dims;
+    eos5_dim_info.grppath_to_dims = grppath_to_dims;
 }
 
 void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
@@ -1747,10 +1770,12 @@ void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, u
             break;
     }
 
+#if 0
     for (const auto & eos5dim:dim_list) {
         cout << "EOS5 Dim Name=" << eos5dim.name << endl;
         cout << "EOS5 Dim Size=" << eos5dim.size << endl;
     }
+#endif
 
     vector <HE5Dim> grp_dims;
     for (const auto &eos5dim:dim_list) {  
@@ -1791,7 +1816,9 @@ void build_var_dim_path(const string & eos5_obj_name, vector<HE5Var> var_list, u
     }
 
     for (const auto & eos5var:var_list) {
+#if 0
         cout << "EOS5 Var Name=" << eos5var.name << endl;
+#endif
         string var_path;
         vector<string> var_dim_names;
 
@@ -1821,11 +1848,12 @@ void build_var_dim_path(const string & eos5_obj_name, vector<HE5Var> var_list, u
                 break;
         }
 
-
+#if 0
 cout <<"var_path is "<<var_path <<endl;
         for (const auto &eos5dim:eos5var.dim_list)  {
             cout << "EOS Var Dim Name=" << eos5dim.name << endl;
         }
+#endif
         for (const auto &eos5dim:eos5var.dim_list) {  
             string new_eos5dim_name = eos5dim.name;
             string dim_fpath = eos5_dim_name_prefix + handle_string_special_characters(new_eos5dim_name);

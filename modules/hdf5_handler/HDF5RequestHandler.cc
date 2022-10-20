@@ -1516,8 +1516,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     use_dimscale = check_dimscale(fileid);
 
                 eos5_dim_info_t eos5_dim_info;
-                if (is_eos5 && !use_dimscale) 
+                if (is_eos5 && !use_dimscale)  
                     obtain_eos5_dims(fileid,eos5_dim_info);
+
                     //obtain_eos5_dims(fileid,eos5_var_dims);
                 unordered_map<string,vector<string>> eos5_var_dims = eos5_dim_info.varpath_to_dims;
 //unordered_map<string,vector<string>> eos5_grp_dims = eos5_dim_info.grppath_to_dims;
