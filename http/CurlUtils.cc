@@ -1289,8 +1289,6 @@ void clear_cookies() {
  * @param target_url The URL to be examined
  * @return True if the target_url does not match a no retry regex, false if the entire target_url matches
  * a "no retry" regex.
- *
- * @todo If these regexes are complex, they will take a significant amount of time to compile. Fix.
  */
 bool is_retryable(std::string target_url) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -1302,6 +1300,8 @@ bool is_retryable(std::string target_url) {
     if (found) {
         vector<string>::iterator it;
         for (it = nr_regexs.begin(); it != nr_regexs.end() && retryable; it++) {
+            // FIXME TODO If this 'list of regexes' is going to be used, it should be compiled once.
+            //  Compilation of regexes is expensive. jhrg 10/20/22
             BESRegex no_retry_regex((*it).c_str(), (*it).size());
             size_t match_length;
             match_length = no_retry_regex.match(target_url.c_str(), target_url.size(), 0);

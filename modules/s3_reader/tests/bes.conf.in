@@ -25,15 +25,15 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.dmrpp(\.gz|\.bz2|\.Z)?$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.UncompressCache.dir=/tmp/hy
-BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.dir=@abs_top_srcdir@/modules/s3_reader/tests/cache
+BES.UncompressCache.prefix=un_
 BES.UncompressCache.size=500
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
 Http.MimeTypes+=h5:application/x-hdf5
 
-Http.Cache.dir=/tmp/hy
+Http.Cache.dir=@abs_top_srcdir@/modules/s3_reader/tests/cache
 Http.Cache.prefix=s3_
 Http.Cache.size=500
 
@@ -47,6 +47,8 @@ Http.Cache.size=500
 S3.inject_data_urls=true
 
 AllowedHosts = ^https?://localhost:8080/.*$
-AllowedHosts+= ^https?://test.opendap.org/.*$
+AllowedHosts += ^https?://test.opendap.org/.*$
 
-CredentialsManager.config = ENV_CREDS
+# For this to work with the DMR++ documents, we will have to modify the
+# RemoteResource code in the http library. jhrg 10/20/22
+# CredentialsManager.config = ENV_CREDS

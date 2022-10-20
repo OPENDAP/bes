@@ -414,7 +414,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     env_id.assign(        get_env_value(CredentialsManager::ENV_ID_KEY));
     env_access_key.assign(get_env_value(CredentialsManager::ENV_ACCESS_KEY));
     env_region.assign(    get_env_value(CredentialsManager::ENV_REGION_KEY));
-    //env_bucket.assign(    get_env_value(CredentialsManager::ENV_BUCKET_KEY));
+    // TODO Remove env_bucket.assign(    get_env_value(CredentialsManager::ENV_BUCKET_KEY));
     env_url.assign(       get_env_value(CredentialsManager::ENV_URL_KEY));
 
     if(env_url.size() &&
