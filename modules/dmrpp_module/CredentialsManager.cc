@@ -53,7 +53,9 @@ using namespace std;
 const char *CredentialsManager::ENV_ID_KEY     = "CMAC_ID";
 const char *CredentialsManager::ENV_ACCESS_KEY = "CMAC_ACCESS_KEY";
 const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
+#if 0
 const char *CredentialsManager::ENV_BUCKET_KEY = "CMAC_BUCKET";
+#endif
 const char *CredentialsManager::ENV_URL_KEY    = "CMAC_URL";
 
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
@@ -304,9 +306,9 @@ void CredentialsManager::load_credentials( ) {
             theCM()->add(url,accessCredentials);
         }
         // Environment injected credentials override all other configuration credentials.
-        // Since the value of CATALOG_MANAGER_CREDENTIALS is  ENV_CREDS_VALUE there is no
-        // Configuration file identified, so wether or not valid credentials information was
-        // found in the ENV we simply return.
+        // Since the value of CATALOG_MANAGER_CREDENTIALS is ENV_CREDS_VALUE, there is no
+        // configuration file identified, so we simply return regardless of whether valid
+        // credential information was found in the ENV.
         return;
     }
 

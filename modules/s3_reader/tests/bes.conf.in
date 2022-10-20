@@ -48,3 +48,5 @@ S3.inject_data_urls=true
 
 AllowedHosts = ^https?://localhost:8080/.*$
 AllowedHosts+= ^https?://test.opendap.org/.*$
+
+CredentialsManager.config = ENV_CREDS
