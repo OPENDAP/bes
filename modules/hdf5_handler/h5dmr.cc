@@ -63,6 +63,10 @@
 #include "HDF5CFUtil.h"
 #include "h5dmr.h"
 
+#include "he5dds.tab.hh"
+#include "HE5Parser.h"
+#include "HE5Checker.h"
+
 using namespace std;
 using namespace libdap;
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
@@ -71,6 +75,13 @@ HDF5PathFinder obj_paths;
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
+
+struct yy_buffer_state;
+
+yy_buffer_state *he5dds_scan_string(const char *str);
+int he5ddsparse(HE5Parser *he5parser);
+int he5ddslex_destroy();
+
 
 #if 0
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -316,7 +327,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls )
+//bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,unordered_map<string, vector<string>>& varpath_to_dims)
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -424,7 +436,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                 }
 
                 try {
-                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5);
+                    read_objects(par_grp, full_path_name, fname,dset_id,use_dimscale,is_eos5,eos5_dim_info.varpath_to_dims);
                 }
                 catch(...) {
                     H5Dclose(dset_id);
@@ -456,6 +468,32 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
    
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
     map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
+
+    // For HDF-EOS5 files, We also need to add DAP4 dimensions to this group if there are HDF-EOS5 dimensions.
+    if (is_eos5 && !use_dimscale) {
+
+        unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
+        vector<string> dim_names;
+        auto par_grp_name = string(gname);
+        if (par_grp_name.size()>1)
+            par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
+#if 0
+cout <<"par_grp_name is "<<par_grp_name <<endl;
+#endif
+        bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
+        if (is_eos5_dims) {
+            vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
+            D4Dimensions *d4_dims = par_grp->dims();
+            for (unsigned grp_dim_idx = 0; grp_dim_idx<dim_names.size();grp_dim_idx++) {
+                D4Dimension *d4_dim = d4_dims->find_dim(dim_names[grp_dim_idx]);
+                if (d4_dim == nullptr) {
+                    d4_dim = new D4Dimension(dim_names[grp_dim_idx],grp_eos5_dim[grp_dim_idx].size);
+                    d4_dims->add_dim_nocopy(d4_dim);
+                }
+            }
+        }
+
+    }
     // The fullnamepath of the group is not necessary since dmrpp only needs the dataset path to retrieve info.
     // It only increases the dmr file size. So comment out for now.  KY 2022-10-13
 #if 0
@@ -553,7 +591,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -605,13 +643,16 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 /////////////////////////////////////////////////////////////////////////////////
 //
 void
-read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5)
+read_objects( D4Group * d4_grp, const string &varname, const string &filename, const hid_t dset_id,bool use_dimscale, bool is_eos5, const unordered_map<string, vector<string>>& varpath_to_dims)
 {
 
     switch (H5Tget_class(dt_inst.type)) {
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
+#if 0
+        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5,varpath_to_dims);
+#endif
         read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5);
         break;
 
@@ -620,7 +661,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
         throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
     
     default:
-        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5);
+        read_objects_base_type(d4_grp,varname, filename,dset_id,use_dimscale,is_eos5,varpath_to_dims);
         break;
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
@@ -650,7 +691,7 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 //read_objects_base_type(DMR & dmr, D4Group * d4_grp,const string & varname,
 void
 read_objects_base_type(D4Group * d4_grp,const string & varname,
-                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5)
+                       const string & filename,hid_t dset_id, bool use_dimscale, bool is_eos5,const unordered_map<string, vector<string>>& varpath_to_dims)
 {
 
     // Obtain the relative path of the variable name under the leaf group
@@ -720,6 +761,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 //cerr<<"ndims is "<<dt_inst.ndims <<endl;
 #endif
             
+        bool is_eos5_dims = false;
         if(dimnames_size ==dt_inst.ndims) {
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
@@ -732,15 +774,46 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
             dt_inst.dimnames.clear();
         }
         else {
+            // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
+            // We search if there are dimension names. If yes, add them here.
+            vector<string> dim_names;
+            is_eos5_dims = obtain_eos5_dim(varname,varpath_to_dims,dim_names);
+#if 0
+cout<<"final varname is "<<varname <<endl;
+for (const auto & dname:dim_names)
+    cout<<"dname is "<<dname<<endl;
+#endif
+            
+                       
             // For DAP4, no need to add dimension if no dimension name
+            if (is_eos5_dims) {
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
+                    ar->append_dim(dt_inst.size[dim_index],dim_names[dim_index]);
+            }
+            else {
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
                 ar->append_dim(dt_inst.size[dim_index]); 
+            }
         }
 
         // We need to transform dimension info. to DAP4 group
         BaseType* new_var = nullptr;
         try {
-            new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+            if (is_eos5_dims) {
+#if 0
+vector<string>test_dim_path = varpath_to_dims.at(varname);
+for (const auto &td:test_dim_path)
+cout<<"dimpath final "<<td<<endl;
+#endif
+                new_var = ar->h5dims_transform_to_dap4(d4_grp,varpath_to_dims.at(varname));
+            }
+            else {
+#if 0
+ for (const auto td:dt_inst.dimnames_path)
+cout<<"dimpath final non-eos5 "<<td<<endl;
+#endif
+                new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+            }
         }
         catch(...) {
             delete ar;
@@ -787,7 +860,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
 ///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
-                       const string & filename,hid_t dset_id,bool use_dimscale, bool is_eos5)
+                       const string & filename,hid_t dset_id,bool use_dimscale,bool is_eos5)
 {
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
@@ -799,11 +872,12 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
     }
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
-
+    
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);
 
+    // TODO: compound datatype should not be used by HDF-EOS5. Still we may add those support.
     try {
         BESDEBUG("h5", "=read_objects_structure(): Dimension is " 
             << dt_inst.ndims << endl);
@@ -1277,4 +1351,544 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
         return "";
     }
 
+}
+
+string read_struct_metadata(hid_t s_file_id) {
+
+    BESDEBUG("h5","Coming to read_struct_metadata()  "<<endl);
+    
+    string total_strmeta_value;
+    string ecs_group = "/HDFEOS INFORMATION";
+    hid_t ecs_grp_id = -1;
+    if ((ecs_grp_id = H5Gopen(s_file_id, ecs_group.c_str(),H5P_DEFAULT))<0) {
+        string msg =
+            "h5_ecs_meta: unable to open the HDF5 group  ";
+        msg +=ecs_group;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    H5G_info_t g_info;
+    hsize_t nelems = 0;
+
+    if (H5Gget_info(ecs_grp_id,&g_info) <0) {
+       string msg =
+            "h5_ecs_meta: unable to obtain the HDF5 group info. for ";
+        msg +=ecs_group;
+        H5Gclose(ecs_grp_id);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    nelems = g_info.nlinks;
+
+    ssize_t oname_size      = 0;
+
+    // Initalize the total number for different metadata.
+    int strmeta_num         = -1;
+    int strmeta_num_total   = 0;
+        
+    bool strmeta_no_suffix  = true;
+
+    // Define a vector of string to hold all dataset names.
+    vector<string> s_oname(nelems);
+
+    // Define an EOSMetadata array that can describe the metadata type for each object
+    // We initialize the value to OtherMeta.
+    vector<bool> smetatype(nelems,false);
+
+    for (hsize_t i = 0; i < nelems; i++) {
+
+        // Query the length of the object name.
+        oname_size =
+            H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
+                0, H5P_DEFAULT); 
+        if (oname_size <= 0) {
+            string msg = "hdf5 object name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the name of the object.
+        vector<char> oname(oname_size + 1);
+        if (H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),
+                (size_t)(oname_size+1), H5P_DEFAULT)<0){
+            string msg = "hdf5 object name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Check if this object is an HDF5 dataset, not, throw an error.
+        // First, check if it is the hard link or the soft link
+        H5L_info_t linfo;
+        if (H5Lget_info(ecs_grp_id,oname.data(),&linfo,H5P_DEFAULT)<0) {
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // This is the soft link.
+        if (linfo.type == H5L_TYPE_SOFT){
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the object type
+        H5O_info_t oinfo;
+        if (H5OGET_INFO_BY_IDX(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+                              i, &oinfo, H5P_DEFAULT)<0) {
+            string msg = "Cannot obtain the object info ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        if(oinfo.type != H5O_TYPE_DATASET) {
+            string msg = "hdf5 link name error from: ";
+            msg += ecs_group;
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+ 
+        // We want to remove the last '\0' character added by C .
+        string s_one_oname(oname.begin(),oname.end()-1);
+        s_oname[i] = s_one_oname;
+
+        // Calculate how many elements we have for each category(StructMetadata, CoreMetadata, etc.)
+        if (((s_one_oname.find("StructMetadata"))==0) ||
+           ((s_one_oname.find("structmetadata"))==0)){
+
+            smetatype[i] = true;
+
+            // Do we have suffix for the metadata?
+            // If this metadata doesn't have any suffix, it should only come to this loop once.
+            // That's why, when checking the first time, no_suffix is always true.
+            // If we have already found that it doesn't have any suffix,
+            // it should not go into this loop. throw an error.
+            if (false == strmeta_no_suffix) {
+                string msg = "StructMetadata/structmetadata without suffix should only appear once. ";
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            else if(strmeta_num_total >0) 
+                strmeta_num_total++;
+            else { // either no suffix or the first time to loop the one having the suffix.   
+                if ((0 == s_one_oname.compare("StructMetadata"))||
+                    (0 == s_one_oname.compare("structmetadata")))
+                    strmeta_no_suffix = false;
+                else strmeta_num_total++;
+            }
+#if 0
+"h5","strmeta_num_total= "<<strmeta_num_total <<endl;
+if(strmeta_no_suffix) "h5","structmeta data has the suffix" <<endl;
+else "h5","structmeta data doesn't have the suffix" <<endl;
+#endif
+        }
+
+        oname.clear();
+        s_one_oname.clear();
+
+    }
+
+    // Define a vector of string to hold StructMetadata.
+    // StructMetadata must exist for a valid HDF-EOS5 file.
+    vector<string> strmeta_value;
+    if (strmeta_num_total <= 0) {
+        string msg = "hdf5 object name error from: ";
+        H5Gclose(ecs_grp_id);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+    else {
+        strmeta_value.resize(strmeta_num_total);
+        for (int i = 0; i < strmeta_num_total; i++) 
+            strmeta_value[i]="";
+    }
+
+
+    // Now we want to retrieve the metadata value and combine them into one string.
+    // Here we have to remember the location of every element of the metadata if
+    // this metadata has a suffix.
+    for (hsize_t i = 0; i < nelems; i++) {
+
+         // DDS parser only needs to parse the struct Metadata. So check
+        // if st_only flag is true, will only read StructMetadata string.
+        // Struct Metadata is generated by the HDF-EOS5 library, so the
+        // name "StructMetadata.??" won't change for real struct metadata. 
+        //However, we still assume that somebody may not use the HDF-EOS5
+        // library to add StructMetadata, the name may be "structmetadata".
+        if (((s_oname[i].find("StructMetadata"))!=0) && 
+            ((s_oname[i].find("structmetadata"))!=0)){
+            continue; 
+        }
+        
+        // Open the dataset, dataspace, datatype, number of elements etc. for this metadata
+        hid_t s_dset_id      = -1;
+        hid_t s_space_id     = -1;
+        hid_t s_ty_id        = -1;      
+        hssize_t s_nelms     = -1;
+        size_t dtype_size    = -1;
+
+        if ((s_dset_id = H5Dopen(ecs_grp_id,s_oname[i].c_str(),H5P_DEFAULT))<0){
+            string msg = "Cannot open HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        if ((s_space_id = H5Dget_space(s_dset_id))<0) {
+            string msg = "Cannot open the data space of HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Dclose(s_dset_id);
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        if ((s_ty_id = H5Dget_type(s_dset_id)) < 0) {
+            string msg = "Cannot get the data type of HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Sclose(s_space_id);
+            H5Dclose(s_dset_id);
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
+            string msg = "Cannot get the number of points of HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Tclose(s_ty_id);
+            H5Sclose(s_space_id);
+            H5Dclose(s_dset_id);
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+        if ((dtype_size = H5Tget_size(s_ty_id))==0) {
+
+            string msg = "Cannot get the data type size of HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Tclose(s_ty_id);
+            H5Sclose(s_space_id);
+            H5Dclose(s_dset_id);
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Obtain the real value of the metadata
+        vector<char> s_buf(dtype_size*s_nelms +1);
+
+        if ((H5Dread(s_dset_id,s_ty_id,H5S_ALL,H5S_ALL,H5P_DEFAULT,s_buf.data()))<0) {
+
+            string msg = "Cannot read HDF5 dataset  ";
+            msg += s_oname[i];
+            H5Tclose(s_ty_id);
+            H5Sclose(s_space_id);
+            H5Dclose(s_dset_id);
+            H5Gclose(ecs_grp_id);
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        // Now we can safely close datatype, data space and dataset IDs.
+        H5Tclose(s_ty_id);
+        H5Sclose(s_space_id);
+        H5Dclose(s_dset_id);
+
+
+        // Convert from the vector<char> to a C++ string.
+        string tempstr(s_buf.begin(),s_buf.end());
+        s_buf.clear();
+        size_t temp_null_pos = tempstr.find_first_of('\0');
+
+        // temp_null_pos returns the position of nullptr,which is the last character of the string. 
+        // so the length of string before null is EQUAL to
+        // temp_null_pos since pos starts at 0.
+        string finstr = tempstr.substr(0,temp_null_pos);
+
+        // For the DDS parser, only return StructMetadata
+        if (true == smetatype[i]) {
+
+            // Now obtain the corresponding value in integer type for the suffix. '0' to 0 etc. 
+            try {
+                strmeta_num = get_strmetadata_num(s_oname[i]);
+            }
+            catch(...) {
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
+
+            }
+            // This is probably not necessary, since structmetadata may always have a suffix.           
+            // Leave here just in case the rules change or a special non-HDF-EOS5 library generated file.
+            // when strmeta_num is -1, it means no suffix for this metadata. So the total structmetadata
+            // is this string only.
+            if (-1 == strmeta_num) 
+                total_strmeta_value = finstr;
+            // strmeta_value at this point should be empty before assigning any values.
+            else if (strmeta_value[strmeta_num]!="") {
+                string msg = "The structmeta value array at this index should be empty string  ";
+                H5Gclose(ecs_grp_id);
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+            // assign the string vector to this value.
+            else 
+                strmeta_value[strmeta_num] = finstr;
+        }
+        tempstr.clear();
+        finstr.clear();
+    }
+
+
+    // Now we need to handle the concatenation of the metadata
+    if ((strmeta_num_total > 0) && (strmeta_num != -1) ) {
+        // The no suffix one has been taken care.
+        for (int i = 0; i <strmeta_num_total; i++) 
+            total_strmeta_value +=strmeta_value[i];
+    }
+
+    return total_strmeta_value;
+}
+
+// Helper function for read_ecs_metadata. Get the number after metadata.
+int get_strmetadata_num(const string & meta_str) {
+
+    size_t dot_pos = meta_str.find(".");
+    if (dot_pos == string::npos) // No dot
+        return -1;
+    else { 
+        string num_str = meta_str.substr(dot_pos+1);
+        stringstream ssnum(num_str);
+        int num;
+        ssnum >> num;
+        if (ssnum.fail()) 
+            throw InternalErr(__FILE__,__LINE__,"Suffix after dots is not a number.");
+        return num;
+    }
+}
+
+void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
+
+    unordered_map<string, vector<string>> varpath_to_dims;
+    unordered_map<string, vector<HE5Dim>> grppath_to_dims;
+
+    string st_str = read_struct_metadata(fileid);
+    
+    // Parse the structmetadata
+    HE5Parser p;
+    HE5Checker c;
+    he5dds_scan_string(st_str.c_str());
+    he5ddsparse(&p);
+    he5ddslex_destroy();
+
+    // Retrieve ProjParams from StructMetadata
+    p.add_projparams(st_str);
+#if 0
+    p.print();
+#endif
+
+    // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
+    if (c.check_grids_unknown_parameters(&p)) {
+        throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+    }
+
+    if (c.check_grids_missing_projcode(&p)) {
+        throw InternalErr("The HDF-EOS5 is missing project code ");
+    }
+
+    // We gradually add the support of different projection codes
+    if (c.check_grids_support_projcode(&p)) {
+        throw InternalErr("The current project code is not supported");
+    }
+
+    // HDF-EOS5 provides default pixel and origin values if they are not defined.
+    c.set_grids_missing_pixreg_orig(&p);
+
+    // HDF-EOS5 provides default pixel and origin values if they are not defined.
+    c.set_grids_missing_pixreg_orig(&p);
+
+    // Check if this multi-grid file shares the same grid.
+    // TODO: NEED TO check if the following function needs to be called 
+    //       when handling the HDF-EOS5 grid.
+#if 0
+    bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
+#endif
+
+    for (const auto &sw:p.swath_list) 
+      build_grp_dim_path(sw.name,sw.dim_list,grppath_to_dims,HE5_TYPE::SW);
+
+    for (const auto &sw:p.swath_list) 
+      build_var_dim_path(sw.name,sw.data_var_list,varpath_to_dims,HE5_TYPE::SW,false);
+
+    for (const auto &sw:p.swath_list) 
+      build_var_dim_path(sw.name,sw.geo_var_list,varpath_to_dims,HE5_TYPE::SW,true);
+
+    for (const auto &gd:p.grid_list) 
+      build_grp_dim_path(gd.name,gd.dim_list,grppath_to_dims,HE5_TYPE::GD);
+
+    for (const auto &gd:p.grid_list) 
+      build_var_dim_path(gd.name,gd.data_var_list,varpath_to_dims,HE5_TYPE::GD,false);
+
+    for (const auto &za:p.za_list) 
+      build_grp_dim_path(za.name,za.dim_list,grppath_to_dims,HE5_TYPE::ZA);
+
+    for (const auto &za:p.za_list) 
+      build_var_dim_path(za.name,za.data_var_list,varpath_to_dims,HE5_TYPE::ZA,false);
+
+
+#if 0
+for (auto it:varpath_to_dims) {
+    cout<<"var path is "<<it.first <<endl; 
+    for (auto sit:it.second)
+        cout<<"var dimension name is "<<sit <<endl; 
+}
+       
+for (auto it:grppath_to_dims) {
+    cout<<"grp path is "<<it.first <<endl; 
+    for (auto sit:it.second) {
+        cout<<"grp dimension name is "<<sit.name<<endl; 
+        cout<<"grp dimension size is "<<sit.size<<endl; 
+    }
+}   
+#endif 
+
+    eos5_dim_info.varpath_to_dims = varpath_to_dims;
+    eos5_dim_info.grppath_to_dims = grppath_to_dims;
+}
+
+void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
+
+    string eos_name_prefix = "/HDFEOS/";
+    string eos5_grp_path;
+    string new_eos5_obj_name = eos5_obj_name;
+
+    switch (e5_type) {  
+       case HE5_TYPE::SW: 
+            eos5_grp_path = eos_name_prefix + "SWATHS/"+handle_string_special_characters(new_eos5_obj_name);      
+            break;
+       case HE5_TYPE::GD: 
+            eos5_grp_path = eos_name_prefix + "GRIDS/"+handle_string_special_characters(new_eos5_obj_name);      
+            break;
+       case HE5_TYPE::ZA: 
+            eos5_grp_path = eos_name_prefix + "ZAS/"+handle_string_special_characters(new_eos5_obj_name);      
+            break;
+       default:
+            break;
+    }
+
+#if 0
+    for (const auto & eos5dim:dim_list) {
+        cout << "EOS5 Dim Name=" << eos5dim.name << endl;
+        cout << "EOS5 Dim Size=" << eos5dim.size << endl;
+    }
+#endif
+
+    vector <HE5Dim> grp_dims;
+    for (const auto &eos5dim:dim_list) {  
+        HE5Dim eos5_dimp;
+        string new_eos5dim_name = eos5dim.name;
+        string dim_fpath = eos5_grp_path +"/" + handle_string_special_characters(new_eos5dim_name);
+        eos5_dimp.name = dim_fpath;
+        eos5_dimp.size = eos5dim.size;
+        grp_dims.push_back(eos5_dimp); 
+    }
+
+    pair<string,vector<HE5Dim>> gtod = make_pair(eos5_grp_path,grp_dims);
+    grppath_to_dims.insert(gtod);
+
+          
+}
+
+void build_var_dim_path(const string & eos5_obj_name, const vector<HE5Var>& var_list, unordered_map<string, vector<string>>& varpath_to_dims, HE5_TYPE e5_type, bool is_geo) {
+
+    string eos_name_prefix = "/HDFEOS/";
+    string eos5_data_grp_name = "/Data Fields/";
+    string eos5_geo_grp_name = "/Geolocation Fields/";
+    string eos5_dim_name_prefix;
+    string new_eos5_obj_name = eos5_obj_name;
+
+    switch (e5_type) {  
+       case HE5_TYPE::SW: 
+            eos5_dim_name_prefix = eos_name_prefix + "SWATHS/"+handle_string_special_characters(new_eos5_obj_name) +"/";      
+            break;
+       case HE5_TYPE::GD: 
+            eos5_dim_name_prefix = eos_name_prefix + "GRIDS/"+handle_string_special_characters(new_eos5_obj_name) +"/";      
+            break;
+       case HE5_TYPE::ZA: 
+            eos5_dim_name_prefix = eos_name_prefix + "ZAS/"+handle_string_special_characters(new_eos5_obj_name) +"/";      
+            break;
+       default:
+            break;
+    }
+
+    for (const auto & eos5var:var_list) {
+#if 0
+        cout << "EOS5 Var Name=" << eos5var.name << endl;
+#endif
+        string var_path;
+        vector<string> var_dim_names;
+
+        switch (e5_type) {  
+
+            case HE5_TYPE::SW: 
+            {
+                if (is_geo) 
+                    var_path = eos_name_prefix + "SWATHS/"+eos5_obj_name + eos5_geo_grp_name + eos5var.name;
+                else 
+                    var_path = eos_name_prefix + "SWATHS/"+eos5_obj_name + eos5_data_grp_name + eos5var.name;
+                break;
+            }
+
+            case HE5_TYPE::GD: 
+            {
+                var_path = eos_name_prefix + "GRIDS/"+eos5_obj_name + eos5_data_grp_name + eos5var.name;
+                break;
+            }
+
+            case HE5_TYPE::ZA: 
+            {
+                var_path = eos_name_prefix + "ZAS/"+eos5_obj_name + eos5_data_grp_name + eos5var.name;
+                break;
+            }
+            default:
+                break;
+        }
+
+#if 0
+cout <<"var_path is "<<var_path <<endl;
+        for (const auto &eos5dim:eos5var.dim_list)  {
+            cout << "EOS Var Dim Name=" << eos5dim.name << endl;
+        }
+#endif
+        for (const auto &eos5dim:eos5var.dim_list) {  
+            string new_eos5dim_name = eos5dim.name;
+            string dim_fpath = eos5_dim_name_prefix + handle_string_special_characters(new_eos5dim_name);
+            var_dim_names.push_back(dim_fpath); 
+        }
+        pair<string,vector<string>> vtod = make_pair(var_path,var_dim_names);
+        varpath_to_dims.insert(vtod);
+    }
+
+}
+
+bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<string>>& varpath_to_dims, vector<string> & dimnames) {
+
+    bool ret_value = false;
+    unordered_map<string,vector<string>>::const_iterator vit = varpath_to_dims.find(varname);
+    if (vit != varpath_to_dims.end()){
+        for (const auto &sit:vit->second)
+            dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit));
+        ret_value = true;
+    }
+    return ret_value;
+} 
+
+bool obtain_eos5_grp_dim(const string & varname, const unordered_map<string, vector<HE5Dim>>& grppath_to_dims, vector<string> & dimnames) {
+
+    bool ret_value = false;
+    unordered_map<string,vector<HE5Dim>>::const_iterator vit = grppath_to_dims.find(varname);
+    if (vit != grppath_to_dims.end()){
+        for (const auto &sit:vit->second)
+            dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit.name));
+        ret_value = true;
+    }
+    return ret_value;
 }
