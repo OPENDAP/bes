@@ -63,6 +63,10 @@
 #include "HDF5CFUtil.h"
 #include "h5dmr.h"
 
+#include "he5dds.tab.hh"
+#include "HE5Parser.h"
+#include "HE5Checker.h"
+
 using namespace std;
 using namespace libdap;
 /// A variable for remembering visited paths to break cyclic HDF5 groups. 
@@ -71,10 +75,6 @@ HDF5PathFinder obj_paths;
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
-
-#include "he5dds.tab.hh"
-#include "HE5Parser.h"
-#include "HE5Checker.h"
 
 struct yy_buffer_state;
 
@@ -474,7 +474,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 
         unordered_map<string,vector<HE5Dim>> grppath_to_dims = eos5_dim_info.grppath_to_dims;
         vector<string> dim_names;
-        string par_grp_name = string(gname);
+        auto par_grp_name = string(gname);
         if (par_grp_name.size()>1)
             par_grp_name = par_grp_name.substr(0,par_grp_name.size()-1);
 #if 0
@@ -1635,12 +1635,10 @@ else "h5","structmeta data doesn't have the suffix" <<endl;
 
 
     // Now we need to handle the concatenation of the metadata
-    if (strmeta_num_total > 0) {
+    if ((strmeta_num_total > 0) && (strmeta_num != -1) ) {
         // The no suffix one has been taken care.
-        if (strmeta_num != -1) {
-            for (int i = 0; i <strmeta_num_total; i++) 
-                total_strmeta_value +=strmeta_value[i];
-        }
+        for (int i = 0; i <strmeta_num_total; i++) 
+            total_strmeta_value +=strmeta_value[i];
     }
 
     return total_strmeta_value;
@@ -1663,14 +1661,12 @@ int get_strmetadata_num(const string & meta_str) {
     }
 }
 
-//void obtain_eos5_dims(hid_t fileid, unordered_map<string, vector<string>>& varpath_to_dims) {
 void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     unordered_map<string, vector<string>> varpath_to_dims;
     unordered_map<string, vector<HE5Dim>> grppath_to_dims;
 
     string st_str = read_struct_metadata(fileid);
-//    cout <<"str_metadata is "<<str_metadata <<endl;
     
     // Parse the structmetadata
     HE5Parser p;
@@ -1706,7 +1702,11 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     c.set_grids_missing_pixreg_orig(&p);
 
     // Check if this multi-grid file shares the same grid.
+    // TODO: NEED TO check if the following function needs to be called 
+    //       when handling the HDF-EOS5 grid.
+#if 0
     bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
+#endif
 
     for (const auto &sw:p.swath_list) 
       build_grp_dim_path(sw.name,sw.dim_list,grppath_to_dims,HE5_TYPE::SW);
@@ -1750,7 +1750,7 @@ for (auto it:grppath_to_dims) {
     eos5_dim_info.grppath_to_dims = grppath_to_dims;
 }
 
-void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
+void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_list, unordered_map<string, vector<HE5Dim>>& grppath_to_dims, HE5_TYPE e5_type) {
 
     string eos_name_prefix = "/HDFEOS/";
     string eos5_grp_path;
@@ -1793,7 +1793,7 @@ void build_grp_dim_path(const string & eos5_obj_name, vector<HE5Dim> dim_list, u
           
 }
 
-void build_var_dim_path(const string & eos5_obj_name, vector<HE5Var> var_list, unordered_map<string, vector<string>>& varpath_to_dims, HE5_TYPE e5_type, bool is_geo) {
+void build_var_dim_path(const string & eos5_obj_name, const vector<HE5Var>& var_list, unordered_map<string, vector<string>>& varpath_to_dims, HE5_TYPE e5_type, bool is_geo) {
 
     string eos_name_prefix = "/HDFEOS/";
     string eos5_data_grp_name = "/Data Fields/";
@@ -1861,7 +1861,6 @@ cout <<"var_path is "<<var_path <<endl;
         }
         pair<string,vector<string>> vtod = make_pair(var_path,var_dim_names);
         varpath_to_dims.insert(vtod);
-        //varpath_to_dims.insert(make_pair<string,vector<string>>(var_path,var_dim_names));
     }
 
 }
@@ -1871,7 +1870,7 @@ bool obtain_eos5_dim(const string & varname, const unordered_map<string, vector<
     bool ret_value = false;
     unordered_map<string,vector<string>>::const_iterator vit = varpath_to_dims.find(varname);
     if (vit != varpath_to_dims.end()){
-        for (auto sit:vit->second)
+        for (const auto &sit:vit->second)
             dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit));
         ret_value = true;
     }
@@ -1883,7 +1882,7 @@ bool obtain_eos5_grp_dim(const string & varname, const unordered_map<string, vec
     bool ret_value = false;
     unordered_map<string,vector<HE5Dim>>::const_iterator vit = grppath_to_dims.find(varname);
     if (vit != grppath_to_dims.end()){
-        for (auto sit:vit->second)
+        for (const auto &sit:vit->second)
             dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit.name));
         ret_value = true;
     }
