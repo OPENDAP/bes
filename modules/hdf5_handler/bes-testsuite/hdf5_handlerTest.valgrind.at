@@ -691,7 +691,6 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_special_char_attr.h5.dmr.bescmd])
 
 # default HDF-EOS5 DMR tests
-AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd_aug.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d.h5.dmr.bescmd])

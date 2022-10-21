@@ -93,7 +93,10 @@ bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, c
 
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,const std::unordered_map<std::string, std::vector<std::string>>&);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
+void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool);
+#if 0
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
+#endif
 
 string get_hardlink_dmr(hid_t, const std::string &);
 void get_softlink(libdap::D4Group* par_grp, hid_t,  const std::string &, int,size_t);

@@ -650,7 +650,10 @@ read_objects( D4Group * d4_grp, const string &varname, const string &filename, c
 
     // HDF5 compound maps to DAP structure.
     case H5T_COMPOUND:
+#if 0
         read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5,varpath_to_dims);
+#endif
+        read_objects_structure(d4_grp, varname, filename,dset_id,use_dimscale,is_eos5);
         break;
 
     case H5T_ARRAY:
@@ -857,7 +860,7 @@ cout<<"dimpath final non-eos5 "<<td<<endl;
 ///////////////////////////////////////////////////////////////////////////////
 void
 read_objects_structure(D4Group *d4_grp, const string & varname,
-                       const string & filename,hid_t dset_id,bool use_dimscale, bool is_eos5, const unordered_map<string, vector<string>>& varpath_to_dims)
+                       const string & filename,hid_t dset_id,bool use_dimscale,bool is_eos5)
 {
     // Obtain the relative path of the variable name under the leaf group
     string newvarname = HDF5CFUtil::obtain_string_after_lastslash(varname);
@@ -869,11 +872,12 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
     }
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
-
+    
 
     // Map HDF5 compound datatype to Structure
     Structure *structure = Get_structure(newvarname, varname,filename, dt_inst.type,true);
 
+    // TODO: compound datatype should not be used by HDF-EOS5. Still we may add those support.
     try {
         BESDEBUG("h5", "=read_objects_structure(): Dimension is " 
             << dt_inst.ndims << endl);
