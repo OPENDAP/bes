@@ -6,7 +6,7 @@
   <bes:setContext name="max_response_size">0</bes:setContext>
 
   <bes:setContainer name="S3_1" space="s3">
-     http://test.opendap.org/data/uat_tester_eval_files/d_int.h5
+     http://test.opendap.org/uat_tester_eval_files/d_int.h5
     <bes:dap4Constraint>
         /d16_1;/d32_1
     </bes:dap4Constraint>
