@@ -425,7 +425,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
             // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
             bool is_pure_dim = false;
-            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_pure_dim,hdf5_hls);
+            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls);
                
             if(false == is_pure_dim) {
                 hid_t dset_id = -1;
@@ -451,7 +451,13 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             else {
                 //Need to add this pure dimension to the corresponding DAP4 group
                 D4Dimensions *d4_dims = par_grp->dims();
-                auto d4dim_name = string(oname.begin(),oname.end()-1);   
+                string d4dim_name;
+                if (is_eos5) { 
+                    auto tempdim_name = string(oname.begin(),oname.end()-1);
+                    d4dim_name = handle_string_special_characters(tempdim_name);
+                }
+                else 
+                    d4dim_name = string(oname.begin(),oname.end()-1);   
                 D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
                 if(d4_dim == nullptr) {
                     d4_dim = new D4Dimension(d4dim_name,dt_inst.nelmts);
@@ -480,6 +486,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
 #if 0
 cout <<"par_grp_name is "<<par_grp_name <<endl;
 #endif
+        // We need to ensure the special characters are handled.
         bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
         if (is_eos5_dims) {
             vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
@@ -1747,7 +1754,7 @@ for (auto it:grppath_to_dims) {
         cout<<"grp dimension name is "<<sit.name<<endl; 
         cout<<"grp dimension size is "<<sit.size<<endl; 
     }
-}   
+}   swath_2_3d_2x2yz.h5.dmr.bescmd.baseline
 #endif 
 
     eos5_dim_info.varpath_to_dims = varpath_to_dims;
@@ -1762,13 +1769,13 @@ void build_grp_dim_path(const string & eos5_obj_name, const vector<HE5Dim>& dim_
 
     switch (e5_type) {  
        case HE5_TYPE::SW: 
-            eos5_grp_path = eos_name_prefix + "SWATHS/"+handle_string_special_characters(new_eos5_obj_name);      
+            eos5_grp_path = eos_name_prefix + "SWATHS/"+new_eos5_obj_name;      
             break;
        case HE5_TYPE::GD: 
-            eos5_grp_path = eos_name_prefix + "GRIDS/"+handle_string_special_characters(new_eos5_obj_name);      
+            eos5_grp_path = eos_name_prefix + "GRIDS/"+new_eos5_obj_name;      
             break;
        case HE5_TYPE::ZA: 
-            eos5_grp_path = eos_name_prefix + "ZAS/"+handle_string_special_characters(new_eos5_obj_name);      
+            eos5_grp_path = eos_name_prefix + "ZAS/"+new_eos5_obj_name;      
             break;
        default:
             break;

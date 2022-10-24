@@ -152,7 +152,7 @@ m4_define([_AT_BESCMD_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -763,6 +763,8 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_2_3d_2x2yz.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char_aug.h5.dmr.bescmd])
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file
