@@ -133,7 +133,9 @@
             </Group>
         </Group>
         <Group name="GRIDS">
-            <Group name="Aerosol NearUV Grid">
+            <Group name="Aerosol_NearUV_Grid">
+                <Dimension name="XDim" size="360"/>
+                <Dimension name="YDim" size="180"/>
                 <Attribute name="GCTPProjectionCode" type="Int32">
                     <Value>0</Value>
                 </Attribute>
@@ -161,10 +163,10 @@
                 <Attribute name="NumberOfLatitudesInGrid" type="Int32">
                     <Value>180</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="FinalAerosolAbsOpticalDepth388">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -186,10 +188,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth388</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="FinalAerosolAbsOpticalDepth500">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -211,10 +216,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth500</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="FinalAerosolExtOpticalDepth388">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -236,10 +244,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth388</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="FinalAerosolExtOpticalDepth500">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -261,10 +272,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth500</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="FinalAerosolSingleScattAlb388">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -286,10 +300,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb388</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="FinalAerosolSingleScattAlb500">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -311,10 +328,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb500</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="UVAerosolIndex">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/Aerosol_NearUV_Grid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -336,13 +356,20 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/UVAerosolIndex</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.11</Value>
         </Attribute>

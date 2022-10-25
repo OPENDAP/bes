@@ -131,7 +131,9 @@
             </Group>
         </Group>
         <Group name="GRIDS">
-            <Group name="OMI Total Column Amount SO2">
+            <Group name="OMI_Total_Column_Amount_SO2">
+                <Dimension name="XDim" size="1440"/>
+                <Dimension name="YDim" size="720"/>
                 <Attribute name="GCTPProjectionCode" type="Int32">
                     <Value>0</Value>
                 </Attribute>
@@ -159,10 +161,10 @@
                 <Attribute name="NumberOfLatitudesInGrid" type="Int32">
                     <Value>720</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="ColumnAmountO3">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -188,10 +190,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/ColumnAmountO3</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ColumnAmountSO2_PBL">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -217,10 +222,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/ColumnAmountSO2_PBL</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Latitude">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -246,10 +254,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="LineNumber">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
@@ -275,10 +286,13 @@
                         <Attribute name="MissingValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/LineNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Longitude">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -304,10 +318,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="OrbitNumber">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
@@ -333,10 +350,13 @@
                         <Attribute name="MissingValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/OrbitNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="RadiativeCloudFraction">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -362,10 +382,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/RadiativeCloudFraction</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RelativeAzimuthAngle">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -391,10 +414,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/RelativeAzimuthAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="SceneNumber">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
@@ -420,10 +446,13 @@
                         <Attribute name="MissingValue" type="Int32">
                             <Value>-2000000000</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/SceneNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="SlantColumnAmountSO2">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -449,10 +478,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/SlantColumnAmountSO2</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -478,10 +510,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="TerrainHeight">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -507,10 +542,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/TerrainHeight</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="Time">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1.2676506002282294e+30</Value>
                         </Attribute>
@@ -536,10 +574,13 @@
                         <Attribute name="MissingValue" type="Float64">
                             <Value>-1.2676506002282294e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                     <Float32 name="ViewingZenithAngle">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/OMI_Total_Column_Amount_SO2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -565,13 +606,20 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/OMI Total Column Amount SO2/Data Fields/ViewingZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.11</Value>
         </Attribute>
