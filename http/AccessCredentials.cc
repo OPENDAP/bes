@@ -22,6 +22,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include "config.h"
+
 #include <string>
 #include <sstream>
 
@@ -32,6 +33,8 @@ using std::map;
 using std::pair;
 using std::stringstream;
 using std::endl;
+
+namespace http {
 
 const char *AccessCredentials::ID_KEY = "id";
 const char *AccessCredentials::KEY_KEY = "key";
@@ -46,9 +49,9 @@ const char *AccessCredentials::URL_KEY = "url";
 string
 AccessCredentials::get(const string &key) {
     map<string, string>::iterator it;
-    string value={""};
-    it = kvp.find(key);
-    if (it != kvp.end())
+    string value;
+    it = d_kvp.find(key);
+    if (it != d_kvp.end())
         value = it->second;
     return value;
 }
@@ -60,7 +63,7 @@ AccessCredentials::get(const string &key) {
  */
 void
 AccessCredentials::add(const string &key, const string &value) {
-    kvp.insert(pair<string, string>(key, value));
+    d_kvp.insert(pair<string, string>(key, value));
 }
 
 /**
@@ -69,29 +72,30 @@ AccessCredentials::add(const string &key, const string &value) {
  */
 bool AccessCredentials::is_s3_cred() {
     if (!d_s3_tested) {
-        d_is_s3 = get(URL_KEY).size() > 0 &&
-                get(ID_KEY).size() > 0 &&
-                get(KEY_KEY).size() > 0 &&
-                get(REGION_KEY).size() > 0; //&&
-        //get(BUCKET_KEY).size()>0;
+        d_is_s3 = !(get(URL_KEY).empty() || get(ID_KEY).empty() || get(KEY_KEY).empty() || get(REGION_KEY).empty());
         d_s3_tested = true;
     }
     return d_is_s3;
 }
 
-string AccessCredentials::to_json() {
+string AccessCredentials::to_json() const {
     stringstream ss;
-    ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
-    ss << "    \"name\": \"" << d_config_name << "\"," << endl;
-    for (map<string, string>::iterator it = kvp.begin(); it != kvp.end(); ++it) {
-        string key = it->first;
-        string value = it->second;
+    ss << "{" << endl << R"(  "AccessCredentials": { )" << endl;
+    ss << R"(    "name": ")" << d_config_name << R"(",)" << endl;
+    bool first = true;
+    for (const auto &item: d_kvp) {
+        string key = item.first;
+        string value = item.second;
 
-        if (it != kvp.begin())
+        if (first) {
+            first = false;
             ss << ", " << endl;
+        }
 
-        ss << "    \"" << it->first << "\": \"" << it->second << "\"";
+        ss << R"(    ")" << item.first << R"(": ")" << item.second << R"(")";
     }
     ss << endl << "  }" << endl << "}" << endl;
     return ss.str();
 }
+
+} // namespace http

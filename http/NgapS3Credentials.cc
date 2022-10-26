@@ -25,13 +25,13 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include "dispatch/BESError.h"
+#include "dispatch/BESDebug.h"
 
 #include "CurlUtils.h"
 
 #include "NgapS3Credentials.h"
-#include "DmrppNames.h"
+#include "HttpNames.h"
 
 using std::string;
 using std::endl;
@@ -43,13 +43,14 @@ using std::endl;
 
 #define prolog std::string("NgapS3Credentials::").append(__func__).append("() - ")
 
+namespace http {
+
 // Scope: public members of AccessCredentials
 const string NgapS3Credentials::AWS_SESSION_TOKEN = "aws_session_token";
 const string NgapS3Credentials::AWS_TOKEN_EXPIRATION = "aws_token_expiration";
 const string NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY = "NGAP.S3.distribution.endpoint.url";
 const string NgapS3Credentials::BES_CONF_REFRESH_KEY = "NGAP.S3.refresh.margin";
 const string NgapS3Credentials::BES_CONF_URL_BASE = "NGAP.s3.url.base";
-
 
 bool NgapS3Credentials::is_s3_cred() { return true; }
 
@@ -70,39 +71,37 @@ void NgapS3Credentials::get_temporary_credentials() {
 
     string accessKeyId, secretAccessKey, sessionToken, expiration;
 
-    BESDEBUG(MODULE, prolog << "distribution_api_endpoint: " << distribution_api_endpoint << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "distribution_api_endpoint: " << distribution_api_endpoint << endl);
 
     rapidjson::Document d = curl::http_get_as_json(distribution_api_endpoint);
-    BESDEBUG(MODULE, prolog << "S3 Credentials:" << endl);
+    BESDEBUG(HTTP_MODULE, prolog << "S3 Credentials:" << endl);
 
     rapidjson::Value &val = d[AWS_ACCESS_KEY_ID_KEY];
     accessKeyId = val.GetString();
     add(ID_KEY, accessKeyId);
-    BESDEBUG(MODULE, prolog << AWS_ACCESS_KEY_ID_KEY << ":        " << accessKeyId << endl);
+    BESDEBUG(HTTP_MODULE, prolog << AWS_ACCESS_KEY_ID_KEY << ":        " << accessKeyId << endl);
 
     val = d[AWS_SECRET_ACCESS_KEY_KEY];
     secretAccessKey = val.GetString();
     add(KEY_KEY, secretAccessKey);
-    BESDEBUG(MODULE, prolog << AWS_SECRET_ACCESS_KEY_KEY << ":    " << secretAccessKey << endl);
+    BESDEBUG(HTTP_MODULE, prolog << AWS_SECRET_ACCESS_KEY_KEY << ":    " << secretAccessKey << endl);
 
     val = d[AWS_SESSION_TOKEN_KEY];
     sessionToken = val.GetString();
     add(AWS_SESSION_TOKEN, sessionToken);
-    BESDEBUG(MODULE, prolog << AWS_SESSION_TOKEN_KEY << ":       " << sessionToken << endl);
+    BESDEBUG(HTTP_MODULE, prolog << AWS_SESSION_TOKEN_KEY << ":       " << sessionToken << endl);
 
     val = d[AWS_EXPIRATION_KEY];
     expiration = val.GetString();
     add(AWS_TOKEN_EXPIRATION, expiration);
-    BESDEBUG(MODULE, prolog << AWS_EXPIRATION_KEY << ":         " << expiration << endl);
+    BESDEBUG(HTTP_MODULE, prolog << AWS_EXPIRATION_KEY << ":         " << expiration << endl);
 
     // parse the time string into a something useful -------------------------------------------------------
     struct tm tm;
     // 2020-02-18 13:49:30+00:00
     strptime(expiration.c_str(), "%Y-%m-%d %H:%M:%S%z", &tm);
     d_expiration_time = mktime(&tm);  // t is now your desired time_t
-    BESDEBUG(MODULE, prolog << "expiration(time_t): " << d_expiration_time << endl);
-
+    BESDEBUG(HTTP_MODULE, prolog << "expiration(time_t): " << d_expiration_time << endl);
 }
 
-
-
+} //namespace http

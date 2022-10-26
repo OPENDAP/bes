@@ -50,7 +50,11 @@ SRCS = CurlUtils.cc \
     EffectiveUrlCache.cc \
     url_impl.cc \
     EffectiveUrl.cc \
-    AllowedHosts.cc
+    AllowedHosts.cc \
+    AccessCredentials.cc \
+    CredentialsManager.cc \
+    NgapS3Credentials.cc \
+    awsv4.cc
 
 HDRS = CurlUtils.h \
     HttpCache.h \
@@ -61,7 +65,11 @@ HDRS = CurlUtils.h \
     EffectiveUrlCache.h \
     url_impl.h \
     EffectiveUrl.h \
-    AllowedHosts.h
+    AllowedHosts.h \
+    AccessCredentials.h \
+    CredentialsManager.h \
+    NgapS3Credentials.h \
+    awsv4.h
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf
