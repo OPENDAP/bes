@@ -31,7 +31,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h credentials.conf
 
 noinst_HEADERS = test_config.h
 
@@ -45,6 +45,10 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+credentials.conf: credentials.conf.src
+	cp $< $@
+	chmod 600 $@
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
