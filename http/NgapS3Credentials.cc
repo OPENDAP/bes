@@ -46,17 +46,18 @@ using std::endl;
 namespace http {
 
 // Scope: public members of AccessCredentials
-const string NgapS3Credentials::AWS_SESSION_TOKEN = "aws_session_token";
-const string NgapS3Credentials::AWS_TOKEN_EXPIRATION = "aws_token_expiration";
-const string NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY = "NGAP.S3.distribution.endpoint.url";
-const string NgapS3Credentials::BES_CONF_REFRESH_KEY = "NGAP.S3.refresh.margin";
-const string NgapS3Credentials::BES_CONF_URL_BASE = "NGAP.s3.url.base";
+const char *NgapS3Credentials::AWS_SESSION_TOKEN = "aws_session_token";
+const char *NgapS3Credentials::AWS_TOKEN_EXPIRATION = "aws_token_expiration";
+const char *NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY = "NGAP.S3.distribution.endpoint.url";
+const char *NgapS3Credentials::BES_CONF_REFRESH_KEY = "NGAP.S3.refresh.margin";
+const char *NgapS3Credentials::BES_CONF_URL_BASE = "NGAP.s3.url.base";
 
+// TODO Move to the header. jhrg 10/27/22
 bool NgapS3Credentials::is_s3_cred() { return true; }
 
 string NgapS3Credentials::get(const std::string &key) {
     if (needs_refresh()) {
-        this->get_temporary_credentials();
+        this->get_temporary_credentials();  // TODO Why use 'this->'? jhrg 10/27/22
     }
     return AccessCredentials::get(key);
 }

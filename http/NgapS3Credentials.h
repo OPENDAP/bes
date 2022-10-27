@@ -34,11 +34,11 @@ class NgapS3Credentials : public AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
-    static const std::string AWS_SESSION_TOKEN;
-    static const std::string AWS_TOKEN_EXPIRATION;
-    static const std::string BES_CONF_S3_ENDPOINT_KEY;
-    static const std::string BES_CONF_REFRESH_KEY;
-    static const std::string BES_CONF_URL_BASE;
+    static const char *AWS_SESSION_TOKEN;
+    static const char *AWS_TOKEN_EXPIRATION;
+    static const char *BES_CONF_S3_ENDPOINT_KEY;
+    static const char *BES_CONF_REFRESH_KEY;
+    static const char *BES_CONF_URL_BASE;
 
 private:
     time_t d_expiration_time = 0;
