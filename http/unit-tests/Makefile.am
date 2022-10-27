@@ -18,12 +18,12 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-DISTCLEANFILES = bes.conf bes.log bes_ngap_s3_creds.conf credentials.conf
+DISTCLEANFILES = bes.conf bes.log bes_ngap_s3_creds.conf credentials.conf test_config.h
 
 CLEANFILES = bes.conf *.dbg *.log
 
 EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini bes_ngap_s3_creds.conf.in \
-awsv4 weak.conf
+awsv4 weak.conf credentials.conf.src
 
 check_PROGRAMS = $(UNIT_TESTS)
 
