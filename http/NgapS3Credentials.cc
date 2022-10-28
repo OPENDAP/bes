@@ -21,12 +21,12 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
+#include "document.h"
+#include "writer.h"
+#include "stringbuffer.h"
 
-#include "dispatch/BESError.h"
-#include "dispatch/BESDebug.h"
+#include "BESError.h"
+#include "BESDebug.h"
 
 #include "CurlUtils.h"
 

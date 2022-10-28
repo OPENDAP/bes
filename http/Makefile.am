@@ -5,7 +5,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
