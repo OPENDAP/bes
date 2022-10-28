@@ -118,7 +118,6 @@ namespace http {
 
         void show_vector(vector<string> v){
             cerr << "show_vector(): Found " << v.size() << " elements." << endl;
-            vector<string>::iterator it = v.begin();
             for(size_t i=0;  i < v.size(); i++){
                 cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
             }

@@ -51,7 +51,6 @@ using namespace std;
 static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
-static bool purge_cache = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -205,7 +204,7 @@ public:
         shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap", true));
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         string expected_url = "http://test.opendap.org/opendap/";
-        EffectiveUrl *effective_url;
+        // *** EffectiveUrl *effective_url;
 
         try {
             if (debug) cerr << prolog << "   target_url: " << target_url->str() << endl;

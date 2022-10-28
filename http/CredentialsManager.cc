@@ -66,7 +66,7 @@ CredentialsManager *CredentialsManager::theMngr = nullptr;
 /**
  * Run once_flag for initializing the singleton instance.
  */
-static std::once_flag d_cmac_init_once;
+std::once_flag d_cmac_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -119,7 +119,6 @@ void CredentialsManager::initialize_instance() {
  * Destructor
  */
 CredentialsManager::~CredentialsManager() {
-    //for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
     for (auto &item: creds) {
         delete item.second;
     }
@@ -418,7 +417,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     return ac;
 }
 
-std::string NGAP_S3_BASE_DEFAULT = "https://";
+#define NGAP_S3_BASE_DEFAULT "https://"
 
 /**
  * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
@@ -438,7 +437,7 @@ void CredentialsManager::load_ngap_s3_credentials() {
         long refresh_margin = 600;
         TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_REFRESH_KEY, value, found);
         if (found) {
-            refresh_margin = strtol(value.c_str(), 0, 10);
+            refresh_margin = strtol(value.c_str(), nullptr, 10);
         }
 
         string s3_base_url = NGAP_S3_BASE_DEFAULT;
@@ -448,7 +447,7 @@ void CredentialsManager::load_ngap_s3_credentials() {
         }
 
         NgapS3Credentials *nsc = new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin);
-        nsc->add(NgapS3Credentials::URL_KEY, s3_base_url);
+        nsc->add(AccessCredentials::URL_KEY, s3_base_url);
         nsc->name("NgapS3Credentials");
 
         CredentialsManager::theCM()->add(s3_base_url, nsc);
