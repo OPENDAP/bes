@@ -197,14 +197,16 @@ const std::string credential_scope(const std::time_t &request_date,
 // time_t -> 20131222T043039Z
 const std::string ISO8601_date(const std::time_t &t) {
     char buf[sizeof "20111008T070709Z"];
-    std::strftime(buf, sizeof buf, "%Y%m%dT%H%M%SZ", std::gmtime(&t));
+    struct tm tm_buf;
+    std::strftime(buf, sizeof buf, "%Y%m%dT%H%M%SZ", gmtime_r(&t, &tm_buf));
     return std::string{buf};
 }
 
 // time_t -> 20131222
 const std::string utc_yyyymmdd(const std::time_t &t) {
     char buf[sizeof "20111008"];
-    std::strftime(buf, sizeof buf, "%Y%m%d", std::gmtime(&t));
+    struct tm tm_buf;
+    std::strftime(buf, sizeof buf, "%Y%m%d", gmtime_r(&t, &tm_buf));
     return std::string{buf};
 }
 
