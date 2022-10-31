@@ -981,7 +981,9 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             if (H5Tget_size(type) == 4) {
                 
                 float attr_val = *(float*)sm_buf;
-                if (isnan(attr_val)) {
+                // Note: this comparsion is the same as isnan.
+                // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
+                if (attr_val!=attr_val) {
                     rep.resize(3);
                     rep[0]='N';
                     rep[1]='a';
@@ -1009,7 +1011,9 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             else if (H5Tget_size(type) == 8) {
 
                 double attr_val = *(double*)sm_buf;
-                if (isnan(attr_val)) {
+                // Note: this comparsion is the same as isnan.
+                // However, on CentOS 7, isnan() is declared in two headers and causes conflicts.
+                if (attr_val!=attr_val) {
                     rep.resize(3);
                     rep[0]='N';
                     rep[1]='a';
