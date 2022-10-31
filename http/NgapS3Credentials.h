@@ -61,7 +61,7 @@ public:
         return (d_expiration_time - time(nullptr)) < refresh_margin;
     }
 
-    bool is_s3_cred() const {
+    bool is_s3_cred() override {
         return true;
     }
 

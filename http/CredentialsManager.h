@@ -77,7 +77,7 @@ public:
         ngaps3CredentialsLoaded = false;
     }
 
-    AccessCredentials *get(std::shared_ptr<http::url> &url);
+    AccessCredentials *get(const std::shared_ptr<http::url> &url);
 
     size_t size() const {
         return creds.size();

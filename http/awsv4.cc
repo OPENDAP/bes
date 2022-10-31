@@ -63,7 +63,7 @@ const int SHA256_DIGEST_STRING_LENGTH = (SHA256_DIGEST_LENGTH << 1);
  * @return The string result
  */
 std::string join(const std::vector<std::string> &ss, const std::string &delim) {
-    if (ss.size() == 0)
+    if (ss.empty())
         return "";
 
     std::stringstream sstream;
@@ -113,20 +113,15 @@ static std::string trim(const std::string &str, const std::string &whitespace = 
 // headers A vector where each element is a header name and value, separated by a colon. No spaces.
 std::map<std::string, std::string> canonicalize_headers(const std::vector<std::string> &headers) {
     std::map<std::string, std::string> header_key2val;
-    for (auto h = headers.begin(), end = headers.end(); h != end; ++h) {
-        // CentOS6 does not appear to support auth and the range-based for loop together.
-        // jhrg 1/5/20
-        // for (const auto & h: headers) {
-        // h is a header <key> : <val>
-
-        auto i = h->find(':');
+    for (const auto &header: headers) {
+        auto i = header.find(':');
         if (i == std::string::npos) {
             header_key2val.clear();
             return header_key2val;
         }
 
-        std::string key = trim(h->substr(0, i));
-        const std::string val = trim(h->substr(i + 1));
+        std::string key = trim(header.substr(0, i));
+        const std::string val = trim(header.substr(i + 1));
         if (key.empty() || val.empty()) {
             header_key2val.clear();
             return header_key2val;
@@ -139,45 +134,41 @@ std::map<std::string, std::string> canonicalize_headers(const std::vector<std::s
 }
 
 // get a string representation of header:value lines
-const std::string map_headers_string(const std::map<std::string, std::string> &header_key2val) {
+std::string map_headers_string(const std::map<std::string, std::string> &header_key2val) {
     const std::string pair_delim{":"};
     std::string h;
-    for (auto kv = header_key2val.begin(), end = header_key2val.end(); kv != end; ++kv) {
-        h.append(kv->first + pair_delim + kv->second + ENDL);
+    for (const auto &kv: header_key2val) {
+        h.append(kv.first).append(pair_delim).append(kv.second).append(ENDL);
     }
     return h;
 }
 
 // get a string representation of the header names
-const std::string map_signed_headers(const std::map<std::string, std::string> &header_key2val) {
+std::string map_signed_headers(const std::map<std::string, std::string> &header_key2val) {
     const std::string signed_headers_delim{";"};
     std::vector<std::string> ks;
-    // CentOS6 compat hack "for (const auto& kv:header_key2val) {"
-    for (auto kv = header_key2val.begin(), end = header_key2val.end(); kv != end; ++kv) {
-        ks.push_back(kv->first);
+    for ( const auto &kv: header_key2val) {
+        ks.push_back(kv.first);
     }
     return join(ks, signed_headers_delim);
 }
 
-const std::string canonicalize_request(const std::string &http_request_method,
+std::string canonicalize_request(const std::string &http_request_method,
                                        const std::string &canonical_uri,
                                        const std::string &canonical_query_string,
                                        const std::string &canonical_headers,
                                        const std::string &signed_headers,
                                        const std::string &shar256_of_payload) {
-    return http_request_method + ENDL +
-           canonical_uri + ENDL +
-           canonical_query_string + ENDL +
-           canonical_headers + ENDL +
-           signed_headers + ENDL +
-           shar256_of_payload;
+    return std::string(http_request_method).append(ENDL).append(canonical_uri).append(ENDL)
+            .append(canonical_query_string).append(ENDL).append(canonical_headers).append(ENDL)
+            .append(signed_headers).append(ENDL).append(shar256_of_payload);
 }
 
 // -----------------------------------------------------------------------------------
 // TASK 2 - create a string-to-sign
 // http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
 
-const std::string string_to_sign(const std::string &algorithm,
+std::string string_to_sign(const std::string &algorithm,
                                  const std::time_t &request_date,
                                  const std::string &credential_scope,
                                  const std::string &hashed_canonical_request) {
@@ -187,31 +178,31 @@ const std::string string_to_sign(const std::string &algorithm,
            hashed_canonical_request;
 }
 
-const std::string credential_scope(const std::time_t &request_date,
-                                   const std::string region,
-                                   const std::string service) {
+std::string credential_scope(const std::time_t &request_date,
+                                   const std::string &region,
+                                   const std::string &service) {
     const std::string s{"/"};
-    return utc_yyyymmdd(request_date) + s + region + s + service + s + AWS4_REQUEST;
+    return utc_yyyymmdd(request_date).append(s).append(region).append(s).append(service).append(s).append(AWS4_REQUEST);
 }
 
 // time_t -> 20131222T043039Z
-const std::string ISO8601_date(const std::time_t &t) {
+std::string ISO8601_date(const std::time_t &t) {
     char buf[sizeof "20111008T070709Z"];
-    struct tm tm_buf;
+    struct tm tm_buf{0};
     std::strftime(buf, sizeof buf, "%Y%m%dT%H%M%SZ", gmtime_r(&t, &tm_buf));
-    return std::string{buf};
+    return buf;
 }
 
 // time_t -> 20131222
-const std::string utc_yyyymmdd(const std::time_t &t) {
+std::string utc_yyyymmdd(const std::time_t &t) {
     char buf[sizeof "20111008"];
-    struct tm tm_buf;
+    struct tm tm_buf{0};
     std::strftime(buf, sizeof buf, "%Y%m%d", gmtime_r(&t, &tm_buf));
-    return std::string{buf};
+    return buf;
 }
 
 // HMAC --> string. jhrg 11/25/19
-const std::string hmac_to_string(const unsigned char *hmac) {
+std::string hmac_to_string(const unsigned char *hmac) {
     // Added to print the kSigning value to check against AWS example. jhrg 11/24/19
     char buf[SHA256_DIGEST_STRING_LENGTH + 1];
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
@@ -219,7 +210,7 @@ const std::string hmac_to_string(const unsigned char *hmac) {
         snprintf(buf + (i * 2), 3, "%02x", hmac[i]);
     }
     buf[SHA256_DIGEST_STRING_LENGTH] = 0;
-    return std::string{buf};
+    return buf;
 }
 
 // -----------------------------------------------------------------------------------
@@ -234,11 +225,11 @@ const std::string hmac_to_string(const unsigned char *hmac) {
  *          where md must be EVP_MAX_MD_SIZE in size
  */
 
-const std::string calculate_signature(const std::time_t &request_date,
-                                      const std::string secret,
-                                      const std::string region,
-                                      const std::string service,
-                                      const std::string string_to_sign) {
+std::string calculate_signature(const std::time_t &request_date,
+                                      const std::string &secret,
+                                      const std::string &region,
+                                      const std::string &service,
+                                      const std::string &string_to_sign) {
 
     // These are used/re-used for the various signatures. jhrg 1/3/20
     unsigned char md[EVP_MAX_MD_SIZE + 1];
@@ -246,49 +237,50 @@ const std::string calculate_signature(const std::time_t &request_date,
 
     const std::string k1 = AWS4 + secret;
     const std::string yyyymmdd = utc_yyyymmdd(request_date);
-    unsigned char *kDate = HMAC(EVP_sha256(), (const void *) k1.c_str(), k1.size(),
+    // NB: The third argument for HMAC is an unsigned int. jhrg 10/31/22
+    const unsigned char *kDate = HMAC(EVP_sha256(), (const void *)k1.c_str(), (unsigned int)k1.size(),
                                 (const unsigned char *) yyyymmdd.c_str(), yyyymmdd.size(), md, &md_len);
     if (!kDate)
-        throw BESInternalError("Could not compute AWS V4 requst signature.", __FILE__, __LINE__);
+        throw BESInternalError("Could not compute AWS V4 request signature.", __FILE__, __LINE__);
 
     md[md_len] = '\0';
     BESDEBUG(HTTP_MODULE,
              prolog << "kDate: " << hmac_to_string(kDate) << " md_len: " << md_len << " md: " << hmac_to_string(md)
                     << std::endl);
 
-    unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t) md_len,
+    const unsigned char *kRegion = HMAC(EVP_sha256(), md, md_len,
                                   (const unsigned char *) region.c_str(), region.size(), md, &md_len);
     if (!kRegion)
-        throw BESInternalError("Could not compute AWS V4 requst signature.", __FILE__, __LINE__);
+        throw BESInternalError("Could not compute AWS V4 request signature.", __FILE__, __LINE__);
 
     md[md_len] = '\0';
     BESDEBUG(HTTP_MODULE,
              prolog << "kRegion: " << hmac_to_string(kRegion) << " md_len: " << md_len << " md: " << hmac_to_string(md)
                     << std::endl);
 
-    unsigned char *kService = HMAC(EVP_sha256(), md, (size_t) md_len,
+    const unsigned char *kService = HMAC(EVP_sha256(), md, md_len,
                                    (const unsigned char *) service.c_str(), service.size(), md, &md_len);
     if (!kService)
-        throw BESInternalError("Could not compute AWS V4 requst signature.", __FILE__, __LINE__);
+        throw BESInternalError("Could not compute AWS V4 request signature.", __FILE__, __LINE__);
 
     md[md_len] = '\0';
     BESDEBUG(HTTP_MODULE, prolog << "kService: " << hmac_to_string(kService) << " md_len: " << md_len << " md: "
                            << hmac_to_string(md) << std::endl);
 
-    unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t) md_len,
+    const unsigned char *kSigning = HMAC(EVP_sha256(), md, md_len,
                                    (const unsigned char *) AWS4_REQUEST.c_str(), AWS4_REQUEST.size(), md, &md_len);
     if (!kSigning)
-        throw BESInternalError("Could not compute AWS V4 requst signature.", __FILE__, __LINE__);
+        throw BESInternalError("Could not compute AWS V4 request signature.", __FILE__, __LINE__);
 
     md[md_len] = '\0';
     BESDEBUG(HTTP_MODULE,
              prolog << "kSigning: " << hmac_to_string(kRegion) << " md_len: " << md_len << " md: " << hmac_to_string(md)
                     << std::endl);
 
-    unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t) md_len,
+    const unsigned char *kSig = HMAC(EVP_sha256(), md, md_len,
                                (const unsigned char *) string_to_sign.c_str(), string_to_sign.size(), md, &md_len);
     if (!kSig)
-        throw BESInternalError("Could not compute AWS V4 requst signature.", __FILE__, __LINE__);
+        throw BESInternalError("Could not compute AWS V4 request signature.", __FILE__, __LINE__);
 
     md[md_len] = '\0';
     auto sig = hmac_to_string(md);
@@ -307,8 +299,8 @@ const std::string calculate_signature(const std::time_t &request_date,
  * @param service The AWS service that is the target of the request (S3 by default)
  * @return The AWS V4 Signature string.
  */
-const std::string compute_awsv4_signature(
-        std::shared_ptr<http::url> &uri,
+std::string compute_awsv4_signature(
+        const std::shared_ptr<http::url> &uri,
         const std::time_t &request_date,
         const std::string &public_key,
         const std::string &secret_key,
@@ -317,9 +309,9 @@ const std::string compute_awsv4_signature(
 
 
     // canonical_uri is the path component of the URL. Later we will need the host.
-    const auto canonical_uri = uri->path(); // AWSV4::canonicalize_uri(uri);
+    const auto canonical_uri = uri->path();
     // The query string is null for our code.
-    const auto canonical_query = uri->query(); // AWSV4::canonicalize_query(uri);
+    const auto canonical_query = uri->query();
 
     // We can eliminate one call to sha256 if the payload is null, which
     // is the case for a GET request. jhrg 11/25/19
@@ -332,7 +324,7 @@ const std::string compute_awsv4_signature(
     //
     // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
     std::vector<std::string> headers{"host: ", "x-amz-date: "};
-    headers[0].append(uri->host()); // headers[0].append(uri.getHost());
+    headers[0].append(uri->host());
     headers[1].append(ISO8601_date(request_date));
 
     const auto canonical_headers_map = canonicalize_headers(headers);
@@ -367,7 +359,7 @@ const std::string compute_awsv4_signature(
 
     BESDEBUG(HTTP_MODULE, prolog << "signature: " << signature << std::endl);
 
-    const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
+    std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                                              + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" +
                                              signature;
 
@@ -375,6 +367,5 @@ const std::string compute_awsv4_signature(
 
     return authorization_header;
 }
-
 
 }

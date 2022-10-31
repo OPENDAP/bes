@@ -48,6 +48,9 @@ using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
+// TODO Should this be a member in the class? jhrg 10/31/22
+#define NGAP_S3_BASE_DEFAULT "https://"
+
 namespace http {
 
 // Class vocabulary
@@ -158,7 +161,7 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
  * them will be returned. Otherwise, NULL.
  */
 AccessCredentials *
-CredentialsManager::get(shared_ptr <http::url> &url) {
+CredentialsManager::get(const shared_ptr <http::url> &url) {
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
@@ -168,13 +171,11 @@ CredentialsManager::get(shared_ptr <http::url> &url) {
 
     if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
         for (auto &item: creds) {
-            std::string key = item.first;
-            if (url->str().rfind(key, 0) == 0) {
+            const std::string &key = item.first;
+            if ((url->str().rfind(key, 0) == 0) && (key.size() > best_key.size())) {
                 // url starts with key
-                if (key.size() > best_key.size()) {
-                    best_key = key;
-                    best_match = item.second;
-                }
+                best_key = key;
+                best_match = item.second;
             }
         }
     }
@@ -324,9 +325,9 @@ void CredentialsManager::load_credentials() {
 
     kvp::load_keys(config_file, keystore);
 
-    for (map<string, vector<string>>::iterator it = keystore.begin(); it != keystore.end(); it++) {
-        string creds_name = it->first;
-        vector<string> &credentials_entries = it->second;
+    for (const auto &key: keystore) {
+        string creds_name = key.first;
+        const vector<string> &credentials_entries = key.second;
         map<string, AccessCredentials *>::iterator mit;
         mit = credential_sets.find(creds_name);
         if (mit != credential_sets.end()) {  // New?
@@ -338,47 +339,48 @@ void CredentialsManager::load_credentials() {
             accessCredentials = new AccessCredentials(creds_name);
             credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
         }
-        for (vector<string>::iterator jt = credentials_entries.begin(); jt != credentials_entries.end(); jt++) {
-            string credentials_entry = *jt;
-            int index = credentials_entry.find(":");
+
+        for (const auto &entry: credentials_entries) {
+            size_t index = entry.find(":");
             if (index > 0) {
-                string key_name = credentials_entry.substr(0, index);
-                string value = credentials_entry.substr(index + 1);
+                string key_name = entry.substr(0, index);
+                string value = entry.substr(index + 1);
                 BESDEBUG(HTTP_MODULE, prolog << creds_name << ":" << key_name << "=" << value << endl);
                 accessCredentials->add(key_name, value);
             }
         }
     }
+
     BESDEBUG(HTTP_MODULE, prolog << "Loaded " << credential_sets.size() << " AccessCredentials" << endl);
     vector<AccessCredentials *> bad_creds;
-    map<string, AccessCredentials *>::iterator acit;
 
-    for (acit = credential_sets.begin(); acit != credential_sets.end(); acit++) {
-        accessCredentials = acit->second;
+    for (const auto &acit: credential_sets) {
+        accessCredentials = acit.second;
         string url = accessCredentials->get(AccessCredentials::URL_KEY);
-        if (url.size()) {
+        if (!url.empty()) {
             theCM()->add(url, accessCredentials);
         }
         else {
-            bad_creds.push_back(acit->second);
+            bad_creds.push_back(acit.second);
         }
     }
-    if (bad_creds.size()) {
+
+    if (!bad_creds.empty()) {
         stringstream ss;
-        vector<AccessCredentials *>::iterator bc;
 
         ss << "Encountered " << bad_creds.size() << " AccessCredentials "
            << " definitions missing an associated URL. offenders: ";
 
-        for (bc = bad_creds.begin(); bc != bad_creds.end(); bc++) {
-            ss << (*bc)->name() << "  ";
-            credential_sets.erase((*bc)->name());
-            delete *bc;
+        for (auto &bc: bad_creds) {
+            ss << bc->name() << "  ";
+            credential_sets.erase(bc->name());
+            delete bc;
         }
+
         throw BESInternalError(ss.str(), __FILE__, __LINE__);
     }
-    BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
 
+    BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
 }
 
 
@@ -417,8 +419,6 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     return ac;
 }
 
-#define NGAP_S3_BASE_DEFAULT "https://"
-
 /**
  * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
  * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
@@ -446,18 +446,17 @@ void CredentialsManager::load_ngap_s3_credentials() {
             s3_base_url = value;
         }
 
-        NgapS3Credentials *nsc = new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin);
+        unique_ptr<NgapS3Credentials> nsc(new NgapS3Credentials(s3_distribution_endpoint_url, refresh_margin));
         nsc->add(AccessCredentials::URL_KEY, s3_base_url);
         nsc->name("NgapS3Credentials");
 
-        CredentialsManager::theCM()->add(s3_base_url, nsc);
+        CredentialsManager::theCM()->add(s3_base_url, nsc.release());
         CredentialsManager::theCM()->ngaps3CredentialsLoaded = true;
-
     }
     else {
-        BESDEBUG(HTTP_MODULE, prolog << "WARNING: The BES configuration did not contain an instance of " <<
-                                     NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY <<
-                                     " NGAP S3 Credentials NOT loaded." << endl);
+        BESDEBUG(HTTP_MODULE, prolog << "WARNING: The BES configuration did not contain an instance of "
+                                    << NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY
+                                    << " NGAP S3 Credentials NOT loaded." << endl);
     }
 }
 

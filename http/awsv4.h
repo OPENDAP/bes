@@ -43,6 +43,7 @@
 #include "url_impl.h"
 
 namespace AWSV4 {
+
 const std::string ENDL{"\n"};
 const std::string POST{"POST"};
 const std::string GET{"GET"};
@@ -56,38 +57,38 @@ std::string sha256_base16(const std::string &str);
 
 std::map<std::string, std::string> canonicalize_headers(const std::vector<std::string> &headers);
 
-const std::string map_headers_string(const std::map<std::string, std::string> &header_key2val);
+std::string map_headers_string(const std::map<std::string, std::string> &header_key2val);
 
-const std::string map_signed_headers(const std::map<std::string, std::string> &header_key2val);
+std::string map_signed_headers(const std::map<std::string, std::string> &header_key2val);
 
-const std::string canonicalize_request(const std::string &http_request_method,
+std::string canonicalize_request(const std::string &http_request_method,
                                        const std::string &canonical_uri,
                                        const std::string &canonical_query_string,
                                        const std::string &canonical_headers,
                                        const std::string &signed_headers,
                                        const std::string &payload);
 
-const std::string string_to_sign(const std::string &algorithm,
+std::string string_to_sign(const std::string &algorithm,
                                  const std::time_t &request_date,
                                  const std::string &credential_scope,
                                  const std::string &hashed_canonical_request);
 
-const std::string ISO8601_date(const std::time_t &t);
+std::string ISO8601_date(const std::time_t &t);
 
-const std::string utc_yyyymmdd(const std::time_t &t);
+std::string utc_yyyymmdd(const std::time_t &t);
 
-const std::string credential_scope(const std::time_t &t,
-                                   const std::string region,
-                                   const std::string service);
+std::string credential_scope(const std::time_t &t,
+                                   const std::string &region,
+                                   const std::string &service);
 
-const std::string calculate_signature(const std::time_t &request_date,
-                                      const std::string secret,
-                                      const std::string region,
-                                      const std::string service,
-                                      const std::string string_to_sign);
+std::string calculate_signature(const std::time_t &request_date,
+                                      const std::string &secret,
+                                      const std::string &region,
+                                      const std::string &service,
+                                      const std::string &string_to_sign);
 
 // The whole enchilada. Added jhrg 11/25/19
-const std::string compute_awsv4_signature(std::shared_ptr<http::url> &uri_str, const std::time_t &request_date,
+std::string compute_awsv4_signature(const std::shared_ptr<http::url> &uri_str, const std::time_t &request_date,
                                           const std::string &public_key, const std::string &secret_key,
                                           const std::string &region, const std::string &service = "s3");
 }
