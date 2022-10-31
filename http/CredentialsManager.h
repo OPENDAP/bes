@@ -30,64 +30,64 @@
 #include <string>
 #include <vector>
 #include <mutex>
+
 #include "url_impl.h"
 #include "AccessCredentials.h"
-
 
 // These are the names of the bes keys used to configure the handler.
 #define CATALOG_MANAGER_CREDENTIALS "CredentialsManager.config"
 
+namespace http {
+
 class CredentialsManager {
 public:
-    static const char* ENV_ID_KEY;
-    static const char* ENV_ACCESS_KEY;
-    static const char* ENV_REGION_KEY;
-    static const char* ENV_BUCKET_KEY;
-    static const char* ENV_URL_KEY;
-    static const char* USE_ENV_CREDS_KEY_VALUE;
+    static const char *ENV_ID_KEY;
+    static const char *ENV_ACCESS_KEY;
+    static const char *ENV_REGION_KEY;
+    static const char *ENV_URL_KEY;
+    static const char *USE_ENV_CREDS_KEY_VALUE;
 
 private:
     std::recursive_mutex d_lock_mutex{};
-    // std::string d_netrc_filename;
-    bool ngaps3CredentialsLoaded;
 
-    std::map<std::string, AccessCredentials* > creds;
+    bool ngaps3CredentialsLoaded = false;
+    std::map<std::string, AccessCredentials *> creds;
 
-    CredentialsManager();
-
+    CredentialsManager() = default;   // only called here to build the singleton
     static void initialize_instance();
     static void delete_instance();
-    AccessCredentials *load_credentials_from_env( );
-    void load_ngap_s3_credentials( );
 
+    AccessCredentials *load_credentials_from_env();
+
+    void load_ngap_s3_credentials();
 
 public:
     static CredentialsManager *theMngr;
 
     ~CredentialsManager();
+
     static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
+
     void load_credentials();
 
-    void clear(){
+    void clear() {
         creds.clear();
         ngaps3CredentialsLoaded = false;
     }
 
-    AccessCredentials *get(std::shared_ptr<http::url> &url);
+    AccessCredentials *get(const std::shared_ptr<http::url> &url);
 
-    unsigned int size(){
+    size_t size() const {
         return creds.size();
     }
 
-    bool hasNgapS3Credentials(){
+    bool hasNgapS3Credentials() const {
         return ngaps3CredentialsLoaded;
     }
 };
 
-
-
-
+}   // namespace http
 
 #endif //HYRAX_CREDENTIALSMANAGER_H

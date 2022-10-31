@@ -43,12 +43,11 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace dmrpp {
+namespace http {
 
 class awsv4_test : public CppUnit::TestFixture {
 private:
     string cm_config;
-    // string weak_config;
     time_t request_time;
     string aws_key_id;
     string aws_secret_key;
@@ -298,7 +297,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(awsv4_test);
 
-} // namespace dmrpp
+} // namespace http
 
 int main(int argc, char *argv[]) {
     CppUnit::TextTestRunner runner;
@@ -331,7 +330,7 @@ int main(int argc, char *argv[]) {
         int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            string test = dmrpp::awsv4_test::suite()->getName().append("::").append(argv[i]);
+            string test = http::awsv4_test::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

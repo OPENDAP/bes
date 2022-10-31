@@ -59,6 +59,7 @@
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 using namespace dmrpp;
+using namespace http;
 using namespace std;
 
 string pthread_error(unsigned int err){

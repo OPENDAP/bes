@@ -46,7 +46,6 @@
 
 #include "AllowedHosts.h"
 
-
 using namespace std;
 
 #define MODULE "ah"
