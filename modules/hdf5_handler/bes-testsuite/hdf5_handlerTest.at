@@ -712,6 +712,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dap.bescmd])
 
 #netcdf4 enhanced simple
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim.h5.dmr.bescmd])
 
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
@@ -756,9 +757,14 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([t_special_char_attr.h5.dmr.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([ds_or.h5.dmr.bescmd])
 
 # default HDF-EOS5 DMR tests
-AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd_aug.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_2_3d_2x2yz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char_aug.h5.dmr.bescmd])
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file

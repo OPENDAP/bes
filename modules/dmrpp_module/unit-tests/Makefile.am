@@ -24,10 +24,6 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LIBADD += $(CPPUNIT_LIBS)
 endif
 
-if USE_VALGRIND
-TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1  --dsymutil=yes --leak-check=yes
-endif
-
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
@@ -46,24 +42,19 @@ pugi_xml_test_SOURCES = pugi_xml_test.cc
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
-CREDS_CONF = $(builddir)/credentials.conf
-CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
-
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
+noinst_DATA = bes.conf
 
-EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in curl_handle_pool_keys.conf \
-baselines input-files awsv4
+EXTRA_DIST = bes.conf.in test_config.h.in curl_handle_pool_keys.conf baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes_ngap_s3_creds.conf bes.log $(CREDS_CONF)
+DISTCLEANFILES = bes.conf bes.log
 
 BUILT_SOURCES = test_config.h
 
 BES_CONF_IN = bes.conf.in
-BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile.am
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
@@ -81,14 +72,6 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
-
-$(CREDS_CONF):
-	cp $(CREDS_CONF_IN) $(CREDS_CONF)
-	chmod 600 $(CREDS_CONF)
 
 ############################################################################
 # Unit Tests
@@ -96,20 +79,10 @@ $(CREDS_CONF):
 
 if CPPUNIT
 
-UNIT_TESTS = DmrppArrayTest \
-             NgapCredentialsTest \
-             SuperChunkTest \
-             ChunkTest \
-             DmrppParserTest \
-             DmrppCommonTest \
-             CredentialsManagerTest \
-             awsv4_test \
-             CurlHandlePoolTest \
-             DMZTest \
-             build_dmrpp_util_test \
-             DmrppChunkOdometerTest
+UNIT_TESTS = DmrppArrayTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest CurlHandlePoolTest \
+DMZTest build_dmrpp_util_test DmrppChunkOdometerTest
 
-#              DmrppMetadataStoreTest
+# DmrppMetadataStoreTest
 
 else
 
@@ -136,15 +109,6 @@ ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 SuperChunkTest_SOURCES = SuperChunkTest.cc
 SuperChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
-
-CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
-
-NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(LIBADD)
-
-awsv4_test_SOURCES = awsv4_test.cc
-awsv4_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc

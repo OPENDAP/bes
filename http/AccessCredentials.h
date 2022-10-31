@@ -8,6 +8,8 @@
 #include <map>
 #include <string>
 
+namespace http {
+
 class AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
@@ -18,17 +20,15 @@ public:
     static const char *URL_KEY;
 
 private:
-    std::map<std::string, std::string> kvp;
+    std::map<std::string, std::string> d_kvp;
     std::string d_config_name;
-    bool d_s3_tested;
-    bool d_is_s3;
+    bool d_s3_tested = false;
+    bool d_is_s3 = false;
+
 public:
     AccessCredentials() = default;
 
-    explicit AccessCredentials(const std::string &config_name) :
-        d_config_name(config_name),
-        d_s3_tested(false),
-        d_is_s3(false) { }
+    explicit AccessCredentials(std::string config_name) : d_config_name(std::move(config_name)) {}
 
     AccessCredentials(const AccessCredentials &ac) = default;
 
@@ -36,18 +36,17 @@ public:
 
     virtual std::string get(const std::string &key);
 
-    void add(const std::string &key, const std::string &value);
+    virtual void add(const std::string &key, const std::string &value);
 
     virtual bool is_s3_cred();
 
-    std::string to_json();
+    std::string to_json() const;
 
-    std::string name() { return d_config_name; }
+    std::string name() const { return d_config_name; }
 
     void name(const std::string &name) { d_config_name = name; }
 };
 
-#include <string>
-#include <vector>
+} // namespace http
 
 #endif //HYRAX_GIT_ACCESSCREDENTIALS_H

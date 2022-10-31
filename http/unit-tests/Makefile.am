@@ -2,11 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) \
-                -I$(top_srcdir)/http \
-                -I$(top_srcdir)/dispatch \
-                $(DAP_CFLAGS)
-
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
@@ -22,24 +18,25 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-DISTCLEANFILES = test_config.h *.Po
+DISTCLEANFILES = bes.conf bes.log bes_ngap_s3_creds.conf credentials.conf test_config.h
 
 CLEANFILES = bes.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini
+EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini bes_ngap_s3_creds.conf.in \
+awsv4 weak.conf credentials.conf.src
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes_ngap_s3_creds.conf
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h credentials.conf
 
 noinst_HEADERS = test_config.h
 
 # This way of building the header ensures it's in the build dir and that there
-# are no '../' seqeunces in the paths. The BES will reject paths with 'dot dot'
+# are no '../' sequences in the paths. The BES will reject paths with 'dot dot'
 # in them in certain circumstances. jhrg 1/21/18
 test_config.h: $(srcdir)/test_config.h.in Makefile
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
@@ -49,24 +46,29 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
-BES_CONF_IN = bes.conf.in
+credentials.conf: credentials.conf.src
+	cp $< $@
+	chmod 600 $@
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
-bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
+
+bes.conf: bes.conf.in $(top_srcdir)/configure.ac
+bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
+
+%.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf; \
-	cat bes.conf; # TODO Remove this!
-
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > $@
 
 ############################################################################
 # Unit Tests
 #
 
 if CPPUNIT
-UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest AllowedHostsTest
+UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest \
+AllowedHostsTest CredentialsManagerTest NgapCredentialsTest awsv4_test
 else
 UNIT_TESTS =
 
@@ -99,3 +101,13 @@ HttpUrlTest_LDADD = $(LIBADD)
 
 AllowedHostsTest_SOURCES = AllowedHostsTest.cc
 AllowedHostsTest_LDADD = $(LIBADD)
+
+CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
+CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
+
+NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
+NgapCredentialsTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
+
+awsv4_test_SOURCES = awsv4_test.cc
+awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)
+

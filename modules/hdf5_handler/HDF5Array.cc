@@ -1795,7 +1795,18 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                 // Need the full path of the dimension name
                 string d4_dim_path = dimpath[k].substr(0,dimpath[k].find_last_of("/")+1);
                 BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
-                
+#if 0
+if (d4_dim_path == temp_grp->FQN()){
+cout <<"Found the dimension group" <<endl;
+cout <<"d4_dim_path " <<d4_dim_path <<endl;
+}
+else {
+cout <<"Not Found the dimension group" <<endl;
+cout <<"d4_dim_path " <<d4_dim_path <<endl;
+cout <<"temp_grp->FQN() " <<temp_grp->FQN() <<endl;
+}
+#endif
+
                 bool ancestor_grp = false;
 
                 // If the dim_path is within this group or its ancestor, this is valid.
@@ -1844,7 +1855,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
             if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
-                BESDEBUG("h5", "<Just before adding D4 dimension to group" << endl);
+                BESDEBUG("h5", "<Just before adding D4 dimension to group" << grp->FQN() <<endl);
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }

@@ -58,7 +58,6 @@
 #include "CurlUtils.h"
 #include "NgapS3Credentials.h"
 
-
 using namespace libdap;
 
 static bool debug = false;
@@ -67,8 +66,7 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace dmrpp {
-
+namespace http {
 
 class NgapCredentialsTest : public CppUnit::TestFixture {
 
@@ -114,7 +112,7 @@ public:
                 cout << "   NgapS3Credentials::AWS_SESSION_TOKEN: " << nsc.get(NgapS3Credentials::AWS_SESSION_TOKEN)
                      << endl;
             if (debug)
-                cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION)
+                cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION_KEY)
                      << endl;
 
             time_t now = time(0);
@@ -145,7 +143,7 @@ CPPUNIT_TEST_SUITE(NgapCredentialsTest);
 CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
 
 
-} // namespace dmrpp
+} // namespace http
 
 int main(int argc, char *argv[]) {
     CppUnit::TextTestRunner runner;
@@ -177,7 +175,7 @@ int main(int argc, char *argv[]) {
         int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            string test = dmrpp::NgapCredentialsTest::suite()->getName().append("::").append(argv[i]);
+            string test = http::NgapCredentialsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

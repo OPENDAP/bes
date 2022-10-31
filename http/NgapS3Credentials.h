@@ -24,30 +24,32 @@
 #ifndef HYRAX_GIT_S3CREDENTIALS_H
 #define HYRAX_GIT_S3CREDENTIALS_H
 
-#include "AccessCredentials.h"
 #include <string>
+
+#include "AccessCredentials.h"
+
+namespace http {
 
 class NgapS3Credentials : public AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
-    static const std::string AWS_SESSION_TOKEN;
-    static const std::string AWS_TOKEN_EXPIRATION;
-    static const std::string BES_CONF_S3_ENDPOINT_KEY;
-    static const std::string BES_CONF_REFRESH_KEY;
-    static const std::string BES_CONF_URL_BASE;
+    static const char *AWS_SESSION_TOKEN;   /// @mote There is already a symbol AWS_SESSION_TOKEN_KEY
+    static const char *AWS_TOKEN_EXPIRATION_KEY;
+    static const char *BES_CONF_S3_ENDPOINT_KEY;
+    static const char *BES_CONF_REFRESH_KEY;
+    static const char *BES_CONF_URL_BASE_KEY;
 
 private:
-    time_t d_expiration_time;
-    long refresh_margin;
+    time_t d_expiration_time = 0;
+    long refresh_margin = 600;
     std::string distribution_api_endpoint;
 
 public:
-    NgapS3Credentials() :
-            d_expiration_time(0), refresh_margin(600), distribution_api_endpoint("") {}
+    NgapS3Credentials() = default;
 
     NgapS3Credentials(const std::string &credentials_endpoint, long refresh_margin) :
-            d_expiration_time(0), refresh_margin(refresh_margin), distribution_api_endpoint(credentials_endpoint) {}
+            refresh_margin(refresh_margin), distribution_api_endpoint(credentials_endpoint) {}
 
     void get_temporary_credentials();
 
@@ -56,14 +58,16 @@ public:
     }
 
     bool needs_refresh() const {
-        return (d_expiration_time - time(0)) < refresh_margin;
+        return (d_expiration_time - time(nullptr)) < refresh_margin;
     }
 
-    virtual bool is_s3_cred();
+    bool is_s3_cred() override {
+        return true;
+    }
 
-    std::string get(const std::string &key);
-
+    std::string get(const std::string &key) override;
 };
 
+} // namespace http
 
 #endif //HYRAX_GIT_S3CREDENTIALS_H
