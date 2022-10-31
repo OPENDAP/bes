@@ -945,7 +945,7 @@
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Pressure</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Convergence">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
                         <Attribute name="Units" type="String">
@@ -962,6 +962,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Data Fields/Convergence</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="L2gpPrecision">
@@ -982,6 +985,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Data Fields/L2gpPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpValue">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1000,6 +1006,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Data Fields/L2gpValue</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Quality">
@@ -1019,6 +1028,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Data Fields/Quality</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="Status">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1036,6 +1048,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Data Fields/Status</Value>
                         </Attribute>
                     </Int32>
                     <Attribute name="HDF5_SOFTLINK_1" type="Container">
@@ -1055,7 +1070,7 @@
                         </Attribute>
                     </Attribute>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="ChunkNumber">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
@@ -1072,6 +1087,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/ChunkNumber</Value>
                         </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
@@ -1091,6 +1109,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LineOfSightAngle">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1108,6 +1129,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/LineOfSightAngle</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
@@ -1127,6 +1151,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/LocalSolarTime</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1145,6 +1172,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OrbitGeodeticAngle">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1162,6 +1192,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/OrbitGeodeticAngle</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
@@ -1181,6 +1214,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Pressure</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
                         <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
@@ -1198,6 +1234,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/SolarZenithAngle</Value>
                         </Attribute>
                     </Float32>
                     <Float64 name="Time">
@@ -1217,10 +1256,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Temperature/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
-            <Group name="WMOTPPressure-GEOS5">
+            <Group name="WMOTPPressure_GEOS5">
                 <Dimension name="nTimes" size="3495"/>
                 <Dimension name="nTimesTotal" size="3495"/>
                 <Attribute name="Pressure" type="Float32">
@@ -1229,9 +1271,9 @@
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Pressure</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Convergence">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -1247,9 +1289,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Convergence</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpPrecision">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
@@ -1265,9 +1310,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpValue">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
@@ -1283,9 +1331,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpValue</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Quality">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -1301,9 +1352,12 @@
                         <Attribute name="Title" type="String">
                             <Value>WMOTPPressure-GEOS5Quality</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Quality</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="Status">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>513</Value>
                         </Attribute>
@@ -1318,6 +1372,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Status</Value>
                         </Attribute>
                     </Int32>
                     <Attribute name="HDF5_SOFTLINK_1" type="Container">
@@ -1337,9 +1394,9 @@
                         </Attribute>
                     </Attribute>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="ChunkNumber">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-999</Value>
                         </Attribute>
@@ -1355,9 +1412,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/ChunkNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1373,9 +1433,12 @@
                         <Attribute name="Title" type="String">
                             <Value>Latitude</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LineOfSightAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1391,9 +1454,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LineOfSightAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1409,9 +1475,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LocalSolarTime</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1427,9 +1496,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OrbitGeodeticAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1445,9 +1517,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/OrbitGeodeticAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1463,9 +1538,12 @@
                         <Attribute name="Title" type="String">
                             <Value>SolarZenithAngle</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="Time">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_GEOS5/nTimes"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-999.989990234375</Value>
                         </Attribute>
@@ -1481,10 +1559,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
-            <Group name="WMOTPPressure-MLS">
+            <Group name="WMOTPPressure_MLS">
                 <Dimension name="nTimes" size="3495"/>
                 <Dimension name="nTimesTotal" size="3495"/>
                 <Attribute name="Pressure" type="Float32">
@@ -1493,9 +1574,9 @@
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Pressure</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Convergence">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -1511,9 +1592,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Convergence</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpPrecision">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
@@ -1529,9 +1613,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpValue">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
@@ -1547,9 +1634,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpValue</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Quality">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -1565,9 +1655,12 @@
                         <Attribute name="Title" type="String">
                             <Value>WMOTPPressure-MLSQuality</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Quality</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="Status">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>513</Value>
                         </Attribute>
@@ -1582,6 +1675,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Status</Value>
                         </Attribute>
                     </Int32>
                     <Attribute name="HDF5_SOFTLINK_1" type="Container">
@@ -1601,9 +1697,9 @@
                         </Attribute>
                     </Attribute>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="ChunkNumber">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-999</Value>
                         </Attribute>
@@ -1619,9 +1715,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/ChunkNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Title" type="String">
                             <Value>Latitude</Value>
                         </Attribute>
@@ -1637,9 +1736,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LineOfSightAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1655,9 +1757,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LineOfSightAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1673,9 +1778,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LocalSolarTime</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1691,9 +1799,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OrbitGeodeticAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1709,9 +1820,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/OrbitGeodeticAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1727,9 +1841,12 @@
                         <Attribute name="Title" type="String">
                             <Value>SolarZenithAngle</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="Time">
-                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/WMOTPPressure_MLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-999.989990234375</Value>
                         </Attribute>
@@ -1745,15 +1862,30 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
-        <String name="xmlmetadata"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="xmlmetadata">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/xmlmetadata</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.12</Value>
         </Attribute>

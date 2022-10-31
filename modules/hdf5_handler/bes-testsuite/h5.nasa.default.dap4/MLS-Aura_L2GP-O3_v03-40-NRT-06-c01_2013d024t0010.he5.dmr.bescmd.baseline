@@ -735,7 +735,7 @@
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Pressure</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Convergence">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -752,6 +752,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Data Fields/Convergence</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="L2gpPrecision">
@@ -772,6 +775,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpValue">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
@@ -791,6 +797,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Data Fields/L2gpValue</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Quality">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
@@ -808,6 +817,9 @@
                         </Attribute>
                         <Attribute name="Title" type="String">
                             <Value>O3Quality</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Data Fields/Quality</Value>
                         </Attribute>
                     </Float32>
                     <Int32 name="Status">
@@ -827,6 +839,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Data Fields/Status</Value>
+                        </Attribute>
                     </Int32>
                     <Attribute name="HDF5_SOFTLINK_1" type="Container">
                         <Attribute name="linkname" type="String">
@@ -845,7 +860,7 @@
                         </Attribute>
                     </Attribute>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="ChunkNumber">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
@@ -862,6 +877,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/ChunkNumber</Value>
                         </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
@@ -881,6 +899,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LineOfSightAngle">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
@@ -898,6 +919,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LineOfSightAngle</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
@@ -917,6 +941,9 @@
                         <Attribute name="Title" type="String">
                             <Value>LocalSolarTime</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/LocalSolarTime</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
@@ -934,6 +961,9 @@
                         </Attribute>
                         <Attribute name="Title" type="String">
                             <Value>Longitude</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Longitude</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="OrbitGeodeticAngle">
@@ -953,6 +983,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/OrbitGeodeticAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
                         <Dim name="/HDFEOS/SWATHS/O3/nLevels"/>
@@ -970,6 +1003,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Pressure</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
@@ -989,6 +1025,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="Time">
                         <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
@@ -1007,15 +1046,30 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/O3/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
-        <String name="xmlmetadata"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="xmlmetadata">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/xmlmetadata</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.12</Value>
         </Attribute>
