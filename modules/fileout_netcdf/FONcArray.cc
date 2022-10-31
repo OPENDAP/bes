@@ -588,7 +588,7 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
  */
 bool FONcArray::equal_length(vector<string> &the_strings)
 {
-    if (the_strings.size()==0)
+    if (the_strings.empty()==true)
         return false;
     else {
         size_t length = the_strings[0].size();
