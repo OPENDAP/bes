@@ -34,11 +34,11 @@ class NgapS3Credentials : public AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
-    static const char *AWS_SESSION_TOKEN;
-    static const char *AWS_TOKEN_EXPIRATION;
+    static const char *AWS_SESSION_TOKEN;   /// @mote There is already a symbol AWS_SESSION_TOKEN_KEY
+    static const char *AWS_TOKEN_EXPIRATION_KEY;
     static const char *BES_CONF_S3_ENDPOINT_KEY;
     static const char *BES_CONF_REFRESH_KEY;
-    static const char *BES_CONF_URL_BASE;
+    static const char *BES_CONF_URL_BASE_KEY;
 
 private:
     time_t d_expiration_time = 0;
@@ -61,7 +61,9 @@ public:
         return (d_expiration_time - time(nullptr)) < refresh_margin;
     }
 
-    bool is_s3_cred() override;
+    bool is_s3_cred() const {
+        return true;
+    }
 
     std::string get(const std::string &key) override;
 };

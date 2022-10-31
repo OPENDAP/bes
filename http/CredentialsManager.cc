@@ -167,7 +167,6 @@ CredentialsManager::get(shared_ptr <http::url> &url) {
     std::string best_key;
 
     if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
-        //for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
         for (auto &item: creds) {
             std::string key = item.first;
             if (url->str().rfind(key, 0) == 0) {
@@ -179,6 +178,7 @@ CredentialsManager::get(shared_ptr <http::url> &url) {
             }
         }
     }
+
     return best_match;
 }
 
@@ -441,7 +441,7 @@ void CredentialsManager::load_ngap_s3_credentials() {
         }
 
         string s3_base_url = NGAP_S3_BASE_DEFAULT;
-        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE, value, found);
+        TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_URL_BASE_KEY, value, found);
         if (found) {
             s3_base_url = value;
         }
