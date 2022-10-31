@@ -577,17 +577,27 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 
 /**
  * @brief Are all of the strings the same length?
+ *
+ * This function also handles a special case when
+ * the vector size is 0. If this happens,
+ * the return value is false since no string is
+ * compared. KY 2022-10-31
+ *
  * @param the_array_strings
  * @return True if the strings are the same length
  */
 bool FONcArray::equal_length(vector<string> &the_strings)
 {
-    size_t length = the_strings[0].size();
-    if ( std::all_of(the_strings.begin()+1, the_strings.end(),
-                     [length](string &s){return s.size() == length;}) )
-        return true;
-    else
+    if (the_strings.size()==0)
         return false;
+    else {
+        size_t length = the_strings[0].size();
+        if ( std::all_of(the_strings.begin()+1, the_strings.end(),
+                         [length](string &s){return s.size() == length;}) )
+            return true;
+        else
+            return false;
+    }
 }
 
 /**
