@@ -85,6 +85,9 @@
         </Group>
         <Group name="GRIDS">
             <Group name="NadirGrid">
+                <Dimension name="XDim" size="90"/>
+                <Dimension name="YDim" size="83"/>
+                <Dimension name="nLevels" size="15"/>
                 <Attribute name="Projection" type="String">
                     <Value>Geographic</Value>
                 </Attribute>
@@ -109,11 +112,11 @@
                 <Attribute name="TriangleVertDistMax" type="Float32">
                     <Value>-999.</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="CH4">
-                        <Dim size="90"/>
-                        <Dim size="83"/>
-                        <Dim size="15"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -129,10 +132,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-SHARED</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CH4AtSurface">
-                        <Dim size="90"/>
-                        <Dim size="83"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -148,9 +154,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TES-SPECIFIC</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/CH4AtSurface</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Latitude">
-                        <Dim size="83"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -166,9 +175,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-SHARED</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="90"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -184,9 +196,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-SHARED</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
-                        <Dim size="15"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -202,10 +217,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-SHARED</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/Pressure</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SurfacePressure">
-                        <Dim size="90"/>
-                        <Dim size="83"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -221,10 +239,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TES-SPECIFIC</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/SurfacePressure</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="TotalColumnDensity">
-                        <Dim size="90"/>
-                        <Dim size="83"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/NadirGrid/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -240,14 +261,25 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>TES-SPECIFIC</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/NadirGrid/Data Fields/TotalColumnDensity</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.10.1</Value>
         </Attribute>
