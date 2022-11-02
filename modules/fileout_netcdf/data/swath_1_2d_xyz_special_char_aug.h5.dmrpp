@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="swath_1_2d_xyz_special_char_aug.h5" dmrpp:href="data/swath_1_2d_xyz_special_char_aug.h5" dmrpp:version="3.20.13">
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/Users/myang6/work/opendap/hyrax-858/bes/modules/dmrpp_module/.libs/build_dmrpp -f swath_1_2d_xyz_special_char_aug.h5 -r swath_1_2d_xyz_special_char_aug.h5.dmr -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="SWATHS">
+            <Group name="Swath_1">
+                <Dimension name="Z_Dim" size="4"/>
+                <Dimension name="N_Dim" size="8"/>
+                <Group name="Geolocation_Fields">
+                    <Float32 name="Pressure_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/Z_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Pressure-1</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34096" nBytes="16"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                    <Float32 name="Latitude_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_north</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Latitude-1</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34112" nBytes="32"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                    <Float32 name="Longitude_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_east</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Longitude-1</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34144" nBytes="32"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                </Group>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/Z_Dim"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Data Fields/Temperature-1</Value>
+                        </Attribute>
+                        <dmrpp:chunks fillValue="0" byteOrder="LE">
+                            <dmrpp:chunk offset="34176" nBytes="128"/>
+                        </dmrpp:chunks>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+            <dmrpp:chunks fillValue="unsupported-string">
+                <dmrpp:chunk offset="2096" nBytes="32000"/>
+            </dmrpp:chunks>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.17</Value>
+        </Attribute>
+    </Group>
+</Dataset>

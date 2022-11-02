@@ -809,6 +809,9 @@
         </Group>
         <Group name="SWATHS">
             <Group name="BrO">
+                <Dimension name="nTimes" size="3495"/>
+                <Dimension name="nTimesTotal" size="3495"/>
+                <Dimension name="nLevels" size="37"/>
                 <Attribute name="Pressure" type="Float32">
                     <Value>1000.</Value>
                     <Value>681.2920532</Value>
@@ -851,9 +854,9 @@
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Pressure</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Convergence">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -869,10 +872,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Data Fields/Convergence</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpPrecision">
-                        <Dim size="3495"/>
-                        <Dim size="37"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -888,10 +894,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Data Fields/L2gpPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="L2gpValue">
-                        <Dim size="3495"/>
-                        <Dim size="37"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -907,9 +916,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Data Fields/L2gpValue</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Quality">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>NoUnits</Value>
                         </Attribute>
@@ -925,9 +937,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Data Fields/Quality</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="Status">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>513</Value>
                         </Attribute>
@@ -942,6 +957,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Data Fields/Status</Value>
                         </Attribute>
                     </Int32>
                     <Attribute name="HDF5_SOFTLINK_1" type="Container">
@@ -961,9 +979,9 @@
                         </Attribute>
                     </Attribute>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="ChunkNumber">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-999</Value>
                         </Attribute>
@@ -979,9 +997,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/ChunkNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Title" type="String">
                             <Value>Latitude</Value>
                         </Attribute>
@@ -997,9 +1018,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LineOfSightAngle">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1015,9 +1039,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/LineOfSightAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>h</Value>
                         </Attribute>
@@ -1033,9 +1060,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/LocalSolarTime</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1051,9 +1081,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OrbitGeodeticAngle">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1069,9 +1102,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>MLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/OrbitGeodeticAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
-                        <Dim size="37"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.9899902</Value>
                         </Attribute>
@@ -1087,9 +1123,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Pressure</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="Units" type="String">
                             <Value>deg</Value>
                         </Attribute>
@@ -1105,9 +1144,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-MLS-TES-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="Time">
-                        <Dim size="3495"/>
+                        <Dim name="/HDFEOS/SWATHS/BrO/nTimes"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-999.989990234375</Value>
                         </Attribute>
@@ -1123,14 +1165,25 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/BrO/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.10</Value>
         </Attribute>

@@ -1,0 +1,421 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:OrbitNumber = 38964, 38965, 38966, 38967, 38968, 38969, 38970, 38971, 38972, 38973, 38974, 38975, 38976, 38977, 38978, 38979 ;
+      		:OrbitPeriod = 5933.06584203243, 5933.03501594067, 5933.0013910532, 5933.01488101482, 5933.0768610239, 5933.15251898766, 5933.14815294743, 5933.10579395294, 5933.02488005161, 5932.99821901321, 5932.99657702446, 5933.02463698387, 5933.11313700676, 5933.14931595325, 5933.09283697605, 5933.09283697605 ;
+      		:InstrumentName = "MLS Aura" ;
+      		:HostName = " " ;
+      		:ProcessLevel = "L2" ;
+      		:PGEVersion = "V03-33" ;
+      		:StartUTC = "removed date-time" ;
+      		:EndUTC = "removed date-time" ;
+      		:GranuleMonth = 11 ;
+      		:GranuleDay = 12 ;
+      		:GranuleDayOfYear = 316 ;
+      		:GranuleYear = 2011 ;
+      		:TAI93At0zOfGranule = 0. ;
+      		:FirstMAF = 784304 ;
+      		:LastMAF = 787811 ;
+      		:MiscNotes = "apriori(geos5),/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0600.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1200.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1800.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111113_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0000.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0600.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1200.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1800.V01.hdf,/workops/jobs/science/1321212753.14503/DAS.ops.asm.tavg3d_prs_v.GEOS520.20111113_0000.V01.hdf" ;
+      		:content = "l2gp" ;
+      		:lastOperation = "write" ;
+      		:name = "/workops/jobs/science/1321212753.14503/MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5" ;
+      		:ShortName = "L2GP-Temperature" ;
+      		:typeStr = "swath" ;
+      		:type = 164 ;
+      		:access = 3 ;
+      		:HDFVersion = 5 ;
+      		:PCFID = 0 ;
+      		:recordlength = 0 ;
+      		:errorCode = 0 ;
+      		:PCFIDRange = 30000, 30569 ;
+      		:FileID = 67108887, 0, 0 ;
+      		:PCF1 = "#\n# filename:\n# \tPCF.relB0\n#\n# description:\n#   \tProcess Control File (PCF)\n#\n# notes:\n#\n# \tThis file supports the Release B version of the toolkit.\n#       It is intended for use with toolkit version \"TK_VERSION_STRING\".\n#\n#       The logical IDs 10000-10999 (inclusive) are reserved for internal\n#       Toolkit/ECS usage, DO NOT add logical IDs with these values.\n#\n# \tPlease treat this file as a master template and make copies of it\n# \tfor your own testing. Note that the Toolkit installation script\n#  \tsets PGS_PC_INFO_FILE to point to this master file by default.\n#       Remember to reset the environment variable PGS_PC_INFO_FILE to \n#       point to the instance of your PCF.\n#\n#       The toolkit will not interpret environment variables specified\n#       in this file (e.g. ~/database/$OSTYPE/TD is not a valid reference).\n#       The \'~\' character, however, when appearing in a reference WILL be\n#       replaced with the value of the environment variable PGSHOME.\n#\n#       The PCF file delivered with the toolkit should be taken as a\n#       template.  User entries should be added as necessary to this\n#       template.  Existing entries may (in some cases should) be altered\n#       but generally should not be commented out or deleted.  A few\n#       entries may not be needed by all users and can in some cases\n#       be commented out or deleted.  Such entries should be clearly\n#       identified in the comment(s) preceding the entry/entries.\n#\n#       Entries preceded by the comment: (DO NOT REMOVE THIS ENTRY)\n#       are deemed especially critical and should not be removed for\n#       any reason (although the values of the various fields of such an\n#       entry may be configurable).\n#\n# -----------------------------------------------------------------------\n?   SYSTEM RUNTIME PARAMETERS\n# -----------------------------------------------------------------------\n#########################################################################\n#\n# This section contains unique identifiers used to track instances of\n# a PGE run, versions of science software, etc.  This section must\n# contain exactly two entries.  These values will be inserted by\n# ECS just before a PGE is executed.  At the SCF the values may be set\n# to anything but these values are not normally user definable and user\n# values will be ignored/overwritten at the DAAC.\n#\n#########################################################################\n#\n# Production Run ID - unique production instance identifier\n# (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n1\n# -----------------------------------------------------------------------\n# Software ID - unique software configuration identifier\n# (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n1\n#\n?   PRODUCT INPUT FILES\n#########################################################################\n#\n# This section is intended for standard product inputs, i.e., major\n# input files such as Level 0 data files.\n#\n# Each logical ID may have several file instances, as given by the\n# version number in the last field.\n#\n#########################################################################\n#\n# Next non-comment line is the default location for PRODUCT INPUT FILES\n# WARNING! DO NOT MODIFY THIS LINE unless you have relocated these \n# data set files to the location specified by the new setting.\n!  /workops/jobs/science/1321212753.14503\n#\n#-----------------\n# Test input files\n#-----------------\n900|job.PCF|||||1\n901|l2cf.0333|/science||||1\n22201|master.ident|/workops/jobs/science/1321212753.14503||||1\n20000|emls-signals.dat|/science||||1\n20001|MLS-Aura_L2Cal-AAAP_v2-0-0_0000d000.txt|/science/l2cal||||1\n20002|MLS-Aura_L2Cal-Filters_v3-0-2_0000d000.txt|/science/l2cal||||1\n20003|MLS-Aura_L2Cal-DACSFilters_v1-5-1_0000d000.txt|/science/l2cal||||1\n20004|MLS-Aura_L2Cal-PFG_v3-0-0_0000d000.txt|/science/l2cal||||1\n20005|PFA_R1A_ME-03.h5|/science/l2cal||||1\n20006|PFA_R1B_ME-03.h5|/science/l2cal||||1\n20007|PFA_R2_ME-03.h5|/science/l2cal||||1\n20008|PFA_R3_ME-03.h5|/science/l2cal||||1\n20009|PFA_R4_ME-03.h5|/science/l2cal||||1\n20010|PFA_R5H_ME-03.h5|/science/l2cal||||1\n20011|PFA_R5V_ME-03.h5|/science/l2cal||||1\n20012|PFA_DACS_ME-03.h5|/science/l2cal||||1\n20033|MLS-Aura_L2Cal-Spectroscopy-PFA_v3-0-5_0000d000.h5|/science/l2cal||||1\n20035|MLS-Aura_L2Cal-L2PC-band1-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20036|MLS-Aura_L2Cal-L2PC-band2-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20037|MLS-Aura_L2Cal-L2PC-band3-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20038|MLS-Aura_L2Cal-L2PC-band4-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20039|MLS-Aura_L2Cal-L2PC-band5-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20040|MLS-Aura_L2Cal-L2PC-band6-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20041|MLS-Aura_L2Cal-L2PC-band7-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20042|MLS-Aura_L2Cal-L2PC-band8-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20043|MLS-Aura_L2Cal-L2PC-band9-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20044|MLS-Aura_L2Cal-L2PC-band10-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20045|MLS-Aura_L2Cal-L2PC-band11-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20046|MLS-Aura_L2Cal-L2PC-band12-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20047|MLS-Aura_L2Cal-L2PC-band13-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20048|MLS-Aura_L2Cal-L2PC-band14-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20049|MLS-Aura_L2Cal-L2PC-band17-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20050|MLS-Aura_L2Cal-L2PC-band20-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20051|MLS-Aura_L2Cal-L2PC-band23-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20052|MLS-Aura_L2Cal-L2PC-band24-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20053|MLS-Aura_L2Cal-L2PC-band25-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20054|MLS-Aura_L2Cal-L2PC-band27-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20055|MLS-Aura_L2Cal-L2PC-band28-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20056|MLS-Aura_L2Cal-L2PC-band29-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20057|MLS-Aura_L2Cal-L2PC-band30-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20058|MLS-Aura_L2Cal-L2PC-band31-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20059|MLS-Aura_L2Cal-L2PC-band32-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20060|MLS-Aura_L2Cal-L2PC-band33-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20061|MLS-Aura_L2Cal-L2PC-band34-LATSCALARHIRES_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20062|MLS-Aura_L2Cal-L2PC-band15-SZASCALARHIRES_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n20063|MLS-Aura_L2Cal-L2PC-band16-SZASCALARHIRES_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n20064|MLS-Aura_L2Cal-L2PC-band18-SZASCALARHIRES_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n20065|MLS-Aura_L2Cal-L2PC-band19-SZASCALARHIRES_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n20066|MLS-Aura_L2Cal-L2PC-band22-LATPOLARHIRES_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n20067|MLS-Aura_L2Cal-L2PC-band1-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20068|MLS-Aura_L2Cal-L2PC-band7-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20069|MLS-Aura_L2Cal-L2PC-band8-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20070|MLS-Aura_L2Cal-L2PC-band9-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20071|MLS-Aura_L2Cal-L2PC-band24-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20072|MLS-Aura_L2Cal-L2PC-band25-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20073|MLS-Aura_L2Cal-L2PC-band32-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20074|MLS-Aura_L2Cal-L2PC-band33-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20075|MLS-Aura_L2Cal-L2PC-band34-LATSCALARHIRESO3HR_v3-20-ME-03_m11.h5|/science/l2cal||||1\n20076|MLS-Aura_L2Cal-L2PC-band22-LATPOLARHIRESO3HR_v3-20-ME-03_0000d000.h5|/science/l2cal||||1\n22200|MLS-Aura_L2Cal-Climatologies_v1-7-7_0000d000.txt|/science/l2cal||||1\n21110|MLS-Aura_L1BOA_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503|||LGID:ML1OA:1:1675389|1\n21050|MLS-Aura_L1BRADD_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503|||LGID:ML1RADD:1:1675392|1\n21052|MLS-Aura_L1BRADT_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503|||LGID:ML1RADT:1:1675390|1\n21051|MLS-Aura_L1BRADG_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503|||LGID:ML1RADG:1:1675391|1\n22000|DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0000.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVDYN:1:1674953|1\n22001|DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_0600.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVDYN:1:1674973|1\n22002|DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1200.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVDYN:1:1675305|1\n22003|DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111112_1800.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVDYN:1:1675307|1\n22004|DAS.ops.asm.tavg3d_dyn_v.GEOS520.20111113_0000.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVDYN:1:1675309|1\n22005|DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0000.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVPRS:1:1674952|1\n22006|DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_0600.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVPRS:1:1674972|1\n22007|DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1200.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVPRS:1:1675303|1\n22008|DAS.ops.asm.tavg3d_prs_v.GEOS520.20111112_1800.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVPRS:1:1675306|1\n22009|DAS.ops.asm.tavg3d_prs_v.GEOS520.20111113_0000.V01.hdf|/workops/jobs/science/1321212753.14503|||LGID:D5OTVPRS:1:1675308|1\n#\n# -----------------------------------------------------------------------\n# These are actual ancillary data set files - supplied by ECS or the\n# user.  The following are supplied for purposes of tests and as a useful\n# set of ancillary data.  These entries may be removed IF the AA tools\n# are not being used.\n# -----------------------------------------------------------------------\n10780|usatile12|AA_DATA_INSTALL_DIR|||10751|12\n10780|usatile11|AA_DATA_INSTALL_DIR|||10750|11\n10780|usatile10|AA_DATA_INSTALL_DIR|||10749|10\n10780|usatile9|AA_DATA_INSTALL_DIR|||10748|9\n10780|usatile8|AA_DATA_INSTALL_DIR|||10747|8\n10780|usatile7|AA_DATA_INSTALL_DIR|||10746|7\n10780|usatile6|AA_DATA_INSTALL_DIR|||10745|6\n10780|usatile5|AA_DATA_INSTALL_DIR|||10744|5\n10780|usatile4|AA_DATA_INSTALL_DIR|||10743|4\n10780|usatile3|AA_DATA_INSTALL_DIR|||10742|3\n10780|usatile2|AA_DATA_INSTALL_DIR|||10741|2\n10780|usatile1|AA_DATA_INSTALL_DIR|||10740|1\n10951|mowe13a.img|AA_DATA_INSTALL_DIR||||1\n10952|owe13a.img|AA_DATA_INSTALL_DIR||||1\n10953|owe14d.img|AA_DATA_INSTALL_DIR||||1\n10954|owe14dr.img|AA_DATA_INSTALL_DIR||||1\n10955|etop05.dat|AA_DATA_INSTALL_DIR||||1\n10956|fnocazm.img|AA_DATA_INSTALL_DIR||||1\n10957|fnococm.img|AA_DATA_INSTALL_DIR||||1\n10958|fnocpt.img|AA_DATA_INSTALL_DIR||||1\n10959|fnocrdg.img|AA_DATA_INSTALL_DIR||||1\n10960|fnocst.img|AA_DATA_INSTALL_DIR||||1\n10961|fnocurb.img|AA_DATA_INSTALL_DIR||||1\n10962|fnocwat.img|AA_DATA_INSTALL_DIR||||1\n10963|fnocmax.imgs|AA_DATA_INSTALL_DIR||||1\n10964|fnocmin.imgs|AA_DATA_INSTALL_DIR||||1\n10965|fnocmod.imgs|AA_DATA_INSTALL_DIR||||1\n10966|srzarea.img|AA_DATA_INSTALL_DIR||||1\n10967|srzcode.img|AA_DATA_INSTALL_DIR||||1\n10968|srzphas.img|AA_DATA_INSTALL_DIR||||1\n10969|srzslop.img|AA_DATA_INSTALL_DIR||||1\n10970|srzsoil.img|AA_DATA_INSTALL_DIR||||1\n10971|srztext.img|AA_DATA_INSTALL_DIR||||1\n10972|nmcRucPotPres.datrepack|AA_DATA_INSTALL_DIR||||1\n10973|tbase.bin|AA_DATA_INSTALL_DIR|||10915|1\n10974|tbase.br|AA_DATA_INSTALL_DIR|||10919|4\n10974|tbase.bl|AA_DATA_INSTALL_DIR|||10918|3\n10974|tbase.tr|AA_DATA_INSTALL_DIR|||10917|2\n10974|tbase.tl|AA_DATA_INSTALL_DIR|||10916|1\n10975|geoid.dat|AA_DATA_INSTALL_DIR||||1\n#\n# -----------------------------------------------------------------------\n# The following are for the PGS_GCT tool only.  The IDs are #defined in\n# the PGS_GCT.h file.  These entries are essential for the State Plane\n# Projection but can otherwise be deleted or commented out.\n# -----------------------------------------------------------------------\n10210|nad27sp|~/database/common/GCT||||1\n10201|nad83sp|~/database/common/GCT||||1\n# -----------------------------------------------------------------------\n# The following are for the PGS_AA_DCW tool only.\n# The IDs are #defined in the PGS_AA_DCW.h file.\n# These entries may be deleted or commented out IF the AA tools are not\n# being used.\n# -----------------------------------------------------------------------\n10990|eurnasia/|AA_DATA_INSTALL_DIR||||1\n10991|noamer/|AA_DATA_INSTALL_DIR||||1\n10992|soamafr/|AA_DATA_INSTALL_DIR||||1\n10993|sasaus/|AA_DATA_INSTALL_DIR||||1\n#\n# -----------------------------------------------------------------------\n# file for Constant & Unit Conversion (CUC) tools\n# IMPORTANT NOTE: THIS FILE WILL BE SUPPLIED AFTER TK4 DELIVERY!\n# -----------------------------------------------------------------------\n10999|PGS_CUC_maths_parameters|~/database/common/CUC||||1\n#\n#\n#------------------------------------------------------------------------\n# Metadata Configuration File (MCF) is a template to be filled in by the\n# Instrument teams.  MCFWrite.temp is a scratch file used to dump the MCF\n# prior to writing to the hdf file. GetAttr.temp is similarly used to\n# dump metadata from the hdf attributes and is used by PGS_MET_GetPCAttr.\n# (DO NOT REMOVE THESE ENTRIES)\n#------------------------------------------------------------------------\n10250|MCF|||||1\n4000|PH.0001.MCF|/science/mcf||||1\n4001|ML2T.0333.MCF|/science/mcf||||1\n4002|ML2GPH.0333.MCF|/science/mcf||||1\n4003|ML2CO.0333.MCF|/science/mcf||||1\n4004|ML2O3.0333.MCF|/science/mcf||||1\n4005|ML2OH.0333.MCF|/science/mcf||||1\n4006|ML2BRO.0333.MCF|/science/mcf||||1\n4007|ML2CLO.0333.MCF|/science/mcf||||1\n4008|ML2H2O.0333.MCF|/science/mcf||||1\n4009|ML2HCL.0333.MCF|/science/mcf||||1\n4010|ML2HCN.0333.MCF|/science/mcf||||1\n4011|ML2HO2.0333.MCF|/science/mcf||||1\n4012|ML2IWC.0333.MCF|/science/mcf||||1\n4013|ML2N2O.0333.MCF|/science/mcf||||1\n4014|ML2OTH.0333.MCF|/science/mcf||||1\n4015|ML2RHI.0333.MCF|/science/mcf||||1\n4016|ML2SO2.0333.MCF|/science/mcf||||1\n4017|ML2HNO3.0333.MCF|/science/mcf||||1\n4018|ML2HOCL.0333.MCF|/science/mcf||||1\n4019|ML2CH3CL.0333.MCF|/science/mcf||||1\n4020|ML2CH3CN.0333.MCF|/science/mcf||||1\n4022|ML2DGG.0333.MCF|/science/mcf||||1\n4023|ML2DGM.0333.MCF|/science/mcf||||1\n#\n#------------------------------------------------------------------------\n# Datasets for PGS_DEM tools.\n# A dataset of a given resolution is accessed via a single logical ID,\n# therefore all physical files comprising a data set must be accessed\n# via the same logical ID.  Use file versions to allow for multiple\n# physical files within a single data set.\n# Data files of 30 arc-sec resolution will be accessed via the\n# logical ID 10650.\n# Data files of 3 arc-sec resolution will be accessed via the\n# logical ID 10653.\n# NOTE: The file names in each entry must also appear in the attribute\n#       column of the entry (this is a requirement of the metadata tools).\n#       The entries given below are \"template\" entries and should be\n#       replaced with actual file name/location data before attempting\n#       to use the DEM tools.\n#------------------------------------------------------------------------\n#\n10650|DEM30ARC_NAME.hdf|DEM_LOCATION|||DEM30ARC_NAME.hdf|1\n10653|DEM3ARC_NAME.hdf|DEM_LOCATION|||DEM3ARC_NAME.hdf|1\n#\n?   PRODUCT OUTPUT FILES\n#########################################################################\n#\n# This section is intended for standard product outputs, i.e., HDF-EOS\n# files generated by this PGE.\n#\n# Each logical ID may have several file instances, as given by the\n# version number in the last field.\n#\n#########################################################################\n#\n# Next line is the default location for PRODUCT OUTPUT FILES\n!  /workops/jobs/science/1321212753.14503\n#\n30000|MLS-Aura_L2GP-BrO_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30001|MLS-Aura_L2GP-CH3Cl_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30002|MLS-Aura_L2GP-CH3CN_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30620|MLS-Aura_L2AUX-Cloud_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30003|MLS-Aura_L2GP-ClO_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30004|MLS-Aura_L2GP-CO_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30590|MLS-Aura_L2GP-DGG_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30621|MLS-Aura_L2AUX-DGM_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30632|MLS-Aura_L2FWM-DAC_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30630|MLS-Aura_L2FWM-GHz_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30631|MLS-Aura_L2FWM-THz_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30015|MLS-Aura_L2GP-GPH_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30005|MLS-Aura_L2GP-H2O_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30006|MLS-Aura_L2GP-HCl_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30007|MLS-Aura_L2GP-HCN_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30008|MLS-Aura_L2GP-HNO3_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30009|MLS-Aura_L2GP-HO2_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30010|MLS-Aura_L2GP-HOCl_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30017|MLS-Aura_L2GP-IWC_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30011|MLS-Aura_L2GP-N2O_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30012|MLS-Aura_L2GP-O3_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30013|MLS-Aura_L2GP-OH_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30016|MLS-Aura_L2GP-RHI_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30018|MLS-Aura_L2GP-SO2_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30660|MLS-Aura_L2Staging-Full_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30014|MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n10100|MLS-Aura_L2LOGSTATUS_v03-33-c01_2011d316.txt|/workops/jobs/science/1321212753.14503||||1\n10102|MLS-Aura_L2LOGUSER_v03-33-c01_2011d316.txt|/workops/jobs/science/1321212753.14503||||1\n10101|MLS-Aura_L2LOG_v03-33-c01_2011d316.txt|/workops/jobs/science/1321212753.14503||||1\n#\n30570|MLS-Aura_L2GP-DGG1_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30571|MLS-Aura_L2GP-DGG2_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30572|MLS-Aura_L2GP-DGG3_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30573|MLS-Aura_L2GP-DGG4_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30574|MLS-Aura_L2GP-DGG5_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30575|MLS-Aura_L2GP-DGG6_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30576|MLS-Aura_L2GP-DGG7_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30577|MLS-Aura_L2GP-DGG8_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30578|MLS-Aura_L2GP-DGG9_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30579|MLS-Aura_L2GP-DGG10_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30580|MLS-Aura_L2GP-DGG11_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30581|MLS-Aura_L2GP-DGG12_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30582|MLS-Aura_L2GP-DGG13_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30583|MLS-Aura_L2GP-DGG14_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30584|MLS-Aura_L2GP-DGG15_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30585|MLS-Aura_L2GP-DGG16_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30586|MLS-Aura_L2GP-DGG17_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30587|MLS-Aura_L2GP-DGG18_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30588|MLS-Aura_L2GP-DGG19_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30589|MLS-Aura_L2GP-DGG20_v03-33-c01_2011d316.he5|/workops/jobs/science/1321212753.14503||||1\n30600|MLS-Aura_L2AUX-DGM1_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30601|MLS-Aura_L2AUX-DGM2_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30602|MLS-Aura_L2AUX-DGM3_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30603|MLS-Aura_L2AUX-DGM4_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30604|MLS-Aura_L2AUX-DGM5_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30605|MLS-Aura_L2AUX-DGM6_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30606|MLS-Aura_L2AUX-DGM7_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30607|MLS-Aura_L2AUX-DGM8_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30608|MLS-Aura_L2AUX-DGM9_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30609|MLS-Aura_L2AUX-DGM10_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30610|MLS-Aura_L2AUX-DGM11_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30611|MLS-Aura_L2AUX-DGM12_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30612|MLS-Aura_L2AUX-DGM13_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30613|MLS-Aura_L2AUX-DGM14_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30614|MLS-Aura_L2AUX-DGM15_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30615|MLS-Aura_L2AUX-DGM16_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30616|MLS-Aura_L2AUX-DGM17_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30617|MLS-Aura_L2AUX-DGM18_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30618|MLS-Aura_L2AUX-DGM19_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n30619|MLS-Aura_L2AUX-DGM20_v03-33-c01_2011d316.h5|/workops/jobs/science/1321212753.14503||||1\n#\n10252|GetAttr.temp|||||1\n10254|MCFWrite.temp|||||1\n10260|XMLstylesheet.temp|/workops/jobs/science/1321212753.14503||||1\n#\n#------------------------------------------------------------------------\n# This file is created when PGS_MET_Write is used with an intention\n# to write an ASCII representation of the MCF in memory. The user is\n# allowed to change the name and path if required.\n#\n# NOTE: THIS IS OBSOLETE, THIS ENTRY IS ONLY HERE FOR BACKWARD\n#       COMPATIBILITY WITH PREVIOUS VERSIONS OF THE TOOLKIT.\n#       THE LOGICAL ID 10255 SHOULD BE MOVED DOWN TO THE RUNTIME\n#       PARAMETERS SECTION OF THIS FILE AND GIVEN A VALUE OF:\n#       <logical_id>:<version_number> WHERE THOSE VALUES REFLECT THE\n#       ACTUAL VALUES FOR THE NON-HDF OUTPUT PRODUCT FOR WHICH THE\n#       ASCII METADATA IS BEING WRITTEN.  e.g.:\n#       10255|reference output product|100:2\n#\n#------------------------------------------------------------------------\n10255|asciidump|||||1\n# -----------------------------------------------------------------------\n#\n?   SUPPORT INPUT FILES\n#########################################################################\n#\n# This section is intended for minor input files, e.g., calibration\n# files.\n#\n# Each logical ID may have several file instances, as given by the\n# version number in the last field.\n#\n#########################################################################\n#\n# Next line is the default location for SUPPORT INPUT FILES\n!  /workops/jobs/science/1321212753.14503\n#\n#  \n# -----------------------------------------------------------------------\n# This ID is #defined in PGS_AA_Tools.h\n# This file contains the IDs for all support and format files (listed\n# below).  This entry may be deleted or commented out if the AA tools are\n# not being used.\n# -----------------------------------------------------------------------\n10900|indexFile|~/database/common/AA||||1\n#\n# -----------------------------------------------------------------------\n# These are support files for the data set files - to be created by user\n# (not necessarily a one-to-one relationship).\n# The IDs must correspond to the logical IDs in the index file (above).\n# These entries may be deleted or commented out if the AA tools are not\n# being used.\n# -----------------------------------------------------------------------\n10901|mowe13aSupport|~/database/common/AA||||1\n10902|owe13aSupport|~/database/common/AA||||1\n10903|owe14Support|~/database/common/AA||||1\n10904|etop05Support|~/database/common/AA||||1\n10905|fnoc1Support|~/database/common/AA||||1\n10906|fnoc2Support|~/database/common/AA||||1\n10907|zobler1Support|~/database/common/AA||||1\n10908|zobler2Support|~/database/common/AA||||1\n10909|nmcRucSupport|~/database/common/AA||||1\n10915|tbaseSupport|~/database/common/AA||||1\n10916|tbase1Support|~/database/common/AA||||1\n10917|tbase2Support|~/database/common/AA||||1\n10918|tbase3Support|~/database/common/AA||||1\n10919|tbase4Support|~/database/common/AA||||1\n10740|usatile1Support|~/database/common/AA||||1\n10741|usatile2Support|~/database/common/AA||||1\n10742|usatile3Support|~/database/common/AA||||1\n10743|usatile4Support|~/database/common/AA||||1\n10744|usatile5Support|~/database/common/AA||||1\n10745|usatile6Support|~/database/common/AA||||1\n10746|usatile7Support|~/database/common/AA||||1\n10747|usatile8Support|~/database/common/AA||||1\n10748|usatile9Support|~/database/common/AA||||1\n10749|usatile10Support|~/database/common/AA||||1\n10750|usatile11Support|~/database/common/AA||||1\n10751|usatile12Support|~/database/common/AA||||1\n10948|geoidSupport|~/database/common/AA||||1\n#\n# -----------------------------------------------------------------------\n# The following are format files for each data set file (not necessarily\n# a one-to-one relationship).  # The IDs must correspond to the logical\n# IDs in the index file (10900, above).\n# These entries may be deleted or commented out if the AA tools are not\n# being used.\n# -----------------------------------------------------------------------\n10920|mowe13a.bfm|~/database/common/AA||||1\n10921|owe13a.bfm|~/database/common/AA||||1\n10922|owe14d.bfm|~/database/common/AA||||1\n10923|owe14dr.bfm|~/database/common/AA||||1\n10924|etop05.bfm|~/database/common/AA||||1\n10925|fnocAzm.bfm|~/database/common/AA||||1\n10926|fnocOcm.bfm|~/database/common/AA||||1\n10927|fnocPt.bfm|~/database/common/AA||||1\n10928|fnocRdg.bfm|~/database/common/AA||||1\n10929|fnocSt.bfm|~/database/common/AA||||1\n10930|fnocUrb.bfm|~/database/common/AA||||1\n10931|fnocWat.bfm|~/database/common/AA||||1\n10932|fnocMax.bfm|~/database/common/AA||||1\n10933|fnocMin.bfm|~/database/common/AA||||1\n10934|fnocMod.bfm|~/database/common/AA||||1\n10935|srzArea.bfm|~/database/common/AA||||1\n10936|srzCode.bfm|~/database/common/AA||||1\n10937|srzPhas.bfm|~/database/common/AA||||1\n10938|srzSlop.bfm|~/database/common/AA||||1\n10939|srzSoil.bfm|~/database/common/AA||||1\n10940|srzText.bfm|~/database/common/AA||||1\n10941|nmcRucSigPotPres.bfm|~/database/common/AA||||1\n10942|tbase.bfm|~/database/common/AA||||1\n10943|tbase1.bfm|~/database/common/AA||||1\n10944|tbase2.bfm|~/database/common/AA||||1\n10945|tbase3.bfm|~/database/common/AA||||1\n10946|tbase4.bfm|~/database/common/AA||||1\n10700|usatile1.bfm|~/database/common/AA||||1\n10701|usatile2.bfm|~/database/common/AA||||1\n10702|usatile3.bfm|~/database/common/AA||||1\n10703|usatile4.bfm|~/database/common/AA||||1\n10704|usatile5.bfm|~/database/common/AA||||1\n10705|usatile6.bfm|~/database/common/AA||||1\n10706|usatile7.bfm|~/database/common/AA||||1\n10707|usatile8.bfm|~/database/common/AA||||1\n10708|usatile9.bfm|~/database/common/AA||||1\n10709|usatile10.bfm|~/database/common/AA||||1\n10710|usatile11.bfm|~/database/common/AA||||1\n10711|usatile12.bfm|~/database/common/AA||||1\n10947|geoid.bfm|~/database/common/AA||||1\n#\n#\n# -----------------------------------------------------------------------\n# leap seconds (TAI-UTC) file (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10301|leapsec.dat|~/database/common/TD||||1\n#\n# -----------------------------------------------------------------------\n# polar motion and UTC-UT1 file (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10401|utcpole.dat|~/database/common/CSC||||1\n#\n# -----------------------------------------------------------------------\n# earth model tags file (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10402|earthfigure.dat|~/database/common/CSC||||1\n#\n# -----------------------------------------------------------------------\n# JPL planetary ephemeris file (binary form) (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10601|de200.eos|~/database/linux/CBP||||1\n#\n# -----------------------------------------------------------------------\n# spacecraft tag definition file (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10801|sc_tags.dat|~/database/common/EPH||||1\n#\n# -----------------------------------------------------------------------\n# units conversion definition file (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10302|udunits.dat|~/database/common/CUC||||1\n#\n# -----------------------------------------------------------------------\n# Style Sheet for XML INVENTORY Metadata (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10303|science.xsl|~/database/common/MET||||1\n#\n#\n?   SUPPORT OUTPUT FILES \n#########################################################################\n#\n# This section is intended for minor output files, e.g., log files.\n#\n# Each logical ID may have several file instances, as given by the\n# version number in the last field.\n#\n#########################################################################\n#\n# Next line is default location for SUPPORT OUTPUT FILES\n!  /workops/jobs/science/1321212753.14503\n#\n#\n# -----------------------------------------------------------------------\n# These files support the SMF log functionality. Each run will cause\n# status information to be written to 1 or more of the Log files. To\n# simulate DAAC operations, remove the 3 Logfiles between test runs.\n# Remember: all executables within a PGE will contribute status data to \n# the same batch of log files. (DO NOT REMOVE THESE ENTRIES)\n# -----------------------------------------------------------------------\n10103|TmpStatus|||||1\n10151|TmpReport|||||1\n10105|TmpUser|||||1\n10110|MailFile|||||1\n#\n# -----------------------------------------------------------------------\n# ASCII file which stores pointers to runtime SMF files in lieu of \n# loading them to shared memory, which is a TK5 enhancement.\n# (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10111|ShmMem|||||1\n#\n#  \n?   USER DEFINED RUNTIME PARAMETERS\n#########################################################################\n#\n# This section is intended for parameters used as PGE input.\n#\n# Note: these parameters may NOT be changed dynamically.\n#\n#########################################################################\n#\n101|ProductMetadataFile|100:1\n2001|PGEVersion|V03-33\n2002|Cycle|01\n#\n# -----------------------------------------------------------------------\n# This entries define the the processing start and end times (CCSDS) and\n# are used by pgs_pc_getconfigdata to obtain the processing range.\n# -----------------------------------------------------------------------\n2003|Processing CCSDS Start Time|removed date-time\n2004|Processing CCSDS End Time|removed date-time\n#\n#These parameters were once needed to override the hard-wired associations\n#between the species part (\"keys\") of l2gp file names and their mcfs (\"hash\")\n2005|L2 Species Name Keys|temperature,gph,h2o,hno3,o3,hcl,clo,co,n2o,oh,rhi,so2,ho2,bro,hocl,hcn,iwc,ch3cn,ch3cl\n2006|L2 Species Name Hash|t,gph,h2o,hno3,o3,hcl,clo,co,n2o,oh,rhi,so2,ho2,bro,hocl,hcn,iwc,ch3cn,ch3cl\n#2007|L2 Runtime Switches|pro apr0\n#\n#\n# -----------------------------------------------------------------------\n# These parameters are required to support the PGS_SMF_Send...() tools.\n# If the first parameter (TransmitFlag) is disabled, then none of the\n# other parameters need to be set. By default, this functionality has been\n# disabled. To enable, set TransmitFlag to 1 and supply the other 3 \n# parameters with local information. (DO NOT REMOVE THESE ENTRIES)\n# -----------------------------------------------------------------------\n10109|TransmitFlag; 1=transmit,0=disable|0\n10106|RemoteHost|sandcrab\n10107|RemotePath|/usr/kwan/test/PC/data\n10108|EmailAddresses|kwan@eos.hitc.com\n#\n# -----------------------------------------------------------------------\n# The following runtime parameters define various logging options.\n# Parameters described as lists should be space (i.e. \' \') separated.\n# The logical IDs 10117, 10118, 10119 listed below are for OPTIONAL\n# control of SMF logging.  Any of these logical IDs which is unused by a\n# PGE may be safely commented out (e.g. if logging is not disabled for\n# any status level, then the line beginning 10117 may be commented out).\n# -----------------------------------------------------------------------\n10114|Logging Control; 0=disable logging, 1=enable logging|1\n10115|Trace Control; 0=no trace, 1=error trace, 2=full trace|0\n10116|Process ID logging; 0=don\'t log PID, 1=log PID|0\n10117|Disabled status level list (e.g. W S F)|\n10118|Disabled seed list|\n10119|Disabled status code list|76809 26112\n#\n# -----------------------------------------------------------------------\n# Toolkit version for which this PCF was intended.\n# DO NOT REMOVE THIS VERSION ENTRY!\n# -----------------------------------------------------------------------\n10220|Toolkit version string|SCF  TK5.2.16\n#\n# -----------------------------------------------------------------------\n# The following parameters define the ADEOS-II TMDF values (all values\n# are assumed to be floating point types).  The ground reference time\n# should be in TAI93 format (SI seconds since 12 AM UTC 1993-01-01).\n# These formats are only prototypes and are subject to change when\n# the ADEOS-II TMDF values are clearly defined.  PGEs that do not access\n# ADEOS-II L0 data files do not require these parameters.  In this case\n# they may be safely commented out, otherwise appropriate values should\n# be supplied.\n# -----------------------------------------------------------------------\n10120|ADEOS-II s/c reference time|\n10121|ADEOS-II ground reference time|\n10122|ADEOS-II s/c clock period|\n#\n# -----------------------------------------------------------------------\n# The following parameter defines the TRMM UTCF value (the value is\n# assumed to be a floating point type).  PGEs that do not access TRMM\n# data of any sort do not require this parameter.  In this case it may be\n# safely commented out, otherwise an appropriate value should be\n# supplied.\n# -----------------------------------------------------------------------\n10123|TRMM UTCF value|\n#\n# -----------------------------------------------------------------------\n# The following parameter defines the Epoch date to be used for the\n# interpretation (conversion) of NASA PB5C times (the Epoch date should\n# be specified here in CCSDS ASCII format--A or B) (reserved for future\n# use--this quantity is not referenced in TK 5.2).  This entry may be\n# safely commented out or deleted.\n# -----------------------------------------------------------------------\n10124|NASA PB5C time Epoch date (ASCII UTC)|\n#\n# -----------------------------------------------------------------------\n# The following parameter is a \"mask\" for the ephemeris data quality \n# flag.  The value should be specified as an unsigned integer\n# specifying those bits of the ephemeris data quality flag that\n# should be considered fatal (i.e. the ephemeris data associated\n# with the quality flag should be REJECTED/IGNORED).\n# -----------------------------------------------------------------------\n10507|ephemeris data quality flag mask|65536\n#\n# -----------------------------------------------------------------------\n# The following parameter is a \"mask\" for the attitude data quality \n# flag.  The value should be specified as an unsigned integer \n# specifying those bits of the attitude data quality flag that\n# should be considered fatal (i.e. the attitude data associated\n# with the quality flag should be REJECTED/IGNORED).\n# -----------------------------------------------------------------------\n10508|attitude data quality flag mask|65536\n#\n# -----------------------------------------------------------------------\n# ECS DPS trigger for PGE debug runs\n#\n# NOTICE TO PGE DEVELOPERS: PGEs which have a debug mode\n# need to examine this parameter to evaluate activation rule\n# (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10911|ECS DEBUG; 0=normal, 1=debug|0\n#\n# -----------------------------------------------------------------------\n# The following runtime parameters defines generation of XML metadata during\n# the production of .met file for the INVENTORY Metadata. If the flag is\n# set to 0 only ASCII .met file will be created besides writing metadata into\n# HDF file.If the flag is set to 1 then a .xml file will also be created\n# in addition to ASCII .met file and metadata that is put into the HDF file.\n# -----------------------------------------------------------------------\n10256|XML METADATA GENERATION FLAG; 0=no, 1=yes|1\n#\n# -----------------------------------------------------------------------\n# This entry defines the IP address of the processing host and is used\n# by the Toolkit when generating unique Intermediate and Temporary file\n# names.  The Toolkit no longer relies on the PGS_HOST_PATH environment\n# variable to otain this information. (DO NOT REMOVE THIS ENTRY)\n# -----------------------------------------------------------------------\n10099|Local IP Address of \'ether\'|128.149.224.148\n#\n?   INTERMEDIATE INPUT\n#########################################################################\n#\n# This section is intended for intermediate input files, i.e., files\n# which are output by an earlier PGE but which are not standard\n# products.\n#\n# Each logical ID may have only one file instance.\n# Last field on the line is ignored.\n#\n#########################################################################\n#\n# Next line is default location for INTERMEDIATE INPUT FILES\n!  /workops/jobs/science/1321212753.14503\n#\n#\n?   INTERMEDIATE OUTPUT\n#########################################################################\n#\n# This section is intended for intermediate output files, i.e., files\n# which are to be input to later PGEs, but which are not standard\n# products.\n#\n# Each logical ID may have only one file instance.\n# Last field on the line is ignored.\n#\n#########################################################################\n#\n# Next line is default location for INTERMEDIATE OUTPUT FILES\n!  /workops/jobs/science/1321212753.14503\n#\n#\n?   TEMPORARY I/O\n#########################################################################\n#\n# This section is intended for temporary files, i.e., files\n# which are generated during a PGE " ;
+      		:PCF2 = "run and deleted at PGE termination.\n#\n# Entries in this section are generated internally by the Toolkit.\n# DO NOT MAKE MANUAL ENTRIES IN THIS SECTION.\n#\n#########################################################################\n#\n# Next line is default location for TEMPORARY FILES\n!  /workops/jobs/science/1321212753.14503\n#\n#\n?   END\n" ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: SWATHS {
+
+    group: Temperature {
+      dimensions:
+      	nLevels = 55 ;
+      	nTimes = 3495 ;
+      	nTimesTotal = 3495 ;
+
+      // group attributes:
+      		:Pressure = 1000.f, 825.4042f, 681.2921f, 562.3413f, 464.1589f, 383.1187f, 316.2278f, 261.0157f, 215.4435f, 177.8279f, 146.7799f, 121.1528f, 100.f, 82.54042f, 68.1292f, 56.23413f, 46.41589f, 38.31187f, 31.62278f, 26.10157f, 21.54435f, 17.78279f, 14.67799f, 12.11528f, 10.f, 8.254042f, 6.812921f, 5.623413f, 4.641589f, 3.831187f, 3.162278f, 2.610157f, 2.154435f, 1.778279f, 1.467799f, 1.211528f, 1.f, 0.6812921f, 0.4641589f, 0.3162278f, 0.2154435f, 0.1467799f, 0.1f, 0.04641589f, 0.02154435f, 0.01f, 0.004641589f, 0.002154435f, 0.001f, 0.0004641589f, 0.0002154435f, 0.0001f, 4.641589e-05f, 2.154435e-05f, 1.e-05f ;
+      		:VerticalCoordinate = "Pressure" ;
+
+      group: Data_Fields {
+        variables:
+        	float Convergence(nTimes) ;
+        		Convergence:Units = "NoUnits" ;
+        		Convergence:_FillValue = -999.99f ;
+        		Convergence:Title = "TemperatureConvergence" ;
+        		Convergence:MissingValue = -999.99f ;
+        		Convergence:UniqueFieldDefinition = "MLS-Specific" ;
+        		Convergence:fullnamepath = "/HDFEOS/SWATHS/Temperature/Data Fields/Convergence" ;
+        	float L2gpPrecision(nTimes, nLevels) ;
+        		L2gpPrecision:_FillValue = -999.99f ;
+        		L2gpPrecision:Title = "TemperaturePrecision" ;
+        		L2gpPrecision:Units = "K" ;
+        		L2gpPrecision:MissingValue = -999.99f ;
+        		L2gpPrecision:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		L2gpPrecision:fullnamepath = "/HDFEOS/SWATHS/Temperature/Data Fields/L2gpPrecision" ;
+        	float L2gpValue(nTimes, nLevels) ;
+        		L2gpValue:_FillValue = -999.99f ;
+        		L2gpValue:Title = "Temperature" ;
+        		L2gpValue:Units = "K" ;
+        		L2gpValue:MissingValue = -999.99f ;
+        		L2gpValue:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		L2gpValue:fullnamepath = "/HDFEOS/SWATHS/Temperature/Data Fields/L2gpValue" ;
+        	float Quality(nTimes) ;
+        		Quality:Units = "NoUnits" ;
+        		Quality:_FillValue = -999.99f ;
+        		Quality:Title = "TemperatureQuality" ;
+        		Quality:MissingValue = -999.99f ;
+        		Quality:UniqueFieldDefinition = "MLS-Specific" ;
+        		Quality:fullnamepath = "/HDFEOS/SWATHS/Temperature/Data Fields/Quality" ;
+        	int Status(nTimes) ;
+        		Status:_FillValue = 513 ;
+        		Status:Title = "TemperatureStatus" ;
+        		Status:Units = "NoUnits" ;
+        		Status:MissingValue = 513 ;
+        		Status:UniqueFieldDefinition = "MLS-Specific" ;
+        		Status:fullnamepath = "/HDFEOS/SWATHS/Temperature/Data Fields/Status" ;
+
+        // group attributes:
+        		:HDF5_SOFTLINK_1.linkname = "Temperature" ;
+        		:HDF5_SOFTLINK_1.LINKTARGET = "L2gpValue" ;
+        		:HDF5_SOFTLINK_2.linkname = "TemperaturePrecision" ;
+        		:HDF5_SOFTLINK_2.LINKTARGET = "L2gpPrecision" ;
+        } // group Data_Fields
+
+      group: Geolocation_Fields {
+        variables:
+        	int ChunkNumber(nTimes) ;
+        		ChunkNumber:_FillValue = -999 ;
+        		ChunkNumber:Title = "ChunkNumber" ;
+        		ChunkNumber:Units = "NoUnits" ;
+        		ChunkNumber:MissingValue = -999 ;
+        		ChunkNumber:UniqueFieldDefinition = "MLS-Specific" ;
+        		ChunkNumber:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/ChunkNumber" ;
+        	float Latitude(nTimes) ;
+        		Latitude:Units = "deg" ;
+        		Latitude:_FillValue = -999.99f ;
+        		Latitude:MissingValue = -999.99f ;
+        		Latitude:Title = "Latitude" ;
+        		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Latitude:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Latitude" ;
+        	float LineOfSightAngle(nTimes) ;
+        		LineOfSightAngle:Units = "deg" ;
+        		LineOfSightAngle:_FillValue = -999.99f ;
+        		LineOfSightAngle:Title = "LineOfSightAngle" ;
+        		LineOfSightAngle:MissingValue = -999.99f ;
+        		LineOfSightAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		LineOfSightAngle:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/LineOfSightAngle" ;
+        	float LocalSolarTime(nTimes) ;
+        		LocalSolarTime:_FillValue = -999.99f ;
+        		LocalSolarTime:Title = "LocalSolarTime" ;
+        		LocalSolarTime:Units = "h" ;
+        		LocalSolarTime:MissingValue = -999.99f ;
+        		LocalSolarTime:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		LocalSolarTime:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/LocalSolarTime" ;
+        	float Longitude(nTimes) ;
+        		Longitude:Units = "deg" ;
+        		Longitude:_FillValue = -999.99f ;
+        		Longitude:Title = "Longitude" ;
+        		Longitude:MissingValue = -999.99f ;
+        		Longitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Longitude:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Longitude" ;
+        	float OrbitGeodeticAngle(nTimes) ;
+        		OrbitGeodeticAngle:Units = "deg" ;
+        		OrbitGeodeticAngle:_FillValue = -999.99f ;
+        		OrbitGeodeticAngle:Title = "OrbitGeodeticAngle" ;
+        		OrbitGeodeticAngle:MissingValue = -999.99f ;
+        		OrbitGeodeticAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		OrbitGeodeticAngle:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/OrbitGeodeticAngle" ;
+        	float Pressure(nLevels) ;
+        		Pressure:_FillValue = -999.99f ;
+        		Pressure:Title = "Pressure" ;
+        		Pressure:Units = "hPa" ;
+        		Pressure:MissingValue = -999.99f ;
+        		Pressure:UniqueFieldDefinition = "Aura-Shared" ;
+        		Pressure:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Pressure" ;
+        	float SolarZenithAngle(nTimes) ;
+        		SolarZenithAngle:Units = "deg" ;
+        		SolarZenithAngle:_FillValue = -999.99f ;
+        		SolarZenithAngle:Title = "SolarZenithAngle" ;
+        		SolarZenithAngle:MissingValue = -999.99f ;
+        		SolarZenithAngle:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		SolarZenithAngle:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/SolarZenithAngle" ;
+        	double Time(nTimes) ;
+        		Time:_FillValue = -999.989990234375 ;
+        		Time:Title = "Time" ;
+        		Time:Units = "s" ;
+        		Time:MissingValue = -999.989990234375 ;
+        		Time:UniqueFieldDefinition = "Aura-Shared" ;
+        		Time:fullnamepath = "/HDFEOS/SWATHS/Temperature/Geolocation Fields/Time" ;
+        } // group Geolocation_Fields
+      } // group Temperature
+
+    group: WMOTPPressure_GEOS5 {
+      dimensions:
+      	nTimes = 3495 ;
+      	nTimesTotal = 3495 ;
+
+      // group attributes:
+      		:Pressure = -999.99f ;
+      		:VerticalCoordinate = "Pressure" ;
+
+      group: Data_Fields {
+        variables:
+        	float Convergence(nTimes) ;
+        		Convergence:Units = "NoUnits" ;
+        		Convergence:_FillValue = -999.99f ;
+        		Convergence:Title = "WMOTPPressure-GEOS5Convergence" ;
+        		Convergence:MissingValue = -999.99f ;
+        		Convergence:UniqueFieldDefinition = "MLS-Specific" ;
+        		Convergence:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Convergence" ;
+        	float L2gpPrecision(nTimes) ;
+        		L2gpPrecision:Units = "hPa" ;
+        		L2gpPrecision:_FillValue = -999.99f ;
+        		L2gpPrecision:Title = "WMOTPPressure-GEOS5Precision" ;
+        		L2gpPrecision:MissingValue = -999.99f ;
+        		L2gpPrecision:UniqueFieldDefinition = "MLS-Specific" ;
+        		L2gpPrecision:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpPrecision" ;
+        	float L2gpValue(nTimes) ;
+        		L2gpValue:Units = "hPa" ;
+        		L2gpValue:_FillValue = -999.99f ;
+        		L2gpValue:Title = "WMOTPPressure-GEOS5" ;
+        		L2gpValue:MissingValue = -999.99f ;
+        		L2gpValue:UniqueFieldDefinition = "MLS-Specific" ;
+        		L2gpValue:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/L2gpValue" ;
+        	float Quality(nTimes) ;
+        		Quality:Units = "NoUnits" ;
+        		Quality:MissingValue = -999.99f ;
+        		Quality:UniqueFieldDefinition = "MLS-Specific" ;
+        		Quality:_FillValue = -999.99f ;
+        		Quality:Title = "WMOTPPressure-GEOS5Quality" ;
+        		Quality:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Quality" ;
+        	int Status(nTimes) ;
+        		Status:_FillValue = 513 ;
+        		Status:Title = "WMOTPPressure-GEOS5Status" ;
+        		Status:Units = "NoUnits" ;
+        		Status:MissingValue = 513 ;
+        		Status:UniqueFieldDefinition = "MLS-Specific" ;
+        		Status:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Data Fields/Status" ;
+
+        // group attributes:
+        		:HDF5_SOFTLINK_1.linkname = "WMOTPPressure-GEOS5" ;
+        		:HDF5_SOFTLINK_1.LINKTARGET = "L2gpValue" ;
+        		:HDF5_SOFTLINK_2.linkname = "WMOTPPressure-GEOS5Precision" ;
+        		:HDF5_SOFTLINK_2.LINKTARGET = "L2gpPrecision" ;
+        } // group Data_Fields
+
+      group: Geolocation_Fields {
+        variables:
+        	int ChunkNumber(nTimes) ;
+        		ChunkNumber:_FillValue = -999 ;
+        		ChunkNumber:Title = "ChunkNumber" ;
+        		ChunkNumber:Units = "NoUnits" ;
+        		ChunkNumber:MissingValue = -999 ;
+        		ChunkNumber:UniqueFieldDefinition = "MLS-Specific" ;
+        		ChunkNumber:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/ChunkNumber" ;
+        	float Latitude(nTimes) ;
+        		Latitude:Units = "deg" ;
+        		Latitude:_FillValue = -999.99f ;
+        		Latitude:MissingValue = -999.99f ;
+        		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Latitude:Title = "Latitude" ;
+        		Latitude:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Latitude" ;
+        	float LineOfSightAngle(nTimes) ;
+        		LineOfSightAngle:_FillValue = -999.99f ;
+        		LineOfSightAngle:Title = "LineOfSightAngle" ;
+        		LineOfSightAngle:Units = "deg" ;
+        		LineOfSightAngle:MissingValue = -999.99f ;
+        		LineOfSightAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		LineOfSightAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LineOfSightAngle" ;
+        	float LocalSolarTime(nTimes) ;
+        		LocalSolarTime:_FillValue = -999.99f ;
+        		LocalSolarTime:Title = "LocalSolarTime" ;
+        		LocalSolarTime:Units = "h" ;
+        		LocalSolarTime:MissingValue = -999.99f ;
+        		LocalSolarTime:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		LocalSolarTime:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/LocalSolarTime" ;
+        	float Longitude(nTimes) ;
+        		Longitude:_FillValue = -999.99f ;
+        		Longitude:Title = "Longitude" ;
+        		Longitude:Units = "deg" ;
+        		Longitude:MissingValue = -999.99f ;
+        		Longitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Longitude:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Longitude" ;
+        	float OrbitGeodeticAngle(nTimes) ;
+        		OrbitGeodeticAngle:_FillValue = -999.99f ;
+        		OrbitGeodeticAngle:Title = "OrbitGeodeticAngle" ;
+        		OrbitGeodeticAngle:Units = "deg" ;
+        		OrbitGeodeticAngle:MissingValue = -999.99f ;
+        		OrbitGeodeticAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		OrbitGeodeticAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/OrbitGeodeticAngle" ;
+        	float SolarZenithAngle(nTimes) ;
+        		SolarZenithAngle:Units = "deg" ;
+        		SolarZenithAngle:MissingValue = -999.99f ;
+        		SolarZenithAngle:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		SolarZenithAngle:_FillValue = -999.99f ;
+        		SolarZenithAngle:Title = "SolarZenithAngle" ;
+        		SolarZenithAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/SolarZenithAngle" ;
+        	double Time(nTimes) ;
+        		Time:_FillValue = -999.989990234375 ;
+        		Time:Title = "Time" ;
+        		Time:Units = "s" ;
+        		Time:MissingValue = -999.989990234375 ;
+        		Time:UniqueFieldDefinition = "Aura-Shared" ;
+        		Time:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-GEOS5/Geolocation Fields/Time" ;
+        } // group Geolocation_Fields
+      } // group WMOTPPressure_GEOS5
+
+    group: WMOTPPressure_MLS {
+      dimensions:
+      	nTimes = 3495 ;
+      	nTimesTotal = 3495 ;
+
+      // group attributes:
+      		:Pressure = -999.99f ;
+      		:VerticalCoordinate = "Pressure" ;
+
+      group: Data_Fields {
+        variables:
+        	float Convergence(nTimes) ;
+        		Convergence:Units = "NoUnits" ;
+        		Convergence:_FillValue = -999.99f ;
+        		Convergence:Title = "WMOTPPressure-MLSConvergence" ;
+        		Convergence:MissingValue = -999.99f ;
+        		Convergence:UniqueFieldDefinition = "MLS-Specific" ;
+        		Convergence:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Convergence" ;
+        	float L2gpPrecision(nTimes) ;
+        		L2gpPrecision:Units = "hPa" ;
+        		L2gpPrecision:_FillValue = -999.99f ;
+        		L2gpPrecision:Title = "WMOTPPressure-MLSPrecision" ;
+        		L2gpPrecision:MissingValue = -999.99f ;
+        		L2gpPrecision:UniqueFieldDefinition = "MLS-Specific" ;
+        		L2gpPrecision:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpPrecision" ;
+        	float L2gpValue(nTimes) ;
+        		L2gpValue:Units = "hPa" ;
+        		L2gpValue:_FillValue = -999.99f ;
+        		L2gpValue:Title = "WMOTPPressure-MLS" ;
+        		L2gpValue:MissingValue = -999.99f ;
+        		L2gpValue:UniqueFieldDefinition = "MLS-Specific" ;
+        		L2gpValue:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/L2gpValue" ;
+        	float Quality(nTimes) ;
+        		Quality:Units = "NoUnits" ;
+        		Quality:MissingValue = -999.99f ;
+        		Quality:UniqueFieldDefinition = "MLS-Specific" ;
+        		Quality:_FillValue = -999.99f ;
+        		Quality:Title = "WMOTPPressure-MLSQuality" ;
+        		Quality:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Quality" ;
+        	int Status(nTimes) ;
+        		Status:_FillValue = 513 ;
+        		Status:Title = "WMOTPPressure-MLSStatus" ;
+        		Status:Units = "NoUnits" ;
+        		Status:MissingValue = 513 ;
+        		Status:UniqueFieldDefinition = "MLS-Specific" ;
+        		Status:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Data Fields/Status" ;
+
+        // group attributes:
+        		:HDF5_SOFTLINK_1.linkname = "WMOTPPressure-MLS" ;
+        		:HDF5_SOFTLINK_1.LINKTARGET = "L2gpValue" ;
+        		:HDF5_SOFTLINK_2.linkname = "WMOTPPressure-MLSPrecision" ;
+        		:HDF5_SOFTLINK_2.LINKTARGET = "L2gpPrecision" ;
+        } // group Data_Fields
+
+      group: Geolocation_Fields {
+        variables:
+        	int ChunkNumber(nTimes) ;
+        		ChunkNumber:_FillValue = -999 ;
+        		ChunkNumber:Title = "ChunkNumber" ;
+        		ChunkNumber:Units = "NoUnits" ;
+        		ChunkNumber:MissingValue = -999 ;
+        		ChunkNumber:UniqueFieldDefinition = "MLS-Specific" ;
+        		ChunkNumber:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/ChunkNumber" ;
+        	float Latitude(nTimes) ;
+        		Latitude:Title = "Latitude" ;
+        		Latitude:_FillValue = -999.99f ;
+        		Latitude:Units = "deg" ;
+        		Latitude:MissingValue = -999.99f ;
+        		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Latitude:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Latitude" ;
+        	float LineOfSightAngle(nTimes) ;
+        		LineOfSightAngle:_FillValue = -999.99f ;
+        		LineOfSightAngle:Title = "LineOfSightAngle" ;
+        		LineOfSightAngle:Units = "deg" ;
+        		LineOfSightAngle:MissingValue = -999.99f ;
+        		LineOfSightAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		LineOfSightAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LineOfSightAngle" ;
+        	float LocalSolarTime(nTimes) ;
+        		LocalSolarTime:_FillValue = -999.99f ;
+        		LocalSolarTime:Title = "LocalSolarTime" ;
+        		LocalSolarTime:Units = "h" ;
+        		LocalSolarTime:MissingValue = -999.99f ;
+        		LocalSolarTime:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		LocalSolarTime:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/LocalSolarTime" ;
+        	float Longitude(nTimes) ;
+        		Longitude:_FillValue = -999.99f ;
+        		Longitude:Title = "Longitude" ;
+        		Longitude:Units = "deg" ;
+        		Longitude:MissingValue = -999.99f ;
+        		Longitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		Longitude:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Longitude" ;
+        	float OrbitGeodeticAngle(nTimes) ;
+        		OrbitGeodeticAngle:_FillValue = -999.99f ;
+        		OrbitGeodeticAngle:Title = "OrbitGeodeticAngle" ;
+        		OrbitGeodeticAngle:Units = "deg" ;
+        		OrbitGeodeticAngle:MissingValue = -999.99f ;
+        		OrbitGeodeticAngle:UniqueFieldDefinition = "MLS-Specific" ;
+        		OrbitGeodeticAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/OrbitGeodeticAngle" ;
+        	float SolarZenithAngle(nTimes) ;
+        		SolarZenithAngle:Units = "deg" ;
+        		SolarZenithAngle:MissingValue = -999.99f ;
+        		SolarZenithAngle:UniqueFieldDefinition = "HIRDLS-MLS-TES-Shared" ;
+        		SolarZenithAngle:_FillValue = -999.99f ;
+        		SolarZenithAngle:Title = "SolarZenithAngle" ;
+        		SolarZenithAngle:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/SolarZenithAngle" ;
+        	double Time(nTimes) ;
+        		Time:_FillValue = -999.989990234375 ;
+        		Time:Title = "Time" ;
+        		Time:Units = "s" ;
+        		Time:MissingValue = -999.989990234375 ;
+        		Time:UniqueFieldDefinition = "Aura-Shared" ;
+        		Time:fullnamepath = "/HDFEOS/SWATHS/WMOTPPressure-MLS/Geolocation Fields/Time" ;
+        } // group Geolocation_Fields
+      } // group WMOTPPressure_MLS
+    } // group SWATHS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  	coremetadata_0_len2 = 65537 ;
+  	xmlmetadata_len3 = 65537 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+  	char coremetadata_0(coremetadata_0_len2) ;
+  		coremetadata_0:fullnamepath = "/HDFEOS INFORMATION/coremetadata.0" ;
+  	char xmlmetadata(xmlmetadata_len3) ;
+  		xmlmetadata:fullnamepath = "/HDFEOS INFORMATION/xmlmetadata" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.12" ;
+  } // group HDFEOS_INFORMATION
+}
