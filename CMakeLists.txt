@@ -651,21 +651,21 @@ add_executable(
 #    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
     modules/dmrpp_module/unit-tests/DmrppArrayTest.cc
     modules/dmrpp_module/unit-tests/ChunkTest.cc
-    modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
+		http/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
 	modules/dmrpp_module/build_dmrpp.cc
 	modules/dmrpp_module/build_dmrpp_util.cc
 	modules/dmrpp_module/build_dmrpp_util.h
-	modules/dmrpp_module/awsv4.cc
-	modules/dmrpp_module/awsv4.h
+		http/awsv4.cc
+		http/awsv4.h
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
     modules/dmrpp_module/CurlHandlePool.cc
     modules/dmrpp_module/CurlHandlePool.h
-    modules/dmrpp_module/CredentialsManager.h
-    modules/dmrpp_module/CredentialsManager.cc
+		http/CredentialsManager.h
+		http/CredentialsManager.cc
     modules/dmrpp_module/DMRpp.cc
     modules/dmrpp_module/DMRpp.h
     modules/dmrpp_module/DmrppArray.cc
@@ -728,12 +728,12 @@ add_executable(
 	modules/dmrpp_module/DMZ.cc
 	modules/dmrpp_module/unit-tests/DMZTest.cc
 
-    modules/dmrpp_module/unit-tests/awsv4_test.cc
+		http/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
     modules/dmrpp_module/AccessCredentials.h
-    modules/dmrpp_module/NgapS3Credentials.cc
-    modules/dmrpp_module/NgapS3Credentials.h
-    modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
+		http/NgapS3Credentials.cc
+		http/NgapS3Credentials.h
+		http/unit-tests/NgapCredentialsTest.cc
     modules/dmrpp_module/unit-tests/CurlHandlePoolTest.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc

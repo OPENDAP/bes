@@ -6,10 +6,12 @@
         </Group>
         <Group name="SWATHS">
             <Group name="Swath">
+                <Dimension name="ZDim" size="4"/>
+                <Dimension name="NDim" size="8"/>
                 <Group name="Data_Fields">
                     <Float32 name="Temperature">
-                        <Dim size="4"/>
-                        <Dim size="8"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath/ZDim"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath/NDim"/>
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
@@ -20,7 +22,7 @@
                 </Group>
                 <Group name="Geolocation_Fields">
                     <Float32 name="Latitude">
-                        <Dim size="8"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath/NDim"/>
                         <Attribute name="units" type="String">
                             <Value>degrees_north</Value>
                         </Attribute>
@@ -29,7 +31,7 @@
                         </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="8"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath/NDim"/>
                         <Attribute name="units" type="String">
                             <Value>degrees_east</Value>
                         </Attribute>
@@ -38,7 +40,7 @@
                         </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
-                        <Dim size="4"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath/ZDim"/>
                         <Attribute name="units" type="String">
                             <Value>hPa</Value>
                         </Attribute>

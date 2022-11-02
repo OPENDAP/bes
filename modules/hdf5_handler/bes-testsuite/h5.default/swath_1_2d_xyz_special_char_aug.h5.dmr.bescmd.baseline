@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="swath_1_2d_xyz_special_char_aug.h5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="SWATHS">
+            <Group name="Swath_1">
+                <Dimension name="Z_Dim" size="4"/>
+                <Dimension name="N_Dim" size="8"/>
+                <Group name="Geolocation_Fields">
+                    <Float32 name="Pressure_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/Z_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Pressure-1</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Latitude_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_north</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Latitude-1</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Longitude_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_east</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Longitude-1</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+                <Group name="Data_Fields">
+                    <Float32 name="Temperature_1">
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/Z_Dim"/>
+                        <Dim name="/HDFEOS/SWATHS/Swath_1/N_Dim"/>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/Swath-1/Data Fields/Temperature-1</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.17</Value>
+        </Attribute>
+    </Group>
+</Dataset>

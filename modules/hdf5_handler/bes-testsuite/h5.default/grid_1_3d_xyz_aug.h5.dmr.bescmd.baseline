@@ -17,6 +17,9 @@
                     <Attribute name="units" type="String">
                         <Value>degrees_east</Value>
                     </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/GRIDS/GeoGrid/XDim</Value>
+                    </Attribute>
                 </Float32>
                 <Float32 name="YDim">
                     <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
@@ -26,15 +29,24 @@
                     <Attribute name="units" type="String">
                         <Value>degrees_north</Value>
                     </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/GRIDS/GeoGrid/YDim</Value>
+                    </Attribute>
                 </Float32>
                 <Float32 name="ZDim">
                     <Dim name="/HDFEOS/GRIDS/GeoGrid/ZDim"/>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/GRIDS/GeoGrid/ZDim</Value>
+                    </Attribute>
                 </Float32>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="Latitude">
                         <Dim name="/HDFEOS/GRIDS/GeoGrid/YDim"/>
                         <Attribute name="units" type="String">
                             <Value>degrees_north</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/Latitude</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
@@ -42,11 +54,17 @@
                         <Attribute name="units" type="String">
                             <Value>degrees_east</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
                         <Dim name="/HDFEOS/GRIDS/GeoGrid/ZDim"/>
                         <Attribute name="units" type="String">
                             <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/Pressure</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Temperature">
@@ -56,13 +74,20 @@
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/Temperature</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.13</Value>
         </Attribute>
