@@ -168,7 +168,7 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
-add_executable(bes
+add_executable(
     config.h
 
 	rapidjson/rapidjson.h
@@ -719,11 +719,11 @@ add_executable(bes
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
 		modules/dmrpp_module/DmrppNames.h
-		modules/dmrpp_module/dev/h5_obj_addr_info.cc
-		modules/dmrpp_module/dev/read_str_vars.cc
-		modules/dmrpp_module/dev/test_read_vl_offset.cc
-		modules/dmrpp_module/dev/obtain_vlstr_addr.cc
-		modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc
+		# modules/dmrpp_module/dev/h5_obj_addr_info.cc
+		#modules/dmrpp_module/dev/read_str_vars.cc
+		#modules/dmrpp_module/dev/test_read_vl_offset.cc
+		#modules/dmrpp_module/dev/obtain_vlstr_addr.cc
+		#modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc
 	modules/dmrpp_module/DMZ.h
 	modules/dmrpp_module/DMZ.cc
 	modules/dmrpp_module/unit-tests/DMZTest.cc
@@ -1909,7 +1909,7 @@ add_executable(bes
 
     standalone/besstandalone.cc
 	modules/fileout_netcdf/history_utils.cc
-	modules/fileout_netcdf/history_utils.h)
+	modules/fileout_netcdf/history_utils.h modules/cmr_module/Collection.cc modules/cmr_module/Collection.h)
 
 if (EXISTS modules/sql_handler)
 	add_executable(bes
@@ -2016,5 +2016,5 @@ if (EXISTS modules/sql_handler)
 		modules/sql_handler/SQLRequestHandler.h
 		modules/sql_handler/SQLResponseNames.h
 		modules/fileout_netcdf/FONcNames.h
-		)
+            modules/cmr_module/Provider.cc modules/cmr_module/Provider.h)
 endif()

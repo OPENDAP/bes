@@ -84,17 +84,17 @@ namespace cmr {
  */
 CmrCatalog::CmrCatalog(const std::string &name /* = “CMR” */) : BESCatalog(name) {
     bool found = false;
-    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS, d_collections, found);
+    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS_KEY, d_collections, found);
     if(!found){
-        throw BESInternalError(string("The CMR module must define at least one collection name using the key; '")+CMR_COLLECTIONS
-            +"'", __FILE__, __LINE__);
+        throw BESInternalError(string("The CMR module must define at least one collection name using the key; '") + CMR_COLLECTIONS_KEY
+                               + "'", __FILE__, __LINE__);
     }
 
     found = false;
-    TheBESKeys::TheKeys()->get_values(CMR_FACETS, d_facets, found);
+    TheBESKeys::TheKeys()->get_values(CMR_FACETS_KEY, d_facets, found);
     if(!found){
-        throw BESInternalError(string("The CMR module must define at least one facet name using the key; '")+CMR_COLLECTIONS
-            +"'", __FILE__, __LINE__);
+        throw BESInternalError(string("The CMR module must define at least one facet name using the key; '") + CMR_COLLECTIONS_KEY
+                               + "'", __FILE__, __LINE__);
     }
 }
 
@@ -105,6 +105,10 @@ bes::CatalogNode *
 CmrCatalog::get_node(const string &path) const
 {
     return get_node_NEW(path);
+}
+
+void get_opendap_providers(bes::CatalogNode *node){
+
 }
 
 

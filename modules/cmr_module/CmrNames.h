@@ -32,9 +32,14 @@
 #define CMR_CATALOG_NAME "CMR"
 
 // These are the names of the be keys used to configure the handler.
-#define CMR_COLLECTIONS "CMR.Collections"
-#define CMR_FACETS "CMR.Facets"
+#define CMR_COLLECTIONS_KEY "CMR.Collections"
+#define CMR_FACETS_KEY "CMR.Facets"
+#define CMR_HOST_URL_KEY "CMR.host.url"
+#define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/"
+#define CMR_SEARCH_SERVICE "/search"
 
+#define CMR_COLLECTIONS_SEARCH_API_ENDPOINT "search/collections.umm_json"
+#define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers.json"
 
 #define MODULE CMR_NAME
 

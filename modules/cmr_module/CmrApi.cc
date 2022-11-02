@@ -56,9 +56,6 @@
 
 using std::string;
 
-#define CMR_HOST_URL_KEY "CMR.host.url"
-#define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/"
-#define CMR_SEARCH_SERVICE "/search"
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
 namespace cmr {
@@ -554,11 +551,11 @@ CmrApi::get_granules(string collection_name, string r_year, string r_month, stri
 void
 CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
     bool found = false;
-    string key = CMR_COLLECTIONS;
-    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS, collection_ids, found);
+    string key = CMR_COLLECTIONS_KEY;
+    TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS_KEY, collection_ids, found);
     if(!found){
-        throw BESInternalError(string("The '") +CMR_COLLECTIONS
-            + "' field has not been configured.", __FILE__, __LINE__);
+        throw BESInternalError(string("The '") + CMR_COLLECTIONS_KEY
+                               + "' field has not been configured.", __FILE__, __LINE__);
     }
 }
 

@@ -79,6 +79,7 @@ private:
     std::string d_lmt;
     bool d_is_data;
     item_type d_type;
+    std::string d_description;
 
     CatalogItem(const CatalogItem &rhs);
     CatalogItem &operator=(const CatalogItem &rhs);
@@ -132,7 +133,12 @@ public:
     /// @brief The name of this item in the node
     std::string get_name() const { return d_name; }
     /// @brief Set the name of the item
-    void set_name(std::string n) { d_name = n; }
+    void set_name(const std::string &n) { d_name = n; }
+
+    /// @brief The descrtiption of this item
+    std::string get_description() const { return d_description; }
+    /// @brief Set the name of the item
+    void set_description(const std::string &n) { d_description = n; }
 
     /// @brief The size (bytes) of the item
     size_t get_size() const { return d_size; }
@@ -142,7 +148,7 @@ public:
     /// @brief Get the last modified time for this item
     std::string get_lmt() const { return d_lmt; }
     /// @brief Set the LMT for this item.
-    void set_lmt(std::string lmt) { d_lmt = lmt; }
+    void set_lmt(const std::string &lmt) { d_lmt = lmt; }
 
     /// @brief Is this item recognized as data?
     bool is_data() const { return d_is_data; }
