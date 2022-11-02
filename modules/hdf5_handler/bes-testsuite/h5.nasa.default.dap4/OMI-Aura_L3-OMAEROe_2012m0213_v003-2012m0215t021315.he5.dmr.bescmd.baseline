@@ -132,6 +132,9 @@
         </Group>
         <Group name="GRIDS">
             <Group name="ColumnAmountAerosol">
+                <Dimension name="XDim" size="1440"/>
+                <Dimension name="YDim" size="720"/>
+                <Dimension name="nWavelDiagnostic" size="5"/>
                 <Attribute name="GCTPProjectionCode" type="Int32">
                     <Value>0</Value>
                 </Attribute>
@@ -162,11 +165,11 @@
                 <Attribute name="WavelDiagnostic" type="String">
                     <Value>342.5, 388.0, 442.0, 463.0, 483.5</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Int16 name="AbsorbingAerosolOpticalThicknessMW">
-                        <Dim size="5"/>
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/nWavelDiagnostic"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -188,10 +191,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AbsorbingAerosolOpticalThicknessMW</Value>
+                        </Attribute>
                     </Int16>
                     <UInt16 name="AerosolModelMW">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="UInt16">
                             <Value>65535</Value>
                         </Attribute>
@@ -213,11 +219,14 @@
                         <Attribute name="MissingValue" type="UInt16">
                             <Value>65535</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolModelMW</Value>
+                        </Attribute>
                     </UInt16>
                     <Int16 name="AerosolOpticalThicknessMW">
-                        <Dim size="5"/>
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/nWavelDiagnostic"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -239,10 +248,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessMW</Value>
+                        </Attribute>
                     </Int16>
                     <Int16 name="AerosolOpticalThicknessPassedThresholdMean">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -264,10 +276,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdMean</Value>
+                        </Attribute>
                     </Int16>
                     <Int16 name="AerosolOpticalThicknessPassedThresholdStd">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -289,10 +304,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/AerosolOpticalThicknessPassedThresholdStd</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="Latitude">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -314,10 +332,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -339,11 +360,14 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="SingleScatteringAlbedoMW">
-                        <Dim size="5"/>
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/nWavelDiagnostic"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -365,10 +389,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoMW</Value>
+                        </Attribute>
                     </Int16>
                     <Int16 name="SingleScatteringAlbedoPassedThresholdMean">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -390,10 +417,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdMean</Value>
+                        </Attribute>
                     </Int16>
                     <Int16 name="SingleScatteringAlbedoPassedThresholdStd">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -415,10 +445,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SingleScatteringAlbedoPassedThresholdStd</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="SolarZenithAngle">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -440,10 +473,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="TerrainReflectivity">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
@@ -465,10 +501,13 @@
                         <Attribute name="MissingValue" type="Int16">
                             <Value>-32767</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/TerrainReflectivity</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="UVAerosolIndex">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -490,10 +529,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/UVAerosolIndex</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="VISAerosolIndex">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -515,10 +557,13 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/VISAerosolIndex</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ViewingZenithAngle">
-                        <Dim size="720"/>
-                        <Dim size="1440"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/ColumnAmountAerosol/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -540,13 +585,20 @@
                         <Attribute name="MissingValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/ColumnAmountAerosol/Data Fields/ViewingZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.11</Value>
         </Attribute>

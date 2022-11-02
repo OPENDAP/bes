@@ -47,6 +47,9 @@
                     <Attribute name="UniqueFieldDefinition" type="String">
                         <Value>Aura-Shared</Value>
                     </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/SWATHS/HIRDLS/nLevels</Value>
+                    </Attribute>
                 </Float32>
                 <Float64 name="nTimes">
                     <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -61,6 +64,9 @@
                     </Attribute>
                     <Attribute name="UniqueFieldDefinition" type="String">
                         <Value>Aura-Shared</Value>
+                    </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/SWATHS/HIRDLS/nTimes</Value>
                     </Attribute>
                 </Float64>
                 <Attribute name="VerticalCoordinate" type="String">
@@ -189,8 +195,8 @@
                     <Value>0.01100693736</Value>
                     <Value>0.009999999776</Value>
                 </Attribute>
-                <Group name="Data Fields">
-                    <Int8 name="10.8MicronCloudAerosolFlag">
+                <Group name="Data_Fields">
+                    <Int8 name="_10_8MicronCloudAerosolFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Int8">
@@ -208,8 +214,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronCloudAerosolFlag</Value>
+                        </Attribute>
                     </Int8>
-                    <Float32 name="10.8MicronExtinction">
+                    <Float32 name="_10_8MicronExtinction">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -227,8 +236,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinction</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="10.8MicronExtinctionNormChiSq">
+                    <Float32 name="_10_8MicronExtinctionNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
@@ -245,8 +257,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinctionNormChiSq</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="10.8MicronExtinctionPrecision">
+                    <Float32 name="_10_8MicronExtinctionPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -264,8 +279,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinctionPrecision</Value>
+                        </Attribute>
                     </Float32>
-                    <Int8 name="10.8MicronExtinctionQuality">
+                    <Int8 name="_10_8MicronExtinctionQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-99</Value>
@@ -282,8 +300,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/10.8MicronExtinctionQuality</Value>
+                        </Attribute>
                     </Int8>
-                    <Int8 name="12.1MicronCloudAerosolFlag">
+                    <Int8 name="_12_1MicronCloudAerosolFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Int8">
@@ -301,8 +322,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronCloudAerosolFlag</Value>
+                        </Attribute>
                     </Int8>
-                    <Float32 name="12.1MicronExtinction">
+                    <Float32 name="_12_1MicronExtinction">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -320,8 +344,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinction</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="12.1MicronExtinctionNormChiSq">
+                    <Float32 name="_12_1MicronExtinctionNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
@@ -338,8 +365,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinctionNormChiSq</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="12.1MicronExtinctionPrecision">
+                    <Float32 name="_12_1MicronExtinctionPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -357,8 +387,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinctionPrecision</Value>
+                        </Attribute>
                     </Float32>
-                    <Int8 name="12.1MicronExtinctionQuality">
+                    <Int8 name="_12_1MicronExtinctionQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-99</Value>
@@ -375,8 +408,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/12.1MicronExtinctionQuality</Value>
+                        </Attribute>
                     </Int8>
-                    <Int8 name="17.4MicronCloudAerosolFlag">
+                    <Int8 name="_17_4MicronCloudAerosolFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Int8">
@@ -394,8 +430,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronCloudAerosolFlag</Value>
+                        </Attribute>
                     </Int8>
-                    <Float32 name="17.4MicronExtinction">
+                    <Float32 name="_17_4MicronExtinction">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -413,8 +452,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinction</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="17.4MicronExtinctionNormChiSq">
+                    <Float32 name="_17_4MicronExtinctionNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
@@ -431,8 +473,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinctionNormChiSq</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="17.4MicronExtinctionPrecision">
+                    <Float32 name="_17_4MicronExtinctionPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -450,8 +495,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinctionPrecision</Value>
+                        </Attribute>
                     </Float32>
-                    <Int8 name="17.4MicronExtinctionQuality">
+                    <Int8 name="_17_4MicronExtinctionQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-99</Value>
@@ -468,8 +516,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/17.4MicronExtinctionQuality</Value>
+                        </Attribute>
                     </Int8>
-                    <Int8 name="7.1MicronCloudAerosolFlag">
+                    <Int8 name="_7_1MicronCloudAerosolFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Int8">
@@ -487,8 +538,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronCloudAerosolFlag</Value>
+                        </Attribute>
                     </Int8>
-                    <Float32 name="7.1MicronExtinction">
+                    <Float32 name="_7_1MicronExtinction">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -506,8 +560,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinction</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="7.1MicronExtinctionNormChiSq">
+                    <Float32 name="_7_1MicronExtinctionNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
@@ -524,8 +581,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinctionNormChiSq</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="7.1MicronExtinctionPrecision">
+                    <Float32 name="_7_1MicronExtinctionPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -543,8 +603,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinctionPrecision</Value>
+                        </Attribute>
                     </Float32>
-                    <Int8 name="7.1MicronExtinctionQuality">
+                    <Int8 name="_7_1MicronExtinctionQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-99</Value>
@@ -561,8 +624,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/7.1MicronExtinctionQuality</Value>
+                        </Attribute>
                     </Int8>
-                    <Int8 name="8.3MicronCloudAerosolFlag">
+                    <Int8 name="_8_3MicronCloudAerosolFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Int8">
@@ -580,8 +646,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronCloudAerosolFlag</Value>
+                        </Attribute>
                     </Int8>
-                    <Float32 name="8.3MicronExtinction">
+                    <Float32 name="_8_3MicronExtinction">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -599,8 +668,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinction</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="8.3MicronExtinctionNormChiSq">
+                    <Float32 name="_8_3MicronExtinctionNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
@@ -617,8 +689,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinctionNormChiSq</Value>
+                        </Attribute>
                     </Float32>
-                    <Float32 name="8.3MicronExtinctionPrecision">
+                    <Float32 name="_8_3MicronExtinctionPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
                         <Attribute name="_FillValue" type="Float32">
@@ -636,8 +711,11 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinctionPrecision</Value>
+                        </Attribute>
                     </Float32>
-                    <Int8 name="8.3MicronExtinctionQuality">
+                    <Int8 name="_8_3MicronExtinctionQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-99</Value>
@@ -653,6 +731,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/8.3MicronExtinctionQuality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="CFC11">
@@ -673,6 +754,9 @@
                         <Attribute name="Title" type="String">
                             <Value>CFC11</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CFC11NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -690,6 +774,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="CFC11Precision">
@@ -710,6 +797,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="CFC11Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -727,6 +817,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC11Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="CFC12">
@@ -747,6 +840,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CFC12NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -764,6 +860,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="CFC12Precision">
@@ -784,6 +883,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="CFC12Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -801,6 +903,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CFC12Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="CH4">
@@ -821,6 +926,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CH4NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -838,6 +946,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="CH4Precision">
@@ -858,6 +969,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="CH4Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -875,6 +989,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CH4Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="ClONO2">
@@ -895,6 +1012,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ClONO2NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -912,6 +1032,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="ClONO2Precision">
@@ -932,6 +1055,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="ClONO2Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -950,6 +1076,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/ClONO2Quality</Value>
+                        </Attribute>
                     </Int8>
                     <Float32 name="CloudTopPressure">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -967,6 +1096,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/CloudTopPressure</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="GPH">
@@ -987,6 +1119,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/GPH</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="GPHPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1005,6 +1140,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/GPHPrecision</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="H2O">
@@ -1025,6 +1163,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2O</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="H2ONormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1042,6 +1183,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2ONormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="H2OPrecision">
@@ -1062,6 +1206,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2OPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="H2OQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1079,6 +1226,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/H2OQuality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="HNO3">
@@ -1099,6 +1249,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="HNO3NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1116,6 +1269,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="HNO3Precision">
@@ -1136,6 +1292,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="HNO3Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1153,6 +1312,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/HNO3Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="N2O">
@@ -1173,6 +1335,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="N2O5">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1192,6 +1357,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="N2O5NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1209,6 +1377,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="N2O5Precision">
@@ -1229,6 +1400,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="N2O5Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1247,6 +1421,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2O5Quality</Value>
+                        </Attribute>
                     </Int8>
                     <Float32 name="N2ONormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1264,6 +1441,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2ONormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="N2OPrecision">
@@ -1284,6 +1464,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2OPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="N2OQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1301,6 +1484,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/N2OQuality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="NO2">
@@ -1321,6 +1507,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="NO2NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1338,6 +1527,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="NO2Precision">
@@ -1358,6 +1550,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="NO2Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1375,6 +1570,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/NO2Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="O3">
@@ -1395,6 +1593,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="O3NormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1412,6 +1613,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3NormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="O3Precision">
@@ -1432,6 +1636,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3Precision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="O3Quality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1449,6 +1656,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/O3Quality</Value>
                         </Attribute>
                     </Int8>
                     <Float32 name="RawGPH">
@@ -1469,6 +1679,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/RawGPH</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RawGPHPrecision">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1487,6 +1700,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/RawGPHPrecision</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Temperature">
@@ -1507,6 +1723,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/Temperature</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="TemperatureNormChiSq">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1524,6 +1743,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/TemperatureNormChiSq</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="TemperaturePrecision">
@@ -1544,6 +1766,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/TemperaturePrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="TemperatureQuality">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1562,9 +1787,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Data Fields/TemperatureQuality</Value>
+                        </Attribute>
                     </Int8>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Float32 name="Altitude">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
@@ -1582,6 +1810,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Altitude</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Latitude">
@@ -1601,6 +1832,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LocalSolarTime">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1618,6 +1852,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/LocalSolarTime</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
@@ -1637,6 +1874,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="OrbitAscendingFlag">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1654,6 +1894,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/OrbitAscendingFlag</Value>
                         </Attribute>
                     </Int8>
                     <Int32 name="OrbitNumber">
@@ -1673,6 +1916,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/OrbitNumber</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Pressure">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
@@ -1690,6 +1936,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Pressure</Value>
                         </Attribute>
                     </Float32>
                     <Int32 name="ProfileID">
@@ -1709,6 +1958,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ProfileID</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="ScanAzimuthAtNominalAltitude">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1726,6 +1978,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ScanAzimuthAtNominalAltitude</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="ScanElevationAtNominalAltitude">
@@ -1745,6 +2000,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ScanElevationAtNominalAltitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="ScanTable">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1762,6 +2020,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ScanTable</Value>
                         </Attribute>
                     </Int16>
                     <Int8 name="ScanUpFlag">
@@ -1781,6 +2042,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ScanUpFlag</Value>
+                        </Attribute>
                     </Int8>
                     <Int32 name="ScienceScanMode">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1798,6 +2062,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ScienceScanMode</Value>
                         </Attribute>
                     </Int32>
                     <Float32 name="SecondsInDay">
@@ -1817,6 +2084,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/SecondsInDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1834,6 +2104,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/SolarZenithAngle</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="SpacecraftAltitude">
@@ -1853,6 +2126,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/SpacecraftAltitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SpacecraftLatitude">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1870,6 +2146,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/SpacecraftLatitude</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="SpacecraftLongitude">
@@ -1889,6 +2168,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/SpacecraftLongitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="TangentHeightAtNominalAltitude">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1906,6 +2188,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/TangentHeightAtNominalAltitude</Value>
                         </Attribute>
                     </Float32>
                     <Float64 name="Time">
@@ -1925,6 +2210,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                     <Float32 name="ViewDirectionAtNominalAltitude">
                         <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
@@ -1943,14 +2231,25 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/HIRDLS/Geolocation Fields/ViewDirectionAtNominalAltitude</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.12</Value>
         </Attribute>

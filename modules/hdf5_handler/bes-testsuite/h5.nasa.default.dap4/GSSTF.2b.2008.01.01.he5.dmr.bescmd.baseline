@@ -28,10 +28,14 @@
         </Group>
         <Group name="GRIDS">
             <Group name="SET1">
-                <Group name="Data Fields">
+                <Dimension name="XDim" size="360"/>
+                <Dimension name="YDim" size="180"/>
+                <Dimension name="Xdim" size="360"/>
+                <Dimension name="Ydim" size="180"/>
+                <Group name="Data_Fields">
                     <Float32 name="DQ">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -41,10 +45,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/kg</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/DQ</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="E">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -54,10 +61,13 @@
                         <Attribute name="Units" type="String">
                             <Value>W/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/E</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="H">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -67,10 +77,13 @@
                         <Attribute name="Units" type="String">
                             <Value>W/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/H</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Qair">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -80,10 +93,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/kg</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/Qair</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="STu">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -93,10 +109,13 @@
                         <Attribute name="Units" type="String">
                             <Value>N/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/STu</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="STv">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -106,10 +125,13 @@
                         <Attribute name="Units" type="String">
                             <Value>N/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/STv</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Tot_Precip_Water">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -119,10 +141,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/cm^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="U">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -132,10 +157,13 @@
                         <Attribute name="Units" type="String">
                             <Value>m/s</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/U</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="WB">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET1/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -144,15 +172,22 @@
                         </Attribute>
                         <Attribute name="Units" type="String">
                             <Value>g/cm^^2</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET1/Data Fields/WB</Value>
                         </Attribute>
                     </Float32>
                 </Group>
             </Group>
             <Group name="SET2">
-                <Group name="Data Fields">
+                <Dimension name="XDim" size="360"/>
+                <Dimension name="YDim" size="180"/>
+                <Dimension name="Xdim" size="360"/>
+                <Dimension name="Ydim" size="180"/>
+                <Group name="Data_Fields">
                     <Float32 name="DQ">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -162,10 +197,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/kg</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/DQ</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="E">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -175,10 +213,13 @@
                         <Attribute name="Units" type="String">
                             <Value>W/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/E</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="H">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -188,10 +229,13 @@
                         <Attribute name="Units" type="String">
                             <Value>W/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/H</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Qair">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -201,10 +245,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/kg</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/Qair</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="STu">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -214,10 +261,13 @@
                         <Attribute name="Units" type="String">
                             <Value>N/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/STu</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="STv">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -227,10 +277,13 @@
                         <Attribute name="Units" type="String">
                             <Value>N/m^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/STv</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Tot_Precip_Water">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -240,10 +293,13 @@
                         <Attribute name="Units" type="String">
                             <Value>g/cm^^2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/Tot_Precip_Water</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="U">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -253,10 +309,13 @@
                         <Attribute name="Units" type="String">
                             <Value>m/s</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/U</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="WB">
-                        <Dim size="180"/>
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/SET2/XDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-999.</Value>
                         </Attribute>
@@ -265,14 +324,21 @@
                         </Attribute>
                         <Attribute name="Units" type="String">
                             <Value>g/cm^^2</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/SET2/Data Fields/WB</Value>
                         </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.11</Value>
         </Attribute>
