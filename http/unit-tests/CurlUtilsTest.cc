@@ -43,6 +43,7 @@
 #include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
+#include "AccessCredentials.h"
 
 #include "test_config.h"
 
@@ -294,7 +295,91 @@ public:
         if (debug) cerr << prolog << "END" << endl;
     }
 
+    // A case where signing works
+    void sign_s3_url_test_1() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        ac.add(AccessCredentials::ID_KEY, "foo");
+        ac.add(AccessCredentials::KEY_KEY, "secret");
+        ac.add(AccessCredentials::REGION_KEY, "oz-1");
+        ac.add(AccessCredentials::URL_KEY, "http://test.opendap.org");
+        auto headers = new curl_slist{};
+        try {
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
+            CPPUNIT_ASSERT_MESSAGE("Afterward, it should have three headers", new_headers->next != nullptr);
+            // skip the first element since the data will be NULL given that we passed in
+            // an empty list.
+            new_headers = new_headers->next;
+            string h = new_headers->data;
+            DBG(cerr << "new_headers->data: " << h << endl);
+            CPPUNIT_ASSERT_MESSAGE("Expected Authorization: AWS4-HMAC-SHA256 Credential=foo/...",
+                                   h.find("Authorization: AWS4-HMAC-SHA256 Credential=foo/") != string::npos);
+
+            new_headers = new_headers->next;
+            h = new_headers->data;
+            DBG(cerr << "new_headers->data: " << h << endl);
+            CPPUNIT_ASSERT_MESSAGE("Expected x-amz-content-sha256: e3b0c4...",
+                                   h.find("x-amz-content-sha256: e3b0c4") != string::npos);
+
+            new_headers = new_headers->next;
+            h = new_headers->data;
+            DBG(cerr << "new_headers->data: " << h << endl);
+            CPPUNIT_ASSERT_MESSAGE("Expected x-amz-date:...", h.find("x-amz-date:") != string::npos);
+
+            new_headers = new_headers->next;
+            CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", new_headers == nullptr);
+        }
+        catch(...) {
+            curl_slist_free_all(headers);
+            throw;
+        }
+
+        curl_slist_free_all(headers);
+    }
+
+    // We have credentials, but the target url doesn't match the URL_KEY
+    void sign_s3_url_test_2() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        ac.add(AccessCredentials::ID_KEY, "foo");
+        ac.add(AccessCredentials::KEY_KEY, "secret");
+        ac.add(AccessCredentials::REGION_KEY, "oz-1");
+        ac.add(AccessCredentials::URL_KEY, "http://never.org");
+        auto headers = new curl_slist{};
+        try {
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
+        }
+        catch(...) {
+            curl_slist_free_all(headers);
+            throw;
+        }
+
+        curl_slist_free_all(headers);
+    }
+
+    // The credentials are empty
+    void sign_s3_url_test_3() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        auto headers = new curl_slist{};
+        try {
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
+        }
+        catch(...) {
+            curl_slist_free_all(headers);
+            throw;
+        }
+
+        curl_slist_free_all(headers);
+    }
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -305,6 +390,9 @@ CPPUNIT_TEST_SUITE(CurlUtilsTest);
         CPPUNIT_TEST(is_retryable_test);
         CPPUNIT_TEST(retrieve_effective_url_test);
         CPPUNIT_TEST(add_edl_auth_headers_test);
+        CPPUNIT_TEST(sign_s3_url_test_1);
+        CPPUNIT_TEST(sign_s3_url_test_2);
+        CPPUNIT_TEST(sign_s3_url_test_3);
 
     CPPUNIT_TEST_SUITE_END();
 };

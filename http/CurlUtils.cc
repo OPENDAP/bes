@@ -41,7 +41,7 @@
 
 #include "rapidjson/document.h"
 
-#include <BESContextManager.h>
+#include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
@@ -61,7 +61,9 @@
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "EffectiveUrlCache.h"
+#include "CredentialsManager.h"
 
+#include "awsv4.h"
 #include "url_impl.h"
 
 #define MODULE "curl"
@@ -72,6 +74,9 @@ using std::map;
 using std::vector;
 using std::stringstream;
 using std::ostringstream;
+using std::shared_ptr;
+
+using namespace AWSV4;
 using namespace http;
 
 #define prolog std::string("CurlUtils::").append(__func__).append("() - ")
@@ -807,8 +812,18 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-    // Add the authorization headers
+    // Add the EDL authorization headers if the Information is in the BES Context Manager
     req_headers = add_edl_auth_headers(req_headers);
+
+    // If this is a URL that references an S3 bucket and we have not added EDL auth headers,
+    // sign the URL. Note that these credentials are 'per URL prefix'
+
+    if (CredentialsManager::theCM()->size() > 0) {
+        auto ac = CredentialsManager::theCM()->get(target_url);
+        if (ac && ac->is_s3_cred()) {
+            req_headers = sign_s3_url(target_url, ac, req_headers);
+        }
+    }
 
     try {
         // OK! Make the cURL handle
@@ -1907,6 +1922,41 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
 
     return request_headers;
 }
+
+/**
+ * @brief Sign a URL for S3
+ *
+ * Given a URL that references an object in an S3 bucket for which the server
+ * has credentials, sign that URL using the AWS V4 signing algorithm and put
+ * the resulting headers in the list of HTTP/S request headers.
+ *
+ * This method modifies the third argument. It _appends_ three new headers,
+ * so if the list of request headers was empty, the list will start with an
+ * element where the 'data' component is NULL.
+ *
+ * @param target_url The URL that should be signed
+ * @param ac AccessCredentials instance that will not be modified (not const
+ * because some of the methods used modify internal state).
+ * @param req_headers The header list that will hold the Authorization, etc.,
+ * headers.
+ * @param The modified list of request headers
+ */
+curl_slist *
+sign_s3_url(const shared_ptr<url> &target_url, AccessCredentials *ac, curl_slist *req_headers) {
+    const time_t request_time = time(nullptr);
+
+    const string auth_header = compute_awsv4_signature(target_url, request_time, ac->get(AccessCredentials::ID_KEY),
+                                                       ac->get(AccessCredentials::KEY_KEY),
+                                                       ac->get(AccessCredentials::REGION_KEY), "s3");
+
+    req_headers = append_http_header(req_headers, "Authorization", auth_header);
+    req_headers = append_http_header(req_headers, "x-amz-content-sha256",
+                                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    req_headers = append_http_header(req_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+
+    return req_headers;
+}
+
 
 /**
  * @brief Queries the passed cURL easy handle, ceh, for the value of CURLINFO_EFFECTIVE_URL and returns said value.
