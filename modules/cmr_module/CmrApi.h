@@ -37,6 +37,8 @@
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
 
+#include "Provider.h"
+#include "Collection.h"
 #include "Granule.h"
 
 namespace cmr {
@@ -44,7 +46,10 @@ namespace cmr {
 
 class CmrApi {
 private:
-    std::string d_cmr_search_endpoint_url;
+    std::string d_cmr_endpoint_url;
+    std::string d_cmr_providers_search_endpoint_url;
+    std::string d_cmr_collections_search_endpoint_url;
+    std::string d_cmr_granules_search_endpoint_url;
 
     const rapidjson::Value& get_temporal_group(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &cmr_doc);
@@ -70,6 +75,9 @@ public:
     unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
     cmr::Granule *get_granule(const std::string path);
     cmr::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
+
+    void get_providers(std::vector<cmr::Provider> &providers);
+
 };
 
 

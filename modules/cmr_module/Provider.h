@@ -68,7 +68,11 @@ private:
     bool rest_only;
 
 public:
+    Provider(std::string id): provider_id(id){}
 
+    void load_from_cmr(){
+
+    }
 
 };
 

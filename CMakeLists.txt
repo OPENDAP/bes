@@ -526,6 +526,18 @@ add_executable(
     http/unit-tests/RemoteResourceTest.cc
     http/unit-tests/AllowedHostsTest.cc
 
+	http/awsv4.cc
+	http/awsv4.h
+	http/CredentialsManager.h
+	http/CredentialsManager.cc
+	http/unit-tests/awsv4_test.cc
+	http/AccessCredentials.cc
+	http/AccessCredentials.h
+	http/NgapS3Credentials.cc
+	http/NgapS3Credentials.h
+	http/unit-tests/NgapCredentialsTest.cc
+
+
 	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
     hello_world/not_used/SayReporter.cc
@@ -616,7 +628,12 @@ add_executable(
     #modules/cmr_module/RemoteHttpResource.cc
     #modules/cmr_module/RemoteHttpResource.h
     modules/cmr_module/rjson_utils.cc
-    modules/cmr_module/rjson_utils.h
+	modules/cmr_module/rjson_utils.h
+	modules/cmr_module/Provider.h
+	modules/cmr_module/Provider.cc
+	modules/cmr_module/Collection.h
+	modules/cmr_module/Collection.cc
+
     modules/csv_handler/CSV_Data.cc
     modules/csv_handler/CSV_Data.h
     modules/csv_handler/CSV_Field.h
@@ -645,27 +662,18 @@ add_executable(
     modules/debug_functions/DebugFunctions.h
 
 	modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
-#    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
     modules/dmrpp_module/unit-tests/DmrppArrayTest.cc
     modules/dmrpp_module/unit-tests/ChunkTest.cc
-		http/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
 	modules/dmrpp_module/build_dmrpp.cc
 	modules/dmrpp_module/build_dmrpp_util.cc
 	modules/dmrpp_module/build_dmrpp_util.h
-		http/awsv4.cc
-		http/awsv4.h
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
     modules/dmrpp_module/CurlHandlePool.cc
     modules/dmrpp_module/CurlHandlePool.h
-		http/CredentialsManager.h
-		http/CredentialsManager.cc
     modules/dmrpp_module/DMRpp.cc
     modules/dmrpp_module/DMRpp.h
     modules/dmrpp_module/DmrppArray.cc
@@ -719,21 +727,10 @@ add_executable(
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
 		modules/dmrpp_module/DmrppNames.h
-		# modules/dmrpp_module/dev/h5_obj_addr_info.cc
-		#modules/dmrpp_module/dev/read_str_vars.cc
-		#modules/dmrpp_module/dev/test_read_vl_offset.cc
-		#modules/dmrpp_module/dev/obtain_vlstr_addr.cc
-		#modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc
 	modules/dmrpp_module/DMZ.h
 	modules/dmrpp_module/DMZ.cc
 	modules/dmrpp_module/unit-tests/DMZTest.cc
 
-		http/unit-tests/awsv4_test.cc
-    modules/dmrpp_module/AccessCredentials.cc
-    modules/dmrpp_module/AccessCredentials.h
-		http/NgapS3Credentials.cc
-		http/NgapS3Credentials.h
-		http/unit-tests/NgapCredentialsTest.cc
     modules/dmrpp_module/unit-tests/CurlHandlePoolTest.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc

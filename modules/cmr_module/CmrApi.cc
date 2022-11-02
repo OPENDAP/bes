@@ -60,20 +60,23 @@ using std::string;
 
 namespace cmr {
 
-    CmrApi::CmrApi() : d_cmr_search_endpoint_url(DEFAULT_CMR_HOST_URL){
+    CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL){
         bool found;
-        string cmr_search_endpoint_url;
-        TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_search_endpoint_url,found);
+        string cmr_endpoint_url;
+        TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_endpoint_url,found);
         if(found){
-            d_cmr_search_endpoint_url = cmr_search_endpoint_url;
+            d_cmr_endpoint_url = cmr_endpoint_url;
         }
-        string search(CMR_SEARCH_SERVICE);
-        if (d_cmr_search_endpoint_url.size() >= search.size()) {
-            if (0 != d_cmr_search_endpoint_url.compare (d_cmr_search_endpoint_url.size() - search.size(), search.size(), search)){
-                d_cmr_search_endpoint_url = BESUtil::pathConcat(d_cmr_search_endpoint_url,search);
-            }
-        }
-        BESDEBUG(MODULE, prolog << "Using CMR search endpoint: " << d_cmr_search_endpoint_url  << endl);
+        BESDEBUG(MODULE, prolog << "Using CMR Endpoint: " << d_cmr_endpoint_url  << endl);
+
+        d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,CMR_PROVIDERS_LEGACY_API_ENDPOINT);
+        BESDEBUG(MODULE, prolog << "Using CMR Providers Search Endpoint: " << d_cmr_providers_search_endpoint_url  << endl);
+
+        d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
+        BESDEBUG(MODULE, prolog << "Using CMR Collections Search Endpoint: " << d_cmr_collections_search_endpoint_url  << endl);
+
+        d_cmr_granules_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,CMR_GRANULES_SEARCH_API_ENDPOINT);
+        BESDEBUG(MODULE, prolog << "Using CMR Granules Search Endpoint: " << d_cmr_granules_search_endpoint_url  << endl);
     }
 
 /**
@@ -351,11 +354,12 @@ CmrApi::get_years(string collection_name, vector<string> &years_result){
     // bool result;
     string msg;
 
-    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json") +
+    string cmr_query_url = d_cmr_granules_search_endpoint_url +
             "?concept_id=" + collection_name + "&include_facets=v2";
+    BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url << endl);
 
     rapidjson::Document doc;
-    rju.getJsonDoc(url,doc);
+    rju.getJsonDoc(cmr_query_url,doc);
 
     const rapidjson::Value& year_group = get_year_group(doc);
     const rapidjson::Value& years = get_children(year_group);
@@ -381,13 +385,14 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
 
     stringstream msg;
 
-    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
+    string cmr_query_url = d_cmr_granules_search_endpoint_url +
         + "?concept_id="+collection_name
         +"&include_facets=v2"
         +"&temporal_facet[0][year]="+r_year;
+    BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url << endl);
 
     rapidjson::Document doc;
-    rju.getJsonDoc(url,doc);
+    rju.getJsonDoc(cmr_query_url,doc);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(doc) << endl);
 
     const rapidjson::Value& year_group = get_year_group(doc);
@@ -443,14 +448,16 @@ CmrApi::get_days(string collection_name, string r_year, string r_month, vector<s
     rjson_utils rju;
     stringstream msg;
 
-    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
-        + "?concept_id="+collection_name
-        +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year
-        +"&temporal_facet[0][month]="+r_month;
+    string cmr_query_url = d_cmr_granules_search_endpoint_url +
+                           + "?concept_id=" + collection_name
+                           + "&include_facets=v2"
+                           + "&temporal_facet[0][year]=" + r_year
+                           + "&temporal_facet[0][month]=" + r_month;
+
+    BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url << endl);
 
     rapidjson::Document cmr_doc;
-    rju.getJsonDoc(url,cmr_doc);
+    rju.getJsonDoc(cmr_query_url, cmr_doc);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(cmr_doc) << endl);
 
     const rapidjson::Value& day_group = get_day_group(r_month, r_year, cmr_doc);
@@ -505,24 +512,27 @@ void
 CmrApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
     rjson_utils rju;
 
-    string url = BESUtil::assemblePath(d_cmr_search_endpoint_url, "granules.json")
+    string cmr_query_url = d_cmr_granules_search_endpoint_url +
         + "?concept_id="+collection_name
         + "&include_facets=v2"
         + "&page_size=2000";
 
-    if(!r_year.empty())
-        url += "&temporal_facet[0][year]="+r_year;
+    if(!r_year.empty()) {
+        cmr_query_url += "&temporal_facet[0][year]=" + r_year;
+    }
+    if(!r_month.empty()) {
+        cmr_query_url += "&temporal_facet[0][month]=" + r_month;
+    }
+    if(!r_day.empty()) {
+        cmr_query_url += "&temporal_facet[0][day]=" + r_day;
+    }
 
-    if(!r_month.empty())
-        url += "&temporal_facet[0][month]="+r_month;
+    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << cmr_query_url << endl);
 
-    if(!r_day.empty())
-        url += "&temporal_facet[0][day]="+r_day;
-
-    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << url << endl);
-    rju.getJsonDoc(url,result_doc);
+    rju.getJsonDoc(cmr_query_url,result_doc);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(result_doc) << endl);
 }
+
 
 
 
@@ -581,6 +591,11 @@ cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string 
         }
     }
     return result;
+}
+
+void CmrApi::get_providers(vector<cmr::Provider> &providers)
+{
+
 }
 
 
