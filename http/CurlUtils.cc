@@ -943,7 +943,7 @@ rapidjson::Document http_get_as_json(const std::string &target_url) {
 }
 
 /**
- * Derefernce the target URL and put the response in response_buf
+ * Dereference the target URL and put the response in response_buf
  * @param target_url The URL to dereference.
  * @param response_buf The buffer into which to put the response.
  */
@@ -956,6 +956,8 @@ void http_get(const std::string &target_url, char *response_buf) {
     curl_slist *request_headers = nullptr;
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
+
+    // TODO Add support signing S3 requests here. Or is that not needed? jhrg 11/3/22
 
     try {
 
@@ -1626,6 +1628,8 @@ bool eval_curl_easy_perform_code(
 
         // Add the authorization headers
         request_headers = add_edl_auth_headers(request_headers);
+
+        // TODO Add support signing S3 requests here. Or is that not needed? jhrg 11/3/22
 
         try {
             BESDEBUG(MODULE,
