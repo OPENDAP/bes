@@ -815,9 +815,8 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
     // Add the EDL authorization headers if the Information is in the BES Context Manager
     req_headers = add_edl_auth_headers(req_headers);
 
-    // If this is a URL that references an S3 bucket and we have not added EDL auth headers,
-    // sign the URL. Note that these credentials are 'per URL prefix'
-
+    // If this is a URL that references an S3 bucket, and there are credentials for the URL,
+    // sign the URL.
     if (CredentialsManager::theCM()->size() > 0) {
         auto ac = CredentialsManager::theCM()->get(target_url);
         if (ac && ac->is_s3_cred()) {
