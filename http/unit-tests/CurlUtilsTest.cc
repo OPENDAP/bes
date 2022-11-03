@@ -47,14 +47,10 @@
 
 #include "test_config.h"
 
+// Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
+#include "modules/run_tests_cppunit.h"
+
 using namespace std;
-
-static bool debug = false;
-static bool Debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 
 #define prolog std::string("CurlUtilsTest::").append(__func__).append("() - ")
 
@@ -62,10 +58,6 @@ namespace http {
 
 class CurlUtilsTest : public CppUnit::TestFixture {
 private:
-
-    /**
-     *
-     */
     void show_file(string filename) {
         ifstream t(filename.c_str());
 
@@ -83,73 +75,29 @@ private:
         }
     }
 
-#if 0
-    std::string get_file_as_string(string filename)
-    {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            if(Debug) cerr << endl << "#############################################################################" << endl;
-            if(Debug) cerr << "file: " << filename << endl;
-            if(Debug) cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            if(Debug) cerr << file_content << endl;
-            if(Debug) cerr << "#############################################################################" << endl;
-            return file_content;
-        }
-        else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
-            CPPUNIT_ASSERT(false);
-            return "";
-        }
-    }
-
-    /**
-     *
-     */
-    string get_data_file_url(string name){
-        string data_file = BESUtil::assemblePath(d_data_dir,name);
-        if(debug) cerr << prolog << "data_file: " << data_file << endl;
-        if(Debug) show_file(data_file);
-
-        string data_file_url = "file://" + data_file;
-        if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
-        return data_file_url;
-    }
-#endif
-
 public:
-    string d_data_dir;
+    string d_data_dir = TEST_DATA_DIR;
 
     // Called once before everything gets tested
-    CurlUtilsTest() {
-        d_data_dir = TEST_DATA_DIR;;
-        cerr << "data_dir: " << d_data_dir << endl;
-    }
+    CurlUtilsTest() = default;
 
     // Called at the end of the test
-    ~CurlUtilsTest() {
-    }
+    ~CurlUtilsTest() override = default;
 
     // Called before each test
-    void setUp() {
-        if (Debug || debug) cerr << endl;
-        if (Debug) cerr << "setUp() - BEGIN" << endl;
+    void setUp() override {
+        if (debug || debug) cerr << endl;
+        if (debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        if (Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-        if (bes_debug) show_file(bes_conf);
+        if (debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        if (debug2) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl");
-
-        if (Debug) cerr << "setUp() - END" << endl;
+        if (debug) cerr << "setUp() - END" << endl;
     }
 
     // Called after each test
-    void tearDown() {
-    }
-
+    void tearDown() override { }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
@@ -184,13 +132,13 @@ public:
             if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
             CPPUNIT_ASSERT(!isRetryable);
         }
-        catch (BESError &be) {
+        catch (const BESError &be) {
             stringstream msg;
             msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
             CPPUNIT_FAIL(msg.str());
 
         }
-        catch (std::exception &se) {
+        catch (const std::exception &se) {
             stringstream msg;
             msg << "CAUGHT std::exception message: " << se.what() << endl;
             cerr << msg.str();
@@ -205,7 +153,6 @@ public:
         shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap", true));
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         string expected_url = "http://test.opendap.org/opendap/";
-        // *** EffectiveUrl *effective_url;
 
         try {
             if (debug) cerr << prolog << "   target_url: " << target_url->str() << endl;
@@ -240,13 +187,13 @@ public:
 
 
         }
-        catch (BESError &be) {
+        catch (const BESError &be) {
             stringstream msg;
             msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
                 << be.get_line() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-        catch (std::exception &se) {
+        catch (const std::exception &se) {
             stringstream msg;
             msg << "CAUGHT std::exception message: " << se.what() << endl;
             cerr << msg.str();
@@ -280,13 +227,13 @@ public:
                 index++;
             }
         }
-        catch (BESError &be) {
+        catch (const BESError &be) {
             stringstream msg;
             msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
                 << be.get_line() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-        catch (std::exception &se) {
+        catch (const std::exception &se) {
             stringstream msg;
             msg << "CAUGHT std::exception message: " << se.what() << endl;
             cerr << msg.str();
@@ -384,15 +331,14 @@ public:
 /* TESTS END */
 /*##################################################################################################*/
 
+    CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
-CPPUNIT_TEST_SUITE(CurlUtilsTest);
-
-        CPPUNIT_TEST(is_retryable_test);
-        CPPUNIT_TEST(retrieve_effective_url_test);
-        CPPUNIT_TEST(add_edl_auth_headers_test);
-        CPPUNIT_TEST(sign_s3_url_test_1);
-        CPPUNIT_TEST(sign_s3_url_test_2);
-        CPPUNIT_TEST(sign_s3_url_test_3);
+    CPPUNIT_TEST(is_retryable_test);
+    CPPUNIT_TEST(retrieve_effective_url_test);
+    CPPUNIT_TEST(add_edl_auth_headers_test);
+    CPPUNIT_TEST(sign_s3_url_test_1);
+    CPPUNIT_TEST(sign_s3_url_test_2);
+    CPPUNIT_TEST(sign_s3_url_test_3);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -402,46 +348,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dbD")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                cerr << "debug enabled" << endl;
-                break;
-            case 'D':
-                Debug = true;  // Debug is a static global
-                cerr << "Debug enabled" << endl;
-                break;
-            case 'b':
-                bes_debug = true;  // debug is a static global
-                cerr << "bes_debug enabled" << endl;
-                break;
-            default:
-                break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = http::CurlUtilsTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl");
 }
