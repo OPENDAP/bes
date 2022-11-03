@@ -172,6 +172,11 @@ add_executable(
     config.h
 
 	rapidjson/rapidjson.h
+	rapidjson/document.h
+	rapidjson/writer.h
+	rapidjson/prettywriter.h
+	rapidjson/stringbuffer.h
+	rapidjson/filereadstream.h
 	pugixml/src/pugixml.hpp
 
     cmdln/unit-tests/test_config.h.in

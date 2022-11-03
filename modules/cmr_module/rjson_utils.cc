@@ -57,16 +57,17 @@ void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     shared_ptr<http::url> target_url(new http::url(url));
-    http::RemoteResource rhr(target_url);
-    rhr.retrieveResource();
+    http::RemoteResource remoteResource(target_url);
+    remoteResource.retrieveResource();
     if(BESDebug::IsSet(MODULE)){
-        string cmr_hits = rhr.get_http_response_header("cmr-hits");
+        string cmr_hits = remoteResource.get_http_response_header("cmr-hits");
         stringstream msg(prolog);
         msg << "CMR-Hits: "<< cmr_hits << endl;
         *(BESDebug::GetStrm()) << msg.str();
     }
-    FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
-    char readBuffer[65536];
+    auto size = remoteResource.cached_object_size();
+    FILE* fp = fopen(remoteResource.getCacheFileName().c_str(), "r"); // non-Windows use "r"
+    char readBuffer[size];
     rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
     doc.ParseStream(frs);
     fclose(fp);
@@ -113,6 +114,12 @@ rjson_utils::jsonDocToString(rapidjson::Document &d){
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
     d.Accept(writer);
     return buffer.GetString();
+}
+
+std::string rjson_utils::typeName(unsigned int t) {
+    const char* tnames[] =
+            { "Null", "False", "True", "Object", "Array", "String", "Number" };
+    return string(tnames[t]);
 }
 
 

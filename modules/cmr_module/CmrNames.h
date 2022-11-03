@@ -36,7 +36,6 @@
 #define CMR_FACETS_KEY "CMR.Facets"
 #define CMR_HOST_URL_KEY "CMR.host.url"
 #define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/"
-#define CMR_SEARCH_SERVICE "/search"
 
 #define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers.json"
 #define CMR_COLLECTIONS_SEARCH_API_ENDPOINT "search/collections.umm_json"

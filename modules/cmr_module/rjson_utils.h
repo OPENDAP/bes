@@ -45,6 +45,7 @@ public:
     std::string getStringValue(const rapidjson::Value& object, const std::string &name);
     // bool getBooleanValue(const rapidjson::Value& object, const std::string name);
     std::string jsonDocToString(rapidjson::Document &d);
+    static std::string typeName(unsigned t);
 };
 
 

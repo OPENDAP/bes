@@ -595,6 +595,49 @@ cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string 
 
 void CmrApi::get_providers(vector<cmr::Provider> &providers)
 {
+    rjson_utils rju;
+
+    string cmr_query_url = d_cmr_providers_search_endpoint_url + "?page_size=2000";
+    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url << endl);
+
+    rapidjson::Document result_doc;
+    rju.getJsonDoc(cmr_query_url,result_doc);
+    assert(result_doc.IsArray());
+
+    for (auto& array_member : result_doc.GetArray()){
+        BESDEBUG(MODULE, prolog << "array_member type: " << rjson_utils::typeName(array_member.GetType()) << endl);
+
+        for (auto& provider_object : array_member.GetObject()) {
+            BESDEBUG(MODULE, prolog << "provider_object name: " << provider_object.name.GetString() << " type: "
+                                    << rjson_utils::typeName(provider_object.value.GetType()) << endl);
+
+            auto& pov = provider_object.value;
+            BESDEBUG(MODULE, prolog << "pov type: " << rjson_utils::typeName(pov.GetType()) << endl);
+            const auto &pid = provider_object.value.FindMember("provider_id");
+            //const auto &mm = pov.FindMember("provider_id");
+            BESDEBUG(MODULE, prolog << "pid type: " << rjson_utils::typeName(pid->value.GetType()) << " value: " << pid->value.GetString() << endl);
+
+            for (auto &p_member: provider_object.value.GetObject()) {
+                BESDEBUG(MODULE, prolog << "p_member name: " << p_member.name.GetString() << " type: "
+                                        << rjson_utils::typeName(p_member.value.GetType()) << endl);
+            }
+            // Provider provider(pov);
+            //BESDEBUG(MODULE, prolog << "provider.get_id(): " << provider.get_id() << endl);
+        }
+
+        //const auto& p_obj = itr.Member("provider");
+        //BESDEBUG(MODULE, prolog << "member name is: " << p_obj.name.GetString() << endl);
+    }
+
+    rapidjson::Value::ConstMemberIterator itr = result_doc.FindMember("provider");
+    auto result  = itr != result_doc.MemberEnd();
+    string msg = prolog + (result?"Located":"FAILED to locate") + " the value 'feed'.";
+    BESDEBUG(MODULE, msg << endl);
+    if(!result){
+        throw CmrError(msg,__FILE__,__LINE__);
+    }
+
+    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(result_doc) << endl);
 
 }
 

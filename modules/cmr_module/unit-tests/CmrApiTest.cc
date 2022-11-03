@@ -613,9 +613,18 @@ public:
 
     }
 
+    void get_providers_test() {
+        stringstream msg;
+        CmrApi cmr;
+        std::vector<cmr::Provider> providers;
+
+        cmr.get_providers(providers);
+
+    }
 
     CPPUNIT_TEST_SUITE( CmrApiTest );
 
+    CPPUNIT_TEST(get_providers_test);
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);

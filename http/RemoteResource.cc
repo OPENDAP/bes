@@ -726,6 +726,12 @@ vector<string> *RemoteResource::getResponseHeaders() {
     return d_response_headers;
 }
 
+off_t RemoteResource::cached_object_size(){
+    struct stat stat_buf{};
+    int rc = stat(getCacheFileName().c_str(), &stat_buf);
+    return rc == 0 ? stat_buf.st_size : -1;
+}
+
 
 #if 0
 void RemoteResource::setType(const vector<string> *resp_hdrs) {

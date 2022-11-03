@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "rapidjson/document.h"
+
 namespace cmr {
 
 /*
@@ -61,18 +63,19 @@ private:
     std::vector<contact> contacts;
     std::string description_of_holdings;
     std::vector<std::string> discovery_urls;
-    std::string id;
+    std::string d_id;
     std::string organization_name;
     std::string provider_id;
     std::vector<std::string> provider_types;
     bool rest_only;
 
+    void set_name(const rapidjson::Value& provider_obj);
+    void set_id(const rapidjson::Value& provider_obj);
+
 public:
-    Provider(std::string id): provider_id(id){}
+    Provider(const rapidjson::Value& provider_obj);
 
-    void load_from_cmr(){
-
-    }
+    std::string get_id() { return d_id; }
 
 };
 

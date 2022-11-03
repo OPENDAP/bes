@@ -52,7 +52,7 @@ namespace http {
  * for rapid (subsequent) access. It can be configure to use a proxy server
  * for the outgoing requests.
  */
-    class RemoteResource {
+class RemoteResource {
     private:
         friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
@@ -180,6 +180,7 @@ namespace http {
          */
         std::vector<std::string> *getResponseHeaders();
 
+        off_t cached_object_size();
 
         /**
          * Returns cache file content in a string..
