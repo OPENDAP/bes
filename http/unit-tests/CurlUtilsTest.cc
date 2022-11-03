@@ -86,7 +86,8 @@ public:
 
     // Called before each test
     void setUp() override {
-        if (debug || debug) cerr << endl;
+        debug = true;
+        if (debug) cerr << endl;
         if (debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         if (debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
@@ -348,5 +349,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl");
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0: 1;
 }
