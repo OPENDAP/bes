@@ -43,6 +43,7 @@
 #include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
+#include "CredentialsManager.h"
 #include "AccessCredentials.h"
 #include "BESForbiddenError.h"
 #include "BESSyntaxUserError.h"
@@ -60,8 +61,7 @@ namespace http {
 
 class CurlUtilsTest : public CppUnit::TestFixture {
 private:
-    void show_file(string filename)
-    {
+    void show_file(string filename) {
         ifstream t(filename.c_str());
 
         if (t.is_open()) {
@@ -88,8 +88,7 @@ public:
     ~CurlUtilsTest() override = default;
 
     // Called before each test
-    void setUp() override
-    {
+    void setUp() override {
         if (debug) cerr << endl;
         if (debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
@@ -101,8 +100,7 @@ public:
     }
 
     // Called after each test
-    void tearDown() override
-    {
+    void tearDown() override {
         // These are set in add_edl_auth_headers_test() and not 'unsetting' them
         // causes other odd behavior in subsequent tests (Forbidden exceptions
         // become SyntaxUser ones). Adding the unset operations here ensures they
@@ -115,8 +113,7 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
-    void is_retryable_test()
-    {
+    void is_retryable_test() {
         if (debug) cerr << prolog << "BEGIN" << endl;
         bool isRetryable;
 
@@ -162,8 +159,7 @@ public:
     }
 
 
-    void retrieve_effective_url_test()
-    {
+    void retrieve_effective_url_test() {
         if (debug) cerr << prolog << "BEGIN" << endl;
         shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap", true));
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
@@ -217,8 +213,7 @@ public:
         if (debug) cerr << prolog << "END" << endl;
     }
 
-    void add_edl_auth_headers_test()
-    {
+    void add_edl_auth_headers_test() {
         if (debug) cerr << prolog << "BEGIN" << endl;
         curl_slist *hdrs = NULL;
         curl_slist *temp = NULL;
@@ -258,8 +253,7 @@ public:
     }
 
     // A case where signing works
-    void sign_s3_url_test_1()
-    {
+    void sign_s3_url_test_1() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         ac.add(AccessCredentials::ID_KEY, "foo");
@@ -298,8 +292,7 @@ public:
     }
 
     // We have credentials, but the target url doesn't match the URL_KEY
-    void sign_s3_url_test_2()
-    {
+    void sign_s3_url_test_2() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         ac.add(AccessCredentials::ID_KEY, "foo");
@@ -322,8 +315,7 @@ public:
     }
 
     // The credentials are empty
-    void sign_s3_url_test_3()
-    {
+    void sign_s3_url_test_3() {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         auto headers = new curl_slist{};
@@ -343,8 +335,7 @@ public:
 
     // Test the first version of http_get() function tht takes a fixed size buffer.
     // If the buffer is too small, buffer overflow.
-    void http_get_test_1()
-    {
+    void http_get_test_1() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf(1024);
         curl::http_get(url, buf.data());
@@ -361,8 +352,7 @@ public:
     }
 
     // Test the http_get() function that extends as needed a vector<char>
-    void http_get_test_2()
-    {
+    void http_get_test_2() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         curl::http_get(url, buf);
@@ -379,8 +369,7 @@ public:
     // Test the http_get() function that extends as needed a vector<char>.
     // This what happens if the vector already holds data - it should be
     // retained.
-    void http_get_test_3()
-    {
+    void http_get_test_3() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         const string twimc = "To whom it may concern:";
@@ -413,8 +402,7 @@ public:
     //
     // This test will read from the cloudydap bucket we own.
 
-    void http_get_test_4()
-    {
+    void http_get_test_4() {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
@@ -423,8 +411,8 @@ public:
         curl::http_get(url, buf);
     }
 
-    void http_get_test_5()
-    {
+    // This test will fail with a BESForbidden exception
+    void http_get_test_5() {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
@@ -433,41 +421,74 @@ public:
         curl::http_get(url, buf);
     }
 
-    void http_get_test_6()
-    {
+    // This test will also fail with a BESForbidden exception
+    void http_get_test_6() {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
         setenv("CMAC_URL", "https://s3.us-east-1", 1);
+        setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         vector<char> buf;
         curl::http_get(url, buf);
     }
 
+    void http_get_test_7() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        setenv("CMAC_URL", "https://s3.us-east-1", 1);
+        setenv("CMAC_REGION", "us-east-1", 1);
+        // If the ID and Secret key are set in the shell/environment where this test
+        // is run, then this should work. Never ever set those values in any file.
+        // The Keys are: CMAC_ID, CMAC_ACCESS_KEY.
+        if (getenv("CMAC_ID") && getenv("CMAC_ACCESS_KEY")) {
+            try {
+                http::CredentialsManager::theCM()->load_credentials();
+                const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+                vector<char> buf;
+                curl::http_get(url, buf);
+                DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+                CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
+                                       string(buf.data()).find("Test data") == 0);
+                CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
+                                       string(buf.data()).find("Do not edit.")
+                                       != string::npos);
+
+                DBG(cerr << "buf.size() = " << buf.size() << endl);
+                CPPUNIT_ASSERT_MESSAGE("Size should be 93", buf.size() == 93);
+            }
+            catch(const BESError &e) {
+                CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));
+            }
+        }
+        else {
+            CPPUNIT_ASSERT("Credentials are not set, so the test passes by default.");
+        }
+    }
 
 /* TESTS END */
 /*##################################################################################################*/
 
-CPPUNIT_TEST_SUITE(CurlUtilsTest);
-        CPPUNIT_TEST(is_retryable_test);
-        CPPUNIT_TEST(retrieve_effective_url_test);
-        CPPUNIT_TEST(add_edl_auth_headers_test);
+    CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
-        CPPUNIT_TEST(sign_s3_url_test_1);
-        CPPUNIT_TEST(sign_s3_url_test_2);
-        CPPUNIT_TEST(sign_s3_url_test_3);
+    CPPUNIT_TEST(is_retryable_test);
+    CPPUNIT_TEST(retrieve_effective_url_test);
+    CPPUNIT_TEST(add_edl_auth_headers_test);
 
-        CPPUNIT_TEST(http_get_test_1);
-        CPPUNIT_TEST(http_get_test_2);
-        CPPUNIT_TEST(http_get_test_3);
+    CPPUNIT_TEST(sign_s3_url_test_1);
+    CPPUNIT_TEST(sign_s3_url_test_2);
+    CPPUNIT_TEST(sign_s3_url_test_3);
 
-        CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+    CPPUNIT_TEST(http_get_test_1);
+    CPPUNIT_TEST(http_get_test_2);
+    CPPUNIT_TEST(http_get_test_3);
 
-        // At one point, http_get_test_5 returned BESForbiddenError, which seems
-        // correct.
-        CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
-        CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
+    CPPUNIT_TEST(http_get_test_7);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -476,7 +497,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 
 } // namespace http
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0 : 1;
 }
