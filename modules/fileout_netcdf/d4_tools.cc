@@ -33,7 +33,9 @@
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
 
-#include <BESDebug.h>
+#include <exception>
+
+#include <BESInternalError.h>
 #include <vector>
 
 #include "d4_tools.h"
@@ -135,90 +137,42 @@ bool d4_tools::is_dap4_projected(DDS *_dds, vector<BaseType *> &projected_dap4_v
 }
 #endif
 
-#if 0
-bool d4_tools::is_dap4_projected(DMR *_dmr) {
-    bool dap4_is_projected = false;
-    // variables in the group
+#if 1
+bool d4_tools::is_dap4_projected(DMR *_dmr, vector<BaseType *> &projected_dap4_variable_inventory) {
 
-    D4Group *group = _dmr->root();
-    vector<BaseType *> projected_dap4_variable_inventory;
+    bool has_dap4_var = false;
 
-    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+    has_dap4_var = is_dap4_projected( _dmr->root(), projected_dap4_variable_inventory);
 
-        BESDEBUG("fonc", prolog << "---------------------------------------------" << endl);
-
-        BaseType *var = *btp;
-
-        bool is_dap4_var = false;
-        if(var->send_p()){
-            switch(var->type()){
-                case libdap::dods_int8_c:
-                case libdap::dods_int64_c:
-                case libdap::dods_uint64_c:
-                    projected_dap4_variable_inventory.push_back(var);
-                    is_dap4_var = true;
-                    dap4_is_projected=true;
-                    break;
-                default:
-                    break;
-            }
-            // Projected variable might not be DAP4, but what about the attributes?
-            if(!is_dap4_var && has_dap4_types(var->attributes())){
-                // It has DAP4 Attributes so that variable is a de-facto dap4 variable.
-                projected_dap4_variable_inventory.push_back(var);
-                is_dap4_var = true;
-                dap4_is_projected = true;
-            }
-        }
-    }
-    // all groups in the group
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        dap4_is_projected |= is_dap4_projected( *g, projected_dap4_variable_inventory);
-    }
-    return dap4_is_projected;
+    return has_dap4_var;
 }
 #endif
 
-#if 0
-bool d4_tools::is_dap4_projected(
-        D4Group *group,
-        vector<BaseType *> &projected_dap4_variable_inventory
-){
-    bool dap4_is_projected = false;
+#if 1
+bool d4_tools::is_dap4_projected(D4Group *group, vector<BaseType *> &projected_dap4_variable_inventory){
+    bool has_dap4_var = false;
     // variables in the group
 
     for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
-
-        BESDEBUG("fonc", prolog << "---------------------------------------------" << endl);
-
         BaseType *var = *btp;
 
-        bool is_dap4_var = false;
-        if(var->send_p()){
-            switch(var->type()){
-                case libdap::dods_int8_c:
-                case libdap::dods_int64_c:
-                case libdap::dods_uint64_c:
-                    projected_dap4_variable_inventory.push_back(var);
-                    is_dap4_var = true;
-                    dap4_is_projected=true;
-                    break;
-                default:
-                    break;
+        if(var->send_p() && var->type() != libdap::dods_group_c){ //dods_group_c <- d4Groups
+            if (is_dap4_projected(var, projected_dap4_variable_inventory)) {
+                has_dap4_var = true;
             }
-            // Projected variable might not be DAP4, but what about the attributes?
-            if(!is_dap4_var && has_dap4_types(var->attributes())){
-                // It has DAP4 Attributes so that variable is a de-facto dap4 variable.
-                projected_dap4_variable_inventory.push_back(var);
-                is_dap4_var = true;
-                dap4_is_projected = true;
+        }
+        else if (var->send_p() && var->type() == libdap::dods_group_c) {
+            try {
+                D4Group *d4g = dynamic_cast<D4Group *>(var);
+                if (is_dap4_projected(d4g, projected_dap4_variable_inventory)) {
+                    has_dap4_var = true;
+                }
+            }
+            catch (exception e){
+                throw BESInternalError("Exception: " + string(e.what()), __FILE__, __LINE__);
             }
         }
     }
-    // all groups in the group
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        dap4_is_projected |= is_dap4_projected( *g, projected_dap4_variable_inventory);
-    }
-    return dap4_is_projected;
+    return has_dap4_var;
 }
 #endif

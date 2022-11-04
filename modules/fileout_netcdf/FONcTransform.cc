@@ -74,10 +74,11 @@
 #include "FONcTransmitter.h"
 #include "history_utils.h"
 #include "FONcNames.h"
-
+#include "d4_tools.h"
 
 using namespace libdap;
 using namespace std;
+using namespace d4_tools;
 
 #define MODULE "fonc"
 #define prolog std::string("FONcTransform::").append(__func__).append("() - ")
@@ -444,6 +445,23 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
     _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
+    vector<BaseType *> projected_dap4_variable_inventory;
+    bool d4_true = d4_tools::is_dap4_projected(_dds, projected_dap4_variable_inventory);
+
+    /**
+     * Implementation check list:
+     * -X- Explain that the request cannot be fulfilled because the response contains types that are not compatible with the requested encoding.
+     * -_- Contain the inventory of incompatible types so the user can see exactly where the issue is.
+     * -_- Direct the user to a more compatible data model or encoding (i.e. DAP4 and NetCDF-4) by suggesting a change in request suffix or DAP4 Data Request Form page.
+     */
+
+    if (d4_true){
+        throw BESSyntaxUserError(
+                "request cannot be fulfilled because the response contains types that are not compatible with the requested encoding",
+                __FILE__,
+                __LINE__);
+    }
+
     throw_if_dap2_response_too_big(_dds, besDRB.get_ce());
 
     // Convert the DDS into an internal format to keep track of
@@ -689,8 +707,26 @@ void FONcTransform::transform_dap4() {
     BESDapResponseBuilder responseBuilder;
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
-
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
+#if 0
+    vector<BaseType *> projected_dap4_variable_inventory;
+    bool d4_true = d4_tools::is_dap4_projected(_dmr, projected_dap4_variable_inventory);
+
+    /**
+     * Implementation check list:
+     * -X- Explain that the request cannot be fulfilled because the response contains types that are not compatible with the requested encoding.
+     * -_- Contain the inventory of incompatible types so the user can see exactly where the issue is.
+     * -_- Direct the user to a more compatible data model or encoding (i.e. DAP4 and NetCDF-4) by suggesting a change in request suffix or DAP4 Data Request Form page.
+     */
+
+    if (d4_true){
+        throw BESSyntaxUserError(
+                "request cannot be fulfilled because the response contains types that are not compatible with the requested encoding",
+                __FILE__,
+                __LINE__);
+    }
+#endif
+
     throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
 
     BESDapResponseBuilder besDRB;

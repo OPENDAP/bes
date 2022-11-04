@@ -719,11 +719,11 @@ add_executable(bes
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
 		modules/dmrpp_module/DmrppNames.h
-		modules/dmrpp_module/dev/h5_obj_addr_info.cc
-		modules/dmrpp_module/dev/read_str_vars.cc
-		modules/dmrpp_module/dev/test_read_vl_offset.cc
-		modules/dmrpp_module/dev/obtain_vlstr_addr.cc
-		modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc
+		#modules/dmrpp_module/dev/h5_obj_addr_info.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/read_str_vars.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/test_read_vl_offset.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/obtain_vlstr_addr.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc # <> sbl 10.21.22
 	modules/dmrpp_module/DMZ.h
 	modules/dmrpp_module/DMZ.cc
 	modules/dmrpp_module/unit-tests/DMZTest.cc

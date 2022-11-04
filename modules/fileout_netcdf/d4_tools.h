@@ -49,9 +49,9 @@ namespace libdap {
 
 namespace d4_tools {
     bool is_dap4_projected(libdap::DDS *_dds, std::vector<libdap::BaseType *> &projected_dap4_variable_inventory);
-    //bool is_dap4_projected(libdap::DMR *_dmr);
+    bool is_dap4_projected(libdap::DMR *_dmr, std::vector<libdap::BaseType *> &projected_dap4_variable_inventory);
     bool is_dap4_projected(libdap::BaseType *var, std::vector<libdap::BaseType *> &inv);
-    //bool is_dap4_projected(libdap::D4Group *group, std::vector<libdap::BaseType *> &projected_dap4_variable_inventory);
+    bool is_dap4_projected(libdap::D4Group *group, std::vector<libdap::BaseType *> &projected_dap4_variable_inventory);
     bool has_dap4_types(libdap::D4Attribute   *attr);
     bool has_dap4_types(libdap::D4Attributes *attrs);
 };
