@@ -873,6 +873,15 @@ string error_message(const CURLcode response_code, char *error_buffer) {
 }
 
 /**
+ * @brief Used to pass memory into the original version of http_get()
+ */
+struct http_get_buffer {
+    char *data;
+    size_t capacity;
+    size_t size;
+};
+
+/**
  * @brief Callback passed to libcurl to handle reading some number of bytes.
  *
  * This callback assumes that the size of the data is small enough
@@ -882,13 +891,16 @@ string error_message(const CURLcode response_code, char *error_buffer) {
  * @param buffer Data from libcurl
  * @param size Number of 'mem' things
  * @param nmemb Number of bytes in 'mem'. Total size of data in this call is 'size * nmemb'
- * @param data Pointer to this
+ * @param data Pointer to an http_get_buffer
  * @return The number of bytes read
  */
 size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
-    //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
-    memcpy(data, buffer, nbytes);
+    auto hg_buf = reinterpret_cast<struct http_get_buffer *>(data);
+    if (hg_buf->size + nbytes > hg_buf->capacity)
+        throw BESInternalError("HTTP GET Response size exceeds buffer.", __FILE__, __LINE__);
+    memcpy(hg_buf->data + hg_buf->size, buffer, nbytes);
+    hg_buf->size += nbytes;
     return nbytes;
 }
 
@@ -901,15 +913,9 @@ size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  * @return JSON document parsed from the response document returned by target_url
  */
 std::string http_get_as_string(const std::string &target_url) {
-
-    // @TODO @FIXME Make the size of this buffer one of:
-    //              a) A configuration setting.
-    //              b) A new parameter to the function. (unsigned long)
-    //              c) Do a HEAD on the URL, check for the Content-Length header and plan accordingly.
-    //
     char response_buf[1024 * 1024];
 
-    http_get(target_url, response_buf);
+    http_get(target_url, response_buf), sizeof(response_buf);
     string response(response_buf);
     return response;
 }
@@ -923,37 +929,21 @@ std::string http_get_as_string(const std::string &target_url) {
  * @return JSON document parsed from the response document returned by target_url
  */
 rapidjson::Document http_get_as_json(const std::string &target_url) {
-
-    // @TODO @FIXME Make the size of this buffer one of:
-    //              a) A configuration setting.
-    //              b) A new parameter to the function. (unsigned long)
-    //              c) Do a HEAD on the URL, check for the Content-Length header and plan accordingly.
-    //
-
     char response_buf[1024 * 1024];
 
-    curl::http_get(target_url, response_buf);
+    curl::http_get(target_url, response_buf, sizeof(response_buf));
     rapidjson::Document d;
     d.Parse(response_buf);
     return d;
 }
 
-// TODO work on this if the function below is needed. jhrg 11/3/22
-struct buffer {
-    char *data;
-    size_t capacity;
-    size_t size;
-};
-
 /**
  * Dereference the target URL and put the response in response_buf
  * @param target_url The URL to dereference.
  * @param response_buf The buffer into which to put the response.
- * @fixme This function can overflow the buffer response_buf. jhrg 11/3/22
+ * @param bufsz The size of the response buffer.
  */
-
-// TODO Add (?) , size_t bufsz = 1024 * 1024
-void http_get(const std::string &target_url, char *response_buf) {
+void http_get(const std::string &target_url, char *response_buf, size_t bufsz) {
 
     char errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
     CURL *ceh = nullptr;     ///< The libcurl handle object.
@@ -965,7 +955,6 @@ void http_get(const std::string &target_url, char *response_buf) {
 
     shared_ptr<http::url> url(new http::url(target_url));
     request_headers = sign_url_for_s3_if_possible(url,  request_headers);
-
     try {
 
         ceh = curl::init(target_url, request_headers, nullptr);
@@ -980,7 +969,8 @@ void http_get(const std::string &target_url, char *response_buf) {
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", errbuf, __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument ----------------------------------------------------------
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buf));
+        struct http_get_buffer hg_buf{response_buf, bufsz, 0};
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&hg_buf));
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", errbuf, __FILE__, __LINE__);
 
         unset_error_buffer(ceh);
@@ -997,7 +987,7 @@ void http_get(const std::string &target_url, char *response_buf) {
             curl_slist_free_all(request_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
-        // TODO Should this throw? jhrg 11/3/22
+        throw;
     }
 }
 

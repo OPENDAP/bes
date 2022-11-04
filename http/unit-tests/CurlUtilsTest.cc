@@ -338,7 +338,7 @@ public:
     void http_get_test_1() {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf(1024);
-        curl::http_get(url, buf.data());
+        curl::http_get(url, buf.data(), buf.size());
 
         // In this response, the first line is "<Proxy *>" and the last line
         // is "ProxyPassReverse /dap ajp://localhost:8009/opendap"
@@ -349,6 +349,15 @@ public:
                                string::npos);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 1024);
+    }
+
+    // This should throw an exception claiming that the beffer is not big enough
+    void http_get_test_1_0() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf(10);   // This buffer is too small for the response
+        curl::http_get(url, buf.data(), buf.size());
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
     // Test the http_get() function that extends as needed a vector<char>
@@ -409,6 +418,8 @@ public:
         const string url = "https://fail.nowhere.com/README";
         vector<char> buf;
         curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
     // This test will fail with a BESForbidden exception
@@ -419,6 +430,8 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         vector<char> buf;
         curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
     // This test will also fail with a BESForbidden exception
@@ -431,6 +444,8 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         vector<char> buf;
         curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
     }
 
     void http_get_test_7() {
@@ -481,6 +496,7 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_3);
 
     CPPUNIT_TEST(http_get_test_1);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_1_0, BESInternalError);
     CPPUNIT_TEST(http_get_test_2);
     CPPUNIT_TEST(http_get_test_3);
 

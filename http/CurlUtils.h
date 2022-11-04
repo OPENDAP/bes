@@ -53,7 +53,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
                                  const int fd,
                                  std::vector<std::string> *http_response_headers);
 
-void http_get(const std::string &url, char *response_buf);
+void http_get(const std::string &url, char *response_buf, size_t bufsz);
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
 #if 0
