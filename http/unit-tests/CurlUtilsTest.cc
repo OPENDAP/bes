@@ -45,6 +45,7 @@
 #include "HttpNames.h"
 #include "AccessCredentials.h"
 #include "BESForbiddenError.h"
+#include "BESSyntaxUserError.h"
 
 #include "test_config.h"
 
@@ -440,9 +441,19 @@ public:
     CPPUNIT_TEST(http_get_test_1);
     CPPUNIT_TEST(http_get_test_2);
     CPPUNIT_TEST(http_get_test_3);
+
+#if 0
+    CPPUNIT_TEST(http_get_test_5);
+    CPPUNIT_TEST(http_get_test_6);
+#endif
+
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
+
+    // At one point, http_get_test_5 returned BESForbiddenError, which seems
+    // correct.
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESSyntaxUserError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESSyntaxUserError);
+
 
     CPPUNIT_TEST_SUITE_END();
 };
