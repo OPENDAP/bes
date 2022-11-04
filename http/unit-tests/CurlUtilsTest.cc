@@ -99,7 +99,15 @@ public:
     }
 
     // Called after each test
-    void tearDown() override { }
+    void tearDown() override {
+        // These are set in add_edl_auth_headers_test() and not 'unsetting' them
+        // causes other odd behavior in subsequent tests (Forbidden exceptions
+        // become SyntaxUser ones). Adding the unset operations here ensures they
+        // happen even if exceptions are thrown by the add_edl...() test.
+        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
+    }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
@@ -204,9 +212,6 @@ public:
         if (debug) cerr << prolog << "END" << endl;
     }
 
-    /**
-     * struct curl_slist {  char *data;  struct curl_slist *next;};
-     */
     void add_edl_auth_headers_test() {
         if (debug) cerr << prolog << "BEGIN" << endl;
         curl_slist *hdrs = NULL;
@@ -241,6 +246,8 @@ public:
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
+        // The BESContexts are 'unset' in tearDown(). They break some later
+        // tests, causing BESForbiddenErrors to become BESSyntaxUserErrors. jhrg 11/3/22
         if (debug) cerr << prolog << "END" << endl;
     }
 
@@ -429,7 +436,6 @@ public:
 /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
-
     CPPUNIT_TEST(is_retryable_test);
     CPPUNIT_TEST(retrieve_effective_url_test);
     CPPUNIT_TEST(add_edl_auth_headers_test);
@@ -442,17 +448,12 @@ public:
     CPPUNIT_TEST(http_get_test_2);
     CPPUNIT_TEST(http_get_test_3);
 
-#if 0
-    CPPUNIT_TEST(http_get_test_5);
-    CPPUNIT_TEST(http_get_test_6);
-#endif
-
     CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
 
     // At one point, http_get_test_5 returned BESForbiddenError, which seems
     // correct.
-    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESSyntaxUserError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESSyntaxUserError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
 
     CPPUNIT_TEST_SUITE_END();
