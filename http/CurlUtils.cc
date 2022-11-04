@@ -815,14 +815,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
     // Add the EDL authorization headers if the Information is in the BES Context Manager
     req_headers = add_edl_auth_headers(req_headers);
 
-    // If this is a URL that references an S3 bucket, and there are credentials for the URL,
-    // sign the URL.
-    if (CredentialsManager::theCM()->size() > 0) {
-        auto ac = CredentialsManager::theCM()->get(target_url);
-        if (ac && ac->is_s3_cred()) {
-            req_headers = sign_s3_url(target_url, ac, req_headers);
-        }
-    }
+    req_headers = sign_url_for_s3_if_possible(target_url,  req_headers);
 
     try {
         // OK! Make the cURL handle
@@ -879,19 +872,19 @@ string error_message(const CURLcode response_code, char *error_buffer) {
     return oss.str();
 }
 
-/*
-* @brief Callback passed to libcurl to handle reading a single byte.
-*
-* This callback assumes that the size of the data is small enough
-* that all of the bytes will be either read at once or that a local
-        * temporary buffer can be used to build up the values.
-*
-* @param buffer Data from libcurl
-* @param size Number of bytes
-* @param nmemb Total size of data in this call is 'size * nmemb'
-* @param data Pointer to this
-* @return The number of bytes read
-*/
+/**
+ * @brief Callback passed to libcurl to handle reading some number of bytes.
+ *
+ * This callback assumes that the size of the data is small enough
+ * that all of the bytes will be either read at once or that a local
+ * temporary buffer can be used to build up the values.
+ *
+ * @param buffer Data from libcurl
+ * @param size Number of 'mem' things
+ * @param nmemb Number of bytes in 'mem'. Total size of data in this call is 'size * nmemb'
+ * @param data Pointer to this
+ * @return The number of bytes read
+ */
 size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
     //cerr << "ngap_write_data() bytes: " << nbytes << "  size: " << size << "  nmemb: " << nmemb << " buffer: " << buffer << "  data: " << data << endl;
@@ -899,6 +892,8 @@ size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     return nbytes;
 }
 
+#if 0
+// Never used
 /**
  * @brief http_get_as_string() This function de-references the target_url and returns the response document as a std:string.
  *
@@ -918,6 +913,7 @@ std::string http_get_as_string(const std::string &target_url) {
     string response(response_buf);
     return response;
 }
+#endif
 
 /**
  * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
@@ -942,11 +938,21 @@ rapidjson::Document http_get_as_json(const std::string &target_url) {
     return d;
 }
 
+// TODO work on this if the function below is needed. jhrg 11/3/22
+struct buffer {
+    char *data;
+    size_t capacity;
+    size_t size;
+};
+
 /**
  * Dereference the target URL and put the response in response_buf
  * @param target_url The URL to dereference.
  * @param response_buf The buffer into which to put the response.
+ * @fixme This function can overflow the buffer response_buf. jhrg 11/3/22
  */
+
+// TODO Add (?) , size_t bufsz = 1024 * 1024
 void http_get(const std::string &target_url, char *response_buf) {
 
     char errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
@@ -957,7 +963,8 @@ void http_get(const std::string &target_url, char *response_buf) {
     // Add the authorization headers
     request_headers = add_edl_auth_headers(request_headers);
 
-    // TODO Add support signing S3 requests here. Or is that not needed? jhrg 11/3/22
+    shared_ptr<http::url> url(new http::url(target_url));
+    request_headers = sign_url_for_s3_if_possible(url,  request_headers);
 
     try {
 
@@ -990,6 +997,85 @@ void http_get(const std::string &target_url, char *response_buf) {
             curl_slist_free_all(request_headers);
         if (ceh)
             curl_easy_cleanup(ceh);
+        // TODO Should this throw? jhrg 11/3/22
+    }
+}
+
+/**
+ * @brief Callback passed to libcurl to handle reading some number of bytes.
+ *
+ * Use a vector<char> to read data using HTTP. Assume that the size() returned
+ * by the vector<char> is the number of bytes currently held and that any new
+ * data will be appended to the vector by first allocating more space and then
+ * using memcpy to write the new dat into that space.
+ *
+ * @param buffer Data from libcurl
+ * @param size Number of 'mem' things
+ * @param nmemb Number of bytes in 'mem'. Total size of data in this call is 'size * nmemb'
+ * @param data Pointer to a vector<char>.
+ * @return The number of bytes read
+ */
+static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    auto vec = reinterpret_cast<vector<char>*>(data);
+    size_t nbytes = size * nmemb;
+    size_t current_size = vec->size();
+    vec->resize(current_size + nbytes);
+    memcpy(vec->data() + current_size, buffer, nbytes);
+    return nbytes;
+}
+
+/**
+ * Dereference the target URL and put the response in response_buf
+ * @param target_url The URL to dereference.
+ * @param buf The vector<char> into which to put the response. New data will be
+ * appended to this vector<char>. In most cases this should be zero-length vector,
+ * but setting its capacity() to the suspected size may improve performance.
+ * @return The HTTP result code
+ */
+void http_get(const string &target_url, vector<char> &buf) {
+
+    char errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
+    CURL *ceh = nullptr;     ///< The libcurl handle object.
+    CURLcode res;
+
+    curl_slist *request_headers = nullptr;
+    // Add the authorization headers
+    request_headers = add_edl_auth_headers(request_headers);
+
+    shared_ptr<http::url> url(new http::url(target_url));
+    request_headers = sign_url_for_s3_if_possible(url,  request_headers);
+
+    try {
+        ceh = curl::init(target_url, request_headers, nullptr);
+        if (!ceh)
+            throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
+
+        // Error Buffer (for use during this setup) ----------------------------------------------------------------
+        set_error_buffer(ceh, errbuf);
+
+        // Pass all data to the 'write_data' function --------------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, vector_write_data);
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", errbuf, __FILE__, __LINE__);
+
+        // Pass this to write_data as the fourth argument ----------------------------------------------------------
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&buf));
+        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", errbuf, __FILE__, __LINE__);
+
+        unset_error_buffer(ceh);
+
+        super_easy_perform(ceh);
+
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+        if (ceh)
+            curl_easy_cleanup(ceh);
+    }
+    catch (...) {
+        if (request_headers)
+            curl_slist_free_all(request_headers);
+        if (ceh)
+            curl_easy_cleanup(ceh);
+        throw;
     }
 }
 
@@ -1307,6 +1393,8 @@ void clear_cookies() {
  * a "no retry" regex.
  *
  * @todo If these regexes are complex, they will take a significant amount of time to compile. Fix.
+ *   A better solution is to compile the regex once and store the compiled regex for future use. It's
+ *   the compilation that takes a long time. jhrg 11/3/22
  */
 bool is_retryable(std::string target_url) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -1629,7 +1717,8 @@ bool eval_curl_easy_perform_code(
         // Add the authorization headers
         request_headers = add_edl_auth_headers(request_headers);
 
-        // TODO Add support signing S3 requests here. Or is that not needed? jhrg 11/3/22
+        // TODO Is this really something that we might need to sign for S3 access? jhrg 11/3/22
+        request_headers = sign_url_for_s3_if_possible(starting_point_url,  request_headers);
 
         try {
             BESDEBUG(MODULE,
@@ -1960,6 +2049,30 @@ sign_s3_url(const shared_ptr<url> &target_url, AccessCredentials *ac, curl_slist
     return req_headers;
 }
 
+/**
+ * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
+ *
+ * @param url An instance of http::url
+ * @param request_headers An existing list of curl request headers. If this is empty,
+ * the append operation used by this function will result in a blank entry in the
+ * first node
+ * @return The modified list of request headers, if the URL was signed, or the original
+ * list of headers if it was not.
+ */
+curl_slist *
+sign_url_for_s3_if_possible(const shared_ptr<url> &url,  curl_slist *request_headers)
+{
+    // If this is a URL that references an S3 bucket, and there are credentials for the URL,
+    // sign the URL.
+    if (CredentialsManager::theCM()->size() > 0) {
+        auto ac = CredentialsManager::theCM()->get(url);
+        if (ac && ac->is_s3_cred()) {
+            request_headers = sign_s3_url(url, ac, request_headers);
+        }
+    }
+
+    return request_headers;
+}
 
 /**
  * @brief Queries the passed cURL easy handle, ceh, for the value of CURLINFO_EFFECTIVE_URL and returns said value.
@@ -1969,16 +2082,15 @@ sign_s3_url(const shared_ptr<url> &target_url, AccessCredentials *ac, curl_slist
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
  */
 string get_effective_url(CURL *ceh, string requested_url) {
-    char *effectve_url = nullptr;
-    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effectve_url);
+    char *effective_url = nullptr;
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effective_url);
     if (curl_code != CURLE_OK) {
         stringstream msg;
         msg << prolog << "Unable to determine CURLINFO_EFFECTIVE_URL! Requested URL: " << requested_url;
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-    return effectve_url;
+    return effective_url;
 }
-
 
 } /* namespace curl */

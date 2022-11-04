@@ -44,6 +44,7 @@
 #include "CurlUtils.h"
 #include "HttpNames.h"
 #include "AccessCredentials.h"
+#include "BESForbiddenError.h"
 
 #include "test_config.h"
 
@@ -86,7 +87,6 @@ public:
 
     // Called before each test
     void setUp() override {
-        debug = true;
         if (debug) cerr << endl;
         if (debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
@@ -298,7 +298,7 @@ public:
         auto headers = new curl_slist{};
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+            const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
         }
@@ -317,7 +317,7 @@ public:
         auto headers = new curl_slist{};
         try {
             CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+            const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
         }
@@ -329,6 +329,101 @@ public:
         curl_slist_free_all(headers);
     }
 
+    // Test the first version of http_get() function tht takes a fixed size buffer.
+    // If the buffer is too small, buffer overflow.
+    void http_get_test_1() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf(1024);
+        curl::http_get(url, buf.data());
+
+        // In this response, the first line is "<Proxy *>" and the last line
+        // is "ProxyPassReverse /dap ajp://localhost:8009/opendap"
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 1024);
+    }
+
+    // Test the http_get() function that extends as needed a vector<char>
+    void http_get_test_2() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf;
+        curl::http_get(url, buf);
+
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287);
+    }
+
+    // Test the http_get() function that extends as needed a vector<char>.
+    // This what happens if the vector already holds data - it should be
+    // retained.
+    void http_get_test_3() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf;
+        const string twimc = "To whom it may concern:";
+        buf.resize(twimc.size());
+        memcpy(buf.data(), twimc.c_str(), twimc.size());
+        curl::http_get(url, buf);
+
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
+                               string(buf.data()).find("<Proxy *>") == twimc.size());
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+
+        DBG(cerr << "twimc.size() = " << twimc.size() << endl);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287 + twimc.size());
+    }
+
+    // This test is to an S3 bucket and must be signed. Use the ENV_CRED
+    // option of CredentialsManager. The environment variables are:
+    //
+    // When a bes.conf file includes the key "CredentialsManager.config" and the value
+    // is "ENV_CREDS", the CredentialsManager will use the four env variables CMAC_ID, ...,
+    // for the Id, Secret key, etc., needed for S3 URL signing. The four evn vars are:
+    // CMAC_ID
+    // CMAC_ACCESS_KEY
+    // CMAC_REGION
+    // CMAC_URL
+    //
+    // This test will read from the cloudydap bucket we own.
+
+    void http_get_test_4() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        const string url = "https://fail.nowhere.com/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+    }
+
+    void http_get_test_5() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+    }
+
+    void http_get_test_6() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        setenv("CMAC_URL", "https://s3.us-east-1", 1);
+        const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+    }
+
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -337,9 +432,17 @@ public:
     CPPUNIT_TEST(is_retryable_test);
     CPPUNIT_TEST(retrieve_effective_url_test);
     CPPUNIT_TEST(add_edl_auth_headers_test);
+
     CPPUNIT_TEST(sign_s3_url_test_1);
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
+
+    CPPUNIT_TEST(http_get_test_1);
+    CPPUNIT_TEST(http_get_test_2);
+    CPPUNIT_TEST(http_get_test_3);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
     CPPUNIT_TEST_SUITE_END();
 };
