@@ -1,0 +1,73 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	dim4 = 2 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	dim7 = 2 ;
+variables:
+	float f32(dim1) ;
+		f32:_FillValue = 65535.f ;
+	double f64(dim2) ;
+		f64:_FillValue = -1.299999952 ;
+	short i16(dim3) ;
+		i16:_FillValue = -100s ;
+	int i32(dim4) ;
+		i32:_FillValue = -65535 ;
+	byte i8(dim5) ;
+		i8:_FillValue = -128b ;
+	float s_f32 ;
+		s_f32:_FillValue = -999.f ;
+	double s_f64 ;
+		s_f64:_FillValue = 9999. ;
+	short s_int16 ;
+		s_int16:_FillValue = -32768s ;
+	int s_int32 ;
+		s_int32:_FillValue = 2147483647 ;
+	byte s_int8 ;
+		s_int8:_FillValue = -128b ;
+	int s_uint16 ;
+		s_uint16:_FillValue = 0 ;
+	short s_uint8 ;
+		s_uint8:_FillValue = 0s ;
+	int ui16(dim6) ;
+		ui16:_FillValue = 65535 ;
+	short ui8(dim7) ;
+		ui8:_FillValue = 255s ;
+
+// global attributes:
+		:history = "removed date-timex t_wrong_fvalue_type_all_classic.h5\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_wrong_fvalue_type_all_classic.h5\"}]}]" ;
+data:
+
+ f32 = 1, 1 ;
+
+ f64 = -1, -1 ;
+
+ i16 = -1, -1 ;
+
+ i32 = -1, -1 ;
+
+ i8 = -1, -1 ;
+
+ s_f32 = -1 ;
+
+ s_f64 = -1 ;
+
+ s_int16 = -1 ;
+
+ s_int32 = -1 ;
+
+ s_int8 = -127 ;
+
+ s_uint16 = 1 ;
+
+ s_uint8 = 255 ;
+
+ ui16 = 1, 1 ;
+
+ ui8 = 1, 1 ;
+}

@@ -15,7 +15,7 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-inconsistent-missing-override
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -53,7 +53,8 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = HistoryUtilsTest D4ToolsTest
+UNIT_TESTS = HistoryUtilsTest D4ToolsTest FONcArrayTest
+
 else
 UNIT_TESTS =
 
@@ -74,3 +75,7 @@ HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
 
 D4ToolsTest_SOURCES = D4ToolsTest.cc
 D4ToolsTest_LDADD = ../d4_tools.o $(LIBADD)
+
+FONcArrayTest_SOURCES = FONcArrayTest.cc
+FONcArrayTest_LDADD = ../.libs/libfonc_module.a $(LIBADD)
+

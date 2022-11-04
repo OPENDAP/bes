@@ -52,6 +52,7 @@ private:
     // Specific to a Grid
     libdap::Grid *d_grid;               //< Constrain this Grid
 
+    libdap::Array *d_coverage;          //< Constrain this Dap4 Array
     libdap::Array *d_latitude;          //< A pointer to the Grid's latitude map
     libdap::Array *d_longitude;         //< A pointer to the Grid's longitude map
 
@@ -67,6 +68,9 @@ public:
     //@{
     GridGeoConstraint(libdap::Grid *grid);
     GridGeoConstraint(libdap::Grid *grid, libdap::Array *lat, libdap::Array *lon);
+
+    GridGeoConstraint(libdap::Array *coverage);
+    GridGeoConstraint(libdap::Array *coverage, libdap::Array *lat, libdap::Array *lon);
     //@}
 
     virtual ~GridGeoConstraint()

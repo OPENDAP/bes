@@ -80,13 +80,13 @@ FONcStr::~FONcStr()
  */
 void FONcStr::define(int ncid)
 {
-    if (!_defined) {
-        BESDEBUG("fonc", "FONcStr::define - defining " << _varname << endl);
+    if (!d_defined) {
+        BESDEBUG("fonc", "FONcStr::define - defining " << d_varname << endl);
 
-        _varname = FONcUtils::gen_name(_embed, _varname, _orig_varname);
+        d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
         _data = new string;
 
-        if (is_dap4)
+        if (d_is_dap4)
             _str->intern_data();
         else
             _str->intern_data(*get_eval(), *get_dds());
@@ -97,34 +97,34 @@ void FONcStr::define(int ncid)
         string dimname;
 
         // For DAP4, we need to ensure the dimension name is unique.
-        if(is_dap4_group == true) {
+        if(d_is_dap4_group == true) {
             ostringstream dim_suffix_strm;
             dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
             FONcDim::DimNameNum++;
-            dimname = _varname+dim_suffix_strm.str();
+            dimname = d_varname + dim_suffix_strm.str();
         }
         else 
-            dimname = _varname + "_len";
+            dimname = d_varname + "_len";
         int stax = nc_def_dim(ncid, dimname.c_str(), size, &_dimid);
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to define dim " + dimname + " for " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to define dim " + dimname + " for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
         int var_dims[1];        // variable shape
         var_dims[0] = _dimid;
-        stax = nc_def_var(ncid, _varname.c_str(), NC_CHAR, 1, var_dims, &_varid);
+        stax = nc_def_var(ncid, d_varname.c_str(), NC_CHAR, 1, var_dims, &d_varid);
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to define var " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to define var " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        _defined = true;
+        d_defined = true;
 
-        FONcAttributes::add_variable_attributes(ncid, _varid, _str,isNetCDF4_ENHANCED(),is_dap4);
-        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, _str, isNetCDF4_ENHANCED(), d_is_dap4);
+        FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
 
-        BESDEBUG("fonc", "FONcStr::define - done defining " << _varname << endl);
+        BESDEBUG("fonc", "FONcStr::define - done defining " << d_varname << endl);
     }
 }
 
@@ -139,16 +139,16 @@ void FONcStr::define(int ncid)
  */
 void FONcStr::write(int ncid)
 {
-    BESDEBUG("fonc", "FONcStr::write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcStr::write for var " << d_varname << endl);
 
     size_t var_start[1];	// variable start
     size_t var_count[1];	// variable count
 
     var_count[0] = _data->size() + 1;
     var_start[0] = 0;
-    int stax = nc_put_vara_text(ncid, _varid, var_start, var_count, _data->c_str());
+    int stax = nc_put_vara_text(ncid, d_varid, var_start, var_count, _data->c_str());
     if (stax != NC_NOERR) {
-        string err = (string) "fileout.netcdf - " + "Failed to write string data " + *_data + " for " + _varname;
+        string err = (string) "fileout.netcdf - " + "Failed to write string data " + *_data + " for " + d_varname;
         delete _data;
         _data = 0;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -156,7 +156,7 @@ void FONcStr::write(int ncid)
     delete _data;
     _data = 0;
 
-    BESDEBUG("fonc", "FONcStr::done write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcStr::done write for var " << d_varname << endl);
 }
 
 /** @brief returns the name of the DAP Str

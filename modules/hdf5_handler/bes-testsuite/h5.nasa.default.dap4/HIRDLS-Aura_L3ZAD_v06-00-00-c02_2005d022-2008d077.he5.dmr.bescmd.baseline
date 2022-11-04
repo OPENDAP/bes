@@ -39,6 +39,9 @@
                     <Attribute name="UniqueFieldDefinition" type="String">
                         <Value>Aura-Shared</Value>
                     </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/ZAS/HIRDLS/nLats</Value>
+                    </Attribute>
                 </Float32>
                 <Float32 name="nLevels">
                     <Dim name="/HDFEOS/ZAS/HIRDLS/nLevels"/>
@@ -54,6 +57,9 @@
                     <Attribute name="UniqueFieldDefinition" type="String">
                         <Value>Aura-Shared</Value>
                     </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/ZAS/HIRDLS/nLevels</Value>
+                    </Attribute>
                 </Float32>
                 <Float64 name="nTimes">
                     <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
@@ -68,6 +74,9 @@
                     </Attribute>
                     <Attribute name="MissingValue" type="Float64">
                         <Value>-999.</Value>
+                    </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/ZAS/HIRDLS/nTimes</Value>
                     </Attribute>
                 </Float64>
                 <Attribute name="VerticalCoordinate" type="String">
@@ -196,7 +205,7 @@
                     <Value>0.01100693736</Value>
                     <Value>0.009999999776</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Int32 name="Day">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
                         <Attribute name="_FillValue" type="Int32">
@@ -213,6 +222,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Day</Value>
                         </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
@@ -232,6 +244,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="Month">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
@@ -249,6 +264,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Month</Value>
                         </Attribute>
                     </Int32>
                     <Float32 name="NO2Day">
@@ -270,6 +288,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="NO2DayCovariance">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
@@ -289,6 +310,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="NO2DayDataCount">
@@ -310,6 +334,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="NO2DayPrecision">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
@@ -330,6 +357,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Pressure">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nLevels"/>
@@ -347,6 +377,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Pressure</Value>
                         </Attribute>
                     </Float32>
                     <Float64 name="Time">
@@ -366,6 +399,9 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                     <Int32 name="Year">
                         <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
@@ -384,14 +420,25 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>HIRDLS-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/HIRDLS/Data Fields/Year</Value>
+                        </Attribute>
                     </Int32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.13</Value>
         </Attribute>

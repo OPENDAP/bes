@@ -4,6 +4,37 @@ see the INSTALL. For comprehensive information about the HDF5 handler, check
 https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc
 and https://hdfeos.org/software/hdf5_handler.php
 
+What's new for Hyrax 1.16.9
+1. CF option
+   Flattened the variable paths stored in the CF "bounds" attribute of the coordinate variables. 
+   This makes the clients find the variable that stores the bounds of the coordinates. 
+   GESDISC's TropOMI Sentinel-5P and OMI's OMI-Aura_L2-OMIAura products benefit from this feature.
+2. Default option
+   1) HDF-EOS5 dimensions are mapped to DAP4 DMR. This makes the DAP4 output of HDF-EOS5 files closely follow the
+      netCDF data model.
+   2) The non-CF compliant HDF-EOS5 variable and dimension names are made to follow the CF naming conventions.
+3. Both CF and Default options
+   1) For HDF5 files that generate from the netCDF-4 APIs, we made the DAP output consistent with the original netCDF output 
+      when a non-coordinate netCDF-4 variable name shares the same name as a netCDF-4 dimension name.
+   2) Since escaping the special characters for attributes is re-arranged in libdap4,
+      we updated the handler in both the default and the CF options to reflect this change.
+
+What's new for Hyrax 1.16.6-1.16.8
+1. Documentation
+   The HDF5 handler user's guide was completely re-written.
+   It is under section 11.C.4 of https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html#_hyrax_handlers .
+   It can also be found at https://github.com/OPENDAP/hyrax_guide/blob/master/handlers/BES_Modules_The_HDF5_Handler.adoc .
+   In consquence, BES key description in the configuration file h5.conf.in is also updated.
+2. CF option
+   1) The DAP4 coverage(https://docs.opendap.org/index.php?title=DAP4:_Specification_Volume_1#Variables) support was added.
+   2) Improved the dimension name handling so that NSIDC SMAP polar grid level 3 products can be successfully handled.   
+   3) Handled the GESDISC GPM special attributes for the direct HDF5 to DAP4(DMR) mapping.
+3. Default option
+   Optimized the string array data reading routine.
+4. Others
+   1) Improved the code quality by using C++ 11 auto and in-class initializer features.
+   2) Improved the testsuite so that the platform-dependent tests can be handled.
+
 What's new for Hyrax 1.16.5
  - Now based on HDF5-1.12.1
  - Updated libdap headers references.

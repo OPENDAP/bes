@@ -18,7 +18,7 @@ LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-inconsistent-missing-override
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 

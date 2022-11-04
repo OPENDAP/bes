@@ -640,7 +640,6 @@ Attributes {
     GEOLOCATION_DATA_Latitude {
         String long_name "Latitude";
         String standard_name "latitude";
-        String bounds "/GEOLOCATION_DATA/FoV75CornerLatitude";
         String units "degrees_north";
         String description "The terrestrial latitude (in degrees) at the center of the ground pixel.";
         Float32 valid_min -90.00000000;
@@ -648,11 +647,11 @@ Attributes {
         Float32 _FillValue -1.267650600e+30;
         String origname "Latitude";
         String fullnamepath "/GEOLOCATION_DATA/Latitude";
+        String bounds "GEOLOCATION_DATA_FoV75CornerLatitude";
     }
     GEOLOCATION_DATA_Longitude {
         String long_name "Longitude";
         String standard_name "longitude";
-        String bounds "/GEOLOCATION_DATA/FoV75CornerLongitude";
         String units "degrees_east";
         String description "The terrestrial longitude (in degrees) at the center of the ground pixel.";
         Float32 valid_min -180.0000000;
@@ -660,5 +659,6 @@ Attributes {
         Float32 _FillValue -1.267650600e+30;
         String origname "Longitude";
         String fullnamepath "/GEOLOCATION_DATA/Longitude";
+        String bounds "GEOLOCATION_DATA_FoV75CornerLongitude";
     }
 }

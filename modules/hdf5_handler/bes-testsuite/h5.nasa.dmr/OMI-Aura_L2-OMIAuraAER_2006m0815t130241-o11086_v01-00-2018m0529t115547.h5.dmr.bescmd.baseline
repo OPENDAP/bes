@@ -87,9 +87,6 @@
         <Attribute name="standard_name" type="String">
             <Value>latitude</Value>
         </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>/GEOLOCATION_DATA/FoV75CornerLatitude</Value>
-        </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
@@ -111,6 +108,9 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GEOLOCATION_DATA/Latitude</Value>
         </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>GEOLOCATION_DATA_FoV75CornerLatitude</Value>
+        </Attribute>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_Longitude">
         <Dim name="/nTimes"/>
@@ -120,9 +120,6 @@
         </Attribute>
         <Attribute name="standard_name" type="String">
             <Value>longitude</Value>
-        </Attribute>
-        <Attribute name="bounds" type="String">
-            <Value>/GEOLOCATION_DATA/FoV75CornerLongitude</Value>
         </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
@@ -144,6 +141,9 @@
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/GEOLOCATION_DATA/Longitude</Value>
+        </Attribute>
+        <Attribute name="bounds" type="String">
+            <Value>GEOLOCATION_DATA_FoV75CornerLongitude</Value>
         </Attribute>
     </Float32>
     <Int32 name="ANCILLARY_DATA_AIRS_CO_Flags">

@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:href="/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc" dmrpp:version="3.20.13-117">
+    <Dimension name="obs" size="183815"/>
+    <Dimension name="Epoch_Time_strlen" size="8"/>
+    <Dimension name="profile" size="950"/>
+    <Dimension name="profile_id_strlen" size="16"/>
+    <String name="Epoch_Time">
+        <Dim name="/obs"/>
+        <Dim name="/Epoch_Time_strlen"/>
+        <Attribute name="_Encoding" type="String">
+            <Value>ISO-8859-1</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Epoch Time</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="unsupported-string">
+            <dmrpp:chunkDimensionSizes>183815 8</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="756683" nBytes="323386" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="null_term"/>
+    </String>
+    <Float64 name="wetlab_Chlorophyll">
+        <Dim name="/obs"/>
+        <Attribute name="actual_range" type="Float64">
+            <Value>4.</Value>
+            <Value>35585.</Value>
+        </Attribute>
+        <Attribute name="colorBarMaximum" type="Float64">
+            <Value>30.</Value>
+        </Attribute>
+        <Attribute name="colorBarMinimum" type="Float64">
+            <Value>0.029999999999999999</Value>
+        </Attribute>
+        <Attribute name="colorBarScale" type="String">
+            <Value>Log</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Concentration Of Chlorophyll In Sea Water</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>concentration_of_chlorophyll_in_sea_water</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1664836" nBytes="2193" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float64>
+    <Int32 name="rowSize">
+        <Dim name="/profile"/>
+        <Attribute name="ioos_category" type="String">
+            <Value>Identifier</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Number of Observations for this Profile</Value>
+        </Attribute>
+        <Attribute name="sample_dimension" type="String">
+            <Value>obs</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>950</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="60384" nBytes="1517" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float64 name="time">
+        <Dim name="/obs"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float64">
+            <Value>1567698865.</Value>
+            <Value>1578345912.</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="ioos_category" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="time_origin" type="String">
+            <Value>01-JAN-1970 00:00:00</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1970-01-01T00:00:00Z</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="62482" nBytes="263164" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float64>
+    <String name="profile_id">
+        <Dim name="/profile"/>
+        <Dim name="/profile_id_strlen"/>
+        <Attribute name="_Encoding" type="String">
+            <Value>ISO-8859-1</Value>
+        </Attribute>
+        <Attribute name="cf_role" type="String">
+            <Value>profile_id</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Profile Id</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="unsupported-string">
+            <dmrpp:chunkDimensionSizes>950 16</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="56371" nBytes="4013" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="null_term"/>
+    </String>
+    <Float32 name="SB_Conductivity">
+        <Dim name="/obs"/>
+        <Attribute name="actual_range" type="Float32">
+            <Value>0.01400000043</Value>
+            <Value>4.68200016</Value>
+        </Attribute>
+        <Attribute name="colorBarMaximum" type="Float64">
+            <Value>40.</Value>
+        </Attribute>
+        <Attribute name="colorBarMinimum" type="Float64">
+            <Value>30.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Sea Water Electrical Conductivity</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_electrical_conductivity</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1463334" nBytes="199306" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int16 name="longitude">
+        <Dim name="/obs"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lon</Value>
+        </Attribute>
+        <Attribute name="actual_range" type="Int16">
+            <Value>-125</Value>
+            <Value>-125</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="colorBarMaximum" type="Float64">
+            <Value>180.</Value>
+        </Attribute>
+        <Attribute name="colorBarMinimum" type="Float64">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="ioos_category" type="String">
+            <Value>Location</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="61901" nBytes="379" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Float32 name="SB_Depth">
+        <Dim name="/obs"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Height</Value>
+        </Attribute>
+        <Attribute name="actual_range" type="Float32">
+            <Value>1.230000019</Value>
+            <Value>468.5799866</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SB Depth</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="325646" nBytes="431037" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int8 name="latitude">
+        <Dim name="/obs"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>Lat</Value>
+        </Attribute>
+        <Attribute name="actual_range" type="Int8">
+            <Value>36</Value>
+            <Value>36</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="colorBarMaximum" type="Float64">
+            <Value>90.</Value>
+        </Attribute>
+        <Attribute name="colorBarMinimum" type="Float64">
+            <Value>-90.</Value>
+        </Attribute>
+        <Attribute name="ioos_category" type="String">
+            <Value>Location</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="62280" nBytes="202" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int8>
+    <Float64 name="Optode_Temp">
+        <Dim name="/obs"/>
+        <Attribute name="actual_range" type="Float64">
+            <Value>0.</Value>
+            <Value>3.5219999999999998</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Optode Temp</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1080069" nBytes="2197" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float64>
+    <Float32 name="SB_Temp">
+        <Dim name="/obs"/>
+        <Attribute name="actual_range" type="Float32">
+            <Value>0.03400000185</Value>
+            <Value>21.57799911</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>SB Temp</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1082266" nBytes="381068" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float64 name="Optode_Dissolved_O2">
+        <Dim name="/obs"/>
+        <Attribute name="actual_range" type="Float64">
+            <Value>0.</Value>
+            <Value>15.26</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time latitude longitude SB_Depth</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Optode Dissolved O2</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>183815</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="1662640" nBytes="2196" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float64>
+    <Attribute name="cdm_altitude_proxy" type="String">
+        <Value>SB_Depth</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>Profile</Value>
+    </Attribute>
+    <Attribute name="cdm_profile_variables" type="String">
+        <Value>profile_id</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>COARDS, CF-1.6, ACDD-1.3</Value>
+    </Attribute>
+    <Attribute name="Easternmost_Easting" type="Float64">
+        <Value>-125.</Value>
+    </Attribute>
+    <Attribute name="featureType" type="String">
+        <Value>Profile</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="Float64">
+        <Value>36.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="Float64">
+        <Value>36.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees_north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="Float64">
+        <Value>-125.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="Float64">
+        <Value>-125.</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees_east</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>2020-01-06T22:29:22Z (local files)
+2020-01-06T22:29:22Z https://ferret.pmel.noaa.gov/engineering/erddap/tabledap/prawler_TELON001.ncCF?profile_id,longitude,latitude,time,SB_Depth,Epoch_Time%2COptode_Temp%2CSB_Temp%2CSB_Conductivity%2COptode_Dissolved_O2%2Cwetlab_Chlorophyll%26latitude%3E%3D35.75%26latitude%3C%3D36.25%26SB_Depth%3E%3D1.21%26SB_Depth%3C%3D468.58%26time%3E%3D2019-09-05T00%3A00%3A00.000Z%26time%3C%3D2020-02-29T00%3A00%3A00.000Z%26orderBy%28%22profile_id%2Ctime%22%29%26longitude%3E%3D-125.25%26longitude%3C%3D-124.75</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>prawler_TELON001_ce23_d6c2_83ea</Value>
+    </Attribute>
+    <Attribute name="infoUrl" type="String">
+        <Value>www.pmel.noaa.gov</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NOAA/PMEL</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>chemistry, chlorophyll, concentration, concentration_of_chlorophyll_in_sea_water, conductivity, data, density, depth, dissolved, earth, Earth Science &gt; Oceans &gt; Ocean Chemistry &gt; Chlorophyll, Earth Science &gt; Oceans &gt; Salinity/Density &gt; Conductivity, electrical, epoch, Epoch_Time, latitude, local, longitude, O2, ocean, oceans, optode, Optode_Dissolved_O2, Optode_Temp, oxygen, profile, profile_id, salinity, SB_Conductivity, SB_Depth, SB_Temp, science, sea, sea_water_electrical_conductivity, seawater, source, temperature, time, water, wetlab_Chlorophyll</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>GCMD Science Keywords</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>The data may be used and redistributed for free but is not intended
+for legal use, since it may contain inaccuracies. Neither the data
+Contributor, ERD, NOAA, nor the United States Government, nor any
+of their employees or contractors, makes any warranty, express or
+implied, including warranties of merchantability and fitness for a
+particular purpose, or assumes any legal liability for the accuracy,
+completeness, or usefulness, of this information.</Value>
+    </Attribute>
+    <Attribute name="Northernmost_Northing" type="Float64">
+        <Value>36.</Value>
+    </Attribute>
+    <Attribute name="sourceUrl" type="String">
+        <Value>(local files)</Value>
+    </Attribute>
+    <Attribute name="Southernmost_Northing" type="Float64">
+        <Value>36.</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>CF Standard Name Table v29</Value>
+    </Attribute>
+    <Attribute name="subsetVariables" type="String">
+        <Value>profile_id</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>TELON001 Prawler Data</Value>
+    </Attribute>
+    <Attribute name="testOutOfDate" type="String">
+        <Value>now-1day</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>2020-01-06T21:25:12Z</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>2019-09-05T15:54:25Z</Value>
+    </Attribute>
+    <Attribute name="title" type="String">
+        <Value>TELON001 Prawler Data</Value>
+    </Attribute>
+    <Attribute name="Westernmost_Easting" type="Float64">
+        <Value>-125.</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13-117</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13-117</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11-51</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.RootDirectory=.
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Data.RootDirectory=/dev/null
+BES.LogName=./bes.log
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.module.cmd=/usr/lib64/bes/libdap_xml_module.so
+BES.module.dap=/usr/lib64/bes/libdap_module.so
+BES.module.dmrpp=/usr/lib64/bes/libdmrpp_module.so
+BES.module.fonc=/usr/lib64/bes/libfonc_module.so
+BES.module.h5=/usr/lib64/bes/libhdf5_module.so
+BES.module.nc=/usr/lib64/bes/libnc_module.so
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.EnableCF=false
+H5.EnableCheckNameClashing=true
+</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/usr/bin/build_dmrpp -c /tmp/bes_conf_6ADW -f ./NOAA_PRAWLER_L2_20100905_20200106_VER001.nc -r /tmp/dmr__HJ06Jg -u file:///usr/share/hyrax/NOAA_PRAWLER_L2_20100905_20200106_VER001.nc -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

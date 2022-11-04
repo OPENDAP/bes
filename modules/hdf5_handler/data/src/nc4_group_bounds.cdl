@@ -1,0 +1,27 @@
+netcdf bnds{
+dimensions:
+        lat = 2 ;
+        lon = 3 ;
+variables:
+        float lat(lat);
+              lat:units = "degrees_north";
+              lat:bounds ="/g1/lat_bounds";
+        float lon(lon);
+              lon:units = "degrees_east";
+        float pres1(lat,lon);
+              pres1:units = "hPa";
+data:
+        lat = 2,4;
+        lon = -10,-5,0;
+        pres1 =
+          900,902,904,
+          901,903,905;
+group: g1 {
+ dimensions:
+       dim1 = 4;
+ variables:
+   float lat_bounds(dim1);
+ data:
+       lat_bounds = 1,3,3,5;
+ }
+}

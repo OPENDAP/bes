@@ -82,10 +82,10 @@ FONcUInt::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
-    if( !_defined )
+    if( !d_defined )
     {
 
-        if(is_dap4) {                                                                                       
+        if(d_is_dap4) {
             D4Attributes *d4_attrs = _bt->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_UINT);   
         }
@@ -95,11 +95,11 @@ FONcUInt::define( int ncid )
         }
 
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _bt , isNetCDF4_ENHANCED(), d_is_dap4) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-	_defined = true ;
+        d_defined = true ;
     }
 }
 
@@ -113,26 +113,26 @@ FONcUInt::define( int ncid )
 void
 FONcUInt::write( int ncid )
 {
-    BESDEBUG( "fonc", "FONcUInt::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUInt::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     unsigned int *data = new unsigned int ;
 
-    if (is_dap4)
+    if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
     _bt->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_uint( ncid, _varid, var_index, data ) ;
+    int stax = nc_put_var1_uint(ncid, d_varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write unsigned int data for "
-		     + _varname ;
+                 + "Failed to write unsigned int data for "
+                 + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;
-    BESDEBUG( "fonc", "FONcUInt::done write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUInt::done write for var " << d_varname << endl ) ;
 }
 
 /** @brief returns the name of the DAP UInt32
