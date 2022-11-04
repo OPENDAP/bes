@@ -60,7 +60,8 @@ namespace http {
 
 class CurlUtilsTest : public CppUnit::TestFixture {
 private:
-    void show_file(string filename) {
+    void show_file(string filename)
+    {
         ifstream t(filename.c_str());
 
         if (t.is_open()) {
@@ -87,7 +88,8 @@ public:
     ~CurlUtilsTest() override = default;
 
     // Called before each test
-    void setUp() override {
+    void setUp() override
+    {
         if (debug) cerr << endl;
         if (debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
@@ -99,7 +101,8 @@ public:
     }
 
     // Called after each test
-    void tearDown() override {
+    void tearDown() override
+    {
         // These are set in add_edl_auth_headers_test() and not 'unsetting' them
         // causes other odd behavior in subsequent tests (Forbidden exceptions
         // become SyntaxUser ones). Adding the unset operations here ensures they
@@ -112,7 +115,8 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
-    void is_retryable_test() {
+    void is_retryable_test()
+    {
         if (debug) cerr << prolog << "BEGIN" << endl;
         bool isRetryable;
 
@@ -158,7 +162,8 @@ public:
     }
 
 
-    void retrieve_effective_url_test() {
+    void retrieve_effective_url_test()
+    {
         if (debug) cerr << prolog << "BEGIN" << endl;
         shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap", true));
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
@@ -212,7 +217,8 @@ public:
         if (debug) cerr << prolog << "END" << endl;
     }
 
-    void add_edl_auth_headers_test() {
+    void add_edl_auth_headers_test()
+    {
         if (debug) cerr << prolog << "BEGIN" << endl;
         curl_slist *hdrs = NULL;
         curl_slist *temp = NULL;
@@ -252,51 +258,48 @@ public:
     }
 
     // A case where signing works
-    void sign_s3_url_test_1() {
+    void sign_s3_url_test_1()
+    {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         ac.add(AccessCredentials::ID_KEY, "foo");
         ac.add(AccessCredentials::KEY_KEY, "secret");
         ac.add(AccessCredentials::REGION_KEY, "oz-1");
         ac.add(AccessCredentials::URL_KEY, "http://test.opendap.org");
-        auto headers = new curl_slist{};
-        try {
-            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
-            curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
-            CPPUNIT_ASSERT_MESSAGE("Afterward, it should have three headers", new_headers->next != nullptr);
-            // skip the first element since the data will be NULL given that we passed in
-            // an empty list.
-            new_headers = new_headers->next;
-            string h = new_headers->data;
-            DBG(cerr << "new_headers->data: " << h << endl);
-            CPPUNIT_ASSERT_MESSAGE("Expected Authorization: AWS4-HMAC-SHA256 Credential=foo/...",
-                                   h.find("Authorization: AWS4-HMAC-SHA256 Credential=foo/") != string::npos);
+        // TODO See if the following unique_ptr really does not leak memory. jhrg 11/3//22
+        std::unique_ptr<curl_slist, void (*)(curl_slist *)> headers2(new curl_slist(), &curl_slist_free_all);
 
-            new_headers = new_headers->next;
-            h = new_headers->data;
-            DBG(cerr << "new_headers->data: " << h << endl);
-            CPPUNIT_ASSERT_MESSAGE("Expected x-amz-content-sha256: e3b0c4...",
-                                   h.find("x-amz-content-sha256: e3b0c4") != string::npos);
+        CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers2->next == nullptr);
+        curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers2.get());
 
-            new_headers = new_headers->next;
-            h = new_headers->data;
-            DBG(cerr << "new_headers->data: " << h << endl);
-            CPPUNIT_ASSERT_MESSAGE("Expected x-amz-date:...", h.find("x-amz-date:") != string::npos);
+        CPPUNIT_ASSERT_MESSAGE("Afterward, it should have three headers", new_headers->next != nullptr);
+        // skip the first element since the data will be NULL given that we passed in
+        // an empty list.
+        new_headers = new_headers->next;
+        string h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected Authorization: AWS4-HMAC-SHA256 Credential=foo/...",
+                               h.find("Authorization: AWS4-HMAC-SHA256 Credential=foo/") != string::npos);
 
-            new_headers = new_headers->next;
-            CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", new_headers == nullptr);
-        }
-        catch(...) {
-            curl_slist_free_all(headers);
-            throw;
-        }
+        new_headers = new_headers->next;
+        h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-content-sha256: e3b0c4...",
+                               h.find("x-amz-content-sha256: e3b0c4") != string::npos);
 
-        curl_slist_free_all(headers);
+        new_headers = new_headers->next;
+        h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-date:...", h.find("x-amz-date:") != string::npos);
+
+        new_headers = new_headers->next;
+        CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", new_headers == nullptr);
     }
 
     // We have credentials, but the target url doesn't match the URL_KEY
-    void sign_s3_url_test_2() {
+    void sign_s3_url_test_2()
+    {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         ac.add(AccessCredentials::ID_KEY, "foo");
@@ -310,7 +313,7 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
         }
-        catch(...) {
+        catch (...) {
             curl_slist_free_all(headers);
             throw;
         }
@@ -319,7 +322,8 @@ public:
     }
 
     // The credentials are empty
-    void sign_s3_url_test_3() {
+    void sign_s3_url_test_3()
+    {
         shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
         AccessCredentials ac;
         auto headers = new curl_slist{};
@@ -329,7 +333,7 @@ public:
 
             CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
         }
-        catch(...) {
+        catch (...) {
             curl_slist_free_all(headers);
             throw;
         }
@@ -339,7 +343,8 @@ public:
 
     // Test the first version of http_get() function tht takes a fixed size buffer.
     // If the buffer is too small, buffer overflow.
-    void http_get_test_1() {
+    void http_get_test_1()
+    {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf(1024);
         curl::http_get(url, buf.data());
@@ -349,13 +354,15 @@ public:
         DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 1024);
     }
 
     // Test the http_get() function that extends as needed a vector<char>
-    void http_get_test_2() {
+    void http_get_test_2()
+    {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         curl::http_get(url, buf);
@@ -363,7 +370,8 @@ public:
         DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
         CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
         CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287);
     }
@@ -371,7 +379,8 @@ public:
     // Test the http_get() function that extends as needed a vector<char>.
     // This what happens if the vector already holds data - it should be
     // retained.
-    void http_get_test_3() {
+    void http_get_test_3()
+    {
         const string url = "http://test.opendap.org/opendap.conf";
         vector<char> buf;
         const string twimc = "To whom it may concern:";
@@ -383,7 +392,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
                                string(buf.data()).find("<Proxy *>") == twimc.size());
         CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
-                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") != string::npos);
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
 
         DBG(cerr << "twimc.size() = " << twimc.size() << endl);
         DBG(cerr << "buf.size() = " << buf.size() << endl);
@@ -403,7 +413,8 @@ public:
     //
     // This test will read from the cloudydap bucket we own.
 
-    void http_get_test_4() {
+    void http_get_test_4()
+    {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
@@ -412,7 +423,8 @@ public:
         curl::http_get(url, buf);
     }
 
-    void http_get_test_5() {
+    void http_get_test_5()
+    {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
@@ -421,7 +433,8 @@ public:
         curl::http_get(url, buf);
     }
 
-    void http_get_test_6() {
+    void http_get_test_6()
+    {
         // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
         // s3://cloudydap/samples/README
         // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
@@ -435,25 +448,25 @@ public:
 /* TESTS END */
 /*##################################################################################################*/
 
-    CPPUNIT_TEST_SUITE(CurlUtilsTest);
-    CPPUNIT_TEST(is_retryable_test);
-    CPPUNIT_TEST(retrieve_effective_url_test);
-    CPPUNIT_TEST(add_edl_auth_headers_test);
+CPPUNIT_TEST_SUITE(CurlUtilsTest);
+        CPPUNIT_TEST(is_retryable_test);
+        CPPUNIT_TEST(retrieve_effective_url_test);
+        CPPUNIT_TEST(add_edl_auth_headers_test);
 
-    CPPUNIT_TEST(sign_s3_url_test_1);
-    CPPUNIT_TEST(sign_s3_url_test_2);
-    CPPUNIT_TEST(sign_s3_url_test_3);
+        CPPUNIT_TEST(sign_s3_url_test_1);
+        CPPUNIT_TEST(sign_s3_url_test_2);
+        CPPUNIT_TEST(sign_s3_url_test_3);
 
-    CPPUNIT_TEST(http_get_test_1);
-    CPPUNIT_TEST(http_get_test_2);
-    CPPUNIT_TEST(http_get_test_3);
+        CPPUNIT_TEST(http_get_test_1);
+        CPPUNIT_TEST(http_get_test_2);
+        CPPUNIT_TEST(http_get_test_3);
 
-    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+        CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
 
-    // At one point, http_get_test_5 returned BESForbiddenError, which seems
-    // correct.
-    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
-    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
+        // At one point, http_get_test_5 returned BESForbiddenError, which seems
+        // correct.
+        CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+        CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
 
     CPPUNIT_TEST_SUITE_END();
@@ -463,6 +476,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 
 } // namespace http
 
-int main(int argc, char *argv[]) {
-    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0: 1;
+int main(int argc, char *argv[])
+{
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0 : 1;
 }
