@@ -38,6 +38,11 @@
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
 
+namespace http {
+class AccessCredentials;
+class EffectiveUrl;
+class url;
+}
 namespace curl {
 
 //void http_get_and_write_resource(const std::string &url,
@@ -48,9 +53,13 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
                                  const int fd,
                                  std::vector<std::string> *http_response_headers);
 
-void http_get(const std::string &url, char *response_buf);
+void http_get(const std::string &url, char *response_buf, size_t bufsz);
+void http_get(const std::string &target_url, std::vector<char> &buf);
 
+#if 0
+// Never used
 std::string http_get_as_string(const std::string &url);
+#endif
 
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
@@ -114,6 +123,10 @@ curl_slist *append_http_header(curl_slist *slist, const std::string &header_name
 
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
+curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::AccessCredentials *ac,
+                         curl_slist *req_headers);
+
+curl_slist *sign_url_for_s3_if_possible(const std::shared_ptr<http::url> &url,  curl_slist *request_headers);
 
 } // namespace curl
 

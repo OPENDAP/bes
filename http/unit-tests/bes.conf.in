@@ -21,6 +21,10 @@ AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
 AllowedHosts += ^https:\/\/harmony(\.uat)?\.earthdata\.nasa\.gov\/.*$
 AllowedHosts += ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*$
 
+AllowedHosts += ^https://s3.us-east-1.amazonaws.com/cloudydap/samples/.*
+
+CredentialsManager.config = ENV_CREDS
+
 # https://harmony.uat.earthdata.nasa.gov
 ###############################################################################
 #
