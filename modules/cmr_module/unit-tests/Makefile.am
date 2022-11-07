@@ -96,7 +96,7 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../rjson_utils.o ../CmrApi.o ../Granule.o ../CmrCatalog.o
+OBJS = ../rjson_utils.o ../CmrApi.o ../Granule.o ../CmrCatalog.o ../Provider.o
 
 CmrApiTest_SOURCES = CmrApiTest.cc
 CmrApiTest_LDADD = $(OBJS) $(LIBADD)

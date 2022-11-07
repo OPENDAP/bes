@@ -23,12 +23,15 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 //
 #include <sstream>
+#include <fstream>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
+
+#include "nlohmann/json.hpp"
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -40,6 +43,7 @@
 #include "rjson_utils.h"
 
 using namespace std;
+using json = nlohmann::json;
 
 #define prolog std::string("rjson_utils::").append(__func__).append("() - ")
 
@@ -72,6 +76,26 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     doc.ParseStream(frs);
     fclose(fp);
 }
+
+json rjson_utils::get_as_json(const string &url)
+{
+    BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
+    shared_ptr<http::url> target_url(new http::url(url));
+    http::RemoteResource remoteResource(target_url);
+    remoteResource.retrieveResource();
+    if(BESDebug::IsSet(MODULE)){
+        string cmr_hits = remoteResource.get_http_response_header("cmr-hits");
+        stringstream msg(prolog);
+        msg << "CMR-Hits: "<< cmr_hits << endl;
+        *(BESDebug::GetStrm()) << msg.str();
+    }
+    std::ifstream f(remoteResource.getCacheFileName());
+    json data = json::parse(f);
+    return data;
+}
+
+
+
 
 
 /**

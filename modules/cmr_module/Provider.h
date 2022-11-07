@@ -1,6 +1,26 @@
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of cmr_module, A C++ MODULE that can be loaded in to
+// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+
+// Copyright (c) 2022 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
-// Created by ndp on 10/31/22.
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
 //
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #ifndef HYRAX_GIT_PROVIDER_H
 #define HYRAX_GIT_PROVIDER_H
@@ -8,75 +28,27 @@
 #include "config.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 
 namespace cmr {
 
-/*
-   {
-    "provider": {
-      "contacts": [
-        {
-          "email": "michael.p.morahan@nasa.gov",
-          "first_name": "Michael",
-          "last_name": "Morahan",
-          "phones": [],
-          "role": "Default Contact"
-        }
-      ],
-      "description_of_holdings": "EO European and Canadian missions Earth Science Data",
-      "discovery_urls": [
-        "https://fedeo-client.ceos.org/about/"
-      ],
-      "id": "E37E931C-A94A-3F3C-8FA1-206EB96B465C",
-      "organization_name": "Federated EO missions support environment",
-      "provider_id": "FEDEO",
-      "provider_types": [
-        "CMR"
-      ],
-      "rest_only": true
-    }
- */
-
-/*
-    {
-        "email": "michael.p.morahan@nasa.gov",
-        "first_name": "Michael",
-        "last_name": "Morahan",
-        "phones": [],
-        "role": "Default Contact"
-    }
-
- */
-struct contact {
-    std::string email;
-    std::string first_name;
-    std::string last_name;
-    std::vector<std::string> phones;
-    std::string role;
-};
-
 class Provider {
 private:
-    std::vector<contact> contacts;
-    std::string description_of_holdings;
-    std::vector<std::string> discovery_urls;
-    std::string d_id;
-    std::string organization_name;
-    std::string provider_id;
-    std::vector<std::string> provider_types;
-    bool rest_only;
-
-    void set_name(const rapidjson::Value& provider_obj);
-    void set_id(const rapidjson::Value& provider_obj);
+    nlohmann::json d_provider_json_obj;
 
 public:
-    Provider(const rapidjson::Value& provider_obj);
+    Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
 
-    std::string get_id() { return d_id; }
+    std::string id();
+    std::string description_of_holdings();
+    std::string organization_name();
+    nlohmann::json contacts();
+    bool rest_only();
 
+    std::string dump();
 };
 
 } // cmr

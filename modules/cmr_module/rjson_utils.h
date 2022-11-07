@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 
 namespace cmr {
 
@@ -46,6 +47,8 @@ public:
     // bool getBooleanValue(const rapidjson::Value& object, const std::string name);
     std::string jsonDocToString(rapidjson::Document &d);
     static std::string typeName(unsigned t);
+
+    nlohmann::json get_as_json(const std::string &url);
 };
 
 

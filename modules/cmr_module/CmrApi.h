@@ -34,6 +34,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
 
@@ -77,6 +79,7 @@ public:
     cmr::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
 
     void get_providers(std::vector<cmr::Provider> &providers);
+    void get_opendap_providers(std::vector<cmr::Provider> &providers);
 
 };
 
