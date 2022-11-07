@@ -1,0 +1,143 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+
+      // group attributes:
+      		:InstrumentName = "HIRDLS" ;
+      		:ProcessLevel = "L3ZA  " ;
+      		:PGEVersion = "6.00.00" ;
+      		:HIRDLSFileType = "H3ZA    " ;
+      		:Period = "Daily" ;
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: ZAS {
+
+    group: HIRDLS {
+      dimensions:
+      	nLats = 73 ;
+      	nLevels = 121 ;
+      	nTimes = 1151 ;
+      variables:
+      	float nLats(nLats) ;
+      		nLats:MissingValue = -999.f ;
+      		nLats:Units = "degress_north" ;
+      		nLats:_FillValue = -999.f ;
+      		nLats:UniqueFieldDefinition = "Aura-Shared" ;
+      		nLats:fullnamepath = "/HDFEOS/ZAS/HIRDLS/nLats" ;
+      	float nLevels(nLevels) ;
+      		nLevels:MissingValue = -999.f ;
+      		nLevels:Units = "hPa" ;
+      		nLevels:_FillValue = -999.f ;
+      		nLevels:UniqueFieldDefinition = "Aura-Shared" ;
+      		nLevels:fullnamepath = "/HDFEOS/ZAS/HIRDLS/nLevels" ;
+      	double nTimes(nTimes) ;
+      		nTimes:Units = "seconds since 1993-01-01" ;
+      		nTimes:UniqueFieldDefinition = "Aura-Shared" ;
+      		nTimes:_FillValue = -999. ;
+      		nTimes:MissingValue = -999. ;
+      		nTimes:fullnamepath = "/HDFEOS/ZAS/HIRDLS/nTimes" ;
+
+      // group attributes:
+      		:VerticalCoordinate = "Pressure" ;
+      		:Pressure = 1000.f, 908.5176f, 825.4042f, 749.8942f, 681.2921f, 618.9658f, 562.3413f, 510.897f, 464.1589f, 421.6965f, 383.1187f, 348.0701f, 316.2278f, 287.2985f, 261.0157f, 237.1374f, 215.4435f, 195.7342f, 177.8279f, 161.5598f, 146.7799f, 133.3521f, 121.1528f, 110.0694f, 100.f, 90.85177f, 82.54041f, 74.98943f, 68.12921f, 61.89658f, 56.23413f, 51.0897f, 46.41589f, 42.16965f, 38.31187f, 34.807f, 31.62277f, 28.72985f, 26.10157f, 23.71374f, 21.54435f, 19.57342f, 17.78279f, 16.15598f, 14.67799f, 13.33521f, 12.11528f, 11.00694f, 10.f, 9.085174f, 8.254044f, 7.498942f, 6.81292f, 6.189659f, 5.623413f, 5.108969f, 4.64159f, 4.216965f, 3.831186f, 3.480701f, 3.162278f, 2.872984f, 2.610158f, 2.371374f, 2.154434f, 1.957342f, 1.778279f, 1.615598f, 1.4678f, 1.333521f, 1.211527f, 1.100694f, 1.f, 0.9085174f, 0.8254043f, 0.7498942f, 0.6812919f, 0.6189659f, 0.5623413f, 0.5108969f, 0.464159f, 0.4216965f, 0.3831186f, 0.3480701f, 0.3162278f, 0.2872984f, 0.2610158f, 0.2371374f, 0.2154434f, 0.1957342f, 0.1778279f, 0.1615598f, 0.14678f, 0.1333521f, 0.1211527f, 0.1100694f, 0.09999999f, 0.09085179f, 0.08254039f, 0.07498942f, 0.06812923f, 0.06189656f, 0.05623413f, 0.05108972f, 0.04641587f, 0.04216965f, 0.03831188f, 0.03480699f, 0.03162278f, 0.02872986f, 0.02610156f, 0.02371374f, 0.02154435f, 0.01957341f, 0.01778279f, 0.01615599f, 0.01467799f, 0.01333521f, 0.01211528f, 0.01100694f, 0.01f ;
+
+      group: Data_Fields {
+        variables:
+        	int Day(nTimes) ;
+        		Day:_FillValue = -999 ;
+        		Day:MissingValue = -999 ;
+        		Day:Title = "Day of Observation" ;
+        		Day:Units = " " ;
+        		Day:UniqueFieldDefinition = "HIRDLS-Specific" ;
+        		Day:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Day" ;
+        	float Latitude(nLats) ;
+        		Latitude:_FillValue = -999.f ;
+        		Latitude:MissingValue = -999.f ;
+        		Latitude:Title = "Latitude" ;
+        		Latitude:Units = "degress_north" ;
+        		Latitude:UniqueFieldDefinition = "Aura-Shared" ;
+        		Latitude:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Latitude" ;
+        	int Month(nTimes) ;
+        		Month:_FillValue = -999 ;
+        		Month:MissingValue = -999 ;
+        		Month:Title = "Month of Observation" ;
+        		Month:Units = " " ;
+        		Month:UniqueFieldDefinition = "HIRDLS-Specific" ;
+        		Month:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Month" ;
+        	float NO2Day(nTimes, nLevels, nLats) ;
+        		NO2Day:_FillValue = -999.f ;
+        		NO2Day:MissingValue = -999.f ;
+        		NO2Day:Title = "Nitrogen Dioxide vmr (Day)" ;
+        		NO2Day:Units = "1" ;
+        		NO2Day:UniqueFieldDefinition = "Aura-Shared" ;
+        		NO2Day:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2Day" ;
+        	float NO2DayCovariance(nTimes, nLevels, nLats) ;
+        		NO2DayCovariance:_FillValue = -999.f ;
+        		NO2DayCovariance:MissingValue = -999.f ;
+        		NO2DayCovariance:Title = "Nitrogen Dioxide Covariance vmr (Day)" ;
+        		NO2DayCovariance:Units = "1" ;
+        		NO2DayCovariance:UniqueFieldDefinition = "Aura-Shared" ;
+        		NO2DayCovariance:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayCovariance" ;
+        	float NO2DayDataCount(nTimes, nLevels, nLats) ;
+        		NO2DayDataCount:_FillValue = -999.f ;
+        		NO2DayDataCount:MissingValue = -999.f ;
+        		NO2DayDataCount:Title = "Nitrogen Dioxide Data Count (Day)" ;
+        		NO2DayDataCount:Units = " " ;
+        		NO2DayDataCount:UniqueFieldDefinition = "Aura-Shared" ;
+        		NO2DayDataCount:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayDataCount" ;
+        	float NO2DayPrecision(nTimes, nLevels, nLats) ;
+        		NO2DayPrecision:_FillValue = -999.f ;
+        		NO2DayPrecision:MissingValue = -999.f ;
+        		NO2DayPrecision:Title = "Nitrogen Dioxide Precision vmr (Day)" ;
+        		NO2DayPrecision:Units = "1" ;
+        		NO2DayPrecision:UniqueFieldDefinition = "Aura-Shared" ;
+        		NO2DayPrecision:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/NO2DayPrecision" ;
+        	float Pressure(nLevels) ;
+        		Pressure:_FillValue = -999.f ;
+        		Pressure:MissingValue = -999.f ;
+        		Pressure:Title = "Pressure" ;
+        		Pressure:Units = "hPa" ;
+        		Pressure:UniqueFieldDefinition = "Aura-Shared" ;
+        		Pressure:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Pressure" ;
+        	double Time(nTimes) ;
+        		Time:_FillValue = -999. ;
+        		Time:MissingValue = -999. ;
+        		Time:Title = "TAI Time" ;
+        		Time:Units = "seconds since 1993-01-01" ;
+        		Time:UniqueFieldDefinition = "Aura-Shared" ;
+        		Time:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Time" ;
+        	int Year(nTimes) ;
+        		Year:_FillValue = -999 ;
+        		Year:MissingValue = -999 ;
+        		Year:Title = "Year of Observation" ;
+        		Year:Units = " " ;
+        		Year:UniqueFieldDefinition = "HIRDLS-Specific" ;
+        		Year:fullnamepath = "/HDFEOS/ZAS/HIRDLS/Data Fields/Year" ;
+        } // group Data_Fields
+      } // group HIRDLS
+    } // group ZAS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 32002 ;
+  	coremetadata_0_len2 = 65537 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+  	char coremetadata_0(coremetadata_0_len2) ;
+  		coremetadata_0:fullnamepath = "/HDFEOS INFORMATION/coremetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.13" ;
+  } // group HDFEOS_INFORMATION
+}

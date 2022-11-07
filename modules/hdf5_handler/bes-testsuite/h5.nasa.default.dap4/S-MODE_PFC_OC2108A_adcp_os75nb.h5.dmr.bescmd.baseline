@@ -28,7 +28,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="status_flag">
@@ -109,7 +109,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="amplitude">
@@ -128,7 +128,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="heading">
@@ -155,7 +155,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="trajectory">
@@ -182,7 +182,7 @@
             <Value>referenceInformation</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="latitude">
@@ -200,7 +200,7 @@
             <Value>referenceInformation</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="transducer_temperature">
@@ -224,7 +224,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="ship_meridional_velocity_component">
@@ -251,7 +251,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="ship_zonal_velocity_component">
@@ -278,7 +278,7 @@
             <Value>physicalMeasurement</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="number_of_pings">
@@ -296,7 +296,7 @@
             <Value>referenceInformation</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Float64 name="depth">
@@ -346,7 +346,7 @@
             <Value>referenceInformation</Value>
         </Attribute>
         <Attribute name="_FillValue" type="Float64">
-            <Value>nan</Value>
+            <Value>NaN</Value>
         </Attribute>
     </Float64>
     <Attribute name="DOI" type="String">

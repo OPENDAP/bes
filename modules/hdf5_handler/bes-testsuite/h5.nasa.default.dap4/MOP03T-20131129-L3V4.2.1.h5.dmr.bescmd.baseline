@@ -22,11 +22,16 @@
         </Group>
         <Group name="GRIDS">
             <Group name="MOP03">
-                <Group name="Data Fields">
+                <Dimension name="XDim" size="360"/>
+                <Dimension name="YDim" size="180"/>
+                <Dimension name="Prs" size="9"/>
+                <Dimension name="Prs2" size="10"/>
+                <Dimension name="NTWO" size="2"/>
+                <Group name="Data_Fields">
                     <Float32 name="APrioriCOMixingRatioProfileDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -36,11 +41,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Mixing Ratio Profile Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOMixingRatioProfileDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriCOMixingRatioProfileNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -50,10 +58,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Mixing Ratio Profile Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOMixingRatioProfileNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriCOSurfaceMixingRatioDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -63,10 +74,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Surface Mixing Ratio Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOSurfaceMixingRatioDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriCOSurfaceMixingRatioNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -76,10 +90,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Surface Mixing Ratio Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOSurfaceMixingRatioNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriCOTotalColumnDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -89,10 +106,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Total Column Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOTotalColumnDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriCOTotalColumnNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -102,10 +122,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori CO Total Column Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriCOTotalColumnNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriSurfaceEmissivityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -115,10 +138,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori Surface Emissivity Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriSurfaceEmissivityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriSurfaceEmissivityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -128,10 +154,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori Surface Emissivity Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriSurfaceEmissivityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriSurfaceTemperatureDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -141,10 +170,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori Surface Temperature Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriSurfaceTemperatureDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="APrioriSurfaceTemperatureNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -154,10 +186,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>A Priori Surface Temperature Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/APrioriSurfaceTemperatureNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DEMAltitudeDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -167,10 +202,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>DEM Altitude Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DEMAltitudeDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DEMAltitudeNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -180,10 +218,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>DEM Altitude Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DEMAltitudeNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DEMAltitudeVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -193,10 +234,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>DEM Altitude Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DEMAltitudeVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DEMAltitudeVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -206,10 +250,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>DEM Altitude Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DEMAltitudeVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DegreesofFreedomforSignalDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -219,10 +266,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Degrees of Freedom for Signal Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DegreesofFreedomforSignalDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="DegreesofFreedomforSignalNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -232,22 +282,31 @@
                         <Attribute name="long_name" type="String">
                             <Value>Degrees of Freedom for Signal Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/DegreesofFreedomforSignalNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Latitude">
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="units" type="String">
                             <Value>degrees_north</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="360"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
                         <Attribute name="units" type="String">
                             <Value>degrees_east</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="NumberofPixelsDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-9999</Value>
                         </Attribute>
@@ -257,10 +316,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Number of Pixel Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/NumberofPixelsDay</Value>
+                        </Attribute>
                     </Int32>
                     <Int32 name="NumberofPixelsNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-9999</Value>
                         </Attribute>
@@ -270,24 +332,33 @@
                         <Attribute name="long_name" type="String">
                             <Value>Number of Pixel Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/NumberofPixelsNight</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Pressure">
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="units" type="String">
                             <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="Pressure2">
-                        <Dim size="10"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs2"/>
                         <Attribute name="units" type="String">
                             <Value>hPa</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievalAveragingKernelMatrixDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="10"/>
-                        <Dim size="10"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs2"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs2"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -297,12 +368,15 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieval Averaging Kernel Matrix Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievalAveragingKernelMatrixDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievalAveragingKernelMatrixNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="10"/>
-                        <Dim size="10"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs2"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs2"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -312,11 +386,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieval Averaging Kernel Matrix Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievalAveragingKernelMatrixNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -326,11 +403,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -340,11 +420,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Mean Uncertainty Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileMeanUncertaintyDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileMeanUncertaintyNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Mean Uncertainty Night</Value>
                         </Attribute>
@@ -354,11 +437,14 @@
                         <Attribute name="units" type="String">
                             <Value>ppbv</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileMeanUncertaintyNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -368,11 +454,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -382,11 +471,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOMixingRatioProfileVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="9"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/Prs"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -396,10 +488,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Mixing Ratio Profile Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOMixingRatioProfileVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -409,10 +504,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -422,10 +520,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Mean Uncertainty Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioMeanUncertaintyDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioMeanUncertaintyNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -435,10 +536,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Mean Uncertainty Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioMeanUncertaintyNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -448,10 +552,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -461,10 +568,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOSurfaceMixingRatioVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -474,10 +584,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Surface Mixing Ratio Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOSurfaceMixingRatioVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -487,11 +600,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnDiagnosticsDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="2"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/NTWO"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -501,11 +617,14 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Diagnostics Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnDiagnosticsDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnDiagnosticsNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
-                        <Dim size="2"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/NTWO"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -515,10 +634,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Diagnostics Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnDiagnosticsNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnMeanUncertaintyDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -528,10 +650,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Mean Uncertainty Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnMeanUncertaintyDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnMeanUncertaintyNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -541,10 +666,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Mean Uncertainty Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnMeanUncertaintyNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -554,10 +682,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -567,10 +698,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedCOTotalColumnVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -580,10 +714,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved CO Total Column Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedCOTotalColumnVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -593,10 +730,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -606,10 +746,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Mean Uncertainty Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityMeanUncertaintyDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityMeanUncertaintyNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -619,10 +762,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Mean Uncertainty Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityMeanUncertaintyNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -632,10 +778,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -645,10 +794,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceEmissivityVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -658,10 +810,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Emissivity Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceEmissivityVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -671,10 +826,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -684,10 +842,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Mean Uncertainty Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureMeanUncertaintyDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureMeanUncertaintyNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -697,10 +858,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Mean Uncertainty Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureMeanUncertaintyNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -710,10 +874,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureVariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -723,10 +890,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureVariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="RetrievedSurfaceTemperatureVariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -736,10 +906,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Retrieved Surface Temperature Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/RetrievedSurfaceTemperatureVariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SatelliteZenithAngleDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -749,10 +922,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Satellite Zenith Angle Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SatelliteZenithAngleDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SatelliteZenithAngleNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -762,10 +938,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Satellite Zenith Angle Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SatelliteZenithAngleNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SignalChi2Day">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -775,10 +954,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Signal Chi2 Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SignalChi2Day</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SignalChi2Night">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -788,10 +970,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Signal Chi2 Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SignalChi2Night</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SignalChi2VariabilityDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -801,10 +986,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Signal Chi2 Variability Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SignalChi2VariabilityDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SignalChi2VariabilityNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -814,10 +1002,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Signal Chi2 Variability Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SignalChi2VariabilityNight</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngleDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -827,10 +1018,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Solar Zenith Angle Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SolarZenithAngleDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngleNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -840,10 +1034,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Solar Zenith Angle Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SolarZenithAngleNight</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="SurfaceIndexDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-9999</Value>
                         </Attribute>
@@ -853,10 +1050,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Surface Index Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SurfaceIndexDay</Value>
+                        </Attribute>
                     </Int32>
                     <Int32 name="SurfaceIndexNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Int32">
                             <Value>-9999</Value>
                         </Attribute>
@@ -866,10 +1066,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Surface Index Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SurfaceIndexNight</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="SurfacePressureDay">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -879,10 +1082,13 @@
                         <Attribute name="long_name" type="String">
                             <Value>Surface Pressure Day</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SurfacePressureDay</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SurfacePressureNight">
-                        <Dim size="360"/>
-                        <Dim size="180"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/XDim"/>
+                        <Dim name="/HDFEOS/GRIDS/MOP03/YDim"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-9999.</Value>
                         </Attribute>
@@ -892,14 +1098,25 @@
                         <Attribute name="long_name" type="String">
                             <Value>Surface Pressure Night</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/MOP03/Data Fields/SurfacePressureNight</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
-        <String name="coremetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <String name="coremetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/coremetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.14.01</Value>
         </Attribute>

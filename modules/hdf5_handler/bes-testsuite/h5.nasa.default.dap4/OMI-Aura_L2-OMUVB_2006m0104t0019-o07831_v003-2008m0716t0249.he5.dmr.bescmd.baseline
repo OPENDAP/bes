@@ -94,10 +94,13 @@
                 <Value>SurfaceData</Value>
             </Attribute>
             <Group name="UVB">
-                <Group name="Data Fields">
+                <Dimension name="nXtrack" size="60"/>
+                <Dimension name="nTimes" size="1"/>
+                <Dimension name="Unlimited" size="18446744073709551615"/>
+                <Group name="Data_Fields">
                     <Float32 name="CSErythemalDailyDose">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -119,10 +122,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSErythemalDailyDose</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CSErythemalDoseRate">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -144,10 +150,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSErythemalDoseRate</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CSIrradiance305">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -169,10 +178,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance305</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CSIrradiance310">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -194,10 +206,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance310</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CSIrradiance324">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -219,10 +234,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance324</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CSIrradiance380">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -244,10 +262,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CSIrradiance380</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="CloudOpticalThickness">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -269,10 +290,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/CloudOpticalThickness</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ErythemalDailyDose">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -294,10 +318,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/ErythemalDailyDose</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ErythemalDoseRate">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -319,10 +346,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/ErythemalDoseRate</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Irradiance305">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -344,10 +374,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance305</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Irradiance310">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -369,10 +402,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance310</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Irradiance324">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -394,10 +430,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance324</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Irradiance380">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -419,10 +458,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/Irradiance380</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="LambertianEquivalentReflectivity">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -444,10 +486,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/LambertianEquivalentReflectivity</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="OMTO3AlgorithmFlags">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Int32">
                             <Value>-2147483647</Value>
                         </Attribute>
@@ -469,10 +514,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3AlgorithmFlags</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="OMTO3ColumnAmountO3">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -494,10 +542,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3ColumnAmountO3</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="OMTO3QualityFlags">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Int32">
                             <Value>-2147483647</Value>
                         </Attribute>
@@ -519,10 +570,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OMTO3QualityFlags</Value>
+                        </Attribute>
                     </Int32>
                     <Int32 name="OMUVBQuality">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Int32">
                             <Value>-2147483647</Value>
                         </Attribute>
@@ -544,10 +598,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OMUVBQuality</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="OPErythemalDoseRate">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -568,6 +625,9 @@
                         </Attribute>
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OPErythemalDoseRate</Value>
                         </Attribute>
                     </Float32>
                     <Float32 name="OPIrradiance305">
@@ -594,10 +654,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance305</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OPIrradiance310">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -619,10 +682,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance310</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OPIrradiance324">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -644,10 +710,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance324</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="OPIrradiance380">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -669,10 +738,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/OPIrradiance380</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SurfaceAlbedo">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -694,12 +766,15 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Data Fields/SurfaceAlbedo</Value>
+                        </Attribute>
                     </Float32>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Int32 name="GroundPixelQualityFlags">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Int32">
                             <Value>-2147483647</Value>
                         </Attribute>
@@ -721,10 +796,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/GroundPixelQualityFlags</Value>
+                        </Attribute>
                     </Int32>
                     <Float32 name="Latitude">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -746,10 +824,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -771,10 +852,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Float32">
                             <Value>-1.2676506e+30</Value>
                         </Attribute>
@@ -796,10 +880,13 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Int32 name="TerrainHeight">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nXtrack"/>
                         <Attribute name="FillValue" type="Int16">
                             <Value>1</Value>
                         </Attribute>
@@ -821,9 +908,12 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>OMI-Specific</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/TerrainHeight</Value>
+                        </Attribute>
                     </Int32>
                     <Float64 name="Time">
-                        <Dim size="1643"/>
+                        <Dim name="/HDFEOS/SWATHS/UVB/nTimes"/>
                         <Attribute name="FillValue" type="Float64">
                             <Value>-1.2676506002282294e+30</Value>
                         </Attribute>
@@ -845,13 +935,20 @@
                         <Attribute name="UniqueFieldDefinition" type="String">
                             <Value>Aura-Shared</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/UVB/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.5</Value>
         </Attribute>
