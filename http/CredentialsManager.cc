@@ -383,7 +383,6 @@ void CredentialsManager::load_credentials() {
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << theCM()->size() << " AccessCredentials" << endl);
 }
 
-
 /**
  * @brief Attempts to load Access Credentials from the environment variables.
  *
