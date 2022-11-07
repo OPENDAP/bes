@@ -250,18 +250,22 @@ void RemoteResource::retrieveResource() {
  * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
  * the remote resource content using HTTP GET.
  *
- * When this method returns the RemoteHttpResource object is fully initialized and the cache file name for the resource
+ * When this method returns the RemoteResource object is fully initialized and the cache file name for the resource
  * is available along with an open file descriptor for the (now read-locked) cache file.
  *
- * @param uid
- * @param template_key
- * @param replace_value
+ * @param content_filters A C++ map<String, string> that is used to substitute specific values
+ * for templates found in the remote resource. These values are substituted only when the remote
+ * resource is accessed and cached (i.e., the information in the cache has the substituted values).
+ *
+ * @note Calling this method once a remote resource has been retrieved (and cached) does nothing,
+ * this method returns immediately in that case. Use getCacheFileName() to get the name of the file
+ * with the cached information, use methods like get_response_as_string() to access copies of the
+ * data in the cached remote resource.
  */
 void RemoteResource::retrieveResource(const std::map<std::string, std::string> &content_filters) {
     BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl->str() << endl);
     bool mangle = true;
-
-    // TODO come back and visit this condition and determine if it is still needed jhrg/sbl 4.14.21
+    
     if (d_initialized) {
         BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
         return;
@@ -277,8 +281,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    // Get the name of the file in the cache (either the code finds this file or
-    // or it makes it).
+    // Get the name of the file in the cache (either the code finds this file or it makes it).
     d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl->str(), mangle);
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
@@ -309,7 +312,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             d_initialized = true;
             return;
         } else {
-            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
+            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
             // content into a local cache file, given that it's not in the cache.
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {

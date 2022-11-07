@@ -49,7 +49,7 @@ namespace http {
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
  * retrieve the content of the resource and place it in a local disk cache
- * for rapid (subsequent) access. It can be configure to use a proxy server
+ * for rapid (subsequent) access. It can be configured to use a proxy server
  * for the outgoing requests.
  */
 class RemoteResource {

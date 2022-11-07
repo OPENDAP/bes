@@ -373,6 +373,9 @@ dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
 
+AC_MSG_CHECKING([on libdap])
+AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
+
 dnl AS_CASE([$variable], [foo*], [run1], [bar*], [run2], [catchall])
     
 dnl extra argument: --with-libwrap
