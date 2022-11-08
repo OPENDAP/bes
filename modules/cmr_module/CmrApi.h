@@ -80,6 +80,8 @@ public:
 
     void get_providers(std::vector<cmr::Provider> &providers);
     void get_opendap_providers(std::vector<cmr::Provider> &providers);
+    unsigned int get_opendap_collections_count(const std::string &provider_id);
+    void get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections );
 
 };
 

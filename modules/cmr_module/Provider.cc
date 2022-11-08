@@ -22,8 +22,12 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <utility>
 #include <sstream>
+#include "nlohmann/json.hpp"
+
 #include "rjson_utils.h"
 
 #include "CmrNames.h"
@@ -75,15 +79,15 @@ namespace cmr {
 
 
 string Provider::id(){
-    return d_provider_json_obj[CMR_PROVIDER_ID_KEY].dump();
+    return d_provider_json_obj[CMR_PROVIDER_ID_KEY].get<std::string>();
 }
 
 string Provider::description_of_holdings() {
-    return d_provider_json_obj[CMR_PROVIDER_DESCRIPTION_OF_HOLDINGS_KEY].dump();
+    return d_provider_json_obj[CMR_PROVIDER_DESCRIPTION_OF_HOLDINGS_KEY].get<std::string>();
 }
 
 string Provider::organization_name() {
-    return d_provider_json_obj[CMR_PROVIDER_ORGANIZATION_NAME_KEY].dump();
+    return d_provider_json_obj[CMR_PROVIDER_ORGANIZATION_NAME_KEY].get<std::string>();
 }
 
 json Provider::contacts() {

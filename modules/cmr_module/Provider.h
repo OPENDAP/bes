@@ -38,9 +38,9 @@ namespace cmr {
 class Provider {
 private:
     nlohmann::json d_provider_json_obj;
-
+    unsigned long long d_opendap_collection_count{};
 public:
-    Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
+    explicit Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
 
     std::string id();
     std::string description_of_holdings();
@@ -48,6 +48,8 @@ public:
     nlohmann::json contacts();
     bool rest_only();
 
+    void set_opendap_collection_count(unsigned long long count){ d_opendap_collection_count = count; }
+    unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
     std::string dump();
 };
 

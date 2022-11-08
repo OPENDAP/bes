@@ -610,25 +610,73 @@ void CmrApi::get_providers(vector<cmr::Provider> &providers)
         auto provider_json = obj[CMR_PROVIDER_KEY];
         // And then make a new provider.
         Provider provider(provider_json);
-        BESDEBUG(MODULE, prolog << provider.dump() << endl);
+        //BESDEBUG(MODULE, prolog << provider.dump() << endl);
         providers.emplace_back(std::move(provider));
     }
 
 }
 
 void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers){
-
-    get_providers(providers);
-
-    string cmr_hits_url_base=d_cmr_collections_search_endpoint_url;
-    cmr_hits_url_base.append("?has_opendap_url=true&page_size=0)&provider=");
-    for(auto &provider: providers){
-        string cmr_query = cmr_hits_url_base + provider.id();
-        
+    vector<cmr::Provider> all_providers;
+    get_providers(all_providers);
+    for(auto &provider: all_providers){
+        BESDEBUG(MODULE, prolog << "PROVIDER: " << provider.id() << endl);
+        unsigned int hits = get_opendap_collections_count(provider.id());
+        provider.set_opendap_collection_count(hits);
+        if (hits > 0){
+            providers.emplace_back(provider);
+        }
     }
+}
+
+unsigned int CmrApi::get_opendap_collections_count(const string &provider_id)
+{
+    rjson_utils ju;
+    stringstream cmr_query_url;
+    cmr_query_url << d_cmr_collections_search_endpoint_url;
+    cmr_query_url << "?has_opendap_url=true&page_size=0";
+    cmr_query_url << "&provider=" << provider_id;
+    BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
+    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+//        BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
+    unsigned int hits = cmr_doc["hits"];
+    BESDEBUG(MODULE, prolog << "HITS: " << hits << endl);
+    return hits;
+}
+
+void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections)
+{
+    rjson_utils ju;
+    stringstream cmr_query_url;
+    cmr_query_url << d_cmr_collections_search_endpoint_url;
+    cmr_query_url << "?has_opendap_url=true&page_size=" << 100;//CMR_MAX_PAGE_SIZE;
+    cmr_query_url << "&provider=" << provider_id;
+    BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
+    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+//      BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
+    unsigned int hits = cmr_doc["hits"];
+    BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
+    if (hits == 0){
+        return;
+    }
+    unsigned int collection_count = 0;
+    unsigned int page_number = 0;
+
+    //while (collection_count < hits){
+        for (auto &collection_json : cmr_doc["items"]) {
+            Collection collection(collection_json);
+            collections.emplace_back(collection);
+            collection_count++;
+        }
+        //collection_count=hits;
+    //}
+
+
+
 
 
 }
+
 
 
 

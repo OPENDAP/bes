@@ -51,6 +51,9 @@
 #include "CmrError.h"
 #include "rjson_utils.h"
 
+#include "Provider.h"
+#include "Collection.h"
+
 using namespace std;
 using namespace rapidjson;
 
@@ -622,8 +625,40 @@ public:
 
     }
 
-    CPPUNIT_TEST_SUITE( CmrApiTest );
+    void get_opendap_providers_test() {
+        stringstream msg;
+        CmrApi cmr;
+        std::vector<cmr::Provider> providers;
 
+        cmr.get_opendap_providers(providers);
+
+        for (auto provider: providers){
+            cerr << provider.id() << ": " << provider.get_opendap_collection_count() << endl;
+        }
+
+    }
+    void get_opendap_collections_test() {
+        stringstream msg;
+        CmrApi cmr;
+        string provider_id("GES_DISC");
+        vector<cmr::Collection> collections;
+
+        cmr.get_opendap_collections(provider_id, collections);
+
+        cerr << prolog << "Got " << collections.size() << " Collections" << endl;
+        for (auto &collection: collections){
+            cerr << endl << "### COLLECTION ####################################################################" << endl;
+            cerr << "concept-id: " << collection.id() << endl;
+            cerr << "ShortName:  " << collection.short_name() << endl;
+            cerr << "EntryTitle: " << collection.entry_title() << endl;
+            cerr << "Abstract:   " << collection.abstract() << endl;
+        }
+
+    }
+CPPUNIT_TEST_SUITE( CmrApiTest );
+
+    CPPUNIT_TEST(get_opendap_collections_test);
+    CPPUNIT_TEST(get_opendap_providers_test);
     CPPUNIT_TEST(get_providers_test);
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
