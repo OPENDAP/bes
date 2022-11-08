@@ -52,7 +52,7 @@ AT_RUN_BES_AND_MATCH([attribute_OtherXML_malformed.ncml],["ddx"],["ParseError:.*
 
 dnl Check that having a non-empty value is an error for OtherXML type.  Don't
 dnl put your XML in there!!
-AT_RUN_BES_AND_MATCH([attribute_OtherXML_val_error.ncml],["ddx"],["ParseError"])
+AT_RUN_BES_AND_MATCH([attribute_OtherXML_val_error.ncml],["ddx"],["ParseError"],[ignore])
 
 dnl Test the new namespace flattern that pulls all ancestral namespaces into 
 dnl each root OtherXML element so it is namespace-closed when serialized.
