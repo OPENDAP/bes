@@ -251,23 +251,39 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
             }
             else {
                 // an error has occurred.
+                delete interface;
+                interface = nullptr;
+
+                if (show_stream) {
+                    *(_strm) << show_stream->str() << endl;
+                    delete show_stream;
+                    show_stream = nullptr;
+                }
+
+                _strm->flush();
+
                 BESDEBUG("standalone", "StandAloneClient::executeCommand - error occurred" << endl);
                 switch (status) {
-                case BES_INTERNAL_FATAL_ERROR: {
-                    cerr << "Status not OK, dispatcher returned value " << status << endl;
-                    exit(1);
-                }
+                case BES_INTERNAL_FATAL_ERROR:
+                    cerr << "Status not OK, dispatcher returned fatal error " << status << endl;
+                    exit(BES_INTERNAL_FATAL_ERROR * 10);
 
                 case BES_INTERNAL_ERROR:
                 case BES_SYNTAX_USER_ERROR:
                 case BES_FORBIDDEN_ERROR:
                 case BES_NOT_FOUND_ERROR:
+                    cerr << "Status not OK, dispatcher returned non-fatal error " << status << endl;
+                    exit(status * 10);
+
                 default:
-                    break;
+                    cerr << "Status not OK, dispatcher returned unrecognized error " << status << endl;
+                    exit(status * 10);
                 }
             }
 
-			delete interface;
+#if 0
+            // changed jhrg 11/8/22
+            delete interface;
 			interface = nullptr;
 
 			if (show_stream) {
@@ -277,6 +293,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			}
 
 			_strm->flush();
+#endif
 		}
 	}
 }

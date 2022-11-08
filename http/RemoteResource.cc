@@ -295,7 +295,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
     try {
-        if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
+        if (false) { // FIXME !!!! jhrg 11/7/22 cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG(MODULE,
                      prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
                             << endl);
@@ -320,20 +320,43 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
                 update_file_and_headers(content_filters);
+
+#if 1
+                cache->exclusive_to_shared_lock(d_fd);
+                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
+
+                unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
+                BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
+
+                if (cache->cache_too_big(size)) {
+                    cache->update_and_purge(d_resourceCacheFileName);
+                    BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
+                }
+#endif
             }
             else {
                 BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
                 cache->get_read_lock(d_resourceCacheFileName, d_fd);
+                BESDEBUG(MODULE, prolog << " Read lock on cache file name " << endl);
+#if 1
+                int hdrs_fd;
+                string resourceCacheFileNameHdrs = d_resourceCacheFileName + ".hdrs";
+                cache->get_read_lock(resourceCacheFileNameHdrs, hdrs_fd);
+                BESDEBUG(MODULE, prolog << " Read lock on cache file headers " << resourceCacheFileNameHdrs << endl);
+#endif
+                //sleep(1);   // FIXME !!!! jhrg 11/7/22
                 load_hdrs_from_file();
             }
             d_initialized = true;
             return;
         }
 
+#if 0
         stringstream msg;
         msg << prolog + "Failed to acquire cache read lock for remote resource: '";
         msg << d_remoteResourceUrl->str() << endl;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
+#endif
 
     }
     catch (BESError &besError) {
@@ -367,6 +390,8 @@ void RemoteResource::update_file_and_headers() {
  */
 void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters) {
 
+#if 0
+    // Removed this to group all the cache control code in one function. jhrg 11/7/22
     // Get a pointer to the singleton cache instance for this process.
     HttpCache *cache = HttpCache::get_instance();
     if (!cache) {
@@ -377,6 +402,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         BESDEBUG(MODULE, oss.str());
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
+#endif
 
     // Write the remote resource to the cache file.
     try {
@@ -410,12 +436,17 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
 
     // #########################################################################################################
 
+#if 0
+    // See above. jhrg 11/7/22
+
     // Change the exclusive lock on the new file to a shared lock. This keeps
     // other processes from purging the new file and ensures that the reading
     // process can use it.
+    // FIXME !!!! jhrg 11/7/22
     cache->exclusive_to_shared_lock(d_fd);
     BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
 
+    // FIXME !!!! ???? Should these be moved back into the caller? jhrg 11/7/22
     // Now update the total cache size info and purge if needed. The new file's
     // name is passed into the purge method because this process cannot detect its
     // own lock on the file.
@@ -429,6 +460,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return;
+#endif
 } //end RemoteResource::update_file_and_headers()
 
 /**
