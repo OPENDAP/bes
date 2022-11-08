@@ -729,8 +729,8 @@ add_executable(bes
 	modules/dmrpp_module/unit-tests/DMZTest.cc
 
 		http/unit-tests/awsv4_test.cc
-    modules/dmrpp_module/AccessCredentials.cc
-    modules/dmrpp_module/AccessCredentials.h
+    #modules/dmrpp_module/AccessCredentials.cc
+    #modules/dmrpp_module/AccessCredentials.h
 		http/NgapS3Credentials.cc
 		http/NgapS3Credentials.h
 		http/unit-tests/NgapCredentialsTest.cc

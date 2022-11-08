@@ -708,7 +708,7 @@ void FONcTransform::transform_dap4() {
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
-#if 0
+#if 1
     vector<BaseType *> projected_dap4_variable_inventory;
     bool d4_true = d4_tools::is_dap4_projected(_dmr, projected_dap4_variable_inventory);
 
@@ -720,8 +720,13 @@ void FONcTransform::transform_dap4() {
      */
 
     if (d4_true){
+        string msg ="Request cannot be fulfilled because the response contains types that are not compatible with the requested encoding";
+        msg += "\r\n\t\t\t\t\t [ Number of non-compatible variables: " + to_string(projected_dap4_variable_inventory.size()) + " ] ";
+        for (BaseType* bt : projected_dap4_variable_inventory){
+            msg += "\r\n\t\t\t\t\t\t [ Variable: " + bt->name() + " | Type: " + bt->type_name() + " ] ";
+        }
         throw BESSyntaxUserError(
-                "request cannot be fulfilled because the response contains types that are not compatible with the requested encoding",
+                msg,
                 __FILE__,
                 __LINE__);
     }
