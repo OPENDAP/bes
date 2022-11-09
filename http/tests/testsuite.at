@@ -2,7 +2,7 @@
 
 AT_INIT([bes/http/tests testsuite])
 
-m4_include([modules/handler_tests_macros.m4])
+dnl m4_include([modules/handler_tests_macros.m4])
 
 # Start out with these test macros defined here, then migrate to the common file
 
@@ -12,44 +12,34 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([bescmd])
 
-    input=$abs_srcdir/$1
-    baseline=$abs_srcdir/$1.baseline
+    input=$1
+    dnl baseline=$abs_srcdir/$1.baseline
+    bes_conf=$abs_srcdir/bes.conf
+
     # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
     AT_XFAIL_IF([test z$2 = zxfail])
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: besstandalone -c $bes_conf -i $1 2>&1 > tmp_n &"])
+    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input &"])
 
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-        [
-        besstandalone -c bes.conf -i $input 2>&1 > tmp1 &
-        p1=$!
-        AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
+    dnl Clean up the cache
+    rm -rf cache
 
-        besstandalone -c bes.conf -i $input 2>&1 > tmp2 &
-        p2=$!
-        AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
+    remote_resource_tester $bes_conf $input &
+    p1=$!
+    AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
 
-        AT_CHECK([wait $p1], [0], [], [], [s1=$!], [s1=$!])
-        AT_CHECK([wait $p2], [0], [], [], [s1=$!], [s1=$!])
+    remote_resource_tester $bes_conf $input &
+    p2=$!
+    AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
 
-        mv tmp1 $baseline
-        ],
-        [
-        besstandalone -c bes.conf -i $input 2>&1 > tmp1 &
-        p1=$!
-        AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
-
-        besstandalone -c bes.conf -i $input 2>&1 > tmp2 &
-        p2=$!
-        AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
-
-        AT_CHECK([wait $p1], [0], [], [], [s1=$!], [s1=$!])
-        AT_CHECK([wait $p2], [0], [], [], [s1=$!], [s1=$!])
-
-        AT_CHECK([diff -b -B $baseline tmp1])
-        AT_CHECK([diff -b -B $baseline tmp2])
-        ])
+    wait $p1
+    s1=$?
+    wait $p2
+    s2=$?
+    AT_CHECK([test $s1 -eq 0], [0])
+    AT_CHECK([test $s2 -eq 0], [0])
 
     AT_CLEANUP
 ])
 
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
