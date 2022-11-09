@@ -633,7 +633,7 @@ public:
         cmr.get_opendap_providers(providers);
 
         for (auto provider: providers){
-            cerr << provider.id() << ": " << provider.get_opendap_collection_count() << endl;
+            cerr << provider.to_string() << endl;
         }
 
     }
@@ -647,11 +647,7 @@ public:
 
         cerr << prolog << "Got " << collections.size() << " Collections" << endl;
         for (auto &collection: collections){
-            cerr << endl << "### COLLECTION ####################################################################" << endl;
-            cerr << "concept-id: " << collection.id() << endl;
-            cerr << "ShortName:  " << collection.short_name() << endl;
-            cerr << "EntryTitle: " << collection.entry_title() << endl;
-            cerr << "Abstract:   " << collection.abstract() << endl;
+            cerr << collection.to_string() << endl;
         }
 
     }

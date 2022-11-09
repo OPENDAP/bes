@@ -3,6 +3,8 @@
 //
 #include "config.h"
 #include <cstdio>
+#include <sstream>
+
 #include "nlohmann/json.hpp"
 
 #include "BESDebug.h"
@@ -10,6 +12,7 @@
 #include "Collection.h"
 
 using json = nlohmann::json;
+using namespace std;
 
 namespace cmr {
 
@@ -29,5 +32,16 @@ std::string Collection::short_name() {
     return d_collection_json_obj[CMR_UMM_KEY][CMR_COLLECTION_SHORT_NAME_KEY].get<std::string>();
 }
 
+string Collection::to_string() {
+    stringstream msg;
+    msg << "# # # # # # # # # # # # # # # # # # " << endl;
+    msg << "# Collection" << endl;
+    msg << "#  concept-id: " << id() << endl;
+    msg << "#  short_name: " << short_name() << endl;
+    msg << "# entry_title: " << entry_title() << endl;
+    msg << "#    abstract: " << abstract() << endl;
+    msg << "#" << endl;
+    return msg.str();
+}
 
 } // cmr

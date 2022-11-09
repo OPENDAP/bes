@@ -27,6 +27,7 @@ public:
     std::string entry_title();
     std::string short_name();
 
+    std::string to_string();
 };
 
 } // cmr

@@ -98,14 +98,17 @@ bool Provider::rest_only() {
     return d_provider_json_obj[CMR_PROVIDER_REST_ONLY_KEY];
 }
 
-string Provider::dump() {
+string Provider::to_string() {
     stringstream msg;
-    msg << prolog << endl;
-    msg << "provider_id: " << id() << endl;
-    msg << "organization_name: " << organization_name() << endl;
-    msg << "description_of_holdings: " << description_of_holdings() << endl;
-    msg << "contacts: " << contacts().dump() << endl;
-    msg << "rest_only: " << (rest_only()?"true":"false") << endl;
+    msg << "# # # # # # # # # # # # # # # # # # " << endl;
+    msg << "# Provider" << endl;
+    msg << "#              provider_id: " << id() << endl;
+    msg << "#        organization_name: " << organization_name() << endl;
+    msg << "#  description_of_holdings: " << description_of_holdings() << endl;
+    msg << "#                 contacts: " << contacts().dump() << endl;
+    msg << "#                rest_only: " << (rest_only()?"true":"false") << endl;
+    msg << "# OPeNDAP collection count: " << d_opendap_collection_count << endl;
+    msg << "#" << endl;
     return msg.str();
 }
 

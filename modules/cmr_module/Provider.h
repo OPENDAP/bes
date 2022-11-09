@@ -50,7 +50,7 @@ public:
 
     void set_opendap_collection_count(unsigned long long count){ d_opendap_collection_count = count; }
     unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
-    std::string dump();
+    std::string to_string();
 };
 
 } // cmr
