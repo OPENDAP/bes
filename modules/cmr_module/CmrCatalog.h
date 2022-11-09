@@ -80,7 +80,6 @@ public:
 
 
     virtual bes::CatalogNode *get_node(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
     virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
 
 
