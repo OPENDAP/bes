@@ -24,11 +24,11 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     dnl Clean up the cache
     rm -rf cache
 
-    remote_resource_tester $bes_conf $input &
+    remote_resource_tester $bes_conf $input "d1" &
     p1=$!
     AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
 
-    remote_resource_tester $bes_conf $input &
+    remote_resource_tester $bes_conf $input "d2" &
     p2=$!
     AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
 

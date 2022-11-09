@@ -282,6 +282,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     }
 
     // Get the name of the file in the cache (either the code finds this file or it makes it).
+    // Build the cache file name. Does not check if the file is in the case. jhrg 11/9/22
     d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl->str(), mangle);
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
@@ -302,7 +303,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
 
             if (cached_resource_is_expired()) {
                 BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
-                update_file_and_headers(content_filters);
+                update_file_and_headers(content_filters, cache);
                 cache->exclusive_to_shared_lock(d_fd);
             }
             else {
@@ -319,7 +320,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
-                update_file_and_headers(content_filters);
+                update_file_and_headers(content_filters, cache);
 
 #if 1
                 cache->exclusive_to_shared_lock(d_fd);
@@ -338,7 +339,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                 BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
                 cache->get_read_lock(d_resourceCacheFileName, d_fd);
                 BESDEBUG(MODULE, prolog << " Read lock on cache file name " << endl);
-#if 1
+#if 0
                 int hdrs_fd;
                 string resourceCacheFileNameHdrs = d_resourceCacheFileName + ".hdrs";
                 cache->get_read_lock(resourceCacheFileNameHdrs, hdrs_fd);
@@ -388,7 +389,7 @@ void RemoteResource::update_file_and_headers() {
  *
  * @param content_filters
  */
-void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters) {
+void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters, HttpCache *cache) {
 
 #if 0
     // Removed this to group all the cache control code in one function. jhrg 11/7/22
@@ -404,12 +405,14 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
     }
 #endif
 
-    // Write the remote resource to the cache file.
+    // Write the remote resource to the cache file and ingest header information. Header
+    // information is cached below. jhrg 11/9/22
     try {
         writeResourceToFile(d_fd);
     }
     catch (...) {
-        // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
+        // If things went south then we need to dump the file because we'll end up with
+        // an empty/bogus file clogging the cache
         unlink(d_resourceCacheFileName.c_str());
         throw;
     }
@@ -420,6 +423,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
 
     // Write the headers to the appropriate cache file.
     string hdr_filename = d_resourceCacheFileName + ".hdrs";
+    //
     std::ofstream hdr_out(hdr_filename.c_str());
     try {
         for (size_t i = 0; i < this->d_response_headers->size(); i++) {
@@ -550,6 +554,9 @@ void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE,
                  prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName
                         << endl);
+
+        // Get the contents of the URL 'this' references and write them to 'fd.'
+        // Return the response headers in 'd_response_headers.' jhrg 11/9/22
         curl::http_get_and_write_resource(d_remoteResourceUrl, fd,
                                           d_response_headers); // Throws BESInternalError if there is a curl error.
 
@@ -566,6 +573,8 @@ void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
 
         // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
+        // I think the headers are being cached. However, not by this function. This
+        // processes the headers and sets internal state based on their contents. jhrg 11/9/22
         ingest_http_headers_and_type();
     }
     catch (BESError &e) {

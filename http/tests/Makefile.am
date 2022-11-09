@@ -8,7 +8,7 @@ include $(top_srcdir)/coverage.mk
 bin_PROGRAMS = remote_resource_tester
 
 remote_resource_tester_SOURCES = remote_resource_tester.cc
-remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch
+remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 BES_CONF_IN = bes.conf.in

@@ -11,6 +11,7 @@
 #include "RemoteResource.h"
 #include "url_impl.h"
 #include "BESError.h"
+#include "BESDebug.h"
 
 using namespace std;
 using namespace http;
@@ -28,6 +29,9 @@ int main(int argc, char *argv[])
     string bes_conf = "bes.conf";
 
     try {
+        string debug_dest = argv[3];
+        debug_dest.append(",http");
+        BESDebug::SetUp(debug_dest);
         TheBESKeys::ConfigFile = argv[1];
         shared_ptr<http::url> url(new http::url(argv[2]));
 

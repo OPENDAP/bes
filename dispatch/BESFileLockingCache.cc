@@ -587,7 +587,7 @@ bool BESFileLockingCache::get_read_lock(const string &target, int &fd)
  * return false if the file already existed (the file won't be locked and the
  * descriptor reference is undefined - but likely -1).
  *
- * @throws BESBESInternalErroror if any error except EEXIST is returned by open(2) or
+ * @throws BESBESInternalError if any error except EEXIST is returned by open(2) or
  * if fcntl(2) returns an error. */
 bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 {

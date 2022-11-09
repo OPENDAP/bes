@@ -136,7 +136,7 @@ private:
      *
      * @param content_filters
      */
-    void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
+    void update_file_and_headers(const std::map<std::string, std::string> &content_filters, HttpCache *cache);
 
     /**
      * finds the header file of a previously specified file and retrieves the related headers file
