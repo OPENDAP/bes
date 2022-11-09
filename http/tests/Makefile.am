@@ -1,16 +1,21 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
-# AM_CPPFLAGS =
-AM_CXXFLAGS =
+bin_PROGRAMS = remote_resource_tester
+
+remote_resource_tester_SOURCES = remote_resource_tester.cc
+remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch
+remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 BES_CONF_IN = bes.conf.in
 
-#noinst_DATA = bes.conf
+noinst_DATA = bes.conf
 
-#CLEANFILES = bes.conf
+CLEANFILES = bes.conf
 
 EXTRA_DIST = http $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
 

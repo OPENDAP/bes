@@ -172,3 +172,8 @@ timing/*/*.dtps
 /.externalToolBuilders/
 /.scannerwork/
 /bw-output/
+/http/tests/remote_resource_tester
+/http/unit-tests/awsv4_test
+/http/unit-tests/bes_ngap_s3_creds.conf
+/http/unit-tests/CredentialsManagerTest
+/http/unit-tests/NgapCredentialsTest
