@@ -5,7 +5,7 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 BES.LogName=/dev/null
 
-Http.Cache.dir=/tmp/hyrax_tests
+Http.Cache.dir=@abs_top_builddir@/http/unit-tests/http_cache
 Http.Cache.prefix=http_unit_tests_
 Http.Cache.size=500
 Http.Cache.expires.time=3600

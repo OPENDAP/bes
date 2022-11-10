@@ -29,12 +29,12 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.(nc|NC)(\.gz|\.bz2|\.Z)?$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.UncompressCache.dir=/tmp
-BES.UncompressCache.prefix=uncompress_cache
+BES.UncompressCache.dir=@abs_top_builddir@/modules/gateway_module/tests/uncompress_cache
+BES.UncompressCache.prefix=uc_
 BES.UncompressCache.size=500
 
-Http.Cache.dir=/tmp
-Http.Cache.prefix=gateway_cache_
+Http.Cache.dir=@abs_top_builddir@/modules/gateway_module/tests/http_cache
+Http.Cache.prefix=hc_
 Http.Cache.size=500
 Http.Cache.expires.time=3600
 

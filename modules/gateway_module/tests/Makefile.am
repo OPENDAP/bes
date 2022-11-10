@@ -38,7 +38,13 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
+# Run the tests twice, the second time with the cache in place. jhrg 11/9/22
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+	@echo "\nRemove the cache directories if they exist\n"
+	-rm -rf http_cache
+	-rm -rf uncompress_cache
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	@echo "\nSecond run with the cache in place\n"
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
