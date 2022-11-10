@@ -33,12 +33,15 @@
 
 #include "nlohmann/json.hpp"
 
+#include "Collection.h"
+
 namespace cmr {
 
 class Provider {
 private:
     nlohmann::json d_provider_json_obj;
     unsigned long long d_opendap_collection_count{};
+
 public:
     explicit Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
 
@@ -50,6 +53,11 @@ public:
 
     void set_opendap_collection_count(unsigned long long count){ d_opendap_collection_count = count; }
     unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
+
+    void get_collections(std::vector<cmr::Collection> &collections);
+    void get_opendap_collections(std::vector<cmr::Collection> &collections);
+
+
     std::string to_string();
 };
 

@@ -41,6 +41,8 @@
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
+#include "Httputils.h"
+
 #include <BESError.h>
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
@@ -384,10 +386,8 @@ CmrApi::get_months(string collection_name, string r_year, vector<string> &months
 
     stringstream msg;
 
-    string cmr_query_url = d_cmr_granules_search_endpoint_url +
-        + "?concept_id="+collection_name
-        +"&include_facets=v2"
-        +"&temporal_facet[0][year]="+r_year;
+    string cmr_query_url =  d_cmr_granules_search_endpoint_url +"?concept_id="+collection_name+"&include_facets=v2&";
+    cmr_query_url += http::url_encode("temporal_facet[0][year]") + "=" + r_year;
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url << endl);
 
     rapidjson::Document doc;
@@ -592,16 +592,45 @@ cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string 
     return result;
 }
 
-void CmrApi::get_providers(vector<cmr::Provider> &providers)
+
+/**
+ * https://cmr.earthdata.nasa.gov/legacy-services/rest/providers/LPDAAC_ECS.json
+ * @param provider_id
+ * @return
+ */
+Provider CmrApi::get_provider(const std::string &provider_id)
 {
     rjson_utils ju;
 
-    string cmr_query_url = d_cmr_providers_search_endpoint_url + "?page_size=2000";
+    string cmr_query_url = BESUtil::pathConcat(d_cmr_providers_search_endpoint_url,provider_id);
+    cmr_query_url += ".json";
     BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url << endl);
 
     json cmr_doc = ju.get_as_json(cmr_query_url);
 
-    // We know that this CMR query retirns an array of anonymous json objects, each of which
+    // We know that this CMR query returns an anonymous json objects, which
+    // contains a single provider object (really...)
+
+    // Grab the internal provider object...
+    auto provider_json = cmr_doc[CMR_PROVIDER_KEY];
+    // And then make a new provider.
+    Provider provider(provider_json);
+
+    return provider;
+}
+
+
+void CmrApi::get_providers(vector<cmr::Provider> &providers)
+{
+    rjson_utils ju;
+
+    stringstream cmr_query_url;
+    cmr_query_url << d_cmr_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
+    BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url.str() << endl);
+
+    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+
+    // We know that this CMR query returns an array of anonymous json objects, each of which
     // contains a single provider object (really...)
 
     // So we iterate over the anonymous objects
@@ -644,37 +673,60 @@ unsigned int CmrApi::get_opendap_collections_count(const string &provider_id)
     return hits;
 }
 
-void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections)
+
+void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
+                             unsigned int page_size,
+                             bool just_opendap)
 {
+    unsigned int page_num=1;
     rjson_utils ju;
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_collections_search_endpoint_url;
-    cmr_query_url << "?has_opendap_url=true&page_size=" << 100;//CMR_MAX_PAGE_SIZE;
-    cmr_query_url << "&provider=" << provider_id;
-    BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
-    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+    string cmr_query_url_base;
+    cmr_query_url_base = d_cmr_collections_search_endpoint_url + "?";
+    cmr_query_url_base += "provider=" + provider_id + "&";
+    if(just_opendap){
+        cmr_query_url_base += "has_opendap_url=true&";
+    }
+    cmr_query_url_base += "page_size=" + to_string(page_size) + "&";
+    BESDEBUG(MODULE, prolog << "cmr_query_url_base: " << cmr_query_url_base << endl);
+
+    string cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
+    BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
+
+    json cmr_doc = ju.get_as_json(cmr_query_url);
 //      BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
     if (hits == 0){
         return;
     }
-    unsigned int collection_count = 0;
-    unsigned int page_number = 0;
+    for (auto &collection_json : cmr_doc["items"]) {
+        Collection collection(collection_json);
+        collections.emplace_back(collection);
+    }
+    BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
 
-    //while (collection_count < hits){
+    while (collections.size() < hits){
+        page_num++;
+        cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
+        BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
+        cmr_doc = ju.get_as_json(cmr_query_url);
+//      BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
         for (auto &collection_json : cmr_doc["items"]) {
             Collection collection(collection_json);
             collections.emplace_back(collection);
-            collection_count++;
         }
-        //collection_count=hits;
-    //}
+        BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
+    }
+
+}
 
 
 
-
-
+void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections){
+    get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, true);
+}
+void CmrApi::get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections){
+    get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, false);
 }
 
 

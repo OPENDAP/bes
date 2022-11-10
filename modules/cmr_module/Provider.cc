@@ -31,6 +31,7 @@
 #include "rjson_utils.h"
 
 #include "CmrNames.h"
+#include "CmrApi.h"
 #include "Provider.h"
 
 using namespace std;
@@ -97,10 +98,24 @@ json Provider::contacts() {
 bool Provider::rest_only() {
     return d_provider_json_obj[CMR_PROVIDER_REST_ONLY_KEY];
 }
+void Provider::get_collections(std::vector<cmr::Collection> &collections)
+{
+    CmrApi cmrApi;
+    cmrApi.get_collections(id(), collections);
+}
+
+void Provider::get_opendap_collections(std::vector<cmr::Collection> &collections)
+{
+    CmrApi cmrApi;
+    cmrApi.get_opendap_collections(id(), collections);
+
+}
+
+
 
 string Provider::to_string() {
     stringstream msg;
-    msg << "# # # # # # # # # # # # # # # # # # " << endl;
+    msg << "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #" << endl;
     msg << "# Provider" << endl;
     msg << "#              provider_id: " << id() << endl;
     msg << "#        organization_name: " << organization_name() << endl;

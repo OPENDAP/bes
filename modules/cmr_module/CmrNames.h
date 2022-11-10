@@ -38,7 +38,7 @@
 #define DEFAULT_CMR_HOST_URL "https://cmr.earthdata.nasa.gov/"
 
 #define CMR_MAX_PAGE_SIZE 2000
-#define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers.json"
+#define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers"
 #define CMR_COLLECTIONS_SEARCH_API_ENDPOINT "search/collections.umm_json"
 #define CMR_GRANULES_SEARCH_API_ENDPOINT "search/granules.json"
 
@@ -56,6 +56,8 @@
 #define CMR_COLLECTION_ABSTRACT_KEY "Abstract"
 #define CMR_COLLECTION_ENTRY_TITLE_KEY "EntryTitle"
 #define CMR_COLLECTION_SHORT_NAME_KEY "ShortName"
+
+#define CMR_TEMPORAL_NAVIGATION_FACET_KEY "temporal"
 
 
 #define MODULE CMR_NAME

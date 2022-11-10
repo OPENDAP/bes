@@ -616,12 +616,24 @@ public:
 
     }
 
+    void get_provider_test() {
+        stringstream msg;
+        CmrApi cmr;
+
+        Provider ges_disc = cmr.get_provider("GES_DISC");
+        cerr << ges_disc.to_string() << endl;
+
+    }
+
     void get_providers_test() {
         stringstream msg;
         CmrApi cmr;
         std::vector<cmr::Provider> providers;
 
         cmr.get_providers(providers);
+        for (auto provider: providers){
+            cerr << provider.to_string() << endl;
+        }
 
     }
 
@@ -653,6 +665,7 @@ public:
     }
 CPPUNIT_TEST_SUITE( CmrApiTest );
 
+    CPPUNIT_TEST(get_provider_test);
     CPPUNIT_TEST(get_opendap_collections_test);
     CPPUNIT_TEST(get_opendap_providers_test);
     CPPUNIT_TEST(get_providers_test);

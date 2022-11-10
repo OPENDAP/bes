@@ -39,6 +39,7 @@
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
 
+#include "CmrNames.h"
 #include "Provider.h"
 #include "Collection.h"
 #include "Granule.h"
@@ -49,6 +50,7 @@ namespace cmr {
 class CmrApi {
 private:
     std::string d_cmr_endpoint_url;
+    std::string d_cmr_provider_search_endpoint_url;
     std::string d_cmr_providers_search_endpoint_url;
     std::string d_cmr_collections_search_endpoint_url;
     std::string d_cmr_granules_search_endpoint_url;
@@ -62,6 +64,11 @@ private:
     const rapidjson::Value& get_feed(const rapidjson::Document &cmr_doc);
     const rapidjson::Value& get_entries(const rapidjson::Document &cmr_doc);
     void  granule_search(std::string collection_name, std::string r_year, std::string r_month, std::string r_day,rapidjson::Document &result_doc);
+
+    void get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
+                         unsigned int page_size=CMR_MAX_PAGE_SIZE,
+                         bool just_opendap=false );
+
 
 
 public:
@@ -78,9 +85,12 @@ public:
     cmr::Granule *get_granule(const std::string path);
     cmr::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
 
+    Provider get_provider(const std::string &provider_id);
     void get_providers(std::vector<cmr::Provider> &providers);
     void get_opendap_providers(std::vector<cmr::Provider> &providers);
     unsigned int get_opendap_collections_count(const std::string &provider_id);
+
+    void get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections );
     void get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections );
 
 };
