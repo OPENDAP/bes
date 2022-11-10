@@ -61,10 +61,10 @@ private:
     std::shared_ptr<http::url> d_remoteResourceUrl;
 
     /// Open file descriptor for the resource content (Returned from the cache).
-    int d_fd;
+    int d_fd = 0;
 
     /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
-    bool d_initialized;
+    bool d_initialized = false;
 
     /// User id associated with this request
     std::string d_uid;
@@ -79,10 +79,10 @@ private:
     // std::vector<std::string> d_request_headers; // Request headers not used, maybe later
 
     /// The raw HTTP response headers returned by the request for the remote resource.
-    std::vector<std::string> *d_response_headers; // Response headers
+    std::vector<std::string> *d_response_headers = nullptr; // Response headers
 
     /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
-    std::map<std::string, std::string> *d_http_response_headers; // Response headers
+    std::map<std::string, std::string> *d_http_response_headers = nullptr; // Response headers
 
     /// The interval before a cache resource needs to be refreshed
     long long d_expires_interval;
@@ -144,15 +144,10 @@ private:
     void load_hdrs_from_file();
 
 protected:
-    RemoteResource() :
-            d_remoteResourceUrl(), d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-            d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
+    RemoteResource() : d_expires_interval(HttpCache::getCacheExpiresTime()) {
     }
 
 public:
-    // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-    //RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
-
     RemoteResource(std::shared_ptr<http::url> target_url, const std::string &uid = "",
                    long long expires_interval = HttpCache::getCacheExpiresTime());
 

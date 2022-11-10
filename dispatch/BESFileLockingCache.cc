@@ -648,7 +648,7 @@ void BESFileLockingCache::lock_cache_write()
     BESDEBUG(LOCK, prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
-        throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
+        throw BESInternalError("An error occurred trying to lock the cache-control file: " + get_errno(), __FILE__,
             __LINE__);
     }
 
