@@ -492,7 +492,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
     int fd;
     if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
         switch (errno) {
-        case ENOENT:
+        case ENOENT:        // NO ENTry - it does not exist
             return false;
 
         default:
@@ -501,7 +501,7 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
     }
 
     struct flock *l = lock(F_RDLCK);
-    if (fcntl(fd, F_SETLKW, l) == -1) {
+    if (fcntl(fd, F_SETLKW, l) == -1) {     // NB: F_SETLKW will block until a conflicting lock is released
         close(fd);
         ostringstream oss;
         oss << prolog << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();

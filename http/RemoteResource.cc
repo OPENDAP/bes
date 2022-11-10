@@ -296,14 +296,18 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
     try {
-        if (false) { // FIXME !!!! jhrg 11/7/22 cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
-            BESDEBUG(MODULE,
-                     prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
-                            << endl);
-
+        if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
+            BESDEBUG(MODULE, prolog << "Remote resource is already in cache. cache_file_name: "
+                                    << d_resourceCacheFileName << endl);
             if (cached_resource_is_expired()) {
                 BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
                 update_file_and_headers(content_filters, cache);
+
+                uint64_t size = cache->update_cache_info(d_resourceCacheFileName);
+                if (cache->cache_too_big(size)) {
+                    cache->update_and_purge(d_resourceCacheFileName);
+                }
+
                 cache->exclusive_to_shared_lock(d_fd);
             }
             else {
@@ -311,8 +315,10 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                 cache->exclusive_to_shared_lock(d_fd);
                 load_hdrs_from_file();
             }
+#if 0
             d_initialized = true;
             return;
+#endif
         }
         else {
             // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
@@ -320,37 +326,37 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
+
                 update_file_and_headers(content_filters, cache);
 
-#if 1
-                cache->exclusive_to_shared_lock(d_fd);
-                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
-
-                unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-                BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
-
+                uint64_t size = cache->update_cache_info(d_resourceCacheFileName);
                 if (cache->cache_too_big(size)) {
                     cache->update_and_purge(d_resourceCacheFileName);
-                    BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
                 }
-#endif
+
+                cache->exclusive_to_shared_lock(d_fd);
+                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
             }
             else {
                 BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
-                cache->get_read_lock(d_resourceCacheFileName, d_fd);
-                BESDEBUG(MODULE, prolog << " Read lock on cache file name " << endl);
-#if 0
-                int hdrs_fd;
-                string resourceCacheFileNameHdrs = d_resourceCacheFileName + ".hdrs";
-                cache->get_read_lock(resourceCacheFileNameHdrs, hdrs_fd);
-                BESDEBUG(MODULE, prolog << " Read lock on cache file headers " << resourceCacheFileNameHdrs << endl);
-#endif
-                //sleep(1);   // FIXME !!!! jhrg 11/7/22
+                bool status = cache->get_read_lock(d_resourceCacheFileName, d_fd);
+                if (!status) {
+                    stringstream msg;
+                    msg << "ERROR. Internal state error. HTTP cache file: " << d_resourceCacheFileName
+                        << " could not be opened for reading.";
+                    BESDEBUG(MODULE, prolog << msg.str() << endl);
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+                BESDEBUG(MODULE, prolog << " Got read lock on cache file, now loading headers" << endl);
                 load_hdrs_from_file();
             }
+#if 0
             d_initialized = true;
             return;
+#endif
         }
+
+        d_initialized = true;
 
 #if 0
         stringstream msg;
@@ -381,7 +387,16 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
  */
 void RemoteResource::update_file_and_headers() {
     std::map<std::string, std::string> content_filters;
-    update_file_and_headers(content_filters);
+    HttpCache *cache = HttpCache::get_instance();
+    if (!cache) {
+        ostringstream oss;
+        oss << prolog << "FAILED to get local cache. ";
+        oss << "Unable to proceed with request for " << this->d_remoteResourceUrl->str();
+        oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+        BESDEBUG(MODULE, oss.str());
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+    update_file_and_headers(content_filters, cache);
 }
 
 /**
@@ -389,7 +404,8 @@ void RemoteResource::update_file_and_headers() {
  *
  * @param content_filters
  */
-void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters, HttpCache *cache) {
+void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters,
+                                             HttpCache *cache) {
 
 #if 0
     // Removed this to group all the cache control code in one function. jhrg 11/7/22
@@ -422,6 +438,37 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
     filter_retrieved_resource(content_filters);
 
     // Write the headers to the appropriate cache file.
+    int hdr_fd;
+    string hdr_filename = d_resourceCacheFileName + ".hdrs";
+    try {
+        bool status = cache->create_and_lock(hdr_filename, hdr_fd);
+        if (!status) {
+            stringstream msg;
+            msg << "ERROR. Internal state error. The headers file: " << hdr_filename
+                << " could not be opened for WRITING.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+
+        BESDEBUG(MODULE, prolog << "Writing headers to " <<  hdr_filename << endl);
+
+        for (auto header: *d_response_headers) {
+            write(hdr_fd, header.c_str(), header.size());
+            write(hdr_fd, "\n", 1);
+        }
+
+        cache->unlock_and_close(hdr_filename);
+
+        BESDEBUG(MODULE, prolog << "Unlock and close " <<  hdr_filename << endl);
+    }
+    catch (...) {
+        // If this fails for any reason we:
+        cache->unlock_and_close(hdr_filename);
+        unlink(hdr_filename.c_str()); // unlink the file
+        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
+        throw;
+    }
+#if 0
     string hdr_filename = d_resourceCacheFileName + ".hdrs";
     //
     std::ofstream hdr_out(hdr_filename.c_str());
@@ -437,7 +484,8 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
         throw;
     }
-
+#endif
+#if 0
     // #########################################################################################################
 
 #if 0
@@ -461,6 +509,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         cache->update_and_purge(d_resourceCacheFileName);
         BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
     }
+#endif
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return;
@@ -471,9 +520,62 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
  * finds the header file of a previously specified file and retrieves the related headers file
  */
 void RemoteResource::load_hdrs_from_file() {
-    string hdr_filename = d_resourceCacheFileName + ".hdrs";
-    std::ifstream hdr_ifs(hdr_filename.c_str());
+    HttpCache *cache = HttpCache::get_instance();
+    if (!cache) {
+        ostringstream oss;
+        oss << prolog << "FAILED to get local cache. ";
+        oss << "Unable to proceed with request for " << d_remoteResourceUrl->str();
+        oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+        BESDEBUG(MODULE, oss.str());
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
 
+    string hdr_filename = d_resourceCacheFileName + ".hdrs";
+    int hdr_fd;
+    try {
+        bool status = cache->get_read_lock(hdr_filename, hdr_fd);
+        // FIXME This is a hack. We need to change this code to manage the
+        //  main file and the header file as a single atomic thing (they can
+        //  still be two files...). jhrg 11/9/22
+        auto start = chrono::steady_clock::now();
+        while (!status) {
+            BESDEBUG(MODULE, prolog << " FAILED to get read lock on cache file" << endl);
+            status = cache->get_read_lock(hdr_filename, hdr_fd);
+            auto end = chrono::steady_clock::now();
+            if (chrono::duration_cast<chrono::seconds>(end - start).count() > 2) {
+                stringstream msg;
+                msg << "ERROR. Internal state error. The headers file: " << hdr_filename
+                    << " could not be opened for READING after waiting 2 seconds.";
+                BESDEBUG(MODULE, prolog << msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+        BESDEBUG(MODULE, prolog << " Got read lock on cache file, now loading headers" << endl);
+#if 0
+        if (!status) {
+            stringstream msg;
+            msg << "ERROR. Internal state error. The headers file: " << hdr_filename
+                << " could not be opened for READING.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+#endif
+
+        ifstream hdr_ifs(hdr_filename);
+        for (string line; getline(hdr_ifs, line);) {
+            (*d_response_headers).push_back(line);
+            BESDEBUG(MODULE, prolog << "header:   " << line << endl);
+        }
+
+        cache->unlock_and_close(hdr_filename);
+    }
+    catch (...) {
+        cache->unlock_and_close(hdr_filename);
+        throw;
+    }
+
+#if 0
+    std::ifstream hdr_ifs(hdr_filename.c_str());
     if (!hdr_ifs.is_open()) {
         stringstream msg;
         msg << "ERROR. Internal state error. The headers file: " << hdr_filename << " could not be opened for reading.";
@@ -486,6 +588,8 @@ void RemoteResource::load_hdrs_from_file() {
         (*d_response_headers).push_back(line);
         BESDEBUG(MODULE, prolog << "header:   " << line << endl);
     }
+#endif
+
     ingest_http_headers_and_type();
 } //end RemoteResource::load_hdrs_from_file()
 
@@ -534,14 +638,14 @@ void RemoteResource::writeResourceToFile(int fd) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     try {
-
+#ifndef NDEBUG
         BESStopWatch besTimer;
         if (BESDebug::IsSet("rr") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
             BESLog::TheLog()->is_verbose()) {
             besTimer.start(prolog + "source url: " + d_remoteResourceUrl->str());
         }
-
-        int status = lseek(fd, 0, SEEK_SET);
+#endif
+        off_t status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
@@ -551,22 +655,18 @@ void RemoteResource::writeResourceToFile(int fd) {
             throw BESInternalError("Could not truncate the file prior to updating from remote. ", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
 
-        BESDEBUG(MODULE,
-                 prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName
-                        << endl);
+        BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file "
+                                << d_resourceCacheFileName  << endl);
 
+        // Throws BESInternalError if there is a curl error.
         // Get the contents of the URL 'this' references and write them to 'fd.'
         // Return the response headers in 'd_response_headers.' jhrg 11/9/22
-        curl::http_get_and_write_resource(d_remoteResourceUrl, fd,
-                                          d_response_headers); // Throws BESInternalError if there is a curl error.
+        curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers);
 
         BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl->str() << " saved to cache file "
                                 << d_resourceCacheFileName << endl);
 
         // rewind the file
-        // FIXME I think the idea here is that we have the file open and we should just keep
-        //  reading from it. But the container mechanism works with file names, so we will
-        //  likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
         status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
