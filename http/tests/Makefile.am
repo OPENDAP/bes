@@ -17,7 +17,7 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = http $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES =  atconfig
 

@@ -12,23 +12,23 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([bescmd])
 
+    dnl input is a URL
     input=$1
-    dnl baseline=$abs_srcdir/$1.baseline
     bes_conf=$abs_srcdir/bes.conf
 
     # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
     AT_XFAIL_IF([test z$2 = zxfail])
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input &"])
+    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input d1 or d2&"])
 
     dnl Clean up the cache
-    rm -rf cache
+    rm -rf $abs_builddir/cache
 
-    remote_resource_tester $bes_conf $input "d1" &
+    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d1-$$ > $abs_builddir/tmp1-$$ &
     p1=$!
     AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
 
-    remote_resource_tester $bes_conf $input "d2" &
+    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d2-$$ > $abs_builddir/tmp2-$$ &
     p2=$!
     AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
 
@@ -36,8 +36,16 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     s1=$?
     wait $p2
     s2=$?
-    AT_CHECK([test $s1 -eq 0], [0])
-    AT_CHECK([test $s2 -eq 0], [0])
+
+    #  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
+    trial1=fail
+    trial2=fail
+    AT_CHECK([test $s1 -eq 0], [0], [], [], [tria1l=fail], [trial1=pass])
+    AT_CHECK([test $s2 -eq 0], [0], [], [], [trial2=fail], [trial2=pass])
+
+    AS_IF([test $trial1 = pass -a $trial2 = pass], [echo "Pass, $abs_builddir/d1-$$"; rm -f $abs_builddir/d1-$$ $abs_builddir/d2-$$], [echo "Fail"])
+
+    rm -f $abs_builddir/tmp1-$$ $abs_builddir/tmp2-$$
 
     AT_CLEANUP
 ])
