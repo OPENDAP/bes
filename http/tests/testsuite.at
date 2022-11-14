@@ -14,7 +14,7 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
 
     dnl input is a URL
     input=$1
-    bes_conf=$abs_srcdir/bes.conf
+    bes_conf=$abs_builddir/bes.conf
 
     # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
     AT_XFAIL_IF([test z$2 = zxfail])
