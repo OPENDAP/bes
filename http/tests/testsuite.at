@@ -43,3 +43,12 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
 ])
 
 AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])

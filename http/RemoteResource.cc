@@ -62,6 +62,7 @@ using namespace std;
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
+#define MODULE_2 "http_2"
 
 namespace http {
 
@@ -105,100 +106,12 @@ RemoteResource::RemoteResource(
     }
     else if (d_remoteResourceUrl->protocol() == HTTPS_PROTOCOL || d_remoteResourceUrl->protocol() == HTTP_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl->str() << endl);
-#if 0
-
-        if (!d_uid.empty()){
-                string client_id_hdr = "User-Id: " + d_uid;
-                BESDEBUG(MODULE, prolog << client_id_hdr << endl);
-                d_request_headers.push_back(client_id_hdr);
-            }
-            if (!d_echo_token.empty()){
-                string echo_token_hdr = "Echo-Token: " + d_echo_token;
-                BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
-                d_request_headers.push_back(echo_token_hdr);
-            }
-#endif
-
     }
     else {
         string err = prolog + "Unsupported protocol: " + d_remoteResourceUrl->protocol();
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-
-    // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
-
 }
-
-
-#if 0
-/**
-     * Builds a RemoteHttpResource object associated with the passed url parameter.
-     *
-     * @param url Is a URL string that identifies the remote resource.
-     */
-    RemoteResource::RemoteResource(const std::string &url, const std::string &uid, const std::string &echo_token) {
-
-        d_fd = 0;
-        d_initialized = false;
-
-        d_uid = uid;
-        d_echo_token = echo_token;
-
-        // d_curl = curl::init(url);
-
-        d_resourceCacheFileName.clear();
-        d_response_headers = new vector<string>();
-        d_request_headers = new vector<string>();
-        d_http_response_headers = new map<string, string>();
-
-        if (url.empty()) {
-            throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
-        }
-
-        if(url.find(FILE_PROTOCOL) == 0){
-            d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
-            while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
-                // Strip trailing slashes, because this about files, not directories
-                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.size()-1);
-            }
-            // Now we check that the data is in the BES_CATALOG_ROOT
-            string catalog_root;
-            bool found;
-            TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY,catalog_root,found );
-            if(!found){
-                throw BESInternalError( prolog + "ERROR - "+ BES_CATALOG_ROOT_KEY + "is not set",__FILE__,__LINE__);
-            }
-            if(d_resourceCacheFileName.find(catalog_root) !=0 ){
-                d_resourceCacheFileName = BESUtil::pathConcat(catalog_root,d_resourceCacheFileName);
-            }
-            d_initialized =true;
-        }
-        else if(url.find(HTTPS_PROTOCOL) == 0  || url.find(HTTP_PROTOCOL) == 0){
-            d_remoteResourceUrl = url;
-            BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
-
-            if (!d_uid.empty()){
-                string client_id_hdr = "User-Id: " + d_uid;
-                BESDEBUG(MODULE, prolog << client_id_hdr << endl);
-                d_request_headers->push_back(client_id_hdr);
-            }
-            if (!d_echo_token.empty()){
-                string echo_token_hdr = "Echo-Token: " + d_echo_token;
-                BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
-                d_request_headers->push_back(echo_token_hdr);
-            }
-        }
-        else {
-            string err = prolog + "Unsupported protocol: " + url;
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-
-
-
-        // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
-    }
-#endif
-
 
 /**
  * Releases any memory resources and also any existing cache file locks for the cached resource.
@@ -287,11 +200,6 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
     // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
-    //   We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
-    //   Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
-    //   to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
-    //   from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
-    //   But really - we gotta fix this.
     http::get_type_from_url(d_remoteResourceUrl->str(), d_type);
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
@@ -301,7 +209,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                                     << d_resourceCacheFileName << endl);
             if (cached_resource_is_expired()) {
                 BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
-                update_file_and_headers(content_filters, cache);
+                update_file_and_headers(content_filters);
 
                 uint64_t size = cache->update_cache_info(d_resourceCacheFileName);
                 if (cache->cache_too_big(size)) {
@@ -312,13 +220,9 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             }
             else {
                 BESDEBUG(MODULE, prolog << "EXISTS - LOADING " << endl);
-                cache->exclusive_to_shared_lock(d_fd);
                 load_hdrs_from_file();
+                cache->exclusive_to_shared_lock(d_fd);
             }
-#if 0
-            d_initialized = true;
-            return;
-#endif
         }
         else {
             // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
@@ -327,15 +231,15 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
 
-                update_file_and_headers(content_filters, cache);
+                update_file_and_headers(content_filters);
+
+                cache->exclusive_to_shared_lock(d_fd);
+                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
 
                 uint64_t size = cache->update_cache_info(d_resourceCacheFileName);
                 if (cache->cache_too_big(size)) {
                     cache->update_and_purge(d_resourceCacheFileName);
                 }
-
-                cache->exclusive_to_shared_lock(d_fd);
-                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
             }
             else {
                 BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
@@ -350,21 +254,9 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                 BESDEBUG(MODULE, prolog << " Got read lock on cache file, now loading headers" << endl);
                 load_hdrs_from_file();
             }
-#if 0
-            d_initialized = true;
-            return;
-#endif
         }
 
         d_initialized = true;
-
-#if 0
-        stringstream msg;
-        msg << prolog + "Failed to acquire cache read lock for remote resource: '";
-        msg << d_remoteResourceUrl->str() << endl;
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-#endif
-
     }
     catch (BESError &besError) {
         BESDEBUG(MODULE, prolog << "Caught BESError. type: " << besError.get_bes_error_type() <<
@@ -387,16 +279,8 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
  */
 void RemoteResource::update_file_and_headers() {
     std::map<std::string, std::string> content_filters;
-    HttpCache *cache = HttpCache::get_instance();
-    if (!cache) {
-        ostringstream oss;
-        oss << prolog << "FAILED to get local cache. ";
-        oss << "Unable to proceed with request for " << this->d_remoteResourceUrl->str();
-        oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-        BESDEBUG(MODULE, oss.str());
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-    update_file_and_headers(content_filters, cache);
+
+    update_file_and_headers(content_filters);
 }
 
 /**
@@ -404,27 +288,30 @@ void RemoteResource::update_file_and_headers() {
  *
  * @param content_filters
  */
-void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters,
-                                             HttpCache *cache) {
-
-#if 0
-    // Removed this to group all the cache control code in one function. jhrg 11/7/22
-    // Get a pointer to the singleton cache instance for this process.
-    HttpCache *cache = HttpCache::get_instance();
-    if (!cache) {
-        ostringstream oss;
-        oss << prolog << "FAILED to get local cache. ";
-        oss << "Unable to proceed with request for " << this->d_remoteResourceUrl->str();
-        oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-        BESDEBUG(MODULE, oss.str());
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-#endif
+void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters) {
 
     // Write the remote resource to the cache file and ingest header information. Header
     // information is cached below. jhrg 11/9/22
     try {
         writeResourceToFile(d_fd);
+
+        // Filter the response file - If content_filters map is empty then nothing is done.
+        filter_retrieved_resource(content_filters);
+
+        // Write the headers to the appropriate cache file.
+        string hdr_filename = d_resourceCacheFileName + ".hdrs";
+        std::ofstream hdr_out(hdr_filename.c_str());
+        try {
+            for (size_t i = 0; i < this->d_response_headers->size(); i++) {
+                hdr_out << (*d_response_headers)[i] << endl;
+            }
+        }
+        catch (...) {
+            // If this fails for any reason we:
+            hdr_out.close(); // Close the stream
+            unlink(hdr_filename.c_str()); // unlink the file
+            throw;
+        }
     }
     catch (...) {
         // If things went south then we need to dump the file because we'll end up with
@@ -432,163 +319,19 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         unlink(d_resourceCacheFileName.c_str());
         throw;
     }
-
-    //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-    // Filter the response file - If content_filters map is empty then nothing is done.
-    filter_retrieved_resource(content_filters);
-
-    // Write the headers to the appropriate cache file.
-    int hdr_fd;
-    string hdr_filename = d_resourceCacheFileName + ".hdrs";
-    try {
-        bool status = cache->create_and_lock(hdr_filename, hdr_fd);
-        if (!status) {
-            stringstream msg;
-            msg << "ERROR. Internal state error. The headers file: " << hdr_filename
-                << " could not be opened for WRITING.";
-            BESDEBUG(MODULE, prolog << msg.str() << endl);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-
-        BESDEBUG(MODULE, prolog << "Writing headers to " <<  hdr_filename << endl);
-
-        for (auto header: *d_response_headers) {
-            write(hdr_fd, header.c_str(), header.size());
-            write(hdr_fd, "\n", 1);
-        }
-
-        cache->unlock_and_close(hdr_filename);
-
-        BESDEBUG(MODULE, prolog << "Unlock and close " <<  hdr_filename << endl);
-    }
-    catch (...) {
-        // If this fails for any reason we:
-        cache->unlock_and_close(hdr_filename);
-        unlink(hdr_filename.c_str()); // unlink the file
-        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
-        throw;
-    }
-#if 0
-    string hdr_filename = d_resourceCacheFileName + ".hdrs";
-    //
-    std::ofstream hdr_out(hdr_filename.c_str());
-    try {
-        for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-            hdr_out << (*d_response_headers)[i] << endl;
-        }
-    }
-    catch (...) {
-        // If this fails for any reason we:
-        hdr_out.close(); // Close the stream
-        unlink(hdr_filename.c_str()); // unlink the file
-        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
-        throw;
-    }
-#endif
-#if 0
-    // #########################################################################################################
-
-#if 0
-    // See above. jhrg 11/7/22
-
-    // Change the exclusive lock on the new file to a shared lock. This keeps
-    // other processes from purging the new file and ensures that the reading
-    // process can use it.
-    // FIXME !!!! jhrg 11/7/22
-    cache->exclusive_to_shared_lock(d_fd);
-    BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
-
-    // FIXME !!!! ???? Should these be moved back into the caller? jhrg 11/7/22
-    // Now update the total cache size info and purge if needed. The new file's
-    // name is passed into the purge method because this process cannot detect its
-    // own lock on the file.
-    unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-    BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
-
-    if (cache->cache_too_big(size)) {
-        cache->update_and_purge(d_resourceCacheFileName);
-        BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
-    }
-#endif
-    BESDEBUG(MODULE, prolog << "END" << endl);
-
-    return;
-#endif
 } //end RemoteResource::update_file_and_headers()
 
 /**
  * finds the header file of a previously specified file and retrieves the related headers file
  */
 void RemoteResource::load_hdrs_from_file() {
-    HttpCache *cache = HttpCache::get_instance();
-    if (!cache) {
-        ostringstream oss;
-        oss << prolog << "FAILED to get local cache. ";
-        oss << "Unable to proceed with request for " << d_remoteResourceUrl->str();
-        oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-        BESDEBUG(MODULE, oss.str());
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
-    }
-
     string hdr_filename = d_resourceCacheFileName + ".hdrs";
-    int hdr_fd;
-    try {
-        bool status = cache->get_read_lock(hdr_filename, hdr_fd);
-        // FIXME This is a hack. We need to change this code to manage the
-        //  main file and the header file as a single atomic thing (they can
-        //  still be two files...). jhrg 11/9/22
-        auto start = chrono::steady_clock::now();
-        while (!status) {
-            BESDEBUG(MODULE, prolog << " FAILED to get read lock on cache file" << endl);
-            status = cache->get_read_lock(hdr_filename, hdr_fd);
-            auto end = chrono::steady_clock::now();
-            if (chrono::duration_cast<chrono::seconds>(end - start).count() > 2) {
-                stringstream msg;
-                msg << "ERROR. Internal state error. The headers file: " << hdr_filename
-                    << " could not be opened for READING after waiting 2 seconds.";
-                BESDEBUG(MODULE, prolog << msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-        }
-        BESDEBUG(MODULE, prolog << " Got read lock on cache file, now loading headers" << endl);
-#if 0
-        if (!status) {
-            stringstream msg;
-            msg << "ERROR. Internal state error. The headers file: " << hdr_filename
-                << " could not be opened for READING.";
-            BESDEBUG(MODULE, prolog << msg.str() << endl);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-#endif
 
-        ifstream hdr_ifs(hdr_filename);
-        for (string line; getline(hdr_ifs, line);) {
-            (*d_response_headers).push_back(line);
-            BESDEBUG(MODULE, prolog << "header:   " << line << endl);
-        }
-
-        cache->unlock_and_close(hdr_filename);
-    }
-    catch (...) {
-        cache->unlock_and_close(hdr_filename);
-        throw;
-    }
-
-#if 0
-    std::ifstream hdr_ifs(hdr_filename.c_str());
-    if (!hdr_ifs.is_open()) {
-        stringstream msg;
-        msg << "ERROR. Internal state error. The headers file: " << hdr_filename << " could not be opened for reading.";
-        BESDEBUG(MODULE, prolog << msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-
-    BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
-    for (std::string line; std::getline(hdr_ifs, line);) {
+    ifstream hdr_ifs(hdr_filename);
+    for (string line; getline(hdr_ifs, line);) {
         (*d_response_headers).push_back(line);
-        BESDEBUG(MODULE, prolog << "header:   " << line << endl);
+        BESDEBUG(MODULE_2, prolog << "header:   " << line << endl);
     }
-#endif
 
     ingest_http_headers_and_type();
 } //end RemoteResource::load_hdrs_from_file()
@@ -672,8 +415,8 @@ void RemoteResource::writeResourceToFile(int fd) {
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
 
-        // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
-        // I think the headers are being cached. However, not by this function. This
+        // @TODO USE THE CACHED OBJECT TO GET THE CORRECT TYPE
+        // The headers are now being cached. However, not by this function. This
         // processes the headers and sets internal state based on their contents. jhrg 11/9/22
         ingest_http_headers_and_type();
     }
@@ -692,34 +435,34 @@ void RemoteResource::ingest_http_headers_and_type() {
     const string colon_space = ": ";
     for (size_t i = 0; i < this->d_response_headers->size(); i++) {
         string header = (*d_response_headers)[i];
-        BESDEBUG(MODULE, prolog << "Processing header " << header << endl);
+        BESDEBUG(MODULE_2, prolog << "Processing header " << header << endl);
         size_t colon_index = header.find(colon_space);
         if (colon_index == string::npos) {
-            BESDEBUG(MODULE, prolog << "Unable to locate the colon space \": \" delimiter in the header " <<
+            BESDEBUG(MODULE_2, prolog << "Unable to locate the colon space \": \" delimiter in the header " <<
                                     "string: '" << header << "' SKIPPING!" << endl);
         }
         else {
             string key = BESUtil::lowercase(header.substr(0, colon_index));
             string value = header.substr(colon_index + colon_space.size());
-            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+            BESDEBUG(MODULE_2, prolog << "key: " << key << " value: " << value << endl);
             (*d_http_response_headers)[key] = value;
         }
     }
-    BESDEBUG(MODULE, prolog << "Ingested " << d_http_response_headers->size() << " response headers." << endl);
+    BESDEBUG(MODULE_2, prolog << "Ingested " << d_http_response_headers->size() << " response headers." << endl);
 
     std::map<string, string>::iterator it;
     string type;
 
     // Try and figure out the file type first from the
     // Content-Disposition in the http header response.
-    BESDEBUG(MODULE, prolog << "Checking Content-Disposition headers for type information." << endl);
+    BESDEBUG(MODULE_2, prolog << "Checking Content-Disposition headers for type information." << endl);
     string content_disp_hdr;
     content_disp_hdr = get_http_response_header("content-disposition");
     if (!content_disp_hdr.empty()) {
         // Content disposition exists, grab the filename
         // attribute
         http::get_type_from_disposition(content_disp_hdr, type);
-        BESDEBUG(MODULE,
+        BESDEBUG(MODULE_2,
                  prolog << "Evaluated content-disposition '" << content_disp_hdr << "' matched type: \"" << type << "\""
                         << endl);
     }
@@ -728,20 +471,20 @@ void RemoteResource::ingest_http_headers_and_type() {
     // next, translate to the BES MODULE name. It's also possible
     // that even though Content-disposition was available, we could
     // not determine the type of the file.
-    BESDEBUG(MODULE, prolog << "Checking Content-Type headers for type information." << endl);
+    BESDEBUG(MODULE_2, prolog << "Checking Content-Type headers for type information." << endl);
     string content_type = get_http_response_header("content-type");
     if (type.empty() && !content_type.empty()) {
         http::get_type_from_content_type(content_type, type);
-        BESDEBUG(MODULE,
+        BESDEBUG(MODULE_2,
                  prolog << "Evaluated content-type '" << content_type << "' matched type \"" << type << "\"" << endl);
     }
 
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
-    BESDEBUG(MODULE, prolog << "Checking URL path for type information." << endl);
+    BESDEBUG(MODULE_2, prolog << "Checking URL path for type information." << endl);
     if (type.empty()) {
         http::get_type_from_url(d_remoteResourceUrl->str(), type);
-        BESDEBUG(MODULE,
+        BESDEBUG(MODULE_2,
                  prolog << "Evaluated url '" << d_remoteResourceUrl->str() << "' matched type: \"" << type << "\""
                         << endl);
     }
@@ -749,12 +492,12 @@ void RemoteResource::ingest_http_headers_and_type() {
     if (type.empty()) {
         string err = prolog + "Unable to determine the type of data"
                      + " returned from '" + d_remoteResourceUrl->str() + "'  Setting type to 'unknown'";
-        BESDEBUG(MODULE, err << endl);
+        BESDEBUG(MODULE_2, err << endl);
         type = "unknown";
         //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
     }
     d_type = type;
-    BESDEBUG(MODULE, prolog << "END (dataset type: " << d_type << ")" << endl);
+    BESDEBUG(MODULE_2, prolog << "END (dataset type: " << d_type << ")" << endl);
 }
 
 /**
@@ -882,87 +625,6 @@ vector <string> *RemoteResource::getResponseHeaders() {
     }
     return d_response_headers;
 }
-
-
-#if 0
-void RemoteResource::setType(const vector<string> *resp_hdrs) {
-
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-        string type = "";
-
-        // Try and figure out the file type first from the
-        // Content-Disposition in the http header response.
-        string disp;
-        string ctype;
-
-        if (resp_hdrs) {
-            vector<string>::const_iterator i = resp_hdrs->begin();
-            vector<string>::const_iterator e = resp_hdrs->end();
-            for (; i != e; i++) {
-                string hdr_line = (*i);
-
-                BESDEBUG(MODULE, prolog << "Evaluating header: " << hdr_line << endl);
-
-                hdr_line = BESUtil::lowercase(hdr_line);
-
-                string colon_space = ": ";
-                int index = hdr_line.find(colon_space);
-                string hdr_name = hdr_line.substr(0, index);
-                string hdr_value = hdr_line.substr(index + colon_space.size());
-
-                BESDEBUG(MODULE, prolog << "hdr_name: '" << hdr_name << "'   hdr_value: '" << hdr_value  << "' " << endl);
-
-                if (hdr_name.find("content-disposition") != string::npos) {
-                    // Content disposition exists
-                    BESDEBUG(MODULE, prolog << "Located content-disposition header." << endl);
-                    disp = hdr_value;
-                }
-                if (hdr_name.find("content-type") != string::npos) {
-                    BESDEBUG(MODULE, prolog << "Located content-type header." << endl);
-                    ctype = hdr_value;
-                }
-            }
-        }
-
-        if (!disp.empty()) {
-            // Content disposition exists, grab the filename
-            // attribute
-            HttpUtils::Get_type_from_disposition(disp, type);
-            BESDEBUG(MODULE,prolog << "Evaluated content-disposition '" << disp << "' matched type: \""  << type << "\"" << endl);
-        }
-
-        // still haven't figured out the type. Check the content-type
-        // next, translate to the BES MODULE name. It's also possible
-        // that even though Content-disposition was available, we could
-        // not determine the type of the file.
-        if (type.empty() && !ctype.empty()) {
-            HttpUtils::Get_type_from_content_type(ctype, type);
-            BESDEBUG(MODULE,prolog << "Evaluated content-type '" << ctype << "' matched type \"" << type << "\"" << endl);
-        }
-
-        // still haven't figured out the type. Now check the actual URL
-        // and see if we can't match the URL to a MODULE name
-        if (type.empty()) {
-            HttpUtils::Get_type_from_url(d_remoteResourceUrl, type);
-            BESDEBUG(MODULE,prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
-        }
-
-        // still couldn't figure it out, punt
-        if (type.empty()) {
-            string err = prolog + "Unable to determine the type of data"
-                         + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
-            BESDEBUG(MODULE, err << endl);
-            type = "unknown";
-            //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-        }
-
-        // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
-
-        d_type = type;
-    }
-#endif
-
 
 } //  namespace http
 

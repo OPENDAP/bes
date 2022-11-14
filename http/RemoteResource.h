@@ -34,11 +34,6 @@
 #include <string>
 #include <vector>
 
-#if 0
-#include <libdap/InternalErr.h>
-#include <libdap/RCReader.h>
-#endif
-
 #include "url_impl.h"
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
@@ -87,15 +82,6 @@ private:
     /// The interval before a cache resource needs to be refreshed
     long long d_expires_interval;
 
-#if 0
-    // FIXME Not impl. jhrg 8/7/20
-    /**
-     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
-     * basename in the resource URL to the data handlers TypeMatch.
-     */
-    void setType(const std::vector<std::string> *resp_hdrs);
-#endif
-
     /**
      * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
      * the file descriptor.
@@ -136,7 +122,7 @@ private:
      *
      * @param content_filters
      */
-    void update_file_and_headers(const std::map<std::string, std::string> &content_filters, HttpCache *cache);
+    void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
 
     /**
      * finds the header file of a previously specified file and retrieves the related headers file

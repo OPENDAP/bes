@@ -5,6 +5,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <fstream>
 #include <string>
 
 #include "TheBESKeys.h"
@@ -21,7 +22,7 @@ using namespace http;
  * No error checking to speak of.
  * @param argc
  * @param argv
- * @return 0 if things work, 10 if some sort of BESError is caught, else EXIT_FAILURE (1?)
+ * @return 0 if things work, 10 if some sort of BESError is caught, else EXIT_FAILURE
  */
 int main(int argc, char *argv[])
 {
@@ -38,6 +39,15 @@ int main(int argc, char *argv[])
         unique_ptr<RemoteResource> rr(new RemoteResource(url));
 
         rr->retrieveResource();
+
+        string name = rr->getCacheFileName();
+
+        ifstream rr_cache_file = ifstream(name);
+        while (rr_cache_file) {
+            string line;
+            getline(rr_cache_file, line);
+            cout << line << endl;
+        }
     }
     catch (const BESError &e) {
         cerr << "BES Exception: " << e.get_verbose_message() << endl;
@@ -45,7 +55,7 @@ int main(int argc, char *argv[])
     }
     catch (const std::exception &e) {
         cerr << "STD Exception: " << e.what() << endl;
-        return EXIT_FAILURE;
+        return EXIT_FAILURE + 11;
     }
     catch (...) {
         cerr << "Unknown exception" << endl;
