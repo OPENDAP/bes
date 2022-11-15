@@ -295,6 +295,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
     try {
+#if 0
         if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
             BESDEBUG(MODULE,
                      prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
@@ -314,6 +315,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             return;
         }
         else {
+#endif
             // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
             // content into a local cache file, given that it's not in the cache.
             // First make an empty file and get an exclusive lock on it.
@@ -327,13 +329,16 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                 load_hdrs_from_file();
             }
             d_initialized = true;
+#if 0
             return;
-        }
+
+    }
 
         stringstream msg;
         msg << prolog + "Failed to acquire cache read lock for remote resource: '";
         msg << d_remoteResourceUrl->str() << endl;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
+#endif
 
     }
     catch (BESError &besError) {
