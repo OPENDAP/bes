@@ -372,8 +372,6 @@ dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
-AC_MSG_CHECKING([on libdap])
-AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
 
 AC_MSG_CHECKING([on libdap])
 AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
@@ -389,7 +387,7 @@ AC_ARG_WITH(libwrap,
         [
             AC_MSG_RESULT(yes)
             AC_CHECK_LIB(wrap, request_init, [LIBS="-lwrap $LIBS" AC_DEFINE([HAVE_LIBWRAP], [1], [Description])],
-                [AC_MSG_ERROR(Could not find libwrap library. You have to install tcp-wrappers before using --with-libwrap.)])
+                [AC_MSG_ERROR(Could not find libwrap library. You have to insall tcp-wrappers before using --with-libwrap.)])
         ],
         [AC_MSG_RESULT(no)])],  dnl The default case (!= yes) is no.
     [AC_MSG_RESULT(no)])
@@ -981,6 +979,8 @@ AC_CONFIG_FILES([Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
+		 http/tests/Makefile
+		 http/tests/atlocal
 
 		 docs/Makefile
 		 
@@ -1016,7 +1016,7 @@ AC_CONFIG_FILES([Makefile
 		 ])
 
 dnl These need to be moved into the AC_CONFIG_FILES above 
-dnl when geo-functions is reenabled.
+dnl when geo-functions is re-enabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
@@ -1032,6 +1032,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
+AC_CONFIG_TESTDIR(http/tests, [remote_resource_tester])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])

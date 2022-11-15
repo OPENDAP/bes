@@ -2,31 +2,55 @@
 
 AT_INIT([bes/http/tests testsuite])
 
-m4_include([modules/handler_tests_macros.m4])
+dnl m4_include([modules/handler_tests_macros.m4])
 
-# Test setting the NGAP Container - these tests don't include a <get> directive.
-# Only the container is set. jhrg 3/11/20
-#AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
+# Start out with these test macros defined here, then migrate to the common file
 
-# Utilizing GHRC_CLOUD/ACES_CONTINUOUS_DATA_V1 to get netcdf files
-##AT_BESCMD_RESPONSE_TEST([ngap/amsua15_2020.028_12915_1139_1324_WI.nc.dds.bescmd])
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dds.bescmd])
-##AT_BESCMD_RESPONSE_TEST([ngap/olslit77.nov_analog.hdf.dds.bescmd])
+# run the same command in parallel - two processes
+m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
 
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.das.bescmd])
-##AT_BESCMD_BINARYDATA_RESPONSE_TEST([ngap/aces1cont.nc.nc.dods.bescmd])
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.nc.dmr.bescmd])
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd])
 
-##AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/aces1cont.nc.nc.dap.bescmd])
+    dnl input is a URL
+    input=$1
+    bes_conf=$abs_builddir/bes.conf
 
-# Utilizing dapreader to read returned and cached DAP2 responses.
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dods.das.bescmd])
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dods.dds.bescmd])
-##AT_BESCMD_BINARYDATA_RESPONSE_TEST([ngap/aces1cont.nc.dods.dods.bescmd])
+    # AT_XFAIL_IF is always run first regardless where it appears. jhrg 5/27/22
+    AT_XFAIL_IF([test z$2 = zxfail])
 
+    AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input d1 or d2&"])
 
-# Utilizing dapreader to read returned and cached DAP4 responses.
-##AT_BESCMD_RESPONSE_TEST([ngap/aces1cont.nc.dap.dmr.bescmd])
-##AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap/aces1cont.nc.dap.dap.bescmd])
+    dnl Clean up the cache
+    rm -rf $abs_builddir/cache
 
+    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d1-$$ > $abs_builddir/tmp1-$$ &
+    p1=$!
+    AS_IF([test -z "$at_verbose"], [echo "Started 1: $p1"])
 
+    $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d2-$$ > $abs_builddir/tmp2-$$ &
+    p2=$!
+    AS_IF([test -z "$at_verbose"], [echo "Started 2: $p2"])
+
+    wait $p1
+    s1=$?
+    wait $p2
+    s2=$?
+
+    dnl  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
+    AT_CHECK([test $s1 -eq 0])
+    AT_CHECK([test $s2 -eq 0])
+
+    AT_CLEANUP
+])
+
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])
+AT_BESCMD_PARALLEL_TEST([http://test.opendap.org/uat_tester_eval_files/chunked_oneD.h5])

@@ -1,18 +1,23 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
-# AM_CPPFLAGS =
-AM_CXXFLAGS =
+bin_PROGRAMS = remote_resource_tester
+
+remote_resource_tester_SOURCES = remote_resource_tester.cc
+remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
+remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 BES_CONF_IN = bes.conf.in
 
-#noinst_DATA = bes.conf
+noinst_DATA = bes.conf
 
-#CLEANFILES = bes.conf
+CLEANFILES = bes.conf
 
-EXTRA_DIST = http $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES =  atconfig
 
@@ -40,7 +45,7 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
