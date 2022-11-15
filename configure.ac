@@ -989,6 +989,8 @@ AC_CONFIG_FILES([Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
+		 http/tests/Makefile
+		 http/tests/atlocal
 
 		 docs/Makefile
 		 
@@ -1024,7 +1026,7 @@ AC_CONFIG_FILES([Makefile
 		 ])
 
 dnl These need to be moved into the AC_CONFIG_FILES above 
-dnl when geo-functions is reenabled.
+dnl when geo-functions is re-enabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
@@ -1040,6 +1042,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
+AC_CONFIG_TESTDIR(http/tests, [remote_resource_tester])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
