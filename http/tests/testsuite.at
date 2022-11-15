@@ -37,15 +37,9 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     wait $p2
     s2=$?
 
-    #  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
-    trial1=fail
-    trial2=fail
-    AT_CHECK([test $s1 -eq 0], [0], [], [], [tria1l=fail], [trial1=pass])
-    AT_CHECK([test $s2 -eq 0], [0], [], [], [trial2=fail], [trial2=pass])
-
-    AS_IF([test $trial1 = pass -a $trial2 = pass], [echo "Pass, $abs_builddir/d1-$$"; rm -f $abs_builddir/d1-$$ $abs_builddir/d2-$$], [echo "Fail"])
-
-    rm -f $abs_builddir/tmp1-$$ $abs_builddir/tmp2-$$
+    dnl  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
+    AT_CHECK([test $s1 -eq 0])
+    AT_CHECK([test $s2 -eq 0])
 
     AT_CLEANUP
 ])
