@@ -52,7 +52,7 @@ namespace http {
  * for rapid (subsequent) access. It can be configured to use a proxy server
  * for the outgoing requests.
  */
-class RemoteResource {
+    class RemoteResource {
     private:
         friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
@@ -87,12 +87,12 @@ class RemoteResource {
         long long d_expires_interval;
 
 #if 0
-        // FIXME Not impl. jhrg 8/7/20
-        /**
-         * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
-         * basename in the resource URL to the data handlers TypeMatch.
-         */
-        void setType(const std::vector<std::string> *resp_hdrs);
+    // FIXME Not impl. jhrg 8/7/20
+    /**
+     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
+     * basename in the resource URL to the data handlers TypeMatch.
+     */
+    void setType(const std::vector<std::string> *resp_hdrs);
 #endif
         /**
          * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
@@ -190,6 +190,7 @@ class RemoteResource {
         rapidjson::Document get_as_json();
 
     };
+
 
 } /* namespace http */
 

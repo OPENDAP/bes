@@ -455,8 +455,8 @@ void CredentialsManager::load_ngap_s3_credentials() {
     }
     else {
         BESDEBUG(HTTP_MODULE, prolog << "WARNING: The BES configuration did not contain an instance of "
-                                    << NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY
-                                    << " NGAP S3 Credentials NOT loaded." << endl);
+                                     << NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY
+                                     << " NGAP S3 Credentials NOT loaded." << endl);
     }
 }
 
