@@ -34,11 +34,6 @@
 #include <string>
 #include <vector>
 
-#if 0
-#include <libdap/InternalErr.h>
-#include <libdap/RCReader.h>
-#endif
-
 #include "url_impl.h"
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
@@ -87,15 +82,6 @@ private:
     /// The interval before a cache resource needs to be refreshed
     long long d_expires_interval;
 
-#if 0
-    // FIXME Not impl. jhrg 8/7/20
-    /**
-     * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
-     * basename in the resource URL to the data handlers TypeMatch.
-     */
-    void setType(const std::vector<std::string> *resp_hdrs);
-#endif
-
     /**
      * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
      * the file descriptor.
@@ -125,26 +111,6 @@ private:
      *
      */
     bool cached_resource_is_expired() const;
-
-#if 0
-
-    /**
-     * method for calling update_file_and_header(map<string,string>) with a black map
-     */
-    void update_file_and_headers();
-
-    /**
-     * updates the file in the cache and the related headers file
-     *
-     * @param content_filters
-     */
-    void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
-
-    /**
-     * finds the header file of a previously specified file and retrieves the related headers file
-     */
-    void load_hdrs_from_file();
-#endif
 
 protected:
     RemoteResource() :
@@ -179,26 +145,12 @@ public:
      */
     std::string getCacheFileName();
 
-#if 0
-
-    std::string get_http_response_header(const std::string header_name);
-
-
-    /**
-     * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
-     */
-    std::vector<std::string> *getResponseHeaders();
-
-#endif
-
-
     /**
      * Returns cache file content in a string..
      */
     std::string get_response_as_string();
 
     rapidjson::Document get_as_json();
-
 };
 
 } /* namespace http */
