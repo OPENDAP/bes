@@ -24,6 +24,9 @@ dnl Broken. Fix these by implementing DmrppStr. jhrg 4/25/18
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.dap], xpass)
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.dods], xpass)
 
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.das])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.ddx])
+
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dds])
@@ -38,6 +41,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dods])
+
 
 dnl Check netCDF's var name = dimension name handling
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_var_dim_name_same.h5.dap])

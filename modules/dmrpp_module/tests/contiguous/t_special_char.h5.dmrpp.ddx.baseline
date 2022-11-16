@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="t_special_char_attr.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Attribute name="special_char_attr" type="String">
+        <value>~`!@#%^&amp;*()-_+={}[]|\:;&quot;'?,&lt;&gt;/\013
+&#13;	</value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <value>3.20.13</value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <value>3.20.13</value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <value>libdap-3.20.11</value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <value>/Users/myang6/work/opendap/hyrax-732/bes/modules/dmrpp_module/.libs/build_dmrpp -f t_special_char_attr.h5 -r t_special_char_attr.h5.dmr.bescmd.baseline -M</value>
+        </Attribute>
+    </Attribute>
+    <blob href="cid:"/>
+</Dataset>
