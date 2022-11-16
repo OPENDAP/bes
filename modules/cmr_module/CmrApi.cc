@@ -608,8 +608,8 @@ Provider CmrApi::get_provider(const std::string &provider_id)
 
     json cmr_doc = ju.get_as_json(cmr_query_url);
 
-    // We know that this CMR query returns an anonymous json objects, which
-    // contains a single provider object (really...)
+    // We know that this CMR query returns a single anonymous json object, which
+    // in turn contains a single provider object (really...)
 
     // Grab the internal provider object...
     auto provider_json = cmr_doc[CMR_PROVIDER_KEY];
