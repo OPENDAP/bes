@@ -317,6 +317,8 @@ public:
      * makes a temp file and sets the expire time to 1 second,
      * then checks if the file is updated after it is allowed to expired
      */
+#if 0
+
     void update_file_and_headers_test(){
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -368,6 +370,8 @@ public:
         }
         if(debug) cerr << prolog << "END" << endl;
     }
+
+#endif
 
     /**
      *
@@ -687,8 +691,9 @@ public:
 
 #if 0
         CPPUNIT_TEST(load_hdrs_from_file_test);
-#endif
     CPPUNIT_TEST(update_file_and_headers_test);
+#endif
+
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(filter_test_more_focus);

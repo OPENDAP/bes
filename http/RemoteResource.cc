@@ -321,13 +321,20 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
-                // TODO Rename this to write_file, or just do the write operation here... jhrg 11/16/22
+                writeResourceToFile(d_fd);
+#if 0
                 update_file_and_headers(content_filters);
+#endif
+                filter_retrieved_resource(content_filters);
+                ingest_http_headers_and_type();     // TODO Rename if we keep the change jhrg 11/16/22
             }
             else {
                 BESDEBUG(MODULE, prolog << " EXISTS - CHECKING EXPIRY " << endl);
                 cache->get_read_lock(d_resourceCacheFileName, d_fd);
+                ingest_http_headers_and_type();     // TODO Rename if we keep the change jhrg 11/16/22
+#if 0
                 load_hdrs_from_file();
+#endif
             }
             d_initialized = true;
 #if 0
@@ -364,18 +371,25 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
 /**
  * method for calling update_file_and_header(map<string,string>) with a black map
  */
+#if 0
+
 void RemoteResource::update_file_and_headers() {
     std::map<std::string, std::string> content_filters;
     update_file_and_headers(content_filters);
 }
+
+#endif
 
 /**
  * updates the file in the cache and the related headers file
  *
  * @param content_filters
  */
+#if 0
+
 void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters) {
 
+#if 0
     // Get a pointer to the singleton cache instance for this process.
     HttpCache *cache = HttpCache::get_instance();
     if (!cache) {
@@ -386,6 +400,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         BESDEBUG(MODULE, oss.str());
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
+#endif
 
     // Write the remote resource to the cache file.
     try {
@@ -401,6 +416,7 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
     // Filter the response file - If content_filters map is empty then nothing is done.
     filter_retrieved_resource(content_filters);
 
+#if 0
     // Write the headers to the appropriate cache file.
     string hdr_filename = d_resourceCacheFileName + ".hdrs";
     std::ofstream hdr_out(hdr_filename.c_str());
@@ -435,14 +451,20 @@ void RemoteResource::update_file_and_headers(const std::map<std::string, std::st
         cache->update_and_purge(d_resourceCacheFileName);
         BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
     }
+#endif
     BESDEBUG(MODULE, prolog << "END" << endl);
 
+#if 0
     return;
+#endif
 } //end RemoteResource::update_file_and_headers()
+#endif
 
 /**
  * finds the header file of a previously specified file and retrieves the related headers file
  */
+#if 0
+
 void RemoteResource::load_hdrs_from_file() {
     string hdr_filename = d_resourceCacheFileName + ".hdrs";
     std::ifstream hdr_ifs(hdr_filename.c_str());
@@ -461,6 +483,7 @@ void RemoteResource::load_hdrs_from_file() {
     }
     ingest_http_headers_and_type();
 } //end RemoteResource::load_hdrs_from_file()
+#endif
 
 /**
  * Checks if a cache resource is older than an hour
@@ -542,7 +565,7 @@ void RemoteResource::writeResourceToFile(int fd) {
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
 
-        // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
+        // FIXME Rename this so it's not misleading if we keep the current changes jhrg 11/16/22
         ingest_http_headers_and_type();
     }
     catch (BESError &e) {
