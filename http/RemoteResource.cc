@@ -321,19 +321,23 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
+                // TODO Rename this to write_file, or just do the write operation here... jhrg 11/16/22
                 update_file_and_headers(content_filters);
             }
             else {
-                BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
+                BESDEBUG(MODULE, prolog << " EXISTS - CHECKING EXPIRY " << endl);
                 cache->get_read_lock(d_resourceCacheFileName, d_fd);
                 load_hdrs_from_file();
             }
             d_initialized = true;
 #if 0
             return;
-
+#endif
+#if 0
     }
+#endif
 
+#if 0
         stringstream msg;
         msg << prolog + "Failed to acquire cache read lock for remote resource: '";
         msg << d_remoteResourceUrl->str() << endl;
@@ -465,7 +469,7 @@ void RemoteResource::load_hdrs_from_file() {
  * @param uid
  * @return true if the resource is over an hour old
  */
-bool RemoteResource::cached_resource_is_expired() {
+bool RemoteResource::cached_resource_is_expired() const {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     struct stat statbuf;
@@ -553,6 +557,7 @@ void RemoteResource::writeResourceToFile(int fd) {
 void RemoteResource::ingest_http_headers_and_type() {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
+#if 0
     const string colon_space = ": ";
     for (size_t i = 0; i < this->d_response_headers->size(); i++) {
         string header = (*d_response_headers)[i];
@@ -572,8 +577,10 @@ void RemoteResource::ingest_http_headers_and_type() {
     BESDEBUG(MODULE, prolog << "Ingested " << d_http_response_headers->size() << " response headers." << endl);
 
     std::map<string, string>::iterator it;
+#endif
     string type;
 
+#if 0
     // Try and figure out the file type first from the
     // Content-Disposition in the http header response.
     BESDEBUG(MODULE, prolog << "Checking Content-Disposition headers for type information." << endl);
@@ -599,6 +606,7 @@ void RemoteResource::ingest_http_headers_and_type() {
         BESDEBUG(MODULE,
                  prolog << "Evaluated content-type '" << content_type << "' matched type \"" << type << "\"" << endl);
     }
+#endif
 
     // still haven't figured out the type. Now check the actual URL
     // and see if we can't match the URL to a MODULE name
@@ -621,6 +629,8 @@ void RemoteResource::ingest_http_headers_and_type() {
     BESDEBUG(MODULE, prolog << "END (dataset type: " << d_type << ")" << endl);
 }
 
+#if 0
+
 /**
  * Returns the value of the requested HTTP response header.
  * Evaluation is case-insensitive.
@@ -635,6 +645,8 @@ RemoteResource::get_http_response_header(const std::string header_name) {
         value = it->second;
     return value;
 }
+
+#endif
 
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
@@ -737,6 +749,8 @@ rapidjson::Document RemoteResource::get_as_json() {
     return d;
 }
 
+#if 0
+
 /**
  * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
  */
@@ -746,6 +760,8 @@ vector <string> *RemoteResource::getResponseHeaders() {
     }
     return d_response_headers;
 }
+
+#endif
 
 
 #if 0
