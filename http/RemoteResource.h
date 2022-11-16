@@ -124,7 +124,7 @@ private:
      * Checks if a cache resource is older than an hour
      *
      */
-    bool cached_resource_is_expired();
+    bool cached_resource_is_expired() const;
 
     /**
      * method for calling update_file_and_header(map<string,string>) with a black map
@@ -176,6 +176,8 @@ public:
      */
     std::string getCacheFileName();
 
+#if 0
+
     std::string get_http_response_header(const std::string header_name);
 
 
@@ -183,6 +185,8 @@ public:
      * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
      */
     std::vector<std::string> *getResponseHeaders();
+
+#endif
 
 
     /**

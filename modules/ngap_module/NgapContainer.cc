@@ -254,6 +254,7 @@ void NgapContainer::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->getCacheFileName()
              << endl;
         strm << BESIndent::LMarg << "response headers: ";
+#ifdef RR_HEADERS   // jhrg 11/16/22
         vector<string> *hdrs = d_dmrpp_rresource->getResponseHeaders();
         if (hdrs) {
             strm << endl;
@@ -268,6 +269,7 @@ void NgapContainer::dump(ostream &strm) const {
         } else {
             strm << "none" << endl;
         }
+#endif
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }

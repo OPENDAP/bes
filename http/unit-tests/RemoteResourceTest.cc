@@ -259,6 +259,8 @@ public:
      * tests the load_hdrs_from_file function
      * checks if the headers fields inside a *.hdrs file are correct
      */
+#if 0
+
     void load_hdrs_from_file_test(){
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -307,6 +309,8 @@ public:
         }
         if(debug) cerr << prolog << "END" << endl;
     }
+
+#endif
 
     /**
      * tests the update_file_and_headers() function
@@ -378,11 +382,13 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
+#if 0
             vector<string> *hdrs = rhr.getResponseHeaders();
 
             for(size_t i=0; i<hdrs->size() && debug ; i++){
                 cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
+#endif
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string expected_content("This is a test. If this was not a test you would have known the answer.\n");
@@ -414,10 +420,12 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
+#if 0
             vector<string> *hdrs = rhr.getResponseHeaders();
             for(size_t i=0; i<hdrs->size() && debug ; i++){
                 cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
+#endif
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             //string expected_content("This is a test. If this was not a test you would have known the answer.\n");
@@ -455,10 +463,12 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
+#if 0
             vector<string> *hdrs = rhr.getResponseHeaders();
             for(size_t i=0; i<hdrs->size() && debug ; i++){
                 cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
+#endif
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string content = get_file_as_string(cache_filename);
@@ -486,11 +496,13 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
+#if 0
             vector<string> *hdrs = rhr.getResponseHeaders();
 
             for(size_t i=0; i<hdrs->size() && debug ; i++){
                 cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
+#endif
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
 
@@ -673,7 +685,9 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
-    CPPUNIT_TEST(load_hdrs_from_file_test);
+#if 0
+        CPPUNIT_TEST(load_hdrs_from_file_test);
+#endif
     CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);

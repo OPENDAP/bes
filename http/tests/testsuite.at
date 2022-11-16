@@ -34,12 +34,17 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
 
     wait $p1
     s1=$?
+    AS_IF([test -z "$at_verbose"], [echo "Caught $p1: $s1"])
     wait $p2
     s2=$?
+    AS_IF([test -z "$at_verbose"], [echo "Caught $p2: $s2"])
 
     dnl  AT_CHECK (commands, [status = ‘0’], [stdout], [stderr], [run-if-fail], [run-if-pass])
     AT_CHECK([test $s1 -eq 0])
     AT_CHECK([test $s2 -eq 0])
+
+    dnl cleanup
+    rm -f d1-* d2-* tmp1-* tmp2-*
 
     AT_CLEANUP
 ])
