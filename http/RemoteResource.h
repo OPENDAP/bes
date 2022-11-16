@@ -126,6 +126,8 @@ private:
      */
     bool cached_resource_is_expired() const;
 
+#if 0
+
     /**
      * method for calling update_file_and_header(map<string,string>) with a black map
      */
@@ -142,6 +144,7 @@ private:
      * finds the header file of a previously specified file and retrieves the related headers file
      */
     void load_hdrs_from_file();
+#endif
 
 protected:
     RemoteResource() :
