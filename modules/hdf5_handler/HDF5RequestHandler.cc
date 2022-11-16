@@ -69,6 +69,7 @@
 #include <BESUtil.h>
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
+#include <BESSyntaxUserError.h>
 #include <TheBESKeys.h>
 #include <BESDebug.h>
 #include <BESStopWatch.h>
@@ -916,6 +917,15 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
+    catch(BESSyntaxUserError & e) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+        throw BESSyntaxUserError(e.get_message(), e.get_file(), e.get_line());
+    }
     catch(...) {
 
         if(cf_fileid !=-1)
@@ -1210,6 +1220,10 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
+    }
+    catch(BESSyntaxUserError & e) {
+
+        throw BESSyntaxUserError(e.get_message(), e.get_file(), e.get_line());
     }
     catch(...) {
 
