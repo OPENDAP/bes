@@ -4148,11 +4148,15 @@ void AddHDFAttr(DAS & das, const string & varname,
                 hdfeos_delete_buffer(buf);
             }
             else {
+                // Special characters are handled in libdap4. So the following code block is commented out. KY 2022-11-16
+#if 0
                 if (attrtype == "String")
 #ifdef ATTR_STRING_QUOTE_FIX
                     attv[j] = escattr(attv[j]);
+                     
 #else
                 attv[j] = "\"" + escattr(attv[j]) + "\"";
+#endif
 #endif
 
                 if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
@@ -4182,10 +4186,14 @@ void AddHDFAttr(DAS & das, const string & varname,
     // add the annotations to the DAS
     string an;
     for (int i = 0; i < (int) anv.size(); ++i) {        // for each annotation
+        // Special characters are handled in libdap4. So the following code block is commented out. KY 2022-11-16
+        an = anv[i];
+#if 0
 #ifdef ATTR_STRING_QUOTE_FIX
         an = escattr(anv[i]);     // quote strings
 #else
         an = "\"" + escattr(anv[i]) + "\"";     // quote strings
+#endif
 #endif
         if (atp->append_attr(string("HDF_ANNOT"), "String", an) == 0)
             THROW(dhdferr_addattr);
