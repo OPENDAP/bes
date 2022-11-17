@@ -5,7 +5,9 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-bin_PROGRAMS = remote_resource_tester
+# TODO Remove this if not needed and noist_... works. jhrg 11/16/22
+# bin_PROGRAMS = remote_resource_tester
+noinst_PROGRAMS = remote_resource_tester
 
 remote_resource_tester_SOURCES = remote_resource_tester.cc
 remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
