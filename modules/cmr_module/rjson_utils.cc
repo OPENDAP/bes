@@ -59,12 +59,14 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     shared_ptr<http::url> target_url(new http::url(url));
     http::RemoteResource rhr(target_url);
     rhr.retrieveResource();
+#ifdef RR_HEADERS   // jhrg 11/16/22
     if(BESDebug::IsSet(MODULE)){
         string cmr_hits = rhr.get_http_response_header("cmr-hits");
         stringstream msg(prolog);
         msg << "CMR-Hits: "<< cmr_hits << endl;
         *(BESDebug::GetStrm()) << msg.str();
     }
+#endif
     FILE* fp = fopen(rhr.getCacheFileName().c_str(), "r"); // non-Windows use "r"
     char readBuffer[65536];
     rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
