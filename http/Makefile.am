@@ -22,7 +22,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests #tests
+SUBDIRS = . unit-tests tests
 
 noinst_LTLIBRARIES = libbes_http.la
 
