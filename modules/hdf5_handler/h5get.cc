@@ -2557,7 +2557,7 @@ string invalid_type_error_msg(
 ){
     stringstream msg;
 
-    msg << "Your request was for a (DAP2 data model response). ";
+    msg << "Your request was for a response that uses the DAP2 data model. ";
     msg << "This dataset contains variables whose data type ( "<< var_type << " ) is not compatible with that data model, causing this request to FAIL. ";
     msg << "You may try constraining your request to elide the problematic data type or ask for a different encoding such as NetCDF4 or DAP4 binary response encodings.";
 
