@@ -22,7 +22,8 @@ m4_define([AT_BESCMD_PARALLEL_TEST], [dnl
     AS_IF([test -z "$at_verbose"], [echo "COMMANDS: remote_resource_tester $bes_conf $input d1 or d2&"])
 
     dnl Clean up the cache
-    rm -rf $abs_builddir/cache
+    dnl This can lead to "No such file or directory" because cache does not exist. jhrg 11/16/22
+    dnl rm -rf $abs_builddir/cache
 
     $abs_builddir/remote_resource_tester $bes_conf $input $abs_builddir/d1-$$ > $abs_builddir/tmp1-$$ &
     p1=$!

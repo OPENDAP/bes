@@ -5,7 +5,9 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-bin_PROGRAMS = remote_resource_tester
+# TODO Remove this if not needed and noist_... works. jhrg 11/16/22
+# bin_PROGRAMS = remote_resource_tester
+noinst_PROGRAMS = remote_resource_tester
 
 remote_resource_tester_SOURCES = remote_resource_tester.cc
 remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
@@ -37,8 +39,9 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+	-rm -rf $(abs_builddir)/cache/*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-	-rm -f d1-* d2-* tmp1-* tmp2-*
+	-rm -f d1-* d2-* tmp1-* tmp2-* $(abs_builddir)/cache/*
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean

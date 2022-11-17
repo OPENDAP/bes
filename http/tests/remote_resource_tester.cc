@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
         string name = rr->getCacheFileName();
 
-        ifstream rr_cache_file = ifstream(name);
+        ifstream rr_cache_file(name);
         while (rr_cache_file) {
             string line;
             getline(rr_cache_file, line);
