@@ -1213,10 +1213,6 @@ BaseType *Get_bt(const string &vname,
                         err_msg = invalid_type_error_msg("UInt64");
 
                     throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
-                    /*throw
-                    InternalErr(__FILE__, __LINE__,
-                                string("Unsupported HDF5 64-bit Integer type:")
-                                + vname);*/
                 }
             }
         }
@@ -2559,48 +2555,11 @@ string handle_string_special_characters_in_path(const string &instr) {
 string invalid_type_error_msg(
         string var_type
 ){
-
     stringstream msg;
 
     msg << "Your request was for a (DAP2 data model response). ";
     msg << "This dataset contains variables whose data type ( "<< var_type << " ) is not compatible with that data model, causing this request to FAIL. ";
-    msg << "You may try constraining your request to elide the problematic data type or ask for a different encoding such as DAP4 binary.";
-/*
-    msg << "Your request was for a (DAP"<< dap_version << " data model response) to be encoded as ";
-    msg << return_encoding << ". ";
-    msg << "The response to your specific request will produce a " << dap2_response_size_kb;
-    msg <<  " kilobyte response. On this server the response size for your request is limited to ";
-    msg << contextual_max_response_size_kb << " kilobytes. ";
+    msg << "You may try constraining your request to elide the problematic data type or ask for a different encoding such as NetCDF4 or DAP4 binary response encodings.";
 
-    msg << "The server is configured to allow ";
-    auto conf_max_request_size_kb =FONcRequestHandler::get_request_max_size_kb();
-    if(conf_max_request_size_kb==0){
-        msg << " responses of unlimited size. ";
-    }
-    else {
-        msg << "responses as large as: " << conf_max_request_size_kb <<" kilobytes. ";
-    }
-
-    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF3) {
-        msg << "Additionally, the requested response encoding " << return_encoding << " is structurally limited to ";
-        if (FONcRequestHandler::nc3_classic_format) {
-            msg << TWO_GB_IN_KB << " kilobytes" << MSG_LABEL_CLASSIC_MODEL << ".";
-        }
-        else {
-            msg << FOUR_GB_IN_KB << " kilobytes" << MSG_LABEL_SIXTYFOUR_BIT_MODEL << ".";
-        }
-        msg << "One thing to try would be to reissue the the request, but change the requested response encoding ";
-        msg << "to NetCDF-4. This can be accomplished with the buttons in the Data Request Form, or by modifying ";
-        msg << "the request URL by changing the terminal path suffix from \".nc\" to \".nc4\".  ";
-    }
-
-    if(ce.empty()){
-        msg << "I've noticed that no constraint expression accompanied your request. ";
-    } else {
-        msg << "Your request employed the constraint expression: \"" << ce << "\" ";
-    }
-    msg << "You may also reduce the size of the request by choosing just the variable(s) you need and/or by ";
-    msg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
-*/
     return msg.str();
 }
