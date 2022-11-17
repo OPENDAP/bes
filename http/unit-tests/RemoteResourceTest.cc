@@ -256,116 +256,6 @@ public:
 /* TESTS BEGIN */
 
     /**
-     * tests the load_hdrs_from_file function
-     * checks if the headers fields inside a *.hdrs file are correct
-     */
-    void load_hdrs_from_file_test(){
-        if(debug) cerr << "|--------------------------------------------------|" << endl;
-        if(debug) cerr << prolog << "BEGIN" << endl;
-
-        string url = FILE_PROTOCOL;
-        url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
-        if(debug) cerr << prolog << "url: " << url << endl;
-        shared_ptr<http::url> url_ptr(new http::url(url));
-        RemoteResource rhr(url_ptr);
-        if(debug) cerr << prolog << "rhr created" << endl;
-        try {
-            rhr.load_hdrs_from_file();
-            if(debug) cerr << prolog << "loaded hdrs from file" << endl;
-
-            string expected_header_1 = "This ...";
-            string expected_header_2 = "Is ...";
-            string expected_header_3 = "A ...";
-            string expected_header_4 = "TEST";
-
-            string header_1 = rhr.get_http_response_header("Header_1");
-            if(debug) cerr << prolog << " Expected Header: '" << expected_header_1 << "'" << endl;
-            if(debug) cerr << prolog << "Retrieved Header: '" << header_1  << "'"<< endl;
-            CPPUNIT_ASSERT(header_1 == expected_header_1);
-
-            string header_2 = rhr.get_http_response_header("Header_2");
-            if(debug) cerr << prolog << " Expected Header: '" << expected_header_2  << "'"<< endl;
-            if(debug) cerr << prolog << "Retrieved Header: '" << header_2  << "'"<< endl;
-            CPPUNIT_ASSERT(  header_2 == expected_header_2);
-
-            string header_3 = rhr.get_http_response_header("Header_3");
-            if(debug) cerr << prolog << " Expected Header: '" << expected_header_3   << "'"<< endl;
-            if(debug) cerr << prolog << "Retrieved Header: '" << header_3  << "'"<< endl;
-            CPPUNIT_ASSERT(  header_3 == expected_header_3);
-
-            string header_4 = rhr.get_http_response_header("Header_4");
-            if(debug) cerr << prolog << " Expected Header: '" << expected_header_4  << "'"<< endl;
-            if(debug) cerr << prolog << "Retrieved Header: '" << header_4  << "'"<< endl;
-            CPPUNIT_ASSERT( header_4 == expected_header_4);
-
-        }
-        catch (BESError &besE){
-            stringstream msg;
-            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
-        }
-        if(debug) cerr << prolog << "END" << endl;
-    }
-
-    /**
-     * tests the update_file_and_headers() function
-     * makes a temp file and sets the expire time to 1 second,
-     * then checks if the file is updated after it is allowed to expired
-     */
-    void update_file_and_headers_test(){
-        if(debug) cerr << "|--------------------------------------------------|" << endl;
-        if(debug) cerr << prolog << "BEGIN" << endl;
-
-        try {
-            std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
-            RemoteResource rhr(target_url, "foobar");
-            if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
-
-            rhr.d_resourceCacheFileName = d_temp_file;
-            if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
-
-            string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
-            rhr.d_remoteResourceUrl = shared_ptr<http::url>(new http::url(source_url));
-            if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
-
-            // Get a pointer to the singleton cache instance for this process.
-            HttpCache *cache = HttpCache::get_instance();
-            if (!cache) {
-                ostringstream oss;
-                oss << prolog << "FAILED to get local cache. ";
-                oss << "Unable to proceed with request for " << d_temp_file;
-                oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-                CPPUNIT_FAIL(oss.str());
-            }
-            if(!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)){
-                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+d_temp_file);
-            }
-            rhr.d_initialized = true;
-
-            rhr.update_file_and_headers();
-
-            if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
-
-            string cache_filename = rhr.getCacheFileName();
-            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
-            string expected_content("This an updating file and headers TEST. Move Along...");
-            if(debug) cerr << prolog << "expected_content: " << expected_content << endl;
-            string content = get_file_as_string(cache_filename);
-            if(debug) cerr << prolog << "retrieved content: " << content << endl;
-            CPPUNIT_ASSERT( content == expected_content );
-        }
-        catch (BESError &besE){
-            stringstream msg;
-            msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
-            msg << " type: " << besE.get_bes_error_type() << endl;
-            if(debug) cerr << msg.str();
-            CPPUNIT_FAIL(msg.str());
-        }
-        if(debug) cerr << prolog << "END" << endl;
-    }
-
-    /**
      *
      */
     void get_http_url_test() {
@@ -378,11 +268,6 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
-            vector<string> *hdrs = rhr.getResponseHeaders();
-
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-            }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string expected_content("This is a test. If this was not a test you would have known the answer.\n");
@@ -414,10 +299,6 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
-            vector<string> *hdrs = rhr.getResponseHeaders();
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-            }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             //string expected_content("This is a test. If this was not a test you would have known the answer.\n");
@@ -455,10 +336,6 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
-            vector<string> *hdrs = rhr.getResponseHeaders();
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-            }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string content = get_file_as_string(cache_filename);
@@ -486,11 +363,6 @@ public:
         http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
-            vector<string> *hdrs = rhr.getResponseHeaders();
-
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-            }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
 
@@ -673,8 +545,6 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
-    CPPUNIT_TEST(load_hdrs_from_file_test);
-    CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(filter_test_more_focus);

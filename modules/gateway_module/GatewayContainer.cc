@@ -195,21 +195,6 @@ void GatewayContainer::dump(ostream &strm) const {
     if (d_remoteResource) {
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
                 << endl;
-        strm << BESIndent::LMarg << "response headers: ";
-        vector<string> *hdrs = d_remoteResource->getResponseHeaders();
-        if (hdrs) {
-            strm << endl;
-            BESIndent::Indent();
-            vector<string>::const_iterator i = hdrs->begin();
-            vector<string>::const_iterator e = hdrs->end();
-            for (; i != e; i++) {
-                string hdr_line = (*i);
-                strm << BESIndent::LMarg << hdr_line << endl;
-            }
-            BESIndent::UnIndent();
-        } else {
-            strm << "none" << endl;
-        }
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
