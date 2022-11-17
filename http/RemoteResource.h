@@ -88,11 +88,15 @@ private:
      */
     void writeResourceToFile(int fd);
 
+#if 0
+
     /**
      * Ingests the HTTP headers into a queryable map. Once completed, determines the type of the remote resource.
      * Looks at HTTP headers, and failing that compares the basename in the resource URL to the data handlers TypeMatch.
      */
-    void ingest_http_headers_and_type();
+    void derive_type_from_url();
+
+#endif
 
     /**
     * @brief Filter the cache and replaces all occurances each key in content_filters key with its associated value.

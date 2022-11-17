@@ -207,6 +207,14 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     //   from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
     //   But really - we gotta fix this.
     http::get_type_from_url(d_remoteResourceUrl->str(), d_type);
+    if (d_type.empty()) {
+        string err = prolog + "Unable to determine the type of data returned from '" + d_remoteResourceUrl->str()
+                + ",' Setting type to 'unknown'";
+        BESDEBUG(MODULE, err << endl);
+        INFO_LOG(err);
+        d_type = "unknown";
+    }
+
     BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
     try {
@@ -231,12 +239,10 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
                 BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
                 writeResourceToFile(d_fd);
                 filter_retrieved_resource(content_filters);
-                ingest_http_headers_and_type();     // TODO Rename if we keep the change jhrg 11/16/22
             }
             else {
                 BESDEBUG(MODULE, prolog << " EXISTS - CHECKING EXPIRY " << endl);
                 cache->get_read_lock(d_resourceCacheFileName, d_fd);
-                ingest_http_headers_and_type();     // TODO Rename if we keep the change jhrg 11/16/22
             }
             d_initialized = true;
     }
@@ -328,16 +334,10 @@ void RemoteResource::writeResourceToFile(int fd) {
                                 << d_resourceCacheFileName << endl);
 
         // rewind the file
-        // FIXME I think the idea here is that we have the file open and we should just keep
-        //  reading from it. But the container mechanism works with file names, so we will
-        //  likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
         status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
         BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
-
-        // FIXME Rename this so it's not misleading if we keep the current changes jhrg 11/16/22
-        ingest_http_headers_and_type();
     }
     catch (BESError &e) {
         throw;
@@ -345,10 +345,12 @@ void RemoteResource::writeResourceToFile(int fd) {
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
+#if 0
+
 /**
  *
  */
-void RemoteResource::ingest_http_headers_and_type() {
+void RemoteResource::derive_type_from_url() {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     string type;
 
@@ -372,6 +374,8 @@ void RemoteResource::ingest_http_headers_and_type() {
     d_type = type;
     BESDEBUG(MODULE, prolog << "END (dataset type: " << d_type << ")" << endl);
 }
+
+#endif
 
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
@@ -404,7 +408,6 @@ void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::
         }
         buffer << cr_istrm.rdbuf();
 
-        // FIXME Do we need to make a copy here? Could we pass buffer.str() to replace_all??
         resource_content = buffer.str();
     } // cr_istrm is closed here.
 
