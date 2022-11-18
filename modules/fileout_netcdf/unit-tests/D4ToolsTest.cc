@@ -677,7 +677,8 @@ public:
         subd4g->set_send_p(true);
 
         D4Group *d4g = dmr->root();
-        d4g->add_var_nocopy(subd4g);
+        d4g->add_group_nocopy(subd4g);
+        //d4g->add_var_nocopy(subd4g);
 
         vector<BaseType *> inv;
         CPPUNIT_ASSERT(is_dap4_projected(dmr, inv));
@@ -701,7 +702,8 @@ public:
         subd4g->set_send_p(true);
 
         D4Group *d4g = dmr->root();
-        d4g->add_var_nocopy(subd4g);
+        d4g->add_group_nocopy(subd4g);
+        //d4g->add_var_nocopy(subd4g);
 
         vector<BaseType *> inv;
         CPPUNIT_ASSERT(is_dap4_projected(dmr, inv) == false);

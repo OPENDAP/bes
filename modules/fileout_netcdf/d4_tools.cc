@@ -153,6 +153,7 @@ bool d4_tools::is_dap4_projected(D4Group *group, vector<BaseType *> &projected_d
     bool has_dap4_var = false;
     // variables in the group
 
+    // check all variables in the root group
     for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
         BaseType *var = *btp;
 
@@ -172,6 +173,20 @@ bool d4_tools::is_dap4_projected(D4Group *group, vector<BaseType *> &projected_d
                 throw BESInternalError("Exception: " + string(e.what()), __FILE__, __LINE__);
             }
         }
+    }
+
+    //check if group has any subgroups and check them for dap4 projected variables
+    for (auto gb = group->grp_begin(), ge = group->grp_end(); gb != ge; ++gb){
+        try {
+            D4Group *d4g = *gb;
+            if (is_dap4_projected(d4g, projected_dap4_variable_inventory)) {
+                has_dap4_var = true;
+            }
+        }
+        catch (exception e){
+            throw BESInternalError("Exception: " + string(e.what()), __FILE__, __LINE__);
+        }
+
     }
     return has_dap4_var;
 }
