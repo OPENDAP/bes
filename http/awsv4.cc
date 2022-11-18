@@ -288,31 +288,24 @@ std::string calculate_signature(const std::time_t &request_date,
     return sig;
 }
 
-
 /**
- * @brief Return the AWS V4 signature for a given GET request
+ * @brief Return the AWS V4 signature for a given GET request.
  *
- * @param uri_str The URI to fetch
+ * This version takes strings for the path, query string and host.
+ *
+ * @param canonical_uri The path part of the URI
+ * @param canonical_query The URI query string
+ * @param host The host part of the URI
  * @param request_date The current date & time
  * @param secret_key The Secret key for this resource (the thing referenced by the URI).
  * @param region The AWS region where the request is being made (us-west-2 by default)
  * @param service The AWS service that is the target of the request (S3 by default)
  * @return The AWS V4 Signature string.
  */
-std::string compute_awsv4_signature(
-        const std::shared_ptr<http::url> &uri,
-        const std::time_t &request_date,
-        const std::string &public_key,
-        const std::string &secret_key,
-        const std::string &region,
-        const std::string &service) {
-
-
-    // canonical_uri is the path component of the URL. Later we will need the host.
-    const auto canonical_uri = uri->path();
-    // The query string is null for our code.
-    const auto canonical_query = uri->query();
-
+std::string compute_awsv4_signature(const std::string &canonical_uri, const std::string &canonical_query,
+                                    const std::string &host, const std::time_t &request_date,
+                                    const std::string &public_key, const std::string &secret_key,
+                                    const std::string &region, const std::string &service) {
     // We can eliminate one call to sha256 if the payload is null, which
     // is the case for a GET request. jhrg 11/25/19
     const std::string sha256_empty_payload = {"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"};
@@ -324,7 +317,7 @@ std::string compute_awsv4_signature(
     //
     // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
     std::vector<std::string> headers{"host: ", "x-amz-date: "};
-    headers[0].append(uri->host());
+    headers[0].append(host);
     headers[1].append(ISO8601_date(request_date));
 
     const auto canonical_headers_map = canonicalize_headers(headers);
@@ -360,12 +353,35 @@ std::string compute_awsv4_signature(
     BESDEBUG(HTTP_MODULE, prolog << "signature: " << signature << std::endl);
 
     std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
-                                             + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" +
-                                             signature;
+                                       + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" +
+                                       signature;
 
     BESDEBUG(HTTP_MODULE, prolog << "authorization_header: " << authorization_header << std::endl);
 
     return authorization_header;
+}
+
+/**
+ * @brief Return the AWS V4 signature for a given GET request
+ *
+ * This version takes an http::url object for the path, query string and host.
+ *
+ * @param uri_str The URI to fetch
+ * @param request_date The current date & time
+ * @param secret_key The Secret key for this resource (the thing referenced by the URI).
+ * @param region The AWS region where the request is being made (us-west-2 by default)
+ * @param service The AWS service that is the target of the request (S3 by default)
+ * @return The AWS V4 Signature string.
+ */
+std::string compute_awsv4_signature(
+        const std::shared_ptr<http::url> &uri,
+        const std::time_t &request_date,
+        const std::string &public_key,
+        const std::string &secret_key,
+        const std::string &region,
+        const std::string &service) {
+    return compute_awsv4_signature(uri->path(), uri->query(), uri->host(), request_date, public_key, secret_key,
+                                   region, service);
 }
 
 }

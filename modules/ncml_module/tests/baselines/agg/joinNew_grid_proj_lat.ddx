@@ -708,7 +708,7 @@
 \001merge_sb Apr 16 16:05:18 2004 merge_sb in=(file=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.tmp_m2, filecheck=/RAID/sbaker/DECLOUD/landmask16.img) val=1 valcheck=2 tag=0 out=(file1=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16)
 \001CONVRT Apr 16 16:05:21 2004 CONVRT 1024,1024,0,0,6,6,0,0,f,f,t,16,,SUB,1 in=/RAID2/sbaker/nwa6144d/NDC/dsp_data/f97182070958.nwa16   out=/RAID2/sbaker/nwa1024d/NDC/dsp_data/f97182070958.nwa16
 
-@\000\000\000</value>
+@</value>
         </Attribute>
     </Attribute>
     <Structure name="dsp_band_1">
