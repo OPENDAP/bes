@@ -131,7 +131,7 @@ bes::CatalogNode *CmrCatalog::get_collections_node(const string &path, const str
     cmrApi.get_opendap_collections(provider_id, collections);
     if(collections.empty()){
         stringstream msg;
-        msg << "The provider " << provider_id << " does contain any OPeNDAP senabled collections.";
+        msg << "The provider " << provider_id << " does contain any OPeNDAP enabled collections.";
         throw BESNotFoundError(msg.str(),__FILE__,__LINE__);
     }
 

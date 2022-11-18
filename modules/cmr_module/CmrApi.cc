@@ -662,8 +662,8 @@ cmr::Granule* CmrApi::get_granule(const string& collection_name,
                                   const string& r_day,
                                   const string& r_granule_concept_id)
 {
-    // @TODO If this code is suppoed to get a singe granule, and it has the granule_concept_id this should be making
-    //   a direct cmr query for just that granule.
+    // @TODO If this code is supposed to get a single granule, and it has the granule_concept_id
+    //   this should be making a direct cmr query for just that granule.
     vector<Granule *> granules;
     Granule *result = nullptr;
 
