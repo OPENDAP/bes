@@ -34,7 +34,6 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
 #include "nlohmann/json.hpp"
 
 namespace cmr {
@@ -42,13 +41,16 @@ namespace cmr {
 
 class rjson_utils {
 public:
-    void getJsonDoc(const std::string &url, rapidjson::Document &d);
-    std::string getStringValue(const rapidjson::Value& object, const std::string &name);
+    //void getJsonDoc(const std::string &url, rapidjson::Document &d);
+    //std::string getStringValue(const rapidjson::Value& object, const std::string &name);
     // bool getBooleanValue(const rapidjson::Value& object, const std::string name);
-    std::string jsonDocToString(rapidjson::Document &d);
-    static std::string typeName(unsigned t);
+    //std::string jsonDocToString(rapidjson::Document &d);
+    //static std::string typeName(unsigned t);
 
     nlohmann::json get_as_json(const std::string &url);
+
+    static std::string typeName(unsigned int t);
+
 };
 
 

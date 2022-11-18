@@ -22,11 +22,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -55,7 +50,6 @@
 #include "Collection.h"
 
 using namespace std;
-using namespace rapidjson;
 
 static bool debug = false;
 static bool Debug = false;

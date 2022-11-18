@@ -34,8 +34,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
 #include "nlohmann/json.hpp"
 
 #include <libdap/util.h>
@@ -62,92 +60,66 @@ using json = nlohmann::json;
 
 namespace cmr {
 
-    CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
-        bool found;
-        string cmr_endpoint_url;
-        TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_endpoint_url, found);
-        if (found) {
-            d_cmr_endpoint_url = cmr_endpoint_url;
-        }
-        BESDEBUG(MODULE, prolog << "Using CMR Endpoint: " << d_cmr_endpoint_url << endl);
-
-        d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                    CMR_PROVIDERS_LEGACY_API_ENDPOINT);
-        BESDEBUG(MODULE,
-                 prolog << "Using CMR Providers Search Endpoint: " << d_cmr_providers_search_endpoint_url << endl);
-
-        d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                      CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
-        BESDEBUG(MODULE,
-                 prolog << "Using CMR Collections Search Endpoint: " << d_cmr_collections_search_endpoint_url << endl);
-
-        d_cmr_granules_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
-                                                                   CMR_GRANULES_SEARCH_API_ENDPOINT);
-        BESDEBUG(MODULE,
-                 prolog << "Using CMR Granules Search Endpoint: " << d_cmr_granules_search_endpoint_url << endl);
+CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
+    bool found;
+    string cmr_endpoint_url;
+    TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_endpoint_url, found);
+    if (found) {
+        d_cmr_endpoint_url = cmr_endpoint_url;
     }
+    BESDEBUG(MODULE, prolog << "Using CMR Endpoint: " << d_cmr_endpoint_url << endl);
 
-    /**
-     * Locates and QC's the child object named "children" (aka CMR_V2_CHILDREN_KEY)
-     * @param jobj
-     * @return The "children" (CMR_V2_CHILDREN_KEY) array of objects.
-     */
-    const json &CmrApi::get_children(const json &jobj)
-    {
+    d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                                CMR_PROVIDERS_LEGACY_API_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "Using CMR Providers Search Endpoint: " << d_cmr_providers_search_endpoint_url << endl);
 
-        bool result = jobj.is_object();
-        if(!result){
-            string msg = prolog + "ERROR: Json document is" + (result?"":" NOT") + " an object.";
-            BESDEBUG(MODULE, msg << endl);
-            throw CmrError(msg,__FILE__,__LINE__);
-        }
+    d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                                  CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "Using CMR Collections Search Endpoint: " << d_cmr_collections_search_endpoint_url << endl);
 
-        auto &children =  jobj[CMR_V2_CHILDREN_KEY];
-        if(children.is_null()){
-            stringstream msg;
-            msg << prolog;
-            msg << "Ouch! Unable to locate the " << CMR_V2_CHILDREN_KEY;
-            msg << " child of " << jobj.get<string>() << endl;
-            BESDEBUG(MODULE, msg.str() << endl);
-            throw CmrError(msg.str(),__FILE__,__LINE__);
-        }
-        if(!children.is_array()){
-            stringstream msg;
-            msg << prolog;
-            msg << "Ouch! The child element called '" << CMR_V2_CHILDREN_KEY;
-            msg << "' is not an array. json object: " << jobj.get<string>() << endl;
-            BESDEBUG(MODULE, msg.str() << endl);
-            throw CmrError(msg.str(),__FILE__,__LINE__);
-        }
-
-        return children;
-    }
-
-/**
- *
- */
-const rapidjson::Value&
-CmrApi::get_children(const rapidjson::Value& obj) {
-    rapidjson::Value::ConstMemberIterator itr;
-
-    itr = obj.FindMember("children");
-    bool result  = itr != obj.MemberEnd();
-    string msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in the object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& children = itr->value;
-    result = children.IsArray();
-    msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-    return children;
+    d_cmr_granules_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                               CMR_GRANULES_SEARCH_API_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "Using CMR Granules Search Endpoint: " << d_cmr_granules_search_endpoint_url << endl);
 }
 
+/**
+  * Locates and QC's the child object named "children" (aka CMR_V2_CHILDREN_KEY)
+  * @param jobj
+  * @return The "children" (CMR_V2_CHILDREN_KEY) array of objects.
+  */
+const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
+{
+
+    bool result = jobj.is_object();
+    if(!result){
+        string msg = prolog + "ERROR: Json document is" + (result?"":" NOT") + " an object.";
+        BESDEBUG(MODULE, msg << endl);
+        throw CmrError(msg,__FILE__,__LINE__);
+    }
+
+    auto &children =  jobj[CMR_V2_CHILDREN_KEY];
+    if(children.is_null()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! Unable to locate the " << CMR_V2_CHILDREN_KEY;
+        msg << " child of " << jobj.get<string>() << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw CmrError(msg.str(),__FILE__,__LINE__);
+    }
+    if(!children.is_array()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! The child element called '" << CMR_V2_CHILDREN_KEY;
+        msg << "' is not an array. json object: " << jobj.get<string>() << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw CmrError(msg.str(),__FILE__,__LINE__);
+    }
+
+    return children;
+}
 
 /**
  *
@@ -186,39 +158,6 @@ const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc)
     }
     return feed;
 }
-/**
- *
- * @param cmr_doc
- * @return
- */
-const rapidjson::Value& CmrApi::get_feed_OLD(const rapidjson::Document &cmr_doc)
-{
-
-    bool result = cmr_doc.IsObject();
-    string msg = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    //################### feed
-    rapidjson::Value::ConstMemberIterator itr = cmr_doc.FindMember("feed");
-    result  = itr != cmr_doc.MemberEnd();
-    msg = prolog + (result?"Located":"FAILED to locate") + " the value 'feed'.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& feed = itr->value;
-    result  = feed.IsObject();
-    msg = prolog + "The value 'feed' is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-    return feed;
-}
 
 /**
  *
@@ -243,30 +182,6 @@ const json& CmrApi::get_entries(const json &cmr_doc)
     return entry;
 }
 
-const rapidjson::Value& CmrApi::get_entries_OLD(const rapidjson::Document &cmr_doc)
-{
-    bool result;
-    string msg;
-
-    const rapidjson::Value& feed = get_feed_OLD(cmr_doc);
-
-    rapidjson::Value::ConstMemberIterator itr = feed.FindMember("entry");
-    result  = itr != feed.MemberEnd();
-    msg = prolog + (result?"Located":"FAILED to locate") + " the value 'entry'.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& entry = itr->value;
-    result  = entry.IsArray();
-    msg = prolog + "The value 'entry' is" + (result?"":" NOT") + " an Array.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-    return entry;
-}
 
 /**
  *
@@ -307,59 +222,6 @@ const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc)
 
 } // CmrApi::get_temporal_group()
 
-
-
-
-/**
- *
- */
-const rapidjson::Value&
-CmrApi::get_temporal_group(const rapidjson::Document &cmr_doc)
-{
-    rjson_utils ru;
-
-    bool result;
-    string msg;
-    const rapidjson::Value& feed = get_feed_OLD(cmr_doc);
-
-    //################### facets
-    rapidjson::Value::ConstMemberIterator  itr = feed.FindMember("facets");
-    result  = itr != feed.MemberEnd();
-    msg =  prolog + (result?"Located":"FAILED to locate") + " the value 'facets'." ;
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& facets_obj = itr->value;
-    result  = facets_obj.IsObject();
-    msg =  prolog + "The value 'facets' is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& facets = get_children(facets_obj);
-    for (rapidjson::SizeType i = 0; i < facets.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& facet = facets[i];
-
-        string facet_title = ru.getStringValue(facet,"title");
-        string temporal_title("Temporal");
-        if(facet_title == temporal_title){
-            msg = prolog + "Found Temporal object.";
-            BESDEBUG(MODULE, msg << endl);
-            return facet;
-        }
-        else {
-            msg = prolog + "The child of 'facets' with title '"+facet_title+"' does not match 'Temporal'";
-            BESDEBUG(MODULE, msg << endl);
-        }
-    }
-    msg = prolog + "Failed to locate the Temporal facet.";
-    BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
-
-} // CmrApi::get_temporal_group()
 
 
 
@@ -419,39 +281,6 @@ const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc)
 
 /**
  *
- * @param cmr_doc
- * @return
- */
-const rapidjson::Value&
-CmrApi::get_year_group(const rapidjson::Document &cmr_doc){
-    rjson_utils rju;
-    string msg;
-
-    const rapidjson::Value& temporal_group = get_temporal_group(cmr_doc);
-    const rapidjson::Value& temporal_children = get_children(temporal_group);
-    for (rapidjson::SizeType j = 0; j < temporal_children.Size(); j++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& temporal_child = temporal_children[j];
-
-        string temporal_child_title = rju.getStringValue(temporal_child,"title");
-        string year_title("Year");
-        if(temporal_child_title == year_title){
-            msg = prolog + "Found Year object.";
-            BESDEBUG(MODULE, msg << endl);
-            return temporal_child;
-        }
-        else {
-            msg = prolog + "The child of 'Temporal' with title '"+temporal_child_title+"' does not match 'Year'";
-            BESDEBUG(MODULE, msg << endl);
-        }
-    }
-    msg = prolog + "Failed to locate the Year group.";
-    BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
-}
-
-
-/**
- *
  * @param target_year
  * @param cmr_doc
  * @return
@@ -486,49 +315,6 @@ const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, co
     throw CmrError(msg,__FILE__,__LINE__);
 }
 
-/**
- *
- */
-const rapidjson::Value&
-CmrApi::get_month_group(const string r_year, const rapidjson::Document &cmr_doc){
-    rjson_utils rju;
-    string msg;
-
-    const rapidjson::Value& year_group = get_year_group(cmr_doc);
-    const rapidjson::Value& years = get_children(year_group);
-    for (rapidjson::SizeType i = 0; i < years.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& year_obj = years[i];
-
-        string year_title = rju.getStringValue(year_obj,"title");
-        if(r_year == year_title){
-            msg = prolog + "Found Year object.";
-            BESDEBUG(MODULE, msg << endl);
-
-            const rapidjson::Value& year_children = get_children(year_obj);
-            for (rapidjson::SizeType j = 0; j < year_children.Size(); j++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& child = year_children[i];
-                string title = rju.getStringValue(child,"title");
-                string month_title("Month");
-                if(title == month_title){
-                    msg = prolog + "Found Month object.";
-                    BESDEBUG(MODULE, msg << endl);
-                    return child;
-                }
-                else {
-                    msg = prolog + "The child of 'Year' with title '"+title+"' does not match 'Month'";
-                    BESDEBUG(MODULE, msg << endl);
-                }
-            }
-        }
-        else {
-            msg = prolog + "The child of 'Year' group with title '"+year_title+"' does not match the requested year ("+r_year+")";
-            BESDEBUG(MODULE, msg << endl);
-        }
-    }
-    msg = prolog + "Failed to locate the Year group.";
-    BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
-}
 
 
 /**
@@ -570,40 +356,6 @@ CmrApi::get_month(const std::string &target_month,
 }
 
 
-/**
- *
- * @param r_month
- * @param r_year
- * @param cmr_doc
- * @return
- */
-const rapidjson::Value&
-CmrApi::get_month(const string r_month, const string r_year, const rapidjson::Document &cmr_doc){
-    rjson_utils rju;
-    stringstream msg;
-
-    const rapidjson::Value& month_group = get_month_group(r_year,cmr_doc);
-    const rapidjson::Value& months = get_children(month_group);
-    for (rapidjson::SizeType i = 0; i < months.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& month = months[i];
-        string month_id = rju.getStringValue(month,"title");
-        if(month_id == r_month){
-            msg.str("");
-            msg << prolog  << "Located requested month ("<<r_month << ")";
-            BESDEBUG(MODULE, msg.str() << endl);
-            return month;
-        }
-        else {
-            msg.str("");
-            msg << prolog  << "The month titled '"<<month_id << "' does not match the requested month ("<< r_month <<")";
-            BESDEBUG(MODULE, msg.str() << endl);
-        }
-    }
-    msg.str("");
-    msg << prolog  << "Failed to locate request Year/Month.";
-    BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
-}
 
 
 
@@ -637,38 +389,6 @@ CmrApi::get_day_group(const std::string &target_month,
 }
 
 
-/**
- *
- * @param r_month
- * @param r_year
- * @param cmr_doc
- * @return
- */
-const rapidjson::Value&
-CmrApi::get_day_group(const string &r_month, const string &r_year, const rapidjson::Document &cmr_doc){
-    rjson_utils rju;
-    stringstream msg;
-
-    const rapidjson::Value& month = get_month(r_month, r_year, cmr_doc);
-    const rapidjson::Value& month_children = get_children(month);
-
-    for (rapidjson::SizeType k = 0; k < month_children.Size(); k++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& object = month_children[k];
-        string title = rju.getStringValue(object,"title");
-        string day_group_title = "Day";
-        if(title == day_group_title){
-            msg.str("");
-            msg << prolog  << "Located Day group for year: " << r_year << " month: "<< r_month;
-            BESDEBUG(MODULE, msg.str() << endl);
-            return object;
-        }
-    }
-    msg.str("");
-    msg << prolog  << "Failed to locate requested Day  year: " << r_year << " month: "<< r_month;
-    BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
-}
-
 
 /**
  * Queries CMR for the 'collection_name' and returns the span of years covered by the collection.
@@ -699,26 +419,7 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
     }
 } // CmrApi::get_years()
 
-void CmrApi::get_years_OLD(const string &collection_name, vector<string> &years_result)
-{
-    rjson_utils rju;
-    rapidjson::Document doc;
 
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_granules_search_endpoint_url;
-    cmr_query_url << "?concept_id=" + collection_name << "&";
-    cmr_query_url << "include_facets=v2&page_size=" << CMR_MAX_PAGE_SIZE;
-
-    rju.getJsonDoc(cmr_query_url.str(), doc);
-
-    const rapidjson::Value &year_group = get_year_group(doc);
-    const rapidjson::Value &years = get_children(year_group);
-    for (rapidjson::SizeType k = 0; k < years.Size(); k++) { // Uses SizeType instead of size_t
-        const rapidjson::Value &year_obj = years[k];
-        string year = rju.getStringValue(year_obj, "title");
-        years_result.push_back(year);
-    }
-}
 
 /**
  * Queries CMR for the 'collection_name' and returns the span of years covered by the collection.
@@ -790,68 +491,6 @@ CmrApi::get_months(const string &collection_name,
 } // CmrApi::get_months()
 
 
-void CmrApi::get_months_OLD(const string &collection_name, const string &r_year, vector<string> &months_result){
-    rjson_utils rju;
-
-    stringstream msg;
-
-    stringstream cmr_query_url;
-    cmr_query_url << d_cmr_granules_search_endpoint_url << "?" ;
-    cmr_query_url << "concept_id="+collection_name+"&";
-    cmr_query_url << "include_facets=v2&";
-    cmr_query_url << http::url_encode("temporal_facet[0][year]") + "=" + r_year;
-    BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
-
-    rapidjson::Document doc;
-    rju.getJsonDoc(cmr_query_url.str(),doc);
-    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(doc) << endl);
-
-    const rapidjson::Value& year_group = get_year_group(doc);
-    const rapidjson::Value& years = get_children(year_group);
-    if(years.Size() != 1){
-        msg.str("");
-        msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.Size();
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& year = years[0];
-    string year_title = rju.getStringValue(year,"title");
-    if(year_title != r_year){
-        msg.str("");
-        msg << prolog  << "The returned year (" << year_title << ") does not match the requested year ("<< r_year << ")";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& year_children = get_children(year);
-    if(year_children.Size() != 1){
-        msg.str("");
-        msg << prolog  << "We expected to get back one child for the year (" << r_year << ") but we got back " << years.Size();
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& month_group = year_children[0];
-    string title = rju.getStringValue(month_group,"title");
-    if(title != string("Month")){
-        msg.str("");
-        msg << prolog  << "We expected to get back a Month object, but we did not.";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
-    }
-
-    const rapidjson::Value& months = get_children(month_group);
-    for (rapidjson::SizeType i = 0; i < months.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& month = months[i];
-        string month_id = rju.getStringValue(month,"title");
-        months_result.push_back(month_id);
-    }
-
-    return;
-
-} // CmrApi::get_months()
-
 
 
 void CmrApi::get_days(const string &collection_concept_id,
@@ -878,39 +517,8 @@ void CmrApi::get_days(const string &collection_concept_id,
     }
 }
 
-/**
-  * Creates a list of the valid days for the collection matching the year and month
-  *
-  * @param collection_name
-  * @param r_year
-  * @param r_month
-  * @param days_result
-  */
-void CmrApi::get_days_OLD(string collection_name, string r_year, string r_month, vector<string> &days_result)
-{
-    rjson_utils rju;
-    stringstream msg;
 
-    string cmr_query_url = d_cmr_granules_search_endpoint_url +
-                           + "?concept_id=" + collection_name
-                           + "&include_facets=v2"
-                           + "&temporal_facet[0][year]=" + r_year
-                           + "&temporal_facet[0][month]=" + r_month;
 
-    BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url << endl);
-
-    rapidjson::Document cmr_doc;
-    rju.getJsonDoc(cmr_query_url, cmr_doc);
-    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(cmr_doc) << endl);
-
-    const rapidjson::Value& day_group = get_day_group(r_month, r_year, cmr_doc);
-    const rapidjson::Value& days = get_children(day_group);
-    for (rapidjson::SizeType i = 0; i < days.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& day = days[i];
-        string day_id = rju.getStringValue(day,"title");
-        days_result.push_back(day_id);
-    }
-}
 
 
 
@@ -941,31 +549,6 @@ void CmrApi::get_granule_ids(const std::string& collection_name,
 
 
 
-/**
- *
- * @param collection_name
- * @param r_year
- * @param r_month
- * @param r_day
- * @param granules_ids
- */
-void CmrApi::get_granule_ids_OLD(string collection_name, string r_year, string r_month, string r_day, vector<string> &granules_ids)
-{
-    rjson_utils rju;
-    stringstream msg;
-    rapidjson::Document cmr_doc;
-
-    granule_search_OLD(collection_name, r_year, r_month, r_day, cmr_doc);
-
-    const rapidjson::Value& entries = get_entries_OLD(cmr_doc);
-    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& granule = entries[i];
-        string day_id = rju.getStringValue(granule,"id");
-        granules_ids.push_back(day_id);
-    }
-
-}
-
 
 /**
  *
@@ -987,23 +570,6 @@ unsigned long CmrApi::granule_count(const string &collection_name,
     return entries.size();
 }
 
-
-/**
- *
- * @param collection_name
- * @param r_year
- * @param r_month
- * @param r_day
- * @return
- */
-unsigned long CmrApi::granule_count_OLD(string collection_name, string r_year, string r_month, string r_day)
-{
-    stringstream msg;
-    rapidjson::Document cmr_doc;
-    granule_search_OLD(collection_name, r_year, r_month, r_day, cmr_doc);
-    const rapidjson::Value& entries = get_entries_OLD(cmr_doc);
-    return entries.Size();
-}
 
 
 
@@ -1038,31 +604,6 @@ void CmrApi::granule_search(const std::string &collection_name, const std::strin
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
 }
 
-void CmrApi::granule_search_OLD(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc)
-{
-    rjson_utils rju;
-
-    string cmr_query_url = d_cmr_granules_search_endpoint_url +
-                           + "?concept_id="+collection_name
-                           + "&include_facets=v2"
-                           + "&page_size=2000";
-
-    if(!r_year.empty()) {
-        cmr_query_url += "&temporal_facet[0][year]=" + r_year;
-    }
-    if(!r_month.empty()) {
-        cmr_query_url += "&temporal_facet[0][month]=" + r_month;
-    }
-    if(!r_day.empty()) {
-        cmr_query_url += "&temporal_facet[0][day]=" + r_day;
-    }
-
-    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << cmr_query_url << endl);
-
-    rju.getJsonDoc(cmr_query_url,result_doc);
-    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(result_doc) << endl);
-}
-
 
 
 
@@ -1083,27 +624,11 @@ void CmrApi::get_granules(const std::string& collection_name,
 
     const auto& granules = get_entries(cmr_doc);
     for ( auto &granule : granules){
-        Granule *g = new Granule(granule);
+        auto *g = new Granule(granule);
         granule_objs.push_back(g);
     }
 }
 
-void CmrApi::get_granules_OLD(string collection_name, string r_year, string r_month, string r_day, vector<Granule *> &granules)
-{
-    stringstream msg;
-    rapidjson::Document cmr_doc;
-
-    granule_search_OLD(collection_name, r_year, r_month, r_day, cmr_doc);
-
-    const rapidjson::Value& entries = get_entries_OLD(cmr_doc);
-    for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& granule_obj = entries[i];
-        // rapidjson::Value grnl(granule_obj, cmr_doc.GetAllocator());
-        auto *g = new Granule(granule_obj);
-        granules.push_back(g);
-    }
-
-}
 
 
 
@@ -1121,18 +646,32 @@ CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
 
 
 /**
- * Returns all of the Granules in the collection matching the date.
- */
-cmr::Granule* CmrApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
+  * Returns the requested granule by searching the collection at the supplied  date and sifting
+  * the result.
+  *
+  * @param collection_name
+  * @param r_year
+  * @param r_month
+  * @param r_day
+  * @param granule_id
+  * @return
+  */
+cmr::Granule* CmrApi::get_granule(const string& collection_name,
+                                  const string& r_year,
+                                  const string& r_month,
+                                  const string& r_day,
+                                  const string& r_granule_concept_id)
 {
+    // @TODO If this code is suppoed to get a singe granule, and it has the granule_concept_id this should be making
+    //   a direct cmr query for just that granule.
     vector<Granule *> granules;
     Granule *result = nullptr;
 
     get_granules(collection_name, r_year, r_month, r_day, granules);
     for(auto & granule : granules){
         string id = granule->getName();
-        BESDEBUG(MODULE, prolog << "Comparing granule id: " << granule_id << " to collection member id: " << id << endl);
-        if( id == granule_id){
+        BESDEBUG(MODULE, prolog << "Comparing r_granule_concept_id: '" << r_granule_concept_id << "' to collection member id: " << id << endl);
+        if( id == r_granule_concept_id){
             result = granule;
         }
         else {

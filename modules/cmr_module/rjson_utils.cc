@@ -25,13 +25,6 @@
 #include <sstream>
 #include <fstream>
 
-
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
-
 #include "nlohmann/json.hpp"
 
 #include <BESError.h>
@@ -46,7 +39,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-#define prolog std::string("rjson_utils::").append(__func__).append("() - ")
+#define prolog std::string("json_utils::").append(__func__).append("() - ")
 
 namespace cmr {
 /**
@@ -69,75 +62,8 @@ json rjson_utils::get_as_json(const string &url)
     return data;
 }
 
-
-void
-rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
-    BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    shared_ptr<http::url> target_url(new http::url(url));
-    http::RemoteResource remoteResource(target_url);
-    remoteResource.retrieveResource();
-    if(BESDebug::IsSet(MODULE)){
-        string cmr_hits = remoteResource.get_http_response_header("cmr-hits");
-        stringstream msg(prolog);
-        msg << "CMR-Hits: "<< cmr_hits << endl;
-        *(BESDebug::GetStrm()) << msg.str();
-    }
-    auto size = remoteResource.cached_object_size();
-    FILE* fp = fopen(remoteResource.getCacheFileName().c_str(), "r"); // non-Windows use "r"
-    char readBuffer[size];
-    rapidjson::FileReadStream frs(fp, readBuffer, sizeof(readBuffer));
-    doc.ParseStream(frs);
-    fclose(fp);
-}
-
-
-
-
-
-
-/**
- * Gets the child of 'object' named 'name' and returns it's value as a string.
- * If the 'name' is not a member of 'object', or if IsString() for the named child
- * returns false, then the empty string is returned.
- * @param object the object to serach.
- * @param name The name of the child object to convert to a string
- * @return The value of the named chalid as a string;
- */
-std::string
-rjson_utils::getStringValue(const rapidjson::Value& object, const string &name){
-
-    rapidjson::Value::ConstMemberIterator itr = object.FindMember(name.c_str());
-    bool result  = itr != object.MemberEnd();
-
-    BESDEBUG(MODULE, prolog + (result?"Located":"FAILED to locate") + " the value '"+name+"' in object." << endl);
-    if(!result){
-        return "";
-    }
-    const rapidjson::Value& myValue = itr->value;
-    result = myValue.IsString();
-    BESDEBUG(MODULE, prolog + "The value of '"+ name +"' is " + (result?myValue.GetString():" NOT a String type.") << endl);
-    if(!result){
-        return "";
-    }
-    return myValue.GetString();
-}
-
-
-/**
- * Converts a RapidJson Document object into a "pretty" string.
- *
- * @param d A reference to the document to convert.
- * @return The string manifestation of the JSON document.
- */
-std::string
-rjson_utils::jsonDocToString(rapidjson::Document &d){
-    rapidjson::StringBuffer buffer;
-    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-    d.Accept(writer);
-    return buffer.GetString();
-}
-
-std::string rjson_utils::typeName(unsigned int t) {
+std::string rjson_utils::typeName(unsigned int t)
+{
     const char* tnames[] =
             { "Null", "False", "True", "Object", "Array", "String", "Number" };
     return string(tnames[t]);

@@ -87,9 +87,6 @@ public:
 
 
     bes::CatalogNode *get_node(const std::string &path) const override;
-    virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
-
 
     void dump(std::ostream &strm) const override;
 

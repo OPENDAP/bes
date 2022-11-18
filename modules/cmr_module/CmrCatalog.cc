@@ -100,12 +100,6 @@ CmrCatalog::CmrCatalog(const std::string &name /* = “CMR” */) : BESCatalog(n
     }
 }
 
-bes::CatalogNode *
-CmrCatalog::get_node(const string &path) const
-{
-    return get_node_NEW(path);
-}
-
 bes::CatalogNode * CmrCatalog::get_providers_node() const
 {
     CmrApi cmrApi;
@@ -234,7 +228,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
             vector<string> days;
 
             BESDEBUG(MODULE, prolog << "Getting day nodes for collection: " << collection_id << " year: " << year << " month: " << month << endl);
-            cmrApi.get_days_OLD(collection_id, year, month, days);
+            cmrApi.get_days(collection_id, year, month, days);
             for(auto & day : days){
                 auto *catalogItem = new CatalogItem();
                 catalogItem->set_type(CatalogItem::node);
@@ -308,7 +302,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
  * @return
  */
 bes::CatalogNode *
-CmrCatalog::get_node_NEW(const string &ppath) const
+CmrCatalog::get_node(const string &ppath) const
 {
     string path = BESUtil::normalize_path(ppath,true, false);
     vector<string> path_elements = BESUtil::split(path);
@@ -361,8 +355,7 @@ CmrCatalog::get_node_NEW(const string &ppath) const
     return get_temporal_facet_nodes(path, path_elements,collection_id);
 }
 
-
-
+#if 0
 /**
  * path_elements.size==0  path: / (collections node)
  * path_elements.size==1  path: /collection_name/ (facets node)
@@ -562,6 +555,7 @@ CmrCatalog::get_node_OLD(const string &ppath) const
     }
     return node;
 }
+#endif
 
 
 

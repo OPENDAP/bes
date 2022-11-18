@@ -23,11 +23,6 @@
 #include "test_config.h"
 
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -56,7 +51,6 @@
 
 
 using namespace std;
-using namespace rapidjson;
 
 static bool debug = false;
 static bool bes_debug = false;

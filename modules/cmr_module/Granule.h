@@ -33,7 +33,6 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
 #include "nlohmann/json.hpp"
 #include "CatalogItem.h"
 #include "BESCatalogUtils.h"
@@ -43,8 +42,6 @@ namespace cmr {
 
 class Granule {
 private:
-    const rapidjson::Value& get_links_array(const rapidjson::Value& go);
-    const nlohmann::json& get_links_array(const nlohmann::json& go);
 
     std::string d_name;
     std::string d_id;
@@ -53,21 +50,15 @@ private:
     std::string d_size_str;
     std::string d_last_modified_time;
 
-    void setName(const rapidjson::Value& granule_obj);
     void setName(const nlohmann::json& jobj);
-    void setId(const rapidjson::Value& granule_obj);
     void setId(const nlohmann::json& go);
-    void setDataAccessUrl(const rapidjson::Value& granule_obj);
     void setDataAccessUrl(const nlohmann::json& go);
-    void setMetadataAccessUrl(const rapidjson::Value& granule_obj);
     void setMetadataAccessUrl(const nlohmann::json& granule_obj);
-    void setSize(const rapidjson::Value& granule_obj);
     void setSize(const nlohmann::json& j_obj);
-    void setLastModifiedStr(const rapidjson::Value& granule_obj);
     void setLastModifiedStr(const nlohmann::json& go);
+    const nlohmann::json& get_links_array(const nlohmann::json& go);
 
 public:
-    Granule(const rapidjson::Value& granule_obj);
     Granule(const nlohmann::json& granule_json);
 
     std::string getName(){ return d_name; }

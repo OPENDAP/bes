@@ -47,27 +47,19 @@ using namespace std;
 
 
 namespace cmr {
-string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
-string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
-string granule_LINKS = "links";
-string granule_LINKS_REL= "rel";
-string granule_LINKS_HREFLANG = "hreflang";
-string granule_LINKS_HREF = "href";
-string granule_SIZE = "granule_size";
-string granule_LMT = "updated";
+//string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
+//string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
+//string granule_LINKS = "links";
+//string granule_LINKS_REL= "rel";
+//string granule_LINKS_HREFLANG = "hreflang";
+//string granule_LINKS_HREF = "href";
+//string granule_SIZE = "granule_size";
+//string granule_LMT = "updated";
 
-string granule_ID = "id";
+//string granule_ID = "id";
 
-string granule_NAME = "title";
+//string granule_NAME = "title";
 
-Granule::Granule(const rapidjson::Value& granule_obj){
-    setId(granule_obj);
-    setName(granule_obj);
-    setSize(granule_obj);
-    setDataAccessUrl(granule_obj);
-    setMetadataAccessUrl(granule_obj);
-    setLastModifiedStr(granule_obj);
-}
 
 Granule::Granule(const nlohmann::json& granule_json)
 {
@@ -79,44 +71,22 @@ Granule::Granule(const nlohmann::json& granule_json)
     setLastModifiedStr(granule_json);
 }
 
-void Granule::setName(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_name = rju.getStringValue(go, granule_NAME);
-}
 
 void Granule::setName(const nlohmann::json& j_obj)
 {
     this->d_name = j_obj[CMR_V2_TITLE_KEY].get<string>();
 }
 
-void Granule::setId(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_id = rju.getStringValue(go, granule_ID);
-}
 
 void Granule::setId(const nlohmann::json& j_obj)
 {
     this->d_id = j_obj[CMR_GRANULE_ID_KEY].get<string>();
 }
 
-void Granule::setSize(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_size_str = rju.getStringValue(go, granule_SIZE);
-}
 
 void Granule::setSize(const nlohmann::json& j_obj)
 {
-    rjson_utils rju;
     this->d_size_str = j_obj[CMR_GRANULE_SIZE_KEY];
-}
-
-/**
-  * Sets the last modified time of the granule as a string.
-  * @param go
-  */
-void Granule::setLastModifiedStr(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_last_modified_time = rju.getStringValue(go, granule_LMT);
 }
 
 
@@ -133,30 +103,8 @@ void Granule::setLastModifiedStr(const nlohmann::json& go)
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const rapidjson::Value& Granule::get_links_array(const rapidjson::Value& go){
-
-    rapidjson::Value::ConstMemberIterator itr = go.FindMember(granule_LINKS.c_str());
-    bool result = itr != go.MemberEnd();
-    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
-    }
-    const rapidjson::Value& links = itr->value;
-    if(!links.IsArray())
-        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
-
-    return links;
-}
-
-
-
-/**
- * Internal method that retrieves the "links" array from the Granule's object.
- */
 const nlohmann::json& Granule::get_links_array(const nlohmann::json& go)
 {
-
     auto &links = go[CMR_GRANULE_LINKS_KEY];
     if(links.is_null()){
         string msg = prolog + "ERROR: Failed to locate the value '"+CMR_GRANULE_LINKS_KEY+"' in object.";
@@ -187,26 +135,12 @@ void Granule::setDataAccessUrl(const nlohmann::json& go)
             return;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
+    stringstream msg;
+    msg << "ERROR: Failed to locate granule data access link (";
+    msg << CMR_GRANULE_LINKS_REL_DATA_ACCES << "), :(";
+    throw CmrError(msg.str(),__FILE__,__LINE__);
 }
 
-/**
- * Sets the data access URL for the dataset granule.
- */
-void Granule::setDataAccessUrl(const rapidjson::Value& go){
-    rjson_utils rju;
-
-    const rapidjson::Value& links = get_links_array(go);
-    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& link = links[i];
-        string rel = rju.getStringValue(link,granule_LINKS_REL);
-        if(rel == granule_LINKS_REL_DATA_ACCES){
-            this->d_data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
-            return;
-        }
-    }
-    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
-}
 
 /**
  * Sets the metadata access URL for the dataset granule.
@@ -221,28 +155,13 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
             return;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
+    stringstream msg;
+    msg << "ERROR: Failed to locate granule metadata access link (";
+    msg << CMR_GRANULE_LINKS_REL_METADATA_ACCESS << "), :(";
+    throw CmrError(msg.str(),__FILE__,__LINE__);
 }
 
 
-/**
- * Sets the metadata access URL for the dataset granule.
- */
-void Granule::setMetadataAccessUrl(const rapidjson::Value& go)
-{
-    rjson_utils rju;
-
-    const rapidjson::Value& links = get_links_array(go);
-    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& link = links[i];
-        string rel = rju.getStringValue(link,granule_LINKS_REL);
-        if(rel == granule_LINKS_REL_METADATA_ACCESS){
-            this->d_metadata_access_url = rju.getStringValue(link,granule_LINKS_HREF);
-            return;
-        }
-    }
-    throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
-}
 
 
 bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
