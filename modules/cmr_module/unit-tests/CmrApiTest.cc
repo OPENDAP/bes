@@ -194,6 +194,7 @@ public:
             stringstream msg;
             msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
                     << months.size() << " months: ";
+
             for (size_t i = 0; i < months.size(); i++) {
                 if (i > 0)
                     msg << ", ";

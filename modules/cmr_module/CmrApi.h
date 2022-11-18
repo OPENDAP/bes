@@ -37,6 +37,8 @@
 #include <memory>
 
 #include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
+
 #include "BESCatalogUtils.h"
 
 #include "CmrNames.h"
@@ -55,15 +57,37 @@ private:
     std::string d_cmr_collections_search_endpoint_url;
     std::string d_cmr_granules_search_endpoint_url;
 
-    const rapidjson::Value& get_temporal_group(const rapidjson::Document &cmr_doc);
+    const nlohmann::json &get_temporal_group(const nlohmann::json &cmr_doc);
+    const rapidjson::Value &get_temporal_group(const rapidjson::Document &cmr_doc);
+
+    const nlohmann::json &get_year_group(const nlohmann::json &cmr_doc);
     const rapidjson::Value& get_year_group(const rapidjson::Document &cmr_doc);
+
     const rapidjson::Value& get_month_group(const std::string year, const rapidjson::Document &cmr_doc);
+
+    const nlohmann::json &get_month_group(const std::string &for_year, const nlohmann::json &cmr_doc);
+
+    const nlohmann::json &get_month(const std::string &target_month,
+                                    const std::string &target_year,
+                                    const nlohmann::json &cmr_doc);
     const rapidjson::Value& get_month(const std::string r_month, const std::string r_year, const rapidjson::Document &cmr_doc);
-    const rapidjson::Value& get_day_group(const std::string r_month, const std::string year, const rapidjson::Document &cmr_doc);
+
+    const nlohmann::json &get_day_group(const std::string &target_month,
+                                                const std::string &target_year,
+                                                const nlohmann::json &cmr_doc);
+    const rapidjson::Value& get_day_group(const std::string &r_month, const std::string &year, const rapidjson::Document &cmr_doc);
+
+    const nlohmann::json &get_children(const nlohmann::json &jobj);
     const rapidjson::Value& get_children(const rapidjson::Value& obj);
-    const rapidjson::Value& get_feed(const rapidjson::Document &cmr_doc);
-    const rapidjson::Value& get_entries(const rapidjson::Document &cmr_doc);
-    void  granule_search(std::string collection_name, std::string r_year, std::string r_month, std::string r_day,rapidjson::Document &result_doc);
+
+    const nlohmann::json &get_feed(const nlohmann::json &cmr_doc);
+    const rapidjson::Value& get_feed_OLD(const rapidjson::Document &cmr_doc);
+
+    const nlohmann::json& get_entries(const nlohmann::json &cmr_doc);
+    const rapidjson::Value& get_entries_OLD(const rapidjson::Document &cmr_doc);
+
+    void granule_search(const std::string &collection_name, const std::string &r_year, const std::string &r_month, const std::string &r_day, nlohmann::json &cmr_doc);
+    void granule_search_OLD(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, rapidjson::Document &result_doc);
 
     void get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
                          unsigned int page_size=CMR_MAX_PAGE_SIZE,
@@ -74,14 +98,52 @@ private:
 public:
     CmrApi();
 
-    void get_years(std::string collection_name, std::vector<std::string> &years_result);
-    void get_months(std::string collection_name, std::string year, std::vector<std::string> &months_result);
-    void get_days(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
-    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<std::string> &granules_result);
-    void get_granule_ids(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &granules_result);
-    void get_granules(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::vector<cmr::Granule *> &granules);
+    void get_years(const std::string &collection_name, std::vector<std::string> &years_result);
+    void get_years_OLD(const std::string &collection_name, std::vector<std::string> &years_result);
+
+    void get_months(const std::string &collection_name, const std::string &year, std::vector<std::string> &months_result);
+    void get_months_OLD(const std::string &collection_name, const std::string &r_year, std::vector<std::string> &months_result);
+
+    void get_days(const std::string& collection_name, const std::string& r_year, std::string r_month, std::vector<std::string> &days_result);
+    void get_days_OLD(std::string collection_name, std::string r_year, std::string r_month, std::vector<std::string> &days_result);
+
+    void get_granule_ids(const std::string& collection_name,
+                         const std::string& r_year,
+                         const std::string &r_month,
+                         const std::string &r_day,
+                         std::vector<std::string> &granule_ids);
+
+    void get_granule_ids_OLD(std::string collection_name,
+                             std::string r_year,
+                             std::string r_month,
+                             std::string r_day,
+                             std::vector<std::string> &granules_ids);
+
+    void get_granules(const std::string& collection_name,
+                      const std::string &r_year,
+                      const std::string &r_month,
+                      const std::string &r_day,
+                      std::vector<cmr::Granule *> &granule_objs);
+
+    void get_granules_OLD(std::string collection_name,
+                          std::string r_year,
+                          std::string r_month,
+                          std::string r_day,
+                          std::vector<cmr::Granule *> &granule_objs);
+
     void get_collection_ids(std::vector<std::string> &collection_ids);
-    unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
+
+    unsigned long granule_count(const std::string &collection_name,
+                                const std::string &r_year,
+                                const std::string &r_month,
+                                const std::string &r_day);
+
+    unsigned long granule_count_OLD(std::string collection_name,
+                                    std::string r_year,
+                                    std::string r_month,
+                                    std::string r_day);
+
+
     cmr::Granule *get_granule(const std::string path);
     cmr::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
 

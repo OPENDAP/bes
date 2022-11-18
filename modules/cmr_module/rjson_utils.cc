@@ -25,6 +25,7 @@
 #include <sstream>
 #include <fstream>
 
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
@@ -54,9 +55,21 @@ namespace cmr {
  * parser to populate the parameter 'd'
  *
  * @param url The URL of the JSON document to parse.
- * @param doc The document that will hopd the parsed result.
+ * @return The json document parsed from the source URL response..
  *
  */
+json rjson_utils::get_as_json(const string &url)
+{
+    BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
+    shared_ptr<http::url> target_url(new http::url(url));
+    http::RemoteResource remoteResource(target_url);
+    remoteResource.retrieveResource();
+    std::ifstream f(remoteResource.getCacheFileName());
+    json data = json::parse(f);
+    return data;
+}
+
+
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
@@ -77,22 +90,6 @@ rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     fclose(fp);
 }
 
-json rjson_utils::get_as_json(const string &url)
-{
-    BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    shared_ptr<http::url> target_url(new http::url(url));
-    http::RemoteResource remoteResource(target_url);
-    remoteResource.retrieveResource();
-    if(BESDebug::IsSet(MODULE)){
-        string cmr_hits = remoteResource.get_http_response_header("cmr-hits");
-        stringstream msg(prolog);
-        msg << "CMR-Hits: "<< cmr_hits << endl;
-        *(BESDebug::GetStrm()) << msg.str();
-    }
-    std::ifstream f(remoteResource.getCacheFileName());
-    json data = json::parse(f);
-    return data;
-}
 
 
 

@@ -59,6 +59,31 @@
 
 #define CMR_TEMPORAL_NAVIGATION_FACET_KEY "temporal"
 
+#define CMR_V2_TEMPORAL_FACET_TITLE_VALUE "Temporal"
+#define CMR_V2_FEED_KEY "feed"
+#define CMR_V2_ENTRY_KEY "entry"
+#define CMR_V2_FACETS_KEY "facets"
+#define CMR_V2_HAS_CHILDREN_KEY "has_children"
+#define CMR_V2_CHILDREN_KEY "children"
+#define CMR_V2_TITLE_KEY "title"
+#define CMR_V2_YEAR_TITLE_VALUE "Year"
+#define CMR_V2_MONTH_TITLE_VALUE "Month"
+#define CMR_V2_DAY_TITLE_VALUE "Day"
+#define CMR_V2_TEMPORAL_TITLE_VALUE "Temporal"
+
+#define CMR_GRANULE_ID_KEY "id"
+#define CMR_GRANULE_SIZE_KEY "granule_size"
+#define CMR_GRANULE_LMT_KEY "updated"
+#define CMR_GRANULE_LINKS_KEY "links"
+#define CMR_GRANULE_LINKS_REL_DATA_ACCES "http://esipfed.org/ns/fedsearch/1.1/data#"
+#define CMR_GRANULE_LINKS_REL_METADATA_ACCESS "http://esipfed.org/ns/fedsearch/1.1/data#"
+#define CMR_GRANULE_LINKS "links"
+#define CMR_GRANULE_LINKS_REL "rel"
+#define CMR_GRANULE_LINKS_HREFLANG "hreflang"
+#define CMR_GRANULE_LINKS_HREF "href"
+
+
+
 
 #define MODULE CMR_NAME
 

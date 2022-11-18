@@ -234,7 +234,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
             vector<string> days;
 
             BESDEBUG(MODULE, prolog << "Getting day nodes for collection: " << collection_id << " year: " << year << " month: " << month << endl);
-            cmrApi.get_days(collection_id, year, month, days);
+            cmrApi.get_days_OLD(collection_id, year, month, days);
             for(auto & day : days){
                 auto *catalogItem = new CatalogItem();
                 catalogItem->set_type(CatalogItem::node);
