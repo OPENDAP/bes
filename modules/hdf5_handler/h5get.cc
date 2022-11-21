@@ -52,6 +52,7 @@
 #include "HDF5RequestHandler.h"
 
 #include <BESDebug.h>
+#include <BESSyntaxUserError.h>
 #include <math.h>
 #include <sstream>
 
@@ -1203,10 +1204,15 @@ BaseType *Get_bt(const string &vname,
                       btp = new HDF5UInt64(vname,vpath, dataset);
                 }
                 else {
-                    throw
-                    InternalErr(__FILE__, __LINE__,
-                                string("Unsupported HDF5 64-bit Integer type:")
-                                + vname);
+                    /*string err_msg = "Unsupported HDF5 64-bit Integer type:";
+                    throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);*/
+                    string err_msg;
+                    if(sign == H5T_SGN_2)
+                        err_msg = invalid_type_error_msg("Int64");
+                    else
+                        err_msg = invalid_type_error_msg("UInt64");
+
+                    throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
                 }
             }
         }
@@ -2546,3 +2552,14 @@ string handle_string_special_characters_in_path(const string &instr) {
     return outstr;
 }
 
+string invalid_type_error_msg(
+        string var_type
+){
+    stringstream msg;
+
+    msg << "Your request was for a response that uses the DAP2 data model. ";
+    msg << "This dataset contains variables whose data type ( "<< var_type << " ) is not compatible with that data model, causing this request to FAIL. ";
+    msg << "You may try constraining your request to elide the problematic data type or ask for a different encoding such as NetCDF4 or DAP4 binary response encodings.";
+
+    return msg.str();
+}
