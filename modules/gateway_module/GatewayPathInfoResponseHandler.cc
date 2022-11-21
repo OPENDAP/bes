@@ -175,7 +175,7 @@ void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
     bool isData = false;
 
     // If the valid path is an empty string then we KNOW it's not a dataset
-    if (validPath.length() != 0) {
+    if (validPath.size() != 0) {
 
         // Get the catalog entry.
         BESCatalogEntry *entry = 0;
@@ -350,7 +350,7 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
         else {
             fullpath = BESUtil::assemblePath(fullpath, rem.substr(0, slash), true);
             checking = BESUtil::assemblePath(validPath, rem.substr(0, slash), true);
-            rem = rem.substr(slash + 1, rem.length() - slash);
+            rem = rem.substr(slash + 1, rem.size() - slash);
         }
 
         BESDEBUG(SPI_DEBUG_KEY,
@@ -411,7 +411,7 @@ void GatewayPathInfoResponseHandler::eval_resource_path(const string &resource_p
                         BESDEBUG(SPI_DEBUG_KEY,
                             "GatewayPathInfoResponseHandler::" << __func__ << "() - basename: "<< basename << endl);
 
-                        string candidate_remainder = remainder.substr(basename.length());
+                        string candidate_remainder = remainder.substr(basename.size());
                         BESDEBUG(SPI_DEBUG_KEY,
                             "GatewayPathInfoResponseHandler::" << __func__ << "() - candidate_remainder: "<< candidate_remainder << endl);
 

@@ -25,6 +25,7 @@
 #include <sstream>
 #include <memory>
 #include <iterator>
+#include <unordered_set>
 
 #include <cstdlib>
 
@@ -37,6 +38,7 @@
 
 #include "h5common.h"   // This is in the hdf5 handler
 
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
@@ -48,6 +50,7 @@
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
+#include "DmrppArray.h"
 
 #if 0
 #define H5S_MAX_RANK    32
@@ -81,6 +84,7 @@ namespace build_dmrpp_util {
 bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 #define VERBOSE(x) do { if (verbose) (x); } while(false)
+#define prolog std::string("# build_dmrpp::").append(__func__).append("() - ")
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
@@ -103,9 +107,14 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
-string h5_filter_name(int type) {
+/**
+ * Converts the H5Z_filter_t to a readable string.
+ * @param filter_type an H5Z_filter_t representing the filter_type
+ * @return
+ */
+string h5_filter_name(H5Z_filter_t filter_type) {
     string name;
-    switch(type) {
+    switch(filter_type) {
         case H5Z_FILTER_NONE:
             name = "H5Z_FILTER_NONE";
             break;
@@ -129,14 +138,60 @@ string h5_filter_name(int type) {
             break;
         default:
         {
-            ostringstream oss("ERROR! Unknown HDF5 FILTER! type: ", std::ios::ate);
-            oss << type;
-            name = oss.str();
-            break;
+            ostringstream oss("ERROR! Unknown HDF5 FILTER (H5Z_filter_t) type: ", std::ios::ate);
+            oss << filter_type;
+            throw BESInternalError(oss.str(),__FILE__,__LINE__);
         }
     }
     return name;
 }
+
+/**
+ * Safely creates an hdf5 plist for the dataset.
+ * @param dataset
+ * @return A new plist built by H5Dget_create_plist()
+ */
+hid_t create_h5plist(hid_t dataset){
+    hid_t plist_id;
+    // Get creation properties list
+    plist_id = H5Dget_create_plist(dataset);
+    if ( plist_id < 0 )
+        throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
+    return plist_id;
+}
+
+/**
+ * Safely converts the BaseType pointer btp to a DmrppCommon pointer.
+ * @param btp
+ * @return
+ */
+DmrppCommon *toDC(BaseType *btp){
+    auto *dc = dynamic_cast<DmrppCommon *>(btp);
+    if (!dc) {
+        stringstream msg;
+        msg << "ERROR: Expected a BaseType that was also a DmrppCommon instance.";
+        msg << "(variable_name: "<< ((btp)?btp->name():"unknown") << ").";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    return dc;
+}
+
+/**
+ * Safely converts the BaseType pointer btp to a DmrppCommon pointer.
+ * @param btp
+ * @return
+ */
+DmrppArray *toDA(BaseType *btp){
+    auto *da = dynamic_cast<DmrppArray *>(btp);
+    if (!da) {
+        stringstream msg;
+        msg << "ERROR: Expected a BaseType that was also a DmrppArray instance.";
+        msg << "(variable_name: "<< ((btp)?btp->name():"unknown") << ").";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+    return da;
+}
+
 
 /**
  * @brief Set compression info
@@ -145,11 +200,11 @@ string h5_filter_name(int type) {
  * @param dc A pointer to the DmrppCommon instance for that dataset_id
  */
 static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
-    hid_t plist_id = H5Dget_create_plist(dataset_id);
+    hid_t plist_id = create_h5plist(dataset_id);
 
     try {
         int numfilt = H5Pget_nfilters(plist_id);
-        VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
+        VERBOSE(cerr << prolog << "Number of filters associated with dataset: " << numfilt << endl);
         string filters;
 
         for (int filter = 0; filter < numfilt; filter++) {
@@ -157,7 +212,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
             unsigned int flags, filter_info;
             H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts,
                                                       nullptr, 0, nullptr, &filter_info);
-            VERBOSE(cerr << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
+            VERBOSE(cerr << prolog << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
                     filters.append("deflate ");
@@ -175,40 +230,48 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
             }
         }
+        H5Pclose(plist_id);
+
         //trimming trailing space from compression (aka filter) string
-        filters = filters.substr(0, filters.length() - 1);
+        filters = filters.substr(0, filters.size() - 1);
         dc->set_filter(filters);
     }
     catch (...) {
         H5Pclose(plist_id);
         throw;
     }
-
-    H5Pclose(plist_id);
 }
 
+
+/**
+ *
+ * @param dataset_id
+ * @return
+ */
 bool
 is_hdf5_fill_value_defined(hid_t dataset_id)
 {
-    hid_t plist_id;
 
     // Suppress errors to stderr.
     H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
 
-    // Get creation properties list
-    if ( (plist_id = H5Dget_create_plist(dataset_id)) < 0 )
-        throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
+    auto plist_id = create_h5plist(dataset_id);
 
-    // How the fill value is defined?
-    H5D_fill_value_t status;
-    if ( (H5Pfill_value_defined(plist_id, &status)) < 0 ) {
+    try {
+        // How the fill value is defined?
+        H5D_fill_value_t status;
+        if ((H5Pfill_value_defined(plist_id, &status)) < 0) {
+            H5Pclose(plist_id);
+            throw BESInternalError("Unable to access HDF5 Fillvalue information.", __FILE__, __LINE__);
+        }
         H5Pclose(plist_id);
-        throw BESInternalError("Unable to access HDF5 Fillvalue information.", __FILE__, __LINE__);
+        return status != H5D_FILL_VALUE_UNDEFINED;
+    }
+    catch (...) {
+        H5Pclose(plist_id);
+        throw;
     }
 
-    H5Pclose(plist_id);
-
-    return status != H5D_FILL_VALUE_UNDEFINED;
 }
 
 /**
@@ -294,13 +357,13 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
  * @param dataset_id
  * @return The string representation of the HDF5 Fill Value
  */
-string get_hdf5_fill_value(hid_t dataset_id)
+string get_hdf5_fill_value_str(hid_t dataset_id)
 {
     // Suppress errors to stderr.
     H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
 
     // Get creation properties list
-    hid_t plist_id = H5Dget_create_plist(dataset_id);
+    hid_t plist_id = create_h5plist(dataset_id);
     if (plist_id  < 0 )
         throw BESInternalError("Unable to open HDF5 dataset id.", __FILE__, __LINE__);
 
@@ -314,7 +377,6 @@ string get_hdf5_fill_value(hid_t dataset_id)
             throw BESInternalError("Unable to access HDF5 Fill Value.", __FILE__, __LINE__);
 
         H5Pclose(plist_id);
-
         return get_value_as_string(dtype_id, value);
     }
     catch (...) {
@@ -322,6 +384,540 @@ string get_hdf5_fill_value(hid_t dataset_id)
         throw;
     }
 }
+
+
+/**
+ * Converts the hdf5 string padding scheme str_pad to an instance of the
+ * string_pad_type enumeration..
+ * @param str_pad
+ * @return
+ */
+string_pad_type convert_h5_str_pad_type(const H5T_str_t str_pad){
+    string_pad_type pad_type;
+    switch(str_pad){
+        case H5T_STR_SPACEPAD:
+            pad_type = dmrpp::space_pad;
+            break;
+
+        case H5T_STR_NULLTERM:
+            pad_type = dmrpp::null_term;
+            break;
+
+        case H5T_STR_NULLPAD:
+            pad_type = dmrpp::null_pad;
+            break;
+
+        default:
+        {
+            stringstream msg;
+            msg << "ERROR: Received unrecognized value for H5T_str_t: " << str_pad << endl;
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+    }
+    return pad_type;
+}
+
+/**
+ * Determines string padding schemed used by the passed dataset and encodes it as an instance of the
+ * string_pad_type enumeration..
+ * If the dataset does not have a string padding scheme in place then an exception will be thrown.
+ * @param dataset
+ * @return
+ */
+string_pad_type get_pad_type(const hid_t dataset) {
+    hid_t h5_type = H5Dget_type(dataset);
+    if(h5_type < 0){
+        stringstream msg;
+        msg << "ERROR: H5Dget_type() failed. returned: " << h5_type;
+        throw BESInternalError(msg.str(),__FILE__, __LINE__);
+    }
+    H5T_str_t str_pad = H5Tget_strpad(h5_type);
+    if(str_pad < 0) {
+        stringstream msg;
+        msg << "ERROR: H5Tget_strpad() failed. returned: " << str_pad;
+        throw BESInternalError(msg.str(),__FILE__, __LINE__);
+    }
+    return convert_h5_str_pad_type(str_pad);
+}
+
+
+/**
+ * @brief @TODO THIS IS A DUMMY FUNCTION AND NOT AN ACTUAL IMPLEMENTATION
+ * @param dataset
+ * @param da
+ */
+static void add_vlen_str_array_info(hid_t dataset, DmrppArray *da){
+    string ons_str="0:26,26:35,35:873,873:5000";
+    da->set_ons_string(ons_str);
+    da->set_is_vlsa(true);
+}
+
+
+/**
+ * Adds the fixed length string array information to the array variable array_var. If the array_var is not an
+ * array is not an array of strings, or if the string array is not a fixed length string array (i.e. it's a variable
+ * length string array) the this method is a no-op, nothing is done.
+ *
+ * @param dataset_id The hdf5 dataset reference for this dataset
+ * @param array_var A point to the corresponding DmrppArray into which the information will be added.
+ */
+void add_fixed_length_string_array_state(const hid_t dataset_id, DmrppArray *array_var){
+
+    hid_t h5_type = H5Dget_type(dataset_id);
+    if (H5Tis_variable_str(h5_type) > 0 ){
+        cout << "# The dataset '" << array_var->name() << "' is a variable length string array, skipping..." << endl;
+        return;
+    }
+
+    VERBOSE( cerr << prolog << "Processing the array dariable:  " << array_var->name() << endl);
+    auto data_type = array_var->var()->type();
+
+    if(data_type == libdap::dods_str_c){
+        VERBOSE( cerr << prolog << "The array template variable has type libdap::dods_str_c" << endl);
+
+        array_var->set_is_flsa(true);
+
+        auto pad_type = get_pad_type(dataset_id);
+        VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
+        array_var->set_fixed_length_string_pad(pad_type);
+
+        auto type_size = H5Tget_size(h5_type);
+        VERBOSE( cerr << prolog << "type_size:  " << type_size << endl);
+        array_var->set_fixed_string_length(type_size);
+    }
+}
+
+
+
+/**
+ * Adds special String array state to the passed BaseType variable.
+ *
+ * @param dataset
+ * @param btp
+ */
+static void add_string_array_info(const hid_t dataset, BaseType *btp){
+
+    Type dap_type = btp->type();
+    if(dap_type != dods_array_c){
+        // NOT AN ARRAY SKIPPING...
+        VERBOSE( cerr << prolog << "Variable " << btp->name() << " is not a DAP Array. Skipping..." << endl);
+        return;
+    }
+    auto dap_array = toDA(btp);
+    if (dap_array->var()->type() != dods_str_c) {
+        // NOT A STRING ARRAY SKIPPING...
+        VERBOSE( cerr << prolog << "Variable " << dap_array->name() << " is an Array of " << dap_array->var()->type_name() << " not String. Skipping..." << endl);
+        return;
+    }
+
+    auto h5_dataset_type = H5Dget_type(dataset);
+    if(h5_dataset_type == H5I_INVALID_HID){
+        throw BESInternalError("ERROR: H5Dget_type() failed for variable '" + dap_array->name() + "'",
+                               __FILE__, __LINE__);
+    }
+
+    auto h5_type_class = H5Tget_class(h5_dataset_type);
+    if(h5_type_class != H5T_STRING){
+        VERBOSE( cerr << prolog << "H5Dataset " << dap_array->name() << " is not a String type (type: " << h5_type_class << "). Skipping..." << endl);
+        return;
+    }
+
+    hid_t dspace = H5Dget_space(dataset);
+    if (H5S_SCALAR == H5Sget_simple_extent_type(dspace)){
+        VERBOSE( cerr << prolog << "H5Dataset " << dap_array->name() << " is a scalar type. Skipping..." << endl);
+        return;
+    }
+
+    if (H5Tis_variable_str(h5_dataset_type) > 0) {
+        VERBOSE( cerr << prolog << "Found variable length string array: " << dap_array->name() << endl);
+        add_vlen_str_array_info( dataset, dap_array);
+    }
+    else {
+        VERBOSE( cerr << prolog << "Found fixed length string array: " << dap_array->name() << endl);
+        add_fixed_length_string_array_state( dataset,  dap_array);
+    }
+}
+
+/**
+ * Returns a string representing the byte order for the dariable
+ * @param dataset The dataset from which to acquire the byte order.
+ * @return a string representing the byte order
+ */
+string byte_order_str(hid_t dataset){
+    string byte_order_string;
+    hid_t dtypeid = H5Dget_type(dataset);
+    auto b_order = H5Tget_order(dtypeid);
+    switch (b_order) {
+        case H5T_ORDER_LE:
+            byte_order_string = "LE";
+            break;
+        case H5T_ORDER_BE:
+            byte_order_string = "BE";
+            break;
+        case H5T_ORDER_NONE:
+            break;
+        default:
+            // unsupported enumerations: H5T_ORDER_[ERROR,VAX,MIXED]
+            ostringstream oss("Unsupported HDF5 dataset byteOrder: ", std::ios::ate);
+            oss << b_order << ".";
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+    return byte_order_string;
+}
+
+
+
+/**
+ * Processes the hdf5 storage information for a variable whose data is stored in the H5D_CONTIGUOUS storage layout.
+ * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
+ * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
+ */
+void process_contiguous_layout_dariable(hid_t dataset, BaseType *btp){
+    VERBOSE(cerr << prolog << "Storage:   contiguous" << endl);
+
+    haddr_t cont_addr = H5Dget_offset(dataset);
+    hsize_t cont_size = H5Dget_storage_size(dataset);
+    string byte_order = byte_order_str(dataset);
+
+    VERBOSE(cerr << prolog << "     Addr: " << cont_addr << endl);
+    VERBOSE(cerr << prolog << "     Size: " << cont_size << endl);
+    VERBOSE(cerr << prolog << "byteOrder: " << byte_order << endl);
+
+    if (cont_size > 0) {
+        auto dc = toDC(btp);
+        dc->add_chunk(byte_order, cont_size, cont_addr, "");
+    }
+
+}
+
+
+/**
+ * Processes the hdf5 storage information for a variable whose data is stored in the H5D_CHUNKED storage layout.
+ * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
+ * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
+ */
+void process_chunked_layout_dariable(hid_t dataset, BaseType *btp) {
+
+    DmrppCommon *dc = toDC(btp);
+    hid_t fspace_id = H5Dget_space(dataset);
+    int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
+    string byte_order = byte_order_str(dataset);
+
+    hsize_t num_chunks = 0;
+    herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
+    if (status < 0) {
+        throw BESInternalError("Could not get the number of chunks for variable "+ btp->name(), __FILE__, __LINE__);
+    }
+
+    VERBOSE(cerr << prolog << "Storage: chunked." << endl);
+    VERBOSE(cerr << prolog << "Number of chunks is: " << num_chunks << endl);
+
+    set_filter_information(dataset, dc);
+
+    // Get chunking information: rank and dimensions
+    vector<hsize_t> chunk_dims(dataset_rank);
+
+    unsigned int chunk_rank = 0;
+    hid_t plist_id = create_h5plist(dataset);
+    try {
+        chunk_rank = H5Pget_chunk(plist_id, dataset_rank, chunk_dims.data());
+        H5Pclose(plist_id);
+    }
+    catch (...) {
+        H5Pclose(plist_id);
+        throw;
+    }
+
+    if (chunk_rank != dataset_rank)
+        throw BESNotFoundError(
+                "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
+                __LINE__);
+
+    dc->set_chunk_dimension_sizes(chunk_dims);
+
+    for (unsigned int i = 0; i < num_chunks; ++i) {
+        vector<hsize_t> chunk_coords(dataset_rank);
+        haddr_t addr = 0;
+        hsize_t size = 0;
+
+        status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
+                                   nullptr, &addr, &size);
+        if (status < 0) {
+            VERBOSE(cerr << "ERROR" << endl);
+            throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
+        }
+
+        VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
+        dc->add_chunk(byte_order, size, addr, chunk_coords);
+    }
+}
+
+H5D_layout_t get_h5_storage_layout(hid_t dataset){
+    H5D_layout_t layout_type;
+    hid_t plist_id = create_h5plist(dataset);
+    try {
+        layout_type = H5Pget_layout(plist_id);
+    }
+    catch(...){
+        H5Pclose(plist_id);
+        throw;
+    }
+    return layout_type;
+}
+
+void process_compact_layout_scalar(hid_t dataset, BaseType *btp)
+{
+
+    // The variable is a scalar, not an array
+
+    VERBOSE(cerr << prolog << "Processing scalar dariable. Storage: compact" << endl);
+    vector<uint8_t> values;
+
+    hid_t dtypeid = H5Dget_type(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
+
+    auto type_size = H5Tget_size(dtypeid);
+    VERBOSE(cerr << prolog << "   H5Tget_size(): " << type_size << " (The size of the datatype in bytes)" << endl);
+
+    size_t compact_storage_size = H5Dget_storage_size(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_storage_size(): " << compact_storage_size << " (The amount of storage space, in bytes, or 0.)" << endl);
+    if (compact_storage_size == 0) {
+        throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+    }
+
+    Type dap_type = btp->type();
+    unsigned long long memRequired = 0;
+    if (dap_type == dods_str_c)
+        // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
+        // We know the length is 1 for a scalar string.
+        memRequired = type_size;
+    else
+        memRequired = btp->length() * type_size;
+
+    // For variable length string, the storage size and the datatype size is not the same.
+    // And we don't need to know then since it is a variable length string.
+    if (H5Tis_variable_str(dtypeid) == 0) {
+        if (compact_storage_size != memRequired)
+            throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__,
+                                   __LINE__);
+    }
+
+    switch (dap_type)
+    {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_float32_c:
+        case dods_float64_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        {
+            values.resize(memRequired);
+            get_data(dataset, reinterpret_cast<void *>(values.data()));
+            btp->set_read_p(true);
+            btp->val2buf(reinterpret_cast<void *>(values.data()));
+            break;
+        }
+
+        case dods_url_c:
+        case dods_str_c:
+        {
+            auto str = dynamic_cast<libdap::Str *>(btp);
+            if (H5Tis_variable_str(dtypeid) > 0) {
+                vector<string> finstrval;   // passed by reference to read_vlen_string
+                // @TODO Why push an empty string into the first array position? WHY?
+                finstrval.push_back("");
+                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                string vlstr = finstrval[0];
+                str->set_value(vlstr);
+                str->set_read_p(true);
+            }
+            else {
+                // A single string for scalar.
+                values.resize(memRequired);
+                get_data(dataset, reinterpret_cast<void *>(values.data()));
+                string fstr(values.begin(), values.end());
+                str->set_value(fstr);
+                str->set_read_p(true);
+            }
+            break;
+        }
+
+        default:
+            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
+    }
+}
+
+
+void process_compact_flsa(hid_t dataset, BaseType *btp){
+
+    add_string_array_info(dataset, btp);
+
+    auto pad_type = get_pad_type(dataset);
+    VERBOSE( cerr << prolog << "pad_type:  " << pad_type << endl);
+
+    auto h5_type = H5Dget_type(dataset);
+    VERBOSE( cerr << prolog << "H5Dget_type():  " << h5_type << endl);
+
+    // Since this is a fixed length string, the H5Tget_size() returns the
+    // length in characters (i.e. bytes) of the fixed length string
+    auto fls_length = H5Tget_size(h5_type);
+    VERBOSE( cerr << prolog << "fls_length:  " << fls_length << endl);
+
+    auto memRequired = btp->length_ll() * fls_length;
+
+
+    auto array = toDA(btp);
+    auto &string_buf = array->compact_str_buffer();
+    string_buf.resize(memRequired);
+    get_data(dataset, reinterpret_cast<void *>(string_buf.data()));
+    array->set_read_p(true);
+}
+
+void process_compact_layout_array(hid_t dataset, BaseType *btp) {
+
+    VERBOSE(cerr << prolog << "BEGIN (" << btp->type_name() << " " << btp->name() << ")" << endl);
+    vector<uint8_t> values;
+
+    hid_t dtypeid = H5Dget_type(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_type(): " << dtypeid << endl);
+
+    auto type_size = H5Tget_size(dtypeid);
+    VERBOSE(cerr << prolog << "   H5Tget_size(): " << type_size << " (The size of the datatype in bytes)" << endl);
+
+    size_t compact_storage_size = H5Dget_storage_size(dataset);
+    VERBOSE(cerr << prolog << "   H5Dget_storage_size(): " << compact_storage_size << " (The amount of storage space, in bytes, or 0.)" << endl);
+    if (compact_storage_size == 0) {
+        throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
+    }
+
+    Type dap_type = btp->type();
+    unsigned long long memRequired = 0;
+    if (dap_type == dods_str_c)
+        // The string length is 0 if no string has been stored in the internal buffer. So we cannot use length()
+        // We know the length is 1 for a scalar string.
+        memRequired = type_size;
+    else
+        memRequired = btp->length() * type_size;
+
+    // For variable length string, the storage size and the datatype size is not the same.
+    // And we don't need to know then since it is a variable length string.
+    if (H5Tis_variable_str(dtypeid) == 0) {
+        if (compact_storage_size != memRequired)
+            throw BESInternalError("Compact storage size does not match D4Array or scalar.", __FILE__,
+                                   __LINE__);
+    }
+
+    auto array = toDA(btp);
+    switch (array->var()->type()) {
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_float32_c:
+        case dods_float64_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+        {
+            values.resize(memRequired);
+            get_data(dataset, reinterpret_cast<void *>(values.data()));
+            array->set_read_p(true);
+            array->val2buf(reinterpret_cast<void *>(values.data()));
+            break;
+
+        }
+        case dods_url_c:
+        case dods_str_c:
+        {
+            if (H5Tis_variable_str(dtypeid) > 0) {
+                // Variable length string case.
+                vector<string> finstrval;   // passed by reference to read_vlen_string
+                // @TODO Why push an empty string into the first array position? WHY?
+                finstrval.push_back("");
+                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
+                array->set_value(finstrval, (int) finstrval.size());
+                array->set_read_p(true);
+            }
+            else {
+                // Fixed length string case.
+                process_compact_flsa(dataset, btp);
+            }
+            break;
+        }
+
+        default:
+            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
+    }
+}
+
+
+/**
+ * Processes a variable whose data is stored in the H5D_COMPACT storage layout.
+ * @param dataset The hdf5 dataset that is mate to the BaseType instance btp.
+ * @param btp The dap BaseType variable which is to hold the information gleand from the hdf5 dataset.
+ */
+void process_compact_layout_dariable(hid_t dataset, BaseType *btp){
+
+    VERBOSE(cerr << prolog << "Processing Compact Storage Layout Dariable" << endl);
+    // -         -        -       -      -     -    -   -  - -:- -  -   -    -     -      -       -        -         -
+    // This next block is all the QC stuff "sanitize your inputs"
+    //
+    auto dc = toDC(btp); // throws if no match
+
+    Type dap_type = btp->type();
+    if ( dap_type == dods_structure_c
+         || dap_type == dods_sequence_c
+         || dap_type == dods_grid_c) {
+        stringstream msg;
+        msg << "The variable " << btp->FQN() << " is an instance of " << btp->type_name() << ", and utilizes ";
+        msg << "the hdf5 compact storage layout (H5D_COMPACT). ";
+        msg << "Only arrays of string and numeric data types are supported for the compact storage layout.";
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    auto layout_type = get_h5_storage_layout(dataset);
+    if (layout_type != H5D_COMPACT)
+        throw BESInternalError(string("ERROR: The dataset is not stored with compact layout."), __FILE__, __LINE__);
+
+    // -         -        -       -      -     -    -   -  - -:- -  -   -    -     -      -       -        -         -
+    // Now the QC stuff is finished, so we go to work on the compact layout variable.
+    //
+
+    dc->set_compact(true);
+
+    if (dap_type == dods_array_c) {
+        process_compact_layout_array(dataset, btp);
+    }
+    else {
+        process_compact_layout_scalar(dataset, btp);
+    }
+}
+
+
+/**
+ * Adds hdf5 FillValue information (if any)to the passed variable btp
+ * @param dataset
+ * @param btp
+ */
+void set_fill_value(hid_t dataset, BaseType *btp){
+    bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
+    if (fill_value_defined) {
+        string fill_value = get_hdf5_fill_value_str(dataset);
+        auto dc = toDC(btp);
+        dc->set_uses_fill_value(fill_value_defined);
+        dc->set_fill_value_string(fill_value);
+    }
+}
+
 
 /**
  * @brief Get chunk information for a HDF5 dataset in a file
@@ -333,200 +929,76 @@ string get_hdf5_fill_value(hid_t dataset_id)
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
-    std::string byteOrder;
-    H5T_order_t byte_order;
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp) {
 
-    // Added support for HDF5 Fill Value. jhrg 4/22/22
-    bool fill_value_defined = is_hdf5_fill_value_defined(dataset);
-    if (fill_value_defined) {
-        string fill_value = get_hdf5_fill_value(dataset);
-        dc->set_uses_fill_value(fill_value_defined);
-        dc->set_fill_value_string(fill_value);
+    if(verbose) {
+        string type_name = btp->type_name();
+        if (btp->type() == dods_array_c) {
+            auto array = toDA(btp);
+            type_name = array->var()->type_name();
+        }
+        cerr << prolog << "Processing dataset/variable: " << type_name << " " << btp->name() << endl;
     }
+    // Added support for HDF5 Fill Value. jhrg 4/22/22
+    set_fill_value(dataset, btp);
 
+    hid_t plist_id = create_h5plist(dataset);
+    uint8_t layout_type = 0;
     try {
-        hid_t dcpl = H5Dget_create_plist(dataset);
-        uint8_t layout_type = H5Pget_layout(dcpl);
-
-        hid_t fspace_id = H5Dget_space(dataset);
-        hid_t dtypeid = H5Dget_type(dataset);
-
-        byte_order = H5Tget_order(dtypeid);
-        switch (byte_order) {
-            case H5T_ORDER_LE:
-                byteOrder = "LE";
-                break;
-            case H5T_ORDER_BE:
-                byteOrder = "BE";
-                break;
-            case H5T_ORDER_NONE:
-                break;
-            default:
-                // unsupported enumerations: H5T_ORDER_[ERROR,VAX,MIXED]
-                ostringstream oss("Unsupported HDF5 dataset byteOrder: ", std::ios::ate);
-                oss << byte_order << ".";
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-
-        int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
-
-        size_t dsize = H5Tget_size(dtypeid);
-
-        /* layout_type:  1 contiguous 2 chunk 3 compact */
-        switch (layout_type) {
-
-            case H5D_CONTIGUOUS: { /* Contiguous storage */
-                VERBOSE(cerr << "Storage:   contiguous" << endl);
-
-                haddr_t cont_addr = H5Dget_offset(dataset);
-                hsize_t cont_size = H5Dget_storage_size(dataset);
-
-                VERBOSE(cerr << "     Addr: " << cont_addr << endl);
-                VERBOSE(cerr << "     Size: " << cont_size << endl);
-                VERBOSE(cerr << "byteOrder: " << byteOrder << endl);
-
-                if (cont_size > 0 && dc) {
-                    dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
-                }
-                break;
-            }
-            case H5D_CHUNKED: { /*chunking storage */
-                hsize_t num_chunks = 0;
-                herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
-                if (status < 0) {
-                    throw BESInternalError("Could not get the number of chunks", __FILE__, __LINE__);
-                }
-
-                VERBOSE(cerr << "Storage:   chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is: " << num_chunks << endl);
-
-                if (dc)
-                    set_filter_information(dataset, dc);
-
-                // Get chunking information: rank and dimensions
-                vector<hsize_t> chunk_dims(dataset_rank);
-                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, chunk_dims.data());
-                if (chunk_rank != dataset_rank)
-                    throw BESNotFoundError(
-                            "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
-                            __LINE__);
-
-                if (dc) dc->set_chunk_dimension_sizes(chunk_dims);
-
-                for (unsigned int i = 0; i < num_chunks; ++i) {
-                    vector<hsize_t> chunk_coords(dataset_rank);
-                    haddr_t addr = 0;
-                    hsize_t size = 0;
-
-                    status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
-                                               nullptr, &addr, &size);
-                    if (status < 0) {
-                        VERBOSE(cerr << "ERROR" << endl);
-                        throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
-                    }
-
-                    VERBOSE(cerr << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-                    if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
-                }
-
-                break;
-            }
-
-            case H5D_COMPACT: { /* Compact storage */
-                VERBOSE(cerr << "Storage: compact" << endl);
-
-                size_t comp_size = H5Dget_storage_size(dataset);
-                VERBOSE(cerr << "   Size: " << comp_size << endl);
-
-                if (comp_size == 0) {
-                    throw BESInternalError("Cannot obtain the compact storage size.", __FILE__, __LINE__);
-                }
-
-                vector<uint8_t> values;
-
-                auto btp = dynamic_cast<Array *>(dc);
-                if (btp != nullptr) {
-                    dc->set_compact(true);
-                    size_t memRequired = btp->length() * dsize;
-
-                    if (comp_size != memRequired) {
-                        throw BESInternalError("Compact storage size does not match D4Array.", __FILE__, __LINE__);
-                    }
-
-                    switch (btp->var()->type()) {
-                        case dods_byte_c:
-                        case dods_char_c:
-                        case dods_int8_c:
-                        case dods_uint8_c:
-                        case dods_int16_c:
-                        case dods_uint16_c:
-                        case dods_int32_c:
-                        case dods_uint32_c:
-                        case dods_float32_c:
-                        case dods_float64_c:
-                        case dods_int64_c:
-                        case dods_uint64_c: {
-                            values.resize(memRequired);
-                            get_data(dataset, reinterpret_cast<void *>(values.data()));
-                            btp->set_read_p(true);
-                            btp->val2buf(reinterpret_cast<void *>(values.data()));
-                            break;
-
-                        }
-
-                        case dods_str_c: {
-                            if (H5Tis_variable_str(dtypeid) > 0) {
-                                vector<string> finstrval = {""};   // passed by reference to read_vlen_string
-                                read_vlen_string(dataset, 1, nullptr, nullptr, nullptr, finstrval);
-                                btp->set_value(finstrval, (int)finstrval.size());
-                                btp->set_read_p(true);
-                            }
-                            else {
-                                // For this case, the Array is really a single string - check for that
-                                // with the following assert - but is an Array because the string data
-                                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
-                                // a string and load that into a vector<string> (which will be a vector
-                                // of length one). Set that as the value of the Array. Really, this
-                                // value could be stored as a scalar, but that's complicated and client
-                                // software might be expecting an array, so better to handle it this way.
-                                // jhrg 9/17/20
-                                assert(btp->length() == 1);
-                                values.resize(memRequired);
-                                get_data(dataset, reinterpret_cast<void *>(values.data()));
-                                string str(values.begin(), values.end());
-                                vector<string> strings = {str};
-                                btp->set_value(strings, (int)strings.size());
-                                btp->set_read_p(true);
-                            }
-                            break;
-                        }
-
-                        default:
-                            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
-                    }
-
-                }
-                else {
-                    throw BESInternalError("Compact storage variable is not a D4Array.",
-                                           __FILE__, __LINE__);
-                }
-                break;
-            }
-
-            default:
-                ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
-                oss << layout_type << ".";
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
+        layout_type = H5Pget_layout(plist_id);
+        H5Pclose(plist_id);
     }
     catch (...) {
-        H5Dclose(dataset);
+        H5Pclose(plist_id);
         throw;
     }
 
-    H5Dclose(dataset);
+    switch (layout_type) {
+        case H5D_CONTIGUOUS: { /* Contiguous Storage Layout */
+            process_contiguous_layout_dariable(dataset, btp);
+            break;
+        }
+        case H5D_CHUNKED: { /* Chunked Storage Layout */
+            process_chunked_layout_dariable(dataset, btp);
+            break;
+        }
+        case H5D_COMPACT: { /* Compact Storage Layout */
+            process_compact_layout_dariable(dataset,btp);
+            break;
+        }
+        default:
+            ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
+            oss << layout_type << ".";
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
 }
+
+
+/**
+ * Builds a string that represents the variable's DDSish declaration.
+ * @param btp
+ * @return
+ */
+string get_type_decl(BaseType *btp){
+    stringstream type_decl;
+    if(btp->type() == libdap::dods_array_c){
+        auto array = toDA(btp);
+        type_decl << array->var()->type_name() << " " << btp->FQN();
+        for(auto dim_itr = array->dim_begin(); dim_itr!=array->dim_end(); dim_itr++){
+            auto dim = *dim_itr;
+            type_decl << "[";
+            if(!dim.name.empty()){
+                type_decl << dim.name << "=";
+            }
+            type_decl << dim.size << "]";
+        }
+    }
+    else {
+        type_decl << btp->type_name() << " " << btp->FQN();
+    }
+    return type_decl.str();
+}
+
 
 /**
  * @brief Iterate over all the variables in a DMR and get their chunk info
@@ -536,13 +1008,45 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
  * to process all the variables in the DMR
  */
 void get_chunks_for_all_variables(hid_t file, D4Group *group) {
+
+    // netCDF-4 variable can share the same name as a pure dimension name. 
+    // When this case happens, the netCDF-4 will add "_nc4_non_coord_" to the variable name to
+    // distinguish the variable name from the correponding dimension name when storing in the HDF5. 
+    // To emulate netCDF-4 model, the HDF5 handler will remove the "_nc4_non_coord_" from the variable in dmr.
+    // When obtaining this variable's information, we need to use the real HDF5 variable name.
+    // KY 2022-09-11
+    // When the above case occurs, a dimension name of this group must share with a variable name.
+    // So we will find these variables and put them into an unodered set. 
+
+    unordered_set<string> nc4_non_coord_candidate;
+
+    // First obtain  dimension names.
+    unordered_set<string> dimname_list;
+    D4Dimensions *grp_dims = group->dims();
+    
+    if (grp_dims) {
+        for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) 
+            dimname_list.insert((*di)->name());
+    }
+
+    if (dimname_list.empty() == false) {
+        // Then find the nc4_non_coord candidate variables,
+        for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+            if (dimname_list.find((*btp)->name())!=dimname_list.end())   
+                nc4_non_coord_candidate.insert((*btp)->name());
+        }
+    }
+
+
     // variables in the group
-    for (auto v = group->var_begin(), ve = group->var_end(); v != ve; ++v) {
+    for (auto btp = group->var_begin(), ve = group->var_end(); btp != ve; ++btp) {
+        VERBOSE(cerr << prolog << "-------------------------------------------------------" << endl);
+
         // if this variable has a 'fullnamepath' attribute, use that and not the
         // FQN value.
-        D4Attributes *d4_attrs = (*v)->attributes();
+        D4Attributes *d4_attrs = (*btp)->attributes();
         if (!d4_attrs)
-            throw BESInternalError("Expected to find an attribute table for " + (*v)->name() + " but did not.",
+            throw BESInternalError("Expected to find an attribute table for " + (*btp)->name() + " but did not.",
                                    __FILE__, __LINE__);
 
         // Look for the full name path for this variable
@@ -556,19 +1060,21 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         // It's not an error if a DAP variable in a DMR from the hdf5 handler
         // doesn't exist in the file _if_ there's no 'fullnamepath' because
         // that variable was synthesized (likely for CF compliance)
-        hid_t dataset;
+        hid_t dataset = -1;
         if (attr) {
             string FQN;
             if (attr->num_values() == 1)
                 FQN = attr->value(0);
             else
-                FQN = (*v)->FQN();
-            BESDEBUG("dmrpp", "Working on: " << FQN << endl);
-            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0)
-                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                FQN = (*btp)->FQN();
 
-        } else {
+            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+            if (dataset < 0) {
+                throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+            }
+        }
+        else {
             // The current design seems to still prefer to open the dataset when the fullnamepath doesn't exist
             // So go ahead to open the dataset. Continue even if the dataset cannot be open. KY 2019-12-02
             //
@@ -577,19 +1083,43 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             // doesn't exist in the file _if_ there's no 'fullnamepath' because
             // that variable was synthesized (likely for CF compliance)
             H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
-            string FQN = (*v)->FQN();
-            BESDEBUG("dmrpp", "Working on: " << FQN << endl);
-            dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
-            if (dataset < 0)
-                continue;
+            string FQN = (*btp)->FQN();
+            if (nc4_non_coord_candidate.find((*btp)->name()) != nc4_non_coord_candidate.end()) {
+                string real_name_candidate = "_nc4_non_coord_" + (*btp)->name();
+                size_t fqn_last_fslash_pos = (*btp)->FQN().find_last_of("/");
+                string real_path_candidate = (*btp)->FQN().substr(0,fqn_last_fslash_pos+1)+real_name_candidate;
+                dataset = H5Dopen2(file, real_path_candidate.c_str(), H5P_DEFAULT);
+            }
+            
+            VERBOSE(cerr << prolog << "Working on: " << FQN << endl);
+            if (dataset < 0)  {
+                dataset = H5Dopen2(file, FQN.c_str(), H5P_DEFAULT);
+                if (dataset < 0) {
+                   VERBOSE(cerr << prolog << "WARNING: HDF5 dataset '" << FQN << "' cannot be opened." << endl);
+                    // throw BESInternalError("HDF5 dataset '" + FQN + "' cannot be opened.", __FILE__, __LINE__);
+                    continue;
+                }
+            }
         }
 
-        get_variable_chunk_info(dataset, dynamic_cast<DmrppCommon *>(*v));
+        try {
+            VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(*btp) << endl);
+            get_variable_chunk_info(dataset, *btp);
+
+            VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(*btp) << endl);
+            add_string_array_info(dataset, *btp);
+            H5Dclose(dataset);
+        }
+        catch (...) {
+            H5Dclose(dataset);
+            throw;
+        }
     }
 
     // all groups in the group
-    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g)
+    for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
         get_chunks_for_all_variables(file, *g);
+    }
 }
 
 /**
@@ -602,7 +1132,9 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp)
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0) {
-        throw BESNotFoundError(string("Error: HDF5 file '").append(h5_file_name).append("' cannot be opened."), __FILE__, __LINE__);
+        stringstream msg;
+        msg << "Error: HDF5 file '" << h5_file_name << "' cannot be opened." << endl;
+        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
 
     // iterate over all the variables in the DMR

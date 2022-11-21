@@ -318,7 +318,7 @@ public:
             it=keystore.find(key);
             if(it!=keystore.end()){
                 vector<string> values = it->second;
-                if(val.length()==0){
+                if(val.size()==0){
                     CPPUNIT_ASSERT(values.size() == 0);
                 }
                 else {
@@ -366,7 +366,7 @@ int main(int argc, char*argv[])
             case 'h': {     // help - show test names
                 cerr << "Usage: plistT has the following tests:" << endl;
                 const vector<Test*> &tests = KeyValuePairTest::suite()->getTests();
-                unsigned int prefix_len = KeyValuePairTest::suite()->getName().append("::").length();
+                unsigned int prefix_len = KeyValuePairTest::suite()->getName().append("::").size();
                 for (vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                     cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
                 }

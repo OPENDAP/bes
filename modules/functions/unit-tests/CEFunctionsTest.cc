@@ -180,7 +180,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
     {
         try {
             BaseType *btp = 0;
-            function_grid(0, 0, *dds, &btp);
+            function_dap2_grid(0, 0, *dds, &btp);
             CPPUNIT_ASSERT(true);
         }
         catch (Error &e) {
@@ -196,7 +196,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             argv[0] = dds->var("a");
             CPPUNIT_ASSERT(argv[0] && "dds->var should find this");
             BaseType *btp = 0;
-            function_grid(1, argv, *dds, &btp);
+            function_dap2_grid(1, argv, *dds, &btp);
             CPPUNIT_ASSERT("one_argument_not_a_grid_test() should work");
         }
         catch (Error &e) {
@@ -212,7 +212,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             argv[0] = dds->var("lat");
             CPPUNIT_ASSERT(argv[0] && "dds->var should find this, although it is not a grid");
             BaseType *btp = 0;
-            function_grid(1, argv, *dds, &btp);
+            function_dap2_grid(1, argv, *dds, &btp);
             CPPUNIT_ASSERT(!"one_argument_not_a_grid_test() should have failed");
         }
         catch (Error &e) {
@@ -232,7 +232,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[1])->val2buf(&expression);
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_dap2_grid(2, argv, *dds, &btp);
             CPPUNIT_ASSERT(!"map_not_in_grid_test() should have failed");
         }
         catch (Error &e) {
@@ -253,7 +253,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_dap2_grid(2, argv, *dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //Grid &g = dynamic_cast<Grid&>(*argv[0]);
@@ -286,7 +286,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
 
             //function_grid(3, argv, *dds);
             BaseType *btp = 0;
-            function_grid(3, argv, *dds, &btp);
+            function_dap2_grid(3, argv, *dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //Grid &g = dynamic_cast<Grid&>(*function_grid(3, argv, *dds));
@@ -313,7 +313,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_dap2_grid(2, argv, *dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //function_grid(2, argv, *dds);
@@ -347,7 +347,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[2])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(3, argv, *dds, &btp);
+            function_dap2_grid(3, argv, *dds, &btp);
             Grid &g = dynamic_cast<Grid&>(*btp);
 
             //function_grid(3, argv, *dds);
@@ -375,7 +375,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_dap2_grid(2, argv, *dds, &btp);
             //Grid &g = dynamic_cast<Grid&>(*btp);
 
             // function_grid(2, argv, *dds);
@@ -401,7 +401,7 @@ CPPUNIT_TEST_SUITE( CEFunctionsTest );
             dynamic_cast<Str*>(argv[1])->set_read_p(true);
 
             BaseType *btp = 0;
-            function_grid(2, argv, *dds, &btp);
+            function_dap2_grid(2, argv, *dds, &btp);
             //Grid &g = dynamic_cast<Grid&>(*btp);
 
             // function_grid(2, argv, *dds);
@@ -816,7 +816,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: CEFunctionsTest has the following tests:" << endl;
             const std::vector<Test*> &tests = CEFunctionsTest::suite()->getTests();
-            unsigned int prefix_len = CEFunctionsTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = CEFunctionsTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

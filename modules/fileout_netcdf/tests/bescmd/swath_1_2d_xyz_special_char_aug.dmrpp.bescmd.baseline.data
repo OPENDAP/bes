@@ -1,0 +1,134 @@
+netcdf test {
+
+// global attributes:
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.invocation = "/Users/myang6/work/opendap/hyrax-858/bes/modules/dmrpp_module/.libs/build_dmrpp -f swath_1_2d_xyz_special_char_aug.h5 -r swath_1_2d_xyz_special_char_aug.h5.dmr -M" ;
+		:history = "removed date-timex swath_1_2d_xyz_special_char_aug.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"swath_1_2d_xyz_special_char_aug.h5.dmrpp\"}]}]" ;
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: SWATHS {
+
+    group: Swath_1 {
+      dimensions:
+      	Z_Dim = 4 ;
+      	N_Dim = 8 ;
+
+      group: Geolocation_Fields {
+        variables:
+        	float Pressure_1(Z_Dim) ;
+        		Pressure_1:units = "hPa" ;
+        		Pressure_1:fullnamepath = "/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Pressure-1" ;
+        	float Latitude_1(N_Dim) ;
+        		Latitude_1:units = "degrees_north" ;
+        		Latitude_1:fullnamepath = "/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Latitude-1" ;
+        	float Longitude_1(N_Dim) ;
+        		Longitude_1:units = "degrees_east" ;
+        		Longitude_1:fullnamepath = "/HDFEOS/SWATHS/Swath-1/Geolocation Fields/Longitude-1" ;
+        data:
+
+         Pressure_1 = 0, 1, 2, 3 ;
+
+         Latitude_1 = 0, 1, 2, 3, 4, 5, 6, 7 ;
+
+         Longitude_1 = 0, 1, 2, 3, 4, 5, 6, 7 ;
+        } // group Geolocation_Fields
+
+      group: Data_Fields {
+        variables:
+        	float Temperature_1(Z_Dim, N_Dim) ;
+        		Temperature_1:units = "K" ;
+        		Temperature_1:fullnamepath = "/HDFEOS/SWATHS/Swath-1/Data Fields/Temperature-1" ;
+        data:
+
+         Temperature_1 =
+  0, 1, 2, 3, 4, 5, 6, 7,
+  8, 9, 10, 11, 12, 13, 14, 15,
+  16, 17, 18, 19, 20, 21, 22, 23,
+  24, 25, 26, 27, 28, 29, 30, 31 ;
+        } // group Data_Fields
+      } // group Swath_1
+    } // group SWATHS
+  } // group HDFEOS
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 1354 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.17" ;
+  data:
+
+   StructMetadata_0 = "GROUP=SwathStructure\n",
+    "\tGROUP=SWATH_1\n",
+    "\t\tSwathName=\"Swath-1\"\n",
+    "\t\tGROUP=Dimension\n",
+    "\t\t\tOBJECT=Dimension_1\n",
+    "\t\t\t\tDimensionName=\"Z-Dim\"\n",
+    "\t\t\t\tSize=4\n",
+    "\t\t\tEND_OBJECT=Dimension_1\n",
+    "\t\t\tOBJECT=Dimension_2\n",
+    "\t\t\t\tDimensionName=\"N-Dim\"\n",
+    "\t\t\t\tSize=8\n",
+    "\t\t\tEND_OBJECT=Dimension_2\n",
+    "\t\tEND_GROUP=Dimension\n",
+    "\t\tGROUP=DimensionMap\n",
+    "\t\tEND_GROUP=DimensionMap\n",
+    "\t\tGROUP=IndexDimensionMap\n",
+    "\t\tEND_GROUP=IndexDimensionMap\n",
+    "\t\tGROUP=GeoField\n",
+    "\t\t\tOBJECT=GeoField_1\n",
+    "\t\t\t\tGeoFieldName=\"Pressure-1\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"Z-Dim\")\n",
+    "\t\t\t\tMaxdimList=(\"Z-Dim\")\n",
+    "\t\t\tEND_OBJECT=GeoField_1\n",
+    "\t\t\tOBJECT=GeoField_2\n",
+    "\t\t\t\tGeoFieldName=\"Latitude-1\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"N-Dim\")\n",
+    "\t\t\t\tMaxdimList=(\"N-Dim\")\n",
+    "\t\t\tEND_OBJECT=GeoField_2\n",
+    "\t\t\tOBJECT=GeoField_3\n",
+    "\t\t\t\tGeoFieldName=\"Longitude-1\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"N-Dim\")\n",
+    "\t\t\t\tMaxdimList=(\"N-Dim\")\n",
+    "\t\t\tEND_OBJECT=GeoField_3\n",
+    "\t\tEND_GROUP=GeoField\n",
+    "\t\tGROUP=DataField\n",
+    "\t\t\tOBJECT=DataField_1\n",
+    "\t\t\t\tDataFieldName=\"Temperature-1\"\n",
+    "\t\t\t\tDataType=H5T_NATIVE_FLOAT\n",
+    "\t\t\t\tDimList=(\"Z-Dim\",\"N-Dim\")\n",
+    "\t\t\t\tMaxdimList=(\"Z-Dim\",\"N-Dim\")\n",
+    "\t\t\tEND_OBJECT=DataField_1\n",
+    "\t\tEND_GROUP=DataField\n",
+    "\t\tGROUP=ProfileField\n",
+    "\t\tEND_GROUP=ProfileField\n",
+    "\t\tGROUP=MergedFields\n",
+    "\t\tEND_GROUP=MergedFields\n",
+    "\tEND_GROUP=SWATH_1\n",
+    "END_GROUP=SwathStructure\n",
+    "GROUP=GridStructure\n",
+    "END_GROUP=GridStructure\n",
+    "GROUP=PointStructure\n",
+    "END_GROUP=PointStructure\n",
+    "GROUP=ZaStructure\n",
+    "END_GROUP=ZaStructure\n",
+    "END\n",
+    "" ;
+  } // group HDFEOS_INFORMATION
+}

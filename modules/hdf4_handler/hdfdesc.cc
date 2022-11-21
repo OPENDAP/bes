@@ -2734,7 +2734,7 @@ void change_das_mod08_scale_offset(DAS &das, const HDFSP::File *f) {
                     it++;
                 }
 
-                if(scale_factor_value.length() !=0) {
+                if(scale_factor_value.size() !=0) {
                     double new_offset_value = -1 * orig_scale_value*orig_offset_value;
                     string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_offset_value));
                     at->del_attr("add_offset");
@@ -4148,11 +4148,15 @@ void AddHDFAttr(DAS & das, const string & varname,
                 hdfeos_delete_buffer(buf);
             }
             else {
+                // Special characters are handled in libdap4. So the following code block is commented out. KY 2022-11-16
+#if 0
                 if (attrtype == "String")
 #ifdef ATTR_STRING_QUOTE_FIX
                     attv[j] = escattr(attv[j]);
+                     
 #else
                 attv[j] = "\"" + escattr(attv[j]) + "\"";
+#endif
 #endif
 
                 if (atp->append_attr(hav[i].name, attrtype, attv[j]) == 0)
@@ -4182,10 +4186,14 @@ void AddHDFAttr(DAS & das, const string & varname,
     // add the annotations to the DAS
     string an;
     for (int i = 0; i < (int) anv.size(); ++i) {        // for each annotation
+        // Special characters are handled in libdap4. So the following code block is commented out. KY 2022-11-16
+        an = anv[i];
+#if 0
 #ifdef ATTR_STRING_QUOTE_FIX
         an = escattr(anv[i]);     // quote strings
 #else
         an = "\"" + escattr(anv[i]) + "\"";     // quote strings
+#endif
 #endif
         if (atp->append_attr(string("HDF_ANNOT"), "String", an) == 0)
             THROW(dhdferr_addattr);
@@ -4216,12 +4224,12 @@ static vector < hdf_attr > Pals2Attrs(const vector < hdf_palette > palv)
                                       const_cast <
                                       int32 * >(&palv[i].ncomp), 1);
             pattrs.push_back(pattr);
-            if (palv[i].name.length() != 0) {
+            if (palv[i].name.size() != 0) {
                 pattr.name = palname + "_name";
                 pattr.values = hdf_genvec(DFNT_CHAR,
                                           const_cast <
                                           char *>(palv[i].name.c_str()),
-                                          palv[i].name.length());
+                                          palv[i].name.size());
                 pattrs.push_back(pattr);
             }
         }
@@ -4235,32 +4243,32 @@ static vector < hdf_attr > Dims2Attrs(const hdf_dim dim)
 {
     vector < hdf_attr > dattrs;
     hdf_attr dattr;
-    if (dim.name.length() != 0) {
+    if (dim.name.size() != 0) {
         dattr.name = "name";
         dattr.values =
             hdf_genvec(DFNT_CHAR, const_cast < char *>(dim.name.c_str()),
-                       dim.name.length());
+                       dim.name.size());
         dattrs.push_back(dattr);
     }
-    if (dim.label.length() != 0) {
+    if (dim.label.size() != 0) {
         dattr.name = "long_name";
         dattr.values =
             hdf_genvec(DFNT_CHAR, const_cast < char *>(dim.label.c_str()),
-                       dim.label.length());
+                       dim.label.size());
         dattrs.push_back(dattr);
     }
-    if (dim.unit.length() != 0) {
+    if (dim.unit.size() != 0) {
         dattr.name = "units";
         dattr.values =
             hdf_genvec(DFNT_CHAR, const_cast < char *>(dim.unit.c_str()),
-                       dim.unit.length());
+                       dim.unit.size());
         dattrs.push_back(dattr);
     }
-    if (dim.format.length() != 0) {
+    if (dim.format.size() != 0) {
         dattr.name = "format";
         dattr.values =
             hdf_genvec(DFNT_CHAR, const_cast < char *>(dim.format.c_str()),
-                       dim.format.length());
+                       dim.format.size());
         dattrs.push_back(dattr);
     }
     return dattrs;

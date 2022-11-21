@@ -11,14 +11,14 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_netcdf
-M_VER=1.5.2
+M_VER=1.5.4
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/rapidjson $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-inconsistent-missing-override
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -44,7 +44,8 @@ FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcFloat.h FONcDouble.h FONcStructure.h FONcArray.h		\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
-	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h
+	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h \
+	FONcNames.h
 
 EXTRA_DIST = data fonc.conf.in
 

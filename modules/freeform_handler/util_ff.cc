@@ -565,11 +565,11 @@ find_ancillary_rss_formats(const string & dataset, const string & /* delimiter *
     // and cached decompressed files (ones with '#' in their names).
     size_t delim = dataset.rfind("#");
     if (delim != string::npos)
-        FileName = dataset.substr(delim + 1, dataset.length() - delim + 1);
+        FileName = dataset.substr(delim + 1, dataset.size() - delim + 1);
     else {
         delim = dataset.rfind("/");
         if (delim != string::npos)
-            FileName = dataset.substr(delim + 1, dataset.length() - delim + 1);
+            FileName = dataset.substr(delim + 1, dataset.size() - delim + 1);
         else
             FileName = dataset;
     }
@@ -584,11 +584,11 @@ find_ancillary_rss_formats(const string & dataset, const string & /* delimiter *
     }
 
     // Now determine if this is files holds averaged or daily data.
-    string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
+    string DatePart = FileName.substr(delim+1, FileName.size()-delim+1);
 
     BESUtil::trim_if_trailing_slash(FormatPath);
 
-    if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
+    if ( (DatePart.find("_") != string::npos) || (DatePart.size() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.fmt";
     else
         FormatFile = FormatPath + BaseName + "daily.fmt";
@@ -619,11 +619,11 @@ find_ancillary_rss_das(const string & dataset, const string & /* delimiter */,
 
     size_t delim = dataset.rfind("#");
     if (delim != string::npos)
-        FileName = dataset.substr(delim + 1, dataset.length() - delim + 1);
+        FileName = dataset.substr(delim + 1, dataset.size() - delim + 1);
     else {
         delim = dataset.rfind("/");
         if (delim != string::npos)
-            FileName = dataset.substr(delim + 1, dataset.length() - delim + 1);
+            FileName = dataset.substr(delim + 1, dataset.size() - delim + 1);
         else
             FileName = dataset;
     }
@@ -638,10 +638,10 @@ find_ancillary_rss_das(const string & dataset, const string & /* delimiter */,
         throw InternalErr(msg);
     }
 
-    string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
+    string DatePart = FileName.substr(delim+1, FileName.size()-delim+1);
     BESUtil::trim_if_trailing_slash(FormatPath);
 
-    if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
+    if ( (DatePart.find("_") != string::npos) || (DatePart.size() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.das";
     else
         FormatFile = FormatPath + BaseName + "daily.das";
@@ -770,7 +770,7 @@ string get_Regex_format_file(const string & filename)
 		 " regex: '" << (*rgx).first << "'" <<
 		 " format: '" << (*rgx).second << "'" << endl);
         BESRegex regex(((*rgx).first).c_str());
-         if (  (unsigned long) regex.match(base_name.c_str(), base_name.length()) == base_name.length() ){
+         if (  (unsigned long) regex.match(base_name.c_str(), base_name.size()) == base_name.size() ){
              retVal = string((*rgx).second);
              break;
          }

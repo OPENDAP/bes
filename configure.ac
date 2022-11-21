@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.63)
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.10, support@opendap.org)
+AC_INIT(bes, 3.20.13, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -169,7 +169,7 @@ dnl Interfaces removed or changed (BAD, breaks upward compatibility):
 dnl ==> Increment CURRENT, set AGE and REVISION to 0.
 
 LIB_DIS_CURRENT=18
-LIB_DIS_REVISION=6
+LIB_DIS_REVISION=9
 LIB_DIS_AGE=0
 AC_SUBST(LIB_DIS_CURRENT)
 AC_SUBST(LIB_DIS_REVISION)
@@ -178,7 +178,7 @@ LIBDISPATCH_VERSION="$LIB_DIS_CURRENT:$LIB_DIS_REVISION:$LIB_DIS_AGE"
 AC_SUBST(LIBDISPATCH_VERSION)
 
 LIB_PPT_CURRENT=5
-LIB_PPT_REVISION=4
+LIB_PPT_REVISION=7
 LIB_PPT_AGE=0
 AC_SUBST(LIB_PPT_CURRENT)
 AC_SUBST(LIB_PPT_REVISION)
@@ -187,7 +187,7 @@ LIBPPT_VERSION="$LIB_PPT_CURRENT:$LIB_PPT_REVISION:$LIB_PPT_AGE"
 AC_SUBST(LIBPPT_VERSION)
 
 LIB_XML_CMD_CURRENT=5
-LIB_XML_CMD_REVISION=5
+LIB_XML_CMD_REVISION=8
 LIB_XML_CMD_AGE=0
 AC_SUBST(LIB_XML_CMD_CURRENT)
 AC_SUBST(LIB_XML_CMD_REVISION)
@@ -373,6 +373,9 @@ dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
 
+AC_MSG_CHECKING([on libdap])
+AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
+
 dnl AS_CASE([$variable], [foo*], [run1], [bar*], [run2], [catchall])
     
 dnl extra argument: --with-libwrap
@@ -404,8 +407,6 @@ AM_PATH_CPPUNIT(1.12.0,
 
 dnl Check for RHEL 8 and tirpc
 OX_RHEL8_TIRPC
-
-dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
 dnl AC_ARG_WITH([dap-exp-modules],
 dnl   [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
@@ -770,7 +771,7 @@ AC_SUBST([HDFEOS2_LDFLAGS])
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 
-dnl HDF5 tests; We pass null for the tird argument - the interface number
+dnl HDF5 tests; We pass null for the third argument - the interface number
 AC_CHECK_HDF5(
   [AM_CONDITIONAL([BUILD_HDF5],[true])
   ],
@@ -978,6 +979,8 @@ AC_CONFIG_FILES([Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
+		 http/tests/Makefile
+		 http/tests/atlocal
 
 		 docs/Makefile
 		 
@@ -1013,7 +1016,7 @@ AC_CONFIG_FILES([Makefile
 		 ])
 
 dnl These need to be moved into the AC_CONFIG_FILES above 
-dnl when geo-functions is reenabled.
+dnl when geo-functions is re-enabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
@@ -1029,6 +1032,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
+AC_CONFIG_TESTDIR(http/tests, [remote_resource_tester])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])

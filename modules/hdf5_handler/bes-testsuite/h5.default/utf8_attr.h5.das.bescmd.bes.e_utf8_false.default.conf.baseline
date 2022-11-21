@@ -1,0 +1,9 @@
+Attributes {
+    HDF5_ROOT_GROUP {
+        String Dataset "fl_string_dataset";
+    }
+    /fl_string_dataset {
+        String HDF5_OBJ_FULLPATH "/fl_string_dataset";
+        String utf8_attr "ö¡…·ğ˜•‰óš€€÷¥®³õ™«¶ğ¼Ÿªğ˜¤–ò©Ÿ¥ï’¡óŠ‚£ö˜¹›ğ¶¢•òµ›•ôšœ„ğ˜¾‘ô“ª";
+    }
+}

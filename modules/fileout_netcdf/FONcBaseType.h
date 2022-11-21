@@ -40,12 +40,8 @@
 #include <libdap/D4Attributes.h>
 #include <libdap/D4AttributeType.h>
 #include <BESObj.h>
+#include "FONcNames.h"
 
-#define RETURN_AS_NETCDF "netcdf"
-#define RETURN_AS_NETCDF4 "netcdf-4"
-#define NC4_CLASSIC_MODEL "NC4_CLASSIC_MODEL"
-#define NC4_ENHANCED "NC4_ENHANCED"
-// May add netCDF-3 CDF-5 in the future.
 
 namespace libdap {
 class BaseType;
@@ -63,25 +59,24 @@ class ConstraintEvaluator;
  */
 class FONcBaseType: public BESObj {
 protected:
-    int _varid;
-    std::string _varname;
-    std::string _orig_varname;
-    std::vector<std::string> _embed;
-    bool _defined;
-    std::string _ncVersion;
-    std::string _nc4_datamodel;
-    bool is_dap4;
+    int d_varid = 0;
+    std::string d_varname;
+    std::string d_orig_varname;
+    std::vector<std::string> d_embed;
+    bool d_defined = false;
+    std::string d_ncVersion;
+    std::string d_nc4_datamodel;
+    bool d_is_dap4 = false;
 
     //This is to handle the name clashing of dimension names of string type
-    bool is_dap4_group;
+    bool d_is_dap4_group = false;
 
-    libdap::DDS *d_dds;
-    libdap::ConstraintEvaluator *d_eval;
-
-    FONcBaseType() : _varid(0), _defined(false), is_dap4(false), is_dap4_group(false), d_dds(nullptr), d_eval(nullptr) { }
+    libdap::DDS *d_dds = nullptr;
+    libdap::ConstraintEvaluator *d_eval = nullptr;
 
 public:
-    virtual ~FONcBaseType() = default; // { }
+    FONcBaseType() = default;
+    ~FONcBaseType() override = default;
 
     libdap::DDS *get_dds() const {return d_dds;}
     void set_dds(libdap::DDS *dds) {d_dds = dds;}
@@ -89,22 +84,33 @@ public:
     libdap::ConstraintEvaluator *get_eval() const {return d_eval;}
     void set_eval(libdap::ConstraintEvaluator *eval) {d_eval = eval;}
 
-    virtual void convert(std::vector<std::string> embed, bool is_dap4= false, bool is_dap4_group=false);
+    // I made this change to see how hard it would be to refactor a virtual
+    // method that used parameters with default (prohibited) values. jhrg 10/3/22
+    void convert(std::vector<std::string> embed) {
+        convert(embed, false, false);
+    }
+    void convert(std::vector<std::string> embed, bool is_dap4) {
+        convert(embed, is_dap4, false);
+    }
+    virtual void convert(std::vector<std::string> embed, bool is_dap4, bool is_dap4_group);
+
     virtual void define(int ncid);
+
     virtual void write(int ncid) = 0;
 
     virtual std::string name() = 0;
+
     virtual nc_type type();
     virtual void clear_embedded();
-    virtual int varid() const { return _varid; }
+    virtual int varid() const { return d_varid; }
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 
     virtual void setVersion(const std::string &version);
     virtual void setNC4DataModel(const string &nc4_datamodel);
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
-    virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
+    virtual void set_is_dap4(bool set_dap4) { d_is_dap4 = set_dap4;}
     virtual libdap::AttrType getAttrType(nc_type t);
     virtual D4AttributeType getD4AttrType(nc_type t);
     virtual void updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t);

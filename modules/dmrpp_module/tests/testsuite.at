@@ -24,6 +24,9 @@ dnl Broken. Fix these by implementing DmrppStr. jhrg 4/25/18
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.dap], xpass)
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.dods], xpass)
 
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.das])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.ddx])
+
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dds])
@@ -39,6 +42,9 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dods])
 
+
+dnl Check netCDF's var name = dimension name handling
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_var_dim_name_same.h5.dap])
 
 dnl Read chunked data
 
@@ -224,6 +230,12 @@ AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.dds])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_utc.dods])
 
+dnl scalar variable tests for the compact storage
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/Scalar_compact_vlstr.dap])
+
+
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dmr])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue.das])
@@ -235,6 +247,14 @@ AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.dds])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_chunk.das])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunk.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_chunk.dods])
+
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dmr])
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.dds])
+AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_scalar.das])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar.dap])
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([fill_value/fvalue_scalar.dods])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_compact.dap])
+
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_all_fill.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_fill_not_write.dap])
@@ -257,9 +277,18 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint8.dap])
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_compressed.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_compressed.dap])
 
+# Test fill value plus compression plus one chunk only ky 07/29/22
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/One_chunk_s_c.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/One_chunk_s_c_fvalue.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/One_chunk_c_fv_undef.dap])
+
+
 # Test chunked data where chunks are compressed twice (and thus must be
 # inflated twice). The first file uses deflate once, the second uses it
 # twice. jhrg 5/25/22
+
+# A simple one chunk deflate twice case. KY 08/07/22
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/One_chunk_c_c.h5.dap])
 
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.dap])
@@ -268,3 +297,18 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_1.h5.ce.dap])
 AT_BESCMD_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dmr])
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/cmprss_big_2.h5.ce.dap])
+
+
+#special case to deflate twice. The second inflate input buffer size is bigger than chunk size.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
+#Also add a shuffle + deflate + deflate special case.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
+
+#############################################################################
+# Arrays of Fixed Length String tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_str_dset.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_chunk.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_compact.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
+

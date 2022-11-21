@@ -27,6 +27,11 @@
  * This file contains a templated function that serves as the body of main()
  * for a CppUnit-based unit test.
  *
+ * @note How to use this:
+ *     int main(int argc, char *argv[]) {
+ *         return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0: 1;
+ *     }
+ *
  * @note This is a WIP now but is intended to cut down on duplicated code in both
  * the BES and libdap4 software repositories.
  */
@@ -80,7 +85,7 @@ bool bes_run_tests(int argc, char *argv[], const std::string &besdebug_contexts)
             case 'h': {     // help - show test names
                 std::cerr << "Usage: the following tests can be run individually or in combination:" << std::endl;
                 auto &tests = CLASS::suite()->getTests();
-                unsigned int prefix_len = CLASS::suite()->getName().append("::").length();
+                unsigned int prefix_len = CLASS::suite()->getName().append("::").size();
                 for (auto &t: tests) {
                     std::cerr << t->getName().replace(0, prefix_len, "") << std::endl;
                 }

@@ -35,6 +35,9 @@
 
 #include <BESObj.h>
 
+enum DSGType {
+    UNSUPPORTED_DSG,SPOINT,POINTS,PROFILE
+};
 namespace libdap {
 class BaseType;
 class DDS;
@@ -85,6 +88,10 @@ private:
     unsigned int axisCount;
     std::vector<Axis *> axes;
     std::string axis_t_units;
+    std::string axis_z_units;
+    std::string axis_z_direction;
+    std::string axis_z_standardName;
+    
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
@@ -117,16 +124,43 @@ private:
 
     bool is_simple_cf_geographic;
 
+    // Discrete Sampling Geometries 
+    DSGType dsg_type = UNSUPPORTED_DSG;
+    
+    // TODO: add more error messages.
+#if 0
+    std::string err_msg;
+    bool err_msg_set = false;
+#endif
+
+    bool is_cf_grid_mapping_var(libdap::BaseType *v) const;
+
+    bool is_supported_vars_by_type(libdap::BaseType*v) const;
+    void handle_axisVars_array(libdap::BaseType*v,axisVar & this_axisVar) ;
+    void set_axisVar(libdap::BaseType*v,const string &val);
+    bool is_simple_dsg(DSGType dsg);
+    bool is_simple_dsg_common() const;
+    DSGType is_single_point () const;
+    DSGType is_point_series () const;
+    DSGType is_single_profile () const;
+    bool is_valid_single_point_par_var(libdap::BaseType*) const;
+    bool is_fake_coor_vars(libdap::Array*) const;
+    bool is_valid_array_dsg_par_var(libdap::Array*) const;
+    bool is_valid_dsg_par_var(libdap::BaseType *);
+    bool obtain_valid_dsg_par_vars(libdap::DDS *);
+    bool check_update_simple_dsg(libdap::DDS *);
+
+    void check_update_simple_geo(libdap::DDS *dds,bool sendData);
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
     void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val,std::string &bnd_dim_name,bool);
-    //bool obtain_bound_values_worker(libdap::DDS *dds, libdap::Array *d_a, const std::string & bound_name, std::string &bound_dim_name);
     libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
 
     bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
-    // Current only support the double precision for time.
-    //std::string cf_time_to_greg(double time);
+
+
+    // Convert CF time to gregorian calendar.
     std::string cf_time_to_greg(long long time);
     void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent,bool is_t_axis) const;
     
@@ -141,6 +175,8 @@ private:
      *
      * @returns true if can convert to CovJSON, false if cannot convert
      */
+    // Note we add more accurate checks to see  whether covjson can be supported prior to this function.
+    // Currently this function serves as a wrapper of these checks.
     bool canConvert();
 
     /**
@@ -167,9 +203,12 @@ private:
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
-    void getAttributes_simple_cf_geographic(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+    // Different types need to be handled differently. Eventually the getAttributes() listed above becomes
+    // the wrapper of the functions declared below.
+    void getAttributes_simple_cf_geographic_dsg(std::ostream *strm, libdap::AttrTable &attr_table, const std::string& name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
+    
    
     /**
      * @brief Attemps to sanitize the time origin string by reformatting and removing
@@ -179,6 +218,7 @@ private:
      * 
      * @returns a sanitized version of the time origin timestamp string
      */
+    // TODO: this function is not necessary. May be removed.
     string sanitizeTimeOriginString(std::string timeOrigin);
 
     /**
@@ -254,7 +294,10 @@ private:
      * @param indent Indent the output so humans can make sense of it
      * @param sendData true: send data; false: send metadata
      */
-    void transformAtomic(libdap::BaseType *bt, std::string indent, bool sendData);
+    void transformAtomic(ostream *strm, libdap::BaseType *bt, const std::string& indent, bool sendData);
+#if 0
+    //void transformAtomic(libdap::BaseType *bt, std::string indent, bool sendData);
+#endif
     
     /**
      * @brief Worker method allows us to recursively traverse an Node's variable

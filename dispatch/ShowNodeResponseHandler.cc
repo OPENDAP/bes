@@ -86,7 +86,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
             // Remove the catalog name from the start of 'container.' Now 'container'
             // is a relative path within the catalog.
-            container = container.substr(container.find(catalog_name) + catalog_name.length());
+            container = container.substr(container.find(catalog_name) + catalog_name.size());
 
             BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << container << endl);
         }

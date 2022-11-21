@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="za_1_3d_yztd.h5">
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="ZAS">
+            <Group name="ZA">
+                <Dimension name="YDim" size="8"/>
+                <Dimension name="ZDim" size="4"/>
+                <Dimension name="TDim" size="2"/>
+                <Group name="Data_Fields">
+                    <Float32 name="Date">
+                        <Dim name="/HDFEOS/ZAS/ZA/TDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>days since 2012-1-1 0:0:0</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/ZA/Data Fields/Date</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Latitude">
+                        <Dim name="/HDFEOS/ZAS/ZA/YDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>degrees_north</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/ZA/Data Fields/Latitude</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Pressure">
+                        <Dim name="/HDFEOS/ZAS/ZA/ZDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>hPa</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/ZA/Data Fields/Pressure</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Temperature">
+                        <Dim name="/HDFEOS/ZAS/ZA/TDim"/>
+                        <Dim name="/HDFEOS/ZAS/ZA/ZDim"/>
+                        <Dim name="/HDFEOS/ZAS/ZA/YDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>K</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/ZA/Data Fields/Temperature</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Time">
+                        <Dim name="/HDFEOS/ZAS/ZA/TDim"/>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="units" type="String">
+                            <Value>seconds since 2012-1-1 0:0:0</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/ZAS/ZA/Data Fields/Time</Value>
+                        </Attribute>
+                    </Float32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+    </Group>
+</Dataset>

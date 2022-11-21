@@ -1703,7 +1703,7 @@ throw (Exception)
             }	
 
             // Obtain dimension info.: dim_name, dim_size,dim_type and num of dim. attrs.
-            int temp_num_dim_attrs = 0;
+            int32 temp_num_dim_attrs = 0;
             status =  SDdiminfo (dimid, dim_name, &dim_size, &dim_type, &temp_num_dim_attrs);
             if (status == FAIL) {
                delete sd;

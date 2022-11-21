@@ -580,59 +580,59 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP03T-20131129-L3V4.2.1.he5";
+                    String VALUE "\"MOP03T-20131129-L3V4.2.1.he5\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2013-12-22T10:44:58.000Z";
+                    String VALUE "\"2013-12-22T10:44:58.000Z\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Carbon Monoxide";
+                        String VALUE "\"Carbon Monoxide\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Unknown";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Unknown\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTCLOUDCOVER {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 75;
                         }
                     }
@@ -641,7 +641,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP03T";
+                    String VALUE "\"MOP03T\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -651,14 +651,14 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 101;
-                    String VALUE "/MOPITT/V6T/Staging/L3/20131129/M2/MOP02T-20131129-L2V16.2.1.he5";
+                    String VALUE "\"/MOPITT/V6T/Staging/L3/20131129/M2/MOP02T-20131129-L2V16.2.1.he5\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
                 HORIZONTALSPATIALDOMAINCONTAINER {
@@ -685,25 +685,25 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2013-11-29";
+                    String VALUE "\"2013-11-29\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:06:54.646";
+                    String VALUE "\"00:06:54.646\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2013-11-29";
+                    String VALUE "\"2013-11-29\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:58.825";
+                    String VALUE "\"23:59:58.825\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "4.2.1";
+                    String VALUE "\"4.2.1\"";
                 }
             }
         }

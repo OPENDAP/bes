@@ -237,18 +237,18 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     BESRegex directory("[-a-zA-Z0-9_\\]*");
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
-    if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
+    if (!c.empty() && directory.match(c.c_str(), c.size()) && (access(c.c_str(), 6) == 0))
     goto valid_temp_directory;
 
     c = getenv("TMP") ? getenv("TMP") : "";
-    if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
+    if (!c.empty() && directory.match(c.c_str(), c.size()) && (access(c.c_str(), 6) == 0))
     goto valid_temp_directory;
 #else
     // AllowHosts list for a directory
     BESRegex directory("[-a-zA-Z0-9_/]*");
 
     string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
-    if (!c.empty() && directory.match(c.c_str(), c.length())
+    if (!c.empty() && directory.match(c.c_str(), c.size())
         && (access(c.c_str(), W_OK | R_OK) == 0))
     goto valid_temp_directory;
 
@@ -271,9 +271,9 @@ GatewayUtils::Get_tempfile_template( char *file_template )
 #endif
     c.append(file_template);
 
-    char *temp = new char[c.length() + 1];
-    strncpy(temp, c.c_str(), c.length());
-    temp[c.length()] = '\0';
+    char *temp = new char[c.size() + 1];
+    strncpy(temp, c.c_str(), c.size());
+    temp[c.size()] = '\0';
 
     return temp;
 }
@@ -342,7 +342,7 @@ void GatewayUtils::Get_type_from_disposition(const string &disp, string &type)
                     BESDEBUG("gateway",
                         "  Comparing disp filename " << filename << " against expr " << match.regex << endl);
                     BESRegex reg_expr(match.regex.c_str());
-                    if (reg_expr.match(filename.c_str(), filename.length()) == static_cast<int>(filename.length())) {
+                    if (reg_expr.match(filename.c_str(), filename.size()) == static_cast<int>(filename.size())) {
                         type = match.handler;
                         done = true;
                     }
@@ -402,7 +402,7 @@ void GatewayUtils::Get_type_from_url(const string &url, string &type)
             BESDEBUG("gateway",
                 "GatewayUtils::Get_type_from_url() - Comparing url " << url << " against type match expr " << match.regex << endl);
             BESRegex reg_expr(match.regex.c_str());
-            if (reg_expr.match(url.c_str(), url.length()) == static_cast<int>(url.length())) {
+            if (reg_expr.match(url.c_str(), url.size()) == static_cast<int>(url.size())) {
                 type = match.handler;
                 done = true;
                 BESDEBUG("gateway", "GatewayUtils::Get_type_from_url() - MATCH   type: " << type << endl);
@@ -424,8 +424,8 @@ bool GatewayUtils::Is_Whitelisted(const std::string &url){
     std::vector<std::string>::const_iterator i = WhiteList.begin();
     std::vector<std::string>::const_iterator e = WhiteList.end();
     for (; i != e && !whitelisted; i++) {
-        if ((*i).length() <= url.length()) {
-            if (url.substr(0, (*i).length()) == (*i)) {
+        if ((*i).size() <= url.size()) {
+            if (url.substr(0, (*i).size()) == (*i)) {
                 whitelisted = true;
             }
         }

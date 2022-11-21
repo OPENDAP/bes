@@ -1,0 +1,45 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	g1_dim2 = 2 ;
+	pre = 3 ;
+	g1_hgt = 3 ;
+variables:
+	float dim1(dim1) ;
+	float g1_dim2(g1_dim2) ;
+	float pre(dim1, pre) ;
+		pre:origname = "_nc4_non_coord_pre" ;
+		pre:fullnamepath = "/_nc4_non_coord_pre" ;
+	float g1_hgt(g1_dim2, g1_hgt) ;
+		g1_hgt:origname = "_nc4_non_coord_hgt" ;
+		g1_hgt:fullnamepath = "/g1/_nc4_non_coord_hgt" ;
+	float g1_t(g1_dim2, g1_hgt) ;
+		g1_t:origname = "t" ;
+		g1_t:fullnamepath = "/g1/t" ;
+	float g1_pre(g1_hgt) ;
+		g1_pre:origname = "pre" ;
+		g1_pre:fullnamepath = "/g1/pre" ;
+
+// global attributes:
+		:history = "removed date-timex nc4_group_var_dim_name_same_2.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"nc4_group_var_dim_name_same_2.h5\"}]}]" ;
+data:
+
+ dim1 = 0, 1 ;
+
+ g1_dim2 = 0, 1 ;
+
+ pre =
+  999, 999.2, 999.4,
+  999.6, 999.8, 1000 ;
+
+ g1_hgt =
+  200, 180, 160,
+  140, 120, 100 ;
+
+ g1_t =
+  21, 21.2, 21.4,
+  21.6, 21.8, 22 ;
+
+ g1_pre = 800, 800.2, 800.4 ;
+}

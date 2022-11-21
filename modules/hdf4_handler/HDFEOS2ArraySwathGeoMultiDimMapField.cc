@@ -28,7 +28,7 @@ HDFEOS2ArraySwathGeoMultiDimMapField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoMultiDimMapField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     if(rank !=2) 

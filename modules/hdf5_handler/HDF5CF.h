@@ -924,6 +924,10 @@ public:
     /// Update the coordinate attribute to include path and also flatten
     void Add_Path_Coord_Attr();
 
+    /// Update the Bounds attribute to follow the CF conventions
+    void Update_Bounds_Attr();
+   
+
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag() override
     {
@@ -1051,6 +1055,7 @@ private:
     std::string gp_latname;
     std::string gp_lonname;
     std::set<std::string> grp_cv_paths;
+    std::set<std::string> nc4_sdimv_dv_path;
     std::vector<struct Name_Size_2Pairs> latloncv_candidate_pairs;
     //"map<string,string>dimcvars_2dlatlon"
 #if 0

@@ -145,8 +145,8 @@ void BESFSDir::loadDir()
                     else {
                         if (_fileExpr != "") {
                             BESRegex reg_expr(_fileExpr.c_str());
-                            int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.length());
-                            if (match_ret == static_cast<int>(dirEntry.length())) {
+                            int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.size());
+                            if (match_ret == static_cast<int>(dirEntry.size())) {
                                 _fileList.push_back(BESFSFile(_dirName, dirEntry));
                             }
                         }

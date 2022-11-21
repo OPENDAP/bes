@@ -126,107 +126,107 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP02-20120801-L2V8.2.2.prov.hdf";
+                    String VALUE "\"MOP02-20120801-L2V8.2.2.prov.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-08-02T12:13:43.000Z";
+                    String VALUE "\"2012-08-02T12:13:43.000Z\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Both";
+                    String VALUE "\"Both\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "8.2.2.prov";
+                    String VALUE "\"8.2.2.prov\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally - Check Science Quality Statement";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally - Check Science Quality Statement\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Process Terminated Normally - Check Science Quality Statement";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Process Terminated Normally - Check Science Quality Statement\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTCLOUDCOVER {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 74;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Carbon Monoxide";
+                        String VALUE "\"Carbon Monoxide\"";
                     }
                 }
             }
             ORBITCALCULATEDSPATIALDOMAIN {
                 ORBITCALCULATEDSPATIALDOMAINCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ORBITALMODELNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Unknown";
+                        String VALUE "\"Unknown\"";
                     }
                     STARTORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 67131;
                     }
                     EQUATORCROSSINGDATE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "2012-08-01";
+                        String VALUE "\"2012-08-01\"";
                     }
                     EQUATORCROSSINGTIME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "00:28:49.713";
+                        String VALUE "\"00:28:49.713\"";
                     }
                     ORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 67131;
                     }
                     EQUATORCROSSINGLONGITUDE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Float64 VALUE 150.233791507967;
                     }
                     STOPORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 67145;
                     }
@@ -239,13 +239,13 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOP02";
+                    String VALUE "\"MOP02\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 101;
-                    String VALUE "gdas1-20120801-T00.hdf", "gdas1-20120801-T06.hdf", "gdas1-20120801-T12.hdf", "gdas1-20120801-T18.hdf", "gdas1-20120802-T00.hdf", "MOP01-20120801-L1V3.34.10.hdf", "clim_new_365.hdf", "MOPMskInfo-20120801-V5.dat";
+                    String VALUE "\"gdas1-20120801-T00.hdf\"", "\"gdas1-20120801-T06.hdf\"", "\"gdas1-20120801-T12.hdf\"", "\"gdas1-20120801-T18.hdf\"", "\"gdas1-20120802-T00.hdf\"", "\"MOP01-20120801-L1V3.34.10.hdf\"", "\"clim_new_365.hdf\"", "\"MOPMskInfo-20120801-V5.dat\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -272,32 +272,32 @@ Attributes {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
             }
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-08-01";
+                    String VALUE "\"2012-08-01\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:46.27";
+                    String VALUE "\"23:59:46.27\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-08-01";
+                    String VALUE "\"2012-08-01\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:05.21";
+                    String VALUE "\"00:00:05.21\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "8.2.2.prov";
+                    String VALUE "\"8.2.2.prov\"";
                 }
             }
         }

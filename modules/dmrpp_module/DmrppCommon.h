@@ -115,6 +115,14 @@ class DmrppCommon {
     libdap::Type d_fill_value_type{libdap::dods_null_c};
     fill_value_union d_fill_value;
 
+    // We need this parameter to handle the case when the variable only contains one chunk
+    // and the data in that chunk are all fill_value. It is OK to compress this filled chunk,
+    // However, for some data format like HDF5, it figures out that there is only one filled
+    // chunk data for this variable, so the chunk is not compressed at all. If Dmrpp applies
+    // de-compression to this variable, an error will occur. So we need this parameter to
+    // turn off the de-compression filter for this case. KY 07/28/22
+    bool d_one_chunk_fill_value {false};
+
     // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
     // it can fetch more information from the XML if needed - this is how the lazy-load
     // feature is implemented. The xml_node object is used to simplify finding where
@@ -225,6 +233,13 @@ public:
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual libdap::Type get_fill_value_type() const { return d_fill_value_type; }
 
+    /// @brief Set the one_chunk_fill_value property
+    virtual void set_one_chunk_fill_value(bool ufv) { d_one_chunk_fill_value = ufv; }
+
+    /// @return Return true if this variable contains one chunk and the data are all 'fill value.'
+    virtual bool get_one_chunk_fill_value() const { return d_one_chunk_fill_value; }
+
+    
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
 
     void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
@@ -233,8 +248,10 @@ public:
 
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
     void set_chunk_dimension_sizes(const std::vector<unsigned long long> &chunk_dims) {
+        d_chunk_dimension_sizes.clear();
+        //d_chunk_dimension_sizes.resize(chunk_dims.size());
         for (auto chunk_dim : chunk_dims) {
-            d_chunk_dimension_sizes.push_back(chunk_dim);
+            d_chunk_dimension_sizes.emplace_back(chunk_dim);
         }
     }
 

@@ -563,7 +563,7 @@ string mktemp_bes_conf(const string &bes_conf_filename, const string &data_root,
     if(very_verbose) cerr << "start: current index: " << index << endl;
     while ((index = BES_CONF_DOC.find(root_dir_key)) != -1){
         if(very_verbose)  cerr << "current index: " << index << endl;
-        BES_CONF_DOC.erase(index, root_dir_key.length());
+        BES_CONF_DOC.erase(index, root_dir_key.size());
         BES_CONF_DOC.insert(index, data_root);
     }
     tmp_conf_filename << "/tmp/nbd_" << pid << "_bes.conf";
@@ -617,7 +617,7 @@ string mktemp_get_dmr_bes_cmd(const string &input_data_file, const pid_t &pid) {
     string key = "DATAFILE_NAME";
     int index = 0;
     if( (index=get_dmr_bes_cmd.find(key)) != -1){
-        get_dmr_bes_cmd.erase(index, key.length());
+        get_dmr_bes_cmd.erase(index, key.size());
         get_dmr_bes_cmd.insert(index, input_data_file);
     }
 

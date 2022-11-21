@@ -50,6 +50,10 @@
 #define DMRPP_USE_SUPER_CHUNKS 1
 #define DMRPP_ENABLE_THREAD_TIMERS 0
 
+#define DMRPP_FIXED_LENGTH_STRING_ARRAY_ELEMENT "dmrpp:FixedLengthStringArray"
+#define DMRPP_FIXED_LENGTH_STRING_LENGTH_ATTR "string_length"
+#define DMRPP_FIXED_LENGTH_STRING_PAD_ATTR "pad"
+
 
 #endif // E_DmrppNames_H
 

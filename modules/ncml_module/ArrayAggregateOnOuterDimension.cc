@@ -150,7 +150,7 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
         reserve_value_capacity();
 #endif
         // this index pointing into the value buffer for where to write.
-        // The buffer has a stride equal to the _pSubArrayProto->length().
+        // The buffer has a stride equal to the _pSubArrayProto->size().
 
         // Keep this to do some error checking
         int nextElementIndex = 0;
@@ -262,7 +262,7 @@ void ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDat
     reserve_value_capacity();
 
     // this index pointing into the value buffer for where to write.
-    // The buffer has a stride equal to the _pSubArrayProto->length().
+    // The buffer has a stride equal to the _pSubArrayProto->size().
     int nextElementIndex = 0;
 
     // Traverse the dataset array respecting hyperslab

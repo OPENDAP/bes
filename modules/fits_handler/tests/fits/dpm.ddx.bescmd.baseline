@@ -2,193 +2,193 @@
 <Dataset name="20060328.190602.dpm.alr.fts" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
     <Structure name="HDU_1">
         <Attribute name="SIMPLE" type="String">
-            <value>&quot;T / FITS FILE: MLSO/ACOS&quot;</value>
+            <value>T / FITS FILE: MLSO/ACOS</value>
         </Attribute>
         <Attribute name="BITPIX" type="String">
-            <value>&quot;16 / 2-BYTE SIGNED PIXELS&quot;</value>
+            <value>16 / 2-BYTE SIGNED PIXELS</value>
         </Attribute>
         <Attribute name="NAXIS" type="String">
-            <value>&quot;2 / NUMBER OF DIMENSIONS&quot;</value>
+            <value>2 / NUMBER OF DIMENSIONS</value>
         </Attribute>
         <Attribute name="NAXIS1" type="String">
-            <value>&quot;1534 / SIZE OF X [EAST-&gt;WEST ] DIMENSION&quot;</value>
+            <value>1534 / SIZE OF X [EAST-&gt;WEST ] DIMENSION</value>
         </Attribute>
         <Attribute name="NAXIS2" type="String">
-            <value>&quot;1030 / SIZE OF Y [SOUTH-&gt;NORTH] DIMENSION&quot;</value>
+            <value>1030 / SIZE OF Y [SOUTH-&gt;NORTH] DIMENSION</value>
         </Attribute>
         <Attribute name="EXTEND" type="String">
-            <value>&quot;T / EXTENSION(S) POSSIBLE&quot;</value>
+            <value>T / EXTENSION(S) POSSIBLE</value>
         </Attribute>
         <Attribute name="COMMENT" type="String">
-            <value>&quot; / &quot;</value>
-            <value>&quot; /   THE MAUNA LOA SOLAR OBSERVATORY (MLSO) IS LOCATED ON THE ISLAND OF&quot;</value>
-            <value>&quot; /   HAWAII, AND IS OPERATED BY THE HIGH ALTITUDE OBSERVATORY (HAO),&quot;</value>
-            <value>&quot; /   A DIVISION OF THE NATIONAL CENTER FOR ATMOSPHERIC RESEARCH (NCAR),&quot;</value>
-            <value>&quot; /   UNDER SPONSORSHIP OF THE NATIONAL SCIENCE FOUNDATION (NSF).&quot;</value>
-            <value>&quot; /   THE ADVANCED CORONAL OBSERVING SYSTEM (ACOS) CONSISTS OF 3 SOLAR&quot;</value>
-            <value>&quot; /   INSTRUMENTS (ALL LOCATED AT MLSO):&quot;</value>
-            <value>&quot; /      DIGITAL PROMINENCE MONITOR (DPM), LOW K-CORONA POLARIMETER (LOWK),&quot;</value>
-            <value>&quot; /      &amp; CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER (CHIP).&quot;</value>
-            <value>&quot; /   IMAGE ORIGIN IS THE LOWER LEFT CORNER; X: LEFT-&gt;RIGHT, Y: BOTTOM-&gt;TOP.&quot;</value>
+            <value> / </value>
+            <value> /   THE MAUNA LOA SOLAR OBSERVATORY (MLSO) IS LOCATED ON THE ISLAND OF</value>
+            <value> /   HAWAII, AND IS OPERATED BY THE HIGH ALTITUDE OBSERVATORY (HAO),</value>
+            <value> /   A DIVISION OF THE NATIONAL CENTER FOR ATMOSPHERIC RESEARCH (NCAR),</value>
+            <value> /   UNDER SPONSORSHIP OF THE NATIONAL SCIENCE FOUNDATION (NSF).</value>
+            <value> /   THE ADVANCED CORONAL OBSERVING SYSTEM (ACOS) CONSISTS OF 3 SOLAR</value>
+            <value> /   INSTRUMENTS (ALL LOCATED AT MLSO):</value>
+            <value> /      DIGITAL PROMINENCE MONITOR (DPM), LOW K-CORONA POLARIMETER (LOWK),</value>
+            <value> /      &amp; CHROMOSPHERIC HELIUM-1 IMAGING PHOTOMETER (CHIP).</value>
+            <value> /   IMAGE ORIGIN IS THE LOWER LEFT CORNER; X: LEFT-&gt;RIGHT, Y: BOTTOM-&gt;TOP.</value>
         </Attribute>
         <Attribute name="DATE-OBS" type="String">
-            <value>&quot;'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006&quot;</value>
+            <value>'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006</value>
         </Attribute>
         <Attribute name="TIME-OBS" type="String">
-            <value>&quot;'19:06:02' / OBSERVATION TIME: HH:MM:SS [UTC]&quot;</value>
+            <value>'19:06:02' / OBSERVATION TIME: HH:MM:SS [UTC]</value>
         </Attribute>
         <Attribute name="TIMESYS" type="String">
-            <value>&quot;'UTC     ' / COORDINATED UNIVERSAL TIME&quot;</value>
+            <value>'UTC     ' / COORDINATED UNIVERSAL TIME</value>
         </Attribute>
         <Attribute name="ORIGIN" type="String">
-            <value>&quot;'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY&quot;</value>
+            <value>'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY</value>
         </Attribute>
         <Attribute name="TELESCOP" type="String">
-            <value>&quot;'DPM     ' / DIGITAL PROMINENCE MONITOR&quot;</value>
+            <value>'DPM     ' / DIGITAL PROMINENCE MONITOR</value>
         </Attribute>
         <Attribute name="INSTRUME" type="String">
-            <value>&quot;'CCD     ' / KODAK MEGAPLUS 1.6 CCD&quot;</value>
+            <value>'CCD     ' / KODAK MEGAPLUS 1.6 CCD</value>
         </Attribute>
         <Attribute name="CODE-OBS" type="String">
-            <value>&quot;'ALR     ' / TYPE OF OBSERVATION [CHARACTER CODE]&quot;</value>
+            <value>'ALR     ' / TYPE OF OBSERVATION [CHARACTER CODE]</value>
         </Attribute>
         <Attribute name="TYPE-OBS" type="String">
-            <value>&quot;'HALPHA  ' / TYPE OF OBSERVATION [DESCRIPTION]&quot;</value>
+            <value>'HALPHA  ' / TYPE OF OBSERVATION [DESCRIPTION]</value>
         </Attribute>
         <Attribute name="OBJECT" type="String">
-            <value>&quot;'LIMB    ' / SOURCE OBJECT&quot;</value>
+            <value>'LIMB    ' / SOURCE OBJECT</value>
         </Attribute>
         <Attribute name="TYPE-DP" type="String">
-            <value>&quot;'RAW     ' / DATA PROCESSING TYPE&quot;</value>
+            <value>'RAW     ' / DATA PROCESSING TYPE</value>
         </Attribute>
         <Attribute name="WAVELEN" type="String">
-            <value>&quot;656.28 / CENTRAL WAVE LENGTH OF OBSERVATION [NM]&quot;</value>
+            <value>656.28 / CENTRAL WAVE LENGTH OF OBSERVATION [NM]</value>
         </Attribute>
         <Attribute name="WAVEWID" type="String">
-            <value>&quot;0.80 / BANDPASS OF FILTER [NM]&quot;</value>
+            <value>0.80 / BANDPASS OF FILTER [NM]</value>
         </Attribute>
         <Attribute name="CTYPE1" type="String">
-            <value>&quot;'X       ' / AXIS 1 TYPE: X [EAST-&gt;WEST ] GEOCENTRIC&quot;</value>
+            <value>'X       ' / AXIS 1 TYPE: X [EAST-&gt;WEST ] GEOCENTRIC</value>
         </Attribute>
         <Attribute name="CRPIX1" type="String">
-            <value>&quot;767.71 / X [EAST-&gt;WEST ] SUN CENTER [INDEX:PIXELS]&quot;</value>
+            <value>767.71 / X [EAST-&gt;WEST ] SUN CENTER [INDEX:PIXELS]</value>
         </Attribute>
         <Attribute name="CRVAL1" type="String">
-            <value>&quot;0.00 / X [EAST-&gt;WEST ] SUN CENTER [ARCSEC]&quot;</value>
+            <value>0.00 / X [EAST-&gt;WEST ] SUN CENTER [ARCSEC]</value>
         </Attribute>
         <Attribute name="CDELT1" type="String">
-            <value>&quot;2.9000 / X [EAST-&gt;WEST ] COORD INCREMENT [ARCSEC/PIXEL]&quot;</value>
+            <value>2.9000 / X [EAST-&gt;WEST ] COORD INCREMENT [ARCSEC/PIXEL]</value>
         </Attribute>
         <Attribute name="CROTA1" type="String">
-            <value>&quot;25.98 / X [EAST-&gt;WEST ] ROTATION [DEG.] FROM REFERENCE&quot;</value>
+            <value>25.98 / X [EAST-&gt;WEST ] ROTATION [DEG.] FROM REFERENCE</value>
         </Attribute>
         <Attribute name="CTYPE2" type="String">
-            <value>&quot;'Y       ' / AXIS 2 TYPE: Y [SOUTH-&gt;NORTH] GEOCENTRIC&quot;</value>
+            <value>'Y       ' / AXIS 2 TYPE: Y [SOUTH-&gt;NORTH] GEOCENTRIC</value>
         </Attribute>
         <Attribute name="CRPIX2" type="String">
-            <value>&quot;516.60 / Y [SOUTH-&gt;NORTH] SUN CENTER [INDEX:PIXELS]&quot;</value>
+            <value>516.60 / Y [SOUTH-&gt;NORTH] SUN CENTER [INDEX:PIXELS]</value>
         </Attribute>
         <Attribute name="CRVAL2" type="String">
-            <value>&quot;0.00 / Y [SOUTH-&gt;NORTH] SUN CENTER [ARCSEC]&quot;</value>
+            <value>0.00 / Y [SOUTH-&gt;NORTH] SUN CENTER [ARCSEC]</value>
         </Attribute>
         <Attribute name="CDELT2" type="String">
-            <value>&quot;2.9000 / Y [SOUTH-&gt;NORTH] COORD INCREMENT [ARCSEC/PIXEL]&quot;</value>
+            <value>2.9000 / Y [SOUTH-&gt;NORTH] COORD INCREMENT [ARCSEC/PIXEL]</value>
         </Attribute>
         <Attribute name="CROTA2" type="String">
-            <value>&quot;25.98 / Y [SOUTH-&gt;NORTH] ROTATION [DEG.] FROM REFERENCE&quot;</value>
+            <value>25.98 / Y [SOUTH-&gt;NORTH] ROTATION [DEG.] FROM REFERENCE</value>
         </Attribute>
         <Attribute name="COORDNAM" type="String">
-            <value>&quot;'GEOCENTRIC' / COORDINATE SYSTEM NAME&quot;</value>
+            <value>'GEOCENTRIC' / COORDINATE SYSTEM NAME</value>
         </Attribute>
         <Attribute name="CRRADIUS" type="String">
-            <value>&quot;331.53 / SOLAR RADIUS [PIXELS]&quot;</value>
+            <value>331.53 / SOLAR RADIUS [PIXELS]</value>
         </Attribute>
         <Attribute name="RSUN" type="String">
-            <value>&quot;961.45 / SOLAR RADIUS [ARCSEC]&quot;</value>
+            <value>961.45 / SOLAR RADIUS [ARCSEC]</value>
         </Attribute>
         <Attribute name="OCC-DISC" type="String">
-            <value>&quot;1971.00 / OCCULTING DISC DIAMETER [ARCSEC]&quot;</value>
+            <value>1971.00 / OCCULTING DISC DIAMETER [ARCSEC]</value>
         </Attribute>
         <Attribute name="XCEN_RAW" type="String">
-            <value>&quot;767.71 / X-AXIS CENTER [PIXELS] RAW IMAGE&quot;</value>
+            <value>767.71 / X-AXIS CENTER [PIXELS] RAW IMAGE</value>
         </Attribute>
         <Attribute name="YCEN_RAW" type="String">
-            <value>&quot;516.60 / Y-AXIS CENTER [PIXELS] RAW IMAGE&quot;</value>
+            <value>516.60 / Y-AXIS CENTER [PIXELS] RAW IMAGE</value>
         </Attribute>
         <Attribute name="FILECEN" type="String">
-            <value>&quot;'20060328.190530.dpm.asl.fts' / NAME OF FILE USED FOR CENTER&quot;</value>
+            <value>'20060328.190530.dpm.asl.fts' / NAME OF FILE USED FOR CENTER</value>
         </Attribute>
         <Attribute name="SOLAR_P0" type="String">
-            <value>&quot;-25.98 / SOLAR P-ANGLE [DEGREES]&quot;</value>
+            <value>-25.98 / SOLAR P-ANGLE [DEGREES]</value>
         </Attribute>
         <Attribute name="SOLAR_B0" type="String">
-            <value>&quot;-6.71 / SOLAR B-ANGLE [DEGREES]&quot;</value>
+            <value>-6.71 / SOLAR B-ANGLE [DEGREES]</value>
         </Attribute>
         <Attribute name="SOLAR_L0" type="String">
-            <value>&quot;173.04 / SOLAR L-ANGLE [DEGREES]: CARR. LONGITUDE&quot;</value>
+            <value>173.04 / SOLAR L-ANGLE [DEGREES]: CARR. LONGITUDE</value>
         </Attribute>
         <Attribute name="CARR_ROT" type="String">
-            <value>&quot;2041 / CARRINGTON ROTATION NUMBER&quot;</value>
+            <value>2041 / CARRINGTON ROTATION NUMBER</value>
         </Attribute>
         <Attribute name="SOLAR_RA" type="String">
-            <value>&quot;0.49 / SOLAR ASCENSION [HOURS: 0-24]&quot;</value>
+            <value>0.49 / SOLAR ASCENSION [HOURS: 0-24]</value>
         </Attribute>
         <Attribute name="SOLARDEC" type="String">
-            <value>&quot;3.16 / SOLAR DECLINATION [DEGREES]&quot;</value>
+            <value>3.16 / SOLAR DECLINATION [DEGREES]</value>
         </Attribute>
         <Attribute name="HOUR-ANG" type="String">
-            <value>&quot;309.67 / SOLAR HOUR ANGLE [DEG](W.R.T.ZENITH E- W+)&quot;</value>
+            <value>309.67 / SOLAR HOUR ANGLE [DEG](W.R.T.ZENITH E- W+)</value>
         </Attribute>
         <Attribute name="ELEV" type="String">
-            <value>&quot;38.25 / SOLAR ELEVATION [DEGREES]&quot;</value>
+            <value>38.25 / SOLAR ELEVATION [DEGREES]</value>
         </Attribute>
         <Attribute name="AZIMUTH" type="String">
-            <value>&quot;101.85 / SOLAR AZIMUTH [DEGREES]&quot;</value>
+            <value>101.85 / SOLAR AZIMUTH [DEGREES]</value>
         </Attribute>
         <Attribute name="AIRMASS" type="String">
-            <value>&quot;1.62 / AIRMASS [ATMOSPHERES]&quot;</value>
+            <value>1.62 / AIRMASS [ATMOSPHERES]</value>
         </Attribute>
         <Attribute name="GAIN-DET" type="String">
-            <value>&quot;1.000 / DETECTOR GAIN FACTOR&quot;</value>
+            <value>1.000 / DETECTOR GAIN FACTOR</value>
         </Attribute>
         <Attribute name="NIMSUM" type="String">
-            <value>&quot;1 / NUMBER OF IMAGES SUMMED&quot;</value>
+            <value>1 / NUMBER OF IMAGES SUMMED</value>
         </Attribute>
         <Attribute name="EXPDUR" type="String">
-            <value>&quot;0.002 / EXPOSURE DURATION [SECONDS]&quot;</value>
+            <value>0.002 / EXPOSURE DURATION [SECONDS]</value>
         </Attribute>
         <Attribute name="BUNIT" type="String">
-            <value>&quot;'CCD     ' / PIXEL MAGNITUDE UNITS&quot;</value>
+            <value>'CCD     ' / PIXEL MAGNITUDE UNITS</value>
         </Attribute>
         <Attribute name="BSCALE" type="String">
-            <value>&quot;1.000 / PHYSICAL = DATA * BSCALE + BZERO&quot;</value>
+            <value>1.000 / PHYSICAL = DATA * BSCALE + BZERO</value>
         </Attribute>
         <Attribute name="BZERO" type="String">
-            <value>&quot;0.000 / PHOTOMETRIC SCALING OFFSET [SEE BSCALE]&quot;</value>
+            <value>0.000 / PHOTOMETRIC SCALING OFFSET [SEE BSCALE]</value>
         </Attribute>
         <Attribute name="DATAMIN" type="String">
-            <value>&quot;4.00 / MINIMUM DATA VALUE [CCD]&quot;</value>
+            <value>4.00 / MINIMUM DATA VALUE [CCD]</value>
         </Attribute>
         <Attribute name="DATAMAX" type="String">
-            <value>&quot;248.00 / MAXIMUM DATA VALUE [CCD]&quot;</value>
+            <value>248.00 / MAXIMUM DATA VALUE [CCD]</value>
         </Attribute>
         <Attribute name="DISPMIN" type="String">
-            <value>&quot;4.00 / MIN VALUE FOR DISPLAY [UNSCALED]&quot;</value>
+            <value>4.00 / MIN VALUE FOR DISPLAY [UNSCALED]</value>
         </Attribute>
         <Attribute name="DISPMAX" type="String">
-            <value>&quot;248.00 / MAX VALUE FOR DISPLAY [UNSCALED]&quot;</value>
+            <value>248.00 / MAX VALUE FOR DISPLAY [UNSCALED]</value>
         </Attribute>
         <Attribute name="DISP-DIR" type="String">
-            <value>&quot;'RU      ' / DISPLAY DIRECTION (AXIS 1 2 3): R/L  U/D  O/I&quot;</value>
+            <value>'RU      ' / DISPLAY DIRECTION (AXIS 1 2 3): R/L  U/D  O/I</value>
         </Attribute>
         <Attribute name="VERSION" type="String">
-            <value>&quot;'ACOS V1.03' / ACOS FITS S/W VERSION&quot;</value>
+            <value>'ACOS V1.03' / ACOS FITS S/W VERSION</value>
         </Attribute>
         <Attribute name="DATE" type="String">
-            <value>&quot;'2006-03-29' / FITS FILE GENERATION DATE: CCYY-MM-DD&quot;</value>
+            <value>'2006-03-29' / FITS FILE GENERATION DATE: CCYY-MM-DD</value>
         </Attribute>
         <Attribute name="DATE-CAL" type="String">
-            <value>&quot;'0000-00-00' / ACOS CALIBRATION DATE: CCYY-MM-DD&quot;</value>
+            <value>'0000-00-00' / ACOS CALIBRATION DATE: CCYY-MM-DD</value>
         </Attribute>
         <Structure name="key_1">
             <String name="name"/>
@@ -543,428 +543,428 @@
     </Structure>
     <Structure name="HDU_2">
         <Attribute name="XTENSION" type="String">
-            <value>&quot;'ACOS_HSKP' / MLSO/ACOS HOUSEKEEPING EXTENSION&quot;</value>
+            <value>'ACOS_HSKP' / MLSO/ACOS HOUSEKEEPING EXTENSION</value>
         </Attribute>
         <Attribute name="BITPIX" type="String">
-            <value>&quot;32 / 4-BYTE INTEGERS OR FLOATS&quot;</value>
+            <value>32 / 4-BYTE INTEGERS OR FLOATS</value>
         </Attribute>
         <Attribute name="NAXIS" type="String">
-            <value>&quot;1 / NUMBER OF DIMENSIONS&quot;</value>
+            <value>1 / NUMBER OF DIMENSIONS</value>
         </Attribute>
         <Attribute name="NAXIS1" type="String">
-            <value>&quot;168 / SIZE OF DIMENSION # 1&quot;</value>
+            <value>168 / SIZE OF DIMENSION # 1</value>
         </Attribute>
         <Attribute name="PCOUNT" type="String">
-            <value>&quot;0 / EXTENSION PCOUNT&quot;</value>
+            <value>0 / EXTENSION PCOUNT</value>
         </Attribute>
         <Attribute name="GCOUNT" type="String">
-            <value>&quot;1 / EXTENSION GCOUNT&quot;</value>
+            <value>1 / EXTENSION GCOUNT</value>
         </Attribute>
         <Attribute name="COMMENT" type="String">
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / &quot;</value>
-            <value>&quot; / DATA CONTAINS THE ACOS BINARY HEADER STRUCTURE.&quot;</value>
-            <value>&quot; / ALL FIELDS ARE 4 BYTES IN LENGTH: INTEGERS [I] OR FLOATING POINT [F].&quot;</value>
-            <value>&quot; / INDEX   0     [I]: VERSION: 0=DPM, 1=LOWK, 2=CHIP&quot;</value>
-            <value>&quot; / INDEX   1-  6 [I]: YEAR, MONTH, DAY, HOUR, MINUTES, SECOND.&quot;</value>
-            <value>&quot; / INDEX   7-  8 [I]: X-DIMENSION, Y-DIMENSION.  9-11: NSUM, EXPOSURE, GAIN&quot;</value>
-            <value>&quot; / INDEX  12- 13 [I]: OCCULTING DISK DIAMETER, TYPE OBSERVATION.&quot;</value>
-            <value>&quot; / INDEX  14     [F]: WAVELENGTH.&quot;</value>
-            <value>&quot; / INDEX  15- 17 [F]: P-ANGLE, B-ANGLE, L-ANGLE.&quot;</value>
-            <value>&quot; / INDEX  18- 19 [F]: RIGHT ASCENSION, DECLINATION.&quot;</value>
-            <value>&quot; / INDEX  20- 22 [F]: HOUR ANGLE, SOLAR ELEVATION, SOLAR AZIMUTH.&quot;</value>
-            <value>&quot; / INDEX  23- 24 [F]: AIRMASS, SOLAR RADIUS [ARCSEC].&quot;</value>
-            <value>&quot; / INDEX  25- 40 [F]: XSHIFT [ARCSEC] FOR IMAGE SUM.&quot;</value>
-            <value>&quot; / INDEX  41- 56 [F]: YSHIFT [ARCSEC] FOR IMAGE SUM.&quot;</value>
-            <value>&quot; / INDEX  57- 72 [F]: MEASURED DIAMETERS [ARCSEC] FOR IMAGE SUM.&quot;</value>
-            <value>&quot; / INDEX  73-104 [I]: POSITIONS OF ALL 32 OPTICAL DEVICES.&quot;</value>
-            <value>&quot; / INDEX 105-136 [I]: DRIVE REQUESTS FOR ALL 32 OPTICAL DEVICES.&quot;</value>
-            <value>&quot; / INDEX 137-152 [F]: ANALOG READINGS [INTERPRETED] [16].&quot;</value>
-            <value>&quot; / INDEX 153-160 [F]: LCVR [LIQUID CRYSTAL] MILLIVOLT READINGS [8].&quot;</value>
-            <value>&quot; / INDEX 161-166 [F]: MOTOR MICROMETER READINGS [6].&quot;</value>
-            <value>&quot; / INDEX 167     [I]: IMAGE BUFFER DESIGNATION.&quot;</value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / </value>
+            <value> / DATA CONTAINS THE ACOS BINARY HEADER STRUCTURE.</value>
+            <value> / ALL FIELDS ARE 4 BYTES IN LENGTH: INTEGERS [I] OR FLOATING POINT [F].</value>
+            <value> / INDEX   0     [I]: VERSION: 0=DPM, 1=LOWK, 2=CHIP</value>
+            <value> / INDEX   1-  6 [I]: YEAR, MONTH, DAY, HOUR, MINUTES, SECOND.</value>
+            <value> / INDEX   7-  8 [I]: X-DIMENSION, Y-DIMENSION.  9-11: NSUM, EXPOSURE, GAIN</value>
+            <value> / INDEX  12- 13 [I]: OCCULTING DISK DIAMETER, TYPE OBSERVATION.</value>
+            <value> / INDEX  14     [F]: WAVELENGTH.</value>
+            <value> / INDEX  15- 17 [F]: P-ANGLE, B-ANGLE, L-ANGLE.</value>
+            <value> / INDEX  18- 19 [F]: RIGHT ASCENSION, DECLINATION.</value>
+            <value> / INDEX  20- 22 [F]: HOUR ANGLE, SOLAR ELEVATION, SOLAR AZIMUTH.</value>
+            <value> / INDEX  23- 24 [F]: AIRMASS, SOLAR RADIUS [ARCSEC].</value>
+            <value> / INDEX  25- 40 [F]: XSHIFT [ARCSEC] FOR IMAGE SUM.</value>
+            <value> / INDEX  41- 56 [F]: YSHIFT [ARCSEC] FOR IMAGE SUM.</value>
+            <value> / INDEX  57- 72 [F]: MEASURED DIAMETERS [ARCSEC] FOR IMAGE SUM.</value>
+            <value> / INDEX  73-104 [I]: POSITIONS OF ALL 32 OPTICAL DEVICES.</value>
+            <value> / INDEX 105-136 [I]: DRIVE REQUESTS FOR ALL 32 OPTICAL DEVICES.</value>
+            <value> / INDEX 137-152 [F]: ANALOG READINGS [INTERPRETED] [16].</value>
+            <value> / INDEX 153-160 [F]: LCVR [LIQUID CRYSTAL] MILLIVOLT READINGS [8].</value>
+            <value> / INDEX 161-166 [F]: MOTOR MICROMETER READINGS [6].</value>
+            <value> / INDEX 167     [I]: IMAGE BUFFER DESIGNATION.</value>
         </Attribute>
         <Attribute name="ORIGIN" type="String">
-            <value>&quot;'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY&quot;</value>
+            <value>'MLSO    ' / MAUNA LOA SOLAR OBSERVATORY</value>
         </Attribute>
         <Attribute name="TELESCOP" type="String">
-            <value>&quot;'DPM     ' / DIGITAL PROMINENCE MONITOR&quot;</value>
+            <value>'DPM     ' / DIGITAL PROMINENCE MONITOR</value>
         </Attribute>
         <Attribute name="OBJECT" type="String">
-            <value>&quot;'LIMB    ' / SOURCE OBJECT&quot;</value>
+            <value>'LIMB    ' / SOURCE OBJECT</value>
         </Attribute>
         <Attribute name="TYPE-OBS" type="String">
-            <value>&quot;'HALPHA  ' / TYPE OF OBSERVATION [DESCRIPTION]&quot;</value>
+            <value>'HALPHA  ' / TYPE OF OBSERVATION [DESCRIPTION]</value>
         </Attribute>
         <Attribute name="DATE-OBS" type="String">
-            <value>&quot;'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006&quot;</value>
+            <value>'2006-03-28' / OBSERVATION DATE: CCYY-MM-DD [UTC] DOY 087 2006</value>
         </Attribute>
         <Attribute name="TIME-OBS" type="String">
-            <value>&quot;'19:06:02' / OBSERVATION TIME: HH:MM:SS [UTC]&quot;</value>
+            <value>'19:06:02' / OBSERVATION TIME: HH:MM:SS [UTC]</value>
         </Attribute>
         <Attribute name="XSHIFT00" type="String">
-            <value>&quot;-3.4789 / XSHIFT [ 0] [PIXELS]&quot;</value>
+            <value>-3.4789 / XSHIFT [ 0] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT01" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 1] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 1] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT02" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 2] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 2] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT03" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 3] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 3] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT04" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 4] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 4] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT05" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 5] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 5] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT06" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 6] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 6] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT07" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 7] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 7] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT08" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 8] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 8] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT09" type="String">
-            <value>&quot;0.0000 / XSHIFT [ 9] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [ 9] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT10" type="String">
-            <value>&quot;0.0000 / XSHIFT [10] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [10] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT11" type="String">
-            <value>&quot;0.0000 / XSHIFT [11] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [11] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT12" type="String">
-            <value>&quot;0.0000 / XSHIFT [12] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [12] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT13" type="String">
-            <value>&quot;0.0000 / XSHIFT [13] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [13] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT14" type="String">
-            <value>&quot;0.0000 / XSHIFT [14] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [14] [PIXELS]</value>
         </Attribute>
         <Attribute name="XSHIFT15" type="String">
-            <value>&quot;0.0000 / XSHIFT [15] [PIXELS]&quot;</value>
+            <value>0.0000 / XSHIFT [15] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT00" type="String">
-            <value>&quot;-9.2604 / YSHIFT [ 0] [PIXELS]&quot;</value>
+            <value>-9.2604 / YSHIFT [ 0] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT01" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 1] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 1] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT02" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 2] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 2] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT03" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 3] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 3] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT04" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 4] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 4] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT05" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 5] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 5] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT06" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 6] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 6] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT07" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 7] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 7] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT08" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 8] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 8] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT09" type="String">
-            <value>&quot;0.0000 / YSHIFT [ 9] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [ 9] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT10" type="String">
-            <value>&quot;0.0000 / YSHIFT [10] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [10] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT11" type="String">
-            <value>&quot;0.0000 / YSHIFT [11] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [11] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT12" type="String">
-            <value>&quot;0.0000 / YSHIFT [12] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [12] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT13" type="String">
-            <value>&quot;0.0000 / YSHIFT [13] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [13] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT14" type="String">
-            <value>&quot;0.0000 / YSHIFT [14] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [14] [PIXELS]</value>
         </Attribute>
         <Attribute name="YSHIFT15" type="String">
-            <value>&quot;0.0000 / YSHIFT [15] [PIXELS]&quot;</value>
+            <value>0.0000 / YSHIFT [15] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM00" type="String">
-            <value>&quot;664.5076 / DIAM [ 0] [PIXELS]&quot;</value>
+            <value>664.5076 / DIAM [ 0] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM01" type="String">
-            <value>&quot;0.0000 / DIAM [ 1] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 1] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM02" type="String">
-            <value>&quot;0.0000 / DIAM [ 2] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 2] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM03" type="String">
-            <value>&quot;0.0000 / DIAM [ 3] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 3] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM04" type="String">
-            <value>&quot;0.0000 / DIAM [ 4] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 4] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM05" type="String">
-            <value>&quot;0.0000 / DIAM [ 5] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 5] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM06" type="String">
-            <value>&quot;0.0000 / DIAM [ 6] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 6] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM07" type="String">
-            <value>&quot;0.0000 / DIAM [ 7] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 7] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM08" type="String">
-            <value>&quot;0.0000 / DIAM [ 8] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 8] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM09" type="String">
-            <value>&quot;0.0000 / DIAM [ 9] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [ 9] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM10" type="String">
-            <value>&quot;0.0000 / DIAM [10] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [10] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM11" type="String">
-            <value>&quot;0.0000 / DIAM [11] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [11] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM12" type="String">
-            <value>&quot;0.0000 / DIAM [12] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [12] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM13" type="String">
-            <value>&quot;0.0000 / DIAM [13] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [13] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM14" type="String">
-            <value>&quot;0.0000 / DIAM [14] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [14] [PIXELS]</value>
         </Attribute>
         <Attribute name="DIAM15" type="String">
-            <value>&quot;0.0000 / DIAM [15] [PIXELS]&quot;</value>
+            <value>0.0000 / DIAM [15] [PIXELS]</value>
         </Attribute>
         <Attribute name="OPTDEV00" type="String">
-            <value>&quot;'FILTER STAGE' / OPTDEV00 NAME&quot;</value>
+            <value>'FILTER STAGE' / OPTDEV00 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV01" type="String">
-            <value>&quot;'O2 STAGE' / OPTDEV01 NAME&quot;</value>
+            <value>'O2 STAGE' / OPTDEV01 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV02" type="String">
-            <value>&quot;'CHIP COVER' / OPTDEV02 NAME&quot;</value>
+            <value>'CHIP COVER' / OPTDEV02 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV03" type="String">
-            <value>&quot;'CHIP DIFFUSER' / OPTDEV03 NAME&quot;</value>
+            <value>'CHIP DIFFUSER' / OPTDEV03 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV04" type="String">
-            <value>&quot;'CAMERA STROBE' / OPTDEV04 NAME&quot;</value>
+            <value>'CAMERA STROBE' / OPTDEV04 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV05" type="String">
-            <value>&quot;'DPMON/LOWK O1-S/N' / OPTDEV05 NAME&quot;</value>
+            <value>'DPMON/LOWK O1-S/N' / OPTDEV05 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV06" type="String">
-            <value>&quot;'DPMON/LOWK O1-E/W' / OPTDEV06 NAME&quot;</value>
+            <value>'DPMON/LOWK O1-E/W' / OPTDEV06 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV07" type="String">
-            <value>&quot;'COVER   ' / OPTDEV07 NAME&quot;</value>
+            <value>'COVER   ' / OPTDEV07 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV08" type="String">
-            <value>&quot;'POLARIZER STAGE' / OPTDEV08 NAME&quot;</value>
+            <value>'POLARIZER STAGE' / OPTDEV08 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV09" type="String">
-            <value>&quot;'FILTER WHEEL' / OPTDEV09 NAME&quot;</value>
+            <value>'FILTER WHEEL' / OPTDEV09 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV10" type="String">
-            <value>&quot;'POLARIZER WHEEL' / OPTDEV10 NAME&quot;</value>
+            <value>'POLARIZER WHEEL' / OPTDEV10 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV11" type="String">
-            <value>&quot;'OBJECTIVE WHEEL' / OPTDEV11 NAME&quot;</value>
+            <value>'OBJECTIVE WHEEL' / OPTDEV11 NAME</value>
         </Attribute>
         <Attribute name="OPTDEV12" type="String">
-            <value>&quot;'OCCULTING WHEEL' / OPTDEV12 NAME&quot;</value>
+            <value>'OCCULTING WHEEL' / OPTDEV12 NAME</value>
         </Attribute>
         <Attribute name="OPTPOS00" type="String">
-            <value>&quot;'OUT     ' / FILTER STAGE             POSITION&quot;</value>
+            <value>'OUT     ' / FILTER STAGE             POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS01" type="String">
-            <value>&quot;'DPMON   ' / O2 STAGE                 POSITION&quot;</value>
+            <value>'DPMON   ' / O2 STAGE                 POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS02" type="String">
-            <value>&quot;'IN      ' / CHIP COVER               POSITION&quot;</value>
+            <value>'IN      ' / CHIP COVER               POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS03" type="String">
-            <value>&quot;'IN      ' / CHIP DIFFUSER            POSITION&quot;</value>
+            <value>'IN      ' / CHIP DIFFUSER            POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS04" type="String">
-            <value>&quot;'NONE    ' / CAMERA STROBE            POSITION&quot;</value>
+            <value>'NONE    ' / CAMERA STROBE            POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS05" type="String">
-            <value>&quot;'?       ' / DPMON/LOWK O1-S/N        POSITION&quot;</value>
+            <value>'?       ' / DPMON/LOWK O1-S/N        POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS06" type="String">
-            <value>&quot;'?       ' / DPMON/LOWK O1-E/W        POSITION&quot;</value>
+            <value>'?       ' / DPMON/LOWK O1-E/W        POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS07" type="String">
-            <value>&quot;'UNKNOWN ' / COVER                    POSITION&quot;</value>
+            <value>'UNKNOWN ' / COVER                    POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS08" type="String">
-            <value>&quot;'IN      ' / POLARIZER STAGE          POSITION&quot;</value>
+            <value>'IN      ' / POLARIZER STAGE          POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS09" type="String">
-            <value>&quot;'654.0   ' / FILTER WHEEL             POSITION&quot;</value>
+            <value>'654.0   ' / FILTER WHEEL             POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS10" type="String">
-            <value>&quot;'90      ' / POLARIZER WHEEL          POSITION&quot;</value>
+            <value>'90      ' / POLARIZER WHEEL          POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS11" type="String">
-            <value>&quot;'CLEAR   ' / OBJECTIVE WHEEL          POSITION&quot;</value>
+            <value>'CLEAR   ' / OBJECTIVE WHEEL          POSITION</value>
         </Attribute>
         <Attribute name="OPTPOS12" type="String">
-            <value>&quot;'?       ' / OCCULTING WHEEL          POSITION&quot;</value>
+            <value>'?       ' / OCCULTING WHEEL          POSITION</value>
         </Attribute>
         <Attribute name="OPTDRV00" type="String">
-            <value>&quot;'STOP    ' / FILTER STAGE                DRIVE&quot;</value>
+            <value>'STOP    ' / FILTER STAGE                DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV01" type="String">
-            <value>&quot;'STOP    ' / O2 STAGE                    DRIVE&quot;</value>
+            <value>'STOP    ' / O2 STAGE                    DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV02" type="String">
-            <value>&quot;'OUT_OF_RANGE' / CHIP COVER                  DRIVE&quot;</value>
+            <value>'OUT_OF_RANGE' / CHIP COVER                  DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV03" type="String">
-            <value>&quot;'OUT     ' / CHIP DIFFUSER               DRIVE&quot;</value>
+            <value>'OUT     ' / CHIP DIFFUSER               DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV04" type="String">
-            <value>&quot;'?       ' / CAMERA STROBE               DRIVE&quot;</value>
+            <value>'?       ' / CAMERA STROBE               DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV05" type="String">
-            <value>&quot;'STOP    ' / DPMON/LOWK O1-S/N           DRIVE&quot;</value>
+            <value>'STOP    ' / DPMON/LOWK O1-S/N           DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV06" type="String">
-            <value>&quot;'STOP    ' / DPMON/LOWK O1-E/W           DRIVE&quot;</value>
+            <value>'STOP    ' / DPMON/LOWK O1-E/W           DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV07" type="String">
-            <value>&quot;'STOP    ' / COVER                       DRIVE&quot;</value>
+            <value>'STOP    ' / COVER                       DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV08" type="String">
-            <value>&quot;'STOP    ' / POLARIZER STAGE             DRIVE&quot;</value>
+            <value>'STOP    ' / POLARIZER STAGE             DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV09" type="String">
-            <value>&quot;'CCW     ' / FILTER WHEEL                DRIVE&quot;</value>
+            <value>'CCW     ' / FILTER WHEEL                DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV10" type="String">
-            <value>&quot;'CW      ' / POLARIZER WHEEL             DRIVE&quot;</value>
+            <value>'CW      ' / POLARIZER WHEEL             DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV11" type="String">
-            <value>&quot;'OUT_OF_RANGE' / OBJECTIVE WHEEL             DRIVE&quot;</value>
+            <value>'OUT_OF_RANGE' / OBJECTIVE WHEEL             DRIVE</value>
         </Attribute>
         <Attribute name="OPTDRV12" type="String">
-            <value>&quot;'STOP    ' / OCCULTING WHEEL             DRIVE&quot;</value>
+            <value>'STOP    ' / OCCULTING WHEEL             DRIVE</value>
         </Attribute>
         <Attribute name="ANALOG00" type="String">
-            <value>&quot;18.3690 / DPMON/LOWK PLATE TEMP         (C)&quot;</value>
+            <value>18.3690 / DPMON/LOWK PLATE TEMP         (C)</value>
         </Attribute>
         <Attribute name="ANALOG01" type="String">
-            <value>&quot;17.9985 / DPMON/LOWK AIR TEMP           (C)&quot;</value>
+            <value>17.9985 / DPMON/LOWK AIR TEMP           (C)</value>
         </Attribute>
         <Attribute name="ANALOG02" type="String">
-            <value>&quot;41.6325 / DPMON/LOWK FILTER TEMP        (C)&quot;</value>
+            <value>41.6325 / DPMON/LOWK FILTER TEMP        (C)</value>
         </Attribute>
         <Attribute name="ANALOG03" type="String">
-            <value>&quot;-19.9680 / DPMON/LOWK SPARE TEMP         (C)&quot;</value>
+            <value>-19.9680 / DPMON/LOWK SPARE TEMP         (C)</value>
         </Attribute>
         <Attribute name="ANALOG04" type="String">
-            <value>&quot;5.0142 / LOWK PBS TEMP                 (C)&quot;</value>
+            <value>5.0142 / LOWK PBS TEMP                 (C)</value>
         </Attribute>
         <Attribute name="ANALOG05" type="String">
-            <value>&quot;5.0142 / LOWK MODULATOR TEMP           (C)&quot;</value>
+            <value>5.0142 / LOWK MODULATOR TEMP           (C)</value>
         </Attribute>
         <Attribute name="ANALOG06" type="String">
-            <value>&quot;0.0049 / SKY TRANSMISSION            (ARB)&quot;</value>
+            <value>0.0049 / SKY TRANSMISSION            (ARB)</value>
         </Attribute>
         <Attribute name="ANALOG07" type="String">
-            <value>&quot;-0.0098 / SPARE VOLTAGE                 (V)&quot;</value>
+            <value>-0.0098 / SPARE VOLTAGE                 (V)</value>
         </Attribute>
         <Attribute name="ANALOG08" type="String">
-            <value>&quot;34.5138 / CHIP FILTER TEMP              (C)&quot;</value>
+            <value>34.5138 / CHIP FILTER TEMP              (C)</value>
         </Attribute>
         <Attribute name="ANALOG09" type="String">
-            <value>&quot;21.9960 / CHIP PLATE TEMP               (C)&quot;</value>
+            <value>21.9960 / CHIP PLATE TEMP               (C)</value>
         </Attribute>
         <Attribute name="ANALOG10" type="String">
-            <value>&quot;22.2690 / CHIP AIR TEMP                 (C)&quot;</value>
+            <value>22.2690 / CHIP AIR TEMP                 (C)</value>
         </Attribute>
         <Attribute name="ANALOG11" type="String">
-            <value>&quot;9.5160 / CHIP DOME TEMP                (C)&quot;</value>
+            <value>9.5160 / CHIP DOME TEMP                (C)</value>
         </Attribute>
         <Attribute name="ANALOG12" type="String">
-            <value>&quot;0.4102 / GUIDER X ERROR              (ARB)&quot;</value>
+            <value>0.4102 / GUIDER X ERROR              (ARB)</value>
         </Attribute>
         <Attribute name="ANALOG13" type="String">
-            <value>&quot;0.0146 / GUIDER Y ERROR              (ARB)&quot;</value>
+            <value>0.0146 / GUIDER Y ERROR              (ARB)</value>
         </Attribute>
         <Attribute name="ANALOG14" type="String">
-            <value>&quot;0.0049 / O1 X ERROR                  (ARB)&quot;</value>
+            <value>0.0049 / O1 X ERROR                  (ARB)</value>
         </Attribute>
         <Attribute name="ANALOG15" type="String">
-            <value>&quot;0.0244 / O1 Y ERROR                  (ARB)&quot;</value>
+            <value>0.0244 / O1 Y ERROR                  (ARB)</value>
         </Attribute>
         <Attribute name="LCVR00" type="String">
-            <value>&quot;2864.0000 / CHIP FILTER STAGE 4           (V)&quot;</value>
+            <value>2864.0000 / CHIP FILTER STAGE 4           (V)</value>
         </Attribute>
         <Attribute name="LCVR01" type="String">
-            <value>&quot;5820.0000 / CHIP FILTER STAGE 3           (V)&quot;</value>
+            <value>5820.0000 / CHIP FILTER STAGE 3           (V)</value>
         </Attribute>
         <Attribute name="LCVR02" type="String">
-            <value>&quot;2268.0000 / CHIP FILTER STAGE 2           (V)&quot;</value>
+            <value>2268.0000 / CHIP FILTER STAGE 2           (V)</value>
         </Attribute>
         <Attribute name="LCVR03" type="String">
-            <value>&quot;2254.0000 / CHIP FILTER STAGE 1           (V)&quot;</value>
+            <value>2254.0000 / CHIP FILTER STAGE 1           (V)</value>
         </Attribute>
         <Attribute name="LCVR04" type="String">
-            <value>&quot;0.0000 / SPARE LCVR 3                  (V)&quot;</value>
+            <value>0.0000 / SPARE LCVR 3                  (V)</value>
         </Attribute>
         <Attribute name="LCVR05" type="String">
-            <value>&quot;0.0000 / SPARE LCVR 2                  (V)&quot;</value>
+            <value>0.0000 / SPARE LCVR 2                  (V)</value>
         </Attribute>
         <Attribute name="LCVR06" type="String">
-            <value>&quot;0.0000 / SPARE LCVR 1                  (V)&quot;</value>
+            <value>0.0000 / SPARE LCVR 1                  (V)</value>
         </Attribute>
         <Attribute name="LCVR07" type="String">
-            <value>&quot;0.0000 / LOWK MODULATOR STAGE 1        (V)&quot;</value>
+            <value>0.0000 / LOWK MODULATOR STAGE 1        (V)</value>
         </Attribute>
         <Attribute name="MIC00" type="String">
-            <value>&quot;22682.3008 / CHIP CAMERA Z           (MICRONS)&quot;</value>
+            <value>22682.3008 / CHIP CAMERA Z           (MICRONS)</value>
         </Attribute>
         <Attribute name="MIC01" type="String">
-            <value>&quot;12128.0000 / CHIP O1 X               (MICRONS)&quot;</value>
+            <value>12128.0000 / CHIP O1 X               (MICRONS)</value>
         </Attribute>
         <Attribute name="MIC02" type="String">
-            <value>&quot;2314.6001 / CHIP O1 Y               (MICRONS)&quot;</value>
+            <value>2314.6001 / CHIP O1 Y               (MICRONS)</value>
         </Attribute>
         <Attribute name="MIC03" type="String">
-            <value>&quot;0.0000 / DPMON/LOWK C1 X         (MICRONS)&quot;</value>
+            <value>0.0000 / DPMON/LOWK C1 X         (MICRONS)</value>
         </Attribute>
         <Attribute name="MIC04" type="String">
-            <value>&quot;0.0000 / DPMON/LOWK C1 Y         (MICRONS)&quot;</value>
+            <value>0.0000 / DPMON/LOWK C1 Y         (MICRONS)</value>
         </Attribute>
         <Attribute name="MIC05" type="String">
-            <value>&quot;0.0000 / DPMON/LOWK C1 Z         (MICRONS)&quot;</value>
+            <value>0.0000 / DPMON/LOWK C1 Z         (MICRONS)</value>
         </Attribute>
         <Attribute name="BUFFER" type="String">
-            <value>&quot;1 / BUFFER NUMBER [LOWK]&quot;</value>
+            <value>1 / BUFFER NUMBER [LOWK]</value>
         </Attribute>
         <Structure name="key_1">
             <String name="name"/>

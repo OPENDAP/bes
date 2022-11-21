@@ -179,7 +179,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
                                      gr_map &grmap, const string &dataset)
 {
     // check to make sure hdf_vgroup object is set up properly
-    if (vg.name.length() == 0)  // Vgroup must have a name
+    if (vg.name.size() == 0)  // Vgroup must have a name
         return 0;
     if (!vg)                    // Vgroup must have some tagrefs
         return 0;
@@ -244,7 +244,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
 // Create a DAP HDFArray out of the primary array in an hdf_sds
 HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 {
-    if (sds.name.length() == 0) // SDS must have a name
+    if (sds.name.size() == 0) // SDS must have a name
         return 0;
     if (sds.dims.size() == 0)   // SDS must have rank > 0
         return 0;
@@ -274,7 +274,7 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 // Create a DAP HDFArray out of a general raster
 HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 {
-    if (gr.name.length() == 0)  // GR must have a name
+    if (gr.name.size() == 0)  // GR must have a name
         return 0;
 
     // construct HDFArray, assign data type
@@ -328,7 +328,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
         // add them to the HDFGrid
         string mapname;
         for (int i = 0; i < (int) sds.dims.size(); ++i) {
-            if (sds.dims[i].name.length() == 0) { // the dim must be named
+            if (sds.dims[i].name.size() == 0) { // the dim must be named
                 delete gr;
                 return 0;
             }

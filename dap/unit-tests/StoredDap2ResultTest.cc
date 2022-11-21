@@ -126,16 +126,16 @@ public:
 
     bool re_match(BESRegex &r, const string &s)
     {
-        DBG(cerr << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
+        DBG(cerr << "s.size(): " << s.size() << endl);
+        int pos = r.match(s.c_str(), s.size());
         DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0 && static_cast<unsigned>(pos) == s.length();
+        return pos > 0 && static_cast<unsigned>(pos) == s.size();
     }
 
     bool re_match_binary(BESRegex &r, const string &s)
     {
-        DBG(cerr << "s.length(): " << s.length() << endl);
-        int pos = r.match(s.c_str(), s.length());
+        DBG(cerr << "s.size(): " << s.size() << endl);
+        int pos = r.match(s.c_str(), s.size());
         DBG(cerr << "r.match(s): " << pos << endl);
         return pos > 0;
     }
@@ -505,7 +505,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: StoredDap2ResultTest has the following tests:" << endl;
             const std::vector<Test*> &tests = StoredDap2ResultTest::suite()->getTests();
-            unsigned int prefix_len = StoredDap2ResultTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = StoredDap2ResultTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="fnc4test" space="catalog">/data/S-MODE_PFC_OC2108A_adcp_os75nb.h5</setContainer>
+    <define name="d">
+    <container name="fnc4test" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

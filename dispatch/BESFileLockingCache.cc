@@ -457,10 +457,10 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
         }
     }
 
-    if (target.length() > 254) {
+    if (target.size() > 254) {
         ostringstream msg;
         msg << prolog << "Cache filename is longer than 254 characters (name length: ";
-        msg << target.length() << ", name: " << target;
+        msg << target.size() << ", name: " << target;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
@@ -820,7 +820,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     // start with the matching prefix
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
-        if (dirEntry.compare(0, d_prefix.length(), d_prefix) == 0 && dirEntry != d_cache_info) {
+        if (dirEntry.compare(0, d_prefix.size(), d_prefix) == 0 && dirEntry != d_cache_info) {
             files.push_back(d_cache_dir + "/" + dirEntry);
         }
     }
@@ -1074,31 +1074,41 @@ void BESFileLockingCache::purge_file(const string &file)
     try {
         lock_cache_write();
 
-        // Grab an exclusive lock on the file
+        // Grab an exclusive lock on the file. SonarScan will complain about nested trys... jhrg 11/16/22
         int cfile_fd;
-        if (get_exclusive_lock(file, cfile_fd)) {
-            // Get the file's size
-            unsigned long long size = 0;
-            struct stat buf;
-            if (stat(file.c_str(), &buf) == 0) {
-                size = buf.st_size;
+        try {
+            if (get_exclusive_lock(file, cfile_fd)) {
+                // Get the file's size
+                unsigned long long size = 0;
+                struct stat buf;
+                if (stat(file.c_str(), &buf) == 0) {
+                    size = buf.st_size;
+                }
+
+                BESDEBUG(CACHE, prolog << "file: " << file << " removed." << endl);
+
+                if (unlink(file.c_str()) != 0)
+                    throw BESInternalError(
+                            prolog + "Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__,
+                            __LINE__);
+
+                // FIXME The exception above could result in a leak. jhrg 11/16/22
+                unlock(cfile_fd);
+                cfile_fd = -1;
+                unsigned long long cache_size = get_cache_size() - size;
+
+                if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+                    throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__,
+                                           __LINE__);
+
+                if (write(d_cache_info_fd, &cache_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+                    throw BESInternalError(prolog + "Could not write size info to the cache info file!", __FILE__,
+                                           __LINE__);
             }
-
-            BESDEBUG(CACHE,  prolog << "file: " << file << " removed." << endl);
-
-            if (unlink(file.c_str()) != 0)
-                throw BESInternalError(prolog + "Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__,
-                    __LINE__);
-
-            unlock(cfile_fd);
-
-            unsigned long long cache_size = get_cache_size() - size;
-
-            if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-                throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
-
-            if (write(d_cache_info_fd, &cache_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-                throw BESInternalError(prolog + "Could not write size info to the cache info file!", __FILE__, __LINE__);
+        }
+        catch (...) {
+            if (cfile_fd != -1)
+                unlock(cfile_fd);
         }
 
         unlock_cache();

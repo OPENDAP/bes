@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" xml:base="http://localhost:8080/opendap/dmrpp/string_arrays/t_string_compact.h5" dapVersion="4.0" dmrVersion="1.0" name="t_string_compact.h5" removed dmrpp:version>
+    <String name="array_1d">
+        <Dim size="4"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:compact>UGFydGluZ2lzIHNvICBzd2UgICAgICAgICAgIA==</dmrpp:compact>
+        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+    </String>
+    <String name="array_2d">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:compact>UGFydGluZ2lzIHNvICBzd2UgICAgICAgICAgIA==</dmrpp:compact>
+        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+    </String>
+    <String name="array_special_case">
+        <Dim size="1"/>
+        <Dim size="1"/>
+        <Attribute name="value" type="String">
+            <Value>A</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:compact>QQ==</dmrpp:compact>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
+    </String>
+    <String name="scalar">
+        <Attribute name="value" type="String">
+            <Value>Parting is such sweet sorrow.</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:compact>UGFydGluZyBpcyBzdWNoIHN3ZWV0IHNvcnJvdy4=</dmrpp:compact>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -M -f /path_removed/data/string_arrays/t_string_compact.h5 -r /path_removed/data/string_arrays/t_string_compact.h5.dmr</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

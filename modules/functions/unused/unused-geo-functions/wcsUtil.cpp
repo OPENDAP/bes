@@ -658,7 +658,7 @@ string MakeTempFile(string dir, string covID, string suffix)
 
 	if (!dir.empty() && dir != "")
 	{
-		if (dir[dir.length() - 1] != '/')
+		if (dir[dir.size() - 1] != '/')
 		{
 			dir += "/";
 		}
@@ -765,7 +765,7 @@ StringList::StringList(const string& sstrings, const string& delimiters)
 			!= string::npos))
 	{
 		add(str.substr(op, np - op));
-		op = np + delimiters.length();
+		op = np + delimiters.size();
 	}
 }
 
@@ -1099,7 +1099,7 @@ string CPL_STDCALL StrReplace(string& str, const string oldSubStr, const string 
 		string::size_type pos(0);
 		if( ( pos = str.find(oldSubStr) ) != string::npos )
 		{
-			str.replace( pos, oldSubStr.length(), newStr );
+			str.replace( pos, oldSubStr.size(), newStr );
 		}else {
 			break;
 		}

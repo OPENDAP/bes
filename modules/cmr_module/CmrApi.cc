@@ -71,8 +71,8 @@ namespace cmr {
             d_cmr_search_endpoint_url = cmr_search_endpoint_url;
         }
         string search(CMR_SEARCH_SERVICE);
-        if (d_cmr_search_endpoint_url.length() >= search.length()) {
-            if (0 != d_cmr_search_endpoint_url.compare (d_cmr_search_endpoint_url.length() - search.length(), search.length(), search)){
+        if (d_cmr_search_endpoint_url.size() >= search.size()) {
+            if (0 != d_cmr_search_endpoint_url.compare (d_cmr_search_endpoint_url.size() - search.size(), search.size(), search)){
                 d_cmr_search_endpoint_url = BESUtil::pathConcat(d_cmr_search_endpoint_url,search);
             }
         }

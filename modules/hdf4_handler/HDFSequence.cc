@@ -89,7 +89,7 @@ bool HDFSequence::read_tagref(int32 /*tag*/, int32 ref, int &err)
     string hdf_name = this->name();
 
     // check to see if vd is empty; if so, read in Vdata
-    if (vd.name.length() == 0) {
+    if (vd.name.size() == 0) {
         hdfistream_vdata vin(hdf_file.c_str());
         if (ref != -1)
             vin.seek_ref(ref);

@@ -812,11 +812,17 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // with values that use the UTF-8 character set _are_ encoded unless the
             // HD.EscapeUTF8Attr is set to false. If the attribute values use ASCII
             // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
+            // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
+#if 0
             if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
                 && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
             }
-            at->append_attr(attr->getNewName(), "String", tempstring);
+#endif
+            if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
+                at->append_attr(attr->getNewName(), "String", tempstring,true);
+            else 
+                at->append_attr(attr->getNewName(), "String", tempstring);
         }
     }
 }
@@ -1187,7 +1193,11 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 #if 0
                         //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
 #endif
+
+                        // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
+#if 0
                         tempstring = HDF5CFDAPUtil::escattr(tempstring);
+#endif
                         d4_attr->add_value(tempstring);
                     }
                 }
@@ -1352,11 +1362,16 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
+                // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
+#if 0
                 if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
                     && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
                 }
+#endif
                 d4_attr->add_value(tempstring);
+                if (HDF5RequestHandler::get_escape_utf8_attr() == false && (false == attr->getCsetType())) 
+                    d4_attr->set_utf8_str_flag(true);
             }
         }
     }
@@ -1754,7 +1769,7 @@ string get_cf_string_helper(string & s) {
     // Always start with _ if the first character is not a letter
     if (true == isdigit(s[0])) s.insert(0, insertString);
 
-    for (unsigned int i = 0; i < s.length(); i++)
+    for (unsigned int i = 0; i < s.size(); i++)
         if ((false == isalnum(s[i])) && (s[i] != '_')) s[i] = '_';
     return s;
 }

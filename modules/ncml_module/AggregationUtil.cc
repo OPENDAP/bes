@@ -526,7 +526,7 @@ void AggregationUtil::produceOuterDimensionJoinedArray(Array* pJoinedArray, cons
 
     if (copyData) {
         // Make sure we have capacity for the full length of the up-ranked shape.
-        pJoinedArray->reserve_value_capacity(pJoinedArray->length());
+        pJoinedArray->reserve_value_capacity(pJoinedArray->size());
         // Glom the data together in
         joinArrayData(pJoinedArray, fromVars, false, // we already reserved the space
             true); // but please clear the Vector buffers after you use each Array in fromVars to help on memory.
@@ -633,7 +633,7 @@ void AggregationUtil::joinArrayData(Array* pAggArray, const std::vector<Array*>&
     NCML_ASSERT_MSG(pAggArray->var()->is_simple_type(),
         "AggregationUtil::joinArrayData: the output Array is not of a simple type!  Can't aggregate!");
 
-    // If the caller wants us to do it, sum up length() and reserve that much.
+    // If the caller wants us to do it, sum up size() and reserve that much.
     if (reserveStorage) {
         // Figure it how much we need...
         unsigned int totalLength = 0;
@@ -643,7 +643,7 @@ void AggregationUtil::joinArrayData(Array* pAggArray, const std::vector<Array*>&
             for (it = varArrays.begin(); it != endIt; ++it) {
                 Array* pArr = *it;
                 if (pArr) {
-                    totalLength += pArr->length();
+                    totalLength += pArr->size();
                 }
             }
         }
@@ -912,7 +912,7 @@ Array* AggregationUtil::readDatasetArrayDataForAggregation(const Array& constrai
     if (constrainedTemplateArray.length() != pDatasetArray->length()) {
         NCML_ASSERT_MSG(constrainedTemplateArray.length() == pDatasetArray->length(),
             "AggregationUtil::addDatasetArrayDataToAggregationOutputArray: "
-                "The prototype array and the loaded dataset array length()'s were not equal, even "
+                "The prototype array and the loaded dataset array size()'s were not equal, even "
                 "though their shapes matched. Logic problem.");
     }
 

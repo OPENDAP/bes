@@ -8,6 +8,21 @@ dimensions:
 	StructMetadata_0_len = 13976 ;
 	coremetadata_len = 5839 ;
 variables:
+	float Latitude(Latitude) ;
+		Latitude:_FillValue = -999.f ;
+		Latitude:missing_value = -999.f ;
+		Latitude:title = "Latitude" ;
+		Latitude:units = "degrees_north" ;
+		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude" ;
+		Latitude:orig_dimname = "nTimes" ;
+	float Pressure_CV(Pressure_CV) ;
+		Pressure_CV:units = "hPa" ;
+	float Pressure_CV_1(Pressure_CV_1) ;
+		Pressure_CV_1:units = "hPa" ;
+	int nFreq(nFreq) ;
+		nFreq:units = "level" ;
 	float AirDensity(Latitude, Pressure_CV) ;
 		AirDensity:_FillValue = -999.f ;
 		AirDensity:missing_value = -999.f ;
@@ -690,21 +705,6 @@ variables:
 	char coremetadata(coremetadata_len) ;
 		coremetadata:origname = "coremetadata" ;
 		coremetadata:fullnamepath = "/HDFEOS INFORMATION/coremetadata" ;
-	float Latitude(Latitude) ;
-		Latitude:_FillValue = -999.f ;
-		Latitude:missing_value = -999.f ;
-		Latitude:title = "Latitude" ;
-		Latitude:units = "degrees_north" ;
-		Latitude:UniqueFieldDefinition = "HIRDLS-MLS-TES-SHARED" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude" ;
-		Latitude:orig_dimname = "nTimes" ;
-	float Pressure_CV(Pressure_CV) ;
-		Pressure_CV:units = "hPa" ;
-	float Pressure_CV_1(Pressure_CV_1) ;
-		Pressure_CV_1:units = "hPa" ;
-	int nFreq(nFreq) ;
-		nFreq:units = "level" ;
 
 // global attributes:
 		:CoreMetadata = "\nGROUP                  = INVENTORYMETADATA\n  GROUPTYPE            = MASTERGROUP\n\n  GROUP                  = ECSDATAGRANULE\n\n    OBJECT                 = LOCALGRANULEID\n      NUM_VAL              = 1\n      VALUE                = \"TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5\"\n    END_OBJECT             = LOCALGRANULEID\n\n    OBJECT                 = PRODUCTIONDATETIME\n      NUM_VAL              = 1\n      VALUE                = \"removed date-time\"\n    END_OBJECT             = PRODUCTIONDATETIME\n\n    OBJECT                 = LOCALVERSIONID\n      NUM_VAL              = 1\n      VALUE                = \"L2_Products_Main:R11.01.00\"\n    END_OBJECT             = LOCALVERSIONID\n\n  END_GROUP              = ECSDATAGRANULE\n\n  GROUP                  = MEASUREDPARAMETER\n\n    OBJECT                 = MEASUREDPARAMETERCONTAINER\n      CLASS                = \"1\"\n\n      GROUP                  = QAFLAGS\n        CLASS                = \"1\"\n\n        OBJECT                 = SCIENCEQUALITYFLAG\n          NUM_VAL              = 1\n          VALUE                = \"Not Investigated\"\n          CLASS                = \"1\"\n        END_OBJECT             = SCIENCEQUALITYFLAG\n\n      END_GROUP              = QAFLAGS\n\n      OBJECT                 = PARAMETERNAME\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"Granule\"\n      END_OBJECT             = PARAMETERNAME\n\n    END_OBJECT             = MEASUREDPARAMETERCONTAINER\n\n  END_GROUP              = MEASUREDPARAMETER\n\n  GROUP                  = COLLECTIONDESCRIPTIONCLASS\n\n    OBJECT                 = SHORTNAME\n      NUM_VAL              = 1\n      VALUE                = \"TL2O3N\"\n    END_OBJECT             = SHORTNAME\n\n    OBJECT                 = VERSIONID\n      NUM_VAL              = 1\n      VALUE                = 4\n    END_OBJECT             = VERSIONID\n\n  END_GROUP              = COLLECTIONDESCRIPTIONCLASS\n\n  GROUP                  = INPUTGRANULE\n\n    OBJECT                 = INPUTPOINTER\n      NUM_VAL              = 1\n      VALUE                = \"Production History at block: /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PRODUCTION_HISTORY\"\n    END_OBJECT             = INPUTPOINTER\n\n  END_GROUP              = INPUTGRANULE\n\n  GROUP                  = SPATIALDOMAINCONTAINER\n\n    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER\n\n      GROUP                  = BOUNDINGRECTANGLE\n\n        OBJECT                 = NORTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 90.00000000000000\n        END_OBJECT             = NORTHBOUNDINGCOORDINATE\n\n        OBJECT                 = SOUTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -90.00000000000000\n        END_OBJECT             = SOUTHBOUNDINGCOORDINATE\n\n        OBJECT                 = WESTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -180.0000000000000\n        END_OBJECT             = WESTBOUNDINGCOORDINATE\n\n        OBJECT                 = EASTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 180.0000000000000\n        END_OBJECT             = EASTBOUNDINGCOORDINATE\n\n      END_GROUP              = BOUNDINGRECTANGLE\n\n    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER\n\n    GROUP                  = GRANULELOCALITY\n\n      OBJECT                 = LOCALITYVALUE\n        NUM_VAL              = 1\n        VALUE                = \"Global\"\n      END_OBJECT             = LOCALITYVALUE\n\n    END_GROUP              = GRANULELOCALITY\n\n  END_GROUP              = SPATIALDOMAINCONTAINER\n\n  GROUP                  = RANGEDATETIME\n\n    OBJECT                 = RANGEBEGINNINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2009-12-20\"\n    END_OBJECT             = RANGEBEGINNINGDATE\n\n    OBJECT                 = RANGEBEGINNINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"10:16:00.195053Z\"\n    END_OBJECT             = RANGEBEGINNINGTIME\n\n    OBJECT                 = RANGEENDINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"12:15:06.119552Z\"\n    END_OBJECT             = RANGEENDINGTIME\n\n    OBJECT                 = RANGEENDINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2009-12-21\"\n    END_OBJECT             = RANGEENDINGDATE\n\n  END_GROUP              = RANGEDATETIME\n\n  GROUP                  = PGEVERSIONCLASS\n\n    OBJECT                 = PGEVERSION\n      NUM_VAL              = 1\n      VALUE                = \"R11.01.00\"\n    END_OBJECT             = PGEVERSION\n\n  END_GROUP              = PGEVERSIONCLASS\n\n  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR\n\n    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER\n      CLASS                = \"1\"\n\n      OBJECT                 = OPERATIONMODE\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"Routine\"\n      END_OBJECT             = OPERATIONMODE\n\n      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"Aura\"\n      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME\n\n      OBJECT                 = ASSOCIATEDSENSORSHORTNAME\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"FTS\"\n      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME\n\n      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"TES\"\n      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME\n\n    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER\n\n  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR\n\nEND_GROUP              = INVENTORYMETADATA\n\nEND\n" ;

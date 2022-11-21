@@ -56,8 +56,8 @@ public:
 
     virtual bool read();
 
-    virtual void set_length(int len) { d_length = len; }
-    virtual int length() const { return d_length; }
+    virtual void set_size(int len) { d_length = len; }
+    virtual int size() const { return d_length; }
 };
 
 // $Log: FFStr.h,v $

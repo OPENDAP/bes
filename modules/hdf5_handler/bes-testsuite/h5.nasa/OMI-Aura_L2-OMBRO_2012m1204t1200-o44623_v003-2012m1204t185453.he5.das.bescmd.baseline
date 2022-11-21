@@ -609,11 +609,11 @@ Attributes {
             String GROUPTYPE "MASTERGROUP";
             LONGNAME {
                 Int32 NUM_VAL 1;
-                String VALUE "OMI/Aura Bromine Monoxide (BrO) Total Column 1-Orbit L2 Swath 13x24km";
+                String VALUE "\"OMI/Aura Bromine Monoxide (BrO) Total Column 1-Orbit L2 Swath 13x24km\"";
             }
             ESDTDESCRIPTORREVISION {
                 Int32 NUM_VAL 1;
-                String VALUE "3.0.2";
+                String VALUE "\"3.0.2\"";
             }
         }
     }
@@ -625,105 +625,105 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5";
+                    String VALUE "\"OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-12-04T18:54:53.000Z";
+                    String VALUE "\"2012-12-04T18:54:53.000Z\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Day";
+                    String VALUE "\"Day\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "processed 1 time";
+                    String VALUE "\"processed 1 time\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "RFC1321 MD5 = not yet calculated";
+                    String VALUE "\"RFC1321 MD5 = not yet calculated\"";
                 }
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "further update is anticipated";
+                    String VALUE "\"further update is anticipated\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Not Investigated";
-                            String CLASS "1";
+                            String VALUE "\"Not Investigated\"";
+                            String CLASS "\"1\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Flag set to Passed if NrofGoodOutputSamples >= 75% of NrofGoodInputSamples, to Suspect if NrofGoodOutputSamples >= 50% but < 75% of NrofGoodInputSamples, and to Failed if NrofGoodOutputSamples < 50% of NrofGoodInputSamples.";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Flag set to Passed if NrofGoodOutputSamples >= 75% of NrofGoodInputSamples, to Suspect if NrofGoodOutputSamples >= 50% but < 75% of NrofGoodInputSamples, and to Failed if NrofGoodOutputSamples < 50% of NrofGoodInputSamples.\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String VALUE "This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.";
-                            String CLASS "1";
+                            String VALUE "\"This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.\"";
+                            String CLASS "\"1\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Passed";
-                            String CLASS "1";
+                            String VALUE "\"Passed\"";
+                            String CLASS "\"1\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String VALUE "An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.";
-                            String CLASS "1";
+                            String VALUE "\"An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.\"";
+                            String CLASS "\"1\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 10;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Total Column Bromine Oxide";
+                        String VALUE "\"Total Column Bromine Oxide\"";
                     }
                 }
             }
             ORBITCALCULATEDSPATIALDOMAIN {
                 ORBITCALCULATEDSPATIALDOMAINCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     EQUATORCROSSINGDATE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "2012-12-04";
+                        String VALUE "\"2012-12-04\"";
                     }
                     EQUATORCROSSINGTIME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "12:55:50.000000";
+                        String VALUE "\"12:55:50.000000\"";
                     }
                     ORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 44623;
                     }
                     EQUATORCROSSINGLONGITUDE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Float64 VALUE 12.04;
                     }
@@ -736,78 +736,78 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "OMBRO";
+                    String VALUE "\"OMBRO\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 20;
-                    String VALUE "OMI-Aura_L1-OML1BRUG_2012m1204t1200-o44623_v003-2012m1204t175600.he4", "OMI-Aura_L2-OMCLDO2_2012m1204t1200-o44623_v003-2012m1204t180700.he5";
+                    String VALUE "\"OMI-Aura_L1-OML1BRUG_2012m1204t1200-o44623_v003-2012m1204t175600.he4\"", "\"OMI-Aura_L2-OMCLDO2_2012m1204t1200-o44623_v003-2012m1204t180700.he5\"";
                 }
             }
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-12-04";
+                    String VALUE "\"2012-12-04\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "13:39:24.000000";
+                    String VALUE "\"13:39:24.000000\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2012-12-04";
+                    String VALUE "\"2012-12-04\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "12:00:32.000000";
+                    String VALUE "\"12:00:32.000000\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "3.0.2";
+                    String VALUE "\"3.0.2\"";
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "CCD Ultra Violet";
+                        String VALUE "\"CCD Ultra Violet\"";
                     }
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Aura";
+                        String VALUE "\"Aura\"";
                     }
                     OPERATIONMODE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Test";
+                        String VALUE "\"Test\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "OMI";
+                        String VALUE "\"OMI\"";
                     }
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "NrMeasurements", "NrZoom", "NrSpatialZoom", "NrSpectralZoom", "ExpeditedData", "SouthAtlanticAnomalyCrossing", "SpacecraftManeuverFlag", "SolarEclipse", "InstrumentConfigurationIDs", "MasterClockPeriods", "ExposureTimes", "PathNr", "StartBlockNr", "EndBlockNr";
+                        String VALUE "\"NrMeasurements\"", "\"NrZoom\"", "\"NrSpatialZoom\"", "\"NrSpectralZoom\"", "\"ExpeditedData\"", "\"SouthAtlanticAnomalyCrossing\"", "\"SpacecraftManeuverFlag\"", "\"SolarEclipse\"", "\"InstrumentConfigurationIDs\"", "\"MasterClockPeriods\"", "\"ExposureTimes\"", "\"PathNr\"", "\"StartBlockNr\"", "\"EndBlockNr\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14";
-                            String VALUE "1643", "0", "0", "0", "FALSE", "TRUE", "FALSE", "FALSE", "0", "1", "2", "2.000400", "1.000200", "0.500100", "0.400080", "124", "9", "36";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"";
+                            String VALUE "\"1643\"", "\"0\"", "\"0\"", "\"0\"", "\"FALSE\"", "\"TRUE\"", "\"FALSE\"", "\"FALSE\"", "\"0\"", "\"1\"", "\"2\"", "\"2.000400\"", "\"1.000200\"", "\"0.500100\"", "\"0.400080\"", "\"124\"", "\"9\"", "\"36\"";
                         }
                     }
                 }

@@ -75,13 +75,13 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
-    /// Holds names of the XML elements thst define variables (e.g., Byte)
+    /// Holds names of the XML elements that define variables (e.g., Byte)
     static const std::set<std::string> variable_elements;
 
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     static pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
-    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks) const;
+    void process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks) const;
 
     static void process_fill_value_chunks(dmrpp::DmrppCommon *dc, const std::set<shape> &chunk_map, const shape &chunk_shape,
                                    const shape &array_shape, unsigned long long chunk_size);

@@ -262,91 +262,91 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOD021KM.A2010277.1710.005.2010278082807.hdf";
+                    String VALUE "\"MOD021KM.A2010277.1710.005.2010278082807.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2010-10-05T08:28:21.000Z";
+                    String VALUE "\"2010-10-05T08:28:21.000Z\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Day";
+                    String VALUE "\"Day\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "processed once";
+                    String VALUE "\"processed once\"";
                 }
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "further update is anticipated";
+                    String VALUE "\"further update is anticipated\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1", "2";
+                    String CLASS "\"1\"", "\"2\"";
                     QAFLAGS {
-                        String CLASS "1", "2";
+                        String CLASS "\"1\"", "\"2\"";
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1, 1;
-                            String VALUE "Not Investigated", "Not Investigated";
-                            String CLASS "1", "2";
+                            String VALUE "\"Not Investigated\"", "\"Not Investigated\"";
+                            String CLASS "\"1\"", "\"2\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
-                            String VALUE "not being investigated", "not being investigated";
+                            String CLASS "\"1\"", "\"2\"";
+                            String VALUE "\"not being investigated\"", "\"not being investigated\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
-                            String VALUE "Suspect", "Suspect";
+                            String CLASS "\"1\"", "\"2\"";
+                            String VALUE "\"Suspect\"", "\"Suspect\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1", "2";
+                        String CLASS "\"1\"", "\"2\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
+                            String CLASS "\"1\"", "\"2\"";
                             Int32 VALUE 0, 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
+                            String CLASS "\"1\"", "\"2\"";
                             Int32 VALUE 37, 0;
                         }
                         QAPERCENTINTERPOLATEDDATA {
                             Int32 NUM_VAL 1, 1;
-                            String CLASS "1", "2";
+                            String CLASS "\"1\"", "\"2\"";
                             Int32 VALUE 0, 1;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1", "2";
+                        String CLASS "\"1\"", "\"2\"";
                         Int32 NUM_VAL 1, 1;
-                        String VALUE "EV_1KM_RefSB", "EV_1KM_Emissive";
+                        String VALUE "\"EV_1KM_RefSB\"", "\"EV_1KM_Emissive\"";
                     }
                 }
             }
             ORBITCALCULATEDSPATIALDOMAIN {
                 ORBITCALCULATEDSPATIALDOMAINCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     EQUATORCROSSINGDATE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "2010-10-04";
+                        String VALUE "\"2010-10-04\"";
                     }
                     EQUATORCROSSINGTIME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "17:16:09.441650";
+                        String VALUE "\"17:16:09.441650\"";
                     }
                     ORBITNUMBER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Int32 VALUE 57425;
                     }
                     EQUATORCROSSINGLONGITUDE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
                         Float64 VALUE -101.654208483135;
                     }
@@ -359,44 +359,44 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MOD021KM";
+                    String VALUE "\"MOD021KM\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 10;
-                    String VALUE "MOD01.A2010277.1705.005.2010278071738.hdf", "MOD01.A2010277.1710.005.2010278072034.hdf", "MOD01.A2010277.1715.005.2010278071837.hdf", "MOD02_Reflective_LUTs.hdf.V5.0.46.7", "MOD02_Emissive_LUTs.hdf.V5.0.46.7", "MOD02_QA_LUTs.hdf.V5.0.46.7";
+                    String VALUE "\"MOD01.A2010277.1705.005.2010278071738.hdf\"", "\"MOD01.A2010277.1710.005.2010278072034.hdf\"", "\"MOD01.A2010277.1715.005.2010278071837.hdf\"", "\"MOD02_Reflective_LUTs.hdf.V5.0.46.7\"", "\"MOD02_Emissive_LUTs.hdf.V5.0.46.7\"", "\"MOD02_QA_LUTs.hdf.V5.0.46.7\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
                 HORIZONTALSPATIALDOMAINCONTAINER {
                     GPOLYGON {
                         GPOLYGONCONTAINER {
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             GRINGPOINT {
-                                String CLASS "1";
+                                String CLASS "\"1\"";
                                 GRINGPOINTLONGITUDE {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE -108.18167098662, -85.7658290550888, -90.3145390334385, -111.189954853235;
                                 }
                                 GRINGPOINTLATITUDE {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE 23.6254320616681, 20.359189414654, 2.56838958663442, 5.52551682686387;
                                 }
                                 GRINGPOINTSEQUENCENO {
                                     Int32 NUM_VAL 4;
-                                    String CLASS "1";
+                                    String CLASS "\"1\"";
                                     Float64 VALUE 1, 2, 3, 4;
                                 }
                             }
                             GRING {
-                                String CLASS "1";
+                                String CLASS "\"1\"";
                                 EXCLUSIONGRINGFLAG {
                                     Int32 NUM_VAL 1;
-                                    String CLASS "1";
-                                    String VALUE "N";
+                                    String CLASS "\"1\"";
+                                    String VALUE "\"N\"";
                                 }
                             }
                         }
@@ -406,76 +406,76 @@ Attributes {
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2010-10-04";
+                    String VALUE "\"2010-10-04\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "17:15:00.000000";
+                    String VALUE "\"17:15:00.000000\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2010-10-04";
+                    String VALUE "\"2010-10-04\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "17:10:00.000000";
+                    String VALUE "\"17:10:00.000000\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "5.0.46";
+                    String VALUE "\"5.0.46\"";
                 }
             }
             ANCILLARYINPUTGRANULE {
                 ANCILLARYINPUTGRANULECONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ANCILLARYINPUTPOINTER {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MOD03.A2010277.1710.005.2010278072150.hdf";
+                        String VALUE "\"MOD03.A2010277.1710.005.2010278072150.hdf\"";
                     }
                     ANCILLARYINPUTTYPE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Geolocation";
+                        String VALUE "\"Geolocation\"";
                     }
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MODIS";
+                        String VALUE "\"MODIS\"";
                     }
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Terra";
+                        String VALUE "\"Terra\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "MODIS";
+                        String VALUE "\"MODIS\"";
                     }
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "AveragedBlackBodyTemperature", "AveragedMirrorTemperature", "AveragedFocalPlane1Temperature", "AveragedFocalPlane2Temperature", "AveragedFocalPlane3Temperature", "AveragedFocalPlane4Temperature", "CalibrationQuality", "MissionPhase", "NadirPointing";
+                        String VALUE "\"AveragedBlackBodyTemperature\"", "\"AveragedMirrorTemperature\"", "\"AveragedFocalPlane1Temperature\"", "\"AveragedFocalPlane2Temperature\"", "\"AveragedFocalPlane3Temperature\"", "\"AveragedFocalPlane4Temperature\"", "\"CalibrationQuality\"", "\"MissionPhase\"", "\"NadirPointing\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9";
-                            String VALUE " 290.02", " 278.01", " 269.94", " 269.97", "  83.38", "  83.02", "marginal", "EXECUTION", "Y";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"";
+                            String VALUE "\" 290.02\"", "\" 278.01\"", "\" 269.94\"", "\" 269.97\"", "\"  83.38\"", "\"  83.02\"", "\"marginal\"", "\"EXECUTION\"", "\"Y\"";
                         }
                     }
                 }
@@ -506,46 +506,46 @@ Attributes {
             ALGORITHMPACKAGE {
                 ALGORITHMPACKAGEACCEPTANCEDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "1999-12-14";
+                    String VALUE "\"1999-12-14\"";
                 }
                 ALGORITHMPACKAGEMATURITYCODE {
                     Int32 NUM_VAL 1;
-                    String VALUE "OPERATIONAL";
+                    String VALUE "\"OPERATIONAL\"";
                 }
                 ALGORITHMPACKAGENAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "MODIS Level 1B Algorithm Package";
+                    String VALUE "\"MODIS Level 1B Algorithm Package\"";
                 }
                 ALGORITHMPACKAGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "5.0.46.7_Terra";
+                    String VALUE "\"5.0.46.7_Terra\"";
                 }
             }
             PROJECT {
                 INSTRUMENTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "Moderate Resolution Imaging SpectroRadiometer";
+                    String VALUE "\"Moderate Resolution Imaging SpectroRadiometer\"";
                 }
                 PROCESSINGCENTER {
                     Int32 NUM_VAL 1;
-                    String VALUE "MODAPS";
+                    String VALUE "\"MODAPS\"";
                 }
             }
             DESCRREVISION {
                 Int32 NUM_VAL 1;
-                String VALUE "5.0";
+                String VALUE "\"5.0\"";
             }
             PRODUCTIONHISTORY {
                 Int32 NUM_VAL 1;
-                String VALUE "PGE02:5.0.46.7;PGE01:5.0.41";
+                String VALUE "\"PGE02:5.0.46.7;PGE01:5.0.41\"";
             }
             LONGNAME {
                 Int32 NUM_VAL 1;
-                String VALUE "MODIS/Terra Calibrated Radiances 5-Min L1B Swath 1km";
+                String VALUE "\"MODIS/Terra Calibrated Radiances 5-Min L1B Swath 1km\"";
             }
             PROCESSINGENVIRONMENT {
                 Int32 NUM_VAL 1;
-                String VALUE "Linux minion5004 2.6.8.1-26mdksmp ";
+                String VALUE "\"Linux minion5004 2.6.8.1-26mdksmp \"";
             }
         }
     }

@@ -113,8 +113,8 @@ find_user_from_cookie( const char *cookie, string &user )
 	int user_var = s_cookie.find( var ) ;
 	if( user_var >= 0 )
 	{
-	    string s_user_var = s_cookie.substr( user_var + var.length(),
-	                                         s_cookie.length() ) ;
+	    string s_user_var = s_cookie.substr( user_var + var.size(),
+	                                         s_cookie.size() ) ;
 	    int semi = s_user_var.find( ";" ) ;
 	    if( semi < 0 )
 	    {

@@ -740,11 +740,11 @@ void RenamedArrayWrapper::syncConstraints()
         Array::dimension& wrapDim = *wrapIt;
         wrapDim = thisDim; // copy them!
     }
-    // this calculates it's length fine, then set it to the wrapped
+    // this calculates its length fine, then set it to the wrapped
     // since it has no way to know we changed the dimensions...
     update_length(this->length());
     _pArray->set_length(this->length());
     NCML_ASSERT_MSG(this->length() == _pArray->length(),
-        "RenamedArrayWrapper::syncConstraints(): length() of this and wrapped do not match!!");
+        "RenamedArrayWrapper::syncConstraints(): size() of this and wrapped do not match!!");
 }
 }

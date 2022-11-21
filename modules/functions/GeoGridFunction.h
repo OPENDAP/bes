@@ -29,11 +29,13 @@
 namespace libdap {
 class BaseType;
 class DDS;
+class DMR;
 }
 
 namespace functions {
 
-void function_geogrid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) ;
+void function_dap2_geogrid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp) ;
+libdap::BaseType *function_dap4_geogrid(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class GeoGridFunction: public libdap::ServerFunction {
 public:
@@ -44,7 +46,8 @@ public:
 		setUsageString("geogrid(...)");
 		setRole("http://services.opendap.org/dap4/server-side-function/geogrid");
 		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#geogrid");
-		setFunction(function_geogrid);
+        setFunction(function_dap2_geogrid);
+        setFunction(function_dap4_geogrid);
 		setVersion("1.2");
     }
     virtual ~GeoGridFunction()
@@ -52,6 +55,7 @@ public:
     }
 
     bool canOperateOn(libdap::DDS &dds);
+    bool canOperateOn(libdap::DMR &dmr);
 };
 
 } // functions namespace

@@ -72,7 +72,7 @@ FONcSequence::~FONcSequence()
 void FONcSequence::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
     FONcBaseType::convert(embed,_dap4,is_dap4_group);
-    _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
+    d_varname = FONcUtils::gen_name(embed, d_varname, d_orig_varname);
 }
 
 /** @brief define the DAP Sequence in the netcdf file
@@ -90,10 +90,10 @@ void FONcSequence::define(int ncid)
     // for now we are simply going to add a global variable noting the
     // presence of the sequence, the name of the sequence, and that the
     // sequences has been elided.
-    string val = (string) "The sequence " + _varname + " is a member of this dataset and has been elided.";
-    int stax = nc_put_att_text(ncid, NC_GLOBAL, _varname.c_str(), val.length(), val.c_str());
+    string val = (string) "The sequence " + d_varname + " is a member of this dataset and has been elided.";
+    int stax = nc_put_att_text(ncid, NC_GLOBAL, d_varname.c_str(), val.size(), val.c_str());
     if (stax != NC_NOERR) {
-        string err = (string) "File out netcdf, " + "failed to write string attribute for sequence " + _varname;
+        string err = (string) "File out netcdf, " + "failed to write string attribute for sequence " + d_varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 }

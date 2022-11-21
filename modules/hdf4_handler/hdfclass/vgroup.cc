@@ -159,7 +159,7 @@ hdfistream_vgroup::hdfistream_vgroup(const string filename):hdfistream_obj
     (filename)
 {
     _init();
-    if (_filename.length() != 0)        // if ctor specified a null filename
+    if (_filename.size() != 0)        // if ctor specified a null filename
         open(_filename.c_str());
     return;
 }
@@ -435,7 +435,7 @@ bool IsInternalVdata(int32 fid, int32 ref)  {
 // currently open Vgroup
 bool hdfistream_vgroup::eo_attr(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eos() && !bos())        // if eos(), then always eo_attr()
         return true;
@@ -462,7 +462,7 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_attr & ha)
     ha.name = string();
     ha.values = hdf_genvec();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eo_attr())              // if positioned past last attr, do nothing
         return *this;

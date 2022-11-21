@@ -77,9 +77,9 @@ FONcUByte::define( int ncid )
 {
     FONcBaseType::define( ncid ) ;
 
-    if( !_defined )
+    if( !d_defined )
     {
-        if(is_dap4) {                                                                                       
+        if(d_is_dap4) {
             D4Attributes *d4_attrs = _b->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_UBYTE);   
         }
@@ -88,11 +88,11 @@ FONcUByte::define( int ncid )
             updateAttrType(attrs,NC_UBYTE); 
         }
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _b, isNetCDF4_ENHANCED(), d_is_dap4 ) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-	_defined = true ;
+        d_defined = true ;
     }
 }
 
@@ -108,22 +108,22 @@ FONcUByte::define( int ncid )
 void
 FONcUByte::write( int ncid )
 {
-    BESDEBUG( "fonc", "FOncUByte::write for var " << _varname << endl ) ;
+    BESDEBUG( "fonc", "FOncUByte::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     unsigned char *data = new unsigned char ;
 
-    if (is_dap4)
+    if (d_is_dap4)
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());
 
     _b->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_uchar(ncid, _varid, var_index, data ) ;
+    int stax = nc_put_var1_uchar(ncid, d_varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-		     + "Failed to write byte data for "
-		     + _varname ;
+                 + "Failed to write byte data for "
+                 + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
     delete data ;

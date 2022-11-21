@@ -73,6 +73,7 @@
 #include "CredentialsManager.h"
 
 using namespace bes;
+using namespace http;
 using namespace libdap;
 using namespace std;
 

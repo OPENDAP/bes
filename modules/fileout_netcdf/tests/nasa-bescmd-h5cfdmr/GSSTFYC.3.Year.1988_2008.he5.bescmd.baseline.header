@@ -1,9 +1,13 @@
 netcdf test {
 dimensions:
-	lat = 720 ;
 	lon = 1440 ;
+	lat = 720 ;
 	StructMetadata_0_len = 3148 ;
 variables:
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
 	float NCEP_Psea_level(lat, lon) ;
 		NCEP_Psea_level:_FillValue = -999.f ;
 		NCEP_Psea_level:LongName = "sea level pressure" ;
@@ -91,10 +95,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.BeginDate = "1988-01-01" ;

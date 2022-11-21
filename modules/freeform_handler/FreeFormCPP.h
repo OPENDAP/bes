@@ -1588,7 +1588,7 @@ int format_to_ISO8211DDR(FORMAT_PTR format, const char *first_fields,
         FF_BUFSIZE_HANDLE ddf);
 VARIABLE_PTR ff_find_variable(char *, FORMAT_PTR);
 VARIABLE_PTR ff_new_name(FORMAT_PTR, char *, char *);
-unsigned char ff_var_length(VARIABLE_PTR);
+unsigned char ff_var_size(VARIABLE_PTR);
 int btype_to_btype(void *src_value, FF_TYPES_t src_type, void *dest_value,
         FF_TYPES_t dest_type);
 BOOLEAN type_cmp(FF_TYPES_t type, void *value0, void *value1);

@@ -85,9 +85,9 @@ void CacheMarshaller::put_uint32(dods_uint32 val)
 
 void CacheMarshaller::put_str(const string &val)
 {
-    size_t len = val.length();
+    size_t len = val.size();
     d_out.write(reinterpret_cast<const char*>(&len), sizeof(size_t));
-    d_out.write(val.data(), val.length());
+    d_out.write(val.data(), val.size());
 }
 
 void CacheMarshaller::put_url(const string &val)

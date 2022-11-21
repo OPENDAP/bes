@@ -39,9 +39,9 @@
 namespace focovjson {
 
 void removeSubstring(std::string& str, const std::string subStr) {
-   int n = subStr.length();
+   int n = subStr.size();
 
-   for (unsigned int i = str.find(subStr); i < str.length(); i = str.find(subStr))
+   for (unsigned int i = str.find(subStr); i < str.size(); i = str.find(subStr))
       str.erase(i, n);
 }
 
@@ -80,7 +80,7 @@ long computeConstrainedShape(libdap::Array *a, std::vector<unsigned int> *shape 
 
 string escape_for_covjson(const std::string &input) {
     std::stringstream ss;
-    for (size_t i = 0; i < input.length(); ++i) {
+    for (size_t i = 0; i < input.size(); ++i) {
         if (unsigned(input[i]) < '\x20' || input[i] == '\\' || input[i] == '"') {
             ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << unsigned(input[i]);
         } else {
@@ -95,7 +95,7 @@ std::string backslash_escape(std::string source, char char_to_escape) {
 	std::string escaped_result = source;
 	if(source.find(char_to_escape) != string::npos ){
 		size_t found = 0;
-		for(size_t i=0; i< source.length() ; i++){
+		for(size_t i=0; i< source.size() ; i++){
 			if(source[i] == char_to_escape){
 				escaped_result.insert( i + found++, "\\");
 			}

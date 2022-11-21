@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+	dim1_r = 2 ;
+	pre = 3 ;
+variables:
+	float dim1_r(dim1_r) ;
+		dim1_r:origname = "dim1_r" ;
+		dim1_r:fullnamepath = "/dim1_r" ;
+	float pre(dim1_r, pre) ;
+		pre:origname = "_nc4_non_coord_pre" ;
+		pre:fullnamepath = "/_nc4_non_coord_pre" ;
+	float dim1(dim1_r) ;
+		dim1:origname = "_nc4_non_coord_dim1" ;
+		dim1:fullnamepath = "/_nc4_non_coord_dim1" ;
+
+// global attributes:
+		:history = "removed date-timex nc4_var_dim_name_same_2.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"nc4_var_dim_name_same_2.h5\"}]}]" ;
+}

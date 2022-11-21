@@ -98,7 +98,12 @@ struct HDF5CFUtil {
                static std::string obtain_string_after_lastslash(const std::string & s);
                static std::string obtain_string_before_lastslash(const std::string & s);
                static std::string remove_substrings(std::string str, const std::string &s);
+
+
+               // Make the coordinate follow the CF conventions when the group hierarchy is flattened.
                static void cha_co(std::string &co,const std::string & vpath);
+
+               // Supposed string temp_str contains several relpath, Obtain all the positions of relpath in temp_str. 
                static void get_relpath_pos(const std::string& temp_str,const std::string& relpath,std::vector<size_t>&var_pos);
 
                static bool cf_strict_support_type(H5DataType dtype,bool is_dap4); 

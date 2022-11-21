@@ -74,7 +74,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK lines to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 # This looks like a copy of the older logic we used and it will pass a test
 # if the baseline is empty and the test wrote nothing to stderr. It's better
@@ -535,6 +535,24 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
 
+#nc var dim name same 
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dmr.bescmd])
+
+#cf bound
+AT_BESCMD_RESPONSE_TEST([t_cf_latlon_bounds.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_bounds.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_cf_latlon_bounds.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_bounds.h5.dmr.bescmd])
+
+
+
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_2dll.h5.dmr.bescmd])
@@ -694,6 +712,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dap.bescmd])
 
 #netcdf4 enhanced simple
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim.h5.dmr.bescmd])
 
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
@@ -701,9 +720,13 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 
+#netcdf4 var and dim share the same name
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bescmd])
+
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
-# This tests that the DDS used as an argument to a function does contain attributes.
+# In this test, the DDS is used as an argument to a function that does contain attributes.
 # ky 11/1/19
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
@@ -716,6 +739,11 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
 # Test the case when a dimension has multiple hardlinks(HYRAX-588)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
+
+
+# Test special character handling
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_special_char_attr.h5.dmr.bescmd])
+#
 # This test will generate error message like 
 # "The shortest hardlink is not located under an ancestor group of all links.This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.
 # Please report this to support@opendap.org
@@ -728,6 +756,15 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([ds_nr.h5.dmr.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([ds_or.h5.dmr.bescmd])
 
+# default HDF-EOS5 DMR tests
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd_aug.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_2_3d_2x2yz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char_aug.h5.dmr.bescmd])
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file
@@ -748,7 +785,19 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xpass])
+
 # and change to false
+
+#AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf], [xfail])
+
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.conf])
+
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.default.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf])
+
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf])
+
+

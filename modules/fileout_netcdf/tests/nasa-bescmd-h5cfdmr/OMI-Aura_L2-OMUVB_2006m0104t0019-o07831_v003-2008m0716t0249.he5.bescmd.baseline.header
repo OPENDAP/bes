@@ -4,6 +4,26 @@ dimensions:
 	nXtrack = 60 ;
 	StructMetadata_0_len = 5703 ;
 variables:
+	float Latitude(nTimes, nXtrack) ;
+		Latitude:_FillValue = -1.267651e+30f ;
+		Latitude:missing_value = -1.267651e+30f ;
+		Latitude:scale_factor = 1. ;
+		Latitude:add_offset = 0. ;
+		Latitude:title = "Latitude" ;
+		Latitude:units = "degrees_north" ;
+		Latitude:UniqueFieldDefinition = "Aura-Shared" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude" ;
+	float Longitude(nTimes, nXtrack) ;
+		Longitude:_FillValue = -1.267651e+30f ;
+		Longitude:missing_value = -1.267651e+30f ;
+		Longitude:scale_factor = 1. ;
+		Longitude:add_offset = 0. ;
+		Longitude:title = "Longitude" ;
+		Longitude:units = "degrees_east" ;
+		Longitude:UniqueFieldDefinition = "Aura-Shared" ;
+		Longitude:origname = "Longitude" ;
+		Longitude:fullnamepath = "/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude" ;
 	float CSErythemalDailyDose(nTimes, nXtrack) ;
 		CSErythemalDailyDose:_FillValue = -1.267651e+30f ;
 		CSErythemalDailyDose:missing_value = -1.267651e+30f ;
@@ -314,26 +334,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float Latitude(nTimes, nXtrack) ;
-		Latitude:_FillValue = -1.267651e+30f ;
-		Latitude:missing_value = -1.267651e+30f ;
-		Latitude:scale_factor = 1. ;
-		Latitude:add_offset = 0. ;
-		Latitude:title = "Latitude" ;
-		Latitude:units = "degrees_north" ;
-		Latitude:UniqueFieldDefinition = "Aura-Shared" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/HDFEOS/SWATHS/UVB/Geolocation Fields/Latitude" ;
-	float Longitude(nTimes, nXtrack) ;
-		Longitude:_FillValue = -1.267651e+30f ;
-		Longitude:missing_value = -1.267651e+30f ;
-		Longitude:scale_factor = 1. ;
-		Longitude:add_offset = 0. ;
-		Longitude:title = "Longitude" ;
-		Longitude:units = "degrees_east" ;
-		Longitude:UniqueFieldDefinition = "Aura-Shared" ;
-		Longitude:origname = "Longitude" ;
-		Longitude:fullnamepath = "/HDFEOS/SWATHS/UVB/Geolocation Fields/Longitude" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.InstrumentName = "OMI" ;

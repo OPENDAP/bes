@@ -78,7 +78,7 @@ name_map::lookup(string name, const bool canonical_names)
 	    else {
 		static BESRegex ident("[A-Za-z_][A-Za-z0-9_]*", 1);
 		string tmp_n = p->to;
-		if (ident.match(tmp_n.c_str(), tmp_n.length())) 
+		if (ident.match(tmp_n.c_str(), tmp_n.size()))
 		    return munge(tmp_n);
 		else
 		    return tmp_n;
