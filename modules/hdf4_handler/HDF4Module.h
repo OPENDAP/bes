@@ -36,13 +36,13 @@
 
 class HDF4Module:public BESAbstractModule {
   public:
-    HDF4Module() {
-    } virtual ~ HDF4Module() {
-    }
-    virtual void initialize(const std::string & modname);
-    virtual void terminate(const std::string & modname);
 
-    virtual void dump(std::ostream & strm) const;
+    HDF4Module() = default;
+    ~ HDF4Module() override = default;
+    void initialize(const std::string & modname) override;
+    void terminate(const std::string & modname) override;
+
+    void dump(std::ostream & strm) const override;
 };
 
 #endif                          // A_HDF4Module_H

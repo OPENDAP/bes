@@ -101,7 +101,7 @@ BESH4Cache::BESH4Cache()
 BESH4Cache *
 BESH4Cache::get_instance()
 {
-    if (d_enabled && d_instance == 0) {
+    if (d_enabled && d_instance == nullptr) {
         struct stat buf;
         string cache_dir = getCacheDirFromConfig();
         if ((stat(cache_dir.c_str(), &buf) == 0) && (buf.st_mode & S_IFDIR)) {
@@ -134,7 +134,7 @@ BESH4Cache::get_instance()
 }
 
 // Check whether the real lat/lon file size is the same as the expected lat/lon size. If not, return false. 
-bool BESH4Cache::is_valid(const string & cache_file_name, const int expected_file_size)
+bool BESH4Cache::is_valid(const string & cache_file_name, const int expected_file_size) const
 {
 
     struct stat st;

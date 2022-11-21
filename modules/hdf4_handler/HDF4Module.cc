@@ -29,7 +29,6 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#define HDF4_CATALOG "catalog"
 #include <iostream>
 #include "HDF4Module.h"
 #include <BESRequestHandlerList.h>
@@ -42,6 +41,7 @@
 #include <BESDebug.h>
 
 using namespace std;
+const string HDF4_CATALOG="catalog";
 
 void HDF4Module::initialize(const string & modname)
 {
@@ -58,8 +58,7 @@ void HDF4Module::initialize(const string & modname)
         }
 
         if( !BESContainerStorageList::TheList()->ref_persistence( HDF4_CATALOG ) ) {
-            BESFileContainerStorage *csc =
-            new BESFileContainerStorage(HDF4_CATALOG);
+            auto csc = new BESFileContainerStorage(HDF4_CATALOG);
             BESContainerStorageList::TheList()->add_persistence(csc);
         }
 

@@ -60,8 +60,6 @@
 #include <BESDebug.h>
 #include <libdap/debug.h>
 
-
-using namespace std;
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
@@ -91,6 +89,7 @@ using namespace std;
 #include "hdf-maps.h"
 #include <libdap/debug.h>
 
+using namespace std;
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98
 // jhrg.
@@ -104,8 +103,7 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row);
 // STL predicate comparing equality of hdf_field objects based on their names
 class fieldeq {
 public:
-    explicit fieldeq(const string & s) {
-        _val = s;
+    explicit fieldeq(const string & s):_val(s) {
     }
 
     bool operator() (const hdf_field & f) const {
@@ -121,18 +119,61 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
 {
     // check to make sure hdf_vdata object is set up properly
     // Vdata must have a name
-    if (!vd || vd.fields.size() == 0 || vd.name.empty())
-        return 0;
+    if (!vd || vd.fields.empty() || vd.name.empty())
+        return nullptr;
 
     // construct HDFSequence
-    HDFSequence *seq = new HDFSequence(vd.name, dataset);
+    auto seq = new HDFSequence(vd.name, dataset);
 
     // step through each field and create a variable in the DAP Sequence
+    for (const auto &vdf:vd.fields) {
+        if (!vdf || vdf.vals.size() < 1 ||
+            vdf.name.empty()) {
+            delete seq;         // problem with the field
+            return nullptr;
+        }
+        HDFStructure *st = 0;
+        try {
+            st = new HDFStructure(vdf.name, dataset);
+
+            // for each subfield add the subfield to st
+            if (vdf.vals[0].number_type() == DFNT_CHAR8
+                || vdf.vals[0].number_type() == DFNT_UCHAR8) {
+
+                // collapse char subfields into one string
+                string subname = vdf.name + "__0";
+                BaseType *bt = new HDFStr(subname, dataset);
+                st->add_var(bt); // *st now manages *bt
+                delete bt;
+            }
+            else {
+                // create a DODS variable for each subfield
+                for (int j = 0; j < (int) vdf.vals.size(); ++j) {
+                    ostringstream strm;
+                    strm << vdf.name << "__" << j;
+                    BaseType *bt =
+                        NewDAPVar(strm.str(), dataset,
+                                  vdf.vals[j].number_type());
+                    st->add_var(bt); // *st now manages *bt
+                    delete bt;
+                }
+            }
+            seq->add_var(st); // *seq now manages *st
+            delete st;
+        }
+        catch (...) {
+            delete seq;
+            delete st;
+            throw;
+        }
+    }
+
+#if 0
     for (int i = 0; i < (int) vd.fields.size(); ++i) {
         if (!vd.fields[i] || vd.fields[i].vals.size() < 1 ||
             vd.fields[i].name.empty()) {
             delete seq;         // problem with the field
-            return 0;
+            return nullptr;
         }
         HDFStructure *st = 0;
         try {
@@ -169,6 +210,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
             throw;
         }
     }
+#endif
 
     return seq;
 }
@@ -359,7 +401,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 // return 0 if the HDF Type is invalid or not supported.
 BaseType *NewDAPVar(const string &varname,
 		    const string &dataset,
-		    int32 hdf_type)
+		    const int32 hdf_type)
 {
     switch (hdf_type) {
     case DFNT_FLOAT32:

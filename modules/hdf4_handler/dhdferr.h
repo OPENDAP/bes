@@ -46,15 +46,14 @@
 
 #include <libdap/Error.h>
 
-using namespace libdap;
 
 #define THROW(x) throw x(__FILE__,__LINE__)
 
 // DODS/HDF exceptions class
-class dhdferr: public Error {
+class dhdferr:public libdap::Error {
 public:
     dhdferr(const string & msg, const string & file, int line);
-    virtual ~dhdferr() throw ()
+     ~dhdferr() throw ()
     {
     }
 };
