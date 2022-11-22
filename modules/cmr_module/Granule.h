@@ -67,7 +67,7 @@ public:
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
     std::string getSizeStr(){ return d_size_str; }
     std::string getLastModifiedStr() { return d_last_modified_time; }
-    size_t getSize(){ return atol(getSizeStr().c_str()); }
+    float getSize(){ return atof(getSizeStr().c_str())*1024*1204; }
 
     bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };

@@ -257,6 +257,11 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
 
         case 4: // Looks like they are trying to get a particular granule...
         {
+            // http://localhost:8080/opendap/CMR/EEDTEST/C1245618475-EEDTEST/temporal/2020/01/05/GPM_3IMERGHH.06%3A3B-HHR.MS.MRG.3IMERG.20200105-S000000-E002959.0000.V06B.HDF5.dmr.html
+            // provider_id: EEDTEST
+            // collection_conept_id: C1245618475-EEDTEST
+            // temporal/year/month/day
+            // granule??: GPM_3IMERGHH.06%3A3B-HHR.MS.MRG.3IMERG.20200105-S000000-E002959.0000.V06B.HDF5
             const string &year = path_elements[0];
             const string &month = path_elements[1];
             const string &day = path_elements[2];

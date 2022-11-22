@@ -620,7 +620,7 @@ add_executable(
     modules/cmr_module/CmrContainer.h
     modules/cmr_module/CmrContainerStorage.cc
     modules/cmr_module/CmrContainerStorage.h
-    modules/cmr_module/CmrError.h
+        modules/cmr_module/CmrInternalError.h
     modules/cmr_module/CmrModule.cc
     modules/cmr_module/CmrModule.h
     modules/cmr_module/CmrNames.h

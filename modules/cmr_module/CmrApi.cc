@@ -41,16 +41,18 @@
 
 #include "Httputils.h"
 
-#include <BESError.h>
+#include "BESError.h"
 #include "BESInternalError.h"
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
+#include "BESSyntaxUserError.h"
+#include "BESNotFoundError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 #include "CmrApi.h"
 #include "CmrNames.h"
-#include "CmrError.h"
+#include "CmrInternalError.h"
+#include "CmrNotFoundError.h"
 #include "rjson_utils.h"
 
 using std::string;
@@ -59,6 +61,39 @@ using json = nlohmann::json;
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
 namespace cmr {
+
+std::string truth(bool t){ if(t){return "true";} return "false"; }
+
+std::string probe_json(const nlohmann::json &j){
+    string hdr0("#########################################################################################");
+    string hdr1("#- -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -");
+
+    stringstream msg;
+    msg << endl;
+    msg << hdr0 << endl;
+    msg << j.dump(2) << endl;
+    msg << hdr1 << endl;
+    msg << "           j.is_null(): " << truth(j.is_null()) << endl;
+    msg << "         j.is_object(): " << truth(j.is_object()) << endl;
+    msg << "          j.is_array(): " << truth(j.is_array()) << endl;
+    msg << endl;
+    msg << "      j.is_discarded(): " << truth(j.is_discarded()) << endl;
+    msg << "         j.is_string(): " << truth(j.is_string()) << endl;
+    msg << "     j.is_structured(): " << truth(j.is_structured()) << endl;
+    msg << "         j.is_binary(): " << truth(j.is_binary()) << endl;
+    msg << "        j.is_boolean(): " << truth(j.is_boolean()) << endl;
+    msg << "         j.is_number(): " << truth(j.is_number()) << endl;
+    msg << "   j.is_number_float(): " << truth(j.is_number_float()) << endl;
+    msg << " j.is_number_integer(): " << truth(j.is_number_integer()) << endl;
+    msg << "j.is_number_unsigned(): " << truth(j.is_number_unsigned()) << endl;
+    msg << "      j.is_primitive(): " << truth(j.is_primitive()) << endl;
+    msg << "              j.size(): " << j.size()<< endl;
+    msg << "             j.empty(): " << truth(j.empty()) << endl;
+
+    msg << hdr0 << endl;
+    return msg.str();
+}
+
 
 CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
     bool found;
@@ -85,19 +120,36 @@ CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
              prolog << "Using CMR Granules Search Endpoint: " << d_cmr_granules_search_endpoint_url << endl);
 }
 
+
+#if 0
 /**
-  * Locates and QC's the child object named "children" (aka CMR_V2_CHILDREN_KEY)
-  * @param jobj
-  * @return The "children" (CMR_V2_CHILDREN_KEY) array of objects.
-  */
-const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
+ *
+ * @param jobj
+ * @param result_json passed result parameter object
+ * @return
+ */
+bool CmrApi::get_children(const nlohmann::json &jobj, nlohmann::json &result_json)
 {
+
+    BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
 
     bool result = jobj.is_object();
     if(!result){
         string msg = prolog + "ERROR: Json document is" + (result?"":" NOT") + " an object.";
         BESDEBUG(MODULE, msg << endl);
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw CmrInternalError(msg,__FILE__,__LINE__);
+    }
+
+    const auto &has_children_j = jobj[CMR_V2_HAS_CHILDREN_KEY];
+    if(!has_children_j.get<bool>()){
+        BESDEBUG(MODULE, probe_json(jobj) << endl);
+        stringstream msg;
+        msg << prolog;
+        msg << "This CMR object does not have children. cmr_json: " << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        // json empty_array_explicit = json::array();
+        result_json = json::array();
+        return false;
     }
 
     auto &children =  jobj[CMR_V2_CHILDREN_KEY];
@@ -107,7 +159,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
         msg << "Ouch! Unable to locate the " << CMR_V2_CHILDREN_KEY;
         msg << " child of " << jobj.get<string>() << endl;
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(),__FILE__,__LINE__);
     }
     if(!children.is_array()){
         stringstream msg;
@@ -115,7 +167,82 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
         msg << "Ouch! The child element called '" << CMR_V2_CHILDREN_KEY;
         msg << "' is not an array. json object: " << jobj.get<string>() << endl;
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(),__FILE__,__LINE__);
+    }
+    result_json = children;
+    return true;
+
+}
+#endif
+
+std::vector<std::string> CmrApi::get_opendap_dataset_url(const nlohmann::json &cmr_doc)
+{
+    vector
+    const auto &granules = cmr_doc[CMR_ITEMS_KEY];
+    for(const auto &granule: granules){
+        const auto & related_urls = granule[CMR_UMM_KEY][CMR_RELATED_URLS_KEY];
+        for(const auto &related_url: related_urls){
+            bool has_subtype = related_urls.contains(CMR_SUBTYPE_KEY);
+            if(has_subtype){
+                string subtype = related_urls[CMR_SUBTYPE_KEY].get<string>();
+                if ( subtype == CMR_RELATED_URLS_SUBTYPE_OPENDAP_DATA){
+
+                }
+            }
+        }
+
+    }
+}
+
+/**
+  * Locates and QC's the child object named "children" (aka CMR_V2_CHILDREN_KEY)
+  * @param jobj
+  * @return The "children" (CMR_V2_CHILDREN_KEY) array of objects.
+  */
+const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
+{
+    BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
+    bool result = jobj.is_null();
+    if(jobj.is_null()){
+        stringstream msg;
+        msg <<  "ERROR: Json document is NULL: " << endl << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, prolog <<  msg.str() << endl);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    result = jobj.is_object();
+    if(!result){
+        stringstream msg;
+        msg <<  "ERROR: Json document is NOT an object. json: " << endl << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, prolog <<  msg.str() << endl);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
+    }
+
+    const auto &has_children_j = jobj[CMR_V2_HAS_CHILDREN_KEY];
+    if(!has_children_j.get<bool>()){
+        stringstream msg;
+        msg << prolog;
+        msg << "This json object does not have children. json: " << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
+    }
+
+    auto &children =  jobj[CMR_V2_CHILDREN_KEY];
+    if(children.is_null()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! Unable to locate the " << CMR_V2_CHILDREN_KEY;
+        msg << " child of json: " << endl << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
+    }
+    if(!children.is_array()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! The child element called '" << CMR_V2_CHILDREN_KEY;
+        msg << "' is not an array. json: " << endl << jobj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     return children;
@@ -135,17 +262,18 @@ const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc)
     string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
     BESDEBUG(MODULE, msg0 << endl);
     if(!result){
-        throw CmrError(msg0,__FILE__,__LINE__);
+        throw CmrInternalError(msg0, __FILE__, __LINE__);
     }
 
 
     // Get feed object or fail...
     auto &feed = cmr_doc[CMR_V2_FEED_KEY];
-    if (feed.is_null()){
-        string msg = prolog + (result?"Located":"FAILED to locate") + " the value 'feed'.";
+    result  = feed.is_null();
+    if (result){
+        string msg = prolog + "FAILED to locate a value for the key "+ CMR_V2_FEED_KEY;
         BESDEBUG(MODULE, msg << endl);
         if(!result){
-            throw CmrError(msg,__FILE__,__LINE__);
+            throw CmrNotFoundError(msg, __FILE__, __LINE__);
         }
 
     }
@@ -154,7 +282,7 @@ const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc)
     msg << "The '" << CMR_V2_FEED_KEY << "' is" << (result?"":" NOT") <<  " an object.";
     BESDEBUG(MODULE, prolog << msg0 << endl);
     if(!result){
-        throw CmrError(msg0,__FILE__,__LINE__);
+        throw CmrInternalError(msg0, __FILE__, __LINE__);
     }
     return feed;
 }
@@ -171,13 +299,13 @@ const json& CmrApi::get_entries(const json &cmr_doc)
     if(entry.is_null()){
         string msg = prolog + "FAILED to locate the value of '" + CMR_V2_ENTRY_KEY + "' key.";
         BESDEBUG(MODULE, msg << endl);
-            throw CmrError(msg,__FILE__,__LINE__);
+            throw CmrNotFoundError(msg, __FILE__, __LINE__);
     }
     result = entry.is_array();
     string msg = prolog + "The value 'entry' is" + (result?"":" NOT") + " an Array.";
     BESDEBUG(MODULE, msg << endl);
     if(!result){
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw CmrInternalError(msg, __FILE__, __LINE__);
     }
     return entry;
 }
@@ -188,38 +316,38 @@ const json& CmrApi::get_entries(const json &cmr_doc)
  */
 const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc)
 {
-    string msg;
+    string msg0;
     const auto &feed = get_feed(cmr_doc);
     const auto &facets_obj = feed[CMR_V2_FACETS_KEY];
     if(facets_obj.is_null()){
-        msg =  prolog + "FAILED to locate the value of '" + CMR_V2_FACETS_KEY + "'." ;
+        string msg =  prolog + "FAILED to locate the value of '" + CMR_V2_FACETS_KEY + "'." ;
         BESDEBUG(MODULE, msg << endl);
-            throw CmrError(msg,__FILE__,__LINE__);
+            throw CmrNotFoundError(msg, __FILE__, __LINE__);
     }
     if(!facets_obj.is_object()){
-        msg =  prolog + "The value '" + CMR_V2_FACETS_KEY + "' is NOT an object.";
+        string msg =  prolog + "The value '" + CMR_V2_FACETS_KEY + "' is NOT an object.";
         BESDEBUG(MODULE, msg << endl);
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw CmrInternalError(msg, __FILE__, __LINE__);
     }
 
-    const auto &facets = get_children(facets_obj);
-    for(const auto &facet:facets){
+    const auto &facets_array = get_children(facets_obj);
+    for(const auto &facet:facets_array){
         string facet_title = facet[CMR_V2_TITLE_KEY].get<string>();
         if(facet_title == CMR_V2_TEMPORAL_TITLE_VALUE){
-            msg = prolog + "Found Temporal object.";
+            string msg = prolog + "Found Temporal object.";
             BESDEBUG(MODULE, msg << endl);
             return facet;
         }
         else {
-            msg = prolog + "The child of 'facets' with title '"+facet_title+"' does not match "+ CMR_V2_TEMPORAL_TITLE_VALUE;
+            string msg = prolog + "The child of 'facets' with title '"+facet_title+"' does not match "+ CMR_V2_TEMPORAL_TITLE_VALUE;
             BESDEBUG(MODULE, msg << endl);
         }
 
     }
-    msg = prolog + "Failed to locate the Temporal facet.";
-    BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
-
+    stringstream msg;
+    msg << "Failed to locate the Temporal facet in : " << endl << cmr_doc.dump(2) << endl;
+    BESDEBUG(MODULE, prolog << msg.str() << endl);
+    throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
 } // CmrApi::get_temporal_group()
 
 
@@ -275,7 +403,7 @@ const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc)
     }
     string msg = prolog + "Failed to locate the Year group.";
     BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
+    throw CmrInternalError(msg, __FILE__, __LINE__);
 }
 
 
@@ -312,7 +440,7 @@ const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, co
     }
     string msg = prolog + "Failed to locate the Month group.";
     BESDEBUG(MODULE, msg << endl);
-    throw CmrError(msg,__FILE__,__LINE__);
+    throw CmrInternalError(msg, __FILE__, __LINE__);
 }
 
 
@@ -351,7 +479,7 @@ CmrApi::get_month(const std::string &target_month,
     msg.str("");
     msg << prolog  << "Failed to locate request Year/Month.";
     BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 
 }
 
@@ -385,7 +513,7 @@ CmrApi::get_day_group(const std::string &target_month,
     stringstream msg;
     msg << prolog  << "Failed to locate requested Day, year: " << target_year << " month: "<< target_month;
     BESDEBUG(MODULE, msg.str() << endl);
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 }
 
 
@@ -414,7 +542,7 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
     const json &year_group = get_year_group(cmr_doc);
     if(year_group[CMR_V2_HAS_CHILDREN_KEY].get<bool>()) {
         for (const auto &year_obj: year_group[CMR_V2_CHILDREN_KEY]) {
-            years_result.emplace_back(year_obj[CMR_V2_TITLE_KEY]);
+            years_result.emplace_back(year_obj[CMR_V2_TITLE_KEY].get<string>());
         }
     }
 } // CmrApi::get_years()
@@ -453,7 +581,7 @@ CmrApi::get_months(const string &collection_name,
         msg.str("");
         msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.size();
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     const auto &year = years[0];
@@ -463,7 +591,7 @@ CmrApi::get_months(const string &collection_name,
         msg.str("");
         msg << prolog  << "The returned year (" << year_title << ") does not match the requested year ("<< r_year << ")";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     const auto &year_children = get_children(year);
@@ -471,7 +599,7 @@ CmrApi::get_months(const string &collection_name,
         msg.str("");
         msg << prolog  << "We expected to get back one child for the year (" << r_year << ") but we got back " << years.size();
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     const auto &month_group = year_children[0];
@@ -480,7 +608,7 @@ CmrApi::get_months(const string &collection_name,
         msg.str("");
         msg << prolog  << "We expected to get back a Month object, but we did not.";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     const auto &months = get_children(month_group);

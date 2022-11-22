@@ -71,6 +71,7 @@ private:
                                                 const nlohmann::json &cmr_doc);
 
     const nlohmann::json &get_children(const nlohmann::json &jobj);
+    bool get_children(const nlohmann::json &jobj, nlohmann::json &result_json);
 
     const nlohmann::json &get_feed(const nlohmann::json &cmr_doc);
 
@@ -82,6 +83,7 @@ private:
                          unsigned int page_size=CMR_MAX_PAGE_SIZE,
                          bool just_opendap=false );
 
+    std::vector<std::string> get_opendap_dataset_url(const nlohmann::json &cmr_doc);
 
 
 public:

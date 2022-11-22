@@ -1,10 +1,15 @@
+//
+// Created by ndp on 11/22/22.
+//
+
+
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// CmrError.h
+// CmrInternalError.h
 //
 // This file is part of BES cmr_module
 //
-// Copyright (c) 2018 OPeNDAP, Inc.
+// Copyright (c) 2022 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -24,27 +29,34 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
-#include <BESInternalError.h>
 
-#ifndef MODULES_CMR_MODULE_CMRERROR_H_
-#define MODULES_CMR_MODULE_CMRERROR_H_
+#ifndef BES_CMRNOTFOUNDERROR_H
+#define BES_CMRNOTFOUNDERROR_H
+
+#include "config.h"
+#include <string>
+#include <ostream>
+
+
+#include "BESError.h"
+#include "BESNotFoundError.h"
 
 namespace cmr {
 
-class CmrError: public BESInternalError {
+class CmrNotFoundError: public BESNotFoundError {
 
 public:
-    CmrError(const std::string &msg, const std::string &file, unsigned int line) :
-        BESInternalError("CmrError " + msg, file, line)
+    CmrNotFoundError(const std::string &msg, const std::string &file, unsigned int line) :
+            BESNotFoundError("CmrNotFoundError " + msg, file, line)
     { }
 
-    ~CmrError() override = default;
+    ~CmrNotFoundError() override = default;
 
     void dump(std::ostream &strm) const override
     {
-        strm << "CmrError::dump - (" << (void *) this << ")" << std::endl;
+        strm << "CmrNotFoundError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
-        BESInternalError::dump(strm);
+        BESNotFoundError::dump(strm);
         BESIndent::UnIndent();
     }
 
@@ -52,4 +64,4 @@ public:
 
 } /* namespace cmr */
 
-#endif /* MODULES_CMR_MODULE_CMRERROR_H_ */
+#endif //BES_CMRNOTFOUNDERROR_H

@@ -82,6 +82,10 @@
 #define CMR_GRANULE_LINKS_HREFLANG "hreflang"
 #define CMR_GRANULE_LINKS_HREF "href"
 
+#define CMR_ITEMS_KEY "items"
+#define CMR_RELATED_URLS_KEY "RelatedUrls"
+#define CMR_SUBTYPE_KEY "Subtype"
+#define CMR_RELATED_URLS_SUBTYPE_OPENDAP_DATA "OPENDAP DATA"
 
 
 

@@ -37,7 +37,7 @@
 #include "BESDebug.h"
 
 #include "CmrNames.h"
-#include "CmrError.h"
+#include "CmrInternalError.h"
 #include "Granule.h"
 
 
@@ -47,18 +47,6 @@ using namespace std;
 
 
 namespace cmr {
-//string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
-//string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
-//string granule_LINKS = "links";
-//string granule_LINKS_REL= "rel";
-//string granule_LINKS_HREFLANG = "hreflang";
-//string granule_LINKS_HREF = "href";
-//string granule_SIZE = "granule_size";
-//string granule_LMT = "updated";
-
-//string granule_ID = "id";
-
-//string granule_NAME = "title";
 
 
 Granule::Granule(const nlohmann::json& granule_json)
@@ -109,13 +97,13 @@ const nlohmann::json& Granule::get_links_array(const nlohmann::json& go)
     if(links.is_null()){
         string msg = prolog + "ERROR: Failed to locate the value '"+CMR_GRANULE_LINKS_KEY+"' in object.";
         BESDEBUG(MODULE, prolog << msg << endl << go.get<string>());
-        throw CmrError(msg,__FILE__,__LINE__);
+        throw CmrInternalError(msg, __FILE__, __LINE__);
     }
 
     if(!links.is_array()){
         stringstream msg;
         msg << "ERROR: The '" << CMR_GRANULE_LINKS_KEY << "' object is NOT an array!";
-        throw CmrError(msg.str(),__FILE__,__LINE__);
+        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
     }
     return links;
 }
@@ -138,7 +126,7 @@ void Granule::setDataAccessUrl(const nlohmann::json& go)
     stringstream msg;
     msg << "ERROR: Failed to locate granule data access link (";
     msg << CMR_GRANULE_LINKS_REL_DATA_ACCES << "), :(";
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 }
 
 
@@ -158,7 +146,7 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
     stringstream msg;
     msg << "ERROR: Failed to locate granule metadata access link (";
     msg << CMR_GRANULE_LINKS_REL_METADATA_ACCESS << "), :(";
-    throw CmrError(msg.str(),__FILE__,__LINE__);
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 }
 
 

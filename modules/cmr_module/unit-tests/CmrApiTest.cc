@@ -43,7 +43,7 @@
 #include "CmrApi.h"
 #include "CmrNames.h"
 #include "CmrCatalog.h"
-#include "CmrError.h"
+#include "CmrInternalError.h"
 #include "rjson_utils.h"
 
 #include "Provider.h"
