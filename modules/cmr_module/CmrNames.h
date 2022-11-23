@@ -72,6 +72,27 @@
 #define CMR_V2_DAY_TITLE_VALUE "Day"
 #define CMR_V2_TEMPORAL_TITLE_VALUE "Temporal"
 
+#define CMR_UMM_ITEMS_KEY "items"
+#define CMR_UMM_UMM_KEY "umm"
+#define CMR_UMM_META_KEY "meta"
+#define CMR_UMM_RELATED_URLS_KEY "RelatedUrls"
+#define CMR_UMM_GRANULE_UR_KEY "GranuleUR"
+#define CMR_UMM_CONCEPT_ID_KEY "concept-id"
+#define CMR_UMM_DATA_GRANULE_KEY "DataGranule"
+#define CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY "ArchiveAndDistributionInformation"
+#define CMR_UMM_SIZE_KEY "Size"
+#define CMR_UMM_SIZE_UNIT_KEY "SizeUnit"
+#define CMR_UMM_REVISION_DATE_KEY "revision-date"
+#define CMR_UMM_URL_KEY "URL"
+#define CMR_UMM_TYPE_KEY "Type"
+#define CMR_UMM_TYPE_GET_DATA_VALUE "GET DATA"
+#define CMR_UMM_TYPE_USE_SERVICE_API_VALUE "USE SERVICE API"
+#define CMR_UMM_SUBTYPE_KEY "Subtype"
+#define CMR_UMM_SUBTYPE_KEY_OPENDAP_DATA_VALUE "OPENDAP DATA"
+
+
+#define CMR_UMM_DESCRIPTION_KEY "Description"
+
 #define CMR_GRANULE_ID_KEY "id"
 #define CMR_GRANULE_SIZE_KEY "granule_size"
 #define CMR_GRANULE_LMT_KEY "updated"

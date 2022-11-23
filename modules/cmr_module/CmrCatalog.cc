@@ -247,8 +247,8 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
             const string &month = path_elements[1];
             const string &day = path_elements[2];
             BESDEBUG(MODULE, prolog << "Getting granule leaves for collection: " << collection_id << " year: " << year << " month: " << month <<  " day: " << day << endl);
-            vector<Granule *> granules;
-            cmrApi.get_granules(collection_id, year, month, day, granules);
+            vector<GranuleUMM *> granules;
+            cmrApi.get_granules_umm(collection_id, year, month, day, granules);
             for(auto & granule : granules){
                 node->add_leaf(granule->getCatalogItem(get_catalog_utils()));
             }

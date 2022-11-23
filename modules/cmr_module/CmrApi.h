@@ -72,6 +72,8 @@ private:
                                                 const std::string &target_year,
                                                 const nlohmann::json &cmr_doc);
 
+    const nlohmann::basic_json<> &get_items(const nlohmann::basic_json<> &cmr_doc);
+
     const nlohmann::json &get_children(const nlohmann::json &jobj);
     bool get_children(const nlohmann::json &jobj, nlohmann::json &result_json);
 
@@ -100,6 +102,13 @@ private:
 public:
     CmrApi();
 
+    std::string probe_json(const nlohmann::json &j);
+    std::string get_str_if_present(std::string key, const nlohmann::json& jo);
+    const nlohmann::json& qc_get_array(std::string key, const nlohmann::json& go);
+    const nlohmann::json& qc_get_object(std::string key, const nlohmann::json& go);
+    const nlohmann::json& get_related_urls_array(const nlohmann::json& go);
+
+
     void get_years(const std::string &collection_name, std::vector<std::string> &years_result);
 
     void get_months(const std::string &collection_name, const std::string &year, std::vector<std::string> &months_result);
@@ -111,12 +120,6 @@ public:
                          const std::string &r_month,
                          const std::string &r_day,
                          std::vector<std::string> &granule_ids);
-
-    void get_granules_umm(const std::string& collection_name,
-                                  const std::string &r_year,
-                                  const std::string &r_month,
-                                  const std::string &r_day,
-                                  std::vector<cmr::GranuleUMM *> &granule_objs);
 
     void get_granules(const std::string& collection_name,
                       const std::string &r_year,
@@ -136,11 +139,6 @@ public:
                                 const std::string &r_year,
                                 const std::string &r_month,
                                 const std::string &r_day);
-
-    unsigned long granule_count_OLD(std::string collection_name,
-                                    std::string r_year,
-                                    std::string r_month,
-                                    std::string r_day);
 
 
     cmr::Granule *get_granule(const std::string path);

@@ -49,16 +49,15 @@ private:
     std::string d_dap_service_url;
     std::string d_metadata_access_url;
     std::string d_size_str;
+    std::string d_size_units_str;
     std::string d_last_modified_time;
 
     void setName(const nlohmann::json& jobj);
     void setId(const nlohmann::json& go);
     void setDataGranuleUrl(const nlohmann::json& go);
     void setDapServiceUrl(const nlohmann::json& go);
-    void setMetadataAccessUrl(const nlohmann::json& granule_obj);
     void setSize(const nlohmann::json& j_obj);
     void setLastModifiedStr(const nlohmann::json& go);
-    const nlohmann::json& get_links_array(const nlohmann::json& go);
 
 public:
     GranuleUMM(const nlohmann::json& granule_json);
