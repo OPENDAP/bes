@@ -1,0 +1,78 @@
+netcdf t_wrong_fvalue_type_all {
+dimensions:
+	phony_dim_0 = 2 ;
+variables:
+	float f32(phony_dim_0) ;
+		f32:_FillValue = 65535U ;
+	double f64(phony_dim_0) ;
+		f64:_FillValue = -1.3f ;
+	short i16(phony_dim_0) ;
+		i16:_FillValue = -100. ;
+	int i32(phony_dim_0) ;
+		i32:_FillValue = -65535. ;
+	int64 i64(phony_dim_0) ;
+		i64:_FillValue = -65535. ;
+	byte i8(phony_dim_0) ;
+		i8:_FillValue = 128UB ;
+	short s_int16 ;
+		s_int16:_FillValue = 32768.f ;
+	int s_int32 ;
+		s_int32:_FillValue = 2.147484e+09f ;
+	int64 s_int64 ;
+		s_int64:_FillValue = 0.f ;
+	byte s_int8 ;
+		s_int8:_FillValue = 128.f ;
+	ushort s_uint16 ;
+		s_uint16:_FillValue = 0.f ;
+	uint s_uint32 ;
+		s_uint32:_FillValue = 0.f ;
+	uint64 s_uint64 ;
+		s_uint64:_FillValue = 0.f ;
+	ubyte s_uint8 ;
+		s_uint8:_FillValue = 0.f ;
+	ushort ui16(phony_dim_0) ;
+		ui16:_FillValue = 65535 ;
+	uint ui32(phony_dim_0) ;
+		ui32:_FillValue = 65535. ;
+	uint64 ui64(phony_dim_0) ;
+		ui64:_FillValue = 65535. ;
+	ubyte ui8(phony_dim_0) ;
+		ui8:_FillValue = 255US ;
+data:
+
+ f32 = 1, 1 ;
+
+ f64 = -1, -1 ;
+
+ i16 = -1, -1 ;
+
+ i32 = -1, -1 ;
+
+ i64 = -1, -1 ;
+
+ i8 = -1, -1 ;
+
+ s_int16 = -1 ;
+
+ s_int32 = -1 ;
+
+ s_int64 = -1 ;
+
+ s_int8 = -127 ;
+
+ s_uint16 = 1 ;
+
+ s_uint32 = 1 ;
+
+ s_uint64 = 1 ;
+
+ s_uint8 = 255 ;
+
+ ui16 = 1, 1 ;
+
+ ui32 = 1, 1 ;
+
+ ui64 = 1, 1 ;
+
+ ui8 = 1, 1 ;
+}

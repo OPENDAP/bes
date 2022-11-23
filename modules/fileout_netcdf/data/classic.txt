@@ -1,0 +1,62 @@
+netcdf t_wrong_fvalue_type_all_classic {
+dimensions:
+	phony_dim_0 = 2 ;
+variables:
+	float f32(phony_dim_0) ;
+		f32:_FillValue = 65535 ;
+	double f64(phony_dim_0) ;
+		f64:_FillValue = -1.3f ;
+	short i16(phony_dim_0) ;
+		i16:_FillValue = -100. ;
+	int i32(phony_dim_0) ;
+		i32:_FillValue = -65535. ;
+	byte i8(phony_dim_0) ;
+		i8:_FillValue = 128UB ;
+	float s_f32 ;
+		s_f32:_FillValue = -999 ;
+	double s_f64 ;
+		s_f64:_FillValue = 9999.f ;
+	short s_int16 ;
+		s_int16:_FillValue = -32768 ;
+	int s_int32 ;
+		s_int32:_FillValue = 2147483647U ;
+	byte s_int8 ;
+		s_int8:_FillValue = 128s ;
+	ushort s_uint16 ;
+		s_uint16:_FillValue = 0.f ;
+	ubyte s_uint8 ;
+		s_uint8:_FillValue = 0.f ;
+	ushort ui16(phony_dim_0) ;
+		ui16:_FillValue = 65535 ;
+	ubyte ui8(phony_dim_0) ;
+		ui8:_FillValue = 255US ;
+data:
+
+ f32 = 1, 1 ;
+
+ f64 = -1, -1 ;
+
+ i16 = -1, -1 ;
+
+ i32 = -1, -1 ;
+
+ i8 = -1, -1 ;
+
+ s_f32 = -1 ;
+
+ s_f64 = -1 ;
+
+ s_int16 = -1 ;
+
+ s_int32 = -1 ;
+
+ s_int8 = -127 ;
+
+ s_uint16 = 1 ;
+
+ s_uint8 = 255 ;
+
+ ui16 = 1, 1 ;
+
+ ui8 = 1, 1 ;
+}

@@ -53,7 +53,8 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = HistoryUtilsTest FONcArrayTest
+UNIT_TESTS = HistoryUtilsTest D4ToolsTest FONcArrayTest
+
 else
 UNIT_TESTS =
 
@@ -72,5 +73,9 @@ LDFLAGS = -static
 HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
 HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
 
+D4ToolsTest_SOURCES = D4ToolsTest.cc
+D4ToolsTest_LDADD = ../d4_tools.o $(LIBADD)
+
 FONcArrayTest_SOURCES = FONcArrayTest.cc
 FONcArrayTest_LDADD = ../.libs/libfonc_module.a $(LIBADD)
+

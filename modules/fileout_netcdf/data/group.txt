@@ -1,0 +1,63 @@
+netcdf d_group {
+ 
+group: a {
+
+  dimensions:
+	phony_dim_0 = 2 ;
+  variables:
+	byte b2;
+		b2:_FillValue = 128.f ;
+	int i8;
+		i8:_FillValue = -65535. ;
+	int i32(phony_dim_0) ;
+		i32:_FillValue = -65535. ;
+	int64 i64(phony_dim_0) ;
+		i64:_FillValue = -65535. ;
+	byte b4(phony_dim_0) ;
+		b4:_FillValue = 128UB ;
+  data:
+
+ b2 = 128.f ;
+
+ i8 = 3 ;
+
+ i32 = -1, -1 ;
+
+ i64 = -1, -1 ;
+
+ b4 = -1, -1 ;
+
+ group: b {
+  dimensions:
+	m = 2 ;
+  	n = 3 ;
+  variables:
+  	uint64 b_data(m, n) ;
+  data:
+
+   b_data =
+  0, 1, 2,
+  3, 4, 5 ;
+
+  group: c {
+    dimensions:
+	p = 2 ;
+	q = 3 ;
+    	r = 4 ;
+    variables:
+    	float c_data(p, q, r) ;
+    data:
+
+     c_data =
+  0, 1, 2, 3,
+  1, 2, 3, 4,
+  2, 3, 4, 5,
+  3, 4, 5, 6,
+  4, 5, 6, 7,
+  5, 6, 7, 8,
+  6, 7, 8, 9,
+  7, 8, 9, 10 ;
+      } // group c
+    } // group b
+  } // group a
+}
