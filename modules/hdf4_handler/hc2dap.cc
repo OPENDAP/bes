@@ -222,16 +222,16 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
 {
     // check to make sure hdf_vgroup object is set up properly
     if (vg.name.size() == 0)  // Vgroup must have a name
-        return 0;
+        return nullptr;
     if (!vg)                    // Vgroup must have some tagrefs
-        return 0;
+        return nullptr;
 
     // construct HDFStructure
     HDFStructure *str = new HDFStructure(vg.name, dataset);
     bool nonempty = false;
 
     // I think coverity is unreasonable on this one. The code is sound. KY 2016-05-12
-    BaseType *bt = 0;
+    BaseType *bt = nullptr;
     try {
         // step through each tagref and copy its contents to DAP
         for (int i = 0; i < (int) vg.tags.size(); ++i) {
@@ -264,7 +264,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
             if (bt) {
                 str->add_var(bt);   // *st now manages *bt
                 delete bt;
-                bt = 0; // See if coverity scan can pass this.
+                bt = nullptr; // See if coverity scan can pass this.
                 nonempty = true;
             }
         }
@@ -279,7 +279,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
         return str;
     } else {
         delete str;
-        return 0;
+        return nullptr;
     }
 }
 
@@ -287,23 +287,23 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
 HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 {
     if (sds.name.size() == 0) // SDS must have a name
-        return 0;
+        return nullptr;
     if (sds.dims.size() == 0)   // SDS must have rank > 0
-        return 0;
+        return nullptr;
 
     // construct HDFArray, assign data type
     BaseType *bt = NewDAPVar(sds.name, dataset, sds.data.number_type());
-    if (bt == 0) {              // something is not right with SDS number type?
-        return 0;
+    if (bt == nullptr) {              // something is not right with SDS number type?
+        return nullptr;
     }
     try {
-        HDFArray *ar = 0;
+        HDFArray *ar = nullptr;
         ar = new HDFArray(sds.name,dataset,bt);
         delete bt;
 
         // add dimension info to HDFArray
-        for (int i = 0; i < (int) sds.dims.size(); ++i)
-            ar->append_dim(sds.dims[i].count, sds.dims[i].name);
+        for (const auto &sds_dim:sds.dims)
+            ar->append_dim(sds_dim.count, sds_dim.name);
 
         return ar;
     }
@@ -317,16 +317,16 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 {
     if (gr.name.size() == 0)  // GR must have a name
-        return 0;
+        return nullptr;
 
     // construct HDFArray, assign data type
     BaseType *bt = NewDAPVar(gr.name, dataset, gr.image.number_type());
     if (bt == 0) {              // something is not right with GR number type?
-        return 0;
+        return nullptr;
     }
 
     try {
-        HDFArray *ar = 0;
+        HDFArray *ar = nullptr;
         ar = new HDFArray(gr.name, dataset, bt);
 
         // Array duplicates the base type passed, so delete here
@@ -350,17 +350,17 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
     BESDEBUG("h4", "NewGridFromSDS" << endl);
     if (!sds.has_scale())       // we need a dim scale to make a Grid
-        return 0;
+        return nullptr;
 
     // Create the HDFGrid and the primary array.  Add the primary array to
     // the HDFGrid.
     HDFArray *ar = NewArrayFromSDS(sds, dataset);
-    if (ar == 0)
-        return 0;
+    if (ar == nullptr)
+        return nullptr;
 
-    HDFGrid *gr = 0;
-    HDFArray *dmar = 0;
-    BaseType *dsbt = 0;
+    HDFGrid *gr = nullptr;
+    HDFArray *dmar = nullptr;
+    BaseType *dsbt = nullptr;
     try {
         gr = new HDFGrid(sds.name, dataset);
         gr->add_var(ar, libdap::array); // note: gr now manages ar
@@ -372,13 +372,13 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
         for (int i = 0; i < (int) sds.dims.size(); ++i) {
             if (sds.dims[i].name.size() == 0) { // the dim must be named
                 delete gr;
-                return 0;
+                return nullptr;
             }
             mapname = sds.dims[i].name;
             if ((dsbt = NewDAPVar(mapname, dataset,
                                   sds.dims[i].scale.number_type())) == 0) {
                 delete gr; // note: ~HDFGrid() cleans up the attached ar
-                return 0;
+                return nullptr;
             }
             dmar = new HDFArray(mapname, dataset, dsbt);
             delete dsbt;

@@ -47,7 +47,7 @@ void HDF4Module::initialize(const string & modname)
 {
     BESDEBUG("h4", "Initializing HDF4 module " << modname << endl);
 
-        BESRequestHandler *handler = new HDF4RequestHandler(modname);
+        auto handler = new HDF4RequestHandler(modname);
         BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
         BESDapService::handle_dap_service( modname );

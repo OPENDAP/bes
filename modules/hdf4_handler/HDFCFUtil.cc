@@ -307,8 +307,12 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
     case DFNT_UCHAR:
     case DFNT_CHAR:
         {
+#if 0
             // Use the customized escattr function. Don't escape \n,\t and \r. KY 2013-10-14
             return escattr(static_cast<const char*>(vals));
+#endif
+            string tmp_str = static_cast<const char*>(vals);
+            return tmp_str;
         }
 
     case DFNT_INT16:
@@ -521,7 +525,8 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
     // Find the correct index
     int dim0count = count[0];
     int dim1count = count[1];
-    int dim0index[dim0count], dim1index[dim1count];
+    vector<int> dim0index(dim0count);
+    vector<int> dim1index(dim1count);
 
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];
@@ -1111,7 +1116,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
  
 
             if(scale_factor_type !="Float64") {
-                new_scale_value_float = 1.0/orig_scale_value_float;
+                new_scale_value_float = 1.0f/orig_scale_value_float;
                 if (true == add_offset_found) {
                     if(add_offset_type !="Float64") 
                         new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_float); 
@@ -1124,7 +1129,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                 new_scale_value_double = 1.0/orig_scale_value_double;
                 if (true == add_offset_found) {
                     if(add_offset_type !="Float64") 
-                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_double); 
+                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1.0f * orig_offset_value_float *((float)new_scale_value_double)); 
                     else 
                         new_offset_value_double = (orig_offset_value_double==0)?0:(-1 * orig_offset_value_double *new_scale_value_double); 
                 }
@@ -2639,8 +2644,8 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                     string scale_value = *at->get_attr_vector(it)->begin();
                             
                                     if(true == has_dBm) {
-                                       short valid_min = (short)(-120 *strtof(scale_value.c_str(),nullptr));
-                                       short valid_max = (short)(-20 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_min = (short)(-120 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_max = (short)(-20 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2650,8 +2655,8 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                     }
 
                                     else if(true == has_dBZ){
-                                       short valid_min = (short)(-20 *strtof(scale_value.c_str(),nullptr));
-                                       short valid_max = (short)(80 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_min = (short)(-20 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_max = (short)(80 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2882,7 +2887,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                         string tempstring2(va->getValue().begin(),va->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());
+#if 0
                         at->append_attr(VDattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                        at->append_attr(VDattrprefix+va->getNewName(), "String" , tempfinalstr);
                     }
                     else {
                         for (int loc=0; loc < va->getCount() ; loc++) {
@@ -2916,7 +2924,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                                     string tempstring2(va->getValue().begin(),va->getValue().end());
                                     string tempfinalstr= string(tempstring2.c_str());
+#if 0
                                     at_v->append_attr(va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                    at_v->append_attr(va->getNewName(), "String" , tempfinalstr);
                                 }
                                 else {
                                     for (int loc=0; loc < va->getCount() ; loc++) {
@@ -2941,7 +2952,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             string tempfinalstr;
                             tempfinalstr.resize(vdf->getValue().size());
                             copy(vdf->getValue().begin(),vdf->getValue().end(),tempfinalstr.begin());
+#if 0
                             at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                            at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , tempfinalstr);
                         }
                         else {
                             for ( int loc=0; loc < vdf->getNumRec(); loc++) {
@@ -2959,8 +2973,11 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                         if(vdf->getNumRec()==1){
                             if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
                                 string tempstring2(vdf->getValue().begin(),vdf->getValue().end());
-                                string tempfinalstr= string(tempstring2.c_str());
+                                auto tempfinalstr= string(tempstring2.c_str());
+#if 0
                                 at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempfinalstr);
                             }
                             else {
                                 for (int loc=0; loc < vdf->getFieldOrder(); loc++) {
@@ -2978,9 +2995,12 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                                     vector<char>::const_iterator tempit;
                                     tempit = vdf->getValue().begin()+tempcount*(vdf->getFieldOrder());
                                     string tempstring2(tempit,tempit+vdf->getFieldOrder());
-                                    string tempfinalstr= string(tempstring2.c_str());
+                                    auto tempfinalstr= string(tempstring2.c_str());
                                     string tempoutstring = "'"+tempfinalstr+"'";
+#if 0
                                     at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
+#endif
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempoutstring);
                                 }
                             }
 
@@ -3004,8 +3024,11 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             if(va->getType()==DFNT_UCHAR || va->getType() == DFNT_CHAR){
 
                                 string tempstring2(va->getValue().begin(),va->getValue().end());
-                                string tempfinalstr= string(tempstring2.c_str());
+                                auto tempfinalstr= string(tempstring2.c_str());
+#if 0
                                 at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , tempfinalstr);
                             }
                             else {
                                 for (int loc=0; loc < va->getCount() ; loc++) {
@@ -3219,7 +3242,9 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
     for(int i = 0; i<num_gobjects;i++) {
 
-        int32 obj_tag, obj_ref;
+        int32 obj_tag;
+        int32 obj_ref;
+
         if (Vgettagref(obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) 
             throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
 
@@ -3284,7 +3309,10 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                     string tempstring(vdata_value.begin(),vdata_value.end());
                     // Remove the nullptr term
                     auto tempstring2 = string(tempstring.c_str());
+#if 0
                     at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
+#endif
+                    at->append_attr(vdataname_cfstr,"String",tempstring2);
                 }
                 else {
                     string print_rep = HDFCFUtil::print_attr(fieldtype, 0, (void*) vdata_value.data());
@@ -3300,6 +3328,9 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
     return;
 }
 
+// The function that escapes the special characters is no longer needed after we move that functionality to libdap4.
+// Will keep the following function as an #if 0/#endif block for a while and then the code should be removed. KY 2022-11-22
+#if 0
 // Part of a large fix for attributes. Escaping the values of the attributes
 // may have been a bad idea. It breaks using JSON, for example. If this is a
 // bad idea - to turn of escaping - then we'll have to figure out how to store
@@ -3343,6 +3374,7 @@ string HDFCFUtil::escattr(string s)
 
     return s;
 }
+#endif
 
 // This function is necessary since char is represented as string. For fillvalue, this has to be resumed. 
 string HDFCFUtil::escattr_fvalue(string s)

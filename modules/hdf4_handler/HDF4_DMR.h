@@ -38,10 +38,10 @@
  */
 class HDF4DMR : public libdap::DMR {
 private:
-    int sdfd;
-    int fileid;
-    int gridfd;
-    int swathfd;
+    int sdfd = -1;
+    int fileid = -1;
+    int gridfd = -1;
+    int swathfd = -1;
 
     void m_duplicate(const HDF4DMR &src) 
     { 
@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    explicit HDF4DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    explicit HDF4DMR(const libdap::DMR *dmr) : libdap::DMR(*dmr) {}
     HDF4DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
 
     HDF4DMR(const HDF4DMR &rhs) : libdap::DMR(rhs) {
@@ -72,7 +72,7 @@ public:
         return *this;
     }
 
-    ~HDF4DMR() {
+    ~HDF4DMR() override {
 
         if (sdfd != -1)
             SDend(sdfd);

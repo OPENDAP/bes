@@ -1077,7 +1077,6 @@ add_executable(bes
     modules/hdf4_handler/eosdas-test.cc
     modules/hdf4_handler/errormacros.h
     modules/hdf4_handler/hc2dap.cc
-    modules/hdf4_handler/hdf-dods.h
     modules/hdf4_handler/hdf-maps.h
     modules/hdf4_handler/HDF4_DDS.h
     modules/hdf4_handler/HDF4_DMR.h
