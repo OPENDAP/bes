@@ -369,20 +369,20 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
         // create dimension scale HDFArrays (i.e., maps) and
         // add them to the HDFGrid
         string mapname;
-        for (int i = 0; i < (int) sds.dims.size(); ++i) {
-            if (sds.dims[i].name.size() == 0) { // the dim must be named
+        for (const auto & sds_dim:sds.dims) {
+            if (sds_dim.name.size() == 0) { // the dim must be named
                 delete gr;
                 return nullptr;
             }
-            mapname = sds.dims[i].name;
+            mapname = sds_dim.name;
             if ((dsbt = NewDAPVar(mapname, dataset,
-                                  sds.dims[i].scale.number_type())) == 0) {
+                                  sds_dim.scale.number_type())) == 0) {
                 delete gr; // note: ~HDFGrid() cleans up the attached ar
                 return nullptr;
             }
             dmar = new HDFArray(mapname, dataset, dsbt);
             delete dsbt;
-            dmar->append_dim(sds.dims[i].count); // set dimension size
+            dmar->append_dim(sds_dim.count); // set dimension size
             gr->add_var(dmar, maps); // add dimension map to grid;
             delete dmar;
         }
@@ -486,6 +486,14 @@ string DAPTypeName(int32 hdf_type)
 void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
 {
 #ifdef SIGNED_BYTE_TO_INT32
+    if (sds.data.number_type() == DFNT_INT8) {
+        char *data = static_cast < char *>(ExportDataForDODS(sds.data));
+        ar->val2buf(data);
+        delete[]data;
+    }
+    else
+        ar->val2buf(const_cast < char *>(sds.data.data()));
+#if 0
     switch (sds.data.number_type()) {
     case DFNT_INT8:{
         char *data = static_cast < char *>(ExportDataForDODS(sds.data));
@@ -496,6 +504,7 @@ void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
     default:
         ar->val2buf(const_cast < char *>(sds.data.data()));
     }
+#endif
 #else
     ar->val2buf(const_cast < char *>(sds.data.data()));
 #endif
@@ -506,6 +515,14 @@ void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
 void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr)
 {
 #ifdef SIGNED_BYTE_TO_INT32
+    if (gr.image.number_type() == DFNT_INT8) {
+        char *data = static_cast < char *>(ExportDataForDODS(gr.image));
+        ar->val2buf(data);
+        delete[]data;
+    }
+    else
+        ar->val2buf(const_cast < char *>(gr.image.data()));
+#if 0
     switch (gr.image.number_type()) {
     case DFNT_INT8:{
         char *data = static_cast < char *>(ExportDataForDODS(gr.image));
@@ -513,10 +530,10 @@ void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr)
         delete[]data;
         break;
     }
-
     default:
         ar->val2buf(const_cast < char *>(gr.image.data()));
     }
+#endif
 #else
     ar->val2buf(const_cast < char *>(gr.image.data()));
 #endif
@@ -530,7 +547,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 {
 
     // load data into primary array
-    HDFArray & primary_array = static_cast < HDFArray & >(*gr->array_var());
+    auto primary_array = static_cast < HDFArray & >(*gr->array_var());
     if (primary_array.send_p()) {
         LoadArrayFromSDS(&primary_array, sds);
         primary_array.set_read_p(true);
@@ -544,6 +561,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
          i < sds.dims.size() && p != gr->map_end(); ++i, ++p) {
         if ((*p)->send_p()) {
 #ifdef SIGNED_BYTE_TO_INT32
+#if 0
             switch (sds.dims[i].scale.number_type()) {
             case DFNT_INT8:{
                 char *data = static_cast < char *>(ExportDataForDODS(sds.dims[i].scale));
@@ -555,6 +573,15 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
                 (*p)->val2buf(const_cast < char *>
                               (sds.dims[i].scale.data()));
             }
+#endif
+            if (sds.dims[i].scale.number_type() == DFNT_INT8) {
+                char *data = static_cast < char *>(ExportDataForDODS(sds.dims[i].scale));
+                (*p)->val2buf(data);
+                delete[]data;
+            }
+            else
+                (*p)->val2buf(const_cast < char *>(sds.dims[i].scale.data()));
+
 #else
             (*p)->val2buf(const_cast < char *>(sds.dims[i].scale.data()));
 #endif
@@ -567,8 +594,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 // load an HDFSequence from a row of an hdf_vdata
 void LoadSequenceFromVdata(HDFSequence * seq, hdf_vdata & vd, int row)
 {
-    Constructor::Vars_iter p;
-    for (p = seq->var_begin(); p != seq->var_end(); ++p) {
+    for (Constructor::Vars_iter p = seq->var_begin(); p != seq->var_end(); ++p) {
         HDFStructure & stru = static_cast < HDFStructure & >(**p);
 
         // find corresponding field in vd
@@ -600,19 +626,21 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
         // contain.  In that case, concatenate the different char8
         // components of the field and load the DODS String with the value.
         string str = "";
+#if 0
         for (unsigned int i = 0; i < f.vals.size(); ++i) {
-            //DBG(cerr << i << ": " << f.vals[i].elt_char8(row) << endl);
             str += f.vals[i].elt_char8(row);
         }
+#endif
+        for (const auto & fval:f.vals) 
+            str += fval.elt_char8(row);
 
-        firstp->val2buf(static_cast < void *>(&str));   // data);
+        firstp->val2buf(static_cast < void *>(&str));  
         firstp->set_read_p(true);
     } else {
         // for each component of the field, load the corresponding component
         // of the DODS Structure.
         int i = 0;
-        Constructor::Vars_iter q;
-        for (q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
+        for (Constructor::Vars_iter q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
             char *val = static_cast <char *>(ExportDataForDODS(f.vals[i], row));
             (*q)->val2buf(val);
 #if 0
@@ -632,8 +660,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
 {
     int i = 0;
     int err = 0;
-    Constructor::Vars_iter q;
-    for (q = str->var_begin(); err == 0 && q != str->var_end(); ++q, ++i) {
+    for (Constructor::Vars_iter q = str->var_begin(); err == 0 && q != str->var_end(); ++q, ++i) {
         BaseType *p = *q;
         BESDEBUG("h4", "Reading within LoadStructureFromVgroup: " << p->name()
         	 << ", send_p: " << p->send_p() << ", vg.names[" << i << "]: "
