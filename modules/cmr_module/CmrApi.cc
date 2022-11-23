@@ -697,7 +697,14 @@ void CmrApi::granule_umm_search(const std::string &collection_name, const std::s
 }
 
 
+void CmrApi::get_granules_umm(const std::string& collection_name,
+                          const std::string &r_year,
+                          const std::string &r_month,
+                          const std::string &r_day,
+                          std::vector<cmr::Granule *> &granule_objs)
+{
 
+}
 
 
 /**
@@ -729,7 +736,7 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
                           const std::string &r_year,
                           const std::string &r_month,
                           const std::string &r_day,
-                          std::vector<cmr::Granule *> &granule_objs)
+                          std::vector<cmr::GranuleUMM *> &granule_objs)
 {
     stringstream msg;
     json cmr_doc;
@@ -737,7 +744,7 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
     granule_umm_search(collection_name, r_year, r_month, r_day, cmr_doc);
     const auto& granules = get_entries(cmr_doc);
     for ( auto &granule : granules){
-        auto *g = new Granule(granule);
+        auto *g = new GranuleUMM(granule);
         granule_objs.push_back(g);
     }
 }

@@ -444,9 +444,9 @@ public:
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
                 msg << granule->getName() << endl
-                    << "    size:  " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
+                    << "        size:  " << granule->getSizeStr() << endl
+                    << "         lmt:    " << granule->getLastModifiedStr() << endl
+                    << " granule_url: " << granule->getDataGranuleUrl() << endl;
             }
             BESDEBUG(MODULE, msg.str());
 
@@ -529,18 +529,18 @@ public:
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
                 msg << granule->getName() << endl
-                    << "    size:   " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
+                    << "        size: " << granule->getSizeStr() << endl
+                    << "         lmt: " << granule->getLastModifiedStr() << endl
+                    << " granule_url: " << granule->getDataGranuleUrl() << endl;
             }
             BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
                 Granule *granule = granules[i];
-                string url = granule->getDataAccessUrl();
+                string granule_url = granule->getDataGranuleUrl();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << url;
+                        << " received: " << granule_url;
                 BESDEBUG(MODULE, msg.str() << endl);
                 // CPPUNIT_ASSERT(expected[i] == url);
             }

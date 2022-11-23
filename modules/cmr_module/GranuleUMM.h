@@ -28,8 +28,8 @@
  *  Created on: July, 14 2018
  *      Author: ndp
  */
-#ifndef MODULES_CMR_MODULE_GRANULE_H_
-#define MODULES_CMR_MODULE_GRANULE_H_
+#ifndef MODULES_CMR_MODULE_GRANULE_UMM_H_
+#define MODULES_CMR_MODULE_GRANULE_UMM_H_
 
 #include <string>
 #include <vector>
@@ -40,7 +40,7 @@
 
 namespace cmr {
 
-class Granule {
+class GranuleUMM {
 private:
 
     std::string d_name;
@@ -61,7 +61,7 @@ private:
     const nlohmann::json& get_links_array(const nlohmann::json& go);
 
 public:
-    Granule(const nlohmann::json& granule_json);
+    GranuleUMM(const nlohmann::json& granule_json);
 
     std::string getName(){ return d_name; }
     std::string getId(){ return d_id; }
@@ -77,7 +77,7 @@ public:
 
 } // namespace cmr
 
-#endif /* MODULES_CMR_MODULE_GRANULE_H_ */
+#endif /* MODULES_CMR_MODULE_GRANULE_UMM_H_ */
 
 
 

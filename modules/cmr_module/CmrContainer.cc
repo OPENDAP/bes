@@ -139,13 +139,13 @@ string CmrContainer::access() {
     if (!granule) {
         throw BESNotFoundError("Failed to locate a granule associated with the path " + path, __FILE__, __LINE__);
     }
-    string url = granule->getDataAccessUrl();
+    string granule_url = granule->getDataGranuleUrl();
     delete granule;
     granule = nullptr;
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        shared_ptr<http::url> target_url(new http::url(url,true));
+        shared_ptr<http::url> target_url(new http::url(granule_url,true));
         d_remoteResource = new http::RemoteResource(target_url);
         d_remoteResource->retrieveResource();
     }

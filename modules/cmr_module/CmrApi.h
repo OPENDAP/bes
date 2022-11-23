@@ -44,6 +44,7 @@
 #include "Provider.h"
 #include "Collection.h"
 #include "Granule.h"
+#include "GranuleUMM.h"
 
 namespace cmr {
 
@@ -111,6 +112,11 @@ public:
                          const std::string &r_day,
                          std::vector<std::string> &granule_ids);
 
+    void get_granules_umm(const std::string& collection_name,
+                                  const std::string &r_year,
+                                  const std::string &r_month,
+                                  const std::string &r_day,
+                                  std::vector<cmr::GranuleUMM *> &granule_objs);
 
     void get_granules(const std::string& collection_name,
                       const std::string &r_year,
@@ -122,7 +128,7 @@ public:
                               const std::string &r_year,
                               const std::string &r_month,
                               const std::string &r_day,
-                              std::vector<cmr::Granule *> &granule_objs);
+                              std::vector<cmr::GranuleUMM *> &granule_objs);
 
     void get_collection_ids(std::vector<std::string> &collection_ids);
 

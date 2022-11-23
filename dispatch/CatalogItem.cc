@@ -73,10 +73,10 @@ void CatalogItem::encode_item(BESInfo *info) const
         oss << get_size();
         props[CATALOG_SIZE_KEY] = oss.str();
         props[CATALOG_IS_DATA_KEY] = is_data() ? "true" : "false";
-        string dap_access_url = get_dap_data_access_url();
-        BESDEBUG(MODULE,prolog << "dap_access_url: " << dap_access_url << endl );
-        if(!dap_access_url.empty()){
-            props[CATALOG_DAP_URL_KEY] = dap_access_url;
+        string dap_service_url = get_dap_service_url();
+        BESDEBUG(MODULE,prolog << "dap_service_url: " << dap_service_url << endl );
+        if(!dap_service_url.empty()){
+            props[CATALOG_DAP_URL_KEY] = dap_service_url;
         }
     }
 

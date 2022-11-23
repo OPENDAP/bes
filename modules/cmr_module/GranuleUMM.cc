@@ -39,7 +39,7 @@
 #include "CmrNames.h"
 #include "CmrInternalError.h"
 #include "CmrNotFoundError.h"
-#include "GranuleUMM.h"
+#include "Granule.h"
 
 
 using namespace std;
@@ -48,100 +48,9 @@ using namespace std;
 
 
 namespace cmr {
-/**
- * granule.umm_json
-{
-  "hits": 1,
-  "took": 399,
-  "items": [
-    {
-      "meta": {
-        "concept-type": "granule",
-        "concept-id": "G1216079418-GES_DISC",
-        "revision-id": 1,
-        "native-id": "AIRH2SUP.006:AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
-        "provider-id": "GES_DISC",
-        "format": "application/echo10+xml",
-        "revision-date": "2016-05-05T14:45:25.846Z"
-      },
-      "umm": {
-        "TemporalExtent": {
-          "RangeDateTime": {
-            "BeginningDateTime": "2002-11-16T23:59:26.000Z",
-            "EndingDateTime": "2002-11-17T00:05:26.000Z"
-          }
-        },
-        "GranuleUR": "AIRH2SUP.006:AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
-        "SpatialExtent": {
-          "HorizontalSpatialDomain": {
-            "Geometry": {
-              "BoundingRectangles": [
-                {
-                  "WestBoundingCoordinate": -163.196578979492,
-                  "EastBoundingCoordinate": -139.618240356445,
-                  "NorthBoundingCoordinate": -18.9448909759521,
-                  "SouthBoundingCoordinate": -42.5188293457031
-                }
-              ]
-            }
-          }
-        },
-        "ProviderDates": [
-          {
-            "Date": "2016-05-05T13:58:30.000Z",
-            "Type": "Insert"
-          },
-          {
-            "Date": "2016-05-05T13:58:30.000Z",
-            "Type": "Update"
-          }
-        ],
-        "CollectionReference": {
-          "ShortName": "AIRH2SUP",
-          "Version": "006"
-        },
-        "PGEVersionClass": {
-          "PGEVersion": "6.0.12.0"
-        },
-        "RelatedUrls": [
-          {
-            "URL": "http://discnrt1.gesdisc.eosdis.nasa.gov/data/Aqua_AIRS_Level2/AIRH2SUP.006/2002/320/AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
-            "Type": "GET DATA"
-          }
-        ],
-        "DataGranule": {
-          "DayNightFlag": "Day",
-          "Identifiers": [
-            {
-              "Identifier": "AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
-              "IdentifierType": "ProducerGranuleId"
-            }
-          ],
-          "ProductionDateTime": "2014-04-15T09:40:21.000Z",
-          "ArchiveAndDistributionInformation": [
-            {
-              "Name": "Not provided",
-              "Size": 21.0902881622314,
-              "SizeUnit": "MB"
-            }
-          ]
-        },
-        "MetadataSpecification": {
-          "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.4",
-          "Name": "UMM-G",
-          "Version": "1.6.4"
-        }
-      }
-    }
-  ]
-}
 
- */
-/** Builds GranuleUMM from granule.umm_json response from CMR.
- *
- * @param granule_json
- */
-GranuleUMM::GranuleUMM(const nlohmann::json& granule_json)
+
+Granule::Granule(const nlohmann::json& granule_json)
 {
     setId(granule_json);
     setName(granule_json);
@@ -153,19 +62,19 @@ GranuleUMM::GranuleUMM(const nlohmann::json& granule_json)
 }
 
 
-void GranuleUMM::setName(const nlohmann::json& j_obj)
+void Granule::setName(const nlohmann::json& j_obj)
 {
     this->d_name = j_obj[CMR_V2_TITLE_KEY].get<string>();
 }
 
 
-void GranuleUMM::setId(const nlohmann::json& j_obj)
+void Granule::setId(const nlohmann::json& j_obj)
 {
     this->d_id = j_obj[CMR_GRANULE_ID_KEY].get<string>();
 }
 
 
-void GranuleUMM::setSize(const nlohmann::json& j_obj)
+void Granule::setSize(const nlohmann::json& j_obj)
 {
     this->d_size_str = j_obj[CMR_GRANULE_SIZE_KEY];
 }
@@ -175,7 +84,7 @@ void GranuleUMM::setSize(const nlohmann::json& j_obj)
   * Sets the last modified time of the granule as a string.
   * @param go
   */
-void GranuleUMM::setLastModifiedStr(const nlohmann::json& go)
+void Granule::setLastModifiedStr(const nlohmann::json& go)
 {
     this->d_last_modified_time = go[CMR_GRANULE_LMT_KEY].get<string>();
 }
@@ -184,7 +93,7 @@ void GranuleUMM::setLastModifiedStr(const nlohmann::json& go)
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const nlohmann::json& GranuleUMM::get_links_array(const nlohmann::json& go)
+const nlohmann::json& Granule::get_links_array(const nlohmann::json& go)
 {
     auto &links = go[CMR_GRANULE_LINKS_KEY];
     if(links.is_null()){
@@ -206,7 +115,7 @@ const nlohmann::json& GranuleUMM::get_links_array(const nlohmann::json& go)
 /**
  * Sets the data access URL for the dataset granule.
  */
-void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
+void Granule::setDataGranuleUrl(const nlohmann::json& go)
 {
     const auto& links = get_links_array(go);
     for(auto &link : links){
@@ -225,7 +134,7 @@ void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
 /**
  * Sets the data access URL for the dataset granule.
  */
-void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
+void Granule::setDapServiceUrl(const nlohmann::json& jo)
 {
     BESDEBUG(MODULE, prolog << "JSON: " << endl << jo.dump(4) << endl);
     const auto& links = get_links_array(jo);
@@ -255,7 +164,7 @@ void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
 /**
  * Sets the metadata access URL for the dataset granule.
  */
-void GranuleUMM::setMetadataAccessUrl(const nlohmann::json& go)
+void Granule::setMetadataAccessUrl(const nlohmann::json& go)
 {
     const auto &links = get_links_array(go);
     for(auto &link : links){
@@ -274,7 +183,7 @@ void GranuleUMM::setMetadataAccessUrl(const nlohmann::json& go)
 
 
 
-bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils){
+bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
     bes::CatalogItem *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
