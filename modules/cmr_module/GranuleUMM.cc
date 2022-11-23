@@ -139,10 +139,11 @@ void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
 /**
  * Sets the data access URL for the dataset granule.
  */
-const std::string HTML_SUFFIX(".html");
 
 void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
 {
+    const std::string HTML_SUFFIX(".html");
+
     CmrApi cmrApi;
     const auto& umm_obj = cmrApi.qc_get_object(CMR_UMM_UMM_KEY, jo);
     const auto& related_urls = cmrApi.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
