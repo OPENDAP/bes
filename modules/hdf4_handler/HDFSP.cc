@@ -3681,7 +3681,7 @@ void File::create_sds_dim_name_list() {
 }
 
 // Add the missing coordinate variables based on the corrected dimension name list
-void File::handle_sds_missing_fields() {
+void File::handle_sds_missing_fields() const {
 
     const File *file = this;
 

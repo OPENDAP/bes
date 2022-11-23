@@ -808,7 +808,7 @@ namespace HDFSP
             void create_sds_dim_name_list();
 
             /// Add the missing coordinate variables based on the corrected dimension name list
-            void handle_sds_missing_fields();
+            void handle_sds_missing_fields() const;
 
             /// Create the final CF-compliant dimension name list for each field
             void handle_sds_final_dim_names() throw(Exception);

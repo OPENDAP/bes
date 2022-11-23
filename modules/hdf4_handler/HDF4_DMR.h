@@ -53,7 +53,7 @@ private:
 
 public:
     explicit HDF4DMR(const libdap::DMR *dmr) : libdap::DMR(*dmr) {}
-    HDF4DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    HDF4DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name) {}
 
     HDF4DMR(const HDF4DMR &rhs) : libdap::DMR(rhs) {
         m_duplicate(rhs);
