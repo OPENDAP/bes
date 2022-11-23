@@ -134,7 +134,7 @@ void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
     msg << "ERROR: Failed to locate Data Granule URL (";
     msg << CMR_UMM_RELATED_URLS_KEY << "). json: " << endl << related_urls.dump(2) << endl;
     BESDEBUG(MODULE, prolog << msg.str() << endl);
-    throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
+    // throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
 }
 /**
  * Sets the data access URL for the dataset granule.
