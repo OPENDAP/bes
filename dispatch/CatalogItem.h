@@ -80,6 +80,7 @@ private:
     bool d_is_data;
     item_type d_type;
     std::string d_description;
+    std::string d_dap_data_access_url;
 
     CatalogItem(const CatalogItem &rhs);
     CatalogItem &operator=(const CatalogItem &rhs);
@@ -155,12 +156,17 @@ public:
     /// @brief Is this item data that the BES should interpret?
     void set_is_data(bool id) { d_is_data = id; }
 
+    /// @brief The DAP Dataset URL for an external DAP service.
+    std::string get_dap_data_access_url() const { return d_dap_data_access_url; }
+    /// @brief Is this item data that the BES should interpret?
+    void set_dap_data_access_url(std::string url) { d_dap_data_access_url = url; }
+
     /// @brief Get the type of this item (unknown, node or leaf)
     item_type get_type() const { return d_type; }
     /// @brief Set the type for this item
     void set_type(item_type t) { d_type = t; }
 
-    void encode_item(BESInfo *info);
+    void encode_item(BESInfo *info) const;
 
     virtual void dump(std::ostream &strm) const;
 };

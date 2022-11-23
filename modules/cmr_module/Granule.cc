@@ -38,6 +38,7 @@
 
 #include "CmrNames.h"
 #include "CmrInternalError.h"
+#include "CmrNotFoundError.h"
 #include "Granule.h"
 
 
@@ -97,7 +98,7 @@ const nlohmann::json& Granule::get_links_array(const nlohmann::json& go)
     if(links.is_null()){
         string msg = prolog + "ERROR: Failed to locate the value '"+CMR_GRANULE_LINKS_KEY+"' in object.";
         BESDEBUG(MODULE, prolog << msg << endl << go.get<string>());
-        throw CmrInternalError(msg, __FILE__, __LINE__);
+        throw CmrNotFoundError(msg, __FILE__, __LINE__);
     }
 
     if(!links.is_array()){
@@ -159,6 +160,9 @@ bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
     item->set_lmt(getLastModifiedStr());
     item->set_size(getSize());
     item->set_is_data(d_catalog_utils->is_data(item->get_name()));
+    if(!getDataAccessUrl().empty()) {
+        item->set_dap_data_access_url(getDataAccessUrl());
+    }
     return item;
 }
 

@@ -102,96 +102,27 @@ CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
     if (found) {
         d_cmr_endpoint_url = cmr_endpoint_url;
     }
-    BESDEBUG(MODULE, prolog << "Using CMR Endpoint: " << d_cmr_endpoint_url << endl);
+    BESDEBUG(MODULE, prolog << "d_cmr_endpoint_url: " << d_cmr_endpoint_url << endl);
 
     d_cmr_providers_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                 CMR_PROVIDERS_LEGACY_API_ENDPOINT);
     BESDEBUG(MODULE,
-             prolog << "Using CMR Providers Search Endpoint: " << d_cmr_providers_search_endpoint_url << endl);
+             prolog << "d_cmr_providers_search_endpoint_url: " << d_cmr_providers_search_endpoint_url << endl);
 
     d_cmr_collections_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                   CMR_COLLECTIONS_SEARCH_API_ENDPOINT);
     BESDEBUG(MODULE,
-             prolog << "Using CMR Collections Search Endpoint: " << d_cmr_collections_search_endpoint_url << endl);
+             prolog << "d_cmr_collections_search_endpoint_url: " << d_cmr_collections_search_endpoint_url << endl);
 
     d_cmr_granules_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
                                                                CMR_GRANULES_SEARCH_API_ENDPOINT);
     BESDEBUG(MODULE,
-             prolog << "Using CMR Granules Search Endpoint: " << d_cmr_granules_search_endpoint_url << endl);
-}
+             prolog << "d_cmr_granules_search_endpoint_url: " << d_cmr_granules_search_endpoint_url << endl);
 
-
-#if 0
-/**
- *
- * @param jobj
- * @param result_json passed result parameter object
- * @return
- */
-bool CmrApi::get_children(const nlohmann::json &jobj, nlohmann::json &result_json)
-{
-
-    BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
-
-    bool result = jobj.is_object();
-    if(!result){
-        string msg = prolog + "ERROR: Json document is" + (result?"":" NOT") + " an object.";
-        BESDEBUG(MODULE, msg << endl);
-        throw CmrInternalError(msg,__FILE__,__LINE__);
-    }
-
-    const auto &has_children_j = jobj[CMR_V2_HAS_CHILDREN_KEY];
-    if(!has_children_j.get<bool>()){
-        BESDEBUG(MODULE, probe_json(jobj) << endl);
-        stringstream msg;
-        msg << prolog;
-        msg << "This CMR object does not have children. cmr_json: " << jobj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        // json empty_array_explicit = json::array();
-        result_json = json::array();
-        return false;
-    }
-
-    auto &children =  jobj[CMR_V2_CHILDREN_KEY];
-    if(children.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the " << CMR_V2_CHILDREN_KEY;
-        msg << " child of " << jobj.get<string>() << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrInternalError(msg.str(),__FILE__,__LINE__);
-    }
-    if(!children.is_array()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! The child element called '" << CMR_V2_CHILDREN_KEY;
-        msg << "' is not an array. json object: " << jobj.get<string>() << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrInternalError(msg.str(),__FILE__,__LINE__);
-    }
-    result_json = children;
-    return true;
-
-}
-#endif
-
-std::vector<std::string> CmrApi::get_opendap_dataset_url(const nlohmann::json &cmr_doc)
-{
-    vector
-    const auto &granules = cmr_doc[CMR_ITEMS_KEY];
-    for(const auto &granule: granules){
-        const auto & related_urls = granule[CMR_UMM_KEY][CMR_RELATED_URLS_KEY];
-        for(const auto &related_url: related_urls){
-            bool has_subtype = related_urls.contains(CMR_SUBTYPE_KEY);
-            if(has_subtype){
-                string subtype = related_urls[CMR_SUBTYPE_KEY].get<string>();
-                if ( subtype == CMR_RELATED_URLS_SUBTYPE_OPENDAP_DATA){
-
-                }
-            }
-        }
-
-    }
+    d_cmr_granules_umm_search_endpoint_url = BESUtil::assemblePath(d_cmr_endpoint_url,
+                                                               CMR_GRANULES_SEARCH_API_UMM_ENDPOINT);
+    BESDEBUG(MODULE,
+             prolog << "d_cmr_granules_umm_search_endpoint_url: " << d_cmr_granules_umm_search_endpoint_url << endl);
 }
 
 /**
@@ -726,7 +657,40 @@ void CmrApi::granule_search(const std::string &collection_name, const std::strin
         cmr_query_url << http::url_encode("temporal_facet[0][day]") << "=" << r_day;
     }
 
-    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: : " << cmr_query_url.str() << endl);
+    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
+
+    cmr_doc = rju.get_as_json(cmr_query_url.str());
+    BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
+}
+
+
+
+/**
+ * Locates granules in the collection matching the year, month, and day. Any or all of
+ * year, month, and day may be the empty string.
+ */
+void CmrApi::granule_umm_search(const std::string &collection_name, const std::string &r_year, const std::string &r_month, const std::string &r_day, nlohmann::json &cmr_doc)
+{
+
+    rjson_utils rju;
+
+    stringstream cmr_query_url;
+    cmr_query_url <<  d_cmr_granules_umm_search_endpoint_url << "?";
+    cmr_query_url << "concept_id=" << collection_name << "&";
+    cmr_query_url << "include_facets=v2&";
+    cmr_query_url << "page_size=" << CMR_MAX_PAGE_SIZE << "&";
+
+    if(!r_year.empty()) {
+        cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year<< "&";
+    }
+    if(!r_month.empty()) {
+        cmr_query_url << http::url_encode("temporal_facet[0][month]") << "=" << r_month<< "&";
+    }
+    if(!r_day.empty()) {
+        cmr_query_url << http::url_encode("temporal_facet[0][day]") << "=" << r_day;
+    }
+
+    BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
 
     cmr_doc = rju.get_as_json(cmr_query_url.str());
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
@@ -740,10 +704,10 @@ void CmrApi::granule_search(const std::string &collection_name, const std::strin
  * Returns all of the Granules in the collection matching the date.
  */
 void CmrApi::get_granules(const std::string& collection_name,
-                  const std::string &r_year,
-                  const std::string &r_month,
-                  const std::string &r_day,
-                  std::vector<cmr::Granule *> &granule_objs)
+                          const std::string &r_year,
+                          const std::string &r_month,
+                          const std::string &r_day,
+                          std::vector<cmr::Granule *> &granule_objs)
 {
     stringstream msg;
     json cmr_doc;
@@ -758,11 +722,32 @@ void CmrApi::get_granules(const std::string& collection_name,
 }
 
 
+/**
+ * Returns all of the Granules in the collection matching the date.
+ */
+void CmrApi::get_granules_umm(const std::string& collection_name,
+                          const std::string &r_year,
+                          const std::string &r_month,
+                          const std::string &r_day,
+                          std::vector<cmr::Granule *> &granule_objs)
+{
+    stringstream msg;
+    json cmr_doc;
+
+    granule_umm_search(collection_name, r_year, r_month, r_day, cmr_doc);
+    const auto& granules = get_entries(cmr_doc);
+    for ( auto &granule : granules){
+        auto *g = new Granule(granule);
+        granule_objs.push_back(g);
+    }
+}
 
 
 
-void
-CmrApi::get_collection_ids(std::vector<std::string> &collection_ids){
+
+
+void CmrApi::get_collection_ids(std::vector<std::string> &collection_ids)
+{
     bool found = false;
     string key = CMR_COLLECTIONS_KEY;
     TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS_KEY, collection_ids, found);

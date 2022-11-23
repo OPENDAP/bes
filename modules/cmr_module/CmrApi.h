@@ -55,6 +55,7 @@ private:
     std::string d_cmr_providers_search_endpoint_url;
     std::string d_cmr_collections_search_endpoint_url;
     std::string d_cmr_granules_search_endpoint_url;
+    std::string d_cmr_granules_umm_search_endpoint_url;
 
     const nlohmann::json &get_temporal_group(const nlohmann::json &cmr_doc);
 
@@ -77,13 +78,22 @@ private:
 
     const nlohmann::json& get_entries(const nlohmann::json &cmr_doc);
 
-    void granule_search(const std::string &collection_name, const std::string &r_year, const std::string &r_month, const std::string &r_day, nlohmann::json &cmr_doc);
+    void granule_search(const std::string &collection_name,
+                        const std::string &r_year,
+                        const std::string &r_month,
+                        const std::string &r_day,
+                        nlohmann::json &cmr_doc);
+
+    void granule_umm_search(const std::string &collection_name,
+                            const std::string &r_year,
+                            const std::string &r_month,
+                            const std::string &r_day,
+                            nlohmann::json &cmr_doc);
 
     void get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
                          unsigned int page_size=CMR_MAX_PAGE_SIZE,
                          bool just_opendap=false );
 
-    std::vector<std::string> get_opendap_dataset_url(const nlohmann::json &cmr_doc);
 
 
 public:
@@ -108,6 +118,11 @@ public:
                       const std::string &r_day,
                       std::vector<cmr::Granule *> &granule_objs);
 
+    void get_granules_umm(const std::string& collection_name,
+                              const std::string &r_year,
+                              const std::string &r_month,
+                              const std::string &r_day,
+                              std::vector<cmr::Granule *> &granule_objs);
 
     void get_collection_ids(std::vector<std::string> &collection_ids);
 

@@ -41,6 +41,7 @@
 #define CMR_PROVIDERS_LEGACY_API_ENDPOINT "legacy-services/rest/providers"
 #define CMR_COLLECTIONS_SEARCH_API_ENDPOINT "search/collections.umm_json"
 #define CMR_GRANULES_SEARCH_API_ENDPOINT "search/granules.json"
+#define CMR_GRANULES_SEARCH_API_UMM_ENDPOINT "search/granules.umm_json"
 
 #define CMR_META_KEY "meta"
 #define CMR_CONCEPT_ID_KEY "concept-id"

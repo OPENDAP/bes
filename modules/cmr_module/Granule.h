@@ -64,6 +64,7 @@ public:
     std::string getName(){ return d_name; }
     std::string getId(){ return d_id; }
     std::string getDataAccessUrl() { return d_data_access_url; }
+    std::string getDapUrl() { return d_data_access_url; }
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
     std::string getSizeStr(){ return d_size_str; }
     std::string getLastModifiedStr() { return d_last_modified_time; }
