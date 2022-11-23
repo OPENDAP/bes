@@ -53,7 +53,7 @@ namespace d4_tools {
     bool is_dap4_projected(libdap::BaseType *var, std::vector<libdap::BaseType *> &inv);
     bool is_dap4_projected(libdap::D4Group *group, std::vector<libdap::BaseType *> &projected_dap4_variable_inventory);
     bool has_dap4_types(libdap::D4Attribute   *attr);
-    bool has_dap4_types(libdap::D4Attributes *attrs);
+    bool has_dap4_types(const libdap::D4Attributes *attrs);
 };
 
 #endif // d4_tools_h_

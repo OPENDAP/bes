@@ -714,12 +714,11 @@ void FONcTransform::transform_dap4() {
     vector<BaseType *> projected_dap4_variable_inventory;
     bool d4_true = d4_tools::is_dap4_projected(_dmr, projected_dap4_variable_inventory);
 
-    //if (d4_true){
     if (d4_true && _returnAs == "netcdf"){
         string msg ="This dataset contains variables/attributes whose data types are not compatible with the NetCDF-3 data model. If your request includes any of these incompatible variables or attributes and you choose the “NetCDF-3” download encoding, your request will FAIL.";
         msg += "\r\n\t\t\t\t\t You may also try constraining your request to omit the problematic data type(s), or ask for a different encoding such as DAP4 binary or NetCDF-4";
         msg += "\r\n\t\t\t\t\t [ Number of non-compatible variables: " + to_string(projected_dap4_variable_inventory.size()) + " ] ";
-        for (BaseType* bt : projected_dap4_variable_inventory){
+        for (const BaseType* bt : projected_dap4_variable_inventory){
             msg += "\r\n\t\t\t\t\t\t [ Variable: " + bt->name() + " | Type: " + bt->type_name() + " ] ";
         }
         throw BESSyntaxUserError(

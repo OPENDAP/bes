@@ -69,7 +69,7 @@ bool d4_tools::has_dap4_types(D4Attribute *attr)
     return has_d4_attr;
 }
 
-bool d4_tools::has_dap4_types(D4Attributes *attrs)
+bool d4_tools::has_dap4_types(const D4Attributes *attrs)
 {
     bool has_d4_attr = false;
     for (auto attr: attrs->attributes()) {
@@ -127,10 +127,8 @@ bool d4_tools::is_dap4_projected(DDS *_dds, vector<BaseType *> &projected_dap4_v
     for (auto btp = _dds->var_begin(), ve = _dds->var_end(); btp != ve; ++btp) {
 
         BaseType *var = *btp;
-        if(var->send_p()){
-            if (is_dap4_projected(var, projected_dap4_variable_inventory)) {
+        if(var->send_p() && is_dap4_projected(var, projected_dap4_variable_inventory)){
                 has_dap4_var = true;
-            }
         }
     }
     return has_dap4_var;
@@ -169,7 +167,7 @@ bool d4_tools::is_dap4_projected(D4Group *group, vector<BaseType *> &projected_d
                     has_dap4_var = true;
                 }
             }
-            catch (exception e){
+            catch (const exception &e){
                 throw BESInternalError("Exception: " + string(e.what()), __FILE__, __LINE__);
             }
         }
@@ -183,7 +181,7 @@ bool d4_tools::is_dap4_projected(D4Group *group, vector<BaseType *> &projected_d
                 has_dap4_var = true;
             }
         }
-        catch (exception e){
+        catch (const exception &e){
             throw BESInternalError("Exception: " + string(e.what()), __FILE__, __LINE__);
         }
 
