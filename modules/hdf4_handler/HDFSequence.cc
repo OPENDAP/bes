@@ -59,13 +59,11 @@ using namespace libdap;
 using namespace std;
 
 HDFSequence::HDFSequence(const string &n, const string &d)
-    : Sequence(n, d), row(0)
+    : Sequence(n, d)
 {
 }
 
-HDFSequence::~HDFSequence()
-{
-}
+HDFSequence::~HDFSequence() = default;
 
 BaseType *HDFSequence::ptr_duplicate()
 {

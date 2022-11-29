@@ -3495,7 +3495,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
     if(EOS2ObjName=="mod05" || EOS2ObjName=="mod06" || EOS2ObjName=="mod07" 
                             || EOS2ObjName=="mod08" || EOS2ObjName=="atml2")
     {
-        scaletype = MODIS_MUL_SCALE;
+        scaletype = SOType::MODIS_MUL_SCALE;
         return;
     }
 
@@ -3515,7 +3515,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
         if(pos != string::npos && 
           (pos== (EOS2ObjName.size()-modis_eq_scale_type.size())))
         {
-            scaletype = MODIS_EQ_SCALE;
+            scaletype = SOType::MODIS_EQ_SCALE;
             return;
         }
 
@@ -3525,7 +3525,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
             if (pos !=string::npos && 
                (pos== (EOS2ObjName.size()-modis_multi_scale_type[k].size())))
             {
-                scaletype = MODIS_MUL_SCALE;
+                scaletype = SOType::MODIS_MUL_SCALE;
                 return;
             }
         }
@@ -3535,7 +3535,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
             pos = EOS2ObjName.rfind(modis_div_scale_type[k]);
             if (pos != string::npos && 
                 (pos==(EOS2ObjName.size()-modis_div_scale_type[k].size()))){
-                scaletype = MODIS_DIV_SCALE;
+                scaletype = SOType::MODIS_DIV_SCALE;
 
                 // We have a case that group 
                 // MODIS_Grid_1km_2D should apply the equal scale equation.
@@ -3557,23 +3557,23 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
                                  *EOS2ObjName.find(modis_equ_scale_lst_group1)
                                  *EOS2ObjName.find(modis_equ_scale_lst_group2);
             if (0 == eq_scale_pos) 
-                scaletype = MODIS_EQ_SCALE;
+                scaletype = SOType::MODIS_EQ_SCALE;
             else 
-                scaletype = MODIS_DIV_SCALE;
+                scaletype = SOType::MODIS_DIV_SCALE;
         }
         else {
             size_t div_scale_pos = EOS2ObjName.find(modis_div_scale_group);
 
             // Find the "MOD_Grid???" group. 
             if ( 0 == div_scale_pos) 
-                scaletype = MODIS_DIV_SCALE;
+                scaletype = SOType::MODIS_DIV_SCALE;
         }
     }
 
     //  MEASuRES VIP files have the grid name VIP_CMG_GRID. 
     // This applies to all VIP version 2 files. KY 2013-01-24
     if (EOS2ObjName =="VIP_CMG_GRID")
-        scaletype = MODIS_DIV_SCALE;
+        scaletype = SOType::MODIS_DIV_SCALE;
 }
 
 int Dataset::obtain_dimsize_with_dimname(const string & dimname) const{

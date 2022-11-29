@@ -721,7 +721,7 @@ namespace HDFEOS2
             // group level. Hopefully this is the final fix. Truly hope that 
             // this will not happen at the field level since it will be too messy to 
             // check.  KY 2012-11-21
-            SOType scaletype = DEFAULT_CF_EQU;
+            SOType scaletype = SOType::DEFAULT_CF_EQU;
 
         friend class File;
     };

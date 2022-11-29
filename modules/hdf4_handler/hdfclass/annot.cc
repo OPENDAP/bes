@@ -62,7 +62,7 @@
 //
 
 // initialize hdfistream_annot members
-void hdfistream_annot::_init(const string filename)
+void hdfistream_annot::_init(const string& filename)
 {
     _an_id = _index = _tag = _ref = 0;
     _file_id = 0; // The fix for ticket 1360. jhrg 8/7/09
@@ -73,7 +73,7 @@ void hdfistream_annot::_init(const string filename)
 }
 
 // initialize hdfistream_annot members, setting _tag, _ref to an object
-void hdfistream_annot::_init(const string filename, int32 tag, int32 ref)
+void hdfistream_annot::_init(const string& filename, int32 tag, int32 ref)
 {
     _init(filename);
     _tag = tag;
@@ -133,39 +133,33 @@ void hdfistream_annot::_get_file_anninfo(void)
 // retrieve information about the annotations for currently pointed-at object
 void hdfistream_annot::_get_obj_anninfo(void)
 {
-    int nlab = 0, ndesc = 0;
-    if (_desc &&
-        (ndesc = ANnumann(_an_id, AN_DATA_DESC, _tag, _ref)) == FAIL)
+    int nlab = ANnumann(_an_id, AN_DATA_LABEL, (uint16)_tag, (uint16)_ref);
+    int ndesc = ANnumann(_an_id, AN_DATA_DESC, (uint16)_tag, (uint16)_ref);
+
+    if (_desc && (ndesc==FAIL))
         THROW(hcerr_anninfo);
-    if (_lab &&
-        (nlab = ANnumann(_an_id, AN_DATA_LABEL, _tag, _ref)) == FAIL)
+    if (_lab && (nlab==FAIL))
         THROW(hcerr_anninfo);
+
     if (nlab + ndesc > 0) {
-        int32 *annlist = new int32[nlab + ndesc];
-        if (annlist == 0)
+        //int32 *annlist = new int32[nlab + ndesc];
+        vector<int32> annlist(nlab+ndesc);
+        int num_desc_ann_list = ANannlist(_an_id, AN_DATA_DESC, (uint16)_tag, (uint16)_ref, annlist.data());
+        if (_desc && num_desc_ann_list == FAIL) 
             THROW(hcerr_annlist);
-        if (_desc &&
-            ANannlist(_an_id, AN_DATA_DESC, _tag, _ref, annlist) == FAIL) {
-            delete[]annlist;
-            annlist = 0;
+        
+        int num_label_ann_list = ANannlist(_an_id, AN_DATA_LABEL, (uint16)_tag, (uint16)_ref, annlist.data() + ndesc);
+        if (_lab && num_label_ann_list == FAIL)
             THROW(hcerr_annlist);
-        }
-        if (_lab &&
-            ANannlist(_an_id, AN_DATA_LABEL, _tag, _ref,
-                      annlist + ndesc) == FAIL) {
-            delete[]annlist;
-            annlist = 0;
-            THROW(hcerr_annlist);
-        }
         // import into _an_ids vector
         // try {    // add this when STL supports exceptions
-        _an_ids = vector < int32 > (annlist[0], annlist[nlab + ndesc]);
+        _an_ids = annlist;
         // }
         // catch(...) {
         //              delete []annlist; annlist = 0;
         //              THROW(hcerr_annlist);
         // }
-        delete[]annlist;
+        //delete[]annlist;
     }
     return;
 }
@@ -175,7 +169,7 @@ void hdfistream_annot::_get_obj_anninfo(void)
 // public member functions
 //
 
-hdfistream_annot::hdfistream_annot(const string filename):
+hdfistream_annot::hdfistream_annot(const string& filename):
 hdfistream_obj(filename)
 {
     _init(filename);
@@ -184,7 +178,7 @@ hdfistream_obj(filename)
     return;
 }
 
-hdfistream_annot::hdfistream_annot(const string filename, int32 tag, int32 ref):
+hdfistream_annot::hdfistream_annot(const string& filename, int32 tag, int32 ref):
 hdfistream_obj(filename)
 {
     _init(filename);

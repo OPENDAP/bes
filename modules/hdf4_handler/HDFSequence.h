@@ -53,15 +53,15 @@
 class HDFSequence:public libdap::Sequence, public ReadTagRef {
   public:
     HDFSequence(const std::string &n, const std::string &d);
-    virtual ~ HDFSequence();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual bool read_tagref(int32 tag, int32 ref, int &error);
+    ~ HDFSequence() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    bool read_tagref(int32 tag, int32 ref, int &error) override;
 
-    virtual void transfer_attributes(libdap::AttrTable *at_container);
+    void transfer_attributes(libdap::AttrTable *at_container) override;
 
-  protected:
-    int row;                    // current row
+  private:
+    int row = 0;                    // current row
     hdf_vdata vd;               // holds Vdata
 };
 

@@ -55,16 +55,16 @@ class HE2CF
 
     private:
 
-        libdap::DAS* das;
+        libdap::DAS* das = nullptr;
 
         // SDStart ID
-        int32 sd_id;
+        int32 sd_id = -1;
 
         // Hopen ID 
-        int32 file_id;
+        int32 file_id = -1;
 
         // Number of global attributes
-        int32 num_global_attributes;
+        int32 num_global_attributes = -1;
 
         // ECS metadata 
         std::string metadata;
@@ -114,10 +114,10 @@ class HE2CF
         // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
         // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
         // Should watch if there are any outliers. 
-        void arrange_list(std::list<std::string> & sl1, std::list<std::string>&sl2,std::vector<std::string>&v1,std::string name,int& flag);
+        void arrange_list(std::list<std::string> & sl1, std::list<std::string>&sl2,std::vector<std::string>&v1,const std::string & name,int& flag);
 
         // Obtain SD attribute value
-        void obtain_SD_attr_value(const std::string &,std::string&);
+        void obtain_SD_attr_value(const std::string &,std::string&) const;
 
         // Create SDS name to SDS ID and Vdata name to vdata ID maps.
         bool set_vgroup_map(int32 refid,bool isgeo);
@@ -140,7 +140,7 @@ class HE2CF
 
         // Write the Vdata attribute.
         bool write_attr_vdata(int32 vd_id, const std::string& newfname,int fieldtype);
-        void throw_error(std::string _error);
+        void throw_error(const std::string &_error);
     
     public:
         HE2CF();
@@ -177,12 +177,12 @@ class HE2CF
         /// 
         /// This attribute plays an essential role for two dimensional
         /// coordinate system like Swath.
-        bool write_attribute_coordinates(const std::string& varname, std::string coord);
+        bool write_attribute_coordinates(const std::string& varname, const std::string& coord);
 
         /// writes units attribute into \a varname attribute table.
         /// 
         /// Any existing units attribute will be overwritten by this function.
-        bool write_attribute_units(const std::string& varname, std::string units);
+        bool write_attribute_units(const std::string& varname, const std::string& units);
 
 
 };

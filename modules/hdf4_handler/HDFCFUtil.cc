@@ -741,7 +741,7 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
     // Otherwise, continue checking the scale and offset names.
     // KY 2013-12-13
 
-    if(scaletype!=DEFAULT_CF_EQU && at!=nullptr)
+    if(scaletype!=SOType::DEFAULT_CF_EQU && at!=nullptr)
     {
         AttrTable::Attr_iter it = at->attr_begin();
         string  scale_factor_value="";
@@ -1060,7 +1060,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
 
     
     if(scale_factor_value.size()!=0) {
-        if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+        if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
             if (orig_scale_value_float > 1 || orig_scale_value_double >1) {
 
                 bool need_change_scale = true;
@@ -1074,7 +1074,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                         need_change_scale = false;
                 }
                 if(true == need_change_scale)  {
-                    sotype = MODIS_DIV_SCALE;
+                    sotype = SOType::MODIS_DIV_SCALE;
                     (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                    << " Now change it to MODIS_DIV_SCALE. "<<endl;
@@ -1082,9 +1082,9 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
             }
         }
 
-        if (MODIS_DIV_SCALE == sotype) {
+        if (SOType::MODIS_DIV_SCALE == sotype) {
             if (orig_scale_value_float < 1 || orig_scale_value_double<1) {
-                sotype = MODIS_MUL_SCALE;
+                sotype = SOType::MODIS_MUL_SCALE;
                 (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
                                    << " Now change it to MODIS_MUL_SCALE. "<<endl;
@@ -1092,7 +1092,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
         }
 
 
-        if ((MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
+        if ((SOType::MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
 
             float new_offset_value_float=0;
             double new_offset_value_double=0;
@@ -1107,7 +1107,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
       
         }    
 
-        if (MODIS_DIV_SCALE == sotype) {
+        if (SOType::MODIS_DIV_SCALE == sotype) {
 
             float new_scale_value_float=1;
             double new_scale_value_double=1;
@@ -1282,7 +1282,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
     // MODIS level 1B's Emissive and RefSB fields' scale_factor and add_offset 
     // get changed according to different vertical levels.
     // So we need to handle them specifically.
-    if (sotype == MODIS_MUL_SCALE && true ==changedtype) {
+    if (sotype == SOType::MODIS_MUL_SCALE && true ==changedtype) {
 
         // Emissive should be at the end of the field name such as "..._Emissive"
         string emissive_str = "Emissive";
@@ -1466,7 +1466,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
             // we don't want to change the scale and offset settings. 
             // KY 2014-01-13
 
-            if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+            if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
                 if (orig_scale_value > 1) {
                   
                     bool need_change_scale = true;
@@ -1481,7 +1481,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                             need_change_scale = false;
                     }
                     if(true == need_change_scale) {
-                        sotype = MODIS_DIV_SCALE;
+                        sotype = SOType::MODIS_DIV_SCALE;
                         (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
                                  << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                  << " Now change it to MODIS_DIV_SCALE. "<<endl;
@@ -1489,34 +1489,34 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                 }
             }
 
-            if (MODIS_DIV_SCALE == sotype) {
+            if (SOType::MODIS_DIV_SCALE == sotype) {
                 if (orig_scale_value < 1) {
-                    sotype = MODIS_MUL_SCALE;
+                    sotype = SOType::MODIS_MUL_SCALE;
                     (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
                                  << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
                                  << " Now change it to MODIS_MUL_SCALE. "<<endl;
                 }
             }
 
-            if(sotype == MODIS_MUL_SCALE) {
+            if(sotype == SOType::MODIS_MUL_SCALE) {
                 valid_min = (orig_valid_min - orig_offset_value)*orig_scale_value;
                 valid_max = (orig_valid_max - orig_offset_value)*orig_scale_value;
             }
-            else if (sotype == MODIS_DIV_SCALE) {
+            else if (sotype == SOType::MODIS_DIV_SCALE) {
                 valid_min = (orig_valid_min - orig_offset_value)/orig_scale_value;
                 valid_max = (orig_valid_max - orig_offset_value)/orig_scale_value;
             }
-            else if (sotype == MODIS_EQ_SCALE) {
+            else if (sotype == SOType::MODIS_EQ_SCALE) {
                 valid_min = orig_valid_min * orig_scale_value + orig_offset_value;
                 valid_max = orig_valid_max * orig_scale_value + orig_offset_value;
             }
         }
         else {// This is our current assumption.
-            if (MODIS_MUL_SCALE == sotype || MODIS_DIV_SCALE == sotype) {
+            if (SOType::MODIS_MUL_SCALE == sotype || SOType::MODIS_DIV_SCALE == sotype) {
                 valid_min = orig_valid_min - orig_offset_value;
                 valid_max = orig_valid_max - orig_offset_value;
             }
-            else if (MODIS_EQ_SCALE == sotype) {
+            else if (SOType::MODIS_EQ_SCALE == sotype) {
                 valid_min = orig_valid_min + orig_offset_value;
                 valid_max = orig_valid_max + orig_offset_value;
             }

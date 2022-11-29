@@ -133,7 +133,7 @@ void hdfistream_vdata::_seek(int32 ref) {
 // hdfistream_vdata -- public member functions
 //
 
-hdfistream_vdata::hdfistream_vdata(const string filename) :
+hdfistream_vdata::hdfistream_vdata(const string& filename) :
 	hdfistream_obj(filename) {
 	_init();
 	if (_filename.size() != 0) // if ctor specified a null filename

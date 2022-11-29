@@ -13,17 +13,14 @@
 #define HDFEOS2ARRAYSWATHDIMMAPFIELD_H
 
 #include <libdap/Array.h>
-using namespace libdap;
-
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"
-
 #include "HDFEOS2EnumType.h"
 
-class HDFEOS2ArraySwathDimMapField:public Array
+class HDFEOS2ArraySwathDimMapField:public libdap::Array
 {
     public:
-    HDFEOS2ArraySwathDimMapField (int rank,  const std::string & filename, bool isgeofile, const int sdfd, const int swathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, const std::vector < struct dimmap_entry >&dimmaps, SOType sotype, const string & n = "", BaseType * v = nullptr):
+    HDFEOS2ArraySwathDimMapField (int rank,  const std::string & filename, bool isgeofile, const int sdfd, const int swathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, const std::vector < struct dimmap_entry >&dimmaps, SOType sotype, const string & n = "", libdap::BaseType * v = nullptr):
         Array (n, v),
         rank (rank),
         filename(filename),
@@ -60,13 +57,13 @@ class HDFEOS2ArraySwathDimMapField:public Array
         template < class T > bool Field3DSubset (T * outlatlon, std::vector<int32>& newdims, T * latlon, int32 * offset, int32 * count, int32 * step);
 
 #endif
-        BaseType *ptr_duplicate () override
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathDimMapField (*this);
         }
 
-       // Read the data
-       virtual bool read () override;
+        // Read the data
+        bool read () override;
 
     private:
 

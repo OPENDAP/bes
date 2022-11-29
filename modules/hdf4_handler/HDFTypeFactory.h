@@ -26,12 +26,9 @@
 #define nc_type_factory_h
 
 #include <string>
-
-using std::string ;
-
 #include <libdap/BaseTypeFactory.h>
 
-using namespace libdap;
+using std::string ;
 
 // Class declarations; Make sure to include the corresponding headers in the
 // implementation file.
@@ -52,31 +49,31 @@ class HDFGrid;
 
 /** A factory for the netCDF client library types.
 
-    @author James Gallagher
+    @author James Gallagher, Kent Yang
     @see DDS */
-class HDFTypeFactory:public BaseTypeFactory {
+class HDFTypeFactory:public libdap::BaseTypeFactory {
 private:
     string d_filename ;
-    HDFTypeFactory() {}
+    HDFTypeFactory() = default;
 public:
     explicit HDFTypeFactory( const string &filename ) : d_filename( filename ) {} 
-    virtual ~HDFTypeFactory() {}
+    ~HDFTypeFactory() override = default;
 
-    virtual Byte *NewByte(const string & n = "") const;
-    virtual Int16 *NewInt16(const string & n = "") const;
-    virtual UInt16 *NewUInt16(const string & n = "") const;
-    virtual Int32 *NewInt32(const string & n = "") const;
-    virtual UInt32 *NewUInt32(const string & n = "") const;
-    virtual Float32 *NewFloat32(const string & n = "") const;
-    virtual Float64 *NewFloat64(const string & n = "") const;
+    libdap::Byte *NewByte(const string & n = "") const override;
+    libdap::Int16 *NewInt16(const string & n = "") const override;
+    libdap::UInt16 *NewUInt16(const string & n = "") const override;
+    libdap::Int32 *NewInt32(const string & n = "") const override;
+    libdap::UInt32 *NewUInt32(const string & n = "") const override;
+    libdap::Float32 *NewFloat32(const string & n = "") const override;
+    libdap::Float64 *NewFloat64(const string & n = "") const override;
 
-    virtual Str *NewStr(const string & n = "") const;
-    virtual Url *NewUrl(const string & n = "") const;
+    libdap::Str *NewStr(const string & n = "") const override;
+    libdap::Url *NewUrl(const string & n = "") const override;
 
-    virtual Array *NewArray(const string & n = "", BaseType * v = 0) const;
-    virtual Structure *NewStructure(const string & n = "") const;
-    virtual Sequence *NewSequence(const string & n = "") const;
-    virtual Grid *NewGrid(const string & n = "") const;
+    libdap::Array *NewArray(const string & n = "", libdap::BaseType * v = 0) const override;
+    libdap::Structure *NewStructure(const string & n = "") const override;
+    libdap::Sequence *NewSequence(const string & n = "") const override;
+    libdap::Grid *NewGrid(const string & n = "") const override;
 };
 
 #endif

@@ -37,9 +37,8 @@ HDFFloat32::HDFFloat32(const string & n, const string &d) : Float32(n, d)
 {
 }
 
-HDFFloat32::~HDFFloat32()
-{
-}
+HDFFloat32::~HDFFloat32() = default;
+
 BaseType *HDFFloat32::ptr_duplicate()
 {
     return new HDFFloat32(*this);

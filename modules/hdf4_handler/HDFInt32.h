@@ -50,9 +50,9 @@
 class HDFInt32:public libdap::Int32 {
   public:
     HDFInt32(const std::string &n, const std::string &d);
-    virtual ~ HDFInt32();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFInt32() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFINT32_H

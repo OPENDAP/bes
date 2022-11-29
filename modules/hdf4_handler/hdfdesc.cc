@@ -870,7 +870,7 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd, int32 gridfd
     bool onelatlon = f->getOneLatLon();
 
     // Set scale and offset type to the DEFAULT one.
-    SOType sotype = DEFAULT_CF_EQU;
+    SOType sotype = SOType::DEFAULT_CF_EQU;
 
     // Iterate all the grids of this file and map them to DAP DDS.
     for (const auto &gd:grids){
@@ -1360,7 +1360,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
     }
     cf.set_DAS(&das);
 
-    SOType sotype = DEFAULT_CF_EQU;
+    SOType sotype = SOType::DEFAULT_CF_EQU;
 
     // A flag not to generate structMetadata for the MOD13C2 file.
     // MOD13C2's structMetadata has wrong values. It couldn't pass the parser. 
@@ -1481,7 +1481,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
                 AttrTable *at = das.get_table(newfname);
 
                 // No need for the case that follows the CF scale and offset .
-                if(sotype!=DEFAULT_CF_EQU && at!=nullptr)
+                if(sotype!=SOType::DEFAULT_CF_EQU && at!=nullptr)
                 {
                     bool has_Key_attr = false;
                     AttrTable::Attr_iter it = at->attr_begin();
@@ -1615,7 +1615,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 	        AttrTable *at = das.get_table(newfname);
 
                 // No need for CF scale and offset equation.
-                if(sotype!=DEFAULT_CF_EQU && at!=nullptr)
+                if(sotype!=SOType::DEFAULT_CF_EQU && at!=nullptr)
                 {
 
                     bool has_Key_attr = false;

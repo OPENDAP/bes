@@ -895,9 +895,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     int ifillvalue = fillvalue;
 
                     vector <int8> temp_total_val;
-                    //The previous size doesn't make sense since num_elems = xdim*ydim
                     temp_total_val.resize(xdim*ydim);
-                    //temp_total_val.resize(xdim*ydim*4);
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
@@ -913,7 +911,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     try {
                         // Recalculate lat/lon for the geographic projection lat/lon that has fill values
-                        HandleFillLatLon(temp_total_val, (int8*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -938,7 +936,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 }
 
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((int8 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -988,7 +986,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (uint8*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1013,7 +1011,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 }
 	    
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((uint8 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
                 set_value ((dods_byte *) val.data(), nelms);
 
             }
@@ -1048,7 +1046,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (int16*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1074,7 +1072,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
 	    
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((int16 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_int16 *) val.data(), nelms);
             }
@@ -1109,7 +1107,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (uint16*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1133,7 +1131,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                 }
 
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((uint16 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_uint16 *) val.data(), nelms);
 
@@ -1170,7 +1168,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (int32*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1195,7 +1193,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                 }
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((int32 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_int32 *) val.data(), nelms);
 
@@ -1231,7 +1229,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (uint32*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
 
                     }
                     catch(...) {
@@ -1256,7 +1254,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                 }
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((uint32 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_uint32 *) val.data(), nelms);
 
@@ -1295,7 +1293,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (float32*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1319,7 +1317,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                 }
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((float32 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_float32 *) val.data(), nelms);
 
@@ -1355,7 +1353,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     }
 
                     try {
-                        HandleFillLatLon(temp_total_val, (float64*)val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
+                        HandleFillLatLon(temp_total_val, val.data(),ydimmajor,fieldtype,xdim,ydim,offset32.data(),count32.data(),step32.data(),ifillvalue);
                     }
                     catch(...) {
                         detachfunc(gridid);
@@ -1380,7 +1378,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                 }
                 if (speciallon && fieldtype == 2)
-                    CorSpeLon ((float64 *) val.data(), nelms);
+                    CorSpeLon (val.data(), nelms);
 
                 set_value ((dods_float64 *) val.data(), nelms);
 
@@ -1457,8 +1455,8 @@ void
 HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
                                            int g_specialformat,
                                            float64 * outlatlon,float64* latlon_all,
-                                           int32 * offset, int32 * count,
-                                           int32 * step, int nelms,bool write_latlon_cache)
+                                           const int32 * offset, const int32 * count,
+                                           const int32 * step, int nelms,bool write_latlon_cache)
 {
 
     // Retrieve dimensions and X-Y coordinates of corners 
@@ -1707,7 +1705,8 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int /*majordim */,
     // Find the correct index
     int dim0count = count[0];
     int dim1count = count[1];
-    int dim0index[dim0count], dim1index[dim1count];
+    int dim0index[dim0count];
+    int dim1index[dim1count];
 
     for (i = 0; i < count[0]; i++)	// count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];
@@ -2112,7 +2111,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
 
     int iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
-    inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, nullptr, nullptr, (int*)&iflg, inv_trans);
+    inv_init((int)projcode, (int)zone, (double*)params, (int)sphere, nullptr, nullptr, (int*)&iflg, inv_trans);
     if(iflg) 
         throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
@@ -2166,14 +2165,18 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
 
             // Send the subset of latlon to DAP.
             vector<double>latlon;
-            latlon.resize(nelms); //double[180*xdim*ydim];
+            latlon.resize(nelms); 
+          
+            // Leave the following #if 0 #endif for possible future references. KY 2022-11-28
+#if 0
+            //double[180*xdim*ydim];
             //int s1=start[0]+1, e1=s1+count[0]*step[0];
             //int s2=start[1],   e2=s2+count[1]*step[1];
             //int s3=start[2],   e3=s3+count[2]*step[2];
             //int s1=start[0]+1; 
             //int s2=start[1];  
             //int s3=start[2]; 
-
+#endif
 
             npts =0;
             for(i=0; i<count[0]; i++) //i = 1; i<180+1; i++)
@@ -2261,8 +2264,8 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtyp
     if (count[0] != nelms) {
         throw InternalErr(__FILE__,__LINE__, "rank is not 1 ");
     }
-    float lat_step = (lowright[1] - upleft[1])/ydim;
-    float lon_step = (lowright[0] - upleft[0])/xdim;
+    float lat_step = (float)(lowright[1] - upleft[1])/ydim;
+    float lon_step = (float)(lowright[0] - upleft[0])/xdim;
 
     if(true == write_latlon_cache) {
 
@@ -2277,13 +2280,13 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtyp
     // Treat the origin of the coordinate as the center of the cell.
     // This has been the setting of MCD43 data.  KY 2012-09-10
     if (1 == gf_fieldtype) { //Latitude
-        float start_lat = upleft[1] + start[0] *lat_step + lat_step/2;
+        float start_lat = (float)(upleft[1] + start[0] *lat_step + lat_step/2);
         float step_lat  = lat_step *step[0];
         for (int i = 0; i < count[0]; i++) 
             latlon[i] = start_lat +i *step_lat;
     }
     else { // Longitude
-        float start_lon = upleft[0] + start[0] *lon_step + lon_step/2;
+        float start_lon = (float)(upleft[0] + start[0] *lon_step + lon_step/2);
         float step_lon  = lon_step *step[0];
         for (int i = 0; i < count[0]; i++) 
             latlon[i] = start_lon +i *step_lon;
@@ -2345,7 +2348,7 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
                     if(isundef_lon(lon_all[i*xdim+j]))
                         lon_all[i*xdim+j]=nearestNeighborLonVal(temp_lon_all.data(), i, j, ydim, xdim);
         }
-        else { // end if(ydimmajor)
+        else { 
             for(int i=0; i<xdim; i++)
                 for(int j=0; j<ydim; j++)
                     if(isundef_lat(lat_all[i*ydim+j]))

@@ -29,6 +29,7 @@
 #define SIGNED_BYTE_TO_INT32 1
 
 using namespace std;
+using namespace libdap;
 bool
 HDFEOS2ArraySwathDimMapField::read ()
 {
@@ -202,7 +203,7 @@ cerr<<"inc is: "<<dimmaps[i].inc <<endl;
 }
 #endif
 
-    if (sotype!=DEFAULT_CF_EQU) {
+    if (sotype!=SOType::DEFAULT_CF_EQU) {
 
         if("MODIS_SWATH_Type_L1B" == swathname) {
 
@@ -237,7 +238,6 @@ cerr<<"inc is: "<<dimmaps[i].inc <<endl;
         is_modis1b = true;
 
     try {
-        //if(true == turn_on_disable_scale_comp_key && false== is_modis1b) 
         if(true == HDF4RequestHandler::get_disable_scaleoffset_comp() && false== is_modis1b) 
             write_dap_data_disable_scale_comp(swathid,nelms,offset32,count32,step32);
         else
@@ -310,7 +310,7 @@ HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step, int *co
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }
@@ -345,7 +345,7 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     vals.resize (size);
 
     ret = SWreadfield (swathid, const_cast < char *>(geofieldname.c_str ()),
-                       NULL, NULL, NULL, (void *) vals.data());
+                       nullptr, nullptr, nullptr, (void *) vals.data());
     if (ret != 0)
         return -1;
 
@@ -355,19 +355,19 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     for (int i = 0; i < sw_rank; i++) {
         vector < struct dimmap_entry >::iterator it;
 
-        for (it = sw_dimmaps.begin (); it != sw_dimmaps.end (); it++) {
-            if (it->geodim == dimname[i]) {
+        for (const auto & dmap:sw_dimmaps) {
+            if (dmap.geodim == dimname[i]) {
 #if 0
 //cerr<<"dimnames["<<i<<"]: " <<dimname[i]<<endl;
 //cerr<<"offset is "<<it->offset<<endl;
 //cerr<<"inc is "<<it->inc<<endl;
 #endif
-                int32 ddimsize = SWdiminfo (swathid, (char *) it->datadim.c_str ());
+                int32 ddimsize = SWdiminfo (swathid, (char *) dmap.datadim.c_str ());
                 if (ddimsize == -1)
                     return -1;
                 int r;
 
-                r = _expand_dimmap_field (&vals, sw_rank, dims, i, ddimsize, it->offset, it->inc);
+                r = _expand_dimmap_field (&vals, sw_rank, dims, i, ddimsize, dmap.offset, dmap.inc);
                 if (r != 0)
                     return -1;
             }
@@ -546,8 +546,8 @@ bool HDFEOS2ArraySwathDimMapField::Field2DSubset (T * outlatlon,
     int	dim0count = count[0];
     int dim1count = count[1];
 
-    int	dim0index[dim0count];
-    int dim1index[dim1count];
+    vector<int>dim0index(dim0count);
+    vector<int>dim1index(dim1count);
 
     for (i = 0; i < count[0]; i++) // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
@@ -596,9 +596,9 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
     int dim1count = count[1];
     int dim2count = count[2];
 
-    int dim0index[dim0count];
-    int dim1index[dim1count];
-    int dim2index[dim2count];
+    vector<int> dim0index(dim0count);
+    vector<int> dim1index(dim1count);
+    vector<int> dim2index(dim2count);
 
     for (i = 0; i < count[0]; i++) // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
@@ -659,7 +659,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     float offset2=0;
     float fillvalue = 0.;
 
-    if (sotype!=DEFAULT_CF_EQU) {
+    if (sotype!=SOType::DEFAULT_CF_EQU) {
 
         // Obtain attribute values.
         int32 sdfileid = -1;
@@ -800,7 +800,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         }
 	
         attrindex = SDfindattr(sdsid, "_FillValue");
-        if(sotype!=DEFAULT_CF_EQU && attrindex!=FAIL)
+        if(sotype!=SOType::DEFAULT_CF_EQU && attrindex!=FAIL)
         {
             intn ret = 0;
             ret = SDattrinfo(sdsid, attrindex, attrname, &attrtype, &attrcount);
@@ -1059,9 +1059,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     // for a swath case, we still keep the old ways.
 
 
-    if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+    if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
-            sotype = MODIS_DIV_SCALE;
+            sotype = SOType::MODIS_DIV_SCALE;
             (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "
              << scale << endl
              << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " 
@@ -1070,9 +1070,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         }
     }
     
-    if (MODIS_DIV_SCALE == sotype) {
+    if (SOType::MODIS_DIV_SCALE == sotype) {
         if (scale < 1) {
-            sotype = MODIS_MUL_SCALE;
+            sotype = SOType::MODIS_MUL_SCALE;
             (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "
                                << scale << endl
                                << " But the original scale factor type is MODIS_DIV_SCALE. " 
@@ -1097,7 +1097,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
-    if(sotype!=DEFAULT_CF_EQU) \
+    if(sotype!=SOType::DEFAULT_CF_EQU) \
     { \
         if(scale_factor_attr_index!=FAIL && !(scale==1 && offset2==0)) \
         { \
@@ -1108,9 +1108,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 tmpval[l] = (float)tmptr[l]; \
             float temp_scale = scale; \
             float temp_offset = offset2; \
-            if(sotype==MODIS_MUL_SCALE) \
+            if(sotype==SOType::MODIS_MUL_SCALE) \
                 temp_offset = -1. *offset2*temp_scale;\
-            else if (sotype==MODIS_DIV_SCALE) \
+            else if (sotype==SOType::MODIS_DIV_SCALE) \
             {\
                 temp_scale = 1/scale; \
                 temp_offset = -1. *temp_scale *offset2;\
@@ -1154,7 +1154,6 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     }
 
 
-    // int32 majordimsize, minordimsize;
     vector<int32> newdims;
     newdims.resize(rank);
 
@@ -1191,7 +1190,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val8[counter]);
 
-            RECALCULATE(int32*, dods_int32*, newval.data());
+            RECALCULATE(int32*, dods_int32*, newval.data())
 #endif
         }
             break;
@@ -1214,7 +1213,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
             FieldSubset (val_u8.data(), newdims, total_val_u8.data(),
                          offset32.data(), count32.data(), step32.data());
-            RECALCULATE(uint8*, dods_byte*, val_u8.data());
+            RECALCULATE(uint8*, dods_byte*, val_u8.data())
         }
             break;
         case DFNT_INT16:
@@ -1236,7 +1235,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             FieldSubset (val16.data(), newdims, total_val16.data(),
                          offset32.data(), count32.data(), step32.data());
 
-            RECALCULATE(int16*, dods_int16*, val16.data());
+            RECALCULATE(int16*, dods_int16*, val16.data())
         }
             break;
         case DFNT_UINT16:
@@ -1258,7 +1257,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
             FieldSubset (val_u16.data(), newdims, total_val_u16.data(),
                          offset32.data(), count32.data(), step32.data());
-            RECALCULATE(uint16*, dods_uint16*, val_u16.data());
+            RECALCULATE(uint16*, dods_uint16*, val_u16.data())
 
         }
             break;
@@ -1282,7 +1281,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             FieldSubset (val32.data(), newdims, total_val32.data(),
                          offset32.data(), count32.data(), step32.data());
 
-            RECALCULATE(int32*, dods_int32*, val32.data());
+            RECALCULATE(int32*, dods_int32*, val32.data())
         }
             break;
         case DFNT_UINT32:
@@ -1304,7 +1303,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
             FieldSubset (val_u32.data(), newdims, total_val_u32.data(),
                          offset32.data(), count32.data(), step32.data());
-            RECALCULATE(uint32*, dods_uint32*, val_u32.data());
+            RECALCULATE(uint32*, dods_uint32*, val_u32.data())
  
         }
             break;
@@ -1326,7 +1325,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
 
             FieldSubset (val_f32.data(), newdims, total_val_f32.data(),
                          offset32.data(), count32.data(), step32.data());
-            RECALCULATE(float32*, dods_float32*, val_f32.data());
+            RECALCULATE(float32*, dods_float32*, val_f32.data())
         }
             break;
         case DFNT_FLOAT64:
@@ -1345,7 +1344,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             val_f64.resize(nelms);
             FieldSubset (val_f64.data(), newdims, total_val_f64.data(),
                          offset32.data(), count32.data(), step32.data());
-            RECALCULATE(float64*, dods_float64*, val_f64.data());
+            RECALCULATE(float64*, dods_float64*, val_f64.data())
  
         }
             break;
