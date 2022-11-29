@@ -169,12 +169,13 @@ void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
     // throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
 }
 
-
-
-
-
+/**
+ *
+ * @param d_catalog_utils
+ * @return
+ */
 bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils){
-    bes::CatalogItem *item = new bes::CatalogItem();
+    auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
     item->set_lmt(getLastModifiedStr());

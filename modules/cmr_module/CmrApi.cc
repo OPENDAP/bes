@@ -39,7 +39,7 @@
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
-#include "Httputils.h"
+#include "HttpUtils.h"
 
 #include "BESError.h"
 #include "BESInternalError.h"
