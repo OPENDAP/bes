@@ -48,28 +48,37 @@ private:
     std::string d_data_access_url;
     std::string d_dap_service_url;
     std::string d_metadata_access_url;
+    double d_size_orig;
+    uint64_t d_size;
     std::string d_size_str;
     std::string d_size_units_str;
     std::string d_last_modified_time;
+    std::string d_description;
 
     void setName(const nlohmann::json& jobj);
-    void setId(const nlohmann::json& go);
+    void setConceptId(const nlohmann::json& j_obj);
     void setDataGranuleUrl(const nlohmann::json& go);
     void setDapServiceUrl(const nlohmann::json& go);
-    void setSize(const nlohmann::json& j_obj);
+    void setSize(const nlohmann::json& granule_obj);
     void setLastModifiedStr(const nlohmann::json& go);
+    void setDescription(const nlohmann::json& go);
+
 
 public:
-    GranuleUMM(const nlohmann::json& granule_json);
+    explicit GranuleUMM(const nlohmann::json& granule_json);
 
     std::string getName(){ return d_name; }
-    std::string getId(){ return d_id; }
+    std::string getConceptId(){ return d_id; }
     std::string getDataGranuleUrl() { return d_data_access_url; }
     std::string getDapServiceUrl() { return d_dap_service_url; }
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
     std::string getSizeStr(){ return d_size_str; }
     std::string getLastModifiedStr() { return d_last_modified_time; }
-    float getSize(){ return atof(getSizeStr().c_str())*1024*1204; }
+    // float getSize(){ return atof(getSizeStr().c_str())*1024.0*1024.0; }
+    uint64_t getSize(){ return d_size; }
+
+    // For now we use getName() until a better option appears.
+    std::string getDescription(){ return getName(); }
 
     bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };

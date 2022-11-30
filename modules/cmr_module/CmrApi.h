@@ -106,6 +106,7 @@ public:
     std::string get_str_if_present(std::string key, const nlohmann::json& jo);
     const nlohmann::json& qc_get_array(std::string key, const nlohmann::json& go);
     const nlohmann::json& qc_get_object(std::string key, const nlohmann::json& go);
+    double qc_double(const std::string &key, const nlohmann::json &json_obj);
     const nlohmann::json& get_related_urls_array(const nlohmann::json& go);
 
 
