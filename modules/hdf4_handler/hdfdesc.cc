@@ -147,6 +147,7 @@
 
 
 using namespace std;
+using namespace libdap;
 
 // Added 5/7/09; This bug (#1163) was fixed in July 2008 except for this
 // handler. jhrg
@@ -2292,7 +2293,6 @@ bool read_das_hdfsp(DAS & das, const string & filename, int32 sdfd, int32 fileid
         HDFCFUtil::add_obpg_special_attrs(f,das,*it_g,scaling,slope,global_slope_flag,intercept,global_intercept_flag);
 
         // MAP individual SDS field to DAP DAS
-        //for(vector<HDFSP::Attribute *>::const_iterator i=(*it_g)->getAttributes().begin();i!=(*it_g)->getAttributes().end();i++) {
         for (const auto &attr:(*it_g)->getAttributes()) {
 
             // Handle string first.

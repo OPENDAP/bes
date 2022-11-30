@@ -320,7 +320,7 @@ HDFEOS2ArraySwathDimMapField::format_constraint (int *offset, int *step, int *co
 template < class T > int
 HDFEOS2ArraySwathDimMapField::
 GetFieldValue (int32 swathid, const string & geofieldname,
-    vector < struct dimmap_entry >&sw_dimmaps,
+    const vector < struct dimmap_entry >&sw_dimmaps,
     vector < T > &vals, vector<int32>&newdims)
 {
 
@@ -353,7 +353,6 @@ GetFieldValue (int32 swathid, const string & geofieldname,
     HDFCFUtil::Split (dimlist, ',', dimname);
 
     for (int i = 0; i < sw_rank; i++) {
-        vector < struct dimmap_entry >::iterator it;
 
         for (const auto & dmap:sw_dimmaps) {
             if (dmap.geodim == dimname[i]) {

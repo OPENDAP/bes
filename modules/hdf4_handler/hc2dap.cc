@@ -90,6 +90,7 @@
 #include <libdap/debug.h>
 
 using namespace std;
+using namespace libdap;
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98
 // jhrg.
@@ -376,7 +377,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
             }
             mapname = sds_dim.name;
             if ((dsbt = NewDAPVar(mapname, dataset,
-                                  sds_dim.scale.number_type())) == 0) {
+                                  sds_dim.scale.number_type())) == nullptr) {
                 delete gr; // note: ~HDFGrid() cleans up the attached ar
                 return nullptr;
             }
@@ -401,7 +402,7 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 // return 0 if the HDF Type is invalid or not supported.
 BaseType *NewDAPVar(const string &varname,
 		    const string &dataset,
-		    const int32 hdf_type)
+		    int32 hdf_type)
 {
     switch (hdf_type) {
     case DFNT_FLOAT32:
@@ -580,7 +581,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
                 delete[]data;
             }
             else
-                (*p)->val2buf(const_cast < char *>(sds.dims[i].scale.data()));
+                (*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
 
 #else
             (*p)->val2buf(const_cast < char *>(sds.dims[i].scale.data()));

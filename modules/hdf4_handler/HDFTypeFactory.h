@@ -70,7 +70,7 @@ public:
     libdap::Str *NewStr(const string & n = "") const override;
     libdap::Url *NewUrl(const string & n = "") const override;
 
-    libdap::Array *NewArray(const string & n = "", libdap::BaseType * v = 0) const override;
+    libdap::Array *NewArray(const string & n = "", libdap::BaseType * v = nullptr) const override;
     libdap::Structure *NewStructure(const string & n = "") const override;
     libdap::Sequence *NewSequence(const string & n = "") const override;
     libdap::Grid *NewGrid(const string & n = "") const override;

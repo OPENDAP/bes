@@ -35,7 +35,7 @@ class HDFSPArray_VDField:public libdap::Array
         // Return the number of elements to read.  
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArray_VDField (*this);
         }

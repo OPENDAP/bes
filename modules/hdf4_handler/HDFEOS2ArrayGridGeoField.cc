@@ -2280,13 +2280,13 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtyp
     // Treat the origin of the coordinate as the center of the cell.
     // This has been the setting of MCD43 data.  KY 2012-09-10
     if (1 == gf_fieldtype) { //Latitude
-        float start_lat = (float)(upleft[1] + start[0] *lat_step + lat_step/2);
+        auto start_lat = (float)(upleft[1] + start[0] *lat_step + lat_step/2);
         float step_lat  = lat_step *step[0];
         for (int i = 0; i < count[0]; i++) 
             latlon[i] = start_lat +i *step_lat;
     }
     else { // Longitude
-        float start_lon = (float)(upleft[0] + start[0] *lon_step + lon_step/2);
+        auto start_lon = (float)(upleft[0] + start[0] *lon_step + lon_step/2);
         float step_lon  = lon_step *step[0];
         for (int i = 0; i < count[0]; i++) 
             latlon[i] = start_lon +i *step_lon;

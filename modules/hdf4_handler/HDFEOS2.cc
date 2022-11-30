@@ -3658,7 +3658,7 @@ void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
         }
 #endif
         for (const auto &dimname:dimnames) {
-            Dimension *dim = new Dimension(dimname, dimsize[count]);
+            auto dim = new Dimension(dimname, dimsize[count]);
             d_dims.push_back(dim);
             ++count;
         }

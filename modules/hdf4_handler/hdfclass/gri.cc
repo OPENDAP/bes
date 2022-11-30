@@ -112,19 +112,19 @@ void hdfistream_gri::_close_ri(void)
 }
 
 // constructor
-hdfistream_gri::hdfistream_gri(const string filename):hdfistream_obj
+hdfistream_gri::hdfistream_gri(const string& filename):hdfistream_obj
     (filename)
 {
     _init();
     if (_filename.size() != 0)
-        open(_filename.c_str());
+        hdfistream_gri::open(_filename.c_str());
     return;
 }
 
 // open the GRI input stream
 void hdfistream_gri::open(const char *filename)
 {
-    if (filename == 0)          // no filename given
+    if (filename == nullptr)          // no filename given
         THROW(hcerr_openfile);
     if (_file_id != 0)          // close any currently open file
         close();
@@ -177,7 +177,7 @@ void hdfistream_gri::seek_ref(int ref)
 {
     if (_filename.size() == 0)        // no open file
         THROW(hcerr_invstream);
-    int32 index = GRreftoindex(_gr_id, ref);
+    int32 index = GRreftoindex(_gr_id, (uint16)ref);
     seek(index);
 }
 
@@ -333,7 +333,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr)
     *this >> hr.palettes;
     *this >> hr.attrs;
     if (_meta)
-        hr.image.import(data_type);
+        hr.image.import_vec(data_type);
     else {
         int32 nelts;
         char *image;
@@ -342,7 +342,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr)
             // allocate a temporary C array to hold the data from GRreadimage()
             int imagesize = nelts * DFKNTsize(data_type);
             image = new char[imagesize];
-            if (image == 0)
+            if (image == nullptr)
                 THROW(hcerr_nomemory);
             // read the image and store it in a hdf_genvec
             GRreqimageil(_ri_id, _interlace_mode);
@@ -368,7 +368,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr)
             // allocate a temporary C array to hold the data from GRreadimage()
             int imagesize = nelts * DFKNTsize(data_type);
             image = new char[imagesize];
-            if (image == 0)
+            if (image == nullptr)
                 THROW(hcerr_nomemory);
             // read the image and store it in a hdf_genvec
             GRreqimageil(_ri_id, _interlace_mode);
@@ -376,18 +376,12 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_gri & hr)
             cerr << "dim_sizes[0] = " << dim_sizes[0] << " dim_sizes[1] = "
                 << dim_sizes[1] << endl;
 #endif
-            if (GRreadimage(_ri_id, zero, 0, dim_sizes, image) < 0) {
+            if (GRreadimage(_ri_id, zero, nullptr, dim_sizes, image) < 0) {
                 delete[]image;  // problem: clean up and throw an exception
                 THROW(hcerr_griread);
             }
         }
-        // try { // try to import into an hdf_genvec
-        hr.image.import(data_type, image, nelts);
-        // }
-        // catch(...)
-        //    delete [] image;
-        //    throw;
-        // }
+        hr.image.import_vec(data_type, image, nelts);
         delete[]image;          // deallocate temporary C array
     }
     seek_next();                // position to next RI
@@ -416,20 +410,19 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_attr & ha)
     int32 id;
     //int nattrs;
     if (bos()) {
-        //nattrs = _nfattrs;
         id = _gr_id;
     } else {
-        //nattrs = _nattrs;
         id = _ri_id;
     }
     char name[hdfclass::MAXSTR];
-    int32 number_type, count;
+    int32 number_type;
+    int32 count;
     if (GRattrinfo(id, _attr_index, name, &number_type, &count) < 0)
         THROW(hcerr_griinfo);
     // allocate a temporary C array to hold data from GRgetattr()
     char *data;
     data = new char[count * DFKNTsize(number_type)];
-    if (data == 0)
+    if (data == nullptr)
         THROW(hcerr_nomemory);
     // read attribute values and store them in an hdf_genvec
     if (GRgetattr(id, _attr_index, data) < 0) {
@@ -440,14 +433,8 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_attr & ha)
     // they cause GNU's string class problems
     if (number_type == DFNT_CHAR)
         count = (int32) min((int) count, (int) strlen((char *) data));
-    // try { // try to allocate an hdf_genvec
     if (count > 0) {
-        ha.values.import(number_type, data, count);
-// }
-// catch(...) { //problem allocating hdf_genvec: clean up and rethrow
-//    delete  []data;
-//    throw;
-//  }
+        ha.values.import_vec(number_type, data, count);
     }
     delete[]data;
     ++_attr_index;
@@ -495,7 +482,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp)
     if (number_type != 0) {     // found a palette
         char *pal_data;
         pal_data = new char[count * DFKNTsize(number_type)];
-        if (pal_data == 0)
+        if (pal_data == nullptr)
             THROW(hcerr_nomemory);
         // read the palette data and store it in an hdf_genvec
         GRreqlutil(pal_id, MFGR_INTERLACE_PIXEL);
@@ -503,13 +490,7 @@ hdfistream_gri & hdfistream_gri::operator>>(hdf_palette & hp)
             delete[]pal_data;   // problem: clean up and
             THROW(hcerr_griinfo);       // throw an exception
         }
-        // try { // problem allocating hdf_genvec: clean up and rethrow
-        hp.table.import(number_type, pal_data, count);
-        // }
-        // catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-        //    delete []data;
-        //    throw;
-        // }
+        hp.table.import_vec(number_type, pal_data, count);
         delete[]pal_data;       // deallocating temporary C array
     }
     ++_pal_index;
@@ -535,12 +516,12 @@ bool hdf_gri::_ok() const
     // by the number of dimensions and number of componets
     bool ok = (dims[0] * dims[1] * num_comp == image.size());
     if (!ok)
-        return (ok);
+        return ok;
     if (has_palette())
         for (int i = 0; i < int (palettes.size()) && ok; i++)
             ok = (palettes[i].ncomp * palettes[i].num_entries ==
                   palettes[i].table.size());
-    return (ok);
+    return ok;
 }
 
 // $Log: gri.cc,v $

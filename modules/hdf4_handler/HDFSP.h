@@ -820,7 +820,7 @@ namespace HDFSP
             void handle_sds_coords(bool COARDFLAG, const std::string &lldimname1,const std::string &lldimname2) throw(Exception);
 
             /// Handle Vdata
-            void handle_vdata() throw(Exception);
+            void handle_vdata() const throw(Exception);
 
             ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
             void CheckSDType () throw (Exception);

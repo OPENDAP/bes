@@ -164,7 +164,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
             total_val[i] = (float)(0.5*(i+1));
 
         for (int i = 20; i<28;i++)
-            total_val[i] = (float)(total_val[19]+(i-19));
+            total_val[i] = total_val[19]+(i-19);
 
 
 

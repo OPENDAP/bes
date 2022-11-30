@@ -99,7 +99,7 @@ class HDFEOS2ArraySwathDimMapField:public libdap::Array
         int write_dap_data_scale_comp(int32 swid, const int nelms,   std::vector<int32> &offset32, std::vector<int32> &count32, std::vector<int32> &step32);
         int write_dap_data_disable_scale_comp(int32 swid, const int nelms,  std::vector<int32> &offset32,std::vector<int32> &count32,std::vector<int32> &step32);
         // Obtain Field value
-        template < class T > int GetFieldValue (int32, const std::string &,std::vector < struct dimmap_entry >&, std::vector < T > &, std::vector<int32>&);
+        template < class T > int GetFieldValue (int32, const std::string &,const std::vector < struct dimmap_entry >&, std::vector < T > &, std::vector<int32>&);
 
         // The internal routine to do the interpolation
         template < class T > int _expand_dimmap_field (std::vector < T > *pvals, int32 rank, int32 dimsa[], int dimindex, int32 ddimsize, int32 offset, int32 inc) const;

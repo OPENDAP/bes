@@ -356,7 +356,7 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
 // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
 // Should watch if there are any outliers. KY 2012-08-31
-void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,const string& name,int& flag) {
+void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,const string& name,int& flag) const {
 
     // No dot in the ECS name
     if(name.find(".") == string::npos) {

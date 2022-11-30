@@ -4008,7 +4008,7 @@ File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std
     
 // Handle Vdata
 void 
-File::handle_vdata() throw(Exception) {
+File::handle_vdata() const throw(Exception)  {
 
     // Define File 
     const File *file = this;

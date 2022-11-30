@@ -142,7 +142,6 @@ void hdfistream_annot::_get_obj_anninfo(void)
         THROW(hcerr_anninfo);
 
     if (nlab + ndesc > 0) {
-        //int32 *annlist = new int32[nlab + ndesc];
         vector<int32> annlist(nlab+ndesc);
         int num_desc_ann_list = ANannlist(_an_id, AN_DATA_DESC, (uint16)_tag, (uint16)_ref, annlist.data());
         if (_desc && num_desc_ann_list == FAIL) 
@@ -151,15 +150,18 @@ void hdfistream_annot::_get_obj_anninfo(void)
         int num_label_ann_list = ANannlist(_an_id, AN_DATA_LABEL, (uint16)_tag, (uint16)_ref, annlist.data() + ndesc);
         if (_lab && num_label_ann_list == FAIL)
             THROW(hcerr_annlist);
+#if 0
         // import into _an_ids vector
         // try {    // add this when STL supports exceptions
+#endif
         _an_ids = annlist;
+#if 0
         // }
         // catch(...) {
         //              delete []annlist; annlist = 0;
         //              THROW(hcerr_annlist);
         // }
-        //delete[]annlist;
+#endif
     }
     return;
 }

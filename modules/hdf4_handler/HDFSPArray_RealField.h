@@ -34,7 +34,7 @@ class HDFSPArray_RealField:public libdap::Array
         ~ HDFSPArray_RealField () override = default;
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArray_RealField (*this);
         }

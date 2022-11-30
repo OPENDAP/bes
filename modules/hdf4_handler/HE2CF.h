@@ -114,7 +114,7 @@ class HE2CF
         // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
         // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
         // Should watch if there are any outliers. 
-        void arrange_list(std::list<std::string> & sl1, std::list<std::string>&sl2,std::vector<std::string>&v1,const std::string & name,int& flag);
+        void arrange_list(std::list<std::string> & sl1, std::list<std::string>&sl2,std::vector<std::string>&v1,const std::string & name,int& flag) const;
 
         // Obtain SD attribute value
         void obtain_SD_attr_value(const std::string &,std::string&) const;

@@ -71,13 +71,11 @@ class hdfistream_obj {          // base class for streams reading HDF objects
     virtual int index(void) const {
         return _index;
     } // return current position protected:
-    virtual void _init(const string& filename = "") {
+    void _init(const string& filename = "") {
         if (filename.size())
             _filename = filename;
         _file_id = _index = 0;
     }
-    virtual void _init(void) {}
-    virtual void _init(const string& filename, int32 tag, int32 ref) {}
     string _filename;
     int32 _file_id;
     int _index;
@@ -86,7 +84,7 @@ class hdfistream_obj {          // base class for streams reading HDF objects
 class hdfistream_sds:public hdfistream_obj {
   
   public:
-    explicit hdfistream_sds(const string filename = "");
+    explicit hdfistream_sds(const string& filename = "");
     hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
@@ -134,7 +132,7 @@ class hdfistream_sds:public hdfistream_obj {
     hdfistream_sds & operator>>(hdf_dim & hd);  // read a dimension
     hdfistream_sds & operator>>(vector < hdf_dim > &hdv);       // read all dims
   protected:
-    void _init(void) override;
+    void _init(void);
     void _del(void) {
         close();
     }
@@ -226,8 +224,8 @@ class hdfistream_annot:public hdfistream_obj {
     hdfistream_annot & operator>>(string & an); // read current annotation
     hdfistream_annot & operator>>(vector < string > &anv);      // read all annots
   protected:
-    void _init(const string& filename = "") override;
-    void _init(const string& filename, int32 tag, int32 ref) override;
+    void _init(const string& filename = "");
+    void _init(const string& filename, int32 tag, int32 ref);
     void _del(void) {
         close();
     }
@@ -296,7 +294,7 @@ class hdfistream_vdata:public hdfistream_obj {
     virtual bool isInternalVdata(int ref) const;        // check reference against internal type
 #endif 
   protected:
-    void _init(void) override;
+    void _init(void);
     void _del(void) {
         close();
     }
@@ -329,7 +327,7 @@ private:
 
 class hdfistream_vgroup:public hdfistream_obj {
   public:
-    explicit hdfistream_vgroup(const string filename = "");
+    explicit hdfistream_vgroup(const string & filename = "");
     hdfistream_vgroup(const hdfistream_vgroup &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
@@ -371,7 +369,7 @@ class hdfistream_vgroup:public hdfistream_obj {
     hdfistream_vgroup & operator>>(hdf_attr & ha);      // read an attribute
     hdfistream_vgroup & operator>>(vector < hdf_attr > &hav);   // read all attributes
   protected:
-    void _init(void) override;
+    void _init(void);
     void _del(void) {
         close();
     }
@@ -385,7 +383,7 @@ class hdfistream_vgroup:public hdfistream_obj {
         if (_vgroup_refs.empty() == false)
             _seek(_vgroup_refs[0]);
     }
-    string _memberName(int32 ref);      // find the name of ref'd Vgroup in the stream
+    string _memberName(int32 ref) const;      // find the name of ref'd Vgroup in the stream
 
 private:
     int32 _vgroup_id;           // handle of open object in annotation interface
@@ -406,7 +404,7 @@ private:
 // Raster input stream class
 class hdfistream_gri:public hdfistream_obj {
   public:
-    explicit hdfistream_gri(const string filename = "");
+    explicit hdfistream_gri(const string& filename = "");
     hdfistream_gri(const hdfistream_gri &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
@@ -445,7 +443,7 @@ class hdfistream_gri:public hdfistream_obj {
     hdfistream_gri & operator>>(hdf_palette & hp);      // read a palette
     hdfistream_gri & operator>>(vector < hdf_palette > &hpv);   // read all palettes
   protected:
-    void _init(void) override;
+    void _init(void);
     void _del(void) {
         close();
     }

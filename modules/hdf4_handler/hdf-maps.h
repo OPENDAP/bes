@@ -81,7 +81,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg,
                                      vg_map & vgmap, sds_map & map,
                                      vd_map & vdmap, gr_map & grmap,
 				     const string &dataset);
-BaseType *NewDAPVar(const string &varname,
+libdap::BaseType *NewDAPVar(const string &varname,
 		    const string &dataset,
 		    const int32 hdf_type);
 string DAPTypeName(int32 hdf_type);

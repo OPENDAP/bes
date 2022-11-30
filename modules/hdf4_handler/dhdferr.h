@@ -53,9 +53,7 @@
 class dhdferr:public libdap::Error {
 public:
     dhdferr(const string & msg, const string & file, int line);
-     ~dhdferr() throw ()
-    {
-    }
+     ~dhdferr() throw () override = default;
 };
 
 // Define valid DODS/HDF exceptions
