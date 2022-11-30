@@ -46,6 +46,7 @@ using namespace std;
 #define CATALOG_IS_DATA_KEY "isData"
 #define CATALOG_DAP_URL_KEY "dap_url"
 #define CATALOG_ITEM_TAG "item"
+#define CATALOG_DESCRIPTION_KEY "description"
 
 /**
  * @brief Encode this CatalogItem in an info object
@@ -81,6 +82,13 @@ void CatalogItem::encode_item(BESInfo *info) const
     }
 
     info->begin_tag(CATALOG_ITEM_TAG, &props);
+    string description = get_description();
+    if(!description.empty()){
+        map<string, string> description_props;
+        info->begin_tag(CATALOG_DESCRIPTION_KEY, &description_props);
+        info->add_data(description);
+        info->end_tag(CATALOG_DESCRIPTION_KEY);
+    }
 
     info->end_tag(CATALOG_ITEM_TAG);
 
