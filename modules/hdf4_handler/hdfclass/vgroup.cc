@@ -236,7 +236,7 @@ void hdfistream_vgroup::seek(const char *name)
     return;
 }
 
-string hdfistream_vgroup::memberName(int32 ref)
+string hdfistream_vgroup::memberName(int32 ref) const
 {
     string mName = _memberName(ref);
     return mName;

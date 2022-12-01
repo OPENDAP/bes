@@ -350,7 +350,7 @@ class hdfistream_vgroup:public hdfistream_obj {
     void rewind(void) override {
         _rewind();
     }                           // position in front of first Vgroup
-    string memberName(int32 ref);       // find the name of ref'd Vgroup in the stream
+    string memberName(int32 ref) const;       // find the name of ref'd Vgroup in the stream
     bool bos(void) const override      // positioned in front of the first Vgroup?
     {
         return (_index <= 0);

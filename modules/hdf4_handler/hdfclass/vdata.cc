@@ -334,7 +334,7 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_vdata & hv) {
 	// retrieve field information
 	hv.fields = vector<hdf_field> ();
 	for (int i = 0; i < nfields; ++i) {
-		hv.fields.emplace_back(hdf_field());
+		hv.fields.push_back(hdf_field());
 		if (_meta)
 			LoadField(_vdata_id, i, 0, 0, hv.fields[i]);
 		else if (_recs.set)
