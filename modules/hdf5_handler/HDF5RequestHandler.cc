@@ -623,6 +623,11 @@ temp_table->print(cerr);
 
         bdas->clear_container() ;
     }
+    catch(BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
     catch(BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -642,10 +647,6 @@ temp_table->print(cerr);
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -1216,6 +1217,11 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     
     }
+
+    catch(BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
@@ -1229,10 +1235,6 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -1300,6 +1302,11 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     
     }
+
+    catch(BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
@@ -1313,10 +1320,6 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -1390,6 +1393,13 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     }
 
+    catch(BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
+    }
     catch(BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1407,13 +1417,6 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        throw;
     }
     catch(...) {
         if(cf_fileid !=-1)
