@@ -57,15 +57,14 @@ HDFSPArray_RealField::read ()
     bool data_to_cache = false;
 
     short dtype_size = HDFCFUtil::obtain_type_size(dtype);
-    if(-1 == dtype_size) {
+    if (-1 == dtype_size) {
         string err_mesg = "Wrong data type size for the variable ";
         err_mesg += name();
         throw InternalErr(__FILE__,__LINE__,err_mesg);
     }
 
     string cache_fpath;
-    //if(true == enable_check_data_cache_key) {
-    if(true == HDF4RequestHandler::get_enable_data_cachefile()) {
+    if (true == HDF4RequestHandler::get_enable_data_cachefile()) {
 
         BESH4Cache *llcache = BESH4Cache::get_instance();
 
@@ -108,7 +107,6 @@ HDFSPArray_RealField::read ()
             }
         }
 
-        //string cache_fname=HDFCFUtil::obtain_cache_fname(llcache->getCachePrefixFromConfig(),filename,name());
         string cache_fname=HDFCFUtil::obtain_cache_fname(bescacheprefix,filename,name());
         cache_fpath = bescachedir + "/"+ cache_fname;
         
@@ -135,8 +133,6 @@ HDFSPArray_RealField::read ()
             for (int i = 0; i < rank; i++)
                 end[i] = offset[i] +(count[i]-1)*step[i];
             int offset_last = INDEX_nD_TO_1D(dimsizes,end);
-//cerr<<"offset_1d is "<<offset_1st <<endl;
-//cerr<<"offset_last is "<<offset_last <<endl;
             size_t total_read = dtype_size*(offset_last-offset_1st+1);
             
             off_t fpos = lseek(fd,dtype_size*offset_1st,SEEK_SET);
@@ -200,7 +196,6 @@ HDFSPArray_RealField::read ()
         turn_on_enable_mcache_key = HDFCFUtil::check_beskeys(check_enable_mcache_key);
 #endif
 
-        //if(true == turn_on_enable_mcache_key) {
         if(true == HDF4RequestHandler::get_enable_metadata_cachefile()) {
 
             sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
@@ -285,6 +280,8 @@ HDFSPArray_RealField::read ()
             break;
 
         // Will keep the following comments until we formally decide not to support these old products.
+        // Leave the following #if 0 #endif as stated above. KY 2022-11-28
+#if 0
         // --------------------------------------------------------
         // HANDLE this later if necessary. KY 2010-8-17
         //if(sptype == TRMML2_V6) 
@@ -297,6 +294,7 @@ HDFSPArray_RealField::read ()
         // OBPGL2: 16-bit signed integer, (8-bit signed integer or 32-bit signed integer)
         // If slope = 1 and intercept = 0 no need to do conversion
         // ---------------------------------------------------------
+#endif
 
         case DFNT_UINT8:
         case DFNT_UCHAR8:
@@ -370,8 +368,6 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
 
     ssize_t ret_read_val = -1;
     vector<char>buf;
-    //char* buf;
-    //buf = malloc(total_read);
     buf.resize(total_read);
     ret_read_val = HDFCFUtil::read_buffer_from_file(fd,(void*)buf.data(),total_read);
     llcache->unlock_and_close(cache_fpath);
@@ -385,7 +381,6 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
             nele_to_read *=cd_count[i];
 
         if(nele_to_read == (total_read/dtype_size)) {
-//cerr<<"use the buffer" <<endl;
             val2buf(buf.data());
             set_read_p(true);
         }
@@ -683,7 +678,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
 int
 HDFSPArray_RealField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -715,7 +710,7 @@ HDFSPArray_RealField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

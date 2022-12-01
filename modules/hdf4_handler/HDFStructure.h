@@ -52,13 +52,13 @@
 class HDFStructure: public libdap::Structure, public ReadTagRef {
  public:
     HDFStructure(const std::string &n, const std::string &d);
-    virtual ~ HDFStructure();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
-    virtual bool read_tagref(int32 tag, int32 ref, int &error);
-    virtual void set_read_p(bool state);
+    ~ HDFStructure() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
+    bool read_tagref(int32 tag, int32 ref, int &error) override;
+    void set_read_p(bool state) override;
 
-    virtual void transfer_attributes(libdap::AttrTable *at_container);
+    void transfer_attributes(libdap::AttrTable *at_container) override;
 };
 
 #endif                          // _HDFSTRUCTURE_H

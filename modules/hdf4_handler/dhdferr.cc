@@ -39,16 +39,16 @@
 #include "config.h"
 
 #include <sstream>
-
-using std::ostringstream;
-using std::endl;
-
 #include "config_hdf.h"
-
 #include <mfhdf.h>
 #include <BESLog.h>
 #include "hcerr.h"
 #include "dhdferr.h"
+
+using std::ostringstream;
+using std::endl;
+
+
 
 dhdferr::dhdferr(const string & msg, const string & file, int line)
     :Error(msg)

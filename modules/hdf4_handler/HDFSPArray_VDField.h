@@ -19,7 +19,7 @@
 class HDFSPArray_VDField:public libdap::Array
 {
     public:
-        HDFSPArray_VDField (int vdrank, const std::string& filename, const int fileid, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = 0):
+        HDFSPArray_VDField (int vdrank, const std::string& filename, const int fileid, int32 objref, int32 dtype, int32 fieldorder, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = nullptr):
             Array (n, v),
             rank (vdrank),
             filename(filename),
@@ -29,20 +29,18 @@ class HDFSPArray_VDField:public libdap::Array
             fdorder (fieldorder), 
             fdname (fieldname) {
         }
-        virtual ~ HDFSPArray_VDField ()
-        {
-        }
+        ~ HDFSPArray_VDField () override = default;
        
         // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
         // Return the number of elements to read.  
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArray_VDField (*this);
         }
 
-        virtual bool read ();
+        bool read () override;
 
     private:
 

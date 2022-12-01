@@ -55,14 +55,13 @@
 #include <set>
 #include <algorithm>
 
+#include <hcstream.h>
+#include <hdfclass.h>
+#include <BESDebug.h>
+
 using std::vector;
 using std::set;
 using std::less;
-
-#include <hcstream.h>
-#include <hdfclass.h>
-
-#include <BESDebug.h>
 
 using std::endl;    // Added when I removed 'using' from BESDebug.h
 
@@ -119,8 +118,7 @@ void hdfistream_vgroup::_seek(int32 ref)
 {
     if (_vgroup_id != 0)
         Vdetach(_vgroup_id);
-    vector < int32 >::iterator r =
-        find(_vgroup_refs.begin(), _vgroup_refs.end(), ref);
+    auto r = find(_vgroup_refs.begin(), _vgroup_refs.end(), ref);
     if (r == _vgroup_refs.end())
         THROW(hcerr_vgroupfind);
     _index = r - _vgroup_refs.begin();
@@ -133,7 +131,7 @@ void hdfistream_vgroup::_seek(int32 ref)
     return;
 }
 
-string hdfistream_vgroup::_memberName(int32 ref)
+string hdfistream_vgroup::_memberName(int32 ref) const
 {
     char mName[hdfclass::MAXSTR];
     int member_id;
@@ -155,7 +153,7 @@ string hdfistream_vgroup::_memberName(int32 ref)
 // hdfistream_vgroup -- public member functions
 //
 
-hdfistream_vgroup::hdfistream_vgroup(const string filename):hdfistream_obj
+hdfistream_vgroup::hdfistream_vgroup(const string & filename):hdfistream_obj
     (filename)
 {
     _init();
@@ -238,7 +236,7 @@ void hdfistream_vgroup::seek(const char *name)
     return;
 }
 
-string hdfistream_vgroup::memberName(int32 ref)
+string hdfistream_vgroup::memberName(int32 ref) const
 {
     string mName = _memberName(ref);
     return mName;
@@ -293,7 +291,8 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_vgroup & hv)
 #endif 
 
     for (int i = 0; i < npairs; ++i) {
-        int32 tag, ref;
+        int32 tag;
+        int32 ref;
         string vname;
         if (Vgettagref(_vgroup_id, i, &tag, &ref) < 0)
             THROW(hcerr_vgroupread);
@@ -331,34 +330,34 @@ bool hdf_vgroup::_ok(void) const
 {
 
     // make sure there are tags stored in this vgroup
-    if (tags.size() == 0)
+    if (tags.empty() == true)
         return false;
 
     // make sure there are refs stored in this vgroup
-    if (refs.size() == 0)
+    if (refs.empty() == true)
         return false;
 
     return true;                // passed all the tests
 }
 
-bool IsInternalVgroup(int32 fid, int32 ref)
+static bool IsInternalVgroup(int32 fid, int32 ref)
 {
     // block vgroups used internally
     set < string, less < string > >reserved_names;
-    reserved_names.insert("RIATTR0.0N");
-    reserved_names.insert("RIG0.0");
+    reserved_names.emplace("RIATTR0.0N");
+    reserved_names.emplace("RIG0.0");
 
     set < string, less < string > >reserved_classes;
-    reserved_classes.insert("Attr0.0");
-    reserved_classes.insert("RIATTR0.0C");
-    reserved_classes.insert("DimVal0.0");
-    reserved_classes.insert("DimVal0.1");
-    reserved_classes.insert("CDF0.0");
-    reserved_classes.insert("Var0.0");
-    reserved_classes.insert("Dim0.0");
-    reserved_classes.insert("UDim0.0");
-    reserved_classes.insert("Data0.0");
-    reserved_classes.insert("RI0.0");
+    reserved_classes.emplace("Attr0.0");
+    reserved_classes.emplace("RIATTR0.0C");
+    reserved_classes.emplace("DimVal0.0");
+    reserved_classes.emplace("DimVal0.1");
+    reserved_classes.emplace("CDF0.0");
+    reserved_classes.emplace("Var0.0");
+    reserved_classes.emplace("Dim0.0");
+    reserved_classes.emplace("UDim0.0");
+    reserved_classes.emplace("Data0.0");
+    reserved_classes.emplace("RI0.0");
 
     // get name, class of vgroup
     int vid;
@@ -390,16 +389,16 @@ bool IsInternalVgroup(int32 fid, int32 ref)
     return false;
 }
 
-bool IsInternalVdata(int32 fid, int32 ref)  {
+static bool IsInternalVdata(int32 fid, int32 ref)  {
 	set<string, less<string> > reserved_names;
 	reserved_names.insert("RIATTR0.0N");
 
 	set<string, less<string> > reserved_classes;
-	reserved_classes.insert("Attr0.0");
-	reserved_classes.insert("RIATTR0.0C");
-	reserved_classes.insert("DimVal0.0");
-	reserved_classes.insert("DimVal0.1");
-	reserved_classes.insert("_HDF_CHK_TBL_0");
+	reserved_classes.emplace("Attr0.0");
+	reserved_classes.emplace("RIATTR0.0C");
+	reserved_classes.emplace("DimVal0.0");
+	reserved_classes.emplace("DimVal0.1");
+	reserved_classes.emplace("_HDF_CHK_TBL_0");
 
 	// get name, class of vdata
 	int vid;
@@ -468,7 +467,10 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_attr & ha)
         return *this;
 
     char name[hdfclass::MAXSTR];
-    int32 number_type, count, size;
+    int32 number_type;
+    int32 count;
+    int32 size;
+
     if (Vattrinfo
         (_vgroup_id, _attr_index, name, &number_type, &count, &size) < 0)
         THROW(hcerr_vgroupinfo);
@@ -484,14 +486,8 @@ hdfistream_vgroup & hdfistream_vgroup::operator>>(hdf_attr & ha)
         delete[]data;           // problem: clean up and throw an exception
         THROW(hcerr_vgroupinfo);
     }
-    // try { // try to allocate an hdf_genvec
     if (count > 0) {
         ha.values = hdf_genvec(number_type, data, count);
-        // }
-        // catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-        //    delete []data;
-        //    throw;
-        // }
     }
     delete[]data;               // deallocate temporary C array
 
