@@ -213,12 +213,12 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
                     // Basically, the fullspace endpoint mapped to local offset,
                     // clamped into the local granule size.
                     int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead,
-                        currDatasetSize - 1);
+                        (unsigned long long)currDatasetSize - 1);
 
                     // we must clamp the stride to the interval of the
                     // dataset in order to avoid an exception in
                     // add_constraint on stride being larger than dataset.
-                    int clampedStride = std::min(outerDim.stride, currDatasetSize);
+                    int clampedStride = std::min(outerDim.stride, (unsigned long long)currDatasetSize);
                     // mapped endpoint clamped within this granule
                     granuleConstraintTemplate.add_constraint(outerDimIt, localGranuleIndex, clampedStride,
                         granuleStopIndex);
@@ -365,12 +365,12 @@ void ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataH
                 // find the mapped endpoint
                 // Basically, the fullspace endpoint mapped to local offset,
                 // clamped into the local granule size.
-                int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead, currDatasetSize - 1);
+                int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead, (unsigned long long)currDatasetSize - 1);
 
                 // we must clamp the stride to the interval of the
                 // dataset in order to avoid an exception in
                 // add_constraint on stride being larger than dataset.
-                int clampedStride = std::min(outerDim.stride, currDatasetSize);
+                int clampedStride = std::min(outerDim.stride, (unsigned long long) currDatasetSize);
                 // mapped endpoint clamped within this granule
                 granuleConstraintTemplate.add_constraint(outerDimIt, localGranuleIndex, clampedStride, granuleStopIndex);
 
