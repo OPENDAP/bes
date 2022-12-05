@@ -517,7 +517,7 @@ namespace HDFSP
             }
  
             /// Read vdata field attributes.
-            void ReadAttributes (int32 vdata_id, int32 fieldindex) throw (Exception);
+            void ReadAttributes (int32 vdata_id, int32 fieldindex);
 
         private:
 
@@ -543,10 +543,10 @@ namespace HDFSP
         public:
 
             /// Read the information of all SDS objects from the HDF4 file.
-            static SD *Read (int32 sdfileid, int32 hfileid) throw (Exception);
+            static SD *Read (int32 sdfileid, int32 hfileid) ;
 
             /// Read the information of all hybrid SDS objects from the HDF4 file.
-            static SD *Read_Hybrid (int32 sdfileid, int32 hfileid) throw (Exception);
+            static SD *Read_Hybrid (int32 sdfileid, int32 hfileid) ;
 
             /// Redundant member function.
 #if 0
@@ -570,7 +570,7 @@ namespace HDFSP
             }
 
             /// Obtain SDS path, this is like a clone of obtain_path in File class, except the Vdata and some minor parts.
-            void obtain_noneos2_sds_path(int32,char*,int32) throw(Exception);
+            void obtain_noneos2_sds_path(int32,char*,int32) ;
 
 
             /// Destructor
@@ -634,10 +634,10 @@ namespace HDFSP
             ~VDATA ();
 
             /// Retrieve all information of this Vdata.
-            static VDATA *Read (int32 vdata_id, int32 obj_ref) throw (Exception);
+            static VDATA *Read (int32 vdata_id, int32 obj_ref) ;
 
             /// Retrieve all attributes of this Vdata.
-            void ReadAttributes (int32 vdata_id) throw (Exception);
+            void ReadAttributes (int32 vdata_id) ;
 
             /// Obtain new names(with the path and special characters and name clashing handlings)
             const std::string & getNewName () const
@@ -720,21 +720,21 @@ namespace HDFSP
         public:
 
             /// Retrieve SDS and Vdata information from the HDF4 file.
-            static File *Read (const char *path, int32 sdid,int32 fileid) throw (Exception);
+            static File *Read (const char *path, int32 sdid,int32 fileid);
 
             /// Retrieve SDS and Vdata information from the hybrid HDF-EOS file.
             /// Currently we only support the access of additional SDS objects.
             static File *Read_Hybrid (const char *path, int32 sdid,
-                                                   int32 fileid) throw (Exception);
+                                                   int32 fileid);
 
             /// The main step to make HDF4 SDS objects CF-complaint. 
             /// All dimension(coordinate variables) information need to be ready.
             /// All special arrangements need to be done in this step.
-            void Prepare() throw(Exception);
+            void Prepare() ;
 
-            bool Check_update_special(const std::string &gridname) throw(Exception);
+            bool Check_update_special(const std::string &gridname);
 
-            void Handle_AIRS_L23() throw(Exception);
+            void Handle_AIRS_L23();
 
 
             /// Obtain special HDF4 product type
@@ -802,7 +802,7 @@ namespace HDFSP
 
             /// Handle SDS fakedim names: make the dimensions with the same dimension size 
             /// share the same dimension name. In this way, we can reduce many fakedims.
-            void handle_sds_fakedim_names() throw(Exception);
+            void handle_sds_fakedim_names();
 
             /// Create the new dimension name set and the dimension name to size map.
             void create_sds_dim_name_list();
@@ -811,42 +811,42 @@ namespace HDFSP
             void handle_sds_missing_fields() const;
 
             /// Create the final CF-compliant dimension name list for each field
-            void handle_sds_final_dim_names() throw(Exception);
+            void handle_sds_final_dim_names();
 
             /// Create the final CF-compliant field name list
-            void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2) throw(Exception);
+            void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2);
 
             /// Create "coordinates", "units" CF attributes
-            void handle_sds_coords(bool COARDFLAG, const std::string &lldimname1,const std::string &lldimname2) throw(Exception);
+            void handle_sds_coords(bool COARDFLAG, const std::string &lldimname1,const std::string &lldimname2);
 
             /// Handle Vdata
-            void handle_vdata() const throw(Exception);
+            void handle_vdata() const;
 
             ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
-            void CheckSDType () throw (Exception);
+            void CheckSDType () ;
 
             /// Latitude and longitude are stored in one array(geolocation). Need to separate.
-            void PrepareTRMML2_V6 () throw (Exception);
+            void PrepareTRMML2_V6 () ;
 
             /// Special method to prepare TRMM Level 3A46 latitude and longitude information.
-            void PrepareTRMML3A_V6 () throw (Exception);
+            void PrepareTRMML3A_V6 () ;
 
             /// Special method to prepare TRMM Level 3B latitude and longitude information.
-            void PrepareTRMML3B_V6 () throw (Exception);
+            void PrepareTRMML3B_V6 () ;
 
             /// Special method to prepare TRMM Level 3 CSH latitude,longitude and Height information.
-            void PrepareTRMML3C_V6 () throw (Exception);
+            void PrepareTRMML3C_V6 () ;
 
             /// void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) throw(Exception);
             void Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize);
 
-            bool Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, const int lonsize, std::string& latname, std::string& lonname) throw(Exception);
+            bool Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, const int lonsize, std::string& latname, std::string& lonname);
 
             /// Latitude and longitude are stored in different fields. Need to separate.
-            void PrepareTRMML2_V7 () throw (Exception);
+            void PrepareTRMML2_V7 () ;
 
             /// Special method to prepare TRMM single grid Level 3 geolocation fields(latitude,longitude,etc) information.
-            void PrepareTRMML3S_V7 () throw (Exception);
+            void PrepareTRMML3S_V7 () ;
 
             /// Special method to prepare TRMM multiple grid Level 3 geolocation fields(latitude,longitude,etc) information.
             void PrepareTRMML3M_V7 () ;
@@ -854,51 +854,51 @@ namespace HDFSP
 
             /// Special method to prepare CERES AVG (CER_AVG_???) and CERES SYN(CER_SYN_???) latitude and longitude information.
             /// Latitude and longitude are provided; some redundant CO-Latitude and longitude are removed from the final DDS.
-            void PrepareCERAVGSYN () throw (Exception);
+            void PrepareCERAVGSYN () ;
 
             /// Special method to prepare CERES ES4 (CER_ES4_???) and CERES ISCCP GEO(CER_ISCCP__???GEO) latitude and longitude information.
             /// Essentially the lat/lon need to be condensed to 1-D for the geographic projection.
-            void PrepareCERES4IG () throw (Exception);
+            void PrepareCERES4IG () ;
 
             /// Special method to prepare CERES SAVG (CER_SAVG_???) and CERES ISCCP DAYLIKE(CER_ISCCP__???DAYLIKE) latitude and longitude information.
             /// Essentially nested CERES 2-d  lat/lon need to be provided.
             /// https://eosweb.larc.nasa.gov/sites/default/files/project/ceres/quality_summaries/srbavg_ed2d/nestedgrid.pdf  
-            void PrepareCERSAVGID () throw (Exception);
+            void PrepareCERSAVGID () ;
 
             /// Special method to prepare CERES Zonal Average latitude and longitude information.
-            void PrepareCERZAVG () throw (Exception);
+            void PrepareCERZAVG () ;
 
             /// Special method to prepare OBPG Level 2 latitude and longitude information. The latitude and longitude need to be interpolated.
-            void PrepareOBPGL2 () throw (Exception);
+            void PrepareOBPGL2 () ;
 
             /// Special method to prepare OBPG Level 3 latitude and longitude information. The latitude and longitude are calculated by using the attributes.
-            void PrepareOBPGL3 () throw (Exception);
+            void PrepareOBPGL3 () ;
 
             /// MODISARNSS is a special MODIS product saved as pure HDF4 files. Dimension names of different fields need to be 
             /// changed to be consistent with lat/lon.
-            void PrepareMODISARNSS () throw (Exception);
+            void PrepareMODISARNSS () ;
 
             /// We still provide a hook for other HDF data product although no CF compliant is followed.
-            void PrepareOTHERHDF () throw (Exception);
+            void PrepareOTHERHDF () ;
 
             /// Handle non-attribute lone vdatas.
-            void ReadLoneVdatas(File*) throw(Exception);
+            void ReadLoneVdatas(File*);
 
             /// Handle non-attribute non-lone vdatas. Note: this function is only used for
             /// handling hybrid Vdata functions.
-            void ReadHybridNonLoneVdatas(File*) throw(Exception);
+            void ReadHybridNonLoneVdatas(File*);
 
             /// Obtain vgroup attributes.
-            void ReadVgattrs(int32 vgroup_id, const char *fullpath) throw(Exception);
+            void ReadVgattrs(int32 vgroup_id, const char *fullpath);
 
             /// The full path of SDS and Vdata will be obtained.
-            void InsertOrigFieldPath_ReadVgVdata () throw (Exception);
+            void InsertOrigFieldPath_ReadVgVdata () ;
 
             /// The internal function used by InsertOrigFieldPath_ReadVgVdata.
-            void obtain_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref) throw (Exception);
+            void obtain_path (int32 file_id, int32 sd_id, char *full_path, int32 pobj_ref) ;
 
             /// The internal function used to obtain the path for hybrid non-lone vdata.
-            void obtain_vdata_path(int32 file_id, char *full_path, int32 pobj_ref) throw (Exception);
+            void obtain_vdata_path(int32 file_id, char *full_path, int32 pobj_ref) ;
 
 
         private:
