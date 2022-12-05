@@ -50,13 +50,11 @@
 #endif
 
 #include <sstream>
+#include <BESLog.h>
+#include "hcerr.h"
 
 using std::ostringstream;
 using std::endl;
-
-#include <BESLog.h>
-
-#include "hcerr.h"
 
 hcerr::hcerr(const char *msg, const char *file, int line)
 :  Error(msg)

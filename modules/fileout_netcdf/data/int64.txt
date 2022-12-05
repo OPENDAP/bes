@@ -1,0 +1,44 @@
+netcdf t_int64_dap4 {
+dimensions:
+	phony_dim_1 = 2 ;
+variables:
+	int64 d64(phony_dim_1) ;
+		d64:attr_int = -2147483648, 2147483647 ;
+		d64:attr_uint64 = 18446744073709551615ULL ;
+		string d64:attr_vstr = "Parting is such sweet sorrow." ;
+	int64 d64s ;
+		d64s:attr_uint64s = 18446744073709551615ULL ;
+	uint64 du64(phony_dim_1) ;
+		du64:attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		du64:attr_int8 = 127b ;
+		string du64:attr_fstr = "Parting", "is so", "swe", "" ;
+	uint64 du64s ;
+		du64s:attr_int64s = 9223372036854775807LL, -9223372036854775808LL ;
+
+// global attributes:
+		:root_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+		:root_attr_int64_scalar = 9223372036854775807LL ;
+data:
+
+ d64 = 9223372036854775807, -9223372036854775808 ;
+
+ d64s = 9223372036854775807 ;
+
+ du64 = 18446744073709551615, _ ;
+
+ du64s = 18446744073709551615 ;
+
+group: grp_int64 {
+  dimensions:
+  	phony_dim_0 = 2 ;
+  variables:
+  	int64 d64(phony_dim_0) ;
+
+  // group attributes:
+  		:grp_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
+  		:grp_attr_int64_scalar = 9223372036854775807LL ;
+  data:
+
+   d64 = 9223372036854775807, -9223372036854775808 ;
+  } // group grp_int64
+}

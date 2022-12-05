@@ -88,15 +88,15 @@ class hdf_genvec {
     } // use with care!
         void append(int32 nt, const char *new_data, int32 nelts);
 
-    void import(int32 nt, void *data, int nelts) {
-        import(nt, data, 0, nelts - 1, 1);
+    void import_vec(int32 nt, void *data, int nelts) {
+        import_vec(nt, data, 0, nelts - 1, 1);
     } 
     
-    void import(int32 nt, void *data, int begin, int end, int stride = 1);
-    void import(int32 nt) {
-        import(nt, 0, 0, 0, 0);
+    void import_vec(int32 nt, void *data, int begin, int end, int stride = 1);
+    void import_vec(int32 nt) {
+        import_vec(nt, nullptr, 0, 0, 0);
     }
-    void import(int32 nt, const vector < string > &sv);
+    void import_vec(int32 nt, const vector < string > &sv);
 
     void print(vector < string > &strv) const;
     void print(vector < string > &strv, int begin, int end,
@@ -187,7 +187,7 @@ class hdf_sds {
     hdf_genvec data;            // data stored in SDS
     vector < hdf_attr > attrs;  // vector of attributes
   protected:
-    bool _ok(bool * has_scale = 0) const;       // is this hdf_sds correctly initialized?
+    bool _ok(bool * has_scale = nullptr) const;       // is this hdf_sds correctly initialized?
 };
 
 class hdf_field {
@@ -253,7 +253,7 @@ class hdf_gri {
     bool operator!(void) const {
         return !_ok();
     } bool has_palette(void) const {
-        return (palettes.size() > 0 ? true : false);
+        return (!palettes.empty());
   } protected:
     bool _ok(void) const;
 };

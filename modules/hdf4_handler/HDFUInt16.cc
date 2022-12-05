@@ -39,9 +39,8 @@ HDFUInt16::HDFUInt16(const string &n, const string &d) : UInt16(n, d)
 {
 }
 
-HDFUInt16::~HDFUInt16()
-{
-}
+HDFUInt16::~HDFUInt16() = default;
+
 BaseType *HDFUInt16::ptr_duplicate()
 {
     return new HDFUInt16(*this);

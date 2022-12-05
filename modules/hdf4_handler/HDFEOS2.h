@@ -255,19 +255,7 @@ namespace HDFEOS2
     class Field
     {
         public:
-            Field ()
-            {
-                name ="";
-                rank =-1;
-                type =-1;
-                ll_dim0_offset = 0;
-                ll_dim0_inc = 0;
-                ll_dim1_offset = 0;
-                ll_dim1_inc = 0;
-                coordinates="";
-                newname = "";
-                units="";
-            }
+            Field () = default;
             virtual ~ Field ();
 
             /// Get the name of this field
@@ -307,13 +295,13 @@ namespace HDFEOS2
             }
 
             /// Set the list of the corrected dimensions
-            void setCorrectedDimensions (std::vector < Dimension * >eos_dims)
+            void setCorrectedDimensions (const std::vector < Dimension * >& eos_dims)
             {
                 correcteddims = eos_dims;
             }
 
             /// Get the "coordinates" attribute value
-            const std::string getCoordinate () const
+            std::string getCoordinate () const
             {
                 return this->coordinates;
             }
@@ -460,10 +448,10 @@ namespace HDFEOS2
             std::string name;
 
             // field dimension rank
-            int32 rank;
+            int32 rank = -1;
 
             // field  datatype
-            int32 type;
+            int32 type = -1;
 
             // field dimensions with original dimension names
             std::vector < Dimension * >dims;
@@ -531,10 +519,10 @@ namespace HDFEOS2
             // We add the fillvalue to ensure the netCDF client can successfully display the data.
             // haveaddedfv and addedfv are to check if having added fillvalues.
             bool haveaddedfv = false;
-            int ll_dim0_offset;
-            int ll_dim0_inc;
-            int ll_dim1_offset;
-            int ll_dim1_inc;
+            int ll_dim0_offset = 0;
+            int ll_dim0_inc = 0;
+            int ll_dim1_offset = 0;
+            int ll_dim1_inc = 0;
              
             float addedfv = -9999.0;
 
@@ -653,11 +641,7 @@ namespace HDFEOS2
 
         protected:
             explicit Dataset (const std::string & n)
-                : datasetid (-1), addfvalueattr(false),name (n),scaletype(DEFAULT_CF_EQU)
-            {
-                
-            }
-
+                : name (n){}
             virtual ~ Dataset ();
 
             /// Obtain dimensions from Swath or Grid by calling EOS2 APIs such as
@@ -673,8 +657,6 @@ namespace HDFEOS2
                 int32 (*inq) (int32, char *, int32 *, int32 *),
                 intn (*fldinfo) (int32, char *, int32 *, int32 *,
                 int32 *, char *),
-                intn (*readfld) (int32, char *, int32 *, int32 *,
-                int32 *, VOIDP),
                 intn (*getfill) (int32, char *, VOIDP),
                 bool geofield, std::vector < Field * >&fields) 
                 throw (Exception);
@@ -695,15 +677,15 @@ namespace HDFEOS2
             /// MODIS_DIV_SCALE: raw_data = (data-offset)/scale
             void SetScaleType(const std::string & EOS2ObjName) throw(Exception);
 
-            int obtain_dimsize_with_dimname(const std::string& dimname);
+            int obtain_dimsize_with_dimname(const std::string& dimname) const;
         protected:
             /// Grid and Swath ID
-            int32 datasetid;
+            int32 datasetid = -1;
 
             /// This flag is for CERES TRMM data that has fillvalues(huge real number) but doesn't
             /// have the fillvalue attribute. We need to add a fillvalue.
             /// Actually we also need to handle AIRS -9999.0 fillvalue case with this flag.
-            bool addfvalueattr;
+            bool addfvalueattr = false;
 
             /// Dataset name
             std::string name;
@@ -739,7 +721,7 @@ namespace HDFEOS2
             // group level. Hopefully this is the final fix. Truly hope that 
             // this will not happen at the field level since it will be too messy to 
             // check.  KY 2012-11-21
-            SOType scaletype;
+            SOType scaletype = SOType::DEFAULT_CF_EQU;
 
         friend class File;
     };
@@ -940,7 +922,7 @@ namespace HDFEOS2
 
             private:
                 explicit GridDataset (const std::string & g_name)
-                    : Dataset (g_name), calculated(0)
+                    : Dataset (g_name),calculated(0)
                 {
                 }
 
@@ -1108,14 +1090,16 @@ namespace HDFEOS2
                 /// The number of maps will return for future subsetting
                 int ReadDimensionMaps (std::vector < DimensionMap * >&dimmaps) throw (Exception);
 
-                bool obtain_dmap_offset_inc(const std::string& o_dimname,const std::string& n_dimmname,int&,int&) ;
+                bool obtain_dmap_offset_inc(const std::string& o_dimname,const std::string& n_dimmname,int&,int&) const;
 
                 /// Not used.
                 void ReadIndexMaps (std::vector < IndexMap * >&indexmaps) throw (Exception);
 
+#if 0
                 /// TODO: may move the check of GeoDim_in_vars(check_dm_geo_dims_in_vars) for
                 ///  every swath here. 
                 /// void check_dm_geo_dims_in_vars();
+#endif
                 
                 /// dimension map list.
                 std::vector < DimensionMap * >dimmaps;
@@ -1393,22 +1377,22 @@ namespace HDFEOS2
                 /// Although we can keep the latitude/longitude, the original support back in 2008
                 //  is not to keep original latitude/longitude. Now some MODIS files 
                 //  have the variables that still use the low resolution. See HFRHANDLER-332.
-                void check_dm_geo_dims_in_vars();
+                void check_dm_geo_dims_in_vars() const;
 
                 /// Create dim to cvar maps when swath dimension map needs to be handled.
                 void create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset*,Field*,Field*) throw(Exception);
 
                 void create_geo_varnames_list(std::vector<std::string> &,const std::string &, 
-                                              const std::string &,int,bool);
+                                              const std::string &,int,bool) const;
 
                 void create_geo_dim_var_maps(SwathDataset*, Field*, const std::vector<std::string>&,
                                          const std::vector<std::string>&,
-                                         std::vector<Dimension*>&, std::vector<Dimension*>&);
+                                         std::vector<Dimension*>&, std::vector<Dimension*>&) const;
                 void create_geo_vars(SwathDataset*,Field*,Field*,const std::vector<std::string>&,const std::vector<std::string>&,
                                      std::vector<Dimension*>&, std::vector<Dimension*>&) throw(Exception);
 
-                void update_swath_dims_for_dimmap(SwathDataset*,
-                                     const std::vector<Dimension*>&, const std::vector<Dimension*>&);
+                void update_swath_dims_for_dimmap(const SwathDataset*,
+                                     const std::vector<Dimension*>&, const std::vector<Dimension*>&) const;
 
 
 
@@ -1435,7 +1419,9 @@ namespace HDFEOS2
                 /// this will not happen at the field level since it will be too messy to 
                 /// check.  KY 2012-11-21
 
+#if 0
                 /// SOType scaletype;
+#endif
         };
 
 

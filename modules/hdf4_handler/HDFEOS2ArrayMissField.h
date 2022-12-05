@@ -31,7 +31,7 @@ class HDFEOS2ArrayMissGeoField:public libdap::Array
             return new HDFEOS2ArrayMissGeoField (*this);
         }
 
-        virtual bool read () override;
+        bool read () override;
 
     private:
 

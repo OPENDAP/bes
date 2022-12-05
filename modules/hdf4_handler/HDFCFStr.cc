@@ -96,14 +96,14 @@ bool HDFCFStr::read()
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
         }
 
-        int32 dim_sizes[H4_MAX_VAR_DIMS];
+        vector<int32> dim_sizes(H4_MAX_VAR_DIMS);
         int32 sds_rank;
         int32 data_type;
         int32 n_attrs;
-        char  name[H4_MAX_NC_NAME];
+        vector<char> name(H4_MAX_NC_NAME);
 
         int32 r = 0;
-        r = SDgetinfo (sdsid, name, &sds_rank, dim_sizes,
+        r = SDgetinfo (sdsid, name.data(), &sds_rank, dim_sizes.data(),
                            &data_type, &n_attrs);
         if(r == FAIL) {
             SDendaccess(sdsid);

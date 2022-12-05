@@ -40,9 +40,8 @@ HDFEOS2CFStr::HDFEOS2CFStr(const int gsfd,
 {
 }
 
-HDFEOS2CFStr::~HDFEOS2CFStr()
-{
-}
+HDFEOS2CFStr::~HDFEOS2CFStr() = default;
+
 BaseType *HDFEOS2CFStr::ptr_duplicate()
 {
     return new HDFEOS2CFStr(*this);

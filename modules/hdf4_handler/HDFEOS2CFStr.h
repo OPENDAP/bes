@@ -51,10 +51,10 @@ class HDFEOS2CFStr:public libdap::Str {
                  const std::string &varnewname,
                  int grid_or_swath);
 
-    virtual ~ HDFEOS2CFStr();
-    virtual libdap::BaseType *ptr_duplicate();
+    ~ HDFEOS2CFStr() override;
+    libdap::BaseType *ptr_duplicate() override;
 
-    virtual bool read();
+    bool read() override;
 
   private:
     int32 gsfd;

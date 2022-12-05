@@ -1,0 +1,40 @@
+netcdf dim_scale_dim_name_clash {
+dimensions:
+	dim1 = 4 ;
+	phony_dim_3 = 2 ;
+variables:
+	int dim1(dim1) ;
+	int v(dim1) ;
+	int v_mdim(dim1, phony_dim_3) ;
+data:
+
+ dim1 = 0, 1, 2, 3 ;
+
+ v = 0, 1, 2, 3 ;
+
+ v_mdim =
+  0, 1,
+  2, 3,
+  4, 5,
+  6, 7 ;
+
+group: g {
+  dimensions:
+  	dim2 = 2 ;
+  	phony_dim_2 = 3 ;
+  variables:
+  	int dim2(dim2) ;
+  	int vg(dim2) ;
+  	int vg_mdim(phony_dim_2, dim2) ;
+  data:
+
+   dim2 = 0, 1 ;
+
+   vg = 0, 1 ;
+
+   vg_mdim =
+  0, 1,
+  2, 3,
+  4, 5 ;
+  } // group g
+}

@@ -51,9 +51,8 @@ HDFUInt32::HDFUInt32(const string &n, const string &d) : UInt32(n, d)
 {
 }
 
-HDFUInt32::~HDFUInt32()
-{
-}
+HDFUInt32::~HDFUInt32() = default;
+
 BaseType *HDFUInt32::ptr_duplicate()
 {
     return new HDFUInt32(*this);

@@ -1,0 +1,13 @@
+netcdf d_size8 {
+dimensions:
+	phony_dim_0 = 2 ;
+	phony_dim_1 = 3 ;
+variables:
+	byte temp(phony_dim_0, phony_dim_1) ;
+		temp:_FillValue = -127b ;
+data:
+
+ temp =
+  -1, -1, 1,
+  1, 1, 1 ;
+}

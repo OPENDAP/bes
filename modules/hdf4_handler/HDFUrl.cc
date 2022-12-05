@@ -49,9 +49,7 @@ HDFUrl::HDFUrl(const string &n, const string &d) : Url(n, d)
 {
 }
 
-HDFUrl::~HDFUrl()
-{
-}
+HDFUrl::~HDFUrl() = default;
 BaseType *HDFUrl::ptr_duplicate()
 {
     return new HDFUrl(*this);

@@ -38,9 +38,9 @@
 class HDFFloat32:public libdap::Float32 {
   public:
     HDFFloat32(const std::string &n, const std::string &d);
-    virtual ~ HDFFloat32();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFFloat32() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFFLOAT32_H
