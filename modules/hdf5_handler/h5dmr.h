@@ -71,7 +71,9 @@ typedef struct {
 typedef struct {
     haddr_t  link_addr;
     string slink_path;
+#if 0
     //vector<string> link_paths;
+#endif
 } link_info_t;
 #endif
 

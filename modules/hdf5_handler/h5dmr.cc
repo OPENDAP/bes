@@ -609,10 +609,10 @@ cout <<"par_grp_name is "<<par_grp_name <<endl;
                 // This group has been visited.  
                 // Add the attribute table with the attribute name as HDF5_HARDLINK.
                 // The attribute value is the name of the group when it is first visited.
-                D4Group* tem_d4_cgroup = new D4Group(string(grp_name));
+                auto tem_d4_cgroup = new D4Group(string(grp_name));
 
                 // Note attr_str_c is the DAP4 attribute string datatype
-                D4Attribute *d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+                auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
 
                 d4_hlinfo->add_value(obj_paths.get_name(oid));
                 tem_d4_cgroup->attributes()->add_attribute_nocopy(d4_hlinfo);
@@ -1095,7 +1095,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             else {// The number of dimensions is > 0
 
                 // Get the attribute datatype size
-                int elesize = (int) H5Tget_size(ty_id);
+                auto elesize = (int) H5Tget_size(ty_id);
                 if (elesize == 0) {
                     H5Tclose(ty_id);
                     H5Aclose(attr_id); 
@@ -1129,7 +1129,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                         delete d4_attr;
                         throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
                     }
-                }//for(hsize_t temp_index=0; .....
+                }
             } // if attr_inst.ndims != 0
         }
         if(H5Tclose(ty_id) < 0) {
@@ -1184,7 +1184,7 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     // Find that this is a hardlink,add the hardlink info to a DAP4 attribute.
     if(false == oid.empty()) {
 
-        D4Attribute *d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
+        auto d4_hlinfo = new D4Attribute("HDF5_HARDLINK",attr_str_c);
         d4_hlinfo->add_value(obj_paths.get_name(oid));
  
         if (1 == flag) 
