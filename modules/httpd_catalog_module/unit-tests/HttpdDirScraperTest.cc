@@ -197,6 +197,7 @@ public:
 
                 if(debug) cerr << prolog << "Found " <<  node->get_node_count() << " nodes. " <<
                         "Expected: " << expected_node_count << endl;
+                unsigned long i = 0;
                 auto it = node->nodes_begin();
                 while(it != node->nodes_end()){
                     bes::CatalogItem *node = *it++;
@@ -206,7 +207,7 @@ public:
                 cerr << prolog << "Found " << node->get_leaf_count() << " leaves. " <<
                      "Expected: " << expected_leaf_count << endl;
                 it = node->leaves_begin();
-                unsigned long i = 0;
+                i = 0;
                 while(it != node->leaves_end()){
                     bes::CatalogItem *leaf = *it++;
                     cerr << prolog << "    Leaf["<< i << "]: " << leaf->get_name() << endl;
