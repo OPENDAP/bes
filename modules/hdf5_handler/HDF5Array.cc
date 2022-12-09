@@ -473,7 +473,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                         void *src = (void*)(values.data() + (element*ty_size) + values_offset +memb_offset);
                         char val_int8;
                         memcpy(&val_int8,src,1);
-                        short val_short=(short)val_int8;
+                        auto val_short=(short)val_int8;
                         field->val2buf(&val_short);
                     }
                     else {
@@ -1249,7 +1249,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                         void *src = (void*)(values.data() + (number_index*at_base_type_size) + values_offset +child_memb_offset);
                         char val_int8;
                         memcpy(&val_int8,src,1);
-                        short val_short=(short)val_int8;
+                        auto val_short=(short)val_int8;
                         field->val2buf(&val_short);
                     }
                     else 
@@ -1267,7 +1267,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                         // Need to check if the size of variable length array type is right in HDF5 lib.
                         void *src = (void*)(values.data()+(string_index *at_base_type_size)+values_offset+child_memb_offset);
                         string final_str;
-                        char*temp_bp =(char*)src;
+                        auto temp_bp =(char*)src;
                         get_vlen_str_data(temp_bp,final_str);
                         field->val2buf(&final_str[0]);
 #if 0
@@ -1322,7 +1322,6 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             at_orig_index = INDEX_nD_TO_1D(at_dims,at_pos);
         }// end for "(array_index = 0) for array (compound)datatype"
 
-        // Need to check the usage of set_read_p(true);
 #if 0
         //set_read_p(true);
 #endif
@@ -1565,7 +1564,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
         if(true == H5Tis_variable_str(at_base_type)) {
             void *src = (void*)(values.data()+values_offset);
-            char*temp_bp =(char*)src;
+            auto temp_bp =(char*)src;
             for(int i = 0;i <at_total_nelms; i++){
                 string tempstrval;
                 get_vlen_str_data(temp_bp,tempstrval);
@@ -1648,7 +1647,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 /// This inline routine will translate N dimensions into 1 dimension.
 inline int
 HDF5Array::INDEX_nD_TO_1D (const std::vector < int > &dims,
-                const std::vector < int > &pos)
+                const std::vector < int > &pos) const
 {
     //
     //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"

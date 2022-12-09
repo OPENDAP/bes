@@ -46,7 +46,6 @@
 #include <list>
 #include <algorithm>
 #include "HDF5CFUtil.h"
-//#include "h5cfdaputil.h"
 #include "HDF5GCFProduct.h"
 #include "HE5Parser.h"
 
@@ -75,16 +74,14 @@ public:
     {
     }
 
-    virtual ~ Exception() throw ()
-    {
-    }
+    ~ Exception() throw () override = default;
 
-    virtual const char *what() const throw ()
+    const char *what() const throw () override
     {
         return this->message.c_str();
     }
 
-    virtual void setException(std::string except_message)
+    virtual void setException(const std::string& except_message)
     {
         this->message = except_message;
     }
@@ -488,8 +485,8 @@ public:
     std::vector<double> getParams() const
     {
         std::vector<double> ret_params;
-        for (int i = 0; i < 13; i++)
-            ret_params.push_back(param[i]);
+        for (const auto &param_ele:param)
+            ret_params.push_back(param_ele);
         return ret_params;
     }
 
@@ -692,9 +689,9 @@ protected:
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
     void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
         
-    void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &);
+    void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &) const;
 
-    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype); 
+    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype) const; 
     void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace);
 
     float Retrieve_H5_VarCompRatio(const Var*, const hid_t) const;
@@ -721,21 +718,21 @@ protected:
     void Adjust_Duplicate_FakeDim_Name2(Dimension * dim,int dup_dim_size_index) ;
     void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
     void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
-        bool unlimited) ;
+        bool unlimited) const;
 
     virtual std::string get_CF_string(std::string);
     void Replace_Var_Info(Var* src, Var *target);
     void Replace_Var_Attrs(Var *src, Var*target);
 
-    void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) ;
+    void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) const;
     std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string& var_path);
     bool Is_Str_Attr(Attribute* attr, const std::string & varfullpath, const std::string &attrname, const std::string& strvalue);
-    void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) ;
+    void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) const;
     void Replace_Var_Str_Attr(Var* var, const std::string &attr_name, const std::string& strvalue);
     void Change_Attr_One_Str_to_Others(Attribute *attr, const Var *var) ;
 
     // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
-    bool Is_geolatlon(const std::string &var_name, bool is_lat);
+    bool Is_geolatlon(const std::string &var_name, bool is_lat) const;
     bool has_latlon_cf_units(Attribute*attr, const std::string &varfullpath, bool is_lat);
 
     // Check if a variable with a var name is under a specific group with groupname
@@ -852,7 +849,7 @@ public:
     void Retrieve_H5_CVar_Supported_Attr_Values() override;
 
     /// Adjust attribute values for general HDF5 products.
-    void Adjust_H5_Attr_Value(Attribute *attr) ;
+    void Adjust_H5_Attr_Value(Attribute *attr) const;
 
     /// Handle unsupported HDF5 datatypes for general HDF5 products.
     void Handle_Unsupported_Dtype(bool) override;
@@ -1027,7 +1024,7 @@ protected:
 
     // The following three routines handle the GPM CF-related attributes
     void Handle_GPM_l1_Coor_Attr() ;
-    void Correct_GPM_L1_LatLon_units(Var *var, const std::string unit_value) ;
+    void Correct_GPM_L1_LatLon_units(Var *var, const std::string & unit_value) ;
     void Add_GPM_Attrs() ;
 
     void Add_Aqu_Attrs() ;
@@ -1043,8 +1040,8 @@ protected:
     void Handle_GM_Unsupported_Dtype(bool) ;
     void Handle_GM_Unsupported_Dspace(bool) ;
 
-    bool Remove_EOS5_Strings(std::string &);
-    bool Remove_EOS5_Strings_NonEOS_Fields (std::string &);
+    bool Remove_EOS5_Strings(std::string &) const;
+    bool Remove_EOS5_Strings_NonEOS_Fields (std::string &) const;
     void release_standalone_GMCVar_vector(std::vector<GMCVar*> &tempgc_vars);
 
 private:
@@ -1263,7 +1260,7 @@ public:
     void Handle_Grid_Mapping_Vars() override;
 
 
-    bool Have_EOS5_Grids() {
+    bool Have_EOS5_Grids() const {
         return !(this->eos5cfgrids.empty());
     }
     bool Get_IgnoredInfo_Flag() override

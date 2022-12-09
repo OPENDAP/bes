@@ -76,7 +76,7 @@ class HDF5Array:public libdap::Array {
     bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int at_nelms,int* at_offset,int*at_count,int* at_step);
 
     inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
-                                const std::vector < int > &pos);
+                                const std::vector < int > &pos) const;
     bool obtain_next_pos(std::vector<int>& pos, std::vector<int>&start,std::vector<int>&end,std::vector<int>&step,int rank_change);
 
     template<typename T>  int subset(

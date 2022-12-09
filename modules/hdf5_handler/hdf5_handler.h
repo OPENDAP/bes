@@ -58,7 +58,6 @@
 #include <libdap/InternalErr.h>
 #include <hdf5.h>
 
-
 /// Maximum number of dimensions in an array(default option only).
 const int DODS_MAX_RANK=30;
 /// Maximum length of variable or attribute name(default option only).
