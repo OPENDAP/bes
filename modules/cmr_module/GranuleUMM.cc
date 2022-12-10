@@ -30,16 +30,11 @@
  */
 #include "config.h"
 
-#include <cstdlib>     /* atol */
 #include <sstream>
 #include <algorithm>
 #include <string>
 
-
-
 #include "nlohmann/json.hpp"
-#include "rjson_utils.h"
-
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -47,7 +42,6 @@
 #include "CmrNames.h"
 #include "CmrApi.h"
 #include "CmrInternalError.h"
-#include "CmrNotFoundError.h"
 #include "GranuleUMM.h"
 
 
@@ -223,7 +217,8 @@ void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
  * @param d_catalog_utils
  * @return
  */
-bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils){
+bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils)
+{
     auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
