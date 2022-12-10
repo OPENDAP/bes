@@ -127,7 +127,7 @@ CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
 }
 double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj)
 {
-    double value;
+    double value=0.0;
 
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
     // Check input for object.
@@ -358,8 +358,8 @@ const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc)
  */
 const json& CmrApi::get_entries(const json &cmr_doc)
 {
-    bool result;
 
+    BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
     const auto &feed = get_feed(cmr_doc);
     return qc_get_array(CMR_V2_ENTRY_KEY,feed);
 }
@@ -368,8 +368,6 @@ const json& CmrApi::get_entries(const json &cmr_doc)
 
 const json& CmrApi::get_items(const json &cmr_doc)
 {
-    bool result;
-
     BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
     return qc_get_array(CMR_UMM_ITEMS_KEY,cmr_doc);
 }
