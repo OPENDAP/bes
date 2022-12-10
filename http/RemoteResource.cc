@@ -222,15 +222,15 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
         // NB: I am leaving this in place because want to referr to its logic. jhrg 11/6/22
         if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
             if (cached_resource_is_expired()) {
-                update_file_and_headers(content_filters);
+                 update_file_and_headers(content_filters);
                 cache->exclusive_to_shared_lock(d_fd);
             }
             else {
-                cache->exclusive_to_shared_lock(d_fd);
+                 cache->exclusive_to_shared_lock(d_fd);
                 load_hdrs_from_file();
             }
             d_initialized = true;
-        }
+         }
 #endif
             // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
             // content into a local cache file, given that it's not in the cache.
