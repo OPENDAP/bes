@@ -67,8 +67,8 @@ HDFGrid::HDFGrid(const string &n, const string &d) :
 	Grid(n, d) {
 }
 
-HDFGrid::~HDFGrid() {
-}
+HDFGrid::~HDFGrid() = default;
+
 BaseType *HDFGrid::ptr_duplicate() {
 	return new HDFGrid(*this);
 }
@@ -121,7 +121,7 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 		vector<int> start;
         vector<int> edge;
         vector<int> stride;
-		HDFArray *primary_array = static_cast<HDFArray *> (array_var());
+		auto primary_array = static_cast<HDFArray *> (array_var());
 		if (!primary_array)
 			throw InternalErr(__FILE__, __LINE__, "Expected an HDFArray.");
 
@@ -164,7 +164,6 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 			// but not hdfistream_sds op>>(hdf_dim&).
 			sds.dims = vector<hdf_dim> ();
 			sds.data = hdf_genvec(); // needed?
-			//      sds.ref = SDidtoref(_sds_id);
 			sdsin >> sds.dims;
 		}
 

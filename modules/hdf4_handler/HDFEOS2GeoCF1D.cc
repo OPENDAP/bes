@@ -110,7 +110,7 @@ HDFEOS2GeoCF1D::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

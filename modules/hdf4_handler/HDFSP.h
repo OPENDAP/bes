@@ -808,7 +808,7 @@ namespace HDFSP
             void create_sds_dim_name_list();
 
             /// Add the missing coordinate variables based on the corrected dimension name list
-            void handle_sds_missing_fields();
+            void handle_sds_missing_fields() const;
 
             /// Create the final CF-compliant dimension name list for each field
             void handle_sds_final_dim_names() throw(Exception);
@@ -817,10 +817,10 @@ namespace HDFSP
             void handle_sds_names(bool & COARDFLAG , std::string & lldimname1, std::string &lldimname2) throw(Exception);
 
             /// Create "coordinates", "units" CF attributes
-            void handle_sds_coords(bool & COARDFLAG, std::string &lldimname1,std::string &lldimname2) throw(Exception);
+            void handle_sds_coords(bool COARDFLAG, const std::string &lldimname1,const std::string &lldimname2) throw(Exception);
 
             /// Handle Vdata
-            void handle_vdata() throw(Exception);
+            void handle_vdata() const throw(Exception);
 
             ///  This method will check if the HDF4 file is one of TRMM or OBPG products we supported. 
             void CheckSDType () throw (Exception);

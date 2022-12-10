@@ -107,7 +107,7 @@ void *ExportDataForDODS(const hdf_genvec & v, int i)
 {
     switch (v.number_type()) {
     case DFNT_INT16:{
-            int16 *temp = new int16;
+            auto temp = new int16;
             *temp = v.elt_int16(i);
             return (void *) temp;
         }
@@ -116,31 +116,31 @@ void *ExportDataForDODS(const hdf_genvec & v, int i)
     case DFNT_INT8:
 #endif
     case DFNT_INT32:{
-            int32 *temp = new int32;
+            auto temp = new int32;
             *temp = v.elt_int32(i);
             return (void *) temp;
         }
 
     case DFNT_UINT16:{
-            uint16 *temp = new uint16;
+            auto temp = new uint16;
             *temp = v.elt_uint16(i);
             return (void *) temp;
         }
 
     case DFNT_UINT32:{
-            uint32 *temp = new uint32;
+            auto temp = new uint32;
             *temp = v.elt_uint32(i);
             return (void *) temp;
         }
 
     case DFNT_FLOAT32:{
-            float32 *temp = new float32;
+            auto temp = new float32;
             *temp = v.elt_float32(i);
             return (void *) temp;
         }
 
     case DFNT_FLOAT64:{
-            float64 *temp = new float64;
+            auto temp = new float64;
             *temp = v.elt_float64(i);
             return (void *) temp;
         }
@@ -151,7 +151,7 @@ void *ExportDataForDODS(const hdf_genvec & v, int i)
     case DFNT_UINT8:
     case DFNT_UCHAR8:
     case DFNT_CHAR8:{
-            uint8 *temp = new uint8;
+            auto temp = new uint8;
             *temp = v.elt_uint8(i);
             return (void *) temp;
         }

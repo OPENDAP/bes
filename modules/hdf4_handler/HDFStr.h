@@ -51,9 +51,9 @@
 class HDFStr:public libdap::Str {
   public:
     HDFStr(const std::string &n, const std::string &d);
-    virtual ~ HDFStr();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFStr() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFSTR_H

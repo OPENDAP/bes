@@ -58,6 +58,7 @@
 #include <hdfclass.h>
 
 using namespace std;
+using namespace libdap;
 
 // Convert an array of U with length nelts into an array of T by casting each
 // element of array to a T.
@@ -65,11 +66,11 @@ template < class T, class U >
     void ConvertArrayByCast(U * array, int nelts, T ** carray)
 {
     if (nelts == 0) {
-        *carray = 0;
+        *carray = nullptr;
         return;
     }
     *carray = new T[nelts];
-    if (*carray == 0)           // Harmless but should never be used.
+    if (*carray == nullptr)           // Harmless but should never be used.
         THROW(hcerr_nomemory);
     for (int i = 0; i < nelts; ++i) {
         *(*carray + i) = static_cast < T > (*(array + i));
@@ -87,32 +88,32 @@ void hdf_genvec::_init(int32 nt, void *data, int begin, int end,
                        int stride)
 {
 
-    // input checking: nt must be a valid HDF number type;
+    // input checking - nt must be a valid HDF number type,
     // data, nelts can optionally both together be 0.
     int32 eltsize;              // number of bytes per element
     if ((eltsize = DFKNTsize(nt)) <= 0)
         THROW(hcerr_dftype);    // invalid number type
-    bool zerovec = (data == 0 && begin == 0 && end == 0 && stride == 0);
+    bool zerovec = (data == nullptr && begin == 0 && end == 0 && stride == 0);
     if (zerovec) {              // if this is a zero-length vector
         _nelts = 0;
-        _data = 0;
+        _data = nullptr;
     } else {
         if (begin < 0 || end < 0 || stride <= 0 || end < begin)
             THROW(hcerr_range); // invalid range given for subset of data
-        if (data == 0)
+        if (data == nullptr)
             THROW(hcerr_invarr);        // if specify a range, need a data array!
 
         // allocate memory for _data and assign _nt, _nelts
-        int nelts = (int) ((end - begin) / stride + 1);
+        auto nelts = (end - begin)/stride + 1;
         _data = new char[nelts * eltsize];      // allocate memory
-        if (_data == 0)
+        if (_data == nullptr)
             THROW(hcerr_nomemory);
         if (stride == 1)        // copy data directly
             (void) memcpy(_data, (void *) ((char *) data + begin),
                           eltsize * nelts);
         else {
             for (int i = 0, j = begin; i < nelts; ++i, j += stride)     // subsample data
-                memcpy((void *) ((char *) _data + i * eltsize),
+                memcpy((void *) (_data + i * eltsize),
                        (void *) ((char *) data + j * eltsize), eltsize);
         }
         _nelts = nelts;         // assign number of elements
@@ -124,7 +125,7 @@ void hdf_genvec::_init(int32 nt, void *data, int begin, int end,
 // initialize an empty hdf_genvec
 void hdf_genvec::_init(void)
 {
-    _data = 0;
+    _data = nullptr;
     _nelts = _nt = 0;
     return;
 }
@@ -132,10 +133,10 @@ void hdf_genvec::_init(void)
 // initialize hdf_genvec from another hdf_genvec
 void hdf_genvec::_init(const hdf_genvec & gv)
 {
-    if (gv._nt == 0 && gv._nelts == 0 && gv._data == 0)
+    if (gv._nt == 0 && gv._nelts == 0 && gv._data == nullptr)
         _init();
     else if (gv._nelts == 0)
-        _init(gv._nt, 0, 0, 0, 0);
+        _init(gv._nt, nullptr, 0, 0, 0);
     else
         _init(gv._nt, gv._data, 0, gv._nelts - 1, 1);
     return;
@@ -146,7 +147,7 @@ void hdf_genvec::_del(void)
 {
     delete[]_data;
     _nelts = _nt = 0;
-    _data = 0;
+    _data = nullptr;
     return;
 }
 
@@ -199,23 +200,23 @@ hdf_genvec & hdf_genvec::operator=(const hdf_genvec & gv)
 // An append method...
 void hdf_genvec::append(int32 nt, const char *new_data, int32 nelts)
 {
-    // input checking: nt must be a valid HDF number type;
+    // input checking: nt must be a valid HDF number type,
     // data, nelts can optionally both together be 0.
     int32 eltsize;              // number of bytes per element
     if ((eltsize = DFKNTsize(nt)) <= 0)
         THROW(hcerr_dftype);    // invalid number type
 
-    if (new_data == 0 && nelts == 0) {  // if this is a zero-length vector
+    if (new_data == nullptr && nelts == 0) {  // if this is a zero-length vector
         _nelts = 0;
-        _data = 0;
+        _data = nullptr;
     } else {
         if (nelts == 0)
             THROW(hcerr_range); // invalid range given for subset of data
-        if (new_data == 0)
+        if (new_data == nullptr)
             THROW(hcerr_invarr);        // if specify a range, need a data array!
 
         // allocate memory for _data and assign _nt, _nelts
-        char *d = new char[(_nelts + nelts) * eltsize]; // allocate memory
+        auto d = new char[(_nelts + nelts) * eltsize]; // allocate memory
         memcpy(d, _data, _nelts);
         memcpy(d + _nelts, new_data, nelts);
 
@@ -230,7 +231,7 @@ void hdf_genvec::append(int32 nt, const char *new_data, int32 nelts)
 }
 
 // import new data into hdf_genvec (old data is deleted)
-void hdf_genvec::import(int32 nt, void *data, int begin, int end,
+void hdf_genvec::import_vec(int32 nt, void *data, int begin, int end,
                         int stride)
 {
     _del();
@@ -242,19 +243,19 @@ void hdf_genvec::import(int32 nt, void *data, int begin, int end,
 }
 
 // import new data into hdf_genvec from a vector of strings
-void hdf_genvec::import(int32 nt, const vector < string > &sv)
+void hdf_genvec::import_vec(int32 nt, const vector < string > &sv)
 {
     static char strbuf[hdfclass::MAXSTR];
 
     int eltsize = DFKNTsize(nt);
     if (eltsize == 0)
         THROW(hcerr_invnt);
-    if (sv.size() == 0) {
-        this->import(nt);
+    if (sv.empty() == true) {
+        this->import_vec(nt);
         return;
     }
 
-    char *obuf = new char[DFKNTsize(nt) * sv.size()];
+    auto obuf = new char[DFKNTsize(nt) * sv.size()];
     switch (nt) {
     case DFNT_FLOAT32:{
             float32 val;
@@ -354,7 +355,7 @@ void hdf_genvec::import(int32 nt, const vector < string > &sv)
         THROW(hcerr_invnt);
     }
 
-    this->import(nt, obuf, (int) sv.size());
+    this->import_vec(nt, obuf, (int) sv.size());
     delete[] obuf;
     return;
 }
@@ -406,8 +407,8 @@ uchar8 hdf_genvec::elt_uchar8(int i) const
 // export an hdf_genvec holding uint8 or uchar8 data to a uchar8 vector
 vector < uchar8 > hdf_genvec::exportv_uchar8(void) const
 {
-    vector < uchar8 > rv = vector < uchar8 > (0);
-    uchar8 *dtmp = 0;
+    auto rv = vector < uchar8 > (0);
+    uchar8 *dtmp = nullptr;
     if (_nt == DFNT_UINT8)      // cast to uchar8 array and export
         ConvertArrayByCast((uint8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_UCHAR8)
@@ -428,7 +429,7 @@ vector < uchar8 > hdf_genvec::exportv_uchar8(void) const
 // export an hdf_genvec holding int8 or char8 data to a char8 array
 char8 *hdf_genvec::export_char8(void) const
 {
-    char8 *rv = 0;
+    char8 *rv = nullptr;
     if (_nt == DFNT_INT8)
         ConvertArrayByCast((int8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_CHAR8)
@@ -456,13 +457,12 @@ char8 hdf_genvec::elt_char8(int i) const
 // export an hdf_genvec holding int8 or char8 data to a char8 vector
 vector < char8 > hdf_genvec::exportv_char8(void) const
 {
-    vector < char8 > rv = vector < char8 > (0);
-    char8 *dtmp = 0;
+    auto rv = vector < char8 > (0);
+    char8 *dtmp = nullptr;
     if (_nt == DFNT_INT8)       // cast to char8 array and export
         ConvertArrayByCast((int8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_CHAR8)
         ConvertArrayByCast((char8 *) _data, _nelts, &dtmp);
-//      dtmp = (char8 *)_data;
     else
         THROW(hcerr_dataexport);
     if (!dtmp)
@@ -476,7 +476,7 @@ vector < char8 > hdf_genvec::exportv_char8(void) const
 // export an hdf_genvec holding uchar8 or uint8 data to a uint8 array
 uint8 *hdf_genvec::export_uint8(void) const
 {
-    uint8 *rv = 0;
+    uint8 *rv = nullptr;
     if (_nt == DFNT_UCHAR8 || _nt == DFNT_CHAR8)
         ConvertArrayByCast((uchar8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_UINT8)
@@ -504,8 +504,8 @@ uint8 hdf_genvec::elt_uint8(int i) const
 // export an hdf_genvec holding uchar8 or uint8 data to a uint8 vector
 vector < uint8 > hdf_genvec::exportv_uint8(void) const
 {
-    vector < uint8 > rv = vector < uint8 > (0);
-    uint8 *dtmp = 0;
+    auto rv = vector < uint8 > (0);
+    uint8 *dtmp = nullptr;
     if (_nt == DFNT_UCHAR8 || _nt == DFNT_CHAR8)        // cast to uint8 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_UINT8)
@@ -522,7 +522,7 @@ vector < uint8 > hdf_genvec::exportv_uint8(void) const
 // export an hdf_genvec holding char8 or int8 data to a int8 array
 int8 *hdf_genvec::export_int8(void) const
 {
-    int8 *rv = 0;
+    int8 *rv = nullptr;
     if (_nt == DFNT_CHAR8)
         ConvertArrayByCast((char8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_INT8)
@@ -550,8 +550,8 @@ int8 hdf_genvec::elt_int8(int i) const
 // export an hdf_genvec holding int8 data to a int8 vector
 vector < int8 > hdf_genvec::exportv_int8(void) const
 {
-    vector < int8 > rv = vector < int8 > (0);
-    int8 *dtmp = 0;
+    auto rv = vector < int8 > (0);
+    int8 *dtmp = nullptr;
     if (_nt == DFNT_CHAR8)      // cast to int8 array and export
         ConvertArrayByCast((char8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_INT8)
@@ -567,7 +567,7 @@ vector < int8 > hdf_genvec::exportv_int8(void) const
 // export an hdf_genvec holding uchar8, uint8 or uint16 data to a uint16 array
 uint16 *hdf_genvec::export_uint16(void) const
 {
-    uint16 *rv = 0;
+    uint16 *rv = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to uint16 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_UINT8) // cast to uint16 array and export
@@ -582,24 +582,25 @@ uint16 *hdf_genvec::export_uint16(void) const
 // return the i'th element of the vector as a uint16
 uint16 hdf_genvec::elt_uint16(int i) const
 {
+    uint16 ret_value = 0;
     if (i < 0 || i > _nelts)
         THROW(hcerr_range);
     if (_nt == DFNT_UCHAR8)
-        return (uint16) * ((uchar8 *) _data + i);
+        ret_value = (uint16) * ((uchar8 *) _data + i);
     else if (_nt == DFNT_UINT8)
-        return (uint16) * ((uint8 *) _data + i);
+        ret_value = (uint16) * ((uint8 *) _data + i);
     else if (_nt == DFNT_UINT16)
-        return *((uint16 *) _data + i);
+        ret_value = *((uint16 *) _data + i);
     else
         THROW(hcerr_dataexport);
-    return 0;
+    return ret_value;
 }
 
 // export an hdf_genvec holding uchar8, uint8 or uint16 data to a uint16 vector
 vector < uint16 > hdf_genvec::exportv_uint16(void) const
 {
-    vector < uint16 > rv = vector < uint16 > (0);
-    uint16 *dtmp = 0;
+    auto rv = vector < uint16 > (0);
+    uint16 *dtmp = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to uint16 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_UINT8) // cast to uint16 array and export
@@ -618,7 +619,7 @@ vector < uint16 > hdf_genvec::exportv_uint16(void) const
 // an int16 array
 int16 *hdf_genvec::export_int16(void) const
 {
-    int16 *rv = 0;
+    int16 *rv = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to int16 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_CHAR8) // cast to int16 array and export
@@ -637,28 +638,29 @@ int16 *hdf_genvec::export_int16(void) const
 // return the i'th element of the vector as a int16
 int16 hdf_genvec::elt_int16(int i) const
 {
+    int16 ret_value = 0;
     if (i < 0 || i > _nelts)
         THROW(hcerr_range);
     if (_nt == DFNT_UCHAR8)
-        return (int16) (*((uchar8 *) _data + i));
+        ret_value = (int16) (*((uchar8 *) _data + i));
     else if (_nt == DFNT_CHAR8)
-        return (int16) (*((char8 *) _data + i));
+        ret_value = (int16) (*((char8 *) _data + i));
     else if (_nt == DFNT_UINT8)
-        return (int16) (*((uint8 *) _data + i));
+        ret_value = (int16) (*((uint8 *) _data + i));
     else if (_nt == DFNT_INT8)
-        return (int16) (*((int8 *) _data + i));
+        ret_value =  (int16) (*((int8 *) _data + i));
     else if (_nt == DFNT_INT16)
-        return *((int16 *) _data + i);
+        ret_value =  *((int16 *) _data + i);
     else
         THROW(hcerr_dataexport);
-    return 0;
+    return ret_value;
 }
 
 // export an hdf_genvec holding int8 or int16 data to an int16 vector
 vector < int16 > hdf_genvec::exportv_int16(void) const
 {
-    vector < int16 > rv = vector < int16 > (0);
-    int16 *dtmp = 0;
+    auto rv = vector < int16 > (0);
+    int16 *dtmp = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to int16 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_CHAR8) // cast to int16 array and export
@@ -681,7 +683,7 @@ vector < int16 > hdf_genvec::exportv_int16(void) const
 // uint32 array
 uint32 *hdf_genvec::export_uint32(void) const
 {
-    uint32 *rv = 0;
+    uint32 *rv = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to uint32 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_UINT8) // cast to uint32 array and export
@@ -698,27 +700,28 @@ uint32 *hdf_genvec::export_uint32(void) const
 // return the i'th element of the vector as a uint32
 uint32 hdf_genvec::elt_uint32(int i) const
 {
+    uint32 ret_value = 0;
     if (i < 0 || i > _nelts)
         THROW(hcerr_range);
     if (_nt == DFNT_UCHAR8)
-        return (uint32) (*((uchar8 *) _data + i));
+        ret_value = (uint32) (*((uchar8 *) _data + i));
     else if (_nt == DFNT_UINT8)
-        return (uint32) (*((uint8 *) _data + i));
+        ret_value =  (uint32) (*((uint8 *) _data + i));
     else if (_nt == DFNT_UINT16)
-        return (uint32) (*((uint16 *) _data + i));
+        ret_value = (uint32) (*((uint16 *) _data + i));
     else if (_nt == DFNT_UINT32)
-        return *((uint32 *) _data + i);
+        ret_value = *((uint32 *) _data + i);
     else
         THROW(hcerr_dataexport);
-    return 0;
+    return ret_value;
 }
 
 // export an hdf_genvec holding uchar8, uint8, uint16 or uint32 data to a
 // uint32 vector
 vector < uint32 > hdf_genvec::exportv_uint32(void) const
 {
-    vector < uint32 > rv = vector < uint32 > (0);
-    uint32 *dtmp = 0;
+    auto rv = vector < uint32 > (0);
+    uint32 *dtmp = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to uint32 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_UINT8) // cast to uint32 array and export
@@ -739,7 +742,7 @@ vector < uint32 > hdf_genvec::exportv_uint32(void) const
 // int32 data to a int32 array
 int32 *hdf_genvec::export_int32(void) const
 {
-    int32 *rv = 0;
+    int32 *rv = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to int32 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &rv);
     else if (_nt == DFNT_CHAR8) // cast to int32 array and export
@@ -762,33 +765,34 @@ int32 *hdf_genvec::export_int32(void) const
 // return the i'th element of the vector as a int32
 int32 hdf_genvec::elt_int32(int i) const
 {
+    int32 ret_value = 0;
     if (i < 0 || i > _nelts)
         THROW(hcerr_range);
     if (_nt == DFNT_UCHAR8)
-        return (int32) (*((uchar8 *) _data + i));
+        ret_value = (int32) (*((uchar8 *) _data + i));
     else if (_nt == DFNT_CHAR8)
-        return (int32) (*((char8 *) _data + i));
+        ret_value =  (int32) (*((char8 *) _data + i));
     else if (_nt == DFNT_UINT8)
-        return (int32) (*((uint8 *) _data + i));
+        ret_value =  (int32) (*((uint8 *) _data + i));
     else if (_nt == DFNT_INT8)
-        return (int32) (*((int8 *) _data + i));
+        ret_value =  (int32) (*((int8 *) _data + i));
     else if (_nt == DFNT_UINT16)
-        return (int32) (*((uint16 *) _data + i));
+        ret_value =  (int32) (*((uint16 *) _data + i));
     else if (_nt == DFNT_INT16)
-        return (int32) (*((int16 *) _data + i));
+        ret_value =  (int32) (*((int16 *) _data + i));
     else if (_nt == DFNT_INT32)
-        return *((int32 *) _data + i);
+        ret_value = *((int32 *) _data + i);
     else
         THROW(hcerr_dataexport);
-    return 0;
+    return ret_value;
 }
 
 // export an hdf_genvec holding uchar8, char8, uint8, int8, uint16, int16 or
 // int32 data to a int32 vector
 vector < int32 > hdf_genvec::exportv_int32(void) const
 {
-    vector < int32 > rv = vector < int32 > (0);
-    int32 *dtmp = 0;
+    auto rv = vector < int32 > (0);
+    int32 *dtmp = nullptr;
     if (_nt == DFNT_UCHAR8)     // cast to int32 array and export
         ConvertArrayByCast((uchar8 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_CHAR8) // cast to int32 array and export
@@ -814,7 +818,7 @@ vector < int32 > hdf_genvec::exportv_int32(void) const
 // export an hdf_genvec holding float32 data to a float32 array
 float32 *hdf_genvec::export_float32(void) const
 {
-    float32 *rv = 0;
+    float32 *rv = nullptr;
     if (_nt != DFNT_FLOAT32)
         THROW(hcerr_dataexport);
     else
@@ -837,8 +841,6 @@ vector < float32 > hdf_genvec::exportv_float32(void) const
 {
     if (_nt != DFNT_FLOAT32) {
         THROW(hcerr_dataexport);
-        // Comment out this line since the following line will never be reached. KY 2015-10-23
-        //return vector < float32 > (0);
     } else
         return vector < float32 > ((float32 *) _data,
                                    (float32 *) _data + _nelts);
@@ -847,7 +849,7 @@ vector < float32 > hdf_genvec::exportv_float32(void) const
 // export an hdf_genvec holding float32 or float64 data to a float64 array
 float64 *hdf_genvec::export_float64(void) const
 {
-    float64 *rv = 0;
+    float64 *rv = nullptr;
     if (_nt == DFNT_FLOAT64)
         ConvertArrayByCast((float64 *) _data, _nelts, &rv);
     else if (_nt == DFNT_FLOAT32)       // cast to float64 array and export
@@ -868,14 +870,13 @@ float64 hdf_genvec::elt_float64(int i) const
         return (float64) (*((float32 *) _data + i));
     else
         THROW(hcerr_dataexport);
-    //return 0;
 }
 
 // export an hdf_genvec holding float32 or float64 data to a float64 vector
 vector < float64 > hdf_genvec::exportv_float64(void) const
 {
-    vector < float64 > rv = vector < float64 > (0);
-    float64 *dtmp = 0;
+    auto rv = vector < float64 > (0);
+    float64 *dtmp = nullptr;
     if (_nt == DFNT_FLOAT32)    // cast to float64 array and export
         ConvertArrayByCast((float32 *) _data, _nelts, &dtmp);
     else if (_nt == DFNT_FLOAT64)
@@ -895,7 +896,7 @@ string hdf_genvec::export_string(void) const
         THROW(hcerr_dataexport);
     }
     else {
-        if (_data == 0)
+        if (_data == nullptr)
             return string();
         else
             return string((char *) _data, _nelts);
@@ -999,6 +1000,8 @@ void hdf_genvec::print(vector < string > &sv, int begin, int end,
                 sv.push_back(buf.str());
             }
             break;
+        default:
+            THROW(hcerr_dftype);
         }
     }
     return;
@@ -1088,7 +1091,7 @@ void hdf_genvec::print(vector < string > &sv, int begin, int end,
 //
 // Revision 1.3  1996/04/04  01:11:30  todd
 // Added support for empty vectors that have a number type.
-// Added import() public member function.
+// Added import_vec() public member function.
 //
 // Revision 1.2  1996/04/03  00:18:18  todd
 // Fixed a bug in _init(int32, void *, int)

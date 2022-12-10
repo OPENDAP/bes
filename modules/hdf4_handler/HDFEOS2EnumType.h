@@ -1,7 +1,7 @@
 #ifndef _HDFEOS2_ENUM_TYPE_H
 #define _HDFEOS2_ENUM_TYPE_H
 
-enum SOType
+enum class SOType
     {DEFAULT_CF_EQU, MODIS_MUL_SCALE,MODIS_EQ_SCALE,MODIS_DIV_SCALE};
 
 

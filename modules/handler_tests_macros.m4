@@ -122,11 +122,13 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
         
@@ -135,7 +137,7 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
 dnl Simple pattern test. The baseline file holds a set of patterns, one per line,
 dnl and the test will pass if any pattern matches with the test result.
-dnl In many ways it's just a better version of _AT_BESCMD_ERROR_TEST below
+dnl In many ways it is just a better version of _AT_BESCMD_ERROR_TEST below
 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
@@ -505,6 +507,7 @@ m4_define([REMOVE_VERSIONS], [dnl
       sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
       -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
       -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
+      -e 's@[[0-9]]*\.[[0-9]]*\.[[0-9]]*\(-[[0-9]]*\)\{0,1\}@removed version@g'\
       < $1 > $1.sed
       mv $1.sed $1
   ])

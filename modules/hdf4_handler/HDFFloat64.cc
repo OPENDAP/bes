@@ -49,9 +49,8 @@ HDFFloat64::HDFFloat64(const string &n, const string &d):Float64(n, d)
 {
 }
 
-HDFFloat64::~HDFFloat64()
-{
-}
+HDFFloat64::~HDFFloat64() = default;
+
 BaseType *HDFFloat64::ptr_duplicate()
 {
     return new HDFFloat64(*this);

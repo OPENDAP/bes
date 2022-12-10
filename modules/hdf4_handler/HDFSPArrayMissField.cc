@@ -75,7 +75,7 @@ int
 HDFSPArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 {
 
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -107,7 +107,7 @@ HDFSPArrayMissGeoField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

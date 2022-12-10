@@ -755,6 +755,17 @@ AC_ARG_WITH([hdfeos2],
             [HDFEOS2_DIR=${withval}], 
             [HDFEOS2_DIR="$ac_bes_dependencies_prefix"])
 
+dnl Check if the HDF-EOS2 library exists.
+ac_hdfeos2_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include"
+AC_CHECK_HEADERS([HDFEOSVersion.h],[],[HDFEOS2_DIR=])
+CPPFLAGS="$ac_hdfeos2_save_CPPFLAGS"
+
+ac_hdfeos2_save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
+AC_CHECK_LIB(hdfeos,SWopen,[HDFEOS2_LDFLAGS=],[HDFEOS2_DIR=],[-lmfhdf -ldf -lz -ljpeg -lm])
+LDFLAGS="$ac_hdfeos2_save_LDFLAGS"
+
 AS_IF([test -n "$HDFEOS2_DIR"],
     [HDFEOS2_CPPFLAGS="-I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
     HDFEOS2_LDFLAGS="-L$HDFEOS2_DIR/lib"
@@ -765,6 +776,7 @@ AS_IF([test -n "$HDFEOS2_DIR"],
     [AC_MSG_NOTICE([HDFEOS2 set to false])
     AM_CONDITIONAL([HDFEOS2], [false])]
  )
+
     
 AC_SUBST([HDFEOS2_CPPFLAGS])
 AC_SUBST([HDFEOS2_LDFLAGS])
@@ -979,6 +991,8 @@ AC_CONFIG_FILES([Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
+		 http/tests/Makefile
+		 http/tests/atlocal
 
 		 docs/Makefile
 		 
@@ -1014,7 +1028,7 @@ AC_CONFIG_FILES([Makefile
 		 ])
 
 dnl These need to be moved into the AC_CONFIG_FILES above 
-dnl when geo-functions is reenabled.
+dnl when geo-functions is re-enabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
@@ -1030,6 +1044,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
+AC_CONFIG_TESTDIR(http/tests, [remote_resource_tester])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])

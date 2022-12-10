@@ -732,10 +732,21 @@ add_executable(
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
 		modules/dmrpp_module/DmrppNames.h
+		#modules/dmrpp_module/dev/h5_obj_addr_info.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/read_str_vars.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/test_read_vl_offset.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/obtain_vlstr_addr.cc # <> sbl 10.21.22
+		#modules/dmrpp_module/dev/obtain_vlstr_addr_hard_code_subset.cc # <> sbl 10.21.22
 	modules/dmrpp_module/DMZ.h
 	modules/dmrpp_module/DMZ.cc
 	modules/dmrpp_module/unit-tests/DMZTest.cc
 
+		http/unit-tests/awsv4_test.cc
+    #modules/dmrpp_module/AccessCredentials.cc
+    #modules/dmrpp_module/AccessCredentials.h
+		http/NgapS3Credentials.cc
+		http/NgapS3Credentials.h
+		http/unit-tests/NgapCredentialsTest.cc
     modules/dmrpp_module/unit-tests/CurlHandlePoolTest.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc
@@ -1079,7 +1090,6 @@ add_executable(
     modules/hdf4_handler/eosdas-test.cc
     modules/hdf4_handler/errormacros.h
     modules/hdf4_handler/hc2dap.cc
-    modules/hdf4_handler/hdf-dods.h
     modules/hdf4_handler/hdf-maps.h
     modules/hdf4_handler/HDF4_DDS.h
     modules/hdf4_handler/HDF4_DMR.h

@@ -33,9 +33,7 @@ class HDFEOS2Array_RealField:public libdap::Array
         fieldname (fieldname),
         sotype(sotype) {
         }
-        ~ HDFEOS2Array_RealField () override
-        {
-        }
+        ~ HDFEOS2Array_RealField () override = default;
 
         // Standard way to pass the coordinates of the subsetted region from the client to the handlers
         int format_constraint (int *cor, int *step, int *edg);
@@ -78,7 +76,7 @@ class HDFEOS2Array_RealField:public libdap::Array
         int write_dap_data_scale_comp( int32 gridid, int nelms, std::vector<int32> &offset32,std::vector<int32> &count32,std::vector<int32> &step32);
         int write_dap_data_disable_scale_comp( int32 gridid, int nelms, int32 *offset32,int32*count32,int32*step32);
         void release_mod1b_res(float*ref_scale,float*ref_offset,float*rad_scale,float*rad_offset);
-        void close_fileid(const int gsfileid, const int sdfileid);
+        void close_fileid(const int gsfileid, const int sdfileid) const;
 
 };
 
