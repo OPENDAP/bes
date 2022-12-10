@@ -155,19 +155,19 @@ Granule::Granule(const nlohmann::json& granule_json)
 
 void Granule::setName(const nlohmann::json& j_obj)
 {
-    this->d_name = j_obj[CMR_V2_TITLE_KEY].get<string>();
+    d_name = j_obj[CMR_V2_TITLE_KEY].get<string>();
 }
 
 
 void Granule::setId(const nlohmann::json& j_obj)
 {
-    this->d_id = j_obj[CMR_GRANULE_ID_KEY].get<string>();
+    d_id = j_obj[CMR_GRANULE_ID_KEY].get<string>();
 }
 
 
 void Granule::setSize(const nlohmann::json& j_obj)
 {
-    this->d_size_str = j_obj[CMR_GRANULE_SIZE_KEY];
+    d_size_str = j_obj[CMR_GRANULE_SIZE_KEY];
 }
 
 
@@ -177,7 +177,7 @@ void Granule::setSize(const nlohmann::json& j_obj)
   */
 void Granule::setLastModifiedStr(const nlohmann::json& go)
 {
-    this->d_last_modified_time = go[CMR_GRANULE_LMT_KEY].get<string>();
+    d_last_modified_time = go[CMR_GRANULE_LMT_KEY].get<string>();
 }
 
 
@@ -212,7 +212,7 @@ void Granule::setDataGranuleUrl(const nlohmann::json& go)
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if(rel == CMR_GRANULE_LINKS_REL_DATA_ACCESS){
-            this->d_data_access_url = link[CMR_GRANULE_LINKS_HREF];
+            d_data_access_url = link[CMR_GRANULE_LINKS_HREF];
             return;
         }
     }
@@ -232,13 +232,13 @@ void Granule::setDapServiceUrl(const nlohmann::json& jo)
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if (rel == CMR_GRANULE_LINKS_REL_SERVICE) {
-            this->d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
+            d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
             const auto &title_itr = link.find(CMR_V2_TITLE_KEY);
             if(title_itr != link.end()){
                 string title = title_itr.value().get<string>();
                 transform(title.begin(), title.end(), title.begin(), ::toupper);
                 if (title.find("OPENDAP") != string::npos) {
-                    this->d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
+                    d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
                     return;
                 }
             }
@@ -261,7 +261,7 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if(rel == CMR_GRANULE_LINKS_REL_METADATA_ACCESS){
-            this->d_metadata_access_url = link[CMR_GRANULE_LINKS_HREF].get<string>();
+            d_metadata_access_url = link[CMR_GRANULE_LINKS_HREF].get<string>();
             return;
         }
     }
