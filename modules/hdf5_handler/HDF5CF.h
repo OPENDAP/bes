@@ -1277,27 +1277,26 @@ protected:
     void Adjust_H5_Attr_Value(Attribute *attr) ;
 
     void Adjust_EOS5Dim_List(std::vector<HE5Dim>&) ;
-    void Condense_EOS5Dim_List(std::vector<HE5Dim>&) ;
-    void Remove_NegativeSizeDims(std::vector<HE5Dim>&) ;
+    void Condense_EOS5Dim_List(std::vector<HE5Dim>&) const;
+    void Remove_NegativeSizeDims(std::vector<HE5Dim>&) const;
     void Adjust_EOS5DimSize_List(std::vector<HE5Dim>&,const std::vector<HE5Var>&, const EOS5Type,const std::string & eos5objname);
     void Adjust_EOS5VarDim_Info(std::vector<HE5Dim>&, std::vector<HE5Dim>&, const std::string &, EOS5Type) ;
 
-    void EOS5Handle_nonlatlon_dimcvars(std::vector<HE5Var> & eos5varlist, EOS5Type, std::string groupname,
-        std::map<std::string, std::string>& dnamesgeo1dvnames) ;
-    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, std::vector<HE5Var>& eos5varlist)
-        ;
+    void EOS5Handle_nonlatlon_dimcvars(std::vector<HE5Var> & eos5varlist, EOS5Type, const std::string &groupname,
+        std::map<std::string, std::string>& dnamesgeo1dvnames) const;
+    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, std::vector<HE5Var>& eos5varlist) const;
 
     void Obtain_Var_NewName(Var*) ;
-    EOS5Type Get_Var_EOS5_Type(Var*) ;
+    EOS5Type Get_Var_EOS5_Type(const Var*) const;
 
     bool Obtain_Var_Dims(Var*, HE5Parser*) ;
     template<class T> bool Set_Var_Dims(T*, Var*, std::vector<HE5Var>&, const std::string&, int, EOS5Type) ;
     template<class T> void Create_Unique_DimName(T*, std::set<std::string>&, Dimension *, int, EOS5Type) ;
 
-    template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t);
+    template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t) const;
     std::string Obtain_Var_EOS5Type_GroupName(const Var*, EOS5Type) const;
     int Check_EOS5Swath_FieldType(const Var*) const;
-    void Get_Unique_Name(std::set<std::string>&, std::string&) ;
+    void Get_Unique_Name(std::set<std::string>&, std::string&) const;
 
     template<class T> std::string Create_Unique_FakeDimName(T*, EOS5Type) ;
     template<class T> void Set_NonParse_Var_Dims(T*, Var*, const std::map<hsize_t, std::string>&, int, EOS5Type) ;

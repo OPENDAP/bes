@@ -24,8 +24,6 @@
 // You can contact The HDF Group, Inc. at 1800 South Oak Street,
 // Suite 203, Champaign, IL 61820  
 
-// #define DODS_DEBUG
-
 /// \file HDF5Int16.cc
 /// \brief Implementation of mappign HDF5 signed 16-bit integer to DAP for the default option. 
 /// 

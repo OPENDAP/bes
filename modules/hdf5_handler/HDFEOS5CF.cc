@@ -58,23 +58,23 @@ EOS5CVar::EOS5CVar(Var*var)
     unsupported_dspace = var->unsupported_dspace;
     coord_attr_add_path = false;
 
-    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
+    for (const auto &vattr:var->attrs) {
         auto attr = new Attribute();
-        attr->name = (*ira)->name;
-        attr->newname = (*ira)->newname;
-        attr->dtype = (*ira)->dtype;
-        attr->count = (*ira)->count;
-        attr->strsize = (*ira)->strsize;
-        attr->fstrsize = (*ira)->fstrsize;
-        attr->value = (*ira)->value;
+        attr->name = vattr->name;
+        attr->newname = vattr->newname;
+        attr->dtype = vattr->dtype;
+        attr->count = vattr->count;
+        attr->strsize = vattr->strsize;
+        attr->fstrsize = vattr->fstrsize;
+        attr->value = vattr->value;
         attrs.push_back(attr);
     }
 
-    for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
-        dim->name = (*ird)->name;
-        dim->newname = (*ird)->newname;
-        dim->unlimited_dim = (*ird)->unlimited_dim;
+    for (const auto &vdim:var->dims) {
+        auto dim = new Dimension(vdim->size);
+        dim->name = vdim->name;
+        dim->newname = vdim->newname;
+        dim->unlimited_dim = vdim->unlimited_dim;
         dims.push_back(dim);
     }
 
@@ -168,12 +168,12 @@ void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /
 void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()
 {
 
-    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
+    for (const auto &cvar:this->cvars) {
 
         // When the coordinate variables exist in the file, retrieve the attribute values.
-        if ((CV_EXIST == (*ircv)->cvartype) || (CV_MODIFY == (*ircv)->cvartype)) {
-            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ++ira)
-                Retrieve_H5_Attr_Value(*ira, (*ircv)->fullpath);
+        if ((CV_EXIST == cvar->cvartype) || (CV_MODIFY == cvar->cvartype)) {
+            for (const auto &attr:cvar->attrs)
+                Retrieve_H5_Attr_Value(attr, cvar->fullpath);
 
         }
     }
@@ -185,19 +185,18 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values()
 {
 
     File::Retrieve_H5_Supported_Attr_Values();
-    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
+    for (const auto &cvar:this->cvars) {
 
         // When the coordinate variables exist in the file, retrieve the attribute values.
-        if ((CV_EXIST == (*ircv)->cvartype) || (CV_MODIFY == (*ircv)->cvartype)) {
-            for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ++ira)
-                Retrieve_H5_Attr_Value(*ira, (*ircv)->fullpath);
-
+        if ((CV_EXIST == cvar->cvartype) || (CV_MODIFY == cvar->cvartype)) {
+            for (const auto &attr:cvar->attrs)
+                Retrieve_H5_Attr_Value(attr, cvar->fullpath);
         }
     }
 }
 
 // Adjust attribute value
-void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) 
+void EOS5File::Adjust_H5_Attr_Value(Attribute* ) 
 {
     // For future usage.
 
@@ -274,25 +273,23 @@ void EOS5File::Gen_VarAttr_Unsupported_Dtype_Info()
 void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info() 
 {
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
+    for (const auto &cvar:this->cvars) {
         // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
         // attribute REFERENCE_LIST is okay to ignore. No need to report.
-        bool is_ignored = ignored_dimscale_ref_list((*irv));
-        if (false == (*irv)->attrs.empty()) {
-            //if (true == (*irv)->unsupported_attr_dtype) {
-                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                    H5DataType temp_dtype = (*ira)->getType();
-                    // TODO: check why 64-bit integer is included.
-                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
-                        // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
-                        // is okay to ignore if the variable has another attribute
-                        // CLASS="DIMENSION_SCALE"
-                        if (("DIMENSION_LIST" != (*ira)->name)
-                            && ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
-                            this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
-                    }
+        bool is_ignored = ignored_dimscale_ref_list(cvar);
+        if (false == cvar->attrs.empty()) {
+            for (const auto &attr:cvar->attrs) {
+                H5DataType temp_dtype = attr->getType();
+                // TODO: check why 64-bit integer is included.
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
+                    // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
+                    // is okay to ignore if the variable has another attribute
+                    // CLASS="DIMENSION_SCALE"
+                    if (("DIMENSION_LIST" != attr->name)
+                        && ("REFERENCE_LIST" != attr->name || true == is_ignored))
+                        this->add_ignored_info_attrs(false, cvar->fullpath, attr->name);
                 }
-            //}
+            }
         }
     }
 }
@@ -619,7 +616,7 @@ void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist)
 
 //  The negative dimension sizes are found in some HDF-EOS5 files.
 //  We need to remove them.
-void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) 
+void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist) const 
 {
 
     BESDEBUG("h5", "Coming to Remove_NegativeSizeDims" <<endl);
@@ -645,7 +642,7 @@ void EOS5File::Remove_NegativeSizeDims(vector<HE5Dim>& groupdimlist)
 //  Some products use Xdim rather XDim, Ydim rather than Ydim. 
 //  This is significant for grids. We need to make them "XDim" and "YDim".
 //  See comments of function Adjust_EOS5VarDim_Info for the reason.
-void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) 
+void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) const
 {
 
     BESDEBUG("h5", "Coming to Condense_EOS5Dim_List"<<endl);
@@ -719,21 +716,21 @@ void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vec
                 }
                 if(has_objdimlist_index == false)
                     throw2("Cannot find the dimension in the EOS5 object dimension list for the dimension ", he5d.name);
-                for (vector<Var *>::const_iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+                for (const auto &var:this->vars) {
 
-                    EOS5Type vartype = Get_Var_EOS5_Type((*irv));
+                    EOS5Type vartype = Get_Var_EOS5_Type(var);
                     // Compare the EOS5 object type: SWATH,GRID or ZA
                     // eos5objvarlist only stores the variable name, not the path. So we have to ensure the path matches.
                     if(vartype == eos5type) {
-                        string var_eos5gname = Obtain_Var_EOS5Type_GroupName((*irv),vartype);
+                        string var_eos5gname = Obtain_Var_EOS5Type_GroupName(var,vartype);
                         // Compare the EOS5 object name
                         // Now we need to match the var name from eos5objvarlist with the var name. 
                         if(var_eos5gname == eos5objname) {
-                            if((*irv)->name == he5v.name) {
-                                if (he5v.dim_list.size() != (*irv)->dims.size())
-                                    throw2("Number of dimensions don't match with the structmetadata for variable ", (*irv)->name);
+                            if(var->name == he5v.name) {
+                                if (he5v.dim_list.size() != var->dims.size())
+                                    throw2("Number of dimensions don't match with the structmetadata for variable ", var->name);
                                 // Change dimension size
-                                (eos5objdimlist[objdimlist_index]).size = ((*irv)->dims[j])->size;
+                                (eos5objdimlist[objdimlist_index]).size = (var->dims[j])->size;
                                 break;
                             }
                             
@@ -1099,7 +1096,7 @@ void EOS5File::Add_EOS5File_Info(HE5Parser * strmeta_info, bool grids_mllcv)
 
 // Check if EOS5 Swath and Grid hold Latitude and Longitude fields.
 template<class T>
-void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &eos5varlist) 
+void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &eos5varlist) const
 {
 
     BESDEBUG("h5", "Coming to EOS5SwathGrid_Set_LatLon_Flags"<<endl);
@@ -1167,8 +1164,8 @@ void EOS5File::EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, vector<HE5Var> &
 
 // This function builds up the map from dimension names to coordinate variables
 // for non-latitude and longitude fields. 
-void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5Type eos5type, string groupname,
-    map<string, string>& dnamesgeo1dvnames) 
+void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5Type eos5type, const string &groupname,
+    map<string, string>& dnamesgeo1dvnames) const 
 {
 
     BESDEBUG("h5", "Coming to EOS5Handle_nonlatlon_dimcvars"<<endl);
@@ -1225,8 +1222,8 @@ void EOS5File::Adjust_Var_NewName_After_Parsing()
 {
 
     BESDEBUG("h5", "Coming to Adjust_Var_NewName_After_Parsing"<<endl);
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        Obtain_Var_NewName(*irv);
+    for (const auto &var:this->vars) {
+        Obtain_Var_NewName(var);
     }
 }
 
@@ -1290,7 +1287,7 @@ void EOS5File::Obtain_Var_NewName(Var *var)
 }
 
 // Get the HDF-EOS5 type: The type is either grids, swaths or zonal average
-EOS5Type EOS5File::Get_Var_EOS5_Type(Var* var) 
+EOS5Type EOS5File::Get_Var_EOS5_Type(const Var* var) const
 {
 
     BESDEBUG("h5", "Coming to Get_Var_EOS5_Type"<<endl);
@@ -1317,8 +1314,8 @@ void EOS5File::Add_Dim_Name(HE5Parser *strmeta_info)
 {
 
     BESDEBUG("h5", "Coming to Add_Dim_Name"<<endl);
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        Obtain_Var_Dims(*irv, strmeta_info);
+    for (const auto &var:this->vars) {
+        Obtain_Var_Dims(var, strmeta_info);
 #if 0
         for (auto ird = (*irv)->dims.begin();
             ird != (*irv)->dims.end();++ird) {
@@ -1471,22 +1468,22 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 
             for (unsigned int j = 0; j < he5v.dim_list.size(); j++) {
                 HE5Dim he5d = he5v.dim_list.at(j);
-                for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
+                for (const auto &dim:var->dims) {
 
-                    if ((hsize_t) (he5d.size) == (*ird)->size) {
+                    if ((hsize_t) (he5d.size) == dim->size) {
                         // This will assure that the same size dims be assigned to different dims
-                        if ("" == (*ird)->name) {
+                        if ("" == dim->name) {
                             string dimname_candidate = eos5typestr + groupname + fslash_str + he5d.name;
                             setret2 = thisvar_dimname_set.insert(dimname_candidate);
                             if (true == setret2.second) {
-                                (*ird)->name = dimname_candidate;
+                                dim->name = dimname_candidate;
                                 // Should check in the future if the newname may cause potential inconsistency. KY:2012-3-9
-                                (*ird)->newname = (num_groups == 1) ? he5d.name : (*ird)->name;
-                                eos5data->vardimnames.insert((*ird)->name);
+                                dim->newname = (num_groups == 1) ? he5d.name : dim->name;
+                                eos5data->vardimnames.insert(dim->name);
                                 // Since there is no way to figure out the unlimited dimension info. of an individual variable
                                 // from the dimension list. Here we just provide the dimnames to unlimited dimension mapping
                                 // based on the variable mapping. KY 2016-02-18
-                                eos5data->dimnames_to_unlimited[(*ird)->name] = (*ird)->unlimited_dim;
+                                eos5data->dimnames_to_unlimited[dim->name] = dim->unlimited_dim;
                             }
                         }
                     }
@@ -1495,9 +1492,9 @@ bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const
 
             // We have to go through the dimension list of this variable again to assure that every dimension has a name.
             // This is how that FakeDim is added. We still need it just in case. KY 2017-10-19
-            for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
-                if ("" == (*ird)->name)
-                    Create_Unique_DimName(eos5data, thisvar_dimname_set, *ird, num_groups, eos5type);
+            for (const auto &dim:var->dims) {
+                if ("" == dim->name)
+                    Create_Unique_DimName(eos5data, thisvar_dimname_set, dim, num_groups, eos5type);
             }
         } // "if (he5v.name == var->name) "
     } // "for (unsigned int i = 0; i < he5var.size(); i++)"
@@ -1584,7 +1581,7 @@ void EOS5File::Create_Unique_DimName(T*eos5data, set<string>& thisvar_dimname_se
 
 // Check all dim. names to see if this dim. size is used by another dim. name.
 template<class T>
-bool EOS5File::Check_All_DimNames(T* eos5data, string& dimname, hsize_t dimsize)
+bool EOS5File::Check_All_DimNames(T* eos5data, string& dimname, hsize_t dimsize) const
 {
 
     BESDEBUG("h5", "Coming to Check_All_DimNames"<<endl);
@@ -1602,7 +1599,7 @@ bool EOS5File::Check_All_DimNames(T* eos5data, string& dimname, hsize_t dimsize)
 }
 
 // Get a unique name.
-void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate) 
+void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate) const 
 {
 
     BESDEBUG("h5", "Coming to Get_Unique_Name"<<endl);
@@ -1706,11 +1703,11 @@ void EOS5File::Set_NonParse_Var_Dims(T*eos5data, Var* var, const map<hsize_t, st
     map<hsize_t, string>::iterator itmap;
     set<string> thisvar_dimname_set;
 
-    for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
-        if ("" == (*ird)->name)
-            Create_Unique_DimName(eos5data, thisvar_dimname_set, *ird, num_groups, eos5type);
+    for (const auto &vdim:var->dims) {
+        if ("" == vdim->name)
+            Create_Unique_DimName(eos5data, thisvar_dimname_set, vdim, num_groups, eos5type);
         else
-            throw5("The dimension name ", (*ird)->name, " of the variable ", var->name, " is not right");
+            throw5("The dimension name ", vdim->name, " of the variable ", var->name, " is not right");
     }
 }
 
@@ -1725,12 +1722,12 @@ void EOS5File::Check_Aura_Product_Status()
     string instrument_attr_name = "InstrumentName";
 
     // Check if this file is an aura file
-    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-        if (eos5_fattr_group_name == (*irg)->path) {
-            for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
-                if (instrument_attr_name == (*ira)->name) {
-                    Retrieve_H5_Attr_Value(*ira, (*irg)->path);
-                    string attr_value((*ira)->value.begin(), (*ira)->value.end());
+    for (const auto &grp:this->groups) {
+        if (eos5_fattr_group_name == grp->path) {
+            for (const auto &attr:grp->attrs) {
+                if (instrument_attr_name == attr->name) {
+                    Retrieve_H5_Attr_Value(attr, grp->path);
+                    string attr_value(attr->value.begin(), attr->value.end());
                     if ("OMI" == attr_value) {
                         this->isaura = true;
                         this->aura_name = OMI;
