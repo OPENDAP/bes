@@ -142,6 +142,7 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
         if(Debug) cerr << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
@@ -179,20 +180,42 @@ public:
 
 
     void get_remote_node_test() {
-        if(debug) cerr << endl;
+
         // note: the following path must end with "/" in order for the scraper to think
         // it's a catalog/directory link and not an item or file
         string url = "http://test.opendap.org/data/httpd_catalog/";
         HttpdDirScraper hds;
-        bes::CatalogNode *node = 0;
+        bes::CatalogNode *node = nullptr;
+        unsigned int expected_node_count = 2;
+        unsigned int expected_leaf_count = 2;
+
         try {
             if(debug) cerr << prolog << "Scraping '" << url << "'" << endl;
 
             node = hds.get_node(url,"/data/httpd_catalog/");
-            if(debug) cerr << prolog << "Found " <<  node->get_leaf_count() << " leaves and " << node->get_node_count() << " nodes." << endl;
+            if(debug) {
+
+                if(debug) cerr << prolog << "Found " <<  node->get_node_count() << " nodes. " <<
+                        "Expected: " << expected_node_count << endl;
+                unsigned long i = 0;
+                auto it = node->nodes_begin();
+                while(it != node->nodes_end()){
+                    bes::CatalogItem *node = *it++;
+                    cerr << prolog << "    Node["<< i << "]: " << node->get_name() << endl;
+                }
+
+                cerr << prolog << "Found " << node->get_leaf_count() << " leaves. " <<
+                     "Expected: " << expected_leaf_count << endl;
+                it = node->leaves_begin();
+                i = 0;
+                while(it != node->leaves_end()){
+                    bes::CatalogItem *leaf = *it++;
+                    cerr << prolog << "    Leaf["<< i << "]: " << leaf->get_name() << endl;
+                }
+            }
 
             // Node items...
-            CPPUNIT_ASSERT(node->get_node_count() == 2);
+            CPPUNIT_ASSERT(node->get_node_count() == expected_node_count);
             bes::CatalogNode::item_iter it = node->nodes_begin();
             bes::CatalogItem *first_node = *it++;
             if(debug) cerr << prolog << "first_node: " << first_node->get_name() << endl;
@@ -203,7 +226,7 @@ public:
             CPPUNIT_ASSERT(second_node->get_name() == "subdir2");
 
             // Leaf items...
-            CPPUNIT_ASSERT(node->get_leaf_count() == 2);
+            CPPUNIT_ASSERT(node->get_leaf_count() == expected_leaf_count);
             it = node->leaves_begin();
             bes::CatalogItem *first_leaf = *it++;
             if(debug) cerr << prolog << "first_leaf: " << first_leaf->get_name() << endl;
@@ -224,7 +247,6 @@ public:
     }
 
     void get_file_node_test() {
-        if(debug) cerr << endl;
 
         // note: the following path must end with "/" in order for the scraper to think
         // it's a catalog/directory link and not an item or file (even though it is a file...)

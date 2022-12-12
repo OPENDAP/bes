@@ -992,4 +992,4 @@ Dataset {
             Byte HDU_2_IMAGE[NAXIS0 = 1024];
         } HDU_2;
     } c;
-} 20060308.172859.mk4.cpb.fts;
+} removed versionmk4.cpb.fts;
