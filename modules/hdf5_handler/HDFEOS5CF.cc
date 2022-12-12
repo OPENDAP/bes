@@ -1829,9 +1829,9 @@ bool EOS5File::Check_Augmentation_Status()
     bool aug_status = false;
     int num_aug_eos5grp = 0;
 
-    for (auto irg = this->eos5cfgrids.begin(); irg != this->eos5cfgrids.end(); ++irg) {
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            bool is_augmented = Check_Augmented_Var_Candidate(*irg, *irv, GRID);
+    for (const auto &cfgrid:this->eos5cfgrids) {
+        for (const auto &var:this->vars) {
+            bool is_augmented = Check_Augmented_Var_Candidate(cfgrid, var, GRID);
             if (true == is_augmented) {
                 num_aug_eos5grp++;
                 break;
@@ -1839,9 +1839,9 @@ bool EOS5File::Check_Augmentation_Status()
         }
     }
 
-    for (auto irg = this->eos5cfswaths.begin(); irg != this->eos5cfswaths.end(); ++irg) {
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            bool is_augmented = Check_Augmented_Var_Candidate(*irg, *irv, SWATH);
+    for (const auto &cfswath:this->eos5cfswaths) {
+        for (const auto &var:this->vars) {
+            bool is_augmented = Check_Augmented_Var_Candidate(cfswath, var, SWATH);
             if (true == is_augmented) {
                 num_aug_eos5grp++;
                 break;
@@ -1850,9 +1850,9 @@ bool EOS5File::Check_Augmentation_Status()
         }
     }
 
-    for (auto irg = this->eos5cfzas.begin(); irg != this->eos5cfzas.end(); ++irg) {
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            bool is_augmented = Check_Augmented_Var_Candidate(*irg, *irv, ZA);
+    for (const auto &cfza:this->eos5cfzas) {
+        for (const auto &var:this->vars) {
+            bool is_augmented = Check_Augmented_Var_Candidate(cfza, var, ZA);
             if (true == is_augmented) {
                 num_aug_eos5grp++;
                 break;
@@ -1951,8 +1951,8 @@ bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos
 void EOS5File::Handle_Augmented_Grid_CVar() 
 {
     BESDEBUG("h5", "Coming to Handle_Augmented_Grid_CVar()"<<endl);
-    for (auto irv = this->eos5cfgrids.begin(); irv != this->eos5cfgrids.end(); ++irv)
-        Handle_Single_Augment_CVar(*irv, GRID);
+    for (const auto &cfgrid:this->eos5cfgrids)
+        Handle_Single_Augment_CVar(cfgrid, GRID);
 }
 
 // Handle the coordinate variables for the single HDF-EOS5 objects(grid,swath,zonal average) for an augmented file
@@ -2004,8 +2004,8 @@ void EOS5File::Handle_Single_Augment_CVar(T* cfeos5data, EOS5Type eos5type)
         } // end of for (auto irv = this->vars.begin();....
     } // end of for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its)
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        its = tempvardimnamelist.find((*irv)->cfdimname);
+    for (const auto &cvar:this->cvars) {
+        its = tempvardimnamelist.find(cvar->cfdimname);
         if (its != tempvardimnamelist.end()) tempvardimnamelist.erase(its);
     }
 
@@ -2211,8 +2211,9 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_OwnLatLon(const EOS5CFGrid *cf
         } // <if (GRID == Get_Var_EOS5_Type(*irv) ...>
     } // for (auto irv = this->vars.begin() ...
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        its = tempvardimnamelist.find((*irv)->cfdimname);
+    for (const auto &cvar:this->cvars) {
+
+        its = tempvardimnamelist.find(cvar->cfdimname);
         if (its != tempvardimnamelist.end()) tempvardimnamelist.erase(its);
 
     }
@@ -2457,8 +2458,8 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar()
     // If the multiple grids don't share the same lat/lon according to the parameters
     // We then assume that each single grid has its own lat/lon, just loop through each grid.
     if (true == this->grids_multi_latloncvs) {
-        for (auto irv = this->eos5cfgrids.begin(); irv != this->eos5cfgrids.end(); ++irv)
-            Handle_Single_Nonaugment_Grid_CVar(*irv);
+        for (const auto &cfgrid:this->eos5cfgrids)
+            Handle_Single_Nonaugment_Grid_CVar(cfgrid);
     }
 
     // We would like to check if lat/lon pairs provide for all grids
@@ -2517,8 +2518,8 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar()
         else {
 
             this->grids_multi_latloncvs = true;
-            for (auto irv = this->eos5cfgrids.begin(); irv != this->eos5cfgrids.end(); ++irv)
-                Handle_Single_Nonaugment_Grid_CVar(*irv);
+            for (const auto &cfgrid:this->eos5cfgrids)
+                Handle_Single_Nonaugment_Grid_CVar(cfgrid);
         }
     }
 }
@@ -2535,15 +2536,15 @@ void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid)
     bool find_xdim = false;
     bool find_ydim = false;
 
-    for (auto it = cfgrid->vardimnames.begin(); it != cfgrid->vardimnames.end(); ++it) {
-        string xydimname_candidate = HDF5CFUtil::obtain_string_after_lastslash(*it);
+    for (const auto &vardimname:cfgrid->vardimnames) {
+        string xydimname_candidate = HDF5CFUtil::obtain_string_after_lastslash(vardimname);
         if ("XDim" == xydimname_candidate) {
             find_xdim = true;
-            xdimname = *it;
+            xdimname = vardimname; 
         }
         else if ("YDim" == xydimname_candidate) {
             find_ydim = true;
-            ydimname = *it;
+            ydimname = vardimname;
         }
         if (find_xdim && find_ydim) break;
     } // for (auto it = cfgrid->vardimnames.begin() ...
@@ -2551,13 +2552,13 @@ void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid)
     if (false == find_xdim || false == find_ydim)
     throw2("Cannot find Dimension name that includes XDim or YDim in the grid ", cfgrid->name);
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        if (GRID == Get_Var_EOS5_Type(*irv)) {
-            for (auto id = (*irv)->dims.begin(); id != (*irv)->dims.end(); ++id) {
-                string xydimname_candidate = HDF5CFUtil::obtain_string_after_lastslash((*id)->name);
+    for (const auto &var:this->vars) {
+        if (GRID == Get_Var_EOS5_Type(var)) {
+            for (const auto &dim:var->dims) {
+                string xydimname_candidate = HDF5CFUtil::obtain_string_after_lastslash(dim->name);
                 if ("XDim" == xydimname_candidate)
-                    (*id)->name = xdimname;
-                else if ("YDim" == xydimname_candidate) (*id)->name = ydimname;
+                    dim->name = xdimname;
+                else if ("YDim" == xydimname_candidate) dim->name = ydimname;
             }
         }
     }
@@ -2632,7 +2633,7 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
                 this->vars.erase(irv);
                 break;
             } // if ((var_swath_name == cfswath->name) && ...
-        } // if (SWATH == Get_Var_EOS5_Type(*irv) &&
+        } // if SWATH 
     } // for (auto irv = this->vars.begin() ...
 
     // Finish this variable, remove it from the list.
@@ -2640,8 +2641,8 @@ void EOS5File::Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
     bool find_lat_dim = false;
     for (auto its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
 
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if (((*irv)->name == "Latitude") && (*irv)->cfdimname == (*its)) {
+        for (const auto &cvar:this->cvars) {
+            if ((cvar->name == "Latitude") && cvar->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
                 find_lat_dim = true;
                 break;
@@ -2770,8 +2771,8 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
     // Remove the dim. of latitude 
     find_lat = false;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if (((*irv)->name == "Latitude") && (*irv)->cfdimname == (*its)) {
+        for (const auto &cvar:this->cvars) {
+            if ((cvar->name == "Latitude") && cvar->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
                 find_lat = true;
                 break;
@@ -2785,9 +2786,9 @@ void EOS5File::Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_a
     find_lon = false;
     for (its = tempvardimnamelist.begin(); its != tempvardimnamelist.end(); ++its) {
 
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
+        for (const auto &cvar:this->cvars) {
 
-            if (((*irv)->name == "Longitude") && (*irv)->cfdimname == (*its)) {
+            if ((cvar->name == "Longitude") && cvar->cfdimname == (*its)) {
                 tempvardimnamelist.erase(its);
                 find_lon = true;
                 break;
@@ -2880,8 +2881,8 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
     } // for (its = tempvardimnamelist.begin()...
 
     // Remove the dimension name that finds the cooresponding variables from the tempvardimlist.
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        its = tempvardimnamelist.find((*irv)->cfdimname);
+    for (const auto &cvar:this->cvars) {
+        its = tempvardimnamelist.find(cvar->cfdimname);
         if (its != tempvardimnamelist.end()) tempvardimnamelist.erase(its);
     }
 
@@ -2890,8 +2891,8 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
     Handle_Special_NonLatLon_Swath_CVar(cfswath, tempvardimnamelist);
 
     // Remove the dimension name that finds the cooresponding variables from the tempvardimlist.
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        its = tempvardimnamelist.find((*irv)->cfdimname);
+    for (const auto &cvar:this->cvars) {
+        its = tempvardimnamelist.find(cvar->cfdimname);
         if (its != tempvardimnamelist.end()) tempvardimnamelist.erase(its);
     }
 
@@ -2906,7 +2907,7 @@ void EOS5File::Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& te
 }
 
 // Handle special non-lat/lon coordinate variables for swath.
-void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<string>& tempvardimnamelist)
+void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const set<string>& tempvardimnamelist)
     
 {
 
@@ -2926,22 +2927,22 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
         Group *vc_group = nullptr;
 
         // 1. Check if having the "VerticalCoordinate" attribute in this swath and the attribute is "Pressure".
-        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-            if (eos5_swath_group_name == (*irg)->path) {
-                for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
-                    if (eos5_vc_attr_name == (*ira)->name) {
-                        Retrieve_H5_Attr_Value(*ira, (*irg)->path);
-                        string attr_value((*ira)->value.begin(), (*ira)->value.end());
+        for (const auto &grp:this->groups) {
+            if (eos5_swath_group_name == grp->path) {
+                for (const auto &attr:grp->attrs) {
+                    if (eos5_vc_attr_name == attr->name) {
+                        Retrieve_H5_Attr_Value(attr, grp->path);
+                        string attr_value(attr->value.begin(), attr->value.end());
                         if (eos5_pre_attr_name == attr_value) {
                             has_vc_attr = true;
-                            vc_group = *irg;
+                            vc_group = grp;
                             break;
                         }
                     }
-                } // for (vector<Attribute *>:: iterator ira =(*irg)->attrs.begin(); ...
+                } // for (vector<Attribute *>:: iterator ira =grp->attrs.begin(); ...
                 if (true == has_vc_attr) break;
-            } // if (eos5_swath_group_name ==(*irg)->path)
-        } // for (auto irg = this->groups.begin(); ...
+            } // if (eos5_swath_group_name ==grp->path)
+        } // for (const auto &grp: ...
 
         // 2. Check if having the "Pressure" attribute and if the attribute size is 1 less than
         // the dimension size of "nLevels". If yes,
@@ -2972,9 +2973,8 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
                     // one additional nLevels.
                     // So essentially the following loop doesn't hurt the performance.
                     // KY 2012-2-1
-                    for (auto ira = vc_group->attrs.begin(); ira != vc_group->attrs.end();
-                        ++ira) {
-                        if ((eos5_pre_attr_name == (*ira)->name) && ((*ira)->count == (dimsize_candidate - 1))) {
+                    for (const auto &attr:vc_group->attrs) {
+                        if ((eos5_pre_attr_name == attr->name) && (attr->count == (dimsize_candidate - 1))) {
 
                             // Should change the attr_value from char type to float type when reading the data
                             // Here just adding a coordinate variable by using this name.
@@ -2990,7 +2990,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
                             Create_Added_Var_NewName_FullPath(SWATH, cfswath->name, EOS5cvar->name, EOS5cvar->newname,
                                 EOS5cvar->fullpath);
                             EOS5cvar->rank = 1;
-                            EOS5cvar->dtype = (*ira)->dtype;
+                            EOS5cvar->dtype = attr->dtype;
                             auto eos5cvar_dim = new Dimension(dimsize_candidate);
                             eos5cvar_dim->name = *it;
                             if (1 == this->eos5cfswaths.size())
@@ -3005,8 +3005,8 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
 
                             // Save this cv to the cv vector
                             this->cvars.push_back(EOS5cvar);
-                        } // if ((eos5_pre_attr_name == (*ira)->name) && ...
-                    } // for (auto ira = vc_group->attrs.begin();
+                        } // if ((eos5_pre_attr_name == attr->name) && ...
+                    } // for auto attr
                 } // if ((*it).find(dimname_candidate) != string::npos)
             } // for (it = tempvardimnamelist.begin(); ...
         } // if (true == has_vc_attr) ...
@@ -3021,8 +3021,8 @@ void EOS5File::Handle_Za_CVar(bool isaugmented)
     // We are not supporting non-augmented zonal average HDF-EOS5 product now. KY:2012-1-20
     if (false == isaugmented) return;
 
-    for (auto irv = this->eos5cfzas.begin(); irv != this->eos5cfzas.end(); ++irv)
-        Handle_Single_Augment_CVar(*irv, ZA);
+    for (const auto &cfza:this->eos5cfzas)
+        Handle_Single_Augment_CVar(cfza, ZA);
 
 }
 
@@ -3042,11 +3042,11 @@ void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening()
         || ((num_swaths > 0) && (num_zas > 0))) mixed_eos5typefile = true;
 
     // This file doesn't mix swath, grid and zonal average
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv)
-        Adjust_Per_Var_Dim_NewName_Before_Flattening(*irv, mixed_eos5typefile, num_grids, num_swaths, num_zas);
+    for (const auto &var:this->vars)
+        Adjust_Per_Var_Dim_NewName_Before_Flattening(var, mixed_eos5typefile, num_grids, num_swaths, num_zas);
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv)
-        Adjust_Per_Var_Dim_NewName_Before_Flattening(*irv, mixed_eos5typefile, num_grids, num_swaths, num_zas);
+    for (const auto &cvar:this->cvars)
+        Adjust_Per_Var_Dim_NewName_Before_Flattening(cvar, mixed_eos5typefile, num_grids, num_swaths, num_zas);
 #if 0
     for (auto irv = this->cvars.begin();
         irv != this->cvars.end(); ++irv) {
@@ -3096,11 +3096,11 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
             // will handle the current HDF-EOS5 products. Improvement for complicate HDF-EOS5 products
             // will be supported as demanded in the future. KY 2012-1-26
             if (num_grids > 1) {
-                for (auto ird = var->dims.begin(); ird != var->dims.end(); ird++) {
-                    if ((*ird)->newname.size() <= eos5typestr.size())
-                        throw5("The size of the dimension new name ", (*ird)->newname, "of variable ", var->newname,
+                for (auto &dim:var->dims) {
+                    if (dim->newname.size() <= eos5typestr.size())
+                        throw5("The size of the dimension new name ", dim->newname, "of variable ", var->newname,
                             " is too small");
-                    (*ird)->newname = (*ird)->newname.substr(eos5typestr.size());
+                    dim->newname = dim->newname.substr(eos5typestr.size());
                 }
             }
         } // if(false == mixed_eos5type)
@@ -3116,11 +3116,11 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
         if (false == mixed_eos5type) {
             var->newname = ((1 == num_swaths) ? var->name : var->newname.substr(eos5typestr.size()));
             if (num_swaths > 1) {
-                for (auto ird = var->dims.begin(); ird != var->dims.end(); ird++) {
-                    if ((*ird)->newname.size() <= eos5typestr.size())
-                        throw5("The size of the dimension new name ", (*ird)->newname, "of variable ", var->newname,
+                for (auto &dim:var->dims) {
+                    if (dim->newname.size() <= eos5typestr.size())
+                        throw5("The size of the dimension new name ", dim->newname, "of variable ", var->newname,
                             " is too small");
-                    (*ird)->newname = (*ird)->newname.substr(eos5typestr.size());
+                    dim->newname = dim->newname.substr(eos5typestr.size());
                 }
             }
         }
@@ -3135,11 +3135,11 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
         if (false == mixed_eos5type) {
             var->newname = ((1 == num_zas) ? var->name : var->newname.substr(eos5typestr.size()));
             if (num_zas > 1) {
-                for (auto ird = var->dims.begin(); ird != var->dims.end(); ird++) {
-                    if ((*ird)->newname.size() <= eos5typestr.size())
-                        throw5("The size of the dimension new name ", (*ird)->newname, "of variable ", var->newname,
+                for (auto &dim:var->dims) {
+                    if (dim->newname.size() <= eos5typestr.size())
+                        throw5("The size of the dimension new name ", dim->newname, "of variable ", var->newname,
                             " is too small");
-                    (*ird)->newname = (*ird)->newname.substr(eos5typestr.size());
+                    dim->newname = dim->newname.substr(eos5typestr.size());
                 }
             }
         }
@@ -3165,7 +3165,7 @@ void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name()
     // the variable newname and the dimension newname
     // This case won't happen for the current version, but may occur
     // if curviliner grid exists in the file. KY 2012-1-26
-    if ((this->eos5cfgrids.size() > 1) && (0 == this->eos5cfswaths.size()) && (0 == this->eos5cfzas.size())
+    if ((this->eos5cfgrids.size() > 1) && (true == this->eos5cfswaths.empty()) && (true == this->eos5cfzas.empty())
         && (false == this->grids_multi_latloncvs)) {
 
         // We would like to condense the dimension name and the coordinate variable name for lat/lon.
@@ -3173,32 +3173,32 @@ void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name()
         string lat_dimnewname;
         string lon_dimname;
         string lon_dimnewname;
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if ("lat" == (*irv)->name || "Latitude" == (*irv)->name) {
-                (*irv)->newname = (*irv)->name;
-                lat_dimnewname = (((*irv)->dims)[0])->newname;
+        for (const auto &cvar:this->cvars) {
+            if ("lat" == cvar->name || "Latitude" == cvar->name) {
+                cvar->newname = cvar->name;
+                lat_dimnewname = ((cvar->dims)[0])->newname;
                 lat_dimnewname = HDF5CFUtil::obtain_string_after_lastslash(lat_dimnewname);
                 if ("" == lat_dimnewname)
-                throw2("/ is not included in the dimension new name ", (((*irv)->dims)[0])->newname);
-                (((*irv)->dims)[0])->newname = lat_dimnewname;
-                lat_dimname = (*irv)->cfdimname;
+                throw2("/ is not included in the dimension new name ", ((cvar->dims)[0])->newname);
+                ((cvar->dims)[0])->newname = lat_dimnewname;
+                lat_dimname = cvar->cfdimname;
             }
-            else if ("lon" == (*irv)->name || "Longitude" == (*irv)->name) {
-                (*irv)->newname = (*irv)->name;
-                lon_dimnewname = (((*irv)->dims)[0])->newname;
+            else if ("lon" == cvar->name || "Longitude" == cvar->name) {
+                cvar->newname = cvar->name;
+                lon_dimnewname = ((cvar->dims)[0])->newname;
                 lon_dimnewname = HDF5CFUtil::obtain_string_after_lastslash(lon_dimnewname);
                 if ("" == lon_dimnewname)
-                throw2("/ is not included in the dimension new name ", (((*irv)->dims)[0])->newname);
-                (((*irv)->dims)[0])->newname = lon_dimnewname;
-                lon_dimname = (*irv)->cfdimname;
+                throw2("/ is not included in the dimension new name ", ((cvar->dims)[0])->newname);
+                ((cvar->dims)[0])->newname = lon_dimnewname;
+                lon_dimname = cvar->cfdimname;
             }
-        } // for (auto irv = this->cvars.begin(); ...
+        } // for 
 
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
-                if ((*ird)->name == lat_dimname)
-                    (*ird)->newname = lat_dimnewname;
-                else if ((*ird)->name == lon_dimname) (*ird)->newname = lon_dimnewname;
+        for (auto &var:this->vars) {
+            for (auto &dim:var->dims) {
+                if (dim->name == lat_dimname)
+                    dim->newname = lat_dimnewname;
+                else if (dim->name == lon_dimname) dim->newname = lon_dimnewname;
             }
         }
     } // if ((this->eos5cfgrids.size() > 1) && ...
@@ -3211,19 +3211,18 @@ void EOS5File::Flatten_Obj_Name(bool include_attr)
     BESDEBUG("h5", "Coming to Flatten_Obj_Name()"<<endl);
     File::Flatten_Obj_Name(include_attr);
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        (*irv)->newname = get_CF_string((*irv)->newname);
+    for (auto &cvar:this->cvars) {
+        cvar->newname = get_CF_string(cvar->newname);
 
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
-            (*ird)->newname = get_CF_string((*ird)->newname);
-        }
+        for (auto &dim:cvar->dims) 
+            dim->newname = get_CF_string(dim->newname);
 
         if (true == include_attr) {
-            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                (*ira)->newname = File::get_CF_string((*ira)->newname);
+            for (auto &attr:cvar->attrs) {
+                attr->newname = File::get_CF_string(attr->newname);
             }
         }
-    } // for (auto irv = this->cvars.begin(); ...
+    } // end for 
 }
 
 // Handle Object Name clashing
@@ -3261,8 +3260,8 @@ void EOS5File::Handle_EOS5CVar_AttrNameClashing()
     BESDEBUG("h5", "Coming to Handle_EOS5CVar_AttrNameClashing()"<<endl);
     set<string> objnameset;
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        Handle_General_NameClashing(objnameset, (*irv)->attrs);
+    for (const auto &cvar:this->cvars) {
+        Handle_General_NameClashing(objnameset, cvar->attrs);
         objnameset.clear();
     }
 }
@@ -3299,11 +3298,11 @@ template<class T> void EOS5File::EOS5Handle_General_NameClashing(set<string>&obj
 
     // Now change the clashed elements to unique elements; 
     // Generate the set which has the same size as the original vector.
-    for (auto ivs = clashnamelist.begin(); ivs != clashnamelist.end(); ++ivs) {
+    for (auto &clashname:clashnamelist) {
         int clash_index = 1;
-        string temp_clashname = *ivs + '_';
+        string temp_clashname = clashname + '_';
         HDF5CFUtil::gen_unique_name(temp_clashname, objnameset, clash_index);
-        *ivs = temp_clashname;
+        clashname = temp_clashname;
     }
 
     // Now go back to the original vector, make it unique.
@@ -3325,13 +3324,13 @@ void EOS5File::Handle_DimNameClashing()
     pair<set<string>::iterator, bool> setret;
 
     // First: Generate the dimset/dimvar based on coordinate variables.
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+    for (const auto &cvar:this->cvars) {
+        for (const auto &dim:cvar->dims) {
 #if 0
             //setret = dimnameset.insert((*ird)->newname);
 #endif
-            setret = dimnameset.insert((*ird)->name);
-            if (setret.second) vdims.push_back(*ird);
+            setret = dimnameset.insert(dim->name);
+            if (setret.second) vdims.push_back(dim);
         }
     }
 
@@ -3339,13 +3338,13 @@ void EOS5File::Handle_DimNameClashing()
     // variables. For now, we will assume no such cases.
     // Actually, we find such a case in our fake testsuite. So we need to fix it.
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+    for (const auto &var:this->vars) {
+        for (const auto &dim:var->dims) {
 #if 0
             //setret = dimnameset.insert((*ird)->newname);
 #endif
-            setret = dimnameset.insert((*ird)->name);
-            if (setret.second) vdims.push_back(*ird);
+            setret = dimnameset.insert(dim->name);
+            if (setret.second) vdims.push_back(dim);
         }
     }
 
@@ -3359,20 +3358,20 @@ void EOS5File::Handle_DimNameClashing()
     EOS5Handle_General_NameClashing(dimnewnameset, vdims);
 
     // Third: Make dimname_to_dimnewname map
-    for (auto ird = vdims.begin(); ird != vdims.end(); ++ird) {
-        mapret = dimname_to_dimnewname.insert(pair<string, string>((*ird)->name, (*ird)->newname));
+    for (const auto &dim:vdims) {
+        mapret = dimname_to_dimnewname.insert(pair<string, string>(dim->name, dim->newname));
         if (false == mapret.second)
-        throw4("The dimension name ", (*ird)->name, " should map to ", (*ird)->newname);
+        throw4("The dimension name ", dim->name, " should map to ", dim->newname);
     }
 
     // Fourth: Change the original dimension new names to the unique dimension new names
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv)
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird)
-            (*ird)->newname = dimname_to_dimnewname[(*ird)->name];
+    for (auto &cvar:this->cvars)
+        for (auto &dim:cvar->dims)
+            dim->newname = dimname_to_dimnewname[dim->name];
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv)
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird)
-            (*ird)->newname = dimname_to_dimnewname[(*ird)->name];
+    for (auto &var:this->vars)
+        for (auto &dim:var->dims)
+            dim->newname = dimname_to_dimnewname[dim->name];
 
 }
 
@@ -3383,16 +3382,16 @@ void EOS5File::Set_COARDS_Status()
 
     BESDEBUG("h5", "Coming to Set_COARDS_Status()"<<endl);
     iscoard = true;
-    for (auto irg = this->eos5cfgrids.begin(); irg != this->eos5cfgrids.end(); ++irg) {
-        if (false == (*irg)->has_1dlatlon) {
-            if (false == (*irg)->has_nolatlon || (HE5_GCTP_GEO != (*irg)->eos5_projcode)) iscoard = false;
+    for (const auto &cfgrid:this->eos5cfgrids) {
+        if (false == cfgrid->has_1dlatlon) {
+            if (false == cfgrid->has_nolatlon || (HE5_GCTP_GEO != cfgrid->eos5_projcode)) iscoard = false;
             break;
         }
     }
 
     if (true == iscoard) {
-        for (auto irg = this->eos5cfswaths.begin(); irg != this->eos5cfswaths.end(); ++irg) {
-            if (false == (*irg)->has_1dlatlon) {
+        for (const auto &cfswath:this->eos5cfswaths) {
+            if (false == cfswath->has_1dlatlon) {
                 iscoard = false;
                 break;
             }
@@ -3420,19 +3419,17 @@ void EOS5File::Adjust_Aura_Attr_Name()
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Name() for Aura"<<endl);
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-            if (eos5_to_cf_attr_map.find((*ira)->name) != eos5_to_cf_attr_map.end()) (*ira)->newname =
-                eos5_to_cf_attr_map[(*ira)->name];
-
+    for (auto &var:this->vars) {
+        for (auto &attr:var->attrs) {
+            if (eos5_to_cf_attr_map.find(attr->name) != eos5_to_cf_attr_map.end()) 
+                attr->newname = eos5_to_cf_attr_map[attr->name];
         }
     }
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-            if (eos5_to_cf_attr_map.find((*ira)->name) != eos5_to_cf_attr_map.end()) (*ira)->newname =
-                eos5_to_cf_attr_map[(*ira)->name];
-
+    for (auto &var:this->cvars) {
+        for (auto &attr:var->attrs) {
+            if (eos5_to_cf_attr_map.find(attr->name) != eos5_to_cf_attr_map.end()) 
+                attr->newname = eos5_to_cf_attr_map[attr->name];
         }
     }
 }
@@ -3449,27 +3446,27 @@ void EOS5File::Adjust_Aura_Attr_Value()
     // This is for speical NASA requests only for Aura. 
     // We need to pay attention if things get changed later.
     string time_cf_units_value = "seconds since 1993-01-01";
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); irv++) {
-        if (((*irv)->name == "Time") || ((*irv)->name == "nTimes")) {
-            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ira++) {
-                if ("units" == (*ira)->name) {
-                    Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
-                    string units_value((*ira)->value.begin(), (*ira)->value.end());
+    for (const auto &var:this->vars) {
+        if ((var->name == "Time") || (var->name == "nTimes")) {
+            for (const auto &attr:var->attrs) {
+                if ("units" == attr->name) {
+                    Retrieve_H5_Attr_Value(attr, var->fullpath);
+                    string units_value(attr->value.begin(), attr->value.end());
                     if (time_cf_units_value != units_value) {
 
                         units_value = time_cf_units_value;
-                        (*ira)->value.resize(units_value.size());
-                        if (H5FSTRING == (*ira)->dtype) (*ira)->fstrsize = units_value.size();
+                        attr->value.resize(units_value.size());
+                        if (H5FSTRING == attr->dtype) attr->fstrsize = units_value.size();
                         // strsize is used by both fixed and variable length strings.
-                        (*ira)->strsize.resize(1);
-                        (*ira)->strsize[0] = units_value.size();
+                        attr->strsize.resize(1);
+                        attr->strsize[0] = units_value.size();
 
-                        copy(units_value.begin(), units_value.end(), (*ira)->value.begin());
+                        copy(units_value.begin(), units_value.end(), attr->value.begin());
                     }
                     break;
-                } // if ("units" == (*ira)->name)
-            } // for(vector <Attribute*>::iterator ira = (*irv)->attrs.begin();
-        } // if(((*irv)->name == "Time") || ((*irv)->name == "nTimes"))
+                } // if ("units" == attr->name)
+            } // for(vector <Attribute*>::iterator ira = var->attrs.begin();
+        } // if((var->name == "Time") || (var->name == "nTimes"))
     } // for (auto irv = this->vars.begin()...
 }
 
@@ -3485,25 +3482,25 @@ void EOS5File::Handle_Aura_Special_Attr()
         const string PCF1_attr_name = "PCF1";
         bool find_group = false;
         bool find_attr = false;
-        for (auto it_g = this->groups.begin(); it_g != this->groups.end(); ++it_g) {
-            if (File_attr_group_path == (*it_g)->path) {
+        for (const auto &grp:this->groups) {
+            if (File_attr_group_path == grp->path) {
                 find_group = true;
-                for (auto ira = (*it_g)->attrs.begin(); ira != (*it_g)->attrs.end(); ++ira) {
-                    if (PCF1_attr_name == (*ira)->name) {
-                        Retrieve_H5_Attr_Value(*ira, (*it_g)->path);
-                        string pcf_value((*ira)->value.begin(), (*ira)->value.end());
+                for (const auto &attr:grp->attrs) {
+                    if (PCF1_attr_name == attr->name) {
+                        Retrieve_H5_Attr_Value(attr, grp->path);
+                        string pcf_value(attr->value.begin(), attr->value.end());
                         HDF5CFDAPUtil::replace_double_quote(pcf_value);
-                        (*ira)->value.resize(pcf_value.size());
-                        if (H5FSTRING == (*ira)->dtype) (*ira)->fstrsize = pcf_value.size();
+                        attr->value.resize(pcf_value.size());
+                        if (H5FSTRING == attr->dtype) attr->fstrsize = pcf_value.size();
                         // strsize is used by both fixed and variable length strings.
-                        (*ira)->strsize.resize(1);
-                        (*ira)->strsize[0] = pcf_value.size();
+                        attr->strsize.resize(1);
+                        attr->strsize[0] = pcf_value.size();
 
-                        copy(pcf_value.begin(), pcf_value.end(), (*ira)->value.begin());
+                        copy(pcf_value.begin(), pcf_value.end(), attr->value.begin());
                         find_attr = true;
                         break;
-                    } // if (PCF1_attr_name == (*ira)->name)  
-                } // for (auto ira = (*it_g)->attrs.begin()
+                    } // if (PCF1_attr_name == attr->name)  
+                } // for (auto attr
             } // if (File_attr_group_path == (*it_g)->path)
             if (true == find_group && true == find_attr) break;
         } // end of for it_g ...
@@ -3521,40 +3518,40 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr()
     string lon_cf_unit_attrvalue = "degrees_east";
     string tes_cf_pre_attrvalue = "hPa";
 
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        switch ((*irv)->cvartype) {
+    for (const auto &cvar:this->cvars) {
+        switch (cvar->cvartype) {
         case CV_EXIST:
         case CV_MODIFY: {
-            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                if ((*ira)->newname == unit_attrname) {
-                    Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
-                    string units_value((*ira)->value.begin(), (*ira)->value.end());
+            for (const auto &attr:cvar->attrs) {
+                if (attr->newname == unit_attrname) {
+                    Retrieve_H5_Attr_Value(attr, cvar->fullpath);
+                    string units_value(attr->value.begin(), attr->value.end());
                     if ((lat_cf_unit_attrvalue != units_value)
-                        && (((*irv)->name == "Latitude") || ((this->eos5cfzas.empty() == false) && ((*irv)->name == "nLats")))) {
+                        && ((cvar->name == "Latitude") || ((this->eos5cfzas.empty() == false) && (cvar->name == "nLats")))) {
                         units_value = lat_cf_unit_attrvalue;
 #if 0
 //cerr<<"coming to obtain the correct units_value: "<<units_value <<endl;
-//cerr<<"cvar name is "<<(*irv)->newname <<endl;
+//cerr<<"cvar name is "<<cvar->newname <<endl;
 #endif
-                        (*ira)->value.resize(units_value.size());
-                        if (H5FSTRING == (*ira)->dtype) (*ira)->fstrsize = units_value.size();
+                        attr->value.resize(units_value.size());
+                        if (H5FSTRING == attr->dtype) attr->fstrsize = units_value.size();
                         // strsize is used by both fixed and variable length strings.
-                        (*ira)->strsize.resize(1);
-                        (*ira)->strsize[0] = units_value.size();
-                        copy(units_value.begin(), units_value.end(), (*ira)->value.begin());
+                        attr->strsize.resize(1);
+                        attr->strsize[0] = units_value.size();
+                        copy(units_value.begin(), units_value.end(), attr->value.begin());
                     }
-                    else if ((lon_cf_unit_attrvalue != units_value) && (*irv)->name == "Longitude") {
+                    else if ((lon_cf_unit_attrvalue != units_value) && cvar->name == "Longitude") {
                         units_value = lon_cf_unit_attrvalue;
-                        (*ira)->value.resize(units_value.size());
-                        if (H5FSTRING == (*ira)->dtype) (*ira)->fstrsize = units_value.size();
+                        attr->value.resize(units_value.size());
+                        if (H5FSTRING == attr->dtype) attr->fstrsize = units_value.size();
                         // strsize is used by both fixed and variable length strings.
-                        (*ira)->strsize.resize(1);
-                        (*ira)->strsize[0] = units_value.size();
+                        attr->strsize.resize(1);
+                        attr->strsize[0] = units_value.size();
 
-                        copy(units_value.begin(), units_value.end(), (*ira)->value.begin());
+                        copy(units_value.begin(), units_value.end(), attr->value.begin());
                     }
                     break;
-                } // if ((*ira)->newname ==unit_attrname)
+                } // if (attr->newname ==unit_attrname)
             }
         }
             break;
@@ -3562,35 +3559,35 @@ void EOS5File::Handle_EOS5CVar_Unit_Attr()
         case CV_LAT_MISS: {
             auto attr = new Attribute();
             Add_Str_Attr(attr, unit_attrname, lat_cf_unit_attrvalue);
-            (*irv)->attrs.push_back(attr);
+            cvar->attrs.push_back(attr);
         }
             break;
 
         case CV_LON_MISS: {
             auto attr = new Attribute();
             Add_Str_Attr(attr, unit_attrname, lon_cf_unit_attrvalue);
-            (*irv)->attrs.push_back(attr);
+            cvar->attrs.push_back(attr);
         }
             break;
 
         case CV_NONLATLON_MISS: {
             auto attr = new Attribute();
             Add_Str_Attr(attr, unit_attrname, nonll_cf_level_attrvalue);
-            (*irv)->attrs.push_back(attr);
+            cvar->attrs.push_back(attr);
         }
             break;
         case CV_SPECIAL: {
             if (true == this->isaura && TES == this->aura_name) {
                 auto attr = new Attribute();
                 Add_Str_Attr(attr, unit_attrname, tes_cf_pre_attrvalue);
-                (*irv)->attrs.push_back(attr);
+                cvar->attrs.push_back(attr);
             }
         }
             break;
         default:
             throw1("Non-supported Coordinate Variable Type.");
         } 
-    } // for (auto irv = this->cvars.begin() ...
+    } // for (auto cvar
 }
 
 void EOS5File::Add_EOS5_Grid_CF_Attr()  
@@ -3600,9 +3597,9 @@ void EOS5File::Add_EOS5_Grid_CF_Attr()
     bool has_eos5_grid_nongeo_proj = false;
 
     // Check if we have EOS5 grids that are not using the geographic projection.
-    for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-        if ((*irv)->cvartype == CV_LAT_MISS) {
-            if((*irv)->eos5_projcode !=HE5_GCTP_GEO) {
+    for (const auto &cvar:this->cvars) {
+        if (cvar->cvartype == CV_LAT_MISS) {
+            if(cvar->eos5_projcode !=HE5_GCTP_GEO) {
                 has_eos5_grid_nongeo_proj = true;
                 break;
             }
@@ -3614,9 +3611,8 @@ void EOS5File::Add_EOS5_Grid_CF_Attr()
         string conventions_attrname = "Conventions";
         string conventions_attrvalue = "CF-1.7";
         bool has_conventions_attr=false;
-        for(vector<HDF5CF::Attribute *>::const_iterator it_ra=this->root_attrs.begin();
-                it_ra!=this->root_attrs.end();it_ra++) {
-            if((*it_ra)->name==conventions_attrname){
+        for (const auto &root_attr:this->root_attrs) {
+            if(root_attr->name==conventions_attrname){
                 has_conventions_attr = true;
                 break;
             }
@@ -3642,23 +3638,23 @@ void EOS5File::Adjust_Dim_Name()
     if (false == this->iscoard)
         return;
     else {
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); irv++) {
-            if ((*irv)->dims.size() != 1)
-            throw3("Coard coordinate variable ", (*irv)->name, "is not 1D");
-            if ((*irv)->newname != (((*irv)->dims)[0]->newname)) {
-                ((*irv)->dims)[0]->newname = (*irv)->newname;
+        for (const auto &cvar:this->cvars) {
+            if (cvar->dims.size() != 1)
+                throw3("Coard coordinate variable ", cvar->name, "is not 1D");
+            if (cvar->newname != ((cvar->dims)[0]->newname)) {
+                (cvar->dims)[0]->newname = cvar->newname;
 
                 // For all variables that have this dimension,the dimension newname should also change.
-                for (auto irv2 = this->vars.begin(); irv2 != this->vars.end(); irv2++) {
-                    for (auto ird = (*irv2)->dims.begin(); ird != (*irv2)->dims.end(); ird++) {
+                for (const auto &var:this->vars) {
+                    for (const auto &dim:var->dims) {
                         // This is the key, the dimension name of this dimension 
                         // should be equal to the dimension name of the coordinate variable.
                         // Then the dimension name matches and the dimension name should be changed to
                         // the new dimension name.
-                        if ((*ird)->name == ((*irv)->dims)[0]->name) (*ird)->newname = ((*irv)->dims)[0]->newname;
+                        if (dim->name == (cvar->dims)[0]->name) dim->newname = (cvar->dims)[0]->newname;
                     }
                 }
-            }                        // if ((*irv)->newname != (((*irv)->dims)[0]->newname))
+            } // if (cvar->newname != ((cvar->dims)[0]->newname))
         } // for (auto irv = this->cvars.begin();
     } // else
 }
@@ -3673,55 +3669,55 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
         File::Add_Supplement_Attrs(add_path);
 
         // Adding variable original name(origname) and full path(fullpath)
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+        for (const auto &cvar:this->cvars) {
+            if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
                 auto attr = new Attribute();
-                const string varname = (*irv)->name;
+                const string varname = cvar->name;
                 const string attrname = "origname";
                 Add_Str_Attr(attr, attrname, varname);
-                (*irv)->attrs.push_back(attr);
+                cvar->attrs.push_back(attr);
             }
         }
 
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+        for (const auto &cvar:this->cvars) {
+            if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
                 // Turn off the fullnamepath attribute when zero_storage_size is 0.
                 // Use the BES key since quite a few testing cases will be affected.
                 // KY 2020-03-23
-                if((*irv)->zero_storage_size==false 
+                if(cvar->zero_storage_size==false 
                     || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
                     auto attr = new Attribute();
-                    const string varname = (*irv)->fullpath;
+                    const string varname = cvar->fullpath;
                     const string attrname = "fullnamepath";
                     Add_Str_Attr(attr, attrname, varname);
-                    (*irv)->attrs.push_back(attr);
+                    cvar->attrs.push_back(attr);
                 }
             }
         }
     } // if(true == add_path)
 
     if (true == this->iscoard) {
-        for (auto irv = this->cvars.begin(); irv != this->cvars.end(); ++irv) {
-            if (((*irv)->cvartype == CV_EXIST) || ((*irv)->cvartype == CV_MODIFY)) {
+        for (const auto &cvar:this->cvars) {
+            if ((cvar->cvartype == CV_EXIST) || (cvar->cvartype == CV_MODIFY)) {
                 auto attr = new Attribute();
                 const string attrname = "orig_dimname";
-                string orig_dimname = (((*irv)->dims)[0])->name;
+                string orig_dimname = ((cvar->dims)[0])->name;
                 orig_dimname = HDF5CFUtil::obtain_string_after_lastslash(orig_dimname);
                 if ("" == orig_dimname)
                     throw2("wrong dimension name ", orig_dimname);
                 if (orig_dimname.find("FakeDim") != string::npos) orig_dimname = "";
                 Add_Str_Attr(attr, attrname, orig_dimname);
-                (*irv)->attrs.push_back(attr);
+                cvar->attrs.push_back(attr);
             }
         } // for (auto irv = this->cvars.begin()
 
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+        for (const auto &var:this->vars) {
 
-            if ((*irv)->dims.empty() == false) {
+            if (var->dims.empty() == false) {
                 auto attr = new Attribute();
-                if (1 == (*irv)->dims.size()) {
+                if (1 == var->dims.size()) {
                     const string attrname = "orig_dimname";
-                    string orig_dimname = (((*irv)->dims)[0])->name;
+                    string orig_dimname = ((var->dims)[0])->name;
                     if ("" == orig_dimname)
                         orig_dimname = "NoDimName";
                     else
@@ -3732,7 +3728,7 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
                 else {
                     const string attrname = "orig_dimname_list";
                     string orig_dimname_list;
-                    for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
+                    for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
                         string orig_dimname = (*ird)->name;
                         if ("" == orig_dimname)
                             orig_dimname = "NoDimName";
@@ -3749,7 +3745,7 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
                     }
                     Add_Str_Attr(attr, attrname, orig_dimname_list);
                 }
-                (*irv)->attrs.push_back(attr);
+                var->attrs.push_back(attr);
             }  
         } // for (auto irv = this->vars.begin();
     } // if(true == this->iscoard )
@@ -3766,26 +3762,26 @@ void EOS5File::Handle_Coor_Attr()
 
     if (iscoard) return;
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (const auto &var:this->vars) {
 
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
-            for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
-                if ((*ird)->name == (*ircv)->cfdimname)
-                    co_attrvalue = (co_attrvalue.empty()) ? (*ircv)->newname : co_attrvalue + " " + (*ircv)->newname;
+        for (const auto &dim:var->dims) {
+            for (const auto &cvar:this->cvars) {
+                if (dim->name == cvar->cfdimname)
+                    co_attrvalue = (co_attrvalue.empty()) ? cvar->newname : co_attrvalue + " " + cvar->newname;
             }
         }
         if (false == co_attrvalue.empty()) {
             auto attr = new Attribute();
             Add_Str_Attr(attr, co_attrname, co_attrvalue);
-            (*irv)->attrs.push_back(attr);
+            var->attrs.push_back(attr);
         }
         co_attrvalue.clear();
     } // for (auto irv = this->vars.begin(); ...
 
     // We will check if 2dlatlon coordinate variables exist
     bool has_2dlatlon_cv = false;
-    for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
-        if (true == (*ircv)->is_2dlatlon) {
+    for (const auto &cvar:this->cvars) {
+        if (true == cvar->is_2dlatlon) {
             has_2dlatlon_cv = true;
             break;
         }
@@ -3795,27 +3791,27 @@ void EOS5File::Handle_Coor_Attr()
 
         string dimname1;
         string dimname2;
-        for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ++ircv) {
-            if (true == (*ircv)->is_2dlatlon) {
-                dimname1 = (((*ircv)->dims)[0])->name;
-                dimname2 = (((*ircv)->dims)[1])->name;
+        for (const auto &cvar:this->cvars) {
+            if (true == cvar->is_2dlatlon) {
+                dimname1 = ((cvar->dims)[0])->name;
+                dimname2 = ((cvar->dims)[1])->name;
                 break;
             }
         }
 
         int num_latlondims = 0;
 
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
-                if (dimname1 == (*ird)->name) num_latlondims++;
-                if (dimname2 == (*ird)->name) num_latlondims++;
+        for (const auto &var:this->vars) {
+            for (const auto &dim:var->dims) {
+                if (dimname1 == dim->name) num_latlondims++;
+                if (dimname2 == dim->name) num_latlondims++;
             }
             if ((num_latlondims != 0) && (num_latlondims != 2)) {
                 // need to remove the coordinates attribute.
-                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+                for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
                     if (co_attrname == (*ira)->name) {
                         delete (*ira);
-                        (*irv)->attrs.erase(ira);
+                        var->attrs.erase(ira);
                         break;
                     }
                 }
@@ -3933,7 +3929,7 @@ void EOS5File::Create_Missing_CV(T* eos5data, EOS5CVar *EOS5cvar, const string& 
 
 // Helper function for Create_Missing_CV
 void EOS5File::Create_Added_Var_NewName_FullPath(EOS5Type eos5type, const string& eos5_groupname, const string& varname,
-    string &var_newname, string &var_fullpath) 
+    string &var_newname, string &var_fullpath) const
 {
 
     BESDEBUG("h5", "Coming to Create_Added_Var_NewName_FullPath()"<<endl);
@@ -4149,7 +4145,7 @@ void EOS5File::Handle_SpVar_DMR()
     }
 
     // First, if the duplicate dimension exists,
-    if (dimname_to_dupdimnamelist.size() > 0) {
+    if (dimname_to_dupdimnamelist.empty() == false) {
         for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ircv++) {
             if ((*ircv)->cvartype == CV_EXIST) {
                 pair<multimap<string, string>::iterator, multimap<string, string>::iterator> mm_er_ret;

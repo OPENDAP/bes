@@ -30,13 +30,9 @@
 
 using namespace std;
 
-HE5Parser::HE5Parser()
-{
-}
+HE5Parser::HE5Parser() = default;
 
-HE5Parser::~HE5Parser()
-{
-}
+HE5Parser::~HE5Parser() = default;
 
 
 void HE5Parser::print()
@@ -47,50 +43,39 @@ void HE5Parser::print()
         cerr<< "Parse error:" << err_msg << endl;
     }
     cout << "ZA Size=" << za_list.size() << endl;
-    for(i=0; i < za_list.size(); i++) {
-        HE5Za z = za_list.at(i);
+    for (const auto &z:za_list) {
         cout << "ZA Name=" << z.name << endl;
         cout << "ZA Dim Size=" << z.dim_list.size() << endl;
-        unsigned int j = 0;
-        for(j=0; j < z.dim_list.size(); j++) {
-            HE5Dim d = z.dim_list.at(j);
+        for (const auto &d:z.dim_list) {
             cout << "ZA Dim Name=" << d.name;
             cout << " Size=" << d.size << endl;
         }
 
         cout << "ZA Var Size=" << z.data_var_list.size() 
              << endl;
-        for(j=0; j < z.data_var_list.size(); j++) {
-            HE5Var v = z.data_var_list.at(j);
+        for (const auto &v:z.data_var_list) {
             cout << "ZA Var Name=" << v.name << endl;
             cout << "ZA Var Dim Size=" << v.dim_list.size() << endl;
-            for(unsigned int k=0; k < v.dim_list.size(); k++) {
-                HE5Dim d = v.dim_list.at(k);
+            for (const auto &d:v.dim_list) 
                 cout << "ZA Var Dim Name=" << d.name << endl;
-            }
         }
     }
 
     cout << "Swath Size=" << swath_list.size() << endl;
-    for(i=0; i < swath_list.size(); i++) {
-        HE5Swath s = swath_list.at(i);
+    for (const auto &s:swath_list) {
         cout << "Swath Name=" << s.name << endl;
         cout << "Swath Dim Size=" << s.dim_list.size() << endl;
-        unsigned int j = 0;
-        for(j=0; j < s.dim_list.size(); j++) {
-            HE5Dim d = s.dim_list.at(j);
+        for (const auto &d:s.dim_list) {
             cout << "Swath Dim Name=" << d.name;
             cout << " Size=" << d.size << endl;
         }
 
         cout << "Swath Geo Var Size=" << s.geo_var_list.size() 
              << endl;
-        for(j=0; j < s.geo_var_list.size(); j++) {
-            HE5Var v = s.geo_var_list.at(j);
+        for (const auto &v:s.geo_var_list) {
             cout << "Swath Geo Var Name=" << v.name << endl;
             cout << "Swath Geo Var Dim Size=" << v.dim_list.size() << endl;
-            for(unsigned int k=0; k < v.dim_list.size(); k++) {
-                HE5Dim d = v.dim_list.at(k);
+            for (const auto &d:v.dim_list) {
                 cout << "Swath Geo Var Dim Name=" << d.name;
                 cout << " Size=" << d.size << endl;
             }
@@ -98,19 +83,16 @@ void HE5Parser::print()
 
         cout << "Swath Data Var Size=" << s.data_var_list.size() 
              << endl;
-        for(j=0; j < s.data_var_list.size(); j++) {
-            HE5Var v = s.data_var_list.at(j);
+        for (const auto &v:s.data_var_list) {
             cout << "Swath Data Var Name=" << v.name << endl;
             cout << "Swath Data Var Number Dim =" << v.dim_list.size() << endl;
-            for(unsigned int k=0; k < v.dim_list.size(); k++) {
-                HE5Dim d = v.dim_list.at(k);
+            for (const auto &d:v.dim_list) {
                 cout << "Swath Data Var Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
             }
 // UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
 #if 0
-            for(k=0; k < v.max_dim_list.size(); k++) {
-                HE5Dim d = v.max_dim_list.at(k);
+            for (const auto &d:v.max_dim_list) {
                 cout << "Swath Data Var Max Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
             }
@@ -119,8 +101,7 @@ void HE5Parser::print()
     }
 
     cout << "Grid Size=" << grid_list.size() << endl;
-    for(i=0; i < grid_list.size(); i++) {
-        HE5Grid g = grid_list.at(i);
+    for (const auto &g:grid_list) {
         cout << "Grid Name=" << g.name << endl;
 
         cout << "Grid point_lower=" << g.point_lower << endl;
@@ -130,30 +111,25 @@ void HE5Parser::print()
         cout << "Grid Sphere code =" <<g.sphere <<endl;
 
         cout << "Grid Dim Size=" << g.dim_list.size() << endl;
-        unsigned int j = 0;
-        for(j=0; j < g.dim_list.size(); j++) {
-            HE5Dim d = g.dim_list.at(j);
+        for (const auto &d:g.dim_list) {
             cout << "Grid Dim Name=" << d.name;
             cout << " Size=" << d.size << endl;
         }
 
         cout << "Grid Var Size=" << g.data_var_list.size() 
              << endl;
-        for(j=0; j < g.data_var_list.size(); j++) {
-            HE5Var v = g.data_var_list.at(j);
+        for(const auto &v:g.data_var_list) {
             cout << "Grid Var Name=" << v.name << endl;
             cout << "Grid Var Dim Size=" << v.dim_list.size() << endl;
-            for(unsigned int k=0; k < v.dim_list.size(); k++) {
-                HE5Dim d = v.dim_list.at(k);
+            for (const auto &d:v.dim_list) 
                 cout << "Grid Var Dim Name=" << d.name << endl;
-            }
 #if 0
             for(k=0; k < v.max_dim_list.size(); k++) {
                 HE5Dim d = v.max_dim_list.at(k);
                 cout << "Grid Var Max Dim Name=" << d.name << endl;
             }
 #endif
-       }
+        }
         cout << "Grid pixelregistration=" << 
             g.pixelregistration
              << endl;
@@ -168,8 +144,8 @@ void HE5Parser::print()
         cout <<"Grid sphere= "<<g.sphere<<endl;
 
         cout<<"Grid projection parameters are "<<endl;
-        for(j= 0;j<13;j++) 
-            cout<<g.param[j]<<endl;
+        for(const auto &gp:g.param) 
+            cout<<gp<<endl;
     }
     
 }

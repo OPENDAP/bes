@@ -1317,7 +1317,7 @@ protected:
     void Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) ;
     void Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) ;
     void Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>& tempvardimnamelist) ;
-    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>&tempvardimnamelist) ;
+    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const std::set<std::string>&tempvardimnamelist) ;
 
     void Handle_Za_CVar(bool) ;
 
@@ -1345,7 +1345,7 @@ protected:
     template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         ;
     template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) ;
-    void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) ;
+    void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) const;
 
     void Handle_EOS5_Unsupported_Dtype(bool) ;
     void Handle_EOS5_Unsupported_Dspace(bool) ;
