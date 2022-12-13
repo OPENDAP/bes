@@ -40,6 +40,17 @@
 
 namespace cmr {
 
+/**
+ *
+ * GranuleUMM
+ *     Represents a CMR granule as returned by the granule.umm_json response.
+ *
+ * @TODO Make a better implementation for this that is more likely to be successful
+ *   one thing we might want to consider is combining the two granule classes, Granule and GranuleUMM
+ *   the Granule class ingests the granule.json response from CMR. This class, GranuleUMM ingests the
+ *   granule.umm_json response from CMR. Different information is available in each response and combining them
+ *   might allow us to more reliably retrieve things like the granule's size.
+ */
 class GranuleUMM {
 private:
 

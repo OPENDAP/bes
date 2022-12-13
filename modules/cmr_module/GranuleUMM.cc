@@ -86,6 +86,14 @@ void GranuleUMM::setConceptId(const nlohmann::json& j_obj)
 }
 
 
+/**
+ * @brief Sets the granule size by insoecting the passed umm_json granule object.
+ *
+ * Try to locate the granule size from the granule.umm_json response. This is made challenging by how the
+ * records are stored/organized in the reponse, or if objects that we expect to be available even are so.
+ *
+ * @param granule_obj
+ */
 void GranuleUMM::setSize(const nlohmann::json& granule_obj)
 {
     CmrApi cmrApi;
@@ -124,7 +132,7 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
     // netcdf file, and the other entry for its MD5 checksum. Assuming that the order is not fixed in some way
     // We would be lucky to get the right size for the granule from the first element. Nothing in this to
     // distinguish one entry as the correct one other than the name ending in .nc vs .nc.md5. That works for this
-    // example but I doubt it works for hdf5 files (.h5) apand I doubt there semantic constraints on the value of
+    // example, but I doubt it works for hdf5 files (.h5) apand I doubt there semantic constraints on the value of
     // Name in the ArchiveAndDistributionInformation.
     //
     for(const auto &entry : arch_and_info_array){
