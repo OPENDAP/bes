@@ -96,15 +96,16 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
     for(const auto &entry : arch_and_info_array){
         BESDEBUG(MODULE, prolog << CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY << entry.dump(2) << endl );
         d_size_orig = cmrApi.qc_double(CMR_UMM_SIZE_KEY, entry);
+        BESDEBUG(MODULE, prolog << "d_size_orig: " << d_size_orig << endl );
 
         d_size_units_str = cmrApi.get_str_if_present(CMR_UMM_SIZE_UNIT_KEY, entry).c_str();
         std::transform(d_size_units_str.begin(), d_size_units_str.end(),d_size_units_str.begin(), ::toupper);
+        BESDEBUG(MODULE, prolog << "d_size_units_str: " << d_size_units_str << endl );
 
         if(d_size_units_str.empty()){
             BESDEBUG(MODULE, prolog << "Size content is incomplete. size: " << d_size_str << " units: " << d_size_units_str << endl );
             return;
         }
-        BESDEBUG(MODULE, prolog << "d_size_orig: " << d_size_orig << endl );
 
         double size;
         size = d_size_orig;
@@ -124,7 +125,39 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
         d_size = size;
         BESDEBUG(MODULE, prolog << "d_size: " << d_size << endl );
 
-        // We just look at the first entry in the arch_and_info_array. What does more than a single entry mean?
+        // We just look at the first entry in the arch_and_info_array.
+        // What does more than a single entry mean? It means that using this method is not deterministic.
+        // Consider this relevant JSON fragment:
+        //
+        //       "DataGranule" : {
+        //        "ArchiveAndDistributionInformation" : [ {
+        //          "SizeUnit" : "MB",
+        //          "Size" : 29.323293685913086,
+        //          "Checksum" : {
+        //            "Value" : "b807626928f3176bd969664090ad4b05",
+        //            "Algorithm" : "MD5"
+        //          },
+        //          "Name" : "saildrone-gen_4-baja_2018-sd1002-20180411T180000-20180611T055959-1_minutes-v1.nc"
+        //        }, {
+        //          "SizeUnit" : "MB",
+        //          "Size" : 1.0967254638671875E-4,
+        //          "Checksum" : {
+        //            "Value" : "f617b33fb4ace5c26b044a418d22fcbf",
+        //            "Algorithm" : "MD5"
+        //          },
+        //          "Name" : "saildrone-gen_4-baja_2018-sd1002-20180411T180000-20180611T055959-1_minutes-v1.nc.md5"
+        //        } ],
+        //        "DayNightFlag" : "Unspecified",
+        //        "ProductionDateTime" : "2018-08-29T21:02:49.000Z"
+        //      },
+        //
+        // This fragment contains two entries in the ArchiveAndDistributionInformation array. One entry for the native
+        // netcdf file, and the other entry for its MD5 checksum. Assuming that the order is not fixed in some way
+        // We would be lucky to get the right size for the granule from the first element. Nothing in this to
+        // distinguish one entry as the correct one other than the name ending in .nc vs .nc.md5. That works for this
+        // example but I doubt it works for hdf5 files (.h5) apand I doubt there semantic constraints on the value of
+        // Name in the ArchiveAndDistributionInformation.
+        //
         return ;
     }
 }
