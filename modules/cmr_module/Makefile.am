@@ -32,13 +32,13 @@ libcmr_module_la_LIBADD = $(LIBADD)
 CMR_SRC = CmrApi.cc \
 	Provider.cc Collection.cc  Granule.cc  GranuleUMM.cc \
 	CmrCatalog.cc CmrModule.cc CmrContainer.cc CmrContainerStorage.cc \
-	rjson_utils.cc
+	JsonUtils.cc
 
 CMR_HDR = CmrApi.h CmrNames.h   \
 	Provider.h Collection.h Granule.h GranuleUMM.h  \
 	CmrCatalog.h CmrModule.h CmrContainer.h CmrContainerStorage.h \
 	CmrInternalError.h CmrNotFoundError.h \
-	rjson_utils.h
+	JsonUtils.h
 
 
 EXTRA_DIST = cmr.conf.in data

@@ -53,7 +53,7 @@
 #include "CmrNames.h"
 #include "CmrInternalError.h"
 #include "CmrNotFoundError.h"
-#include "rjson_utils.h"
+#include "JsonUtils.h"
 
 using std::string;
 using json = nlohmann::json;

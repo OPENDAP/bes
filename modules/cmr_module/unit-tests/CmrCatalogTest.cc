@@ -47,7 +47,7 @@
 #include "CmrApi.h"
 #include "CmrCatalog.h"
 #include "CmrInternalError.h"
-#include "rjson_utils.h"
+#include "JsonUtils.h"
 
 
 using namespace std;

@@ -44,7 +44,7 @@
 #include "CmrNames.h"
 #include "CmrCatalog.h"
 #include "CmrInternalError.h"
-#include "rjson_utils.h"
+#include "JsonUtils.h"
 
 #include "Provider.h"
 #include "Collection.h"

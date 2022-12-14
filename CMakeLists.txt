@@ -632,8 +632,8 @@ add_executable(
     modules/cmr_module/Granule.h
     #modules/cmr_module/RemoteHttpResource.cc
     #modules/cmr_module/RemoteHttpResource.h
-    modules/cmr_module/rjson_utils.cc
-	modules/cmr_module/rjson_utils.h
+        modules/cmr_module/JsonUtils.cc
+        modules/cmr_module/JsonUtils.h
 	modules/cmr_module/Provider.h
 	modules/cmr_module/Provider.cc
 	modules/cmr_module/Collection.h

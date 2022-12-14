@@ -43,7 +43,7 @@
 #include "CmrApi.h"
 #include "CmrInternalError.h"
 #include "GranuleUMM.h"
-#include "rjson_utils.h"
+#include "JsonUtils.h"
 
 
 using namespace std;
