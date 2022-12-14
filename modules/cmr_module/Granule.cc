@@ -184,7 +184,7 @@ void Granule::setLastModifiedStr(const nlohmann::json& go)
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const nlohmann::json& Granule::get_links_array(const nlohmann::json& go)
+const nlohmann::json& Granule::get_links_array(const nlohmann::json& go) const
 {
     auto &links = go[CMR_GRANULE_LINKS_KEY];
     if(links.is_null()){
@@ -274,8 +274,8 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
 
 
 
-bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
-    bes::CatalogItem *item = new bes::CatalogItem();
+bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils) const {
+    auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
     item->set_lmt(getLastModifiedStr());

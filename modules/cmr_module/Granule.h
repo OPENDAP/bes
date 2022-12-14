@@ -58,21 +58,21 @@ private:
     void setMetadataAccessUrl(const nlohmann::json& granule_obj);
     void setSize(const nlohmann::json& j_obj);
     void setLastModifiedStr(const nlohmann::json& go);
-    const nlohmann::json& get_links_array(const nlohmann::json& go);
+    const nlohmann::json& get_links_array(const nlohmann::json& go) const;
 
 public:
-    Granule(const nlohmann::json& granule_json);
+    explicit Granule(const nlohmann::json& granule_json);
 
-    std::string getName(){ return d_name; }
-    std::string getId(){ return d_id; }
-    std::string getDataGranuleUrl() { return d_data_access_url; }
-    std::string getDapServiceUrl() { return d_dap_service_url; }
+    std::string getName() const { return d_name; }
+    std::string getId() const { return d_id; }
+    std::string getDataGranuleUrl() const { return d_data_access_url; }
+    std::string getDapServiceUrl() const { return d_dap_service_url; }
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
-    std::string getSizeStr(){ return d_size_str; }
-    std::string getLastModifiedStr() { return d_last_modified_time; }
-    float getSize(){ return atof(getSizeStr().c_str())*1024*1204; }
+    std::string getSizeStr() const { return d_size_str; }
+    std::string getLastModifiedStr() const { return d_last_modified_time; }
+    float getSize() const { return atof(getSizeStr().c_str())*1024*1204; }
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
+    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils) const ;
 };
 
 } // namespace cmr

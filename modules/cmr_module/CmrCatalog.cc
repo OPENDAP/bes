@@ -187,7 +187,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
 
             BESDEBUG(MODULE, prolog << "Getting year nodes for collection: " << collection_id<< endl);
             cmrApi.get_years(collection_id, years);
-            for(auto & year : years){
+            for(const auto & year : years){
                 auto *catalogItem = new CatalogItem();
                 catalogItem->set_type(CatalogItem::node);
                 catalogItem->set_name(year);
@@ -202,13 +202,12 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
         case 1:  // The path ends at years facet, so we need the month nodes.
         {
             const string &year = path_elements[0];
-            //string month;
             string day;
             vector<string> months;
 
             BESDEBUG(MODULE, prolog << "Getting month nodes for collection: " << collection_id << " year: " << year << endl);
             cmrApi.get_months(collection_id, year, months);
-            for(auto & month : months){
+            for(const auto & month : months){
                 auto *catalogItem = new CatalogItem();
                 catalogItem->set_type(CatalogItem::node);
                 catalogItem->set_name(month);
@@ -224,12 +223,11 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
         {
             const string &year = path_elements[0];
             const string &month = path_elements[1];
-            //string day("");
             vector<string> days;
 
             BESDEBUG(MODULE, prolog << "Getting day nodes for collection: " << collection_id << " year: " << year << " month: " << month << endl);
             cmrApi.get_days(collection_id, year, month, days);
-            for(auto & day : days){
+            for(const auto &day : days){
                 auto *catalogItem = new CatalogItem();
                 catalogItem->set_type(CatalogItem::node);
                 catalogItem->set_name(day);
@@ -249,7 +247,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
              BESDEBUG(MODULE, prolog << "Getting granule leaves for collection: " << collection_id << " year: " << year << " month: " << month <<  " day: " << day << endl);
             vector<GranuleUMM *> granules;
             cmrApi.get_granules_umm(collection_id, year, month, day, granules);
-            for(auto & granule : granules){
+            for(const auto &granule : granules){
                 node->add_leaf(granule->getCatalogItem(get_catalog_utils()));
             }
         }
@@ -338,6 +336,8 @@ CmrCatalog::get_node(const string &ppath) const
             collection_id = path_elements[1];
             return get_facets_node(path,collection_id );
         }
+        default:
+            break;
     }
 
     // If we are here we know the path_elements vector is not empty and that it has MORE than

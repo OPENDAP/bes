@@ -210,9 +210,9 @@ void CmrContainer::dump(ostream &strm) const {
  * @param granule_path
  * @return
  */
-#define PATH_SIZE 7
 Granule * CmrContainer::getTemporalFacetGranule(const std::string granule_path)
 {
+    const unsigned int PATH_SIZE = 7;
 
     BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
 

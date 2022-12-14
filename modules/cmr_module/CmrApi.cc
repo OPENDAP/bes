@@ -174,6 +174,12 @@ double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj)
 
 }
 
+/**
+ *
+ * @param key
+ * @param json_obj
+ * @return
+ */
 std::string CmrApi::get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const
 {
     string value;
@@ -321,7 +327,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
 {
     BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
     bool result = jobj.is_null();
-    if(jobj.is_null()){
+    if(result){
         stringstream msg;
         msg <<  "ERROR: Json document is NULL: " << endl << jobj.dump(2) << endl;
         BESDEBUG(MODULE, prolog <<  msg.str() << endl);
@@ -994,8 +1000,7 @@ Provider CmrApi::get_provider(const std::string &provider_id) const
     CmrApi cmr;
 
     // Grab the internal provider object...
-    const auto provider_json = cmr.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
-    // const auto provider_json = cmr_doc[CMR_PROVIDER_KEY];
+    const auto &provider_json = cmr.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
 
     // And then make a new provider.
     Provider provider(provider_json);
