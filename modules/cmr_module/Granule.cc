@@ -40,6 +40,7 @@
 #include "CmrInternalError.h"
 #include "CmrNotFoundError.h"
 #include "Granule.h"
+#include "CmrApi.h"
 
 
 using namespace std;
@@ -153,21 +154,24 @@ Granule::Granule(const nlohmann::json& granule_json)
 }
 
 
-void Granule::setName(const nlohmann::json& j_obj)
+void Granule::setName(const nlohmann::json& granule_json)
 {
-    d_name = j_obj[CMR_V2_TITLE_KEY].get<string>();
+    JsonUtils json;
+    d_name = json.get_str_if_present(CMR_V2_TITLE_KEY, granule_json);
 }
 
 
-void Granule::setId(const nlohmann::json& j_obj)
+void Granule::setId(const nlohmann::json& granule_json)
 {
-    d_id = j_obj[CMR_GRANULE_ID_KEY].get<string>();
+    JsonUtils json;
+    d_id = json.get_str_if_present(CMR_GRANULE_ID_KEY, granule_json);
 }
 
 
-void Granule::setSize(const nlohmann::json& j_obj)
+void Granule::setSize(const nlohmann::json& granule_json)
 {
-    d_size_str = j_obj[CMR_GRANULE_SIZE_KEY];
+    JsonUtils json;
+    d_size_str = json.get_str_if_present(CMR_GRANULE_SIZE_KEY, granule_json);
 }
 
 
@@ -175,30 +179,20 @@ void Granule::setSize(const nlohmann::json& j_obj)
   * Sets the last modified time of the granule as a string.
   * @param go
   */
-void Granule::setLastModifiedStr(const nlohmann::json& go)
+void Granule::setLastModifiedStr(const nlohmann::json& granule_json)
 {
-    d_last_modified_time = go[CMR_GRANULE_LMT_KEY].get<string>();
+    JsonUtils json;
+    d_last_modified_time = json.get_str_if_present(CMR_GRANULE_LMT_KEY, granule_json);
 }
 
 
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const nlohmann::json& Granule::get_links_array(const nlohmann::json& go) const
+const nlohmann::json& Granule::get_links_array(const nlohmann::json& granule_json) const
 {
-    auto &links = go[CMR_GRANULE_LINKS_KEY];
-    if(links.is_null()){
-        string msg = prolog + "ERROR: Failed to locate the value '"+CMR_GRANULE_LINKS_KEY+"' in object.";
-        BESDEBUG(MODULE, prolog << msg << endl << go.get<string>());
-        throw CmrNotFoundError(msg, __FILE__, __LINE__);
-    }
-
-    if(!links.is_array()){
-        stringstream msg;
-        msg << "ERROR: The '" << CMR_GRANULE_LINKS_KEY << "' object is NOT an array!";
-        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    return links;
+    JsonUtils json;
+   return json.qc_get_array(CMR_GRANULE_LINKS_KEY, granule_json);
 }
 
 
@@ -248,7 +242,6 @@ void Granule::setDapServiceUrl(const nlohmann::json& jo)
     msg << "Failed to locate DAP service link (";
     msg << CMR_GRANULE_LINKS_REL_SERVICE << "), :(";
     BESDEBUG(MODULE, prolog << msg.str() << endl);
-    // throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
 }
 
 
@@ -274,7 +267,8 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
 
 
 
-bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils) const {
+bes::CatalogItem *Granule::getCatalogItem(const BESCatalogUtils *d_catalog_utils) const
+{
     auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());

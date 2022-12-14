@@ -103,11 +103,6 @@ private:
 public:
     CmrApi();
 
-    std::string probe_json(const nlohmann::json &j) const;
-    std::string get_str_if_present(const std::string &key, const nlohmann::json& jo) const;
-    const nlohmann::json& qc_get_array(const std::string &key, const nlohmann::json& go) const;
-    const nlohmann::json& qc_get_object(const std::string &key, const nlohmann::json& go) const;
-    double qc_double(const std::string &key, const nlohmann::json &json_obj) const;
     const nlohmann::json& get_related_urls_array(const nlohmann::json& go) const;
 
 

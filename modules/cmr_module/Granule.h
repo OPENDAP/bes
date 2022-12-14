@@ -72,7 +72,7 @@ public:
     std::string getLastModifiedStr() const { return d_last_modified_time; }
     float getSize() const { return atof(getSizeStr().c_str())*1024*1204; }
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils) const ;
+    bes::CatalogItem *getCatalogItem(const BESCatalogUtils *d_catalog_utils) const ;
 };
 
 } // namespace cmr

@@ -64,42 +64,6 @@ namespace cmr {
 
 std::string truth(bool t){ if(t){return "true";} return "false"; }
 
-/**
- *
- * @param j
- * @return
- */
-std::string CmrApi::probe_json(const nlohmann::json &j) const
-{
-    string hdr0("#########################################################################################");
-    string hdr1("#- -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -");
-
-    stringstream msg;
-    msg << endl;
-    msg << hdr0 << endl;
-    msg << j.dump(2) << endl;
-    msg << hdr1 << endl;
-    msg << "           j.is_null(): " << truth(j.is_null()) << endl;
-    msg << "         j.is_object(): " << truth(j.is_object()) << endl;
-    msg << "          j.is_array(): " << truth(j.is_array()) << endl;
-    msg << endl;
-    msg << "      j.is_discarded(): " << truth(j.is_discarded()) << endl;
-    msg << "         j.is_string(): " << truth(j.is_string()) << endl;
-    msg << "     j.is_structured(): " << truth(j.is_structured()) << endl;
-    msg << "         j.is_binary(): " << truth(j.is_binary()) << endl;
-    msg << "        j.is_boolean(): " << truth(j.is_boolean()) << endl;
-    msg << "         j.is_number(): " << truth(j.is_number()) << endl;
-    msg << "   j.is_number_float(): " << truth(j.is_number_float()) << endl;
-    msg << " j.is_number_integer(): " << truth(j.is_number_integer()) << endl;
-    msg << "j.is_number_unsigned(): " << truth(j.is_number_unsigned()) << endl;
-    msg << "      j.is_primitive(): " << truth(j.is_primitive()) << endl;
-    msg << "              j.size(): " << j.size()<< endl;
-    msg << "             j.empty(): " << truth(j.empty()) << endl;
-
-    msg << hdr0 << endl;
-    return msg.str();
-}
-
 
 CmrApi::CmrApi() {
     bool found;
@@ -130,191 +94,14 @@ CmrApi::CmrApi() {
     BESDEBUG(MODULE,
              prolog << "d_cmr_granules_umm_search_endpoint_url: " << d_cmr_granules_umm_search_endpoint_url << endl);
 }
-double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj) const
-{
-    double value=0.0;
-
-    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
-    // Check input for object.
-    bool result = json_obj.is_object();
-    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg0 << endl);
-    if(!result){
-        return value;
-    }
-    const auto &key_itr = json_obj.find(key);
-    if(key_itr == json_obj.end()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-
-    auto &dobj = json_obj[key];
-    if(dobj.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Failed to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    if(!dobj.is_number_float() && !dobj.is_number()){
-        stringstream msg;
-        msg << prolog;
-        msg << "The child element called '" << key;
-        msg << "' is not a string. json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    return dobj.get<double>();
-
-
-}
-
-/**
- *
- * @param key
- * @param json_obj
- * @return
- */
-std::string CmrApi::get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const
-{
-    string value;
-
-    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
-    // Check input for object.
-    bool result = json_obj.is_object();
-    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg0 << endl);
-    if(!result){
-        return value;
-    }
-
-    const auto &key_itr = json_obj.find(key);
-    if(key_itr == json_obj.end()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-
-    auto &string_obj = json_obj[key];
-    if(string_obj.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Failed to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    if(!string_obj.is_string()){
-        stringstream msg;
-        msg << prolog;
-        msg << "The child element called '" << key;
-        msg << "' is not a string. json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    return string_obj.get<string>();
-
-
-}
-
-
-const nlohmann::json& CmrApi::qc_get_array(const std::string &key, const nlohmann::json& json_obj) const
-{
-    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
-    // Check input for object.
-    bool result = json_obj.is_object();
-    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg0 << endl);
-    if(!result){
-        throw CmrInternalError(msg0, __FILE__, __LINE__);
-    }
-
-    const auto &key_itr = json_obj.find(key);
-    if(key_itr == json_obj.end()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
-    }
-
-    auto &array_obj = json_obj[key];
-    if(array_obj.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
-    }
-    if(!array_obj.is_array()){
-        stringstream msg;
-        msg << prolog;
-        msg << "ERROR: The child element called '" << key;
-        msg << "' is not an array. json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    return array_obj;
-}
-const nlohmann::json& CmrApi::qc_get_object(const std::string &key, const nlohmann::json& json_obj) const
-{
-    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
-
-    // Check input for object.
-    bool result = json_obj.is_object();
-    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg0 << endl);
-    if(!result){
-        throw CmrInternalError(msg0, __FILE__, __LINE__);
-    }
-
-    const auto &key_itr = json_obj.find(key);
-    if(key_itr == json_obj.end()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
-    }
-
-    auto &child_obj = json_obj[key];
-
-    if(child_obj.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << child_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
-    }
-    if(!child_obj.is_object()){
-        stringstream msg;
-        msg << prolog;
-        msg << "ERROR: The child element called '" << key;
-        msg << "' is not an object. json: " << endl << child_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw CmrInternalError(msg.str(), __FILE__, __LINE__);
-    }
-    return child_obj;
-}
 
 /**
 * Internal method that retrieves the "links" array from the Granule's object.
 */
 const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_obj) const
 {
-    return qc_get_array(CMR_UMM_RELATED_URLS_KEY,json_obj);
+    JsonUtils json;
+    return json.qc_get_array(CMR_UMM_RELATED_URLS_KEY,json_obj);
 }
 
 
@@ -325,7 +112,8 @@ const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_
   */
 const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
 {
-    BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
+    JsonUtils json;
+    BESDEBUG(MODULE, prolog << json.probe_json(jobj) << endl);
     bool result = jobj.is_null();
     if(result){
         stringstream msg;
@@ -351,7 +139,7 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
         throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
     }
 
-    return  qc_get_array(CMR_V2_CHILDREN_KEY,jobj);
+    return json.qc_get_array(CMR_V2_CHILDREN_KEY,jobj);
 }
 
 /**
@@ -361,7 +149,8 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
  */
 const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc) const
 {
-    return qc_get_object(CMR_V2_FEED_KEY, cmr_doc);
+    JsonUtils json;
+    return json.qc_get_object(CMR_V2_FEED_KEY, cmr_doc);
 }
 
 /**
@@ -372,9 +161,10 @@ const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc) const
 const json& CmrApi::get_entries(const json &cmr_doc) const
 {
 
+    JsonUtils json;
     BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
     const auto &feed = get_feed(cmr_doc);
-    return qc_get_array(CMR_V2_ENTRY_KEY,feed);
+    return json.qc_get_array(CMR_V2_ENTRY_KEY,feed);
 }
 
 
@@ -385,8 +175,9 @@ const json& CmrApi::get_entries(const json &cmr_doc) const
  */
 const json& CmrApi::get_items(const json &cmr_doc) const
 {
+    JsonUtils json;
     BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
-    return qc_get_array(CMR_UMM_ITEMS_KEY,cmr_doc);
+    return json.qc_get_array(CMR_UMM_ITEMS_KEY,cmr_doc);
 }
 
 
@@ -397,10 +188,10 @@ const json& CmrApi::get_items(const json &cmr_doc) const
  */
 const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc) const
 {
-    string msg0;
+    JsonUtils json;
     const auto &feed = get_feed(cmr_doc);
 
-    const auto &facets_obj = qc_get_object(CMR_V2_FACETS_KEY, feed);
+    const auto &facets_obj = json.qc_get_object(CMR_V2_FACETS_KEY, feed);
 
     const auto &facets_array = get_children(facets_obj);
     for(const auto &facet:facets_array){
@@ -625,7 +416,8 @@ const {
  */
 void CmrApi::get_years(const string &collection_name, vector<string> &years_result) const
 {
-    rjson_utils rju;
+    JsonUtils json;
+    ;
     // bool result;
     string msg;
 
@@ -636,9 +428,9 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
 
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
 
-    json cmr_doc = rju.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
-    const json &year_group = get_year_group(cmr_doc);
+    const auto &year_group = get_year_group(cmr_doc);
     if(year_group[CMR_V2_HAS_CHILDREN_KEY].get<bool>()) {
         for (const auto &year_obj: year_group[CMR_V2_CHILDREN_KEY]) {
             years_result.emplace_back(year_obj[CMR_V2_TITLE_KEY].get<string>());
@@ -660,18 +452,17 @@ void
 CmrApi::get_months(const string &collection_name,
                    const string &r_year,
                    vector<string> &months_result) const{
-    rjson_utils rju;
-
+    JsonUtils json;
     stringstream msg;
-
     stringstream cmr_query_url;
+
     cmr_query_url << d_cmr_granules_search_endpoint_url << "?" ;
     cmr_query_url << "concept_id=" << collection_name << "&";
     cmr_query_url << "include_facets=v2&";
     cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year;
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
 
-    json cmr_doc = rju.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(2) << endl);
 
     const auto &year_group = get_year_group(cmr_doc);
@@ -743,13 +534,16 @@ void CmrApi::get_days(const string &collection_concept_id,
     cmr_query_url << cmr_query_string.str();
     BESDEBUG(MODULE, prolog << "CMR Query URL: " << cmr_query_url.str() << endl);
 
-    rjson_utils ju;
-    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+    JsonUtils json;
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
-    auto &day_group = get_day_group(r_month, r_year, cmr_doc);
-    auto &days = get_children(day_group);
+    const auto &day_group = get_day_group(r_month, r_year, cmr_doc);
+    const auto &days = get_children(day_group);
     for ( const auto &day : days ){
-        string day_title = day[CMR_V2_TITLE_KEY].get<string>();
+        string day_title = json.get_str_if_present(CMR_V2_TITLE_KEY,day);
+        if(day_title.empty())
+            day_title = "MISSING DAY TITLE";
+
         days_result.push_back(day_title);
     }
 }// CmrApi::get_days()
@@ -821,7 +615,7 @@ void CmrApi::granule_search(const std::string &collection_name,
                             nlohmann::json &cmr_doc) const
 {
 
-    rjson_utils rju;
+    JsonUtils json;
 
     stringstream cmr_query_url;
     cmr_query_url <<  d_cmr_granules_search_endpoint_url << "?";
@@ -841,7 +635,7 @@ void CmrApi::granule_search(const std::string &collection_name,
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
 
-    cmr_doc = rju.get_as_json(cmr_query_url.str());
+    cmr_doc = json.get_as_json(cmr_query_url.str());
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
 }
 
@@ -858,7 +652,7 @@ void CmrApi::granule_umm_search(const std::string &collection_name,
                                 nlohmann::json &cmr_doc)
 const {
 
-    rjson_utils rju;
+    JsonUtils json;
 
     stringstream cmr_query_url;
     cmr_query_url <<  d_cmr_granules_umm_search_endpoint_url << "?";
@@ -877,7 +671,7 @@ const {
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
 
-    cmr_doc = rju.get_as_json(cmr_query_url.str());
+    cmr_doc = json.get_as_json(cmr_query_url.str());
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
 }
 
@@ -986,21 +780,19 @@ const {
  */
 Provider CmrApi::get_provider(const std::string &provider_id) const
 {
-    rjson_utils ju;
+    JsonUtils json;
 
     string cmr_query_url = BESUtil::pathConcat(d_cmr_providers_search_endpoint_url,provider_id);
     cmr_query_url += ".json";
     BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url << endl);
 
-    json cmr_doc = ju.get_as_json(cmr_query_url);
+    const auto &cmr_doc = json.get_as_json(cmr_query_url);
 
     // We know that this CMR query returns a single anonymous json object, which
     // in turn contains a single provider object (really...)
 
-    CmrApi cmr;
-
     // Grab the internal provider object...
-    const auto &provider_json = cmr.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
+    const auto &provider_json = json.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
 
     // And then make a new provider.
     Provider provider(provider_json);
@@ -1011,13 +803,13 @@ Provider CmrApi::get_provider(const std::string &provider_id) const
 
 void CmrApi::get_providers(vector<cmr::Provider> &providers) const
 {
-    rjson_utils ju;
+    JsonUtils json;
 
     stringstream cmr_query_url;
     cmr_query_url << d_cmr_providers_search_endpoint_url << ".json?page_size=" << CMR_MAX_PAGE_SIZE;
     BESDEBUG(MODULE, prolog << "CMR Providers Search Request Url: : " << cmr_query_url.str() << endl);
 
-    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
     // We know that this CMR query returns an array of anonymous json objects, each of which
     // contains a single provider object (really...)
@@ -1050,13 +842,18 @@ void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers) const
 
 unsigned int CmrApi::get_opendap_collections_count(const string &provider_id) const
 {
-    rjson_utils ju;
+    JsonUtils json;
     stringstream cmr_query_url;
     cmr_query_url << d_cmr_collections_search_endpoint_url;
     cmr_query_url << "?has_opendap_url=true&page_size=0";
     cmr_query_url << "&provider=" << provider_id;
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
-    json cmr_doc = ju.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+
+    // @TODO Fix this bit so it error checks the steps in getting the value.
+
+
+
 
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "HITS: " << hits << endl);
@@ -1069,7 +866,7 @@ void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<
                              bool just_opendap)
 const {
     unsigned int page_num=1;
-    rjson_utils ju;
+    JsonUtils json;
     string cmr_query_url_base;
     cmr_query_url_base = d_cmr_collections_search_endpoint_url + "?";
     cmr_query_url_base += "provider=" + provider_id + "&";
@@ -1082,7 +879,7 @@ const {
     string cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
 
-    json cmr_doc = ju.get_as_json(cmr_query_url);
+    const auto &cmr_doc = json.get_as_json(cmr_query_url);
 
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
@@ -1091,7 +888,7 @@ const {
     }
     for (const auto &collection_json : cmr_doc["items"]) {
         Collection collection(collection_json);
-        collections.emplace_back(collection);
+        collections.emplace_back(std::move(collection));
     }
     BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
 
@@ -1099,11 +896,11 @@ const {
         page_num++;
         cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
         BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
-        cmr_doc = ju.get_as_json(cmr_query_url);
+        const auto &cmr_collection_doc = json.get_as_json(cmr_query_url);
 
-        for (const auto &collection_json : cmr_doc["items"]) {
+        for (const auto &collection_json : cmr_collection_doc["items"]) {
             Collection collection(collection_json);
-            collections.emplace_back(collection);
+            collections.emplace_back(std::move(collection));
         }
         BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
     }

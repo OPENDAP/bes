@@ -39,7 +39,7 @@
 namespace cmr {
 
 
-class rjson_utils {
+class JsonUtils {
 public:
     //void getJsonDoc(const std::string &url, rapidjson::Document &d);
     //std::string getStringValue(const rapidjson::Value& object, const std::string &name);
@@ -50,6 +50,13 @@ public:
     nlohmann::json get_as_json(const std::string &url);
 
     static std::string typeName(unsigned int t);
+
+    const nlohmann::json& qc_get_object(const std::string &key, const nlohmann::json& json_obj) const;
+    const nlohmann::json& qc_get_array(const std::string &key, const nlohmann::json& json_obj) const;
+    std::string get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const;
+    double qc_double(const std::string &key, const nlohmann::json &json_obj) const;
+    unsigned long qc_int(const std::string &key, const nlohmann::json &json_obj) const;
+    std::string probe_json(const nlohmann::json &j) const;
 
 };
 

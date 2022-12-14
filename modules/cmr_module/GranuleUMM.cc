@@ -43,6 +43,7 @@
 #include "CmrApi.h"
 #include "CmrInternalError.h"
 #include "GranuleUMM.h"
+#include "rjson_utils.h"
 
 
 using namespace std;
@@ -67,9 +68,9 @@ GranuleUMM::GranuleUMM(const nlohmann::json& granule_json)
 
 
 void GranuleUMM::setName(const nlohmann::json& j_obj) {
-    CmrApi cmrApi;
-    const auto &umm_obj = cmrApi.qc_get_object(CMR_UMM_UMM_KEY, j_obj);
-    this->d_name = cmrApi.get_str_if_present(CMR_UMM_GRANULE_UR_KEY, umm_obj);
+    JsonUtils json;
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, j_obj);
+    this->d_name = json.get_str_if_present(CMR_UMM_GRANULE_UR_KEY, umm_obj);
 }
 
 void GranuleUMM::setDescription(const nlohmann::json& go){
@@ -77,12 +78,12 @@ void GranuleUMM::setDescription(const nlohmann::json& go){
 
 void GranuleUMM::setConceptId(const nlohmann::json& j_obj)
 {
-    CmrApi cmrApi;
-    const auto &meta_obj = cmrApi.qc_get_object(CMR_UMM_META_KEY, j_obj);
+    JsonUtils json;
+    const auto &meta_obj = json.qc_get_object(CMR_UMM_META_KEY, j_obj);
 
-    BESDEBUG(MODULE, prolog << "META OBJECT" << endl << cmrApi.probe_json(meta_obj) << endl);
+    BESDEBUG(MODULE, prolog << "META OBJECT" << endl << json.probe_json(meta_obj) << endl);
 
-    this->d_id = cmrApi.get_str_if_present(CMR_UMM_CONCEPT_ID_KEY, meta_obj);
+    this->d_id = json.get_str_if_present(CMR_UMM_CONCEPT_ID_KEY, meta_obj);
 }
 
 
@@ -96,11 +97,11 @@ void GranuleUMM::setConceptId(const nlohmann::json& j_obj)
  */
 void GranuleUMM::setSize(const nlohmann::json& granule_obj)
 {
-    CmrApi cmrApi;
-    const auto &umm_obj = cmrApi.qc_get_object(CMR_UMM_UMM_KEY, granule_obj);
-    const auto &data_granule_obj = cmrApi.qc_get_object(CMR_UMM_DATA_GRANULE_KEY, umm_obj);
+    JsonUtils json;
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_obj);
+    const auto &data_granule_obj = json.qc_get_object(CMR_UMM_DATA_GRANULE_KEY, umm_obj);
     BESDEBUG(MODULE, prolog << CMR_UMM_DATA_GRANULE_KEY << data_granule_obj.dump(2) << endl );
-    const auto &arch_and_info_array = cmrApi.qc_get_array(CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY, data_granule_obj);
+    const auto &arch_and_info_array = json.qc_get_array(CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY, data_granule_obj);
     //
     // At this point we just look at the first entry in the arch_and_info_array.
     // What does more than a single entry mean? It means that using this method is not deterministic.
@@ -137,7 +138,7 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
     //
     for(const auto &entry : arch_and_info_array){
         BESDEBUG(MODULE, prolog << CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY << entry.dump(2) << endl );
-        string name = cmrApi.get_str_if_present(CMR_UMM_NAME_KEY,entry);
+        string name = json.get_str_if_present(CMR_UMM_NAME_KEY,entry);
         BESDEBUG(MODULE, prolog << CMR_UMM_NAME_KEY << ": " << name << endl );
 
         // We want the granule and not its md5 hash, so we check for that.
@@ -146,10 +147,10 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
             BESDEBUG(MODULE, prolog << "Detected MD5 hash file: " << name << " SKIPPING." << endl);
         }
         else {
-            d_size_orig = cmrApi.qc_double(CMR_UMM_SIZE_KEY, entry);
+            d_size_orig = json.qc_double(CMR_UMM_SIZE_KEY, entry);
             BESDEBUG(MODULE, prolog << "d_size_orig: " << d_size_orig << endl );
 
-            d_size_units_str = cmrApi.get_str_if_present(CMR_UMM_SIZE_UNIT_KEY, entry).c_str();
+            d_size_units_str = json.get_str_if_present(CMR_UMM_SIZE_UNIT_KEY, entry).c_str();
             std::transform(d_size_units_str.begin(), d_size_units_str.end(),d_size_units_str.begin(), ::toupper);
             BESDEBUG(MODULE, prolog << "d_size_units_str: " << d_size_units_str << endl );
 
@@ -187,9 +188,9 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
   */
 void GranuleUMM::setLastModifiedStr(const nlohmann::json& j_obj)
 {
-    CmrApi cmrApi;
-    const auto &umm_obj = cmrApi.qc_get_object(CMR_UMM_META_KEY, j_obj);
-    this->d_last_modified_time = cmrApi.get_str_if_present(CMR_UMM_REVISION_DATE_KEY, umm_obj);
+    JsonUtils json;
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_META_KEY, j_obj);
+    this->d_last_modified_time = json.get_str_if_present(CMR_UMM_REVISION_DATE_KEY, umm_obj);
 }
 
 
@@ -198,12 +199,12 @@ void GranuleUMM::setLastModifiedStr(const nlohmann::json& j_obj)
  */
 void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
 {
-    CmrApi cmrApi;
-    const auto& umm_obj = cmrApi.qc_get_object(CMR_UMM_UMM_KEY, go);
-    const auto& related_urls = cmrApi.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
+    JsonUtils json;
+    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, go);
+    const auto& related_urls = json.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
     for(auto &url_obj : related_urls){
-        string url = cmrApi.get_str_if_present(CMR_UMM_URL_KEY, url_obj);
-        string type = cmrApi.get_str_if_present(CMR_UMM_TYPE_KEY, url_obj);
+        string url = json.get_str_if_present(CMR_UMM_URL_KEY, url_obj);
+        string type = json.get_str_if_present(CMR_UMM_TYPE_KEY, url_obj);
         if(type == CMR_UMM_TYPE_GET_DATA_VALUE){
             this->d_data_access_url = url;
             return;
@@ -238,13 +239,13 @@ void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
 {
     const std::string HTML_SUFFIX(".html");
 
-    CmrApi cmrApi;
-    const auto& umm_obj = cmrApi.qc_get_object(CMR_UMM_UMM_KEY, jo);
-    const auto& related_urls = cmrApi.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
+    JsonUtils json;
+    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, jo);
+    const auto& related_urls = json.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
     for(auto &related_url_obj : related_urls){
-        string url = cmrApi.get_str_if_present(CMR_UMM_URL_KEY,related_url_obj);
-        string type = cmrApi.get_str_if_present(CMR_UMM_TYPE_KEY,related_url_obj);
-        string subtype = cmrApi.get_str_if_present(CMR_UMM_SUBTYPE_KEY,related_url_obj);
+        string url = json.get_str_if_present(CMR_UMM_URL_KEY,related_url_obj);
+        string type = json.get_str_if_present(CMR_UMM_TYPE_KEY,related_url_obj);
+        string subtype = json.get_str_if_present(CMR_UMM_SUBTYPE_KEY,related_url_obj);
         if(type == CMR_UMM_TYPE_USE_SERVICE_API_VALUE || type == CMR_UMM_TYPE_GET_DATA_VALUE){
             if(subtype == CMR_UMM_SUBTYPE_KEY_OPENDAP_DATA_VALUE){
 
