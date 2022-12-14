@@ -427,10 +427,9 @@ public:
         };
 
         unsigned long  expected_size = 31;
-        vector<string> granules;
+        std::vector<Granule *> granules;
         try {
             CmrApi cmr;
-            std::vector<Granule *> granules;
             string year ="1985";
             string month = "03";
 
@@ -460,13 +459,17 @@ public:
                 CPPUNIT_ASSERT(expected[i] == pgi);
             }
 
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
+            for (auto & granule : granules) {
+                delete granule;
+                granule = nullptr;
             }
 
         }
         catch (BESError &be) {
+            for (auto & granule : granules) {
+                delete granule;
+                granule = nullptr;
+            }
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");

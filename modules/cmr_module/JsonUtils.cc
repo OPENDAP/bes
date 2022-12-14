@@ -66,6 +66,11 @@ json JsonUtils::get_as_json(const string &url)
     return data;
 }
 
+/**
+ * A wee helper method to convert type numbers to type strings
+ * @param t
+ * @return
+ */
 std::string JsonUtils::typeName(unsigned int t)
 {
     const char* tnames[] =
@@ -73,6 +78,12 @@ std::string JsonUtils::typeName(unsigned int t)
     return string(tnames[t]);
 }
 
+/**
+ * Tries to get the value of the json object named "key" as a double.
+ * @param key
+ * @param json_obj
+ * @return
+ */
 double JsonUtils::qc_double(const std::string &key, const nlohmann::json &json_obj) const
 {
     double value=0.0;
@@ -117,9 +128,15 @@ double JsonUtils::qc_double(const std::string &key, const nlohmann::json &json_o
 
 }
 
-unsigned long  JsonUtils::qc_int(const std::string &key, const nlohmann::json &json_obj) const
+/**
+ * Get the
+ * @param key
+ * @param json_obj
+ * @return
+ */
+std::string JsonUtils::get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const
 {
-    double value=0.0;
+    const string empty_string;
 
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
     // Check input for object.
@@ -127,8 +144,9 @@ unsigned long  JsonUtils::qc_int(const std::string &key, const nlohmann::json &j
     string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
     BESDEBUG(MODULE, msg0 << endl);
     if(!result){
-        return value;
+        return empty_string;
     }
+
     const auto &key_itr = json_obj.find(key);
     if(key_itr == json_obj.end()){
         stringstream msg;
@@ -136,27 +154,27 @@ unsigned long  JsonUtils::qc_int(const std::string &key, const nlohmann::json &j
         msg << "Ouch! Unable to locate the '" << key;
         msg << "' child of json: " << endl << json_obj.dump(2) << endl;
         BESDEBUG(MODULE, msg.str() << endl);
-        return value;
+        return empty_string;
     }
 
-    auto &dobj = json_obj[key];
-    if(dobj.is_null()){
+    auto &string_obj = json_obj[key];
+    if(string_obj.is_null()){
         stringstream msg;
         msg << prolog;
         msg << "Failed to locate the '" << key;
         msg << "' child of json: " << endl << json_obj.dump(2) << endl;
         BESDEBUG(MODULE, msg.str() << endl);
-        return value;
+        return empty_string;
     }
-    if(!dobj.is_number_float() && !dobj.is_number()){
+    if(!string_obj.is_string()){
         stringstream msg;
         msg << prolog;
         msg << "The child element called '" << key;
         msg << "' is not a string. json: " << endl << json_obj.dump(2) << endl;
         BESDEBUG(MODULE, msg.str() << endl);
-        return value;
+        return empty_string;
     }
-    return dobj.get<double>();
+    return string_obj.get<string>();
 
 
 }
@@ -167,52 +185,6 @@ unsigned long  JsonUtils::qc_int(const std::string &key, const nlohmann::json &j
  * @param json_obj
  * @return
  */
-std::string JsonUtils::get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const
-{
-    string value;
-
-    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
-    // Check input for object.
-    bool result = json_obj.is_object();
-    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-    BESDEBUG(MODULE, msg0 << endl);
-    if(!result){
-        return value;
-    }
-
-    const auto &key_itr = json_obj.find(key);
-    if(key_itr == json_obj.end()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Ouch! Unable to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-
-    auto &string_obj = json_obj[key];
-    if(string_obj.is_null()){
-        stringstream msg;
-        msg << prolog;
-        msg << "Failed to locate the '" << key;
-        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    if(!string_obj.is_string()){
-        stringstream msg;
-        msg << prolog;
-        msg << "The child element called '" << key;
-        msg << "' is not a string. json: " << endl << json_obj.dump(2) << endl;
-        BESDEBUG(MODULE, msg.str() << endl);
-        return value;
-    }
-    return string_obj.get<string>();
-
-
-}
-
-
 const nlohmann::json& JsonUtils::qc_get_array(const std::string &key, const nlohmann::json& json_obj) const
 {
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
@@ -253,6 +225,13 @@ const nlohmann::json& JsonUtils::qc_get_array(const std::string &key, const nloh
     }
     return array_obj;
 }
+
+/**
+ *
+ * @param key
+ * @param json_obj
+ * @return
+ */
 const nlohmann::json& JsonUtils::qc_get_object(const std::string &key, const nlohmann::json& json_obj) const
 {
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);

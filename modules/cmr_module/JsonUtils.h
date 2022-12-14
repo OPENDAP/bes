@@ -55,9 +55,7 @@ public:
     const nlohmann::json& qc_get_array(const std::string &key, const nlohmann::json& json_obj) const;
     std::string get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const;
     double qc_double(const std::string &key, const nlohmann::json &json_obj) const;
-    unsigned long qc_int(const std::string &key, const nlohmann::json &json_obj) const;
     std::string probe_json(const nlohmann::json &j) const;
-
 };
 
 
