@@ -460,7 +460,15 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
                     d4dim_name = string(oname.begin(),oname.end()-1);   
                 D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
                 if(d4_dim == nullptr) {
-                    d4_dim = new D4Dimension(d4dim_name,dt_inst.nelmts);
+                    hsize_t nelmts = dt_inst.nelmts;
+                    // For pure dimension, if the dimension size is 0, 
+                    // the dimension is unlimited and we need to use the object reference
+                    // to retrieve the variable this dimension is attached and then for the same variable retrieve
+                    // the size of this dimension.
+                    if (dt_inst.nelmts == 0) 
+                        nelmts = obtain_unlim_pure_dim_size(pid,full_path_name);
+ 
+                    d4_dim = new D4Dimension(d4dim_name,nelmts);
                     d4_dims->add_dim_nocopy(d4_dim);
                 }
                 BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
@@ -712,6 +720,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
     if (is_eos5) 
         newvarname = handle_string_special_characters(newvarname);
 
+
     // Get a base type. It should be an HDF5 atomic datatype
     // datatype. 
     BaseType *bt = Get_bt(newvarname, varname,filename, dt_inst.type,true);
@@ -764,8 +773,8 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         }
         dimnames_size = (int)(dt_inst.dimnames.size());
 #if 0
-//cerr<<"dimnames_size is "<<dimnames_size <<endl;
-//cerr<<"ndims is "<<dt_inst.ndims <<endl;
+cerr<<"dimnames_size is "<<dimnames_size <<endl;
+cerr<<"ndims is "<<dt_inst.ndims <<endl;
 #endif
             
         bool is_eos5_dims = false;
@@ -790,7 +799,6 @@ cout<<"final varname is "<<varname <<endl;
 for (const auto & dname:dim_names)
     cout<<"dname is "<<dname<<endl;
 #endif
-            
                        
             // For DAP4, no need to add dimension if no dimension name
             if (is_eos5_dims) {
@@ -798,8 +806,8 @@ for (const auto & dname:dim_names)
                     ar->append_dim(dt_inst.size[dim_index],dim_names[dim_index]);
             }
             else {
-            for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                ar->append_dim(dt_inst.size[dim_index]); 
+                for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
+                    ar->append_dim(dt_inst.size[dim_index]); 
             }
         }
 
@@ -1897,5 +1905,154 @@ bool obtain_eos5_grp_dim(const string & varname, const unordered_map<string, vec
             dimnames.push_back(HDF5CFUtil::obtain_string_after_lastslash(sit.name));
         ret_value = true;
     }
+    return ret_value;
+}
+
+hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
+
+    hsize_t ret_value = 0;
+
+    typedef struct s_t {
+        hobj_ref_t s_ref;
+        int s_index;
+    } s_t;
+    
+    hid_t dset_id = -1;
+    if((dset_id = H5Dopen(pid,dname.c_str(),H5P_DEFAULT)) <0) {
+        string msg = "cannot open the HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    htri_t has_reference_list = -1;
+    string reference_name= "REFERENCE_LIST";
+    has_reference_list = H5Aexists(dset_id,reference_name.c_str());
+
+    if (has_reference_list >0) {
+
+        hid_t attr_id = H5Aopen(dset_id,reference_name.c_str(),H5P_DEFAULT);
+        if (attr_id <0 ) {
+            H5Dclose(dset_id);
+            string msg = "Cannot open the attribute " + reference_name + " of HDF5 dataset "+ dname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        hid_t atype_id = H5Aget_type(attr_id);
+        if (atype_id <0) {
+            H5Aclose(attr_id);
+            H5Dclose(dset_id);
+            string msg = "Cannot get the datatype of the attribute " + reference_name + " of HDF5 dataset "+ dname;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
+
+        if (H5T_COMPOUND == H5Tget_class(atype_id)) {
+            
+            hid_t aspace_id = H5Aget_space(attr_id);
+            if (aspace_id < 0) {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "Cannot obtain the data space ID  for the attribute  " + reference_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            hssize_t num_ele_ref = H5Sget_simple_extent_npoints(aspace_id);
+            if (num_ele_ref < 0) {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            size_t ele_size = H5Tget_size(atype_id);
+            if (ele_size == 0) {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "Cannot obtain the datatype size of the attribute  " + reference_name;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            if (sizeof(s_t)!=ele_size) {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "The data type size is not the same as the struct. ";
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+            vector<s_t> ref_list(num_ele_ref);
+
+            if (H5Aread(attr_id,atype_id,ref_list.data()) <0)  {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "Cannot obtain the referenced object for the variable  " + dname;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }            
+
+            // To obtain the dimension size, we only need to grab the first referred object. 
+            // The size is the same for all objects. KY 2022-12-14
+
+            H5O_type_t obj_type; 
+            if (H5Rget_obj_type2(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref),&obj_type)<0) {
+                H5Aclose(attr_id);
+                H5Tclose(atype_id);
+                H5Dclose(dset_id);
+                string msg = "Cannot obtain the referenced object for the variable  " + dname;
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
+
+            if (obj_type == H5O_TYPE_DATASET) {
+
+                hid_t did_ref = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &((ref_list[0]).s_ref));
+                if (did_ref < 0) {
+                    H5Aclose(attr_id);
+                    H5Tclose(atype_id);
+                    H5Dclose(dset_id);
+                    string msg = "Cannot de-reference the object for the variable  " + dname;
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+
+                hid_t did_space = H5Dget_space(did_ref);
+                if (did_space < 0) {
+                    H5Aclose(attr_id);
+                    H5Tclose(atype_id);
+                    H5Dclose(dset_id);
+                    H5Dclose(did_ref);
+                    string msg = "Cannot open the space of the de-referenced object for the variable  " + dname;
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+
+                hssize_t num_ele_dim = H5Sget_simple_extent_npoints(did_space);
+                if (num_ele_dim < 0) {
+                    H5Aclose(attr_id);
+                    H5Tclose(atype_id);
+                    H5Dclose(dset_id);
+                    H5Dclose(did_ref);
+                    H5Sclose(did_space);
+                    string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+                ret_value =(hsize_t)num_ele_dim;
+
+                H5Dclose(did_ref);
+                H5Sclose(did_space);
+            }
+
+            H5Sclose(aspace_id);
+        }
+       
+        H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        
+    }
+    
+    if(H5Dclose(dset_id)<0) {
+        string msg = "cannot close the HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+ 
     return ret_value;
 }

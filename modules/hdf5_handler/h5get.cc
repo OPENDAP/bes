@@ -790,14 +790,16 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
                 // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
                 // Here a little bias towards files created by the netCDF-4 APIs. 
                 // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
-                // we will ignore this orphage dimension sale since it is not associated with other datasets.
-                // However, it is an orphage dimension scale created by the netCDF-4 APIs, we think
+                // we will ignore this orphanage dimension scale since it is not associated with other datasets.
+                // However, it is an orphanage dimension scale created by the netCDF-4 APIs, we think
                 // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
                 //
                 if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2]) 
                     is_dimscale =true;
-                else if(dim_attr_mark[1])
+                else if(dim_attr_mark[1]) {
                     is_pure_dim = true;
+                    // We need to remember if this dimension is unlimited dimension,maybe in the future. 2022-11-13
+                }
             }
         }
  
