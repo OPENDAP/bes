@@ -78,7 +78,7 @@ private:
     std::string d_name;
     size_t d_size;
     std::string d_lmt;
-    bool d_is_data;
+    bool d_is_data{false};
     item_type d_type;
     std::string d_description;
     std::string d_dap_service_url;
@@ -105,7 +105,7 @@ public:
      * @param type
      */
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, item_type type)
-        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
+        : d_name(name), d_size(size), d_lmt(lmt), d_type(type) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog

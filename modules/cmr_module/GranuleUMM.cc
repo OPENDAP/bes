@@ -137,37 +137,46 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
     //
     for(const auto &entry : arch_and_info_array){
         BESDEBUG(MODULE, prolog << CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY << entry.dump(2) << endl );
-        d_size_orig = cmrApi.qc_double(CMR_UMM_SIZE_KEY, entry);
-        BESDEBUG(MODULE, prolog << "d_size_orig: " << d_size_orig << endl );
+        string name = cmrApi.get_str_if_present(CMR_UMM_NAME_KEY,entry);
+        BESDEBUG(MODULE, prolog << CMR_UMM_NAME_KEY << ": " << name << endl );
 
-        d_size_units_str = cmrApi.get_str_if_present(CMR_UMM_SIZE_UNIT_KEY, entry).c_str();
-        std::transform(d_size_units_str.begin(), d_size_units_str.end(),d_size_units_str.begin(), ::toupper);
-        BESDEBUG(MODULE, prolog << "d_size_units_str: " << d_size_units_str << endl );
+        // We want the granule and not its md5 hash, so we check for that.
+        // There may be other entries in the array but *shrugs* what's a person to do?
+        if(BESUtil::endsWith(name,".md5")) {
+            BESDEBUG(MODULE, prolog << "Detected MD5 hash file: " << name << " SKIPPING." << endl);
+        }
+        else {
+            d_size_orig = cmrApi.qc_double(CMR_UMM_SIZE_KEY, entry);
+            BESDEBUG(MODULE, prolog << "d_size_orig: " << d_size_orig << endl );
 
-        if(d_size_units_str.empty()){
-            BESDEBUG(MODULE, prolog << "Size content is incomplete. size: " << d_size_str << " units: " << d_size_units_str << endl );
-            return;
-        }
+            d_size_units_str = cmrApi.get_str_if_present(CMR_UMM_SIZE_UNIT_KEY, entry).c_str();
+            std::transform(d_size_units_str.begin(), d_size_units_str.end(),d_size_units_str.begin(), ::toupper);
+            BESDEBUG(MODULE, prolog << "d_size_units_str: " << d_size_units_str << endl );
 
-        double size;
-        size = d_size_orig;
+            if(d_size_units_str.empty()){
+                BESDEBUG(MODULE, prolog << "Size content is incomplete. size: " << d_size_str << " units: " << d_size_units_str << endl );
+                return;
+            }
 
-        if(d_size_units_str == "KB"){
-            size *= 1024;
-        }
-        if(d_size_units_str == "MB"){
-            size *= 1024ULL*1024ULL;
-        }
-        else if (d_size_units_str=="GB"){
-            size *= 1024ULL*1024ULL*1024ULL;
-        }
-        else if (d_size_units_str=="TB"){
-            size *= 1024ULL*1024ULL*1024ULL*1024ULL;
-        }
-        d_size = size;
-        BESDEBUG(MODULE, prolog << "d_size: " << d_size << endl );
+            double size;
+            size = d_size_orig;
 
-        return ;
+            if(d_size_units_str == "KB"){
+                size *= 1024;
+            }
+            if(d_size_units_str == "MB"){
+                size *= 1024ULL*1024ULL;
+            }
+            else if (d_size_units_str=="GB"){
+                size *= 1024ULL*1024ULL*1024ULL;
+            }
+            else if (d_size_units_str=="TB"){
+                size *= 1024ULL*1024ULL*1024ULL*1024ULL;
+            }
+            d_size = size;
+            BESDEBUG(MODULE, prolog << "d_size: " << d_size << endl );
+            break;
+        }
     }
 }
 

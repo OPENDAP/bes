@@ -75,6 +75,7 @@
 #define CMR_UMM_ITEMS_KEY "items"
 #define CMR_UMM_UMM_KEY "umm"
 #define CMR_UMM_META_KEY "meta"
+#define CMR_UMM_NAME_KEY "name"
 #define CMR_UMM_RELATED_URLS_KEY "RelatedUrls"
 #define CMR_UMM_GRANULE_UR_KEY "GranuleUR"
 #define CMR_UMM_CONCEPT_ID_KEY "concept-id"
