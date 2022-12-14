@@ -51,112 +51,119 @@ namespace cmr {
 
 class CmrApi {
 private:
-    std::string d_cmr_endpoint_url;
+    std::string d_cmr_endpoint_url{DEFAULT_CMR_HOST_URL};
     std::string d_cmr_provider_search_endpoint_url;
     std::string d_cmr_providers_search_endpoint_url;
     std::string d_cmr_collections_search_endpoint_url;
     std::string d_cmr_granules_search_endpoint_url;
     std::string d_cmr_granules_umm_search_endpoint_url;
+    const nlohmann::json &get_temporal_group(const nlohmann::json &cmr_doc) const;
 
-    const nlohmann::json &get_temporal_group(const nlohmann::json &cmr_doc);
+    const nlohmann::json &get_year_group(const nlohmann::json &cmr_doc) const;
+    const nlohmann::json &get_years(const nlohmann::json &cmr_doc) const;
+    const nlohmann::json &get_year(const std::string &target_year, const nlohmann::json &cmr_doc) const;
 
-    const nlohmann::json &get_year_group(const nlohmann::json &cmr_doc);
 
-    const nlohmann::json &get_month_group(const std::string &for_year, const nlohmann::json &cmr_doc);
+    const nlohmann::json &get_month_group(const std::string &for_year, const nlohmann::json &cmr_doc) const;
 
     const nlohmann::json &get_month(const std::string &target_month,
                                     const std::string &target_year,
-                                    const nlohmann::json &cmr_doc);
+                                    const nlohmann::json &cmr_doc) const;
 
     const nlohmann::json &get_day_group(const std::string &target_month,
                                                 const std::string &target_year,
-                                                const nlohmann::json &cmr_doc);
+                                                const nlohmann::json &cmr_doc) const;
 
-    const nlohmann::basic_json<> &get_items(const nlohmann::basic_json<> &cmr_doc);
+    const nlohmann::basic_json<> &get_items(const nlohmann::basic_json<> &cmr_doc) const;
 
-    const nlohmann::json &get_children(const nlohmann::json &jobj);
-    bool get_children(const nlohmann::json &jobj, nlohmann::json &result_json);
+    const nlohmann::json &get_children(const nlohmann::json &jobj) const;
 
-    const nlohmann::json &get_feed(const nlohmann::json &cmr_doc);
+    const nlohmann::json &get_feed(const nlohmann::json &cmr_doc) const;
 
-    const nlohmann::json& get_entries(const nlohmann::json &cmr_doc);
+    const nlohmann::json& get_entries(const nlohmann::json &cmr_doc) const;
 
     void granule_search(const std::string &collection_name,
                         const std::string &r_year,
                         const std::string &r_month,
                         const std::string &r_day,
-                        nlohmann::json &cmr_doc);
+                        nlohmann::json &cmr_doc) const;
 
     void granule_umm_search(const std::string &collection_name,
                             const std::string &r_year,
                             const std::string &r_month,
                             const std::string &r_day,
-                            nlohmann::json &cmr_doc);
+                            nlohmann::json &cmr_doc) const;
 
     void get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
                          unsigned int page_size=CMR_MAX_PAGE_SIZE,
-                         bool just_opendap=false );
+                         bool just_opendap=false ) const;
 
 
 
 public:
     CmrApi();
 
-    std::string probe_json(const nlohmann::json &j);
-    std::string get_str_if_present(std::string key, const nlohmann::json& jo);
-    const nlohmann::json& qc_get_array(std::string key, const nlohmann::json& go);
-    const nlohmann::json& qc_get_object(std::string key, const nlohmann::json& go);
-    double qc_double(const std::string &key, const nlohmann::json &json_obj);
-    const nlohmann::json& get_related_urls_array(const nlohmann::json& go);
+    std::string probe_json(const nlohmann::json &j) const;
+    std::string get_str_if_present(const std::string &key, const nlohmann::json& jo) const;
+    const nlohmann::json& qc_get_array(const std::string &key, const nlohmann::json& go) const;
+    const nlohmann::json& qc_get_object(const std::string &key, const nlohmann::json& go) const;
+    double qc_double(const std::string &key, const nlohmann::json &json_obj) const;
+    const nlohmann::json& get_related_urls_array(const nlohmann::json& go) const;
 
 
-    void get_years(const std::string &collection_name, std::vector<std::string> &years_result);
+    void get_years(const std::string &collection_name,
+                   std::vector<std::string> &years_result) const;
 
-    void get_months(const std::string &collection_name, const std::string &year, std::vector<std::string> &months_result);
+    void get_months(const std::string &collection_name,
+                    const std::string &year,
+                    std::vector<std::string> &months_result) const;
 
-    void get_days(const std::string& collection_name, const std::string& r_year, std::string r_month, std::vector<std::string> &days_result);
+    void get_days(const std::string& collection_name,
+                  const std::string& r_year,
+                  const std::string &r_month,
+                  std::vector<std::string> &days_result) const;
 
     void get_granule_ids(const std::string& collection_name,
                          const std::string& r_year,
                          const std::string &r_month,
                          const std::string &r_day,
-                         std::vector<std::string> &granule_ids);
+                         std::vector<std::string> &granule_ids) const;
 
     void get_granules(const std::string& collection_name,
                       const std::string &r_year,
                       const std::string &r_month,
                       const std::string &r_day,
-                      std::vector<cmr::Granule *> &granule_objs);
+                      std::vector<cmr::Granule *> &granule_objs) const;
 
     void get_granules_umm(const std::string& collection_name,
                               const std::string &r_year,
                               const std::string &r_month,
                               const std::string &r_day,
-                              std::vector<cmr::GranuleUMM *> &granule_objs);
+                              std::vector<cmr::GranuleUMM *> &granule_objs) const;
 
-    void get_collection_ids(std::vector<std::string> &collection_ids);
+    void get_collection_ids(std::vector<std::string> &collection_ids) const;
 
     unsigned long granule_count(const std::string &collection_name,
                                 const std::string &r_year,
                                 const std::string &r_month,
-                                const std::string &r_day);
+                                const std::string &r_day) const;
 
 
-    cmr::Granule *get_granule(const std::string path);
+    cmr::Granule *get_granule(const std::string path) const;
 
     cmr::Granule *get_granule(const std::string& collection_name,
                               const std::string& r_year,
                               const std::string& r_month,
                               const std::string& r_day,
-                              const std::string& granule_id);
+                              const std::string& granule_id) const;
 
-    Provider get_provider(const std::string &provider_id);
-    void get_providers(std::vector<cmr::Provider> &providers);
-    void get_opendap_providers(std::vector<cmr::Provider> &providers);
-    unsigned int get_opendap_collections_count(const std::string &provider_id);
+    Provider get_provider(const std::string &provider_id) const;
+    void get_providers(std::vector<cmr::Provider> &providers) const;
+    void get_opendap_providers(std::vector<cmr::Provider> &providers) const;
+    unsigned int get_opendap_collections_count(const std::string &provider_id) const;
 
-    void get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections );
-    void get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections );
+    void get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections ) const;
+    void get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections ) const;
 
 };
 

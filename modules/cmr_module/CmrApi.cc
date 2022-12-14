@@ -64,7 +64,12 @@ namespace cmr {
 
 std::string truth(bool t){ if(t){return "true";} return "false"; }
 
-std::string CmrApi::probe_json(const nlohmann::json &j)
+/**
+ *
+ * @param j
+ * @return
+ */
+std::string CmrApi::probe_json(const nlohmann::json &j) const
 {
     string hdr0("#########################################################################################");
     string hdr1("#- -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -  - -");
@@ -96,7 +101,7 @@ std::string CmrApi::probe_json(const nlohmann::json &j)
 }
 
 
-CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
+CmrApi::CmrApi() {
     bool found;
     string cmr_endpoint_url;
     TheBESKeys::TheKeys()->get_value(CMR_HOST_URL_KEY, cmr_endpoint_url, found);
@@ -125,7 +130,7 @@ CmrApi::CmrApi() : d_cmr_endpoint_url(DEFAULT_CMR_HOST_URL) {
     BESDEBUG(MODULE,
              prolog << "d_cmr_granules_umm_search_endpoint_url: " << d_cmr_granules_umm_search_endpoint_url << endl);
 }
-double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj)
+double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj) const
 {
     double value=0.0;
 
@@ -169,7 +174,7 @@ double CmrApi::qc_double(const std::string &key, const nlohmann::json &json_obj)
 
 }
 
-std::string CmrApi::get_str_if_present(std::string key, const nlohmann::json& json_obj)
+std::string CmrApi::get_str_if_present(const std::string &key, const nlohmann::json& json_obj) const
 {
     string value;
 
@@ -215,7 +220,7 @@ std::string CmrApi::get_str_if_present(std::string key, const nlohmann::json& js
 }
 
 
-const nlohmann::json& CmrApi::qc_get_array(std::string key, const nlohmann::json& json_obj)
+const nlohmann::json& CmrApi::qc_get_array(const std::string &key, const nlohmann::json& json_obj) const
 {
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
     // Check input for object.
@@ -255,7 +260,7 @@ const nlohmann::json& CmrApi::qc_get_array(std::string key, const nlohmann::json
     }
     return array_obj;
 }
-const nlohmann::json& CmrApi::qc_get_object(std::string key, const nlohmann::json& json_obj)
+const nlohmann::json& CmrApi::qc_get_object(const std::string &key, const nlohmann::json& json_obj) const
 {
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
 
@@ -301,7 +306,7 @@ const nlohmann::json& CmrApi::qc_get_object(std::string key, const nlohmann::jso
 /**
 * Internal method that retrieves the "links" array from the Granule's object.
 */
-const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_obj)
+const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_obj) const
 {
     return qc_get_array(CMR_UMM_RELATED_URLS_KEY,json_obj);
 }
@@ -312,7 +317,7 @@ const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_
   * @param jobj
   * @return The "children" (CMR_V2_CHILDREN_KEY) array of objects.
   */
-const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
+const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj) const
 {
     BESDEBUG(MODULE, prolog << probe_json(jobj) << endl);
     bool result = jobj.is_null();
@@ -348,15 +353,17 @@ const nlohmann::json &CmrApi::get_children(const nlohmann::json &jobj)
  * @param cmr_doc
  * @return
  */
-const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc)
+const nlohmann::json &CmrApi::get_feed(const nlohmann::json &cmr_doc) const
 {
     return qc_get_object(CMR_V2_FEED_KEY, cmr_doc);
 }
 
 /**
  *
+ * @param cmr_doc
+ * @return
  */
-const json& CmrApi::get_entries(const json &cmr_doc)
+const json& CmrApi::get_entries(const json &cmr_doc) const
 {
 
     BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
@@ -365,8 +372,12 @@ const json& CmrApi::get_entries(const json &cmr_doc)
 }
 
 
-
-const json& CmrApi::get_items(const json &cmr_doc)
+/**
+ *
+ * @param cmr_doc
+ * @return
+ */
+const json& CmrApi::get_items(const json &cmr_doc) const
 {
     BESDEBUG(MODULE, prolog << "cmr_doc" << endl << cmr_doc.dump(2) << endl);
     return qc_get_array(CMR_UMM_ITEMS_KEY,cmr_doc);
@@ -375,8 +386,10 @@ const json& CmrApi::get_items(const json &cmr_doc)
 
 /**
  *
+ * @param cmr_doc
+ * @return
  */
-const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc)
+const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc) const
 {
     string msg0;
     const auto &feed = get_feed(cmr_doc);
@@ -404,40 +417,12 @@ const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc)
 } // CmrApi::get_temporal_group()
 
 
-
-
-/**
-
-
-const json &CmrApi::get_year_group(const json &cmr_doc)
-{
-    auto &feed = cmr_doc[CMR_V2_FEED_KEY];
-    auto &facets = feed[CMR_V2_FACETS_KEY];
-    if(facets[CMR_V2_HAS_CHILDREN_KEY].get<bool>()) {
-        for (auto &facet: facets[CMR_V2_CHILDREN_KEY]) {
-            if (facet[CMR_V2_TITLE_KEY].get<std::string>() == CMR_V2_TEMPORAL_FACET_TITLE_VALUE) {
-                if (facet[CMR_V2_HAS_CHILDREN_KEY].get<bool>()) {
-                    for (auto &temporal_child: facet[CMR_V2_CHILDREN_KEY]) {
-                        if (temporal_child[CMR_V2_TITLE_KEY].get<std::string>() == CMR_V2_YEAR_TITLE_VALUE) {
-                            return temporal_child; // It's the Year group!
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-}
-**/
-
-
-
 /**
  *
  * @param cmr_doc
  * @return
  */
-const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc)
+const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc) const
 {
 
     const auto &temporal_group = get_temporal_group(cmr_doc);
@@ -459,6 +444,19 @@ const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc)
     throw CmrInternalError(msg, __FILE__, __LINE__);
 }
 
+/**
+ *
+ * @param cmr_doc
+ * @return
+ */
+const nlohmann::json &CmrApi::get_years(const nlohmann::json &cmr_doc) const
+{
+    auto &year_group = get_year_group(cmr_doc);
+    if (year_group[CMR_V2_HAS_CHILDREN_KEY]) {
+        return get_children(year_group);
+    }
+    throw CmrNotFoundError("The Year object had no children.", __FILE__, __LINE__);
+}
 
 /**
  *
@@ -466,15 +464,54 @@ const nlohmann::json &CmrApi::get_year_group(const nlohmann::json &cmr_doc)
  * @param cmr_doc
  * @return
  */
-const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, const nlohmann::json &cmr_doc){
+const nlohmann::json &CmrApi::get_year(const std::string &target_year, const nlohmann::json &cmr_doc) const
+{
+    const auto &years = get_years(cmr_doc);
+    for( auto &year:years) {
+        string year_title = year[CMR_V2_TITLE_KEY].get<string>();
+        if (target_year == year_title) {
+            BESDEBUG(MODULE, prolog + "Found matching Year object. target_year: " << target_year << endl);
+            return year;
+        }
+        BESDEBUG(MODULE, prolog + "The current year: " << year_title <<
+        " does not match the target_year of: " << target_year << endl);
+    }
+    throw CmrNotFoundError("The list of years did not contain on the matched: "+target_year, __FILE__, __LINE__);
+}
 
+/**
+ *
+ * @param target_year
+ * @param cmr_doc
+ * @return
+ */
+const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, const nlohmann::json &cmr_doc) const
+{
+
+
+    auto &year = get_year(target_year,cmr_doc);
+    auto &months = get_children(year);
+    for(auto &month: months){
+        string title = month[CMR_V2_TITLE_KEY];
+        if( title == CMR_V2_MONTH_TITLE_VALUE ){
+            BESDEBUG(MODULE, prolog + "Found Month object." << endl);
+            return month;
+        }
+        else {
+            stringstream msg;
+            msg << prolog << "The child of '" << CMR_V2_YEAR_TITLE_VALUE << "' with title '"+title+"' does not match 'Month'";
+            BESDEBUG(MODULE, msg.str() << endl);
+        }
+    }
+
+#if 0
     auto &year_group = get_year_group(cmr_doc);
     if(year_group[CMR_V2_HAS_CHILDREN_KEY]){
         auto &years = get_children(year_group);
         for( auto &year:years){
             string year_title = year[CMR_V2_TITLE_KEY].get<string>();
             if(target_year == year_title){
-                BESDEBUG(MODULE, prolog + "Found Year object." << endl);
+                BESDEBUG(MODULE, prolog + "Found matching Year object. target_year: " << target_year << endl);
                 auto &months = get_children(year);
                 for(auto &month: months){
                     string title = month[CMR_V2_TITLE_KEY];
@@ -491,6 +528,8 @@ const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, co
             }
         }
     }
+#endif
+
     string msg = prolog + "Failed to locate the Month group.";
     BESDEBUG(MODULE, msg << endl);
     throw CmrInternalError(msg, __FILE__, __LINE__);
@@ -510,26 +549,26 @@ const nlohmann::json &
 CmrApi::get_month(const std::string &target_month,
                   const std::string &target_year,
                   const nlohmann::json &cmr_doc)
-{
-    stringstream msg;
+ const {
+
 
     auto &month_group = get_month_group(target_year, cmr_doc);
     auto &months = get_children(month_group);
     for (auto &month: months){
         string month_id = month[CMR_V2_TITLE_KEY].get<string>();
         if(month_id == target_month){
-            msg.str("");
+            stringstream msg;
             msg << prolog  << "Located requested month ("<< target_month << ")";
             BESDEBUG(MODULE, msg.str() << endl);
             return month;
         }
         else {
-            msg.str("");
+            stringstream msg;
             msg << prolog  << "The month titled '"<<month_id << "' does not match the requested month ("<< target_month <<")";
             BESDEBUG(MODULE, msg.str() << endl);
         }
     }
-    msg.str("");
+    stringstream msg;
     msg << prolog  << "Failed to locate request Year/Month.";
     BESDEBUG(MODULE, msg.str() << endl);
     throw CmrInternalError(msg.str(), __FILE__, __LINE__);
@@ -551,7 +590,8 @@ const nlohmann::json &
 CmrApi::get_day_group(const std::string &target_month,
                         const std::string &target_year,
                         const nlohmann::json &cmr_doc)
-{
+const {
+
     const auto &month = get_month( target_month, target_year,cmr_doc);
     const auto &m_kids = get_children(month);
     for ( const auto &m_kid : m_kids ) {
@@ -577,7 +617,7 @@ CmrApi::get_day_group(const std::string &target_month,
  * @param collection_name The name of the collection to query.
  * @param collection_years A vector into which the years will be placed.
  */
-void CmrApi::get_years(const string &collection_name, vector<string> &years_result)
+void CmrApi::get_years(const string &collection_name, vector<string> &years_result) const
 {
     rjson_utils rju;
     // bool result;
@@ -613,7 +653,7 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
 void
 CmrApi::get_months(const string &collection_name,
                    const string &r_year,
-                   vector<string> &months_result){
+                   vector<string> &months_result) const{
     rjson_utils rju;
 
     stringstream msg;
@@ -674,12 +714,22 @@ CmrApi::get_months(const string &collection_name,
 
 
 
+/**
+ *
+ * @param collection_concept_id
+ * @param r_year
+ * @param r_month
+ * @param days_result
+ */
 void CmrApi::get_days(const string &collection_concept_id,
-                      const string& r_year, string r_month, vector<string> &days_result)
+                      const string& r_year,
+                      const string &r_month,
+                      vector<string> &days_result) const
 {
-    stringstream cmr_query_url, cmr_query_string;
+    stringstream cmr_query_url;
     cmr_query_url << d_cmr_granules_search_endpoint_url << "?";
 
+    stringstream cmr_query_string;
     cmr_query_string << "concept_id=" << collection_concept_id << "&";
     cmr_query_string << "include_facets=v2" << "&";
     cmr_query_string << http::url_encode("temporal_facet[0][year]") << "=" << r_year << "&";
@@ -696,7 +746,7 @@ void CmrApi::get_days(const string &collection_concept_id,
         string day_title = day[CMR_V2_TITLE_KEY].get<string>();
         days_result.push_back(day_title);
     }
-}
+}// CmrApi::get_days()
 
 
 
@@ -715,7 +765,7 @@ void CmrApi::get_granule_ids(const std::string& collection_name,
                              const std::string& r_year,
                              const std::string &r_month,
                              const std::string &r_day,
-                             std::vector<std::string> &granule_ids)
+                             std::vector<std::string> &granule_ids) const
 {
     json cmr_doc;
 
@@ -742,7 +792,7 @@ void CmrApi::get_granule_ids(const std::string& collection_name,
 unsigned long CmrApi::granule_count(const string &collection_name,
                                     const string &r_year,
                                     const string &r_month,
-                                    const string &r_day)
+                                    const string &r_day) const
 {
     stringstream msg;
     json cmr_doc;
@@ -758,7 +808,11 @@ unsigned long CmrApi::granule_count(const string &collection_name,
  * Locates granules in the collection matching the year, month, and day. Any or all of
  * year, month, and day may be the empty string.
  */
-void CmrApi::granule_search(const std::string &collection_name, const std::string &r_year, const std::string &r_month, const std::string &r_day, nlohmann::json &cmr_doc)
+void CmrApi::granule_search(const std::string &collection_name,
+                            const std::string &r_year,
+                            const std::string &r_month,
+                            const std::string &r_day,
+                            nlohmann::json &cmr_doc) const
 {
 
     rjson_utils rju;
@@ -791,8 +845,12 @@ void CmrApi::granule_search(const std::string &collection_name, const std::strin
  * Locates granules in the collection matching the year, month, and day. Any or all of
  * year, month, and day may be the empty string.
  */
-void CmrApi::granule_umm_search(const std::string &collection_name, const std::string &r_year, const std::string &r_month, const std::string &r_day, nlohmann::json &cmr_doc)
-{
+void CmrApi::granule_umm_search(const std::string &collection_name,
+                                const std::string &r_year,
+                                const std::string &r_month,
+                                const std::string &r_day,
+                                nlohmann::json &cmr_doc)
+const {
 
     rjson_utils rju;
 
@@ -827,7 +885,7 @@ void CmrApi::get_granules(const std::string& collection_name,
                           const std::string &r_month,
                           const std::string &r_day,
                           std::vector<cmr::Granule *> &granule_objs)
-{
+const {
     stringstream msg;
     json cmr_doc;
 
@@ -836,7 +894,7 @@ void CmrApi::get_granules(const std::string& collection_name,
     const auto& granules = get_entries(cmr_doc);
     for ( auto &granule : granules){
         auto *g = new Granule(granule);
-        granule_objs.push_back(g);
+        granule_objs.emplace_back(g);
     }
 }
 
@@ -848,7 +906,7 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
                           const std::string &r_year,
                           const std::string &r_month,
                           const std::string &r_day,
-                          std::vector<cmr::GranuleUMM *> &granule_objs)
+                          std::vector<cmr::GranuleUMM *> &granule_objs) const
 {
     stringstream msg;
     json cmr_doc;
@@ -865,10 +923,9 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
 
 
 
-void CmrApi::get_collection_ids(std::vector<std::string> &collection_ids)
+void CmrApi::get_collection_ids(std::vector<std::string> &collection_ids) const
 {
     bool found = false;
-    string key = CMR_COLLECTIONS_KEY;
     TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS_KEY, collection_ids, found);
     if(!found){
         throw BESInternalError(string("The '") + CMR_COLLECTIONS_KEY
@@ -893,7 +950,7 @@ cmr::Granule* CmrApi::get_granule(const string& collection_name,
                                   const string& r_month,
                                   const string& r_day,
                                   const string& r_granule_concept_id)
-{
+const {
     // @TODO If this code is supposed to get a single granule, and it has the granule_concept_id
     //   this should be making a direct cmr query for just that granule.
     vector<Granule *> granules;
@@ -921,7 +978,7 @@ cmr::Granule* CmrApi::get_granule(const string& collection_name,
  * @param provider_id
  * @return
  */
-Provider CmrApi::get_provider(const std::string &provider_id)
+Provider CmrApi::get_provider(const std::string &provider_id) const
 {
     rjson_utils ju;
 
@@ -934,8 +991,12 @@ Provider CmrApi::get_provider(const std::string &provider_id)
     // We know that this CMR query returns a single anonymous json object, which
     // in turn contains a single provider object (really...)
 
+    CmrApi cmr;
+
     // Grab the internal provider object...
-    auto provider_json = cmr_doc[CMR_PROVIDER_KEY];
+    const auto provider_json = cmr.qc_get_object(CMR_PROVIDER_KEY,cmr_doc);
+    // const auto provider_json = cmr_doc[CMR_PROVIDER_KEY];
+
     // And then make a new provider.
     Provider provider(provider_json);
 
@@ -943,7 +1004,7 @@ Provider CmrApi::get_provider(const std::string &provider_id)
 }
 
 
-void CmrApi::get_providers(vector<cmr::Provider> &providers)
+void CmrApi::get_providers(vector<cmr::Provider> &providers) const
 {
     rjson_utils ju;
 
@@ -957,18 +1018,19 @@ void CmrApi::get_providers(vector<cmr::Provider> &providers)
     // contains a single provider object (really...)
 
     // So we iterate over the anonymous objects
-    for (auto &obj : cmr_doc){
+    for (const auto &obj : cmr_doc){
         // And the grab the internal provider object...
         auto provider_json = obj[CMR_PROVIDER_KEY];
-        // And then make a new provider.
+
+        // And then make a new Provider and put it in the vector.
         Provider provider(provider_json);
-        //BESDEBUG(MODULE, prolog << provider.dump() << endl);
         providers.emplace_back(std::move(provider));
     }
 
 }
 
-void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers){
+void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers) const
+{
     vector<cmr::Provider> all_providers;
     get_providers(all_providers);
     for(auto &provider: all_providers){
@@ -981,7 +1043,7 @@ void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers){
     }
 }
 
-unsigned int CmrApi::get_opendap_collections_count(const string &provider_id)
+unsigned int CmrApi::get_opendap_collections_count(const string &provider_id) const
 {
     rjson_utils ju;
     stringstream cmr_query_url;
@@ -990,7 +1052,7 @@ unsigned int CmrApi::get_opendap_collections_count(const string &provider_id)
     cmr_query_url << "&provider=" << provider_id;
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
     json cmr_doc = ju.get_as_json(cmr_query_url.str());
-//        BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
+
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "HITS: " << hits << endl);
     return hits;
@@ -1000,7 +1062,7 @@ unsigned int CmrApi::get_opendap_collections_count(const string &provider_id)
 void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
                              unsigned int page_size,
                              bool just_opendap)
-{
+const {
     unsigned int page_num=1;
     rjson_utils ju;
     string cmr_query_url_base;
@@ -1016,13 +1078,13 @@ void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
 
     json cmr_doc = ju.get_as_json(cmr_query_url);
-//      BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
+
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
     if (hits == 0){
         return;
     }
-    for (auto &collection_json : cmr_doc["items"]) {
+    for (const auto &collection_json : cmr_doc["items"]) {
         Collection collection(collection_json);
         collections.emplace_back(collection);
     }
@@ -1033,8 +1095,8 @@ void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<
         cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
         BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
         cmr_doc = ju.get_as_json(cmr_query_url);
-//      BESDEBUG(MODULE, prolog << cmr_doc.dump() << endl);
-        for (auto &collection_json : cmr_doc["items"]) {
+
+        for (const auto &collection_json : cmr_doc["items"]) {
             Collection collection(collection_json);
             collections.emplace_back(collection);
         }
@@ -1045,10 +1107,10 @@ void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<
 
 
 
-void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections){
+void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, true);
 }
-void CmrApi::get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections){
+void CmrApi::get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, false);
 }
 
