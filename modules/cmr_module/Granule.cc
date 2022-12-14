@@ -192,7 +192,7 @@ void Granule::setLastModifiedStr(const nlohmann::json& granule_json)
 const nlohmann::json& Granule::get_links_array(const nlohmann::json& granule_json) const
 {
     JsonUtils json;
-   return json.qc_get_array(CMR_GRANULE_LINKS_KEY, granule_json);
+    return json.qc_get_array(CMR_GRANULE_LINKS_KEY, granule_json);
 }
 
 
@@ -264,6 +264,11 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
     throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 }
 
+size_t Granule::getSize() const {
+    double value = atof(getSizeStr().c_str());
+    value *= 1024*1204;
+    return static_cast<size_t>(value);
+}
 
 
 

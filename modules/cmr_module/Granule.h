@@ -70,7 +70,7 @@ public:
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
     std::string getSizeStr() const { return d_size_str; }
     std::string getLastModifiedStr() const { return d_last_modified_time; }
-    float getSize() const { return atof(getSizeStr().c_str())*1024*1204; }
+    size_t getSize() const;
 
     bes::CatalogItem *getCatalogItem(const BESCatalogUtils *d_catalog_utils) const ;
 };

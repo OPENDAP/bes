@@ -174,7 +174,8 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
             else if (d_size_units_str=="TB"){
                 size *= 1024ULL*1024ULL*1024ULL*1024ULL;
             }
-            d_size = size;
+            d_size =  static_cast<uint64_t>(size);
+
             BESDEBUG(MODULE, prolog << "d_size: " << d_size << endl );
             break;
         }
