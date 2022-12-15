@@ -59,39 +59,38 @@ private:
     std::string d_data_access_url;
     std::string d_dap_service_url;
     std::string d_metadata_access_url;
-    double d_size_orig;
-    uint64_t d_size;
+    double d_size_orig{}{};
+    uint64_t d_size{}{};
     std::string d_size_str;
     std::string d_size_units_str;
     std::string d_last_modified_time;
     std::string d_description;
 
-    void setName(const nlohmann::json& jobj);
-    void setConceptId(const nlohmann::json& j_obj);
-    void setDataGranuleUrl(const nlohmann::json& go);
-    void setDapServiceUrl(const nlohmann::json& go);
-    void setSize(const nlohmann::json& granule_obj);
-    void setLastModifiedStr(const nlohmann::json& go);
-    void setDescription(const nlohmann::json& go);
+    void setName(const nlohmann::json& granule_umm_json);
+    void setConceptId(const nlohmann::json& granule_umm_json);
+    void setDataGranuleUrl(const nlohmann::json& granule_umm_json);
+    void setDapServiceUrl(const nlohmann::json& granule_umm_json);
+    void setSize(const nlohmann::json& granule_umm_json);
+    void setLastModifiedStr(const nlohmann::json& granule_umm_json);
+    void setDescription(const nlohmann::json& granule_umm_json);
 
 
 public:
-    explicit GranuleUMM(const nlohmann::json& granule_json);
+    explicit GranuleUMM(const nlohmann::json& granule_umm_json);
 
-    std::string getName(){ return d_name; }
-    std::string getConceptId(){ return d_id; }
-    std::string getDataGranuleUrl() { return d_data_access_url; }
-    std::string getDapServiceUrl() { return d_dap_service_url; }
-    std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
-    std::string getSizeStr(){ return d_size_str; }
-    std::string getLastModifiedStr() { return d_last_modified_time; }
-    // float getSize(){ return atof(getSizeStr().c_str())*1024.0*1024.0; }
-    uint64_t getSize(){ return d_size; }
+    std::string getName() const { return d_name; }
+    std::string getConceptId() const { return d_id; }
+    std::string getDataGranuleUrl() const { return d_data_access_url; }
+    std::string getDapServiceUrl() const { return d_dap_service_url; }
+    std::string getMetadataAccessUrl() const { return d_metadata_access_url; }
+    std::string getSizeStr() const { return d_size_str; }
+    std::string getLastModifiedStr() const { return d_last_modified_time; }
+    uint64_t getSize() const { return d_size; }
 
     // For now we use getName() until a better option appears.
-    std::string getDescription(){ return getName(); }
+    std::string getDescription() const { return getName(); }
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
+    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils) const ;
 };
 
 } // namespace cmr

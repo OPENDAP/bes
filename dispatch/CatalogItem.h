@@ -76,7 +76,7 @@ public:
 
 private:
     std::string d_name;
-    size_t d_size;
+    size_t d_size{0};
     std::string d_lmt;
     bool d_is_data{false};
     item_type d_type;
@@ -88,7 +88,7 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogItem() : d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown) { }
+    CatalogItem() : d_type(unknown) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog

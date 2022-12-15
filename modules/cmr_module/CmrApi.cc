@@ -417,11 +417,8 @@ const {
 void CmrApi::get_years(const string &collection_name, vector<string> &years_result) const
 {
     JsonUtils json;
-    ;
-    // bool result;
-    string msg;
-
     stringstream cmr_query_url;
+
     cmr_query_url << d_cmr_granules_search_endpoint_url;
     cmr_query_url << "?concept_id=" + collection_name << "&";
     cmr_query_url << "include_facets=v2&page_size="<<CMR_MAX_PAGE_SIZE;

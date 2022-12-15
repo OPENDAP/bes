@@ -53,33 +53,43 @@ using namespace std;
 
 namespace cmr {
 
-
-GranuleUMM::GranuleUMM(const nlohmann::json& granule_json)
+/**
+ *
+ * @param granule_umm_json The CMR
+ */
+GranuleUMM::GranuleUMM(const nlohmann::json& granule_umm_json)
 {
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl << granule_json.dump(2) << endl);
-    setConceptId(granule_json);
-    setName(granule_json);
-    setSize(granule_json);
-    setDapServiceUrl(granule_json);
-    setDataGranuleUrl(granule_json);
-    setLastModifiedStr(granule_json);
-    setDescription(granule_json);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl << granule_umm_json.dump(2) << endl);
+    setConceptId(granule_umm_json);
+    setName(granule_umm_json);
+    setSize(granule_umm_json);
+    setDapServiceUrl(granule_umm_json);
+    setDataGranuleUrl(granule_umm_json);
+    setLastModifiedStr(granule_umm_json);
+    setDescription(granule_umm_json);
 }
 
 
-void GranuleUMM::setName(const nlohmann::json& j_obj) {
+void GranuleUMM::setName(const nlohmann::json& granule_umm_json)
+{
     JsonUtils json;
-    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, j_obj);
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_umm_json);
     this->d_name = json.get_str_if_present(CMR_UMM_GRANULE_UR_KEY, umm_obj);
 }
 
-void GranuleUMM::setDescription(const nlohmann::json& go){
+/**
+ * Not implemented because the .umm_json response does not contain an obvious candidate for Description.
+ * @param go
+ */
+void GranuleUMM::setDescription(const nlohmann::json& /*granule_umm_json*/)
+{
+    // Not implemented because the .umm_json response does not contain an obvious candidate for Description.
 }
 
-void GranuleUMM::setConceptId(const nlohmann::json& j_obj)
+void GranuleUMM::setConceptId(const nlohmann::json& granule_umm_json)
 {
     JsonUtils json;
-    const auto &meta_obj = json.qc_get_object(CMR_UMM_META_KEY, j_obj);
+    const auto &meta_obj = json.qc_get_object(CMR_UMM_META_KEY, granule_umm_json);
 
     BESDEBUG(MODULE, prolog << "META OBJECT" << endl << json.probe_json(meta_obj) << endl);
 
@@ -95,10 +105,10 @@ void GranuleUMM::setConceptId(const nlohmann::json& j_obj)
  *
  * @param granule_obj
  */
-void GranuleUMM::setSize(const nlohmann::json& granule_obj)
+void GranuleUMM::setSize(const nlohmann::json& granule_umm_json)
 {
     JsonUtils json;
-    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_obj);
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_umm_json);
     const auto &data_granule_obj = json.qc_get_object(CMR_UMM_DATA_GRANULE_KEY, umm_obj);
     BESDEBUG(MODULE, prolog << CMR_UMM_DATA_GRANULE_KEY << data_granule_obj.dump(2) << endl );
     const auto &arch_and_info_array = json.qc_get_array(CMR_UMM_ARCHIVE_AND_DIST_INFO_KEY, data_granule_obj);
@@ -176,7 +186,7 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
             }
             d_size =  static_cast<uint64_t>(size);
 
-            BESDEBUG(MODULE, prolog << "d_size: " << d_size << endl );
+            BESDEBUG(MODULE, prolog << "d_size: " << d_size << " bytes" << endl );
             break;
         }
     }
@@ -187,10 +197,10 @@ void GranuleUMM::setSize(const nlohmann::json& granule_obj)
   * Sets the last modified time of the granule as a string.
   * @param go
   */
-void GranuleUMM::setLastModifiedStr(const nlohmann::json& j_obj)
+void GranuleUMM::setLastModifiedStr(const nlohmann::json& granule_umm_json)
 {
     JsonUtils json;
-    const auto &umm_obj = json.qc_get_object(CMR_UMM_META_KEY, j_obj);
+    const auto &umm_obj = json.qc_get_object(CMR_UMM_META_KEY, granule_umm_json);
     this->d_last_modified_time = json.get_str_if_present(CMR_UMM_REVISION_DATE_KEY, umm_obj);
 }
 
@@ -198,10 +208,10 @@ void GranuleUMM::setLastModifiedStr(const nlohmann::json& j_obj)
 /**
  * Sets the data access URL for the dataset granule.
  */
-void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
+void GranuleUMM::setDataGranuleUrl(const nlohmann::json& granule_umm_json)
 {
     JsonUtils json;
-    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, go);
+    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_umm_json);
     const auto& related_urls = json.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
     for(auto &url_obj : related_urls){
         string url = json.get_str_if_present(CMR_UMM_URL_KEY, url_obj);
@@ -236,33 +246,37 @@ void GranuleUMM::setDataGranuleUrl(const nlohmann::json& go)
  *
  * @param jo
  */
-void GranuleUMM::setDapServiceUrl(const nlohmann::json& jo)
+void GranuleUMM::setDapServiceUrl(const nlohmann::json& granule_umm_json)
 {
-    const std::string HTML_SUFFIX(".html");
+    const std::string DAP2_HTML_SUFFIX(".html");
+    const std::string DAP4_HTML_SUFFIX(".dmr.html");
 
     JsonUtils json;
-    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, jo);
+    const auto& umm_obj = json.qc_get_object(CMR_UMM_UMM_KEY, granule_umm_json);
     const auto& related_urls = json.qc_get_array(CMR_UMM_RELATED_URLS_KEY, umm_obj);
     for(auto &related_url_obj : related_urls){
         string url = json.get_str_if_present(CMR_UMM_URL_KEY,related_url_obj);
         string type = json.get_str_if_present(CMR_UMM_TYPE_KEY,related_url_obj);
         string subtype = json.get_str_if_present(CMR_UMM_SUBTYPE_KEY,related_url_obj);
-        if(type == CMR_UMM_TYPE_USE_SERVICE_API_VALUE || type == CMR_UMM_TYPE_GET_DATA_VALUE){
-            if(subtype == CMR_UMM_SUBTYPE_KEY_OPENDAP_DATA_VALUE){
-
-                if(BESUtil::endsWith(url, HTML_SUFFIX)){
-                    url = url.substr(0,url.length() - HTML_SUFFIX.length());
-                }
-                this->d_dap_service_url = url;
-                return;
+        bool is_dap_service = ((type == CMR_UMM_TYPE_USE_SERVICE_API_VALUE || type == CMR_UMM_TYPE_GET_DATA_VALUE)
+                                && subtype == CMR_UMM_SUBTYPE_KEY_OPENDAP_DATA_VALUE);
+        if(is_dap_service){
+            // This next is a hack for bad CMR records in which the URL incorrectly references the DAP2 or
+            // DAP4 Data Request form and not the unadorned Dataset URL.
+            if(BESUtil::endsWith(url, DAP2_HTML_SUFFIX)){
+                url = url.substr(0,url.length() - DAP2_HTML_SUFFIX.length());
             }
+            else if(BESUtil::endsWith(url, DAP4_HTML_SUFFIX)){
+                url = url.substr(0,url.length() - DAP4_HTML_SUFFIX.length());
+            }
+            d_dap_service_url = url;
+            return;
         }
     }
     stringstream msg;
     msg << "ERROR: Failed to locate DAP service URL (";
     msg << CMR_UMM_RELATED_URLS_KEY << "). json: " << endl << related_urls.dump(2) << endl;
     BESDEBUG(MODULE, prolog << msg.str() << endl);
-    // throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
 }
 
 /**

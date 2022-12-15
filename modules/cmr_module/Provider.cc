@@ -104,7 +104,7 @@ void Provider::get_collections(std::vector<cmr::Collection> &collections)
     cmrApi.get_collections(id(), collections);
 }
 
-void Provider::get_opendap_collections(std::vector<cmr::Collection> &collections)
+void Provider::get_opendap_collections(std::vector<cmr::Collection> &collections) const
 {
     CmrApi cmrApi;
     cmrApi.get_opendap_collections(id(), collections);

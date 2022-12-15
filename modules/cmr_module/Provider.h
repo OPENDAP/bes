@@ -55,7 +55,7 @@ public:
     unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
 
     void get_collections(std::vector<cmr::Collection> &collections);
-    void get_opendap_collections(std::vector<cmr::Collection> &collections);
+    void get_opendap_collections(std::vector<cmr::Collection> &collections) const;
 
 
     std::string to_string();

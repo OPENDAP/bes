@@ -200,9 +200,9 @@ const nlohmann::json& Granule::get_links_array(const nlohmann::json& granule_jso
 /**
  * Sets the data access URL for the dataset granule.
  */
-void Granule::setDataGranuleUrl(const nlohmann::json& go)
+void Granule::setDataGranuleUrl(const nlohmann::json& granule_json)
 {
-    const auto& links = get_links_array(go);
+    const auto& links = get_links_array(granule_json);
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if(rel == CMR_GRANULE_LINKS_REL_DATA_ACCESS){
@@ -219,10 +219,10 @@ void Granule::setDataGranuleUrl(const nlohmann::json& go)
 /**
  * Sets the data access URL for the dataset granule.
  */
-void Granule::setDapServiceUrl(const nlohmann::json& jo)
+void Granule::setDapServiceUrl(const nlohmann::json& granule_json)
 {
-    BESDEBUG(MODULE, prolog << "JSON: " << endl << jo.dump(4) << endl);
-    const auto& links = get_links_array(jo);
+    BESDEBUG(MODULE, prolog << "JSON: " << endl << granule_json.dump(4) << endl);
+    const auto& links = get_links_array(granule_json);
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if (rel == CMR_GRANULE_LINKS_REL_SERVICE) {
@@ -248,9 +248,9 @@ void Granule::setDapServiceUrl(const nlohmann::json& jo)
 /**
  * Sets the metadata access URL for the dataset granule.
  */
-void Granule::setMetadataAccessUrl(const nlohmann::json& go)
+void Granule::setMetadataAccessUrl(const nlohmann::json& granule_json)
 {
-    const auto &links = get_links_array(go);
+    const auto &links = get_links_array(granule_json);
     for(auto &link : links){
         string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
         if(rel == CMR_GRANULE_LINKS_REL_METADATA_ACCESS){
@@ -265,7 +265,7 @@ void Granule::setMetadataAccessUrl(const nlohmann::json& go)
 }
 
 size_t Granule::getSize() const {
-    double value = atof(getSizeStr().c_str());
+    double value = strtod(getSizeStr().c_str(), nullptr);
     value *= 1024*1204;
     return static_cast<size_t>(value);
 }
