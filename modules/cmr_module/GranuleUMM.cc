@@ -225,7 +225,6 @@ void GranuleUMM::setDataGranuleUrl(const nlohmann::json& granule_umm_json)
     msg << "ERROR: Failed to locate Data Granule URL (";
     msg << CMR_UMM_RELATED_URLS_KEY << "). json: " << endl << related_urls.dump(2) << endl;
     BESDEBUG(MODULE, prolog << msg.str() << endl);
-    // throw CmrNotFoundError(msg.str(), __FILE__, __LINE__);
 }
 /**
  * Sets the DAP Service URL for the dataset granule.
@@ -293,7 +292,6 @@ bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils)
     item->set_size(getSize());
     item->set_description(getDescription());
 
-    // item->set_is_data(d_catalog_utils->is_data(item->get_name()));
     if(!getDapServiceUrl().empty()) {
         item->set_dap_service_url(getDapServiceUrl());
     }

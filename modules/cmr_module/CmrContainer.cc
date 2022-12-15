@@ -208,7 +208,7 @@ void CmrContainer::dump(ostream &strm) const {
  * @param granule_path
  * @return
  */
-unique_ptr<Granule> CmrContainer::getTemporalFacetGranule(const std::string granule_path)
+unique_ptr<Granule> CmrContainer::getTemporalFacetGranule(const std::string &granule_path)
 {
     const unsigned int PATH_SIZE = 7;
 

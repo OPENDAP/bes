@@ -111,7 +111,7 @@ bes::CatalogNode * CmrCatalog::get_providers_node() const
     node->set_catalog_name(CMR_CATALOG_NAME);
     vector<unique_ptr<Provider>> providers;
     cmrApi.get_opendap_providers(providers);
-    for ( auto &provider : providers ) {
+    for (const auto &provider : providers ) {
         auto *collection = new CatalogItem();
         collection->set_name(provider->id());
         collection->set_description(provider->description_of_holdings());
@@ -139,7 +139,7 @@ bes::CatalogNode *CmrCatalog::get_collections_node(const string &path, const str
     auto *catalog_node = new CatalogNode(path);
     catalog_node->set_lmt(epoch_time);
     catalog_node->set_catalog_name(CMR_CATALOG_NAME);
-    for ( auto &collection : collections ) {
+    for (const auto &collection : collections ) {
         auto *catalog_item = new CatalogItem();
         catalog_item->set_name(collection->id());
         catalog_item->set_description(collection->abstract());

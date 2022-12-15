@@ -831,7 +831,7 @@ void CmrApi::get_opendap_providers(vector<unique_ptr<cmr::Provider>> &opendap_pr
     }
 }
 
-unsigned int CmrApi::get_opendap_collections_count(const string &provider_id) const
+unsigned long int CmrApi::get_opendap_collections_count(const string &provider_id) const
 {
     JsonUtils json;
     stringstream cmr_query_url;

@@ -156,7 +156,7 @@ public:
     Provider get_provider(const std::string &provider_id) const;
     void get_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
     void get_opendap_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
-    unsigned int get_opendap_collections_count(const std::string &provider_id) const;
+    unsigned long int get_opendap_collections_count(const std::string &provider_id) const;
 
     void get_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;
     void get_opendap_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;

@@ -103,7 +103,7 @@ bool Provider::rest_only() const {
     JsonUtils json;
     return json.qc_boolean(CMR_PROVIDER_REST_ONLY_KEY,d_provider_json_obj);
 }
-void Provider::get_collections(std::vector<unique_ptr<cmr::Collection>> &collections)
+void Provider::get_collections(std::vector<unique_ptr<cmr::Collection>> &collections) const
 {
     CmrApi cmrApi;
     cmrApi.get_collections(id(), collections);
@@ -118,7 +118,7 @@ void Provider::get_opendap_collections(std::vector<unique_ptr<cmr::Collection>> 
 
 
 
-string Provider::to_string() {
+string Provider::to_string() const {
     stringstream msg;
     msg << "# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #" << endl;
     msg << "# Provider" << endl;

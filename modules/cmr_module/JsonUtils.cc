@@ -55,7 +55,7 @@ namespace cmr {
  * @return The json document parsed from the source URL response..
  *
  */
-json JsonUtils::get_as_json(const string &url)
+json JsonUtils::get_as_json(const string &url) const
 {
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     shared_ptr<http::url> target_url(new http::url(url));
@@ -137,7 +137,7 @@ double JsonUtils::qc_double(const std::string &key, const nlohmann::json &json_o
  */
 bool JsonUtils::qc_boolean(const std::string &key, const nlohmann::json &json_obj) const
 {
-    double value=0.0;
+    bool value=false;
 
     BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
     // Check input for object.

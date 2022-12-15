@@ -43,7 +43,7 @@ class JsonUtils {
 public:
     static std::string typeName(unsigned int t);
 
-    nlohmann::json get_as_json(const std::string &url);
+    nlohmann::json get_as_json(const std::string &url) const;
 
 
     const nlohmann::json& qc_get_object(const std::string &key, const nlohmann::json& json_obj) const;
