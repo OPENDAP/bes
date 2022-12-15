@@ -135,13 +135,11 @@ string CmrContainer::access() {
     string path  = get_real_name();
     BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-    Granule *granule = getTemporalFacetGranule(path);
+    auto granule = getTemporalFacetGranule(path);
     if (!granule) {
         throw BESNotFoundError("Failed to locate a granule associated with the path " + path, __FILE__, __LINE__);
     }
     string granule_url = granule->getDataGranuleUrl();
-    delete granule;
-    granule = nullptr;
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
@@ -210,7 +208,7 @@ void CmrContainer::dump(ostream &strm) const {
  * @param granule_path
  * @return
  */
-Granule * CmrContainer::getTemporalFacetGranule(const std::string granule_path)
+unique_ptr<Granule> CmrContainer::getTemporalFacetGranule(const std::string granule_path)
 {
     const unsigned int PATH_SIZE = 7;
 

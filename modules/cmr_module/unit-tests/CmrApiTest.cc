@@ -427,7 +427,7 @@ public:
         };
 
         unsigned long  expected_size = 31;
-        std::vector<Granule *> granules;
+        std::vector<unique_ptr<Granule>> granules;
         try {
             CmrApi cmr;
             string year ="1985";
@@ -441,7 +441,7 @@ public:
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
                     << granules.size() << " granules: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 msg << granule->getName() << endl
                     << "        size:  " << granule->getSizeStr() << endl
                     << "         lmt:    " << granule->getLastModifiedStr() << endl
@@ -450,7 +450,7 @@ public:
             BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 string pgi = granule->getId();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
@@ -459,17 +459,8 @@ public:
                 CPPUNIT_ASSERT(expected[i] == pgi);
             }
 
-            for (auto & granule : granules) {
-                delete granule;
-                granule = nullptr;
-            }
-
         }
         catch (BESError &be) {
-            for (auto & granule : granules) {
-                delete granule;
-                granule = nullptr;
-            }
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
@@ -518,7 +509,7 @@ public:
         vector<string> granules;
         try {
             CmrApi cmr;
-            std::vector<Granule *> granules;
+            std::vector<unique_ptr<Granule>> granules;
             string year ="1985";
             string month = "03";
 
@@ -530,7 +521,7 @@ public:
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
                     << granules.size() << " granules. Data Access URLs: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 msg << granule->getName() << endl
                     << "        size: " << granule->getSizeStr() << endl
                     << "         lmt: " << granule->getLastModifiedStr() << endl
@@ -539,7 +530,7 @@ public:
             BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 string granule_url = granule->getDataGranuleUrl();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
@@ -548,10 +539,6 @@ public:
                 // CPPUNIT_ASSERT(expected[i] == url);
             }
 
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
-            }
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();

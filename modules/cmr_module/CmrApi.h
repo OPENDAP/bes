@@ -129,7 +129,7 @@ public:
                       const std::string &r_year,
                       const std::string &r_month,
                       const std::string &r_day,
-                      std::vector<cmr::Granule *> &granule_objs) const;
+                      std::vector<std::unique_ptr<cmr::Granule>> &granule_objs) const;
 
     void get_granules_umm(const std::string& collection_name,
                               const std::string &r_year,
@@ -147,11 +147,11 @@ public:
 
     cmr::Granule *get_granule(const std::string path) const;
 
-    cmr::Granule *get_granule(const std::string& collection_name,
-                              const std::string& r_year,
-                              const std::string& r_month,
-                              const std::string& r_day,
-                              const std::string& granule_id) const;
+    std::unique_ptr<Granule> get_granule( const std::string& collection_name,
+                                          const std::string& r_year,
+                                          const std::string& r_month,
+                                          const std::string& r_day,
+                                          const std::string& granule_id) const;
 
     Provider get_provider(const std::string &provider_id) const;
     void get_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;

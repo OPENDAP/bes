@@ -681,7 +681,7 @@ void CmrApi::get_granules(const std::string& collection_name,
                           const std::string &r_year,
                           const std::string &r_month,
                           const std::string &r_day,
-                          std::vector<cmr::Granule *> &granule_objs)
+                          std::vector<unique_ptr<cmr::Granule>> &granule_objs)
 const {
     stringstream msg;
     json cmr_doc;
@@ -690,8 +690,8 @@ const {
 
     const auto& granules = get_entries(cmr_doc);
     for ( auto &granule : granules){
-        auto *g = new Granule(granule);
-        granule_objs.emplace_back(g);
+        auto g = unique_ptr<Granule>(new Granule(granule));
+        granule_objs.emplace_back(std::move(g));
     }
 }
 
@@ -742,28 +742,23 @@ void CmrApi::get_collection_ids(std::vector<std::string> &collection_ids) const
   * @param granule_id
   * @return
   */
-cmr::Granule* CmrApi::get_granule(const string& collection_name,
+unique_ptr<Granule> CmrApi::get_granule(const string& collection_name,
                                   const string& r_year,
                                   const string& r_month,
                                   const string& r_day,
-                                  const string& r_granule_concept_id)
+                                  const string& r_granule_ur)
 const {
     // @TODO If this code is supposed to get a single granule, and it has the granule_concept_id
     //   this should be making a direct cmr query for just that granule.
-    vector<Granule *> granules;
-    Granule *result = nullptr;
+    std::vector<unique_ptr<cmr::Granule>> granules;
+    unique_ptr<Granule> result;
 
     get_granules(collection_name, r_year, r_month, r_day, granules);
     for(auto & granule : granules){
         string id = granule->getName();
-        BESDEBUG(MODULE, prolog << "Comparing r_granule_concept_id: '" << r_granule_concept_id << "' to collection member id: " << id << endl);
-        if( id == r_granule_concept_id){
-            result = granule;
-        }
-        else {
-            // This deletes the granule in the granules vector because granule is a reference.
-            delete granule;
-            granule = nullptr;
+        BESDEBUG(MODULE, prolog << "Comparing granule_ur: '" << r_granule_ur << "' to collection member id: " << id << endl);
+        if( id == r_granule_ur){
+            result = std::move(granule);
         }
     }
     return result;

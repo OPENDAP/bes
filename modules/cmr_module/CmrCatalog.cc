@@ -265,7 +265,7 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
             const string &granule_id = path_elements[3];
             BESDEBUG(MODULE, prolog << "Request resolved to leaf granule/dataset name,  collection: " << collection_id << " year: " << year
                                     << " month: " << month <<  " day: " << day << " granule: " << granule_id << endl);
-            const Granule *granule = cmrApi.get_granule(collection_id,year,month,day,granule_id);
+            auto granule = cmrApi.get_granule(collection_id,year,month,day,granule_id);
             if(granule){
                 auto *granuleItem = new CatalogItem();
                 granuleItem->set_type(CatalogItem::leaf);
@@ -274,7 +274,6 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
                 granuleItem->set_lmt(granule->getLastModifiedStr());
                 granuleItem->set_size(granule->getSize());
                 node->set_leaf(granuleItem);
-                delete granule;
             }
             else {
                 throw BESNotFoundError("No such resource: "+path,__FILE__,__LINE__);
