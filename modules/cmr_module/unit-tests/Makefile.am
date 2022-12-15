@@ -96,7 +96,7 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../rjson_utils.o ../CmrApi.o \
+OBJS = ../JsonUtils.o ../CmrApi.o \
        ../Provider.o ../Collection.o ../Granule.o ../GranuleUMM.o \
        ../CmrCatalog.o
 
