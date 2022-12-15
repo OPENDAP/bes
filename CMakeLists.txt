@@ -168,10 +168,15 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
-add_executable(bes
+add_executable(
     config.h
 
 	rapidjson/rapidjson.h
+	rapidjson/document.h
+	rapidjson/writer.h
+	rapidjson/prettywriter.h
+	rapidjson/stringbuffer.h
+	rapidjson/filereadstream.h
 	pugixml/src/pugixml.hpp
 
     cmdln/unit-tests/test_config.h.in
@@ -526,6 +531,18 @@ add_executable(bes
     http/unit-tests/RemoteResourceTest.cc
     http/unit-tests/AllowedHostsTest.cc
 
+	http/awsv4.cc
+	http/awsv4.h
+	http/CredentialsManager.h
+	http/CredentialsManager.cc
+	http/unit-tests/awsv4_test.cc
+	http/AccessCredentials.cc
+	http/AccessCredentials.h
+	http/NgapS3Credentials.cc
+	http/NgapS3Credentials.h
+	http/unit-tests/NgapCredentialsTest.cc
+
+
 	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h
     hello_world/not_used/SayReporter.cc
@@ -603,7 +620,7 @@ add_executable(bes
     modules/cmr_module/CmrContainer.h
     modules/cmr_module/CmrContainerStorage.cc
     modules/cmr_module/CmrContainerStorage.h
-    modules/cmr_module/CmrError.h
+        modules/cmr_module/CmrInternalError.h
     modules/cmr_module/CmrModule.cc
     modules/cmr_module/CmrModule.h
     modules/cmr_module/CmrNames.h
@@ -615,8 +632,13 @@ add_executable(bes
     modules/cmr_module/Granule.h
     #modules/cmr_module/RemoteHttpResource.cc
     #modules/cmr_module/RemoteHttpResource.h
-    modules/cmr_module/rjson_utils.cc
-    modules/cmr_module/rjson_utils.h
+        modules/cmr_module/JsonUtils.cc
+        modules/cmr_module/JsonUtils.h
+	modules/cmr_module/Provider.h
+	modules/cmr_module/Provider.cc
+	modules/cmr_module/Collection.h
+	modules/cmr_module/Collection.cc
+
     modules/csv_handler/CSV_Data.cc
     modules/csv_handler/CSV_Data.h
     modules/csv_handler/CSV_Field.h
@@ -645,27 +667,18 @@ add_executable(bes
     modules/debug_functions/DebugFunctions.h
 
 	modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
-#    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
-#    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
     modules/dmrpp_module/unit-tests/DmrppArrayTest.cc
     modules/dmrpp_module/unit-tests/ChunkTest.cc
-		http/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
     modules/dmrpp_module/unit-tests/test_config.h
 	modules/dmrpp_module/build_dmrpp.cc
 	modules/dmrpp_module/build_dmrpp_util.cc
 	modules/dmrpp_module/build_dmrpp_util.h
-		http/awsv4.cc
-		http/awsv4.h
     modules/dmrpp_module/Chunk.cc
     modules/dmrpp_module/Chunk.h
     modules/dmrpp_module/CurlHandlePool.cc
     modules/dmrpp_module/CurlHandlePool.h
-		http/CredentialsManager.h
-		http/CredentialsManager.cc
     modules/dmrpp_module/DMRpp.cc
     modules/dmrpp_module/DMRpp.h
     modules/dmrpp_module/DmrppArray.cc
@@ -1908,7 +1921,7 @@ add_executable(bes
 
     standalone/besstandalone.cc
 	modules/fileout_netcdf/history_utils.cc
-	modules/fileout_netcdf/history_utils.h)
+	modules/fileout_netcdf/history_utils.h modules/cmr_module/Collection.cc modules/cmr_module/Collection.h)
 
 if (EXISTS modules/sql_handler)
 	add_executable(bes
@@ -2015,5 +2028,5 @@ if (EXISTS modules/sql_handler)
 		modules/sql_handler/SQLRequestHandler.h
 		modules/sql_handler/SQLResponseNames.h
 		modules/fileout_netcdf/FONcNames.h
-		)
+            modules/cmr_module/Provider.cc modules/cmr_module/Provider.h)
 endif()

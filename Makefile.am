@@ -60,7 +60,7 @@ aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
 EXTRA_DIST = doxy.conf.in bes-config-pkgconfig \
-bes-tmpfiles-conf besd.logrotate README.md rapidjson pugixml
+bes-tmpfiles-conf besd.logrotate README.md rapidjson nlohmann pugixml
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf

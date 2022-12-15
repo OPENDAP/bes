@@ -29,14 +29,17 @@ libcmr_module_la_SOURCES = $(CMR_SRC) $(CMR_HDR)
 libcmr_module_la_LDFLAGS = -avoid-version -module 
 libcmr_module_la_LIBADD = $(LIBADD)
 
-CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
-	rjson_utils.cc \
-	CmrModule.cc CmrContainer.cc CmrContainerStorage.cc
+CMR_SRC = CmrApi.cc \
+	Provider.cc Collection.cc  Granule.cc  GranuleUMM.cc \
+	CmrCatalog.cc CmrModule.cc CmrContainer.cc CmrContainerStorage.cc \
+	JsonUtils.cc
 
+CMR_HDR = CmrApi.h CmrNames.h   \
+	Provider.h Collection.h Granule.h GranuleUMM.h  \
+	CmrCatalog.h CmrModule.h CmrContainer.h CmrContainerStorage.h \
+	CmrInternalError.h CmrNotFoundError.h \
+	JsonUtils.h
 
-CMR_HDR = CmrApi.h CmrNames.h CmrError.h CmrCatalog.h Granule.h \
-	rjson_utils.h \
-	CmrModule.h CmrContainer.h CmrContainerStorage.h
 
 EXTRA_DIST = cmr.conf.in data
 

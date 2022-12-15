@@ -32,6 +32,7 @@
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "BESContainer.h"
 #include "RemoteResource.h"
@@ -77,7 +78,7 @@ public:
 
     virtual void dump(std::ostream &strm) const;
 
-    static Granule *getTemporalFacetGranule(const std::string granule_path);
+    static std::unique_ptr<Granule> getTemporalFacetGranule(const std::string &granule_path);
 };
 
 } // namespace cmr
