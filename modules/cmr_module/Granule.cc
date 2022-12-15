@@ -221,20 +221,20 @@ void Granule::setDataGranuleUrl(const nlohmann::json& granule_json)
  */
 void Granule::setDapServiceUrl(const nlohmann::json& granule_json)
 {
+    JsonUtils json;
     BESDEBUG(MODULE, prolog << "JSON: " << endl << granule_json.dump(4) << endl);
     const auto& links = get_links_array(granule_json);
     for(auto &link : links){
-        string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
+        string rel = json.get_str_if_present(CMR_GRANULE_LINKS_REL,link);
         if (rel == CMR_GRANULE_LINKS_REL_SERVICE) {
-            d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
-            const auto &title_itr = link.find(CMR_V2_TITLE_KEY);
-            if(title_itr != link.end()){
-                string title = title_itr.value().get<string>();
-                transform(title.begin(), title.end(), title.begin(), ::toupper);
-                if (title.find("OPENDAP") != string::npos) {
-                    d_dap_service_url = link[CMR_GRANULE_LINKS_HREF];
-                    return;
-                }
+            // Check the service link title to see itf it's an OPeNDAP thing
+            string title = json.get_str_if_present(CMR_V2_TITLE_KEY,link);
+            // change to upper case
+            transform(title.begin(), title.end(), title.begin(), ::toupper);
+            if (title.find("OPENDAP") != string::npos) {
+                // Ooh! It's an OPeNDAP service link.
+                d_dap_service_url = json.get_str_if_present(CMR_GRANULE_LINKS_HREF, link);
+                return;
             }
         }
     }
