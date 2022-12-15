@@ -714,8 +714,8 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
     granule_umm_search(collection_name, r_year, r_month, r_day, cmr_doc);
     const auto& granules = get_items(cmr_doc);
     for ( auto &granule : granules){
-        auto *g = unique_ptr<GranuleUMM>(new GranuleUMM(granule));
-        granule_objs.push_back(g);
+        auto g = unique_ptr<GranuleUMM>(new GranuleUMM(granule));
+        granule_objs.emplace_back(std::move(g));
     }
 }
 

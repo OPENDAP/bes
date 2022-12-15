@@ -134,7 +134,7 @@ public:
                               const std::string &r_year,
                               const std::string &r_month,
                               const std::string &r_day,
-                              std::vector<unique_ptr<cmr::GranuleUMM>> &granule_objs) const;
+                              std::vector<std::unique_ptr<cmr::GranuleUMM>> &granule_objs) const;
 
     void get_collection_ids(std::vector<std::string> &collection_ids) const;
 
