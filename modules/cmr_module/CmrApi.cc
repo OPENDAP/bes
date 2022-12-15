@@ -798,7 +798,7 @@ Provider CmrApi::get_provider(const std::string &provider_id) const
 }
 
 
-void CmrApi::get_providers(vector<cmr::Provider> &providers) const
+void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
 {
     JsonUtils json;
 
@@ -814,25 +814,24 @@ void CmrApi::get_providers(vector<cmr::Provider> &providers) const
     // So we iterate over the anonymous objects
     for (const auto &obj : cmr_doc){
         // And the grab the internal provider object...
-        auto provider_json = obj[CMR_PROVIDER_KEY];
-
+        auto provider_json = json.qc_get_object(CMR_PROVIDER_KEY, obj);
         // And then make a new Provider and put it in the vector.
-        Provider provider(provider_json);
+        auto provider = unique_ptr<Provider>(new Provider(provider_json));
         providers.emplace_back(std::move(provider));
     }
 
 }
 
-void CmrApi::get_opendap_providers(vector<cmr::Provider> &providers) const
+void CmrApi::get_opendap_providers(vector<unique_ptr<cmr::Provider>> &opendap_providers) const
 {
-    vector<cmr::Provider> all_providers;
+    vector<unique_ptr<cmr::Provider>> all_providers;
     get_providers(all_providers);
     for(auto &provider: all_providers){
-        BESDEBUG(MODULE, prolog << "PROVIDER: " << provider.id() << endl);
-        unsigned int hits = get_opendap_collections_count(provider.id());
-        provider.set_opendap_collection_count(hits);
+        BESDEBUG(MODULE, prolog << "PROVIDER: " << provider->id() << endl);
+        unsigned int hits = get_opendap_collections_count(provider->id());
         if (hits > 0){
-            providers.emplace_back(provider);
+            provider->set_opendap_collection_count(hits);
+            opendap_providers.emplace_back(std::move(provider));
         }
     }
 }
@@ -847,20 +846,16 @@ unsigned int CmrApi::get_opendap_collections_count(const string &provider_id) co
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
     const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
-    // @TODO Fix this bit so it error checks the steps in getting the value.
-
-
-
-
-    unsigned int hits = cmr_doc["hits"];
-    BESDEBUG(MODULE, prolog << "HITS: " << hits << endl);
+    unsigned long int hits = json.qc_integer(CMR_HITS_KEY,cmr_doc);
+    BESDEBUG(MODULE, prolog << CMR_HITS_KEY <<  ": " << hits << endl);
     return hits;
 }
 
 
-void CmrApi::get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
-                             unsigned int page_size,
-                             bool just_opendap)
+void CmrApi::get_collections_worker( const std::string &provider_id,
+                                    std::vector<unique_ptr<cmr::Collection>> &collections,
+                                    unsigned int page_size,
+                                    bool just_opendap)
 const {
     unsigned int page_num=1;
     JsonUtils json;
@@ -884,7 +879,7 @@ const {
         return;
     }
     for (const auto &collection_json : cmr_doc["items"]) {
-        Collection collection(collection_json);
+        auto collection = unique_ptr<Collection>(new Collection(collection_json));
         collections.emplace_back(std::move(collection));
     }
     BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
@@ -896,7 +891,7 @@ const {
         const auto &cmr_collection_doc = json.get_as_json(cmr_query_url);
 
         for (const auto &collection_json : cmr_collection_doc["items"]) {
-            Collection collection(collection_json);
+            auto collection = unique_ptr<Collection>(new Collection(collection_json));
             collections.emplace_back(std::move(collection));
         }
         BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
@@ -906,10 +901,10 @@ const {
 
 
 
-void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections) const{
+void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, true);
 }
-void CmrApi::get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections) const{
+void CmrApi::get_collections(const std::string &provider_id, std::vector<unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, false);
 }
 

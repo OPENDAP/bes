@@ -30,6 +30,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "nlohmann/json.hpp"
 
@@ -54,8 +55,8 @@ public:
     void set_opendap_collection_count(unsigned long long count){ d_opendap_collection_count = count; }
     unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
 
-    void get_collections(std::vector<cmr::Collection> &collections);
-    void get_opendap_collections(std::vector<cmr::Collection> &collections) const;
+    void get_collections(std::vector<std::unique_ptr<cmr::Collection>> &collections);
+    void get_opendap_collections(std::vector<std::unique_ptr<cmr::Collection>> &collections) const;
 
 
     std::string to_string();

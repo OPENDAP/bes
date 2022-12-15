@@ -94,9 +94,10 @@ private:
                             const std::string &r_day,
                             nlohmann::json &cmr_doc) const;
 
-    void get_collections_worker(const std::string &provider_id, std::vector<cmr::Collection> &collections,
-                         unsigned int page_size=CMR_MAX_PAGE_SIZE,
-                         bool just_opendap=false ) const;
+    void get_collections_worker(const std::string &provider_id,
+                                std::vector<std::unique_ptr<cmr::Collection>> &collections,
+                                unsigned int page_size=CMR_MAX_PAGE_SIZE,
+                                bool just_opendap=false ) const;
 
 
 
@@ -153,12 +154,12 @@ public:
                               const std::string& granule_id) const;
 
     Provider get_provider(const std::string &provider_id) const;
-    void get_providers(std::vector<cmr::Provider> &providers) const;
-    void get_opendap_providers(std::vector<cmr::Provider> &providers) const;
+    void get_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
+    void get_opendap_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
     unsigned int get_opendap_collections_count(const std::string &provider_id) const;
 
-    void get_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections ) const;
-    void get_opendap_collections(const std::string &provider_id, std::vector<cmr::Collection> &collections ) const;
+    void get_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;
+    void get_opendap_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;
 
 };
 

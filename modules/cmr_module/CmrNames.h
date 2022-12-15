@@ -46,6 +46,8 @@
 #define CMR_META_KEY "meta"
 #define CMR_CONCEPT_ID_KEY "concept-id"
 #define CMR_UMM_KEY "umm"
+#define CMR_HITS_KEY "hits"
+
 
 #define CMR_PROVIDER_KEY "provider"
 #define CMR_PROVIDER_ID_KEY "provider_id"

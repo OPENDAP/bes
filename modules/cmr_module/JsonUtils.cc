@@ -61,7 +61,8 @@ json JsonUtils::get_as_json(const string &url)
     shared_ptr<http::url> target_url(new http::url(url));
     http::RemoteResource remoteResource(target_url);
     remoteResource.retrieveResource();
-    std::ifstream f(remoteResource.getCacheFileName());
+    string cache_filename = remoteResource.getCacheFileName();
+    std::ifstream f(cache_filename);
     json data = json::parse(f);
     return data;
 }
@@ -173,9 +174,58 @@ bool JsonUtils::qc_boolean(const std::string &key, const nlohmann::json &json_ob
         BESDEBUG(MODULE, msg.str() << endl);
         return value;
     }
-    return dobj.get<double>();
+    return dobj.get<bool>();
 
 
+}
+
+
+/**
+ * Tries to get the value of the json object named "key" as an unsigned long.
+ * @param key
+ * @param json_obj
+ * @return
+ */
+unsigned long int JsonUtils::qc_integer(const std::string &key, const nlohmann::json &json_obj) const
+{
+    unsigned long int value=0;
+
+    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
+    // Check input for object.
+    bool result = json_obj.is_object();
+    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
+    BESDEBUG(MODULE, msg0 << endl);
+    if(!result){
+        return value;
+    }
+    const auto &key_itr = json_obj.find(key);
+    if(key_itr == json_obj.end()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! Unable to locate the '" << key;
+        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+
+    auto &dobj = json_obj[key];
+    if(dobj.is_null()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Failed to locate the '" << key;
+        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+    if(!dobj.is_number_unsigned()){
+        stringstream msg;
+        msg << prolog;
+        msg << "The child element called '" << key;
+        msg << "' is not unsigned integer valued. json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+    return dobj.get<unsigned long>();
 }
 
 

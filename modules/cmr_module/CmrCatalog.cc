@@ -109,12 +109,12 @@ bes::CatalogNode * CmrCatalog::get_providers_node() const
     node = new CatalogNode("/");
     node->set_lmt(epoch_time);
     node->set_catalog_name(CMR_CATALOG_NAME);
-    vector<Provider> providers;
+    vector<unique_ptr<Provider>> providers;
     cmrApi.get_opendap_providers(providers);
     for ( auto &provider : providers ) {
         auto *collection = new CatalogItem();
-        collection->set_name(provider.id());
-        collection->set_description(provider.description_of_holdings());
+        collection->set_name(provider->id());
+        collection->set_description(provider->description_of_holdings());
         collection->set_type(CatalogItem::node);
         node->add_node(collection);
     }
@@ -127,7 +127,8 @@ bes::CatalogNode *CmrCatalog::get_collections_node(const string &path, const str
     CmrApi cmrApi;
     string epoch_time = BESUtil::get_time(0,false);
 
-    vector<cmr::Collection> collections;
+
+    vector<unique_ptr<Collection>> collections;
     cmrApi.get_opendap_collections(provider_id, collections);
     if(collections.empty()){
         stringstream msg;
@@ -138,12 +139,10 @@ bes::CatalogNode *CmrCatalog::get_collections_node(const string &path, const str
     auto *catalog_node = new CatalogNode(path);
     catalog_node->set_lmt(epoch_time);
     catalog_node->set_catalog_name(CMR_CATALOG_NAME);
-    vector<Provider> providers;
-    cmrApi.get_opendap_providers(providers);
     for ( auto &collection : collections ) {
         auto *catalog_item = new CatalogItem();
-        catalog_item->set_name(collection.id());
-        catalog_item->set_description(collection.abstract());
+        catalog_item->set_name(collection->id());
+        catalog_item->set_description(collection->abstract());
         catalog_item->set_type(CatalogItem::node);
         catalog_node->add_node(catalog_item);
     }
