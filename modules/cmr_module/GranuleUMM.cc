@@ -283,7 +283,7 @@ void GranuleUMM::setDapServiceUrl(const nlohmann::json& granule_umm_json)
  * @param d_catalog_utils
  * @return
  */
-bes::CatalogItem *GranuleUMM::getCatalogItem(BESCatalogUtils *d_catalog_utils)
+bes::CatalogItem *GranuleUMM::getCatalogItem(const BESCatalogUtils *d_catalog_utils)
 {
     auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);

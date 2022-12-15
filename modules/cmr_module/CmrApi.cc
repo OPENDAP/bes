@@ -823,7 +823,7 @@ void CmrApi::get_opendap_providers(vector<unique_ptr<cmr::Provider>> &opendap_pr
     get_providers(all_providers);
     for(auto &provider: all_providers){
         BESDEBUG(MODULE, prolog << "PROVIDER: " << provider->id() << endl);
-        unsigned int hits = get_opendap_collections_count(provider->id());
+        auto hits = get_opendap_collections_count(provider->id());
         if (hits > 0){
             provider->set_opendap_collection_count(hits);
             opendap_providers.emplace_back(std::move(provider));

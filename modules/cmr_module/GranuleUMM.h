@@ -90,7 +90,7 @@ public:
     // For now we use getName() until a better option appears.
     std::string getDescription() const { return getName(); }
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
+    bes::CatalogItem *getCatalogItem(const BESCatalogUtils *d_catalog_utils);
 };
 
 } // namespace cmr
