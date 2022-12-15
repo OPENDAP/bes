@@ -59,8 +59,8 @@ private:
     std::string d_data_access_url;
     std::string d_dap_service_url;
     std::string d_metadata_access_url;
-    double d_size_orig{}{};
-    uint64_t d_size{}{};
+    double d_size_orig{};
+    uint64_t d_size{};
     std::string d_size_str;
     std::string d_size_units_str;
     std::string d_last_modified_time;
@@ -90,7 +90,7 @@ public:
     // For now we use getName() until a better option appears.
     std::string getDescription() const { return getName(); }
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils) const ;
+    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
 };
 
 } // namespace cmr

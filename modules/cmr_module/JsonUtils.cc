@@ -119,7 +119,7 @@ double JsonUtils::qc_double(const std::string &key, const nlohmann::json &json_o
         stringstream msg;
         msg << prolog;
         msg << "The child element called '" << key;
-        msg << "' is not a string. json: " << endl << json_obj.dump(2) << endl;
+        msg << "' is not a floating point value. json: " << endl << json_obj.dump(2) << endl;
         BESDEBUG(MODULE, msg.str() << endl);
         return value;
     }
@@ -127,6 +127,58 @@ double JsonUtils::qc_double(const std::string &key, const nlohmann::json &json_o
 
 
 }
+
+/**
+ * Tries to get the value of the json object named "key" as a bool.
+ * @param key
+ * @param json_obj
+ * @return
+ */
+bool JsonUtils::qc_boolean(const std::string &key, const nlohmann::json &json_obj) const
+{
+    double value=0.0;
+
+    BESDEBUG(MODULE, prolog << "Key: '" << key << "' JSON: " << endl << json_obj.dump(2) << endl);
+    // Check input for object.
+    bool result = json_obj.is_object();
+    string msg0 = prolog + "Json document is" + (result?"":" NOT") + " an object.";
+    BESDEBUG(MODULE, msg0 << endl);
+    if(!result){
+        return value;
+    }
+    const auto &key_itr = json_obj.find(key);
+    if(key_itr == json_obj.end()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Ouch! Unable to locate the '" << key;
+        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+
+    auto &dobj = json_obj[key];
+    if(dobj.is_null()){
+        stringstream msg;
+        msg << prolog;
+        msg << "Failed to locate the '" << key;
+        msg << "' child of json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+    if(!dobj.is_boolean()){
+        stringstream msg;
+        msg << prolog;
+        msg << "The child element called '" << key;
+        msg << "' is not boolean valued. json: " << endl << json_obj.dump(2) << endl;
+        BESDEBUG(MODULE, msg.str() << endl);
+        return value;
+    }
+    return dobj.get<double>();
+
+
+}
+
+
 
 /**
  * Get the

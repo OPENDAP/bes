@@ -79,24 +79,29 @@ namespace cmr {
  */
 
 
-string Provider::id(){
-    return d_provider_json_obj[CMR_PROVIDER_ID_KEY].get<std::string>();
+string Provider::id() const{
+    JsonUtils json;
+    return json.get_str_if_present(CMR_PROVIDER_ID_KEY,d_provider_json_obj);
 }
 
-string Provider::description_of_holdings() {
-    return d_provider_json_obj[CMR_PROVIDER_DESCRIPTION_OF_HOLDINGS_KEY].get<std::string>();
+string Provider::description_of_holdings() const {
+    JsonUtils json;
+    return json.get_str_if_present(CMR_PROVIDER_DESCRIPTION_OF_HOLDINGS_KEY,d_provider_json_obj);
 }
 
-string Provider::organization_name() {
-    return d_provider_json_obj[CMR_PROVIDER_ORGANIZATION_NAME_KEY].get<std::string>();
+string Provider::organization_name() const {
+    JsonUtils json;
+    return json.get_str_if_present(CMR_PROVIDER_ORGANIZATION_NAME_KEY,d_provider_json_obj);
 }
 
-json Provider::contacts() {
-    return d_provider_json_obj[CMR_PROVIDER_CONTACTS_KEY];
+json Provider::contacts() const {
+    JsonUtils json;
+    return json.get_str_if_present(CMR_PROVIDER_CONTACTS_KEY,d_provider_json_obj);
 }
 
-bool Provider::rest_only() {
-    return d_provider_json_obj[CMR_PROVIDER_REST_ONLY_KEY];
+bool Provider::rest_only() const {
+    JsonUtils json;
+    return json.qc_boolean(CMR_PROVIDER_REST_ONLY_KEY,d_provider_json_obj);
 }
 void Provider::get_collections(std::vector<cmr::Collection> &collections)
 {

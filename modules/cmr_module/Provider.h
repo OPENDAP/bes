@@ -45,11 +45,11 @@ private:
 public:
     explicit Provider(nlohmann::json provider_obj): d_provider_json_obj(std::move(provider_obj)){}
 
-    std::string id();
-    std::string description_of_holdings();
-    std::string organization_name();
-    nlohmann::json contacts();
-    bool rest_only();
+    std::string id() const;
+    std::string description_of_holdings() const;
+    std::string organization_name() const;
+    nlohmann::json contacts() const;
+    bool rest_only() const;
 
     void set_opendap_collection_count(unsigned long long count){ d_opendap_collection_count = count; }
     unsigned long long get_opendap_collection_count(){ return d_opendap_collection_count; }
