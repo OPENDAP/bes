@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node count="1321" lastModified="removed date-time" name="/CMR/GES_DISC">
+        <node count="1264" lastModified="removed date-time" name="/CMR/GES_DISC">
             <item lastModified="" name="C1223720291-GES_DISC" type="node">
                 <description>ML2HCL is the EOS Aura Microwave Limb Sounder (MLS) standard product for  hydrogen chloride derived from radiances measured primarily by the 640 GHz radiometer. The data version is 4.2. Spatial coverage is near-global (-82  degrees to +82  degrees latitude), with each profile spaced 1.5  degrees or ~165 km along the orbit track (roughly 15 orbits per day). The recommended useful vertical range is from 100 to 0.316 hPa, and the vertical resolution is between 3 and 6 km. Users of the ML2HCL data product should read section 3.10 of the EOS MLS Level 2 Version 4 Quality Document for more information.
 
@@ -4155,56 +4155,6 @@ The data product is comprised of a sequence of daily global files, where quantit
             <item lastModified="" name="C1382049817-GES_DISC" type="node">
                 <description>This data set provides an estimate the marine boundary layer water vapor beneath uniform cloud fields. Microwave radiometry from AMSR-E and AMSR-2 provides the total column water vapor, while the near-infrared imagery from MODIS provides the water vapor above the cloud layers. The difference between the two gives the vapor between the surface and the cloud top, which may be interpreted as the boundary layer water vapor.</description>
             </item>
-            <item lastModified="" name="C1384615107-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1384615108-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1384615109-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1384615110-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
-            <item lastModified="" name="C1384615111-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
-            <item lastModified="" name="C1384615112-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
-            <item lastModified="" name="C1384615114-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
-            <item lastModified="" name="C1384615115-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CMHS contains common calibrated brightness temperature from the MHS passive microwave instrument flown on the NOAA and METOPS satellites. Swath S1 is the only swath and has 5 channels (89.0GHzV, 157.0GHzV, 183.3GHz+/-250MHzH, 183.3GHz+/- 500MHzH, and 190.3 GHzV). MHS is very similar to AMSU-B. The scan period is 2.667s.</description>
-            </item>
-            <item lastModified="" name="C1384615116-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
-            <item lastModified="" name="C1384615117-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CATMS contains common calibrated brightness temperature from the ATMS passive microwave instrument flown on the Suomi NPP satellite and JPSS satellites. ATMS is approximately a combination of the AMSU-A channels and the MHS channels. ATMS rotates 3 scans per 8 seconds. ATMS has the following 22 channels: Ch GHz Pol 1 23.8 QV 2 31.4 QV 3 50.3 QH 4 51.76 QH 5 52.8 QH 6 53.596+-0.115 QH 7 54.4 QH 8 54.94 QH 9 55.5 QH 10 fo = 57.29 QH 11 fo+-0.3222+-0.217 QH 12 fo+-0.3222+-0.048 QH 13 fo+-0.3222+-0.022 QH 14 fo+-0.3222+-0.010 QH 15 fo+-0.3222+-0.0045 QH 16 88.2 QV 17 165.5 QH 18 183.31+-7 QH 19 183.31+-4.5 QH 20 183.31+-3 QH 21 183.31+-1.8 QH 22 183.31+-1 QH
-
-QV means quasi-vertical; the polarization vector is parallel to the scan plane at nadir. QH meansquasi-horizontal polarization. Note on geolocation and 1C swaths: The BeamLatitude and BeamLongitude in ATMSBASE have a band dimension of 5. Lat and lon is for channels 1,2,3,16,17. Each 1C swath will contain one band: 1C swath Band IEEE GHz Ch geo Chs in band 1 K 18-26.5 1 1 2 A(Ka) 26.5-40 2 2 3 W 75-110 16 16 4 G 110-300 17 17-22 Note that channels 3-15 are NOT included in the 1C product. 1C ATMS contains 4 swaths, one for each band K, A(Ka), W, and G.</description>
-            </item>
             <item lastModified="" name="C1384615118-GES_DISC" type="node">
                 <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
 
@@ -4335,11 +4285,6 @@ The GPM radiometer algorithms are Bayesian-type algorithms. These algorithms sea
 
 3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
             </item>
-            <item lastModified="" name="C1384639552-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
             <item lastModified="" name="C1384639553-GES_DISC" type="node">
                 <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
 
@@ -4455,76 +4400,6 @@ The purpose of the 3GPROF algorithm is to provide monthly and daily mean precipi
 
 Each granule contains data from the daylight portion of each orbit measured for a full day. Spatial coverage is global (-90 to  90 degrees latitude), and there are about 14.5 orbits per day, each has typically 400 swaths. The swath width of the NM is about 2800 km with 36 scenes, or pixels, with a footprint size of 50 km x 50 km at nadir. The files are written using the Hierarchical Data Format Version 5 or HDF5.</description>
             </item>
-            <item lastModified="" name="C1388355365-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355366-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355367-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355368-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355374-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355376-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The 'CLIM'  products differ from their 'regular' counterparts (without the 'CLIM' in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the 'CLIM' output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355378-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355381-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355383-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1388355385-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
             <item lastModified="" name="C1393527975-GES_DISC" type="node">
                 <description>The OMPS-NPP L3 NM Ozone (O3) Total Column 1.0 deg grid daily product provides total ozone measurements from the Ozone Mapping and Profiling Suite (OMPS) Nadir-Mapper (NM) instrument on the Suomi-NPP satellite.
 The level-3 gridding algorithm is used to combine the orbital OMPS cross track measurements into a daily map product with a fixed global grid. Grid cells are computed as weighted averages of a given parameter derived for the field-of-views that overlay the given cell. The current version of this product includes UV aerosol index and reflectivity at 331 nm retrievals as well. 
@@ -4634,24 +4509,6 @@ The NASA Carbon Monitoring System (CMS) is designed to make significant contribu
                 <description>This dataset provides the Carbon Flux for Prior Total Carbon.
 
 The NASA Carbon Monitoring System (CMS) is designed to make significant contributions in characterizing, quantifying, understanding, and predicting the evolution of global carbon sources and sinks through improved monitoring of carbon stocks and fluxes. The System will use the full range of NASA satellite observations and modeling/analysis capabilities to establish the accuracy, quantitative uncertainties, and utility of products for supporting national and international policy, regulatory, and management activities. CMS will maintain a global emphasis while providing finer scale regional information, utilizing space-based and surface-based data and will rapidly initiate generation and distribution of products both for user evaluation and to inform near-term policy development and planning.</description>
-            </item>
-            <item lastModified="" name="C1429890443-GES_DISC" type="node">
-                <description>All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1431312226-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1431312227-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
-            </item>
-            <item lastModified="" name="C1431312228-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent. 1CSSMIS contains common calibrated brightness temperature from the SSMIS passive microwave instruments flown on the DMSP satellites. Swath S1 has 3 low frequency channels (19V 19H 22V). Swath S2 has 2 low frequency channels (37V 37H). Swath S3 has 4 high frequency channels (150H 183+/-1H 183+/-3H 183+/-7H). S4 has 2 high frequency channels (91V 91H). All the above frequencies are in GHz. Earth observations for all four swaths are taken during a 144o segment of the instrument rotation when SSMIS scans in the direction of foreward satellite motion. We define the spacecraft vector (v) at the center of this segment.</description>
             </item>
             <item lastModified="" name="C1432254058-GES_DISC" type="node">
                 <description>These data originate from NOAA/NCEP.
@@ -4974,101 +4831,6 @@ version of the product. Please contact the GES DISC
 user support if you need information about previous
 data collections.</description>
             </item>
-            <item lastModified="" name="C1452978042-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978043-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978044-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978046-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978047-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978048-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978049-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978050-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978051-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978052-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978053-GES_DISC" type="node">
-                <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978054-GES_DISC" type="node">
-                <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978055-GES_DISC" type="node">
-                <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978056-GES_DISC" type="node">
-                <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1452978057-GES_DISC" type="node">
-                <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
             <item lastModified="" name="C1452978059-GES_DISC" type="node">
                 <description>The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
 
@@ -5129,92 +4891,12 @@ The LPRM is based on a forward radiative transfer model to retrieve surface soil
                                   
 Input data are from the WindSat brightness temperatures (sdrLowRes) product, archived at the Goddard Earth Sciences Data and Information Services Center (GES DISC).</description>
             </item>
-            <item lastModified="" name="C1517890093-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890094-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5.
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.
-
-The purpose of the 3GPROF algorithm is to provide monthly and daily mean precipitation and related retrieved parameters from the Level 2 GPROF precipitation profiling algorithm for the GPM core and constellation satellites. Each 3GPROF product contains global 0.25 degree x 0.25 degree gridded monthly/daily means. Because this product is an accumulation of the Level 2 retrieval products, much more information is available via the GPROF Level 2 documentation.
-</description>
-            </item>
-            <item lastModified="" name="C1517890095-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890096-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890097-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890098-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890099-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890100-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890101-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5.
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1517890102-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
             <item lastModified="" name="C1537466735-GES_DISC" type="node">
                 <description>Version 9r is the current version of the data set. Previous versions have been superseded by Version 9r.
 
 The Orbiting Carbon Observatory is the first NASA mission designed to collect space-based measurements of atmospheric carbon dioxide with the precision, resolution, and coverage needed to characterize the processes controlling its buildup in the atmosphere. The OCO-2 project uses the LEOStar-2 spacecraft that carries a single instrument. It incorporates three high-resolution spectrometers that make coincident measurements of reflected sunlight in the near-infrared CO2 near 1.61 and 2.06 micrometers and in molecular oxygen (O2) A-Band at 0.76 micrometers. 
 
 This collection encompass meteorological parameters interpolated from global assimilation model for each sounding.
-
-</description>
-            </item>
-            <item lastModified="" name="C1545047048-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5.
-
-1CATMS contains common calibrated brightness temperature from the ATMS passive microwave instrument flown on the Suomi NPP satellite and JPSS satellites. ATMS is approximatly a combination of the AMSU-A channels and the MHS channels, to the total of 22 channels. ATMS rotates 3 scans per 8 seconds. 1CATMS contains 4 swaths, one for each band K, A(Ka), W, and G.
 
 </description>
             </item>
@@ -5228,22 +4910,8 @@ The 2AGPROF (also known as, GPM GPROF (Level 2)) algorithm retrieves consistent 
 
 3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
             </item>
-            <item lastModified="" name="C1545047065-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
             <item lastModified="" name="C1545047068-GES_DISC" type="node">
                 <description>Version 5 is the current version of the data set. Version 4 is no longer available and has been superseded by Version 5. 
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1545047073-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
 
 3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
             </item>
@@ -5332,12 +5000,6 @@ These Level 3 monthly mean products are in the netCDF format. Each data set is r
                 <description>Version 9r is the current version of the data set. Older versions will no longer be available and have been superseded by Version 9r.
 
 The OCO-2 Lite files contain bias-corrected XCO2 along with other select fields aggregated as daily files.The Orbiting Carbon Observatory is the first NASA mission designed to collect space-based measurements of atmospheric carbon dioxide with the precision, resolution, and coverage needed to characterize the processes controlling its buildup in the atmosphere. The OCO-2 project uses the LEOStar-2 spacecraft that carries a single instrument. It incorporates three high-resolution spectrometers that make coincident measurements of reflected sunlight in the near-infrared CO2 near 1.61 and 2.06 micrometers and in molecular oxygen (O2) A-Band at 0.76 micrometers.</description>
-            </item>
-            <item lastModified="" name="C1560291676-GES_DISC" type="node">
-                <description>The Gridded Convective Stratiform Heating (3HCSH) products contain latent heating, Q1-QR and Q2 profiles from DPR raindata.
-
-Version 06 is the current version of the data set. Older versions will no longer be available and are superseded by Version 06.
-</description>
             </item>
             <item lastModified="" name="C1561222825-GES_DISC" type="node">
                 <description>The GEOS-5 FP-IT Assimilation Geo-colocated to OMI/Aura UV-2 1-Orbit L2 Support Swath 13x24km (OMUFPITMET) provides selected parameters from GEOS-5 Forward Processing for Instrument Teams (FP-IT) assimilated product produced by the Global Modeling and Assimilation Office (GMAO) co-located in space and time with the OMI UV-2 swath.  
@@ -6417,11 +6079,6 @@ This collection encompass meteorological parameters interpolated from global ass
 
 The Orbiting Carbon Observatory is the first NASA mission designed to collect space-based measurements of atmospheric carbon dioxide with the precision, resolution, and coverage needed to characterize the processes controlling its buildup in the atmosphere. The OCO-2 project uses the LEOStar-2 spacecraft that carries a single instrument. It incorporates three high-resolution spectrometers that make coincident measurements of reflected sunlight in the near-infrared CO2 near 1.61 and 2.06 micrometers and in molecular oxygen (O2) A-Band at 0.76 micrometers. This collection is the output from the algorithm retrieving the column-averaged CO2 dry air mole fraction XCO2 and other quantities from the spectra collected by the Orbiting Carbon Observatory-2 (OCO-2).</description>
             </item>
-            <item lastModified="" name="C1687121808-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. 
-
-1CAMSR2 contains common calibrated brightness temperature from the AMSR2 passive microwave instrument flown on the GCOMW1 satellite. This products contains 6 swaths. Swath 1 has channels 10.65V 10.65H. Swath 2 has channels 18.7V 18.7H. Swath 3 has channels 23.8V 23.8H. Swath 4 has channels 36.5V 36.5H. Swath S5 has 2 high frequency A-Scan channels (89V 89H). Swath S6 has 2 high frequency B-Scan channels (89V 89H). Data for all six swaths is observed in the same revolution of the instrument. High frequency A and high frequency B data are observed in separate feedhorns. All 1C products have a common L1C data structure, simple and generic. Each L1C swath includes scan time, latitude and longitude, scan status, quality, incidence angle, Sun glint angle, and the intercalibrated brightness temperature (Tc). One or more swaths are included in a product. The radiometer data are recalibrated to a common basis so that precipitation products derived from them are consistent.</description>
-            </item>
             <item lastModified="" name="C1687121809-GES_DISC" type="node">
                 <description>Version 5 is the current version of the data set.  
 
@@ -6432,22 +6089,8 @@ The 2AGPROF (also known as, GPM GPROF (Level 2)) algorithm retrieves consistent 
 
 3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
             </item>
-            <item lastModified="" name="C1687121816-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
             <item lastModified="" name="C1687121817-GES_DISC" type="node">
                 <description>Version 5 is the current version of the data set.  
-
-3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
-            </item>
-            <item lastModified="" name="C1687121822-GES_DISC" type="node">
-                <description>Version 5 is the current version of the data set. Older versions are no longer available and have been superseded by Version 5. 
-
-The &quot;CLIM&quot;  products differ from their &quot;regular&quot; counterparts (without the &quot;CLIM&quot; in the name) by the ancillary data they use. They are Climate-Reference products, which requires homogeneous ancillary data over the climate time series.  Hence, the ECMWF-Interim (European Centre for Medium-Range Weather Forecasts, 2-3 months lag behind the regular production) reanalysis is used as ancillary data to derive surface and atmospheric conditions required by the GPROF algorithm for the &quot;CLIM&quot; output. The GPROF databases are also adjusted accordingly for these climate-referenced retrievals.
 
 3GPROF products provide global gridded monthly/daily precipitation averages from multiple satellites that can be used for climate studies. The 3GPROF products are based on retrievals from high-quality microwave sensors, which are sensitive to liquid and ice-phase precipitation hydrometeors in the atmosphere.</description>
             </item>
