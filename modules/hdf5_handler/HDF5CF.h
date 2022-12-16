@@ -31,7 +31,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2016 The HDF Group
+/// Copyright (C) 2011-2022 The HDF Group
 ///
 /// All rights reserved.
 
