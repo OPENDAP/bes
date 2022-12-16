@@ -1218,7 +1218,7 @@ void EOS5File::EOS5Handle_nonlatlon_dimcvars(vector<HE5Var> & eos5varlist, EOS5T
 }
 
 // Adjust variable names after obtain the parsing information.
-void EOS5File::Adjust_Var_NewName_After_Parsing() 
+void EOS5File::Adjust_Var_NewName_After_Parsing() const
 {
 
     BESDEBUG("h5", "Coming to Adjust_Var_NewName_After_Parsing"<<endl);
@@ -1327,7 +1327,7 @@ void EOS5File::Add_Dim_Name(HE5Parser *strmeta_info)
 }
 
 // CHECK if finding the same variables from the parser.
-bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info) 
+bool EOS5File::Obtain_Var_Dims(const Var *var, HE5Parser * strmeta_info) 
 {
 
     BESDEBUG("h5", "Coming to Obtain_Var_Dims"<<endl);
@@ -1822,7 +1822,7 @@ void EOS5File::Handle_Grid_CVar(bool is_augmented)
 // Check if this file is augmented. The current augmentation tool will
 // add extra variables for every EOS5 object. This function will check
 // if that is the case.
-bool EOS5File::Check_Augmentation_Status() 
+bool EOS5File::Check_Augmentation_Status() const
 {
 
     BESDEBUG("h5", "Coming to Check_Augmentation_Status()"<<endl);
@@ -2527,7 +2527,7 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar()
 // Adjust the HDF-EOS5 grid dimension names for XDim and YDim, we need to remember the grid path  
 // Note this function is used under the assumption that only one lat/lon pair is used for all grids.
 // This is the case for Aura.
-void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) const
+void EOS5File::Adjust_EOS5GridDimNames(const EOS5CFGrid *cfgrid) const
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5GridDimNames()"<<endl);
@@ -3027,7 +3027,7 @@ void EOS5File::Handle_Za_CVar(bool isaugmented)
 }
 
 // Adjust the newname(final names appeared at DDS) for variable and dimensions before flattening.
-void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() 
+void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening() const
 {
 
     BESDEBUG("h5", "Coming to Adjust_Var_Dim_NewName_Before_Flattening()"<<endl);
@@ -3434,7 +3434,7 @@ void EOS5File::Adjust_Aura_Attr_Name()
     }
 }
 
-void EOS5File::Adjust_Aura_Attr_Value() 
+void EOS5File::Adjust_Aura_Attr_Value() const
 {
 
     BESDEBUG("h5", "Coming to Adjust_Attr_Value() for Aura"<<endl);
@@ -4201,7 +4201,7 @@ void EOS5File::Handle_Grid_Mapping_Vars() {
 
 
 // Sometimes need to replace informaton of a variable with the information of another variable.
-void EOS5File::Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar*target)
+void EOS5File::Replace_Var_Info_EOS(const EOS5CVar *src, EOS5CVar*target)
 {
 
     BESDEBUG("h5", "Coming to Replace_Var_Info_EOS()"<<endl);
@@ -4214,7 +4214,7 @@ void EOS5File::Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar*target)
 }
 
 //Sometimes the attributes of a variable need to replace with the attribute of another variable.
-void EOS5File::Replace_Var_Attrs_EOS(EOS5CVar *src, EOS5CVar*target)
+void EOS5File::Replace_Var_Attrs_EOS(const EOS5CVar *src, EOS5CVar*target)
 {
 
     BESDEBUG("h5", "Coming to Replace_Var_Attrs_EOS()"<<endl);

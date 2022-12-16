@@ -971,7 +971,7 @@ protected:
     void Add_Dim_Name_LatLon2D_General_Product() ;
     void Add_Dim_Name_Dimscale_General_Product() ;
     void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) ;
-    void Add_UseDimscale_Var_Dim_Names_General_Product(Var*, const Attribute*) ;
+    void Add_UseDimscale_Var_Dim_Names_General_Product(const Var*, const Attribute*) ;
 
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     void Update_M2DLatLon_Dimscale_CVs() ;
@@ -1205,7 +1205,7 @@ public:
     void Add_EOS5File_Info(HE5Parser*, bool) ;
 
     /// Adjust variable names for HDF-EOS5 files
-    void Adjust_Var_NewName_After_Parsing() ;
+    void Adjust_Var_NewName_After_Parsing() const;
 
     /// This method is a no-op operation. Leave here since the method in the base class is pure virtual.
     void Adjust_Obj_Name()  override;
@@ -1229,7 +1229,7 @@ public:
     void Handle_SpVar_DMR()  override;
      
     /// Adjust variable dimension names before the flattening for HDF-EOS5 files.
-    void Adjust_Var_Dim_NewName_Before_Flattening() ;
+    void Adjust_Var_Dim_NewName_Before_Flattening() const;
 
     /// Flatten the object name for HDF-EOS5 files
     void Flatten_Obj_Name(bool include_attr) override ;
@@ -1290,7 +1290,7 @@ protected:
     void Obtain_Var_NewName(Var*) const;
     EOS5Type Get_Var_EOS5_Type(const Var*) const;
 
-    bool Obtain_Var_Dims(Var*, HE5Parser*) ;
+    bool Obtain_Var_Dims(const Var*, HE5Parser*) ;
     template<class T> bool Set_Var_Dims(T*, const Var*, std::vector<HE5Var>&, const std::string&, int, EOS5Type) ;
     template<class T> void Create_Unique_DimName(T*, std::set<std::string>&, Dimension *, int, EOS5Type) ;
 
@@ -1312,7 +1312,7 @@ protected:
     bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(const EOS5CFGrid *, std::set<std::string>&) ;
     void Handle_NonLatLon_Grid_CVar(EOS5CFGrid *, std::set<std::string>&) ;
     void Remove_MultiDim_LatLon_EOS5CFGrid() ;
-    void Adjust_EOS5GridDimNames(EOS5CFGrid *) const;
+    void Adjust_EOS5GridDimNames(const EOS5CFGrid *) const;
 
     void Handle_Swath_CVar(bool) ;
     void Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) ;
@@ -1322,7 +1322,7 @@ protected:
 
     void Handle_Za_CVar(bool) ;
 
-    bool Check_Augmentation_Status() ;
+    bool Check_Augmentation_Status() const;
     // Don't remove the following commented if 0 line!
 #if 0
     //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
@@ -1333,14 +1333,14 @@ protected:
     void Adjust_SharedLatLon_Grid_Var_Dim_Name() const;
 
     void Adjust_Aura_Attr_Name() ;
-    void Adjust_Aura_Attr_Value() ;
+    void Adjust_Aura_Attr_Value() const;
     void Handle_EOS5CVar_Unit_Attr() const;
     void Add_EOS5_Grid_CF_Attr() ;
     void Handle_Aura_Special_Attr() const;
 
     std::string get_CF_string(std::string s) override;
-    void Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar *target);
-    void Replace_Var_Attrs_EOS(EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Info_EOS(const EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Attrs_EOS(const EOS5CVar *src, EOS5CVar *target);
     void Handle_EOS5CVar_NameClashing(std::set<std::string> &) ;
     void Handle_EOS5CVar_AttrNameClashing() ;
     template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)

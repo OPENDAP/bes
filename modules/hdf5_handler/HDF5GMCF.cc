@@ -2679,7 +2679,7 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product()  {
 void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
 
     BESDEBUG("h5", "Coming to Handle_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
-    Attribute* dimlistattr = nullptr;
+    const Attribute* dimlistattr = nullptr;
     bool has_dimlist = false;
     bool has_dimclass   = false;
 
@@ -2742,7 +2742,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
 }
 
 // Add dimension names for the case when HDF5 dimension scale is followed(netCDF4-like)
-void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,const Attribute*dimlistattr) 
+void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(const Var *var,const Attribute*dimlistattr) 
 {
     
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
