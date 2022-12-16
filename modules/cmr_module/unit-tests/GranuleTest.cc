@@ -116,7 +116,7 @@ public:
 
         try {
             cmr::CmrCatalog catalog;
-            bes::CatalogNode *node = catalog.get_node("ORNL_DAAC/C179003030-ORNL_DAAC/temporal");
+            bes::CatalogNode *node = catalog.get_node("ORNL_DAAC/C179003030-ORNL_DAAC");
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
             CPPUNIT_ASSERT( lcount==0 );
@@ -165,7 +165,7 @@ public:
         vector<string> months;
         try {
             cmr::CmrCatalog catalog;
-            bes::CatalogNode *node = catalog.get_node("/ORNL_DAAC/" +collection_name +"/temporal/1985");
+            bes::CatalogNode *node = catalog.get_node("/ORNL_DAAC/" +collection_name +"/1985");
             unsigned lcount = node->get_leaf_count();
             BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
             CPPUNIT_ASSERT( lcount==0 );
@@ -200,7 +200,7 @@ public:
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
-        string node_path="GES_DISC/" + collection_name + "/temporal/1985/03";
+        string node_path="GES_DISC/" + collection_name + "/1985/03";
         string expected[] = {
                 string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
                 string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
@@ -248,7 +248,7 @@ public:
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
-        string node_path="GES_DISC/" + collection_name + "/temporal/1985/03/13";
+        string node_path="GES_DISC/" + collection_name + "/1985/03/13";
         string expected[] = {
                 string("M2T1NXSLV.5.12.4:MERRA2_100.tavg1_2d_slv_Nx.19850313.nc4")
         };
