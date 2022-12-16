@@ -34,6 +34,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 
 #include "nlohmann/json.hpp"
@@ -95,7 +96,7 @@ private:
                             nlohmann::json &cmr_doc) const;
 
     void get_collections_worker(const std::string &provider_id,
-                                std::vector<std::unique_ptr<cmr::Collection>> &collections,
+                                std::map<std::string, std::unique_ptr<cmr::Collection>> &collections,
                                 unsigned int page_size=CMR_MAX_PAGE_SIZE,
                                 bool just_opendap=false ) const;
 
@@ -155,11 +156,11 @@ public:
 
     Provider get_provider(const std::string &provider_id) const;
     void get_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
-    void get_opendap_providers(std::vector<std::unique_ptr<cmr::Provider>> &providers) const;
+    void get_opendap_providers(std::map<std::string, std::unique_ptr<cmr::Provider>> &providers) const;
     unsigned long int get_opendap_collections_count(const std::string &provider_id) const;
 
-    void get_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;
-    void get_opendap_collections(const std::string &provider_id, std::vector<std::unique_ptr<cmr::Collection>> &collections ) const;
+    void get_collections(const std::string &provider_id, std::map<std::string, std::unique_ptr<cmr::Collection>> &collections ) const;
+    void get_opendap_collections(const std::string &provider_id, std::map<std::string, std::unique_ptr<cmr::Collection>> &collections ) const;
 
 };
 
