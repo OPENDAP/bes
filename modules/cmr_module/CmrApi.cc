@@ -817,7 +817,7 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider>> &providers) const
 
 }
 
-void CmrApi::get_opendap_providers(vector<unique_ptr<cmr::Provider>> &opendap_providers) const
+void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opendap_providers) const
 {
     vector<unique_ptr<cmr::Provider>> all_providers;
     get_providers(all_providers);
@@ -826,7 +826,7 @@ void CmrApi::get_opendap_providers(vector<unique_ptr<cmr::Provider>> &opendap_pr
         auto hits = get_opendap_collections_count(provider->id());
         if (hits > 0){
             provider->set_opendap_collection_count(hits);
-            opendap_providers.emplace_back(std::move(provider));
+            opendap_providers.emplace(provider->id(), std::move(provider));
         }
     }
 }
@@ -848,7 +848,7 @@ unsigned long int CmrApi::get_opendap_collections_count(const string &provider_i
 
 
 void CmrApi::get_collections_worker( const std::string &provider_id,
-                                    std::vector<unique_ptr<cmr::Collection>> &collections,
+                                    std::map<std::string, std::unique_ptr<cmr::Collection>> &collections,
                                     unsigned int page_size,
                                     bool just_opendap)
 const {
@@ -875,7 +875,7 @@ const {
     }
     for (const auto &collection_json : cmr_doc["items"]) {
         auto collection = unique_ptr<Collection>(new Collection(collection_json));
-        collections.emplace_back(std::move(collection));
+        collections.emplace(collection->id(), std::move(collection));
     }
     BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
 
@@ -887,7 +887,7 @@ const {
 
         for (const auto &collection_json : cmr_collection_doc["items"]) {
             auto collection = unique_ptr<Collection>(new Collection(collection_json));
-            collections.emplace_back(std::move(collection));
+            collections.emplace(collection->id(), std::move(collection));
         }
         BESDEBUG(MODULE, prolog << "collections.size(): " << collections.size() << endl);
     }
@@ -896,10 +896,12 @@ const {
 
 
 
-void CmrApi::get_opendap_collections(const std::string &provider_id, std::vector<unique_ptr<cmr::Collection>> &collections) const{
+void CmrApi::get_opendap_collections(const std::string &provider_id,
+                                     std::map<std::string,std::unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, true);
 }
-void CmrApi::get_collections(const std::string &provider_id, std::vector<unique_ptr<cmr::Collection>> &collections) const{
+void CmrApi::get_collections(const std::string &provider_id,
+                             std::map<std::string,std::unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, false);
 }
 
