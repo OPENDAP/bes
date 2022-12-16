@@ -551,10 +551,9 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             if (nullptr == at)
                 at = das.add_table(var->getNewName(), new AttrTable);
 
-            for (auto it_ra = var->getAttributes().begin();
-                 it_ra != var->getAttributes().end(); ++it_ra) {
-                gen_dap_oneobj_das(at,*it_ra,var);
-            }
+            for (const auto &attr:var->getAttributes())
+                gen_dap_oneobj_das(at,attr,var);
+
             // TODO: If a var has integer-64 bit datatype attributes, maybe 
             // we can just keep that attributes(not consistent but 
             // easy to implement) or we have to duplicate all 
@@ -696,12 +695,11 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
     vector<HDF5CF::Var *>::const_iterator       it_v;
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     // Root and low-level group attributes.
     if (false == root_attrs.empty()) {
-        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
-            map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
+        for (const auto &root_attr:root_attrs) 
+            map_cfh5_grp_attr_to_dap4(d4_root,root_attr);
     }
 
     // When the DAP4 coverage is turned on, the coordinate variables should be before the variables.

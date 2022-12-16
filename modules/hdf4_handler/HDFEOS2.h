@@ -871,7 +871,7 @@ namespace HDFEOS2
                     void DetectMajorDimension () ;
 
                     /// Find a field and check which dimension is major for this field. If Y dimension is major, return 1; if X dimension is major, return 0, otherwise throw exception. (LD -2012/01/16)
-                    int DetectFieldMajorDimension () ;
+                    int DetectFieldMajorDimension () const;
 
 
                 private:

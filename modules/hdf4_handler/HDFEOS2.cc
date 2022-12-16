@@ -3934,7 +3934,7 @@ bool GridDataset::Calculated::isOrthogonal()
 }
 #endif
 
-int GridDataset::Calculated::DetectFieldMajorDimension() 
+int GridDataset::Calculated::DetectFieldMajorDimension() const
 {
     int ym = -1;
 	

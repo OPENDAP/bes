@@ -44,7 +44,7 @@ using namespace libdap;
 using namespace HDF5CF;
 
 // A constructor of EOS5CVar
-EOS5CVar::EOS5CVar(Var*var)
+EOS5CVar::EOS5CVar(const Var*var)
 {
 
     newname = var->newname;
@@ -196,7 +196,7 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values()
 }
 
 // Adjust attribute value
-void EOS5File::Adjust_H5_Attr_Value(Attribute* ) 
+void EOS5File::Adjust_H5_Attr_Value(const Attribute* ) const
 {
     // For future usage.
 
@@ -600,7 +600,7 @@ void EOS5File::Adjust_EOS5Dim_Info(HE5Parser*strmeta_info)
 }
 
 // Adjust HDF-EOS5 dimension list. 
-void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) 
+void EOS5File::Adjust_EOS5Dim_List(vector<HE5Dim>& groupdimlist) const
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5Dim_List"<<endl);
@@ -692,7 +692,7 @@ void EOS5File::Condense_EOS5Dim_List(vector<HE5Dim>& groupdimlist) const
 }
 
 void EOS5File:: Adjust_EOS5DimSize_List(vector<HE5Dim>& eos5objdimlist,const vector<HE5Var> & eos5objvarlist, 
-                                        const EOS5Type eos5type, const string & eos5objname) 
+                                        const EOS5Type eos5type, const string & eos5objname) const
 {
 
     set<string>updated_dimlist;
@@ -1227,7 +1227,7 @@ void EOS5File::Adjust_Var_NewName_After_Parsing()
     }
 }
 
-void EOS5File::Obtain_Var_NewName(Var *var) 
+void EOS5File::Obtain_Var_NewName(Var *var) const
 {
 
     BESDEBUG("h5", "Coming to Obtain_Var_NewName"<<endl);
@@ -1406,7 +1406,7 @@ bool EOS5File::Obtain_Var_Dims(Var *var, HE5Parser * strmeta_info)
 
 // Set dimension info.(dimension names and sizes) to variables.
 template<class T>
-bool EOS5File::Set_Var_Dims(T* eos5data, Var *var, vector<HE5Var> &he5var, const string& groupname, int num_groups,
+bool EOS5File::Set_Var_Dims(T* eos5data, const Var *var, vector<HE5Var> &he5var, const string& groupname, int num_groups,
     EOS5Type eos5type) 
 {
 
@@ -1611,7 +1611,7 @@ void EOS5File::Get_Unique_Name(set<string> & nameset, string& dimname_candidate)
 
 // We may need to generate a unique "fake" dim. name for dimensions that don't have any dimension names.
 template<class T>
-string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) 
+string EOS5File::Create_Unique_FakeDimName(T*eos5data, EOS5Type eos5type) const
 {
 
     BESDEBUG("h5", "Coming to Create_Unique_FakeDimName"<<endl);
@@ -1695,7 +1695,7 @@ int EOS5File::Check_EOS5Swath_FieldType(const Var*var) const
 // An error will be thrown if we find a dimension size that doesn't match any dimension name
 // in this EOS5 group.
 template<class T>
-void EOS5File::Set_NonParse_Var_Dims(T*eos5data, Var* var, const map<hsize_t, string>& /*dimsizes_to_dimnames*/,
+void EOS5File::Set_NonParse_Var_Dims(T*eos5data, const Var* var, const map<hsize_t, string>& /*dimsizes_to_dimnames*/,
     int num_groups, EOS5Type eos5type) 
 {
 
@@ -1910,7 +1910,7 @@ bool EOS5File::Check_Augmented_Var_Attrs(Var *var)  {
 // then this file is augmented.
 // Hope that no other hybrid-HDFEOS5 files fall to this category.
 template<class T>
-bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, Var *var, EOS5Type eos5type) 
+bool EOS5File::Check_Augmented_Var_Candidate(T *eos5data, const Var *var, EOS5Type eos5type) const
 {
 
     BESDEBUG("h5", "Coming to Check_Augmented_Var_Candidate"<<endl);
@@ -2527,7 +2527,7 @@ void EOS5File::Handle_Multi_Nonaugment_Grid_CVar()
 // Adjust the HDF-EOS5 grid dimension names for XDim and YDim, we need to remember the grid path  
 // Note this function is used under the assumption that only one lat/lon pair is used for all grids.
 // This is the case for Aura.
-void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) 
+void EOS5File::Adjust_EOS5GridDimNames(EOS5CFGrid *cfgrid) const
 {
 
     BESDEBUG("h5", "Coming to Adjust_EOS5GridDimNames()"<<endl);
@@ -2924,7 +2924,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
         string eos5_vc_attr_name = "VerticalCoordinate";
         string eos5_pre_attr_name = "Pressure";
         bool has_vc_attr = false;
-        Group *vc_group = nullptr;
+        const Group *vc_group = nullptr;
 
         // 1. Check if having the "VerticalCoordinate" attribute in this swath and the attribute is "Pressure".
         for (const auto &grp:this->groups) {
@@ -3065,7 +3065,7 @@ void EOS5File::Adjust_Var_Dim_NewName_Before_Flattening()
 // Adjust the final name of one variable or dim. before flattening the names
 template<class T>
 void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_eos5type, int num_grids, int num_swaths,
-    int num_zas) 
+    int num_zas) const
 {
 
     BESDEBUG("h5", "Coming to Adjust_Per_Var_Dim_NewName_Before_Flattening()"<<endl);
@@ -3157,7 +3157,7 @@ void EOS5File::Adjust_Per_Var_Dim_NewName_Before_Flattening(T* var, bool mixed_e
 }
 
 // Adjust shared var and dim names for shared lat/lon grid case.
-void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() 
+void EOS5File::Adjust_SharedLatLon_Grid_Var_Dim_Name() const
 {
 
     BESDEBUG("h5", "Adjust_SharedLatLon_Grid_Var_Dim_Name()"<<endl);
@@ -3465,13 +3465,13 @@ void EOS5File::Adjust_Aura_Attr_Value()
                     }
                     break;
                 } // if ("units" == attr->name)
-            } // for(vector <Attribute*>::iterator ira = var->attrs.begin();
+            } // for (const auto &attr
         } // if((var->name == "Time") || (var->name == "nTimes"))
     } // for (auto irv = this->vars.begin()...
 }
 
 // Handle EOS5 coordinate variable special attributes. 
-void EOS5File::Handle_Aura_Special_Attr() 
+void EOS5File::Handle_Aura_Special_Attr() const 
 {
 
     BESDEBUG("h5", "Coming to Handle_Aura_Special_Attr()"<<endl);
@@ -3508,7 +3508,7 @@ void EOS5File::Handle_Aura_Special_Attr()
 }
 
 // Handle coordinate variable units attribute     
-void EOS5File::Handle_EOS5CVar_Unit_Attr() 
+void EOS5File::Handle_EOS5CVar_Unit_Attr() const
 {
 
     BESDEBUG("h5", "Coming to Handle_EOS5CVar_Unit_Attr()"<<endl);
@@ -3902,7 +3902,7 @@ void EOS5File::Adjust_Special_EOS5CVar_Name()  {
 // These missing coordinate variables are all 1-D.
 template<class T>
 void EOS5File::Create_Missing_CV(T* eos5data, EOS5CVar *EOS5cvar, const string& dimname, EOS5Type eos5type,
-    int num_eos5data) 
+    int num_eos5data) const
 {
 
     BESDEBUG("h5", "Coming to Create_Missing_CV()"<<endl);

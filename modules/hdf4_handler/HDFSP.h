@@ -732,7 +732,7 @@ namespace HDFSP
             /// All special arrangements need to be done in this step.
             void Prepare() ;
 
-            bool Check_update_special(const std::string &gridname);
+            bool Check_update_special(const std::string &gridname) const;
 
             void Handle_AIRS_L23();
 
@@ -882,11 +882,11 @@ namespace HDFSP
             void PrepareOTHERHDF () ;
 
             /// Handle non-attribute lone vdatas.
-            void ReadLoneVdatas(File*);
+            void ReadLoneVdatas(File*) const;
 
             /// Handle non-attribute non-lone vdatas. Note: this function is only used for
             /// handling hybrid Vdata functions.
-            void ReadHybridNonLoneVdatas(File*);
+            void ReadHybridNonLoneVdatas(const File*);
 
             /// Obtain vgroup attributes.
             void ReadVgattrs(int32 vgroup_id, const char *fullpath);

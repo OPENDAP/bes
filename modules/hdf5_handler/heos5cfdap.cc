@@ -423,8 +423,6 @@ void gen_eos5_cfdds(DDS &dds,  const HDF5CF::EOS5File *f) {
     const hid_t file_id = f->getFileID();
 
     // Read Variable info.
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
-
     for (const auto &var:vars) {
         BESDEBUG("h5","variable full path= "<< var->getFullPath() <<endl);
         gen_dap_onevar_dds(dds,var,file_id,filename);
@@ -781,7 +779,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
                 //gen_dap_oneobj_das(at,attr,nullptr);
 #endif
                 // TODO: ADDING a BES KEY
-                if((attr)->getNewName()=="Conventions" &&(grp->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
+                if(attr->getNewName()=="Conventions" &&(grp->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
                         && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
                     AttrTable *at_das = das.get_table(FILE_ATTR_TABLE_NAME);
                     if (nullptr == at_das)
@@ -2058,7 +2056,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
 }
 
-void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
+void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function   "<<endl);
     const vector<HDF5CF::Var *>& vars       = f->getVars();
@@ -2503,8 +2501,8 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
         vector<string> cvar_name;
         if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
             const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
-            for (const auto &cvar:cvars) 
-                cvar_name.emplace_back(cvar->getNewName()); 
+            for (const auto &gm_cvar:cvars) 
+                cvar_name.emplace_back(gm_cvar->getNewName()); 
 
         }
         add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims,cvar_name);

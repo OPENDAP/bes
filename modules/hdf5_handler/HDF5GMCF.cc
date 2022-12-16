@@ -45,7 +45,7 @@ using namespace libdap;
 using namespace HDF5CF;
 
 // Copier function.
-GMCVar::GMCVar(Var*var) {
+GMCVar::GMCVar(const Var*var) {
 
     BESDEBUG("h5", "Coming to GMCVar()"<<endl);
     newname = var->newname;
@@ -125,7 +125,7 @@ GMCVar::GMCVar(GMCVar*cvar) {
 #endif
 
 //Copier function of a special variable.
-GMSPVar::GMSPVar(Var*var) {
+GMSPVar::GMSPVar(const Var*var) {
 
     BESDEBUG("h5", "Coming to GMSPVar()"<<endl);
     fullpath = var->fullpath;
@@ -952,7 +952,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 }
 
 // Helper function to support dimensions of MeaSUrES SeaWiFS and OZone products
-void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,const Attribute*dimlistattr) 
+void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(const Var *var,const Attribute*dimlistattr) 
 {
     
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
@@ -1329,7 +1329,7 @@ void GMFile::Add_Dim_Name_GPM()
 }
      
 // Add Dimension names for Aquarius level 3 products
-void GMFile::Add_Dim_Name_Aqu_L3()
+void GMFile::Add_Dim_Name_Aqu_L3() const
 {
     BESDEBUG("h5", "Coming to Add_Dim_Name_Aqu_L3()"<<endl);
     for (auto &var:this->vars) {
@@ -2742,7 +2742,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
 }
 
 // Add dimension names for the case when HDF5 dimension scale is followed(netCDF4-like)
-void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*dimlistattr) 
+void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,const Attribute*dimlistattr) 
 {
     
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
@@ -3765,8 +3765,8 @@ void GMFile::Obtain_2DLatLon_Vars(vector<Var*> &var_2dlat,vector<Var*> &var_2dlo
 //  The latlon2d_path_to_index map also needs to be updated.
 void GMFile::Obtain_2DLLVars_With_Dims_not_1DLLCVars(vector<Var*> &var_2dlat,
                                                      vector<Var*> &var_2dlon, 
-                                                     vector<GMCVar*> &cvar_1dlat,
-                                                     vector<GMCVar*> &cvar_1dlon,
+                                                     const vector<GMCVar*> &cvar_1dlat,
+                                                     const vector<GMCVar*> &cvar_1dlon,
                                                      map<string,int> &latlon2d_path_to_index) {
 
     BESDEBUG("h5", "Coming to Obtain_2DLLVars_With_Dims_not_1DLLCVars()"<<endl);
@@ -4083,7 +4083,7 @@ void GMFile::Remove_2DLLCVar_Final_Candidate_from_Vars(vector<int> &var2d_index)
 //This function is for generating the coordinates attribute for the 2-D lat/lon.
 //It will check if this var can keep its "coordinates" attribute rather than rebuilding it.
 //This function is used by Handle_Coor_Attr(). 
-bool GMFile::Check_Var_2D_CVars(Var *var)  {
+bool GMFile::Check_Var_2D_CVars(Var *var)  const {
 
     BESDEBUG("h5", "Coming to Check_Var_2D_CVars()"<<endl);
     bool ret_value = true;
@@ -4838,7 +4838,7 @@ for (auto irv2 = this->vars.begin();
 }
 
 // Adjust object names for GPM level 3 products
-void GMFile:: Adjust_GPM_L3_Obj_Name()  {
+void GMFile:: Adjust_GPM_L3_Obj_Name()  const {
 
     BESDEBUG("h5", "Coming to Adjust_GPM_L3_Obj_Name()"<<endl);
     string objnewname;
@@ -4860,7 +4860,7 @@ void GMFile:: Adjust_GPM_L3_Obj_Name()  {
 }
 
 // Adjust object names for MeaSUREs OZone
-void GMFile:: Adjust_Mea_Ozone_Obj_Name()  {
+void GMFile:: Adjust_Mea_Ozone_Obj_Name()  const {
 
     BESDEBUG("h5", "Coming to Adjust_Mea_Ozone_Obj_Name()"<<endl);
     string objnewname;
@@ -5698,7 +5698,7 @@ GMFile:: Add_Aqu_Attrs()  {
 
 // Add SeaWiFS attributes
 void 
-GMFile:: Add_SeaWiFS_Attrs()  {
+GMFile:: Add_SeaWiFS_Attrs() const {
 
     BESDEBUG("h5", "Coming to Add_SeaWiFS_Attrs()"<<endl);
     // The fill value is -999.0. However, No _FillValue attribute is added.
@@ -6117,7 +6117,7 @@ void GMFile:: Handle_Coor_Attr() {
 }
 
 // Handle GPM level 1 coordiantes attributes.
-void GMFile:: Handle_GPM_l1_Coor_Attr() {
+void GMFile:: Handle_GPM_l1_Coor_Attr() const {
 
     BESDEBUG("h5", "Coming to Handle_GPM_l1_Coor_Attr()"<<endl);
     // Build a map from CFdimname to 2-D lat/lon variable name, should be something like: aa_list[cfdimname]=s1_latitude .
@@ -6472,7 +6472,7 @@ void GMFile:: Create_Missing_CV(GMCVar *GMcvar, const string& dimname)  {
 
  // Check if this is just a netCDF-4 dimension. We need to check the dimension scale dataset attribute "NAME",
  // the value should start with "This is a netCDF dimension but not a netCDF variable".
-bool GMFile::Is_netCDF_Dimension(Var *var)  {
+bool GMFile::Is_netCDF_Dimension(const Var *var) const {
     
     string netcdf_dim_mark = "This is a netCDF dimension but not a netCDF variable";
 
@@ -6505,7 +6505,7 @@ GMFile::Handle_SpVar_Attr()  {
 }
 
 bool
-GMFile::Is_Hybrid_EOS5() {
+GMFile::Is_Hybrid_EOS5() const {
 
     bool has_group_hdfeos  = false;
     bool has_group_hdfeos_info = false;
@@ -6838,7 +6838,7 @@ void GMFile:: Remove_Unused_FakeDimVars() {
 //Rename NC4 NonCoordVars back to the original name. This is detected by CAR_ARCTAS files.
 //By handling this way, the output will be the same as the netCDF handler output.
 //Check HFVHANDLER-254 for more information.
-void GMFile::Rename_NC4_NonCoordVars() {
+void GMFile::Rename_NC4_NonCoordVars() const {
 
     if(true == this->have_nc4_non_coord) {
         string nc4_non_coord="_nc4_non_coord_";

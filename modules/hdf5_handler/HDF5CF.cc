@@ -46,7 +46,7 @@
 
 using namespace HDF5CF;
 
-Var::Var(Var *var)
+Var::Var(const Var *var)
 {
 
     newname = var->newname;
@@ -1066,7 +1066,7 @@ void File::Gen_Group_Unsupported_Dtype_Info()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (const auto grp:this->groups) {
+        for (const auto &grp:this->groups) {
             if (false == grp->attrs.empty()) {
                 //if (true == grp->unsupported_attr_dtype) {
                     for (const auto &grp_attr:grp->attrs) {
@@ -1470,7 +1470,6 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
     set<string>::iterator iss;
 
     vector<string> clashnamelist;
-    vector<string>::iterator ivs;
 
     map<int, int> cl_to_ol;
     int ol_index = 0;
@@ -1710,7 +1709,7 @@ void File::Adjust_Duplicate_FakeDim_Name2(Dimension * dim, int dup_dim_size_inde
         dim->newname = dim->name;
         Insert_One_NameSizeMap_Element(dim->name, dim->size, dim->unlimited_dim);
         // push back to the duplicate size, name vector.
-        dup_dimsize_dimname.emplace_back(make_pair(dim->size,dim->name));
+        dup_dimsize_dimname.push_back(make_pair(dim->size,dim->name));
         addeddimindex++;
 
     }
@@ -1787,7 +1786,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 #endif
 
 // Rretrieve the variable attribute in string.var_path is the variable path.
-string File::Retrieve_Str_Attr_Value(Attribute *attr, const string & var_path)
+string File::Retrieve_Str_Attr_Value(Attribute *attr, const string & var_path) const
 {
 
     if (attr != nullptr && var_path != "") {
@@ -1838,7 +1837,7 @@ void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float flo
 
 // Products like GPM use string type for MissingValue, we need to change them to the corresponding variable datatype and 
 // get the value corrected.
-void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) 
+void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) const
 {
 
     char *pEnd;
@@ -2061,7 +2060,7 @@ void File::Add_Supplement_Attrs(bool add_path)
 // Variable target will not be deleted, but rather its contents are replaced.
 // We may make this as an operator = in the future.
 // Note: the attributes can not be replaced.
-void File::Replace_Var_Info(Var *src, Var *target)
+void File::Replace_Var_Info(const Var *src, Var *target)
 {
 
 #if 0
@@ -2117,7 +2116,7 @@ void File::Replace_Var_Info(Var *src, Var *target)
 }
 
 // Replace the attributes of target with src.
-void File::Replace_Var_Attrs(Var *src, Var *target)
+void File::Replace_Var_Attrs(const Var *src, Var *target)
 {
 
 #if 0
@@ -2149,7 +2148,7 @@ void File::Replace_Var_Attrs(Var *src, Var *target)
 // note: the variable's size at each dimension is also returned. The user must allocate the 
 // memory for the dimension sizes(an array(vector is perferred).
 bool File::is_var_under_group(const string &varname, const string &grpname, const int var_rank,
-    vector<size_t> & var_size)
+    vector<size_t> & var_size) const
 {
 
     bool ret_value = false;
@@ -2221,7 +2220,7 @@ void File::Handle_Grid_Mapping_Vars(){
 
 }
 
-string File::Check_Grid_Mapping_VarName(const string & a_value,const string & var_fpath) {
+string File::Check_Grid_Mapping_VarName(const string & a_value,const string & var_fpath) const {
     
     string var_path = HDF5CFUtil::obtain_string_before_lastslash(var_fpath);
     string gmap_new_name;
@@ -2237,7 +2236,7 @@ string File::Check_Grid_Mapping_VarName(const string & a_value,const string & va
 }
 
 
-string File::Check_Grid_Mapping_FullPath(const string & a_value) {
+string File::Check_Grid_Mapping_FullPath(const string & a_value) const {
 
     string gmap_new_name;
     for (const auto &var:this->vars) {
@@ -2507,7 +2506,7 @@ void File::add_no_ignored_info()
 
 // This function should only be used when the HDF5 file is following the netCDF data model.
 // Check if we should not report the Dimension scale related attributes as ignored.
-bool File::ignored_dimscale_ref_list(Var *var)
+bool File::ignored_dimscale_ref_list(const Var *var) const
 {
 
     bool ignored_dimscale = true;

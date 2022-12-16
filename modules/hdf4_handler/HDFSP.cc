@@ -324,7 +324,7 @@ File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
 
 // Retrieve lone vdata info.
 void
-File::ReadLoneVdatas(File *file) {
+File::ReadLoneVdatas(File *file) const {
 
     int status = -1;
     // No need to start V interface again
@@ -559,7 +559,7 @@ cleanFail:
 
 // Handle non-attribute non-lone vdata for Hybrid HDF-EOS2 files.
 void
-File::ReadHybridNonLoneVdatas(File *file) {
+File::ReadHybridNonLoneVdatas(const File *file) {
 
 
     int32 status         = -1;
@@ -881,7 +881,7 @@ cleanFail:
 // Else return true.
 
 bool
-File::Check_update_special(const string& grid_name) {
+File::Check_update_special(const string& grid_name) const {
 
     set<string> dimnameset;
     set<SDField*> fldset; 

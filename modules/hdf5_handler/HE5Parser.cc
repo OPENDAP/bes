@@ -35,9 +35,8 @@ HE5Parser::HE5Parser() = default;
 HE5Parser::~HE5Parser() = default;
 
 
-void HE5Parser::print()
+void HE5Parser::print() const
 {
-    unsigned int i = 0;
 
     if(err_msg != ""){
         cerr<< "Parse error:" << err_msg << endl;

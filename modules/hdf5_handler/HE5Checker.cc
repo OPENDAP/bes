@@ -42,7 +42,7 @@ using namespace std;
 
 
 bool
-HE5Checker::check_grids_missing_projcode(HE5Parser* p) const
+HE5Checker::check_grids_missing_projcode(const HE5Parser* p) const
 {
     bool flag = false;
     for (const auto &g:p->grid_list) {
@@ -55,7 +55,7 @@ HE5Checker::check_grids_missing_projcode(HE5Parser* p) const
 }
     
 bool
-HE5Checker::check_grids_unknown_parameters(HE5Parser* p) const
+HE5Checker::check_grids_unknown_parameters(const HE5Parser* p) const
 {
     bool flag = false;
     for (const auto &g:p->grid_list) {
@@ -115,7 +115,6 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p) const
     if (1 == p->grid_list.size() ||
         p->grid_list.empty() ) return false;
 
-    unsigned int i = 0;
     // Store name size pair.
     typedef map<string, int> Dimmap;
     Dimmap dim_map;
@@ -150,12 +149,12 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p) const
         EOS5GridPRType pixelreg = g.pixelregistration;      
         EOS5GridOriginType pixelorig =  g.gridorigin;
 
-        float lowercoor = (float)(g.point_lower);
-        float uppercoor = (float)(g.point_upper);
-        float leftcoor = (float)(g.point_left);
-        float rightcoor= (float)(g.point_right);
+        auto lowercoor = (float)(g.point_lower);
+        auto uppercoor = (float)(g.point_upper);
+        auto leftcoor = (float)(g.point_left);
+        auto rightcoor= (float)(g.point_right);
 
-        for(i=1; i < p->grid_list.size(); i++) {
+        for(unsigned int i=1; i < p->grid_list.size(); i++) {
             g = p->grid_list.at(i);
             if (projcode != g.projection ||
                 pixelreg != g.pixelregistration   ||
@@ -173,7 +172,7 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p) const
     return flag;
 }
 
-bool HE5Checker::check_grids_support_projcode(HE5Parser*p) const{
+bool HE5Checker::check_grids_support_projcode(const HE5Parser*p) const{
 
     bool flag = false;
     for (const auto &g:p->grid_list) {
