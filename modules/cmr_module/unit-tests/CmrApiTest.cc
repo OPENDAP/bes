@@ -625,12 +625,12 @@ public:
     void get_opendap_providers_test() {
         stringstream msg;
         CmrApi cmr;
-        std::vector<std::unique_ptr<cmr::Provider>> providers;
+        std::map<string, std::unique_ptr<cmr::Provider>> providers;
 
         cmr.get_opendap_providers(providers);
 
         for (auto &provider: providers){
-            cerr << provider->to_string() << endl;
+            cerr << provider.second->to_string() << endl;
         }
 
     }
@@ -639,13 +639,13 @@ public:
         stringstream msg;
         CmrApi cmr;
         string provider_id("GES_DISC");
-        std::vector<std::unique_ptr<cmr::Collection>> collections;
+        std::map<string, std::unique_ptr<cmr::Collection>> collections;
 
         cmr.get_opendap_collections(provider_id, collections);
 
         cerr << prolog << "Got " << collections.size() << " Collections" << endl;
         for (auto &collection: collections){
-            cerr << collection->to_string() << endl;
+            cerr << collection.second->to_string() << endl;
         }
 
     }
