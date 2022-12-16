@@ -27,6 +27,7 @@
 #include <ostream>
 #include <sstream>
 
+#include "BESDebug.h"
 #include "BESInfo.h"
 #include "BESIndent.h"
 
@@ -34,6 +35,18 @@
 
 using namespace bes;
 using namespace std;
+
+#define MODULE "cat"
+#define prolog std::string("CatalogItem::").append(__func__).append("() - ")
+
+#define CATALOG_NAME_KEY "name"
+#define CATALOG_TYPE_KEY "type"
+#define CATALOG_LMT_KEY "lastModified"
+#define CATALOG_SIZE_KEY "size"
+#define CATALOG_IS_DATA_KEY "isData"
+#define CATALOG_DAP_URL_KEY "dap_url"
+#define CATALOG_ITEM_TAG "item"
+#define CATALOG_DESCRIPTION_KEY "description"
 
 /**
  * @brief Encode this CatalogItem in an info object
@@ -49,24 +62,35 @@ using namespace std;
  * @param info Add information to this instance of BESInfo.
  * @see CatalogItem::encode_item()
  */
-void
-CatalogItem::encode_item(BESInfo *info)
+void CatalogItem::encode_item(BESInfo *info) const
 {
     map<string, string> props;
 
-    props["name"] = get_name();
-    props["type"] = get_type() == leaf ? "leaf": "node";
-    props["lastModified"] = get_lmt();
+    props[CATALOG_NAME_KEY] = get_name();
+    props[CATALOG_TYPE_KEY] = get_type() == leaf ? "leaf": "node";
+    props[CATALOG_LMT_KEY] = get_lmt();
     if (get_type() == leaf) {
         ostringstream oss;
         oss << get_size();
-        props["size"] = oss.str();
-        props["isData"] = is_data() ? "true" : "false";
+        props[CATALOG_SIZE_KEY] = oss.str();
+        props[CATALOG_IS_DATA_KEY] = is_data() ? "true" : "false";
+        string dap_service_url = get_dap_service_url();
+        BESDEBUG(MODULE,prolog << "dap_service_url: " << dap_service_url << endl );
+        if(!dap_service_url.empty()){
+            props[CATALOG_DAP_URL_KEY] = dap_service_url;
+        }
     }
 
-    info->begin_tag("item", &props);
+    info->begin_tag(CATALOG_ITEM_TAG, &props);
+    string description = get_description();
+    if(!description.empty()){
+        map<string, string> description_props;
+        info->begin_tag(CATALOG_DESCRIPTION_KEY, &description_props);
+        info->add_data(description);
+        info->end_tag(CATALOG_DESCRIPTION_KEY);
+    }
 
-    info->end_tag("item");
+    info->end_tag(CATALOG_ITEM_TAG);
 
 #if 0
     // TODO Should we support the serviceRef element? jhrg 7/22/18

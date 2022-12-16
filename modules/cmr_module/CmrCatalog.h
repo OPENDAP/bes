@@ -52,39 +52,43 @@ private:
     std::vector<std::string> d_collections;
     std::vector<std::string> d_facets;
 
+    bes::CatalogNode *get_providers_node() const;
+    bes::CatalogNode *get_collections_node(const std::string &path, const std::string &provider_id) const;
+    bes::CatalogNode *get_facets_node(const std::string &path, const std::string &collection_id) const;
+    bes::CatalogNode *get_temporal_facet_nodes(const std::string &path,
+                                               const std::vector<std::string> &path_elements,
+                                               const std::string &collection_id) const;
 
 public:
-    CmrCatalog(const std::string &name = CMR_CATALOG_NAME);
-    virtual ~CmrCatalog();
+    explicit CmrCatalog(const std::string &name = CMR_CATALOG_NAME);
+    ~CmrCatalog() override = default;
+
 
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+    BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/) override {
         throw BESInternalError("The CMRCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
     /**
      * This is a meaningless method for CMR so it returns empty string
      */
-    virtual std::string get_root() const { return ""; }
+    std::string get_root() const override { return ""; }
 
     /**
      * Maybe someday...
      */
-    virtual void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, std::ostream &/*out*/,
-        const std::string &/*path = "/"*/) const {
+    void get_site_map(const std::string &/*prefix*/, const std::string &/*node_suffix*/, const std::string &/*leaf_suffix*/, std::ostream &/*out*/,
+        const std::string &/*path = "/"*/) const override {
         BESDEBUG(MODULE, "The CMRCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << std::endl);
         // throw BESInternalError("The CMRCatalog::get_site_map() method is not currently supported.",__FILE__,__LINE__);
     }
 
 
-    virtual bes::CatalogNode *get_node(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_OLD(const std::string &path) const;
-    virtual bes::CatalogNode *get_node_NEW(const std::string &path) const;
+    bes::CatalogNode *get_node(const std::string &path) const override;
 
-
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
 };
 } // namespace cmr
