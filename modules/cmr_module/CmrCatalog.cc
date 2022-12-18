@@ -331,10 +331,10 @@ CmrCatalog::get_node(const string &ppath) const
             provider_id = path_elements[0];
             return get_collections_node(path, provider_id);
         }
-        case 2: {
-            collection_id = path_elements[1];
-            return get_facets_node(path,collection_id );
-        }
+        //case 2: {
+        //    collection_id = path_elements[1];
+        //    return get_facets_node(path,collection_id );
+        //}
         default:
             break;
     }
@@ -347,14 +347,14 @@ CmrCatalog::get_node(const string &ppath) const
     collection_id = path_elements[0];
     path_elements.erase(path_elements.begin());
 
-    string facet = path_elements[0];
-    path_elements.erase(path_elements.begin());
+    //string facet = path_elements[0];
+    //path_elements.erase(path_elements.begin());
 
 
     // Now we QC the facet name,
-    if( facet != CMR_TEMPORAL_NAVIGATION_FACET_KEY){
-        throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);
-    }
+    //if( facet != CMR_TEMPORAL_NAVIGATION_FACET_KEY){
+    //    throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);
+    //}
 
     return get_temporal_facet_nodes(path, path_elements,collection_id);
 }
