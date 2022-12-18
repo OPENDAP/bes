@@ -31,7 +31,7 @@
 ///
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
-/// Copyright (C) 2011-2016 The HDF Group
+/// Copyright (C) 2011-2022 The HDF Group
 ///
 /// All rights reserved.
 
@@ -46,7 +46,6 @@
 #include <list>
 #include <algorithm>
 #include "HDF5CFUtil.h"
-//#include "h5cfdaputil.h"
 #include "HDF5GCFProduct.h"
 #include "HE5Parser.h"
 
@@ -75,16 +74,14 @@ public:
     {
     }
 
-    virtual ~ Exception() throw ()
-    {
-    }
+    ~ Exception() throw () override = default;
 
-    virtual const char *what() const throw ()
+    const char *what() const throw () override
     {
         return this->message.c_str();
     }
 
-    virtual void setException(std::string except_message)
+    virtual void setException(const std::string& except_message)
     {
         this->message = except_message;
     }
@@ -256,7 +253,7 @@ private:
 class Var {
 public:
     Var() = default;
-    explicit Var(Var*var);
+    explicit Var(const Var*var);
     virtual ~Var();
 
 
@@ -382,7 +379,7 @@ private:
 class GMSPVar: public Var {
 public:
     GMSPVar() = default;
-    explicit GMSPVar(Var *var);
+    explicit GMSPVar(const Var *var);
     ~GMSPVar() override = default;
 
     H5DataType getOriginalType() const
@@ -413,7 +410,7 @@ private:
 class GMCVar: public CVar {
 public:
     GMCVar()  = default;
-    explicit GMCVar(Var*var);
+    explicit GMCVar(const Var*var);
     ~GMCVar() override = default;
 
     /// Get the data type of this variable
@@ -435,7 +432,7 @@ public:
         std::fill_n(param, 13, 0);
     }
     ;
-    explicit EOS5CVar(Var *);
+    explicit EOS5CVar(const Var *);
 
     ~EOS5CVar() override = default;
 
@@ -488,8 +485,8 @@ public:
     std::vector<double> getParams() const
     {
         std::vector<double> ret_params;
-        for (int i = 0; i < 13; i++)
-            ret_params.push_back(param[i]);
+        for (const auto &param_ele:param)
+            ret_params.push_back(param_ele);
         return ret_params;
     }
 
@@ -692,9 +689,9 @@ protected:
     void Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr);
     void Retrieve_H5_Attr_Info(Attribute *, hid_t obj_id, const int j, bool& unsup_attr_dtype, bool & unsup_attr_dspace);
         
-    void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &);
+    void Retrieve_H5_Attr_Value(Attribute *attr, const std::string &) const;
 
-    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype); 
+    void Retrieve_H5_VarType(Var*, hid_t dset_id, const std::string& varname, bool &unsup_var_dtype) const; 
     void Retrieve_H5_VarDim(Var*, hid_t dset_id, const std::string &varname, bool & unsup_var_dspace);
 
     float Retrieve_H5_VarCompRatio(const Var*, const hid_t) const;
@@ -721,27 +718,27 @@ protected:
     void Adjust_Duplicate_FakeDim_Name2(Dimension * dim,int dup_dim_size_index) ;
     void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
     void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
-        bool unlimited) ;
+        bool unlimited) const;
 
     virtual std::string get_CF_string(std::string);
-    void Replace_Var_Info(Var* src, Var *target);
-    void Replace_Var_Attrs(Var *src, Var*target);
+    void Replace_Var_Info(const Var* src, Var *target);
+    void Replace_Var_Attrs(const Var *src, Var*target);
 
-    void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) ;
-    std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string& var_path);
+    void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) const;
+    std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string& var_path) const;
     bool Is_Str_Attr(Attribute* attr, const std::string & varfullpath, const std::string &attrname, const std::string& strvalue);
-    void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) ;
+    void Add_One_Float_Attr(Attribute* attr, const std::string &attrname, float float_value) const;
     void Replace_Var_Str_Attr(Var* var, const std::string &attr_name, const std::string& strvalue);
-    void Change_Attr_One_Str_to_Others(Attribute *attr, const Var *var) ;
+    void Change_Attr_One_Str_to_Others(Attribute *attr, const Var *var) const;
 
     // Check if having variable latitude by variable names (containing ???latitude/Latitude/lat)
-    bool Is_geolatlon(const std::string &var_name, bool is_lat);
+    bool Is_geolatlon(const std::string &var_name, bool is_lat) const;
     bool has_latlon_cf_units(Attribute*attr, const std::string &varfullpath, bool is_lat);
 
     // Check if a variable with a var name is under a specific group with groupname
     // note: the variable's size at each dimension is also returned. The user must allocate the
     // memory for the dimension sizes(an array(vector is perferred).
-    bool is_var_under_group(const std::string &varname, const std::string &grpname, const int var_rank, std::vector<size_t> &var_size);
+    bool is_var_under_group(const std::string &varname, const std::string &grpname, const int var_rank, std::vector<size_t> &var_size) const;
 
     // Remove netCDF internal attributes. Right now, only CLASS=DIMENSION_SCALE and NAME=Var_name and NAME=pure netCDF dimesnion are handled.
     void remove_netCDF_internal_attributes(bool include_attr);
@@ -761,7 +758,7 @@ protected:
     void add_ignored_info_attrs(bool is_grp, const std::string & obj_path, const std::string &attr_name);
     void add_ignored_info_objs(bool is_dim_related, const std::string & obj_path);
     void add_no_ignored_info();
-    bool ignored_dimscale_ref_list(Var *var);
+    bool ignored_dimscale_ref_list(const Var *var) const;
     bool Check_DropLongStr(const Var *var, const Attribute *attr) ;
     void add_ignored_var_longstr_info(const Var*var, const Attribute *attr) ;
     void add_ignored_grp_longstr_info(const std::string& grp_path, const std::string& attr_name);
@@ -771,8 +768,8 @@ protected:
     void release_standalone_var_vector(std::vector<Var*>&vars);
 
     // Handle grid_mapping attributes
-    std::string Check_Grid_Mapping_VarName(const std::string& attr_value,const std::string& var_full_path);
-    std::string Check_Grid_Mapping_FullPath(const std::string& attr_value);
+    std::string Check_Grid_Mapping_VarName(const std::string& attr_value,const std::string& var_full_path) const;
+    std::string Check_Grid_Mapping_FullPath(const std::string& attr_value) const;
 
 protected:
     File(const char *h5_path, hid_t file_id) :
@@ -852,7 +849,7 @@ public:
     void Retrieve_H5_CVar_Supported_Attr_Values() override;
 
     /// Adjust attribute values for general HDF5 products.
-    void Adjust_H5_Attr_Value(Attribute *attr) ;
+    void Adjust_H5_Attr_Value(Attribute *attr) const;
 
     /// Handle unsupported HDF5 datatypes for general HDF5 products.
     void Handle_Unsupported_Dtype(bool) override;
@@ -906,7 +903,7 @@ public:
     void Handle_Grid_Mapping_Vars()override;
 
     //
-    bool Is_Hybrid_EOS5();
+    bool Is_Hybrid_EOS5() const;
     void Handle_Hybrid_EOS5();
  
     /// Handle "coordinates" attributes for general HDF5 products
@@ -916,7 +913,7 @@ public:
     void Remove_Unused_FakeDimVars();
 
     /// Remove the _nc4_non_coord from the variable new names
-    void Rename_NC4_NonCoordVars();
+    void Rename_NC4_NonCoordVars() const;
 
     /// Update "product type" attributes for general HDF5 products
     void Update_Product_Type() ;
@@ -946,12 +943,12 @@ protected:
     void Add_Dim_Name_GPM() ;
     void Add_Dim_Name_Mea_SeaWiFS() ;
     void Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var*) ;
-    void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *, const Attribute*) ;
+    void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(const Var *, const Attribute*) ;
 
     void Add_Dim_Name_Mea_Ozonel3z() ;
     bool check_cv(const std::string & varname) const;
 
-    void Add_Dim_Name_Aqu_L3() ;
+    void Add_Dim_Name_Aqu_L3() const;
     void Add_Dim_Name_OBPG_L3() ;
     void Add_Dim_Name_OSMAPL2S() ;
     void Add_Dim_Name_ACOS_L2S_OCO2_L1B() ;
@@ -974,7 +971,7 @@ protected:
     void Add_Dim_Name_LatLon2D_General_Product() ;
     void Add_Dim_Name_Dimscale_General_Product() ;
     void Handle_UseDimscale_Var_Dim_Names_General_Product(Var*) ;
-    void Add_UseDimscale_Var_Dim_Names_General_Product(Var*, Attribute*) ;
+    void Add_UseDimscale_Var_Dim_Names_General_Product(const Var*, const Attribute*) ;
 
     // Check if we have 2-D lat/lon CVs, and if yes, add those to the CV list.
     void Update_M2DLatLon_Dimscale_CVs() ;
@@ -983,7 +980,7 @@ protected:
     void Obtain_2DLatLon_Vars(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
         std::map<std::string, int>&latlon2d_path_to_index);
     void Obtain_2DLLVars_With_Dims_not_1DLLCVars(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
-        std::vector<GMCVar*> &cvar_1dlat, std::vector<GMCVar*> &cvar_1dlon, std::map<std::string, int>&latlon2d_path_to_index);
+        const std::vector<GMCVar*> &cvar_1dlat, const std::vector<GMCVar*> &cvar_1dlon, std::map<std::string, int>&latlon2d_path_to_index);
     void Obtain_2DLLCVar_Candidate(std::vector<Var*> &var_2dlat, std::vector<Var*> &var_2dlon,
         std::map<std::string, int>&latlon2d_path_to_index) ;
     void Obtain_unique_2dCV(std::vector<Var*>&, std::map<std::string, int>&);
@@ -1002,8 +999,9 @@ protected:
     void Handle_CVar_LatLon1D_General_Product() ;
     void Handle_CVar_LatLon_General_Product() ;
 
-    void Adjust_Mea_Ozone_Obj_Name() ;
-    void Adjust_GPM_L3_Obj_Name() ;
+    void Adjust_Mea_Ozone_Obj_Name() const;
+    void Adjust_GPM_L3_Obj_Name() const;
+
 
     void Handle_GMCVar_NameClashing(std::set<std::string> &) ;
     void Handle_GMCVar_AttrNameClashing() ;
@@ -1015,7 +1013,7 @@ protected:
     std::string get_CF_string(std::string s) override;
 
     // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
-    bool Check_Var_2D_CVars(Var*) ;
+    bool Check_Var_2D_CVars(Var*) const;
     bool Flatten_VarPath_In_Coordinates_Attr(Var*) ;
 #if 0
     //bool Flatten_VarPath_In_Coordinates_Attr_EOS5(Var*) ;
@@ -1026,15 +1024,15 @@ protected:
     void Add_VarPath_In_Coordinates_Attr(Var*, const std::string &);
 
     // The following three routines handle the GPM CF-related attributes
-    void Handle_GPM_l1_Coor_Attr() ;
-    void Correct_GPM_L1_LatLon_units(Var *var, const std::string unit_value) ;
+    void Handle_GPM_l1_Coor_Attr() const;
+    void Correct_GPM_L1_LatLon_units(Var *var, const std::string & unit_value) ;
     void Add_GPM_Attrs() ;
 
     void Add_Aqu_Attrs() ;
-    void Add_SeaWiFS_Attrs() ;
+    void Add_SeaWiFS_Attrs() const;
     void Create_Missing_CV(GMCVar*, const std::string &) ;
 
-    bool Is_netCDF_Dimension(Var *var) ;
+    bool Is_netCDF_Dimension(const Var *var) const;
 
     void Gen_Unsupported_Dtype_Info(bool) override;
     void Gen_VarAttr_Unsupported_Dtype_Info()  override;
@@ -1043,8 +1041,8 @@ protected:
     void Handle_GM_Unsupported_Dtype(bool) ;
     void Handle_GM_Unsupported_Dspace(bool) ;
 
-    bool Remove_EOS5_Strings(std::string &);
-    bool Remove_EOS5_Strings_NonEOS_Fields (std::string &);
+    bool Remove_EOS5_Strings(std::string &) const;
+    bool Remove_EOS5_Strings_NonEOS_Fields (std::string &) const;
     void release_standalone_GMCVar_vector(std::vector<GMCVar*> &tempgc_vars);
 
 private:
@@ -1207,7 +1205,7 @@ public:
     void Add_EOS5File_Info(HE5Parser*, bool) ;
 
     /// Adjust variable names for HDF-EOS5 files
-    void Adjust_Var_NewName_After_Parsing() ;
+    void Adjust_Var_NewName_After_Parsing() const;
 
     /// This method is a no-op operation. Leave here since the method in the base class is pure virtual.
     void Adjust_Obj_Name()  override;
@@ -1231,7 +1229,7 @@ public:
     void Handle_SpVar_DMR()  override;
      
     /// Adjust variable dimension names before the flattening for HDF-EOS5 files.
-    void Adjust_Var_Dim_NewName_Before_Flattening() ;
+    void Adjust_Var_Dim_NewName_Before_Flattening() const;
 
     /// Flatten the object name for HDF-EOS5 files
     void Flatten_Obj_Name(bool include_attr) override ;
@@ -1263,7 +1261,7 @@ public:
     void Handle_Grid_Mapping_Vars() override;
 
 
-    bool Have_EOS5_Grids() {
+    bool Have_EOS5_Grids() const {
         return !(this->eos5cfgrids.empty());
     }
     bool Get_IgnoredInfo_Flag() override
@@ -1277,33 +1275,32 @@ public:
     }
 
 protected:
-    void Adjust_H5_Attr_Value(Attribute *attr) ;
+    void Adjust_H5_Attr_Value(const Attribute *attr) const;
 
-    void Adjust_EOS5Dim_List(std::vector<HE5Dim>&) ;
-    void Condense_EOS5Dim_List(std::vector<HE5Dim>&) ;
-    void Remove_NegativeSizeDims(std::vector<HE5Dim>&) ;
-    void Adjust_EOS5DimSize_List(std::vector<HE5Dim>&,const std::vector<HE5Var>&, const EOS5Type,const std::string & eos5objname);
+    void Adjust_EOS5Dim_List(std::vector<HE5Dim>&) const;
+    void Condense_EOS5Dim_List(std::vector<HE5Dim>&) const;
+    void Remove_NegativeSizeDims(std::vector<HE5Dim>&) const;
+    void Adjust_EOS5DimSize_List(std::vector<HE5Dim>&,const std::vector<HE5Var>&, const EOS5Type,const std::string & eos5objname) const;
     void Adjust_EOS5VarDim_Info(std::vector<HE5Dim>&, std::vector<HE5Dim>&, const std::string &, EOS5Type) ;
 
-    void EOS5Handle_nonlatlon_dimcvars(std::vector<HE5Var> & eos5varlist, EOS5Type, std::string groupname,
-        std::map<std::string, std::string>& dnamesgeo1dvnames) ;
-    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, std::vector<HE5Var>& eos5varlist)
-        ;
+    void EOS5Handle_nonlatlon_dimcvars(std::vector<HE5Var> & eos5varlist, EOS5Type, const std::string &groupname,
+        std::map<std::string, std::string>& dnamesgeo1dvnames) const;
+    template<class T> void EOS5SwathGrid_Set_LatLon_Flags(T* eos5gridswath, std::vector<HE5Var>& eos5varlist) const;
 
-    void Obtain_Var_NewName(Var*) ;
-    EOS5Type Get_Var_EOS5_Type(Var*) ;
+    void Obtain_Var_NewName(Var*) const;
+    EOS5Type Get_Var_EOS5_Type(const Var*) const;
 
-    bool Obtain_Var_Dims(Var*, HE5Parser*) ;
-    template<class T> bool Set_Var_Dims(T*, Var*, std::vector<HE5Var>&, const std::string&, int, EOS5Type) ;
+    bool Obtain_Var_Dims(const Var*, HE5Parser*) ;
+    template<class T> bool Set_Var_Dims(T*, const Var*, std::vector<HE5Var>&, const std::string&, int, EOS5Type) ;
     template<class T> void Create_Unique_DimName(T*, std::set<std::string>&, Dimension *, int, EOS5Type) ;
 
-    template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t);
+    template<class T> bool Check_All_DimNames(T*, std::string &, hsize_t) const;
     std::string Obtain_Var_EOS5Type_GroupName(const Var*, EOS5Type) const;
     int Check_EOS5Swath_FieldType(const Var*) const;
-    void Get_Unique_Name(std::set<std::string>&, std::string&) ;
+    void Get_Unique_Name(std::set<std::string>&, std::string&) const;
 
-    template<class T> std::string Create_Unique_FakeDimName(T*, EOS5Type) ;
-    template<class T> void Set_NonParse_Var_Dims(T*, Var*, const std::map<hsize_t, std::string>&, int, EOS5Type) ;
+    template<class T> std::string Create_Unique_FakeDimName(T*, EOS5Type) const;
+    template<class T> void Set_NonParse_Var_Dims(T*, const Var*, const std::map<hsize_t, std::string>&, int, EOS5Type) ;
 
     void Handle_Grid_CVar(bool) ;
     void Handle_Augmented_Grid_CVar() ;
@@ -1315,41 +1312,41 @@ protected:
     bool Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(const EOS5CFGrid *, std::set<std::string>&) ;
     void Handle_NonLatLon_Grid_CVar(EOS5CFGrid *, std::set<std::string>&) ;
     void Remove_MultiDim_LatLon_EOS5CFGrid() ;
-    void Adjust_EOS5GridDimNames(EOS5CFGrid *) ;
+    void Adjust_EOS5GridDimNames(const EOS5CFGrid *) const;
 
     void Handle_Swath_CVar(bool) ;
     void Handle_Single_1DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) ;
     void Handle_Single_2DLatLon_Swath_CVar(EOS5CFSwath *cfswath, bool is_augmented) ;
     void Handle_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>& tempvardimnamelist) ;
-    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, std::set<std::string>&tempvardimnamelist) ;
+    void Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const std::set<std::string>&tempvardimnamelist) ;
 
     void Handle_Za_CVar(bool) ;
 
-    bool Check_Augmentation_Status() ;
+    bool Check_Augmentation_Status() const;
     // Don't remove the following commented if 0 line!
 #if 0
     //bool Check_Augmented_Var_Attrs(Var *var) throw(Exception);
 #endif
-    template<class T> bool Check_Augmented_Var_Candidate(T*, Var*, EOS5Type) ;
+    template<class T> bool Check_Augmented_Var_Candidate(T*, const Var*, EOS5Type) const;
 
-    template<class T> void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*, bool, int, int, int) ;
-    void Adjust_SharedLatLon_Grid_Var_Dim_Name() ;
+    template<class T> void Adjust_Per_Var_Dim_NewName_Before_Flattening(T*, bool, int, int, int) const;
+    void Adjust_SharedLatLon_Grid_Var_Dim_Name() const;
 
     void Adjust_Aura_Attr_Name() ;
-    void Adjust_Aura_Attr_Value() ;
-    void Handle_EOS5CVar_Unit_Attr() ;
+    void Adjust_Aura_Attr_Value() const;
+    void Handle_EOS5CVar_Unit_Attr() const;
     void Add_EOS5_Grid_CF_Attr() ;
-    void Handle_Aura_Special_Attr() ;
+    void Handle_Aura_Special_Attr() const;
 
     std::string get_CF_string(std::string s) override;
-    void Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar *target);
-    void Replace_Var_Attrs_EOS(EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Info_EOS(const EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Attrs_EOS(const EOS5CVar *src, EOS5CVar *target);
     void Handle_EOS5CVar_NameClashing(std::set<std::string> &) ;
     void Handle_EOS5CVar_AttrNameClashing() ;
     template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         ;
-    template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) ;
-    void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) ;
+    template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) const;
+    void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) const;
 
     void Handle_EOS5_Unsupported_Dtype(bool) ;
     void Handle_EOS5_Unsupported_Dspace(bool) ;

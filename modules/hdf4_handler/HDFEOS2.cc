@@ -135,7 +135,7 @@ File::~File()
 }
 
 /// Read all the information in this file from the EOS2 APIs.
-File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Exception)
+File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) 
 {
 
     auto file = new File(path);
@@ -628,7 +628,7 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
 }
 
 // For one grid, need to handle lat/lon(both existing lat/lon and calculated lat/lon from EOS2 APIs)
-void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception) 
+void File::handle_one_grid_latlon(GridDataset* gdset) 
 {
 
     // Obtain "XDim","YDim","Latitude","Longitude" 
@@ -963,7 +963,7 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
 
 // For the case of which all grids have one dedicated lat/lon grid,
 // this function shows how to handle lat/lon fields.
-void File::handle_onelatlon_grids() throw(Exception) {
+void File::handle_onelatlon_grids() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();       
@@ -1084,7 +1084,7 @@ void File::handle_onelatlon_grids() throw(Exception) {
 }
 
 // Handle the dimension name to coordinate variable map for grid.
-void File::handle_grid_dim_cvar_maps() throw(Exception) {
+void File::handle_grid_dim_cvar_maps() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();
@@ -1206,7 +1206,7 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
 }
 
 // Follow COARDS for grids.
-void File::handle_grid_coards() throw(Exception) {
+void File::handle_grid_coards() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();       
@@ -1488,7 +1488,7 @@ void File::handle_grid_coards() throw(Exception) {
 }
 
 // Create the corrected dimension vector for each field when COARDS is not followed.
-void File::update_grid_field_corrected_dims() throw(Exception) {
+void File::update_grid_field_corrected_dims() {
 
     // Revisit the lat/lon fields to check if 1-D COARD convention needs to be followed.
     vector<Dimension*> correcteddims;
@@ -1525,7 +1525,7 @@ void File::update_grid_field_corrected_dims() throw(Exception) {
 
 }
 
-void File::handle_grid_cf_attrs() throw(Exception) {
+void File::handle_grid_cf_attrs() {
 
     // Create "coordinates" ,"units"  attributes. The "units" attributes only apply to latitude and longitude.
     // This is the last round of looping through everything, 
@@ -1614,7 +1614,7 @@ void File::handle_grid_cf_attrs() throw(Exception) {
 }
 
 // Special handling SOM(Space Oblique Mercator) projection files
-void File::handle_grid_SOM_projection() throw(Exception) {
+void File::handle_grid_SOM_projection() {
 
     // since the latitude and longitude of the SOM projection are 3-D, so we need to handle this projection in a special way. 
     // Based on our current understanding, the third dimension size is always 180. 
@@ -1736,7 +1736,7 @@ void File::handle_grid_SOM_projection() throw(Exception) {
 
 // Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
 // The input parameter is the number of swath.
-void File::check_swath_dimmap(int numswath) throw(Exception) {
+void File::check_swath_dimmap(int numswath) {
 
     if(HDF4RequestHandler::get_disable_swath_dim_map() == true) 
         return;
@@ -1877,7 +1877,7 @@ void File::check_swath_dimmap_bk_compat(int numswath){
 }
 
 // Create the dimension name to coordinate variable name map for lat/lon. 
-void File::create_swath_latlon_dim_cvar_map() throw(Exception){
+void File::create_swath_latlon_dim_cvar_map(){
 
     vector<Field*> ori_lats;
     vector<Field*> ori_lons;
@@ -2144,7 +2144,7 @@ void File::create_swath_latlon_dim_cvar_map() throw(Exception){
 
 // Create the dimension name to coordinate variable name map for coordinate variables that are not lat/lon. 
 // The input parameter is the number of dimension maps in this file.
-void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
+void File:: create_swath_nonll_dim_cvar_map() 
 {
     // Handle existing and missing fields 
     for (const auto &swath:this->swaths) {
@@ -2327,7 +2327,7 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 }
 
 // Handle swath dimension name to coordinate variable name maps. 
-void File::handle_swath_dim_cvar_maps() throw(Exception) {
+void File::handle_swath_dim_cvar_maps() {
 
     // Start handling name clashing
     vector <string> tempfieldnamelist;
@@ -2586,7 +2586,7 @@ void File::handle_swath_dim_cvar_maps() throw(Exception) {
  
 // Handle CF attributes for swaths. 
 // The CF attributes include "coordinates", "units" for coordinate variables and "_FillValue". 
-void File::handle_swath_cf_attrs() throw(Exception) {
+void File::handle_swath_cf_attrs() {
 
     // Create "coordinates" ,"units"  attributes. The "units" attributes only apply to latitude and longitude.
     // This is the last round of looping through everything, 
@@ -2972,7 +2972,7 @@ void File::create_geo_dim_var_maps(SwathDataset*sd, Field*fd,const vector<string
 // Original lat/lon variable information is provided.
 void File::create_geo_vars(SwathDataset* sd,Field *orig_lat,Field*orig_lon,
                            const vector<string>& lat_names,const vector<string>& lon_names,
-                          vector<Dimension*>&geo_var_dim1,vector<Dimension*>&geo_var_dim2) throw(Exception){
+                          vector<Dimension*>&geo_var_dim1,vector<Dimension*>&geo_var_dim2){
 
 #if 0
     // Handle existing latitude and longitude. 
@@ -3185,7 +3185,7 @@ void File::update_swath_dims_for_dimmap(const SwathDataset* sd,const std::vector
 // This is the main function to handle the multi-dimension map case.
 // It creates the lat/lon lists, handle dimension names and then
 // provide the dimension name to coordinate variable map.
-void File::create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset* sd, Field* ori_lat, Field* ori_lon) throw(Exception) {
+void File::create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset* sd, Field* ori_lat, Field* ori_lon) {
 
     bool one_swath = ((this->swaths).size() == 1);
 
@@ -3223,7 +3223,7 @@ if(sd->GeoDim_in_vars == true)
 /// Read and prepare. This is the main method to make the DAP output CF-compliant.
 /// All dimension(coordinate variables) information need to be ready.
 /// All special arrangements need to be done in this step.
-void File::Prepare(const char *eosfile_path) throw(Exception)
+void File::Prepare(const char *eosfile_path) 
 {
 
     // check if this is a special HDF-EOS2 grid(MOD08_M3) that have all dimension scales
@@ -3339,7 +3339,7 @@ void File::Prepare(const char *eosfile_path) throw(Exception)
 
 
 #if 0
-void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
+void correct_unlimited_missing_zdim(GridDataset* gdset) {
 
     for (vector<Field *>::const_iterator j =
         gdset->getDataFields().begin();
@@ -3356,7 +3356,7 @@ void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
 }
 #endif
 
-bool File::check_special_1d_grid() throw(Exception) {
+bool File::check_special_1d_grid() {
 
     auto numgrid = (int)(this->grids.size());
     auto numswath = (int)(this->swaths.size());
@@ -3407,7 +3407,7 @@ bool File::check_special_1d_grid() throw(Exception) {
 }
     
 
-bool File::check_ll_in_coords(const string& vname) throw(Exception) {
+bool File::check_ll_in_coords(const string& vname) {
 
     bool ret_val = false;
     for (const auto &swath:this->swaths) {
@@ -3447,7 +3447,7 @@ bool File::check_ll_in_coords(const string& vname) throw(Exception) {
 // MODIS_MUL_SCALE: raw_data = scale*(data -offset)
 // MODIS_DIV_SCALE: raw_data = (data-offset)/scale
 
-void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
+void Dataset::SetScaleType(const string & EOS2ObjName) {
 
 
     // Group features of MODIS products.
@@ -3618,7 +3618,7 @@ Dataset::~Dataset()
 // Retrieve dimensions of grids or swaths
 void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
                              int32 (*inq)(int32, char *, int32 *),
-                             vector<Dimension *> &d_dims) throw(Exception)
+                             vector<Dimension *> &d_dims) 
 {
     // Initialize number of dimensions
     int32 numdims = 0; 
@@ -3673,7 +3673,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          (int32, char *, int32 *, int32 *, int32 *, char *),
                          intn (*getfill)(int32, char *, VOIDP),
                          bool geofield,
-                         vector<Field *> &fields) throw(Exception)
+                         vector<Field *> &fields) 
 {
 
     // Initalize the number of fields
@@ -3770,7 +3770,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
 void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
                              intn (*attrinfo)(int32, char *, int32 *, int32 *),
                              intn (*readattr)(int32, char *, VOIDP),
-                             vector<Attribute *> &obj_attrs) throw(Exception)
+                             vector<Attribute *> &obj_attrs) 
 {
     // Initalize the number of attributes to be 0
     int32 numattrs = 0;
@@ -3842,7 +3842,6 @@ GridDataset::~GridDataset()
 
 // Retrieve all information of the grid dataset
 GridDataset * GridDataset::Read(int32 fd, const string &gridname)
-    throw(Exception)
 {
     string err_msg;
     bool GD_fun_err = false;
@@ -3920,14 +3919,14 @@ GridDataset::Calculated & GridDataset::getCalculated() const
     return this->calculated;
 }
 
-bool GridDataset::Calculated::isYDimMajor() throw(Exception)
+bool GridDataset::Calculated::isYDimMajor() 
 {
     this->DetectMajorDimension();
     return this->ydimmajor;
 }
 
 #if 0
-bool GridDataset::Calculated::isOrthogonal() throw(Exception)
+bool GridDataset::Calculated::isOrthogonal() 
 {
     if (!this->valid)
         this->ReadLongitudeLatitude();
@@ -3935,7 +3934,7 @@ bool GridDataset::Calculated::isOrthogonal() throw(Exception)
 }
 #endif
 
-int GridDataset::Calculated::DetectFieldMajorDimension() throw(Exception)
+int GridDataset::Calculated::DetectFieldMajorDimension() const
 {
     int ym = -1;
 	
@@ -3980,7 +3979,7 @@ int GridDataset::Calculated::DetectFieldMajorDimension() throw(Exception)
     return ym;
 }
 
-void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
+void GridDataset::Calculated::DetectMajorDimension() 
 {
     int ym = -1;
     // ydimmajor := true if (YDim, XDim)
@@ -4102,7 +4101,7 @@ SwathDataset::~SwathDataset()
 
 // Read all information of this swath
 SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
-    throw(Exception)
+    
 {
     auto swath = new SwathDataset(swathname);
     if(swath == nullptr)
@@ -4149,7 +4148,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
 
 // Read dimension map info.
 int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
-    throw(Exception)
+    
 {
     int32 nummaps;
     int32 bufsize;
@@ -4200,7 +4199,7 @@ int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
 
 // The following function is nevered tested and probably will never be used.
 void SwathDataset::ReadIndexMaps(vector<IndexMap *> &swath_indexmaps)
-    throw(Exception)
+    
 {
     int32 numindices;
     int32 bufsize;
@@ -4255,7 +4254,6 @@ PointDataset::~PointDataset()
 }
 
 PointDataset * PointDataset::Read(int32 /*fd*/, const string &pointname)
-    throw(Exception)
 {
     auto point = new PointDataset(pointname);
     return point;

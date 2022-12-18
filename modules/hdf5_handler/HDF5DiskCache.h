@@ -25,7 +25,7 @@ public:
     static const std::string PATH_KEY;
     static const std::string SIZE_KEY;
     static const std::string PREFIX_KEY;
-    virtual ~HDF5DiskCache() {}
+    ~HDF5DiskCache() override = default;
 
     static long getCacheSizeFromConfig(const long cache_size);
     static std::string getCachePrefixFromConfig(const std::string&);

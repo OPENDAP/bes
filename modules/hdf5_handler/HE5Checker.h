@@ -46,12 +46,12 @@ class HE5Checker {
 
     // Check if it has multiple grids that have different dimension sizes
     // of coordinate variables.
-    bool check_grids_multi_latlon_coord_vars(HE5Parser* p);
-    bool check_grids_missing_projcode(HE5Parser*p);
-    bool check_grids_unknown_parameters(HE5Parser* p);
-    bool check_grids_support_projcode(HE5Parser*p);
+    bool check_grids_multi_latlon_coord_vars(HE5Parser* p) const;
+    bool check_grids_missing_projcode(const HE5Parser*p) const;
+    bool check_grids_unknown_parameters(const HE5Parser* p) const;
+    bool check_grids_support_projcode(const HE5Parser*p) const;
     
-    void set_grids_missing_pixreg_orig(HE5Parser* p);
+    void set_grids_missing_pixreg_orig(HE5Parser* p) const;
 
 };
 #endif
