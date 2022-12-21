@@ -226,7 +226,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         // DMR CHECK
         bool dap4_int64 = false;
         if(var->getType() == H5INT64 || var->getType()==H5UINT64) { 
-            DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
+            const DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
             if(dmr == nullptr)
                 return;
             else 
@@ -290,11 +290,11 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-            if ("" == (*it_d)->getNewName())
-                ar->append_dim((*it_d)->getSize());
+        for (const auto& dim:dims) {
+            if ("" == dim->getNewName())
+                ar->append_dim(dim->getSize());
             else
-                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                ar->append_dim(dim->getSize(), dim->getNewName());
         }
 
         // When handling DAP4 CF, we need to generate dmr for 64-bit integer separately.
@@ -750,11 +750,11 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-            if ("" == (*it_d)->getNewName())
-                ar->append_dim((int)((*it_d)->getSize()));
+        for (const auto &dim:dims) {
+            if ("" == dim->getNewName())
+                ar->append_dim((int)(dim->getSize()));
             else
-                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                ar->append_dim((int)(dim->getSize()), dim->getNewName());
         }
 
         delete bt;
@@ -1110,22 +1110,22 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 #endif
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
-    for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
+    for (const auto &var:vars) {
 
-        if ((*it_v)->getRank() > 1) {
+        if (var->getRank() > 1) {
             bool has_dim0 = false;
             bool has_dim1 = false;
-            const vector<HDF5CF::Dimension*>& dims = (*it_v)->getDimensions();
-            for (auto j = dims.begin(); j != dims.end(); ++j) {
-                if ((*j)->getNewName() == dim0name && (*j)->getSize() == dim0size)
+            const vector<HDF5CF::Dimension*>& dims = var->getDimensions();
+            for (const auto &dim:dims) {
+                if (dim->getNewName() == dim0name && dim->getSize() == dim0size)
                     has_dim0 = true;
-                else if ((*j)->getNewName() == dim1name && (*j)->getSize() == dim1size) 
+                else if (dim->getNewName() == dim1name && dim->getSize() == dim1size) 
                     has_dim1 = true;
 
             }
             if (true == has_dim0 && true == has_dim1) {        // Need to add the grid_mapping attribute
-                AttrTable *at = das.get_table((*it_v)->getNewName());
-                if (!at) at = das.add_table((*it_v)->getNewName(), new AttrTable);
+                AttrTable *at = das.get_table(var->getNewName());
+                if (!at) at = das.add_table(var->getNewName(), new AttrTable);
 
                 // The dummy projection name is the value of the grid_mapping attribute
                 at->append_attr("grid_mapping", "String", cf_projection);
@@ -1161,37 +1161,36 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 // Note: the main part of DMR still comes from DDS and DAS.
 void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    for (auto it_ra = var->getAttributes().begin();
-        it_ra != var->getAttributes().end(); ++it_ra) {
+    for (const auto & attr:var->getAttributes()) {
         // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
         // obtain the mem datatype. Keep this in DAP4 mapping.
-        size_t mem_dtype_size = ((*it_ra)->getBufSize()) / ((*it_ra)->getCount());
-        H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype((*it_ra)->getType(), mem_dtype_size);
+        size_t mem_dtype_size = (attr->getBufSize()) / (attr->getCount());
+        H5DataType mem_dtype = HDF5CFDAPUtil::get_mem_dtype(attr->getType(), mem_dtype_size);
 
         string dap2_attrtype = HDF5CFDAPUtil::print_type(mem_dtype);
         D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
-        auto d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
+        auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
         if(dap4_attrtype == attr_str_c) {
-            if("coordinates" == (*it_ra)->getNewName()) {
+            if("coordinates" == attr->getNewName()) {
                 bool chg_coor_value = false;
                 if((true == HDF5RequestHandler::get_enable_coord_attr_add_path()) 
                    &&(true == var->getCoorAttrAddPath()))
                     chg_coor_value = true;
                 string tempstring;
-                handle_coor_attr_for_int64_var((*it_ra),var->getFullPath(),tempstring,chg_coor_value);
+                handle_coor_attr_for_int64_var(attr,var->getFullPath(),tempstring,chg_coor_value);
                 d4_attr->add_value(tempstring);
             }
             else {
-                const vector<size_t>& strsize = (*it_ra)->getStrSize();
+                const vector<size_t>& strsize = attr->getStrSize();
                 unsigned int temp_start_pos = 0;
-                for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                     if (strsize[loc] != 0) {
-                        string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
-                                      (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
+                        string tempstring(attr->getValue().begin() + temp_start_pos,
+                                      attr->getValue().begin() + temp_start_pos + strsize[loc]);
                         temp_start_pos += strsize[loc];
                         //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
 #if 0
-                        //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+                        //if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
 #endif
 
                         // Don't escape the special characters. these will be handled in the libdap4. KY 2022-08-25
@@ -1205,8 +1204,8 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
         }
         else {
-            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
-                string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &((*it_ra)->getValue()[0]));
+            for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+                string print_rep = HDF5CFDAPUtil::print_attr(mem_dtype, loc, (void*) &(attr->getValue()[0]));
                 d4_attr->add_value(print_rep);
             }
         }
@@ -1230,7 +1229,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
         if(dmr != nullptr) {
             string dap2_attrtype = HDF5CFDAPUtil::print_type(attr->getType());
             D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
-            D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+            auto d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
             for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
                 string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
                 d4_attr->add_value(print_rep);
@@ -1318,10 +1317,9 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 // Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    for (auto it_ra = var->getAttributes().begin();
-        it_ra != var->getAttributes().end(); ++it_ra) {
+    for (const auto &attr:var->getAttributes()) {
      
-        D4Attribute *d4_attr = gen_dap4_attr((*it_ra));
+        D4Attribute *d4_attr = gen_dap4_attr(attr);
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
 }
@@ -1655,7 +1653,7 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
 
     for (; vi != ve; vi++) {
 
-        BaseType *v = *vi;
+        const BaseType *v = *vi;
 
         // Only Array can have maps.
         if (libdap::dods_array_c == v->type()) {
@@ -1669,8 +1667,8 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             // based on the understanding of the handler. We will
             // watch if there are complicated cases down the road. KY 04-15-2022
             bool is_cv = false;
-            for ( auto it_cv = coord_var_names.begin(); it_cv !=coord_var_names.end();++it_cv) {
-                if ((*it_cv) == v->name()) {
+            for (const auto &cvar_name:coord_var_names) {
+                if (cvar_name == v->name()) {
                     is_cv = true;
                     d4map_array_maps.emplace(v->name(),t_a); 
                     break;
@@ -1686,31 +1684,31 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
 
     // loop through has_map_arrays to add the maps.
     if (is_coard) {// The grid case. 
-        for ( auto it_hm = has_map_arrays.begin(); it_hm != has_map_arrays.end(); ++it_hm) {
+        for (auto& has_map_array:has_map_arrays) {
 
-            Array::Dim_iter dim_i = (*it_hm)->dim_begin();
-            Array::Dim_iter dim_e = (*it_hm)->dim_end();
+            Array::Dim_iter dim_i = has_map_array->dim_begin();
+            Array::Dim_iter dim_e = has_map_array->dim_end();
             for (; dim_i != dim_e; dim_i++) {
 
                 // The dimension name is the same as a map name(A Grid case) 
                 // Need to ensure the map array can be found.
                 unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(dim_i->name);
                 if(it_ma != d4map_array_maps.end()) {
-                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
-                    (*it_hm)->maps()->add_map(d4_map);
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+                    has_map_array->maps()->add_map(d4_map);
                 }
             }
             // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
-            *it_hm = nullptr;
+            has_map_array = nullptr;
         }
     }
     else { // A Swath case, need to find coordinates and retrieve the values.
 
-        for ( auto it_hm = has_map_arrays.begin(); it_hm != has_map_arrays.end(); ++it_hm) {
+        for ( auto has_map_array:has_map_arrays) {
 
             // If we cannot find the "coordinates",then this var doesn't have a map.
             vector<string> coord_names;
-            D4Attributes *d4_attrs = (*it_hm)->attributes();
+            D4Attributes *d4_attrs = has_map_array->attributes();
             const D4Attribute *d4_attr = d4_attrs->find("coordinates");
             if (d4_attr != nullptr) {
                 // For all the coordinates the CF option can handle,  
@@ -1723,25 +1721,24 @@ void add_dap4_coverage(libdap::D4Group* d4_root, const vector<string>& coord_var
             }
 
             // Search if these coordiates can be found in the coordinate variable list.
-            for(auto it_c = coord_names.begin(); it_c != coord_names.end(); ++it_c) {
+            for(const auto& cname:coord_names) {
 
-                unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(*it_c);
+                unordered_map<string, Array*>::const_iterator it_ma = d4map_array_maps.find(cname);
                 if(it_ma != d4map_array_maps.end()) {
-                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, *it_hm);
-                    (*it_hm)->maps()->add_map(d4_map);
+                    auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+                    has_map_array->maps()->add_map(d4_map);
                 }
 
             }
 
             // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
-            *it_hm = nullptr;
+            has_map_array = nullptr;
         }
     }
     // We need to set the second element of the d4map_array_maps to 0 to avoid the ~Array() is called
     // when this map goes out of loop.
-    for (auto it_dm = d4map_array_maps.begin(); it_dm != d4map_array_maps.end(); ++it_dm) 
-        it_dm->second = nullptr;
-
+    for (auto& d4map_array_map:d4map_array_maps) 
+        d4map_array_map.second = nullptr;
  
 }
 

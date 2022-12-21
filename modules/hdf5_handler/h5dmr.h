@@ -71,7 +71,9 @@ typedef struct {
 typedef struct {
     haddr_t  link_addr;
     string slink_path;
+#if 0
     //vector<string> link_paths;
+#endif
 } link_info_t;
 #endif
 
@@ -116,4 +118,6 @@ void build_var_dim_path(const std::string & eos5_obj_name, const std::vector<HE5
 void build_grp_dim_path(const std::string & eos5_obj_name, const std::vector<HE5Dim>& dim_list, std::unordered_map<std::string, std::vector<HE5Dim>>& grppath_to_dims, HE5_TYPE eos5_type);
 bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::string, vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
+
+hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
 #endif

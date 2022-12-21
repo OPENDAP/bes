@@ -74,7 +74,7 @@ public:
     virtual ~ HE5Parser();
 
     /// Print the information about the members of the Vector list.
-    void print();
+    void print() const;
     void add_projparams(const std::string&);
 
 };

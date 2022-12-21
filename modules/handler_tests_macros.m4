@@ -116,16 +116,18 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
-    AS_IF([test -z "$at_verbose"],[echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+    AS_IF([test -z "$at_verbose"],[echo "COMMANDER KIRK: besstandalone $repeat -c $bes_conf -i $1"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         REMOVE_DATE_TIME([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
@@ -135,7 +137,7 @@ m4_define([AT_BESCMD_RESPONSE_SCRUB_DATES_TEST], [dnl
 
 dnl Simple pattern test. The baseline file holds a set of patterns, one per line,
 dnl and the test will pass if any pattern matches with the test result.
-dnl In many ways it's just a better version of _AT_BESCMD_ERROR_TEST below
+dnl In many ways it is just a better version of _AT_BESCMD_ERROR_TEST below
 
 m4_define([AT_BESCMD_RESPONSE_PATTERN_TEST], [dnl
 
@@ -289,6 +291,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
@@ -296,6 +299,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
         REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -502,15 +506,16 @@ dnl
 dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
-      sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
-      -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
-      -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
-      < $1 > $1.sed
-      mv $1.sed $1
-  ])
+    sed -r -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
+    -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
+    -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed-dmrpp:version@g' \
+    -e 's@[[0-9]]+\.[[0-9]]+\.[[0-9]]+(-[[0-9]]+)?@removed-version@g' \
+    < $1 > $1.sed
+    mv $1.sed $1
+])
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
-dnl printed by getdap4 so that we don't have issues with comparing data values
+dnl printed by getdap4 so that we dont have issues with comparing data values
 dnl on big- and little-endian machines. The value of the checksum is a function
 dnl of the bytes, so different word orders produce different checksums. jhrg 4/25/18
 

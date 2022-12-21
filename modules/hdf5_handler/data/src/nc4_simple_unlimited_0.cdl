@@ -1,0 +1,12 @@
+netcdf nc4_simple_unlimited {    
+dimensions:
+ time = unlimited;
+variables:
+  int     lat(time), lon(time);
+  lat:units = "degrees_north";
+  lon:units = "degrees_east";
+data:
+  lat   = 0, 10;
+  lon   = -140, -118;
+}
+
