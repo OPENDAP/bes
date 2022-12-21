@@ -47,8 +47,7 @@ namespace http {
  */
 class EffectiveUrl : public url {
 private:
-
-    // We need order so we use two vectors instead of a map to hold the header "map"
+    // We need order, so we use two vectors instead of a map to hold the header "map"
     std::vector<std::string> d_response_header_names;
     std::vector<std::string> d_response_header_values;
 
@@ -56,66 +55,40 @@ private:
     std::vector<std::string> d_resp_hdr_lines;
 
 public:
+    EffectiveUrl() = default;
+    EffectiveUrl(const EffectiveUrl &src_url) = default;
 
-    explicit EffectiveUrl();
-
-    explicit EffectiveUrl(const std::string &url_s, bool trusted=false) : http::url(url_s,trusted), d_response_header_names(), d_response_header_values() {};
-
-    explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs, bool trusted=false) : http::url(url_s,trusted) {
+    explicit EffectiveUrl(const std::string &url_s, bool trusted = false) : http::url(url_s, trusted) {};
+    explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs, bool trusted = false)
+            : http::url(url_s, trusted) {
         ingest_response_headers(resp_hdrs);
-    };
-
-    /**
-     * Copy constructor
-     * @param src_url
-     */
-    EffectiveUrl(EffectiveUrl const &src_url) : http::url(src_url) {
-        d_response_header_values = src_url.d_response_header_values;
-        d_response_header_names = src_url.d_response_header_names;
-        d_resp_hdr_lines = src_url.d_resp_hdr_lines;
     }
 
-    /**
-     * Copy constructor
-     * @param src_url
-     */
-    explicit EffectiveUrl(
-            http::url const &src_url) :
-            http::url(src_url),
-            d_response_header_names(),
-            d_response_header_values() {
-    }
+    explicit EffectiveUrl(const http::url &src_url) : http::url(src_url) {}
+    explicit EffectiveUrl(const std::shared_ptr<http::url> &source_url) : http::url(source_url) {}
 
-    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url): http::url(source_url) {
-        d_response_header_values = source_url->d_response_header_values;
-        d_response_header_names = source_url->d_response_header_names;
-        d_resp_hdr_lines = source_url->d_resp_hdr_lines;
-    }
+    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url)
+        : http::url(source_url),
+          d_response_header_names(source_url->d_response_header_names),
+          d_response_header_values(source_url->d_response_header_values),
+          d_resp_hdr_lines(source_url->d_resp_hdr_lines) {}
+    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url, bool trusted)
+        : http::url(source_url,trusted),
+          d_response_header_names(source_url->d_response_header_names),
+          d_response_header_values(source_url->d_response_header_values),
+          d_resp_hdr_lines(source_url->d_resp_hdr_lines) {}
 
-    explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url, bool trusted): http::url(source_url,trusted) {
-        d_response_header_values = source_url->d_response_header_values;
-        d_response_header_names = source_url->d_response_header_names;
-        d_resp_hdr_lines = source_url->d_resp_hdr_lines;
-    }
+    ~EffectiveUrl() override = default;
 
-    explicit EffectiveUrl(
-            std::shared_ptr<http::url> source_url):
-            http::url(std::move(source_url)),
-            d_response_header_names(),
-            d_response_header_values()
-        {
-    }
+    bool is_expired() override;
 
-    virtual ~EffectiveUrl(){ }
+    void get_header(const std::string &name, std::string &value, bool &found );
 
-        bool is_expired() override;
+    void ingest_response_headers(const std::vector<std::string> &resp_hdrs);
 
-        void get_header(const std::string &name, std::string &value, bool &found );
+    std::string dump() override;
+};
 
-        void ingest_response_headers(const std::vector<std::string> &resp_hdrs);
-
-        std::string dump() override;
-    };
 } // namespace http
 
 #endif //HYRAX_GIT_EFFECTIVEURL_H

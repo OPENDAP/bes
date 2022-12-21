@@ -34,7 +34,7 @@
 #include <algorithm>
 #include <cctype>
 #include <functional>
-#include <time.h>
+#include <ctime>
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -49,101 +49,12 @@ using std::chrono::system_clock;
 #define MODULE HTTP_MODULE
 #define prolog string("url::").append(__func__).append("() - ")
 
-#define PROTOCOL_KEY "http_url_protocol"
-#define HOST_KEY  "http_url_host"
-#define PATH_KEY  "http_url_path"
-#define QUERY_KEY "http_url_query"
-#define SOURCE_URL_KEY  "http_url_target_url"
-#define INGEST_TIME_KEY  "http_url_ingest_time"
-
-
 namespace http {
-
-#if 0
-/**
- *
- * @param kvp
- */
-url::url(const map<string,string> &kvp)
-{
-    map<string,string> kvp_copy = kvp;
-    map<string,string>::const_iterator it;
-    map<string,string>::const_iterator itc;
-
-    it = kvp.find(PROTOCOL_KEY);
-    itc = kvp_copy.find(PROTOCOL_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_protocol = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located PROTOCOL_KEY(" << PROTOCOL_KEY << ") value: " << d_protocol << endl);
-    }
-    it = kvp.find(HOST_KEY);
-    itc = kvp_copy.find(HOST_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_host = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located HOST_KEY(" << HOST_KEY << ") value: " << d_host << endl);
-    }
-    it = kvp.find(PATH_KEY);
-    itc = kvp_copy.find(PATH_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_path = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located PATH_KEY(" << PATH_KEY << ") value: " << d_path << endl);
-    }
-    it = kvp.find(QUERY_KEY);
-    itc = kvp_copy.find(QUERY_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_query = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located QUERY_KEY(" << QUERY_KEY << ") value: " << d_query << endl);
-    }
-    it = kvp.find(SOURCE_URL_KEY);
-    itc = kvp_copy.find(SOURCE_URL_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_source_url_str = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url_str << endl);
-    }
-
-    for(itc = kvp_copy.begin(); itc != kvp_copy.end(); itc++){
-        string key =  itc->first;
-        string value = itc->second;
-        map<string, vector<string>* >::const_iterator record_it;
-        record_it = d_query_kvp.find(key);
-        if(record_it != d_query_kvp.end()){
-            vector<string> *values = record_it->second;
-            values->push_back(value);
-        }
-        else {
-            vector<string> *values = new vector<string>();
-            values->push_back(value);
-            d_query_kvp.insert(pair<string, vector<string>*>(key, values));
-        }
-    }
-
-}
-#endif
-
-/**
- *
- */
-url::~url()
-{
-    if(!d_query_kvp.empty()){
-        map<string, vector<string>* >::const_iterator it;
-        for(it = d_query_kvp.begin() ; it != d_query_kvp.end(); it++){
-            delete it->second;
-        }
-    }
-}
-
 
 /**
  * @brief Parses the URL into it's components and makes some BES file system magic.
  *
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
- * @param source_url
  */
 void url::parse() {
     const string protocol_end("://");
@@ -156,10 +67,10 @@ void url::parse() {
     if(d_source_url_str.find(protocol_end) == string::npos){
         // Since we want a valid path in the file system tree for data, we make it so by adding
         // the file path that starts with the catalog root dir.
-        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
+        const BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
         BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
-        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
+        const BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (bcat) {
             BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
         } else {
@@ -178,8 +89,8 @@ void url::parse() {
 
     const string parse_url_target(d_source_url_str);
 
-    string::const_iterator prot_i = search(parse_url_target.begin(), parse_url_target.end(),
-                                           protocol_end.begin(), protocol_end.end());
+    auto prot_i = search(parse_url_target.cbegin(), parse_url_target.cend(),
+                         protocol_end.begin(), protocol_end.end());
 
     if (prot_i != parse_url_target.end())
         advance(prot_i, protocol_end.size());
@@ -242,20 +153,17 @@ void url::parse() {
 
 }
 
-
 /**
- *
  * @param key
- * @return
+ * @return The associated value for the key or an empty string if the key is not found.
  */
-string url::query_parameter_value(const string &key) const
-{
+string url::query_parameter_value(const string &key) const {
     string value;
-    map<string, vector<string>* >::const_iterator it;
+    map<string, vector<string> *>::const_iterator it;
     it = d_query_kvp.find(key);
-    if(it != d_query_kvp.end()){
+    if (it != d_query_kvp.end()) {
         vector<string> *values = it->second;
-        if(!values->empty()){
+        if (!values->empty()) {
             value = (*values)[0];
         }
     }
@@ -264,53 +172,12 @@ string url::query_parameter_value(const string &key) const
 
 /**
  *
- * @param key
- * @param values
- */
-void url::query_parameter_values(const string &key, vector<string> &values) const
-{
-    map<string, vector<string>* >::const_iterator it;
-    it = d_query_kvp.find(key);
-    if(it != d_query_kvp.end()){
-        values = *it->second;
-    }
-}
-
-#if 0
-
-/**
- *
- * @param kvp
- */
-void url::kvp(map<string,string>  &kvp){
-    stringstream ss;
-
-    // Do the basic stuff
-    kvp.insert(pair<string,string>(PROTOCOL_KEY, d_protocol));
-    kvp.insert(pair<string,string>(HOST_KEY, d_host));
-    kvp.insert(pair<string,string>(PATH_KEY, d_path));
-    kvp.insert(pair<string,string>(QUERY_KEY, d_query));
-    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url_str));
-    ss << d_ingest_time;
-    kvp.insert(pair<string,string>(INGEST_TIME_KEY,ss.str()));
-
-    // Now grab the query string. Only the first value of multi valued keys is used.
-    map<string, vector<string>* >::const_iterator it;
-    for(it=d_query_kvp.begin(); it != d_query_kvp.end(); it++){
-        kvp.insert(pair<string,string>(it->first,(*it->second)[0]));
-    }
-}
-#endif
-
-/**
- *
- * @return True if the URL appears within the REFRESH_THRESHOLD of the
- * expires time read from one of CLOUDFRONT_EXPIRES_HEADER_KEY, AMS_EXPIRES_HEADER_KEY;
+ * @return True if the URL appears within the REFRESH_THRESHOLD of the expires time
+ * read from one of CLOUDFRONT_EXPIRES_HEADER_KEY or AMS_EXPIRES_HEADER_KEY.
  *
  */
 bool url::is_expired()
 {
-
     bool stale;
     std::time_t now = system_clock::to_time_t(system_clock::now());
 
