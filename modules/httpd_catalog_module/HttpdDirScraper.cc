@@ -71,6 +71,9 @@ HttpdDirScraper::HttpdDirScraper()
  */
 long HttpdDirScraper::get_size_val(const string size_str) const
 {
+    if(size_str.empty())
+        return 0;
+    
     char scale_c = *size_str.rbegin();
     long scale = 1;
 
@@ -144,6 +147,9 @@ void zero_tm_struct(tm &tms)
 
 string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 {
+    if(httpd_time.empty())
+        return httpd_time;
+
     vector<string> tokens;
     string delimiters = "- :";
     BESUtil::tokenize(httpd_time, tokens, delimiters);

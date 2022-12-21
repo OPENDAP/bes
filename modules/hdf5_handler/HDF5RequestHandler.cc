@@ -202,7 +202,6 @@ long HDF5RequestHandler::_latlon_disk_cache_size        =0;
 string HDF5RequestHandler::_latlon_disk_cache_dir       ="";
 string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
 
-// H5.EscapeUTF8Attr jhrg 3/9/22
 bool HDF5RequestHandler::_escape_utf8_attr = true;
 
 DMR* HDF5RequestHandler::dmr_int64 = nullptr;
@@ -623,29 +622,32 @@ temp_table->print(cerr);
 
         bdas->clear_container() ;
     }
-    catch(BESError & e) {
+    catch(const BESSyntaxUserError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
  
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -676,7 +678,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
     try {
 
         // Look in memory cache to see if it's initialized
-        DDS* cached_dds_ptr = nullptr;
+        const DDS* cached_dds_ptr = nullptr;
         bool use_dds_cache = false;
         if (dds_cache) 
             cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename));
@@ -767,7 +769,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         }
     
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -778,7 +780,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -788,7 +790,12 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(BESSyntaxUserError & e) {
+    catch(const BESSyntaxUserError & e) {
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         throw;
     }
@@ -816,7 +823,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
     try {
 
         // Look in memory cache to see if it's initialized
-        DDS* cached_dds_ptr = nullptr;
+        const DDS* cached_dds_ptr = nullptr;
         bool use_datadds_cache = false;
         if (datadds_cache) 
             cached_dds_ptr = static_cast<DDS*>(datadds_cache->get(filename));
@@ -904,7 +911,19 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         data_bdds->set_ia_flag(false);
     
     }
-    catch(InternalErr & e) {
+    catch(const BESSyntaxUserError & e) {
+
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        if(fileid !=-1)
+            H5Fclose(fileid);
+
+        throw;
+    }
+
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -915,7 +934,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -924,16 +943,6 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        if(fileid !=-1)
-            H5Fclose(fileid);
-
-        throw;
     }
     catch(...) {
 
@@ -1111,7 +1120,7 @@ cerr<<"after parsing "<<endl;
 //dds->print(cout);
     
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1122,7 +1131,7 @@ cerr<<"after parsing "<<endl;
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1159,7 +1168,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
  
     string container_name = dhi.container->get_symbolic_name();
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDDSResponse *bdds = dynamic_cast < BESDDSResponse * >(response);
+    auto bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     bdds->set_container(container_name);
@@ -1216,23 +1225,24 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     
     }
-    catch(BESError & e) {
+
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -1261,7 +1271,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     string container_name = dhi.container->get_symbolic_name();
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
+    auto bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
     bdds->set_container(container_name);
@@ -1275,6 +1285,8 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bool build_data  = true;
 #endif
 
+        // The code inside the following #if 0 #endif is not used anymore. So comment out. KY 2022-12-11 
+#if 0
         bool das_from_dc = false;
         string dds_cache_fname;
         string das_cache_fname;
@@ -1290,6 +1302,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
                das_from_dc = true;
 
         }
+#endif
 
 #if 0
         get_dds_with_attributes(nullptr,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
@@ -1300,23 +1313,24 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         bdds->clear_container() ;
     
     }
-    catch(BESError & e) {
+
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-        throw;
     }
     catch(...) {
 
@@ -1353,7 +1367,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     }
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast < BESDataDDSResponse * >(response);
+    auto bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
@@ -1378,7 +1392,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         
         Ancillary::read_ancillary_dds( *hdds, filename ) ;
 
-        DAS *das = new DAS ;
+        auto das = new DAS ;
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
         read_cfdas( *das,filename,cf_fileid);
@@ -1390,30 +1404,30 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     }
 
-    catch(BESError & e) {
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
-        throw;
-    }
-    catch(InternalErr & e) {
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(Error & e) {
-        if(cf_fileid !=-1)
-            H5Fclose(cf_fileid);
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(BESSyntaxUserError & e) {
+    catch(const BESSyntaxUserError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         throw;
+    }
+    catch(const BESError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const InternalErr & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
+                       __FILE__, __LINE__);
+    }
+    catch(const Error & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
+                       __FILE__, __LINE__);
     }
     catch(...) {
         if(cf_fileid !=-1)
@@ -1448,7 +1462,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
  
     try {
 
-        DMR* cached_dmr_ptr = nullptr;
+        const DMR* cached_dmr_ptr = nullptr;
         if (dmr_cache){
             BESDEBUG(HDF5_NAME, prolog << "Checking DMR cache for : " << filename << endl);
             cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
@@ -1613,7 +1627,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }
         }// else no cache
     }// try
-    catch(BESError & e) {
+    catch(const BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         if(fileid !=-1)
@@ -1621,7 +1635,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1631,7 +1645,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1724,13 +1738,13 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 #endif
 
     }
-    catch(BESError & e) {
+    catch(const BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(InternalErr & e) {
+    catch(const InternalErr & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1738,7 +1752,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
                        __FILE__, __LINE__);
     }
-    catch(Error & e) {
+    catch(const Error & e) {
 
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1791,7 +1805,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESInfo *info = dynamic_cast<BESInfo *>(response);
+    auto info = dynamic_cast<BESInfo *>(response);
     if( !info )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
 
@@ -1817,7 +1831,7 @@ bool HDF5RequestHandler::hdf5_build_help(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_version(BESDataHandlerInterface & dhi)
 {
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESVersionInfo *info = dynamic_cast < BESVersionInfo * >(response);
+    auto info = dynamic_cast < BESVersionInfo * >(response);
     if( !info )
         throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
   
@@ -1902,7 +1916,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                 }
                 if(dq_pos.empty() && sq_pos.empty())
                     HDF5CFUtil::Split_helper(temp_name_list,subline,sep);
-                else if((dq_pos.size()!=0) &&(dq_pos.size()%2==0)&& sq_pos.size()==0) {
+                else if((dq_pos.empty()==false) &&(dq_pos.size()%2==0)&& sq_pos.empty()==true) {
                     unsigned int dq_index= 0;
                     while(dq_index < dq_pos.size()){
                         if(dq_pos[dq_index+1]>(dq_pos[dq_index]+1)) {
@@ -1912,7 +1926,7 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
                         dq_index = dq_index + 2;
                     }
                 }
-                else if((sq_pos.size()!=0) &&(sq_pos.size()%2==0)&& dq_pos.size()==0) {
+                else if((sq_pos.empty()==false) &&(sq_pos.size()%2==0)&& dq_pos.empty()==true) {
                     unsigned int sq_index= 0;
                     while(sq_index < sq_pos.size()){
                         if(sq_pos[sq_index+1]>(sq_pos[sq_index]+1)) {
@@ -1995,10 +2009,8 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             char* temp_pointer =buf.data();
 
             AttrTable*at = nullptr;
-            // recursively build DAS
-//#if 0
+            // recursively build DAS, the folloing code is necessary. KY 2022-12-11
             temp_pointer = get_attr_info_from_dc(temp_pointer,das_ptr,at);
-//#endif
 
 
         }
@@ -2617,7 +2629,7 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(response);
     if (!bdds)
         throw BESInternalError("cast error", __FILE__, __LINE__);
     DDS *dds = bdds->get_dds();

@@ -38,9 +38,8 @@ HDFInt16::HDFInt16(const string &n, const string &d) : Int16(n, d)
 {
 }
 
-HDFInt16::~HDFInt16()
-{
-}
+HDFInt16::~HDFInt16() = default;
+
 BaseType *HDFInt16::ptr_duplicate()
 {
     return new HDFInt16(*this);

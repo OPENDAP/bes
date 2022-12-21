@@ -90,8 +90,8 @@ bool HDF5GMCFMissLLArray::read()
             }
 
             size_t total_elems = 1;
-            for (unsigned int i = 0; i < dim_sizes.size(); i++)
-                total_elems = total_elems * dim_sizes[i];
+            for (const auto &dim_size:dim_sizes)
+                total_elems = total_elems * dim_size;
 
             handle_data_with_mem_cache(dtype, total_elems, cache_flag, cache_key,false);
         }
@@ -102,7 +102,7 @@ bool HDF5GMCFMissLLArray::read()
 }
 
 // Obtain latitude and longitude for Aquarius and OBPG level 3 products
-void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset, int* step, int nelms, bool add_cache, void* buf)
+void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int* offset, const int* step, int nelms, bool add_cache, void* buf)
 {
 
     BESDEBUG("h5", "Coming to obtain_aqu_obpg_l3_ll read "<<endl);
@@ -211,7 +211,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset, int* step, int nelm
 }
 
 // Obtain lat/lon for GPM level 3 products
-void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bool add_cache, void*buf)
+void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int* offset, const int* step, int nelms, bool add_cache, void*buf)
 {
 
     if (1 != rank)
@@ -437,7 +437,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
 //template<class T>
 template<typename T>
 void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_id, const string & s_attr_name,
-    T& attr_value, vector<char> & str_attr_value)
+    T& attr_value, vector<char> & str_attr_value) const
 {
 
     BESDEBUG("h5", "Coming to obtain_ll_attr_value"<<endl);
@@ -544,7 +544,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
 
 void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
                                                       vector<char>& grid_info_value1, 
-                                                      vector<char>& grid_info_value2){
+                                                      vector<char>& grid_info_value2) const{
 
    typedef struct {
        char* name;
@@ -618,7 +618,7 @@ void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_valu
                                               const vector<char>& grid_info_value2,
                                               int& latsize,int& lonsize,
                                               float& lat_start,float& lon_start,
-                                              float& lat_res,float& lon_res){
+                                              float& lat_res,float& lon_res) const{
 
     float lat1_start = 0;
     float lon1_start = 0.;
@@ -671,6 +671,7 @@ void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_valu
 }
 
 //Callback function to retrieve the grid information.
+// We delibereately use malloc() and free() in this callback according to the HDF5 documentation. 
 static herr_t
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_data)
 {

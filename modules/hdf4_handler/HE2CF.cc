@@ -235,7 +235,6 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 
         if(SDreadattr(sd_id, i, attr_data.data()) == FAIL){
             Vend(file_id);
-            //delete[] attr_data;
             ostringstream error;
             error <<  "Fail to read SDS global attributes"  << endl;
             throw_error(error.str());
@@ -322,18 +321,16 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
     // list_flag = 1, only .0, coremetadata.0
     // list_flag = 2, coremetadata.0, coremetadata.1 etc
     // list_flag = 3, coremeatadata.0, coremetadata.0.1 etc
-//cerr<<"list_flag "<<list_flag <<endl;
     if ( list_flag >= 0 && list_flag <=2) {
         for (lit = one_dot_names.begin();lit!=one_dot_names.end();++lit) {
             set_eosmetadata_namelist(*lit);
             string cur_data;
             obtain_SD_attr_value(*lit,cur_data);
-//cerr<<"metadata "<<cur_data <<endl;
             metadata.append(cur_data);
         }
     }
 
-    if( 3== list_flag) {
+    if ( 3== list_flag) {
         for (lit = two_dots_names.begin();lit!=two_dots_names.end();++lit){
             set_eosmetadata_namelist(*lit);
             string cur_data;
@@ -342,7 +339,7 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
         }
     }
 
-    if(non_number_names.size() >0) {
+    if (non_number_names.empty() == false) {
         suffix_is_num_or_null = false;
         no_num_data.resize(non_number_names.size());
     }
@@ -359,7 +356,7 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
 // This routine will generate three ECS metadata lists. Note in theory list sl1 and sl2 should be sorted.
 // Since the ECS metadata is always written(sorted) in increasing numeric order, we don't perform this now.
 // Should watch if there are any outliers. KY 2012-08-31
-void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,string name,int& flag) {
+void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,const string& name,int& flag) const {
 
     // No dot in the ECS name
     if(name.find(".") == string::npos) {
@@ -412,7 +409,7 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
 }
 
 // Obtain SD attribute value
-void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
+void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) const {
 
     int32 sds_index = SDfindattr(sd_id, attrname.c_str());
     if(sds_index == FAIL){
@@ -444,9 +441,13 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
         throw InternalErr(__FILE__, __LINE__,error.str());
 
     }
+
+    // Leave the following #if 0 #endif block.
+#if 0
     // Remove the last nullptr character
     //        string temp_data(attrvalue.begin(),attrvalue.end()-1);
     //       cur_data = temp_data;
+#endif
 
     if(attrvalue[count] != '\0') 
         throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be nullptr");
@@ -754,7 +755,6 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 
         // Handle character type attribute as a string.
 	if (datatype == DFNT_CHAR || datatype == DFNT_UCHAR) {
-	    //*(value + n_values) = '\0';
             value[n_values] = '\0';
 	    n_values = 1;
 	}
@@ -904,7 +904,7 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
 }
 
 void
-HE2CF::throw_error(string _error)
+HE2CF::throw_error(const string& _error)
 {
     throw InternalErr(__FILE__, __LINE__,
                       _error);        
@@ -912,21 +912,9 @@ HE2CF::throw_error(string _error)
 
 
 // Public member functions
-HE2CF::HE2CF()
-{
-    num_global_attributes = -1;
-    file_id = -1;
-    sd_id = -1;
-    metadata = "";
-    gname = "";
-    das = nullptr;
-}
+HE2CF::HE2CF() = default;
 
-HE2CF::~HE2CF()
-{
-    // Actually this is not necessary since C++ will clean up the string.
-    metadata.clear();
-}
+HE2CF::~HE2CF() = default;
 
 bool
 HE2CF::close()
@@ -1065,7 +1053,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         
         case DFNT_UINT8:
         {
-            uint8 val = (uint8) value;
+            auto val = (uint8) value;
             v_val.resize(1);
             memcpy(v_val.data(),&val,1);
             v_ptr = (void*)v_val.data();
@@ -1074,7 +1062,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         break;
         case DFNT_INT8:        
         {
-            int8 val = (int8) value;
+            auto val = (int8) value;
             v_val.resize(1);
             memcpy(v_val.data(),&val,1);
             v_ptr = (void*)v_val.data();
@@ -1082,7 +1070,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         break;
         case DFNT_INT16:
         {
-            int16 val = (int16) value;
+            auto val = (int16) value;
             v_val.resize(sizeof(short));
             memcpy(v_val.data(),&val,sizeof(short));
             v_ptr = (void*)v_val.data();
@@ -1091,7 +1079,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
 
         case DFNT_UINT16:        
         {
-            uint16 val = (uint16) value;
+            auto val = (uint16) value;
             v_val.resize(sizeof(unsigned short));
             memcpy(v_val.data(),&val,sizeof(unsigned short));
             v_ptr = (void*)v_val.data();
@@ -1100,7 +1088,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
 
         case DFNT_INT32:
         {
-            int32 val = (int32) value;
+            auto val = (int32) value;
             v_val.resize(sizeof(int));
             memcpy(v_val.data(),&val,sizeof(int));
             v_ptr = (void*)v_val.data();
@@ -1108,7 +1096,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         break;
         case DFNT_UINT32:        
         {
-            uint32 val = (uint32) value;
+            auto val = (uint32) value;
             v_val.resize(sizeof(unsigned int));
             memcpy(v_val.data(),&val,sizeof(int));
             v_ptr = (void*)v_val.data();
@@ -1121,7 +1109,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
         break;
         case DFNT_DOUBLE:
         {
-            float64 val = (float64) value;
+            auto val = (float64) value;
             v_val.resize(sizeof(double));
             memcpy(v_val.data(),&val,sizeof(double));
             v_ptr = (void*)v_val.data();
@@ -1143,7 +1131,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
 }
 
 bool
-HE2CF::write_attribute_coordinates(const string& _varname, string _coordinates)
+HE2CF::write_attribute_coordinates(const string& _varname, const string &_coordinates)
 {
 
     AttrTable *at = das->get_table(_varname);
@@ -1156,7 +1144,7 @@ HE2CF::write_attribute_coordinates(const string& _varname, string _coordinates)
 }
 
 bool
-HE2CF::write_attribute_units(const string& _varname, string _units)
+HE2CF::write_attribute_units(const string& _varname, const string &_units)
 {
 
     AttrTable *at = das->get_table(_varname);

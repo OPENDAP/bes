@@ -34,8 +34,6 @@
 /// \author James Gallagher (jgallagher@opendap.org)
 
 
-// #define DODS_DEBUG
-
 #include <string>
 #include <ctype.h>
 

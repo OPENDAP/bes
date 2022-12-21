@@ -64,14 +64,12 @@
 #include <libdap/Ancillary.h>
 #include "config_hdf.h"
 
-#define HDF4_NAME "h4"
 #include "HE2CF.h"
 #include "HDF4_DDS.h"
 
 #include "HDF4_DMR.h"
 
-//#include "HDFCFUtil.h"
-#include "HDFFloat32.h"
+//#include "HDFFloat32.h"
 #include "HDFSPArray_RealField.h"
 
 #include "dodsutil.h"
@@ -81,6 +79,8 @@
 
 using namespace std;
 using namespace libdap;
+
+const string HDF4_NAME="h4";
 
 bool check_beskeys(const string &);
 bool get_beskeys(const string &,string &);
@@ -151,13 +151,13 @@ string HDF4RequestHandler::_cache_metadata_path            ="";
 
 HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler(name) {
-	add_handler(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
-	add_handler(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
-	add_handler(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
-	add_handler(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-	add_handler(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-	add_handler(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
-	add_handler(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
+	BESRequestHandler::add_method(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
+	BESRequestHandler::add_method(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
+	BESRequestHandler::add_method(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
+	BESRequestHandler::add_method(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
+	BESRequestHandler::add_method(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
+	BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
+	BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
         _usecf = check_beskeys("H4.EnableCF");
 
@@ -354,7 +354,8 @@ cerr<<"Don't output ecs metadata "<<endl;
     } 
 
     catch (BESError & e) {
-        throw;
+        throw BESError(e.what(), e.get_bes_error_type(),
+				__FILE__, __LINE__);
     } 
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -543,7 +544,8 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 	bdds->clear_container();
     } 
     catch (BESError & e) {
-        throw;
+        throw BESError(e.what(), e.get_bes_error_type(),
+				__FILE__, __LINE__);
     } 
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -619,7 +621,9 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
         DDS *dds = bdds->get_dds();
 
         // Not sure why keep the following line, it is not used.
+#if 0
         //ConstraintEvaluator & ce = bdds->get_ce();
+#endif
 
         string accessed = dhi.container->access();
         dds->filename(accessed);
@@ -744,7 +748,8 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     }
 
     catch (BESError & e) {
-        throw;
+        throw BESError(e.what(), e.get_bes_error_type(),
+				__FILE__, __LINE__);
     }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -787,7 +792,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         bdds->set_container(dhi.container->get_symbolic_name());
 
         // Create a new HDF4DDS object.
-        HDF4DDS *hdds = new HDF4DDS(bdds->get_dds());
+        auto hdds = new HDF4DDS(bdds->get_dds());
 
         // delete the old object.
         delete bdds->get_dds();
@@ -1073,7 +1078,8 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
     }
 
     catch (BESError & e) {
-        throw;
+        throw BESError(e.what(), e.get_bes_error_type(),
+				__FILE__, __LINE__);
     }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -1191,7 +1197,8 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
     }
 
     catch (BESError & e) {
-        throw;
+       throw BESError(e.what(), e.get_bes_error_type(),
+                                __FILE__, __LINE__);
     }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -1331,7 +1338,8 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
     }
 
     catch (BESError & e) {
-        throw;
+       throw BESError(e.what(), e.get_bes_error_type(),
+                                __FILE__, __LINE__);
     }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),
@@ -1435,7 +1443,8 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
     }
 
     catch (BESError & e) {
-        throw;
+       throw BESError(e.what(), e.get_bes_error_type(),
+                                __FILE__, __LINE__);
     }
     catch (InternalErr & e) {
         throw BESDapError(e.get_error_message(), true, e.get_error_code(),

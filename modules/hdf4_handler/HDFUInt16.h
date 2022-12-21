@@ -38,9 +38,9 @@
 class HDFUInt16:public libdap::UInt16 {
   public:
     HDFUInt16(const std::string &n, const std::string &d);
-    virtual ~ HDFUInt16();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFUInt16() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFUINT16_H

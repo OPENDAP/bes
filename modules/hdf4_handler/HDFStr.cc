@@ -49,9 +49,7 @@ HDFStr::HDFStr(const string &n, const string &d) : Str(n, d)
 {
 }
 
-HDFStr::~HDFStr()
-{
-}
+HDFStr::~HDFStr() = default;
 BaseType *HDFStr::ptr_duplicate()
 {
     return new HDFStr(*this);

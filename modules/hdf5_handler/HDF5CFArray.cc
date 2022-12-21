@@ -227,8 +227,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         cache_fpath = diskcache_dir + "/"+ cache_fname;
         
         int temp_total_elems = 1;
-        for (unsigned int i = 0; i <dimsizes.size();i++)
-            temp_total_elems = temp_total_elems*dimsizes[i];
+        for (const auto &dimsize:dimsizes)
+            temp_total_elems = temp_total_elems*dimsize;
+
         short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
         // CHECK: I think when signed 8-bit needs to be converted to int16, dtype_size should also change.
         if(is_dap4 == false && dtype==H5CHAR) 
@@ -412,13 +413,13 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 set_value((dods_int8 *)val.data(),nelms);
             else {
 
-            vector<short>newval;
-            newval.resize(nelms);
-
-            for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (short) (val[counter]);
-
-            set_value ((dods_int16 *) newval.data(), nelms);
+                vector<short>newval;
+                newval.resize(nelms);
+    
+                for (int counter = 0; counter < nelms; counter++)
+                    newval[counter] = (short) (val[counter]);
+    
+                set_value ((dods_int16 *) newval.data(), nelms);
             }
 
             if(true == data_to_disk_cache) {
@@ -818,7 +819,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     return;
 }
 
-bool HDF5CFArray::valid_disk_cache() {
+bool HDF5CFArray::valid_disk_cache() const {
 
     bool ret_value = false;
     if(true == HDF5RequestHandler::get_use_disk_cache()) {

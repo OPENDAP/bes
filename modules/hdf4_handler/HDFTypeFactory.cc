@@ -42,6 +42,8 @@
 #include <libdap/debug.h>
 #include <BESDebug.h>
 
+using namespace libdap;
+
 Byte *HDFTypeFactory::NewByte(const string & n) const
 {
     return new HDFByte(n, d_filename);

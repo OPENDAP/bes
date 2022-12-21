@@ -757,43 +757,49 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
                 throw InternalErr(__FILE__, __LINE__, "Fail to check dim. scale.");
             }
 
-            if(true == has_ds_attr) {
+            if (true == has_ds_attr) {
 
 #if 0
-            //int count = 0;
-            //vector<bool>dim_attr_mark;
-            //dim_attr_mark.resize(4);
-            //bool dim_attr_mark[4];
+//int count = 0;
+//vector<bool>dim_attr_mark;
+//dim_attr_mark.resize(4);
+//bool dim_attr_mark[4];
 #endif
+                 
+                // the vector seems not working. use array.   
                 int dim_attr_mark[3];
                 for(int i = 0;i<3;i++)
                     dim_attr_mark[i] = 0;
 
-            // This will check if "NAME" and "REFERENCE_LIST" exists.
-            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark.data());
-            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
-            if(ret < 0) {
-                string msg = "cannot interate the attributes of the dataset ";
-                msg += dname;
-                H5Tclose(dtype);
-                H5Sclose(dspace);
-                H5Dclose(dset);
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
-
-            for (int i = 0; i<3;i++)
-                BESDEBUG("h5","dim_attr_mark is "<<dim_attr_mark[i] <<endl);
-            // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
-            // Here a little bias towards files created by the netCDF-4 APIs. 
-            // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
-            // we will ignore this orphage dimension sale since it is not associated with other datasets.
-            // However, it is an orphage dimension scale created by the netCDF-4 APIs, we think
-            // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
-            //
-            if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2]) 
-                is_dimscale =true;
-            else if(dim_attr_mark[1])
-                is_pure_dim = true;
+                // This will check if "NAME" and "REFERENCE_LIST" exists.
+#if 0
+/herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark.data());
+#endif
+                herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
+                if(ret < 0) {
+                    string msg = "cannot interate the attributes of the dataset ";
+                    msg += dname;
+                    H5Tclose(dtype);
+                    H5Sclose(dspace);
+                    H5Dclose(dset);
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
+    
+                for (int i = 0; i<3;i++)
+                    BESDEBUG("h5","dim_attr_mark is "<<dim_attr_mark[i] <<endl);
+                // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
+                // Here a little bias towards files created by the netCDF-4 APIs. 
+                // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
+                // we will ignore this orphanage dimension scale since it is not associated with other datasets.
+                // However, it is an orphanage dimension scale created by the netCDF-4 APIs, we think
+                // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
+                //
+                if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2]) 
+                    is_dimscale =true;
+                else if(dim_attr_mark[1]) {
+                    is_pure_dim = true;
+                    // We need to remember if this dimension is unlimited dimension,maybe in the future. 2022-11-13
+                }
             }
         }
  
@@ -1393,13 +1399,13 @@ Structure *Get_structure(const string &varname,const string &vpath,
             if (memb_cls == H5T_COMPOUND) {
                 Structure *s = Get_structure(memb_name, memb_name, dataset, memb_type,is_dap4);
                 structure_ptr->add_var(s);
-                delete s; s = 0;
+                delete s; s = nullptr;
             } 
             else if(memb_cls == H5T_ARRAY) {
 
-                BaseType *ar_bt = 0;
-                BaseType *btp   = 0;
-                Structure *s    = 0;
+                BaseType *ar_bt = nullptr;
+                BaseType *btp   = nullptr;
+                Structure *s    = nullptr;
                 hid_t     dtype_base = 0;
 
                 try {
@@ -1439,7 +1445,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                     if(H5T_COMPOUND == array_memb_cls) {
 
                         s = Get_structure(memb_name, memb_name,dataset, dtype_base,is_dap4);
-                        HDF5Array *h5_ar = new HDF5Array(memb_name, dataset, s);
+                        auto h5_ar = new HDF5Array(memb_name, dataset, s);
                     
                         for (int dim_index = 0; dim_index < ndim; dim_index++) {
                             h5_ar->append_dim(size2[dim_index]);
@@ -1457,7 +1463,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                     }
                     else if (H5T_INTEGER == array_memb_cls || H5T_FLOAT == array_memb_cls || H5T_STRING == array_memb_cls) { 
                         ar_bt = Get_bt(memb_name, memb_name,dataset, dtype_base,is_dap4);
-                        HDF5Array *h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
+                        auto h5_ar = new HDF5Array(memb_name,dataset,ar_bt);
                     
                         for (int dim_index = 0; dim_index < ndim; dim_index++) {
                             h5_ar->append_dim(size2[dim_index]);
@@ -1490,7 +1496,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
             else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
                 BaseType *bt = Get_bt(memb_name, memb_name,dataset, memb_type,is_dap4);
                 structure_ptr->add_var(bt);
-                delete bt; bt = 0;
+                delete bt; bt = nullptr;
             }
             else {
                 free(memb_name);
@@ -1753,8 +1759,12 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 static herr_t
 attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
+
+#if 0
     //bool *countp = (bool*)opdata;
     //bool *dimattr_p = (bool*)opdata;
+#endif
+
     int *dimattr_p = (int*)opdata;
 
 #if 0
@@ -2066,16 +2076,16 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     bool link_find = false;
 
                     // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
-                    for (unsigned int i = 0; i <hdf5_hls.size();i++) {
+                    for (const auto & hdf5_hl:hdf5_hls) {
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
                         int token_cmp = -1;                                                                                 
-                        if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hls[i].link_addr),&token_cmp) <0)                   
+                        if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hl.link_addr),&token_cmp) <0)                   
                             throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
                         if(!token_cmp) {                    
 #else
-                        if(obj_info.addr == hdf5_hls[i].link_addr) { 
+                        if(obj_info.addr == hdf5_hl.link_addr) { 
 #endif
-                            trim_objname = '/'+hdf5_hls[i].slink_path;
+                            trim_objname = '/'+hdf5_hl.slink_path;
                             link_find = true;
                             break;
                         }
@@ -2119,7 +2129,9 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
 #endif
                   
                        string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
+#if 0
 //cerr<<"shortest_hl is "<<shortest_hl <<endl;
+#endif
                        if(shortest_hl =="") {
                             H5Dclose(ref_dset);
                             string err_msg;
@@ -2479,7 +2491,7 @@ std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) 
         unsigned min_path_size = hls_path[0].size();
 
         // Find the shortest path index
-        for(unsigned j = 1; j <hls_path.size();j++) {
+        for (unsigned j = 1; j <hls_path.size();j++) {
             if(min_path_size>hls_path[j].size()) {
                 min_path_size = hls_path[j].size();
                 short_path_index = j;
@@ -2490,8 +2502,8 @@ std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) 
 
         //check if all hardlinks have a common ancestor link
         // If not, set the return value be the empty string.
-        for(unsigned j = 0; j <hls_path.size();j++) {
-            if(hls_path[j].find(tmp_sp)!=0) {
+        for (const auto &hl_p:hls_path) {
+            if(hl_p.find(tmp_sp)!=0) {
                 ret_str ="";
                 break;               
             }
@@ -2553,13 +2565,13 @@ string handle_string_special_characters_in_path(const string &instr) {
 }
 
 string invalid_type_error_msg(
-        string var_type
+        const string& var_type
 ){
     stringstream msg;
 
     msg << "Your request was for a response that uses the DAP2 data model. ";
     msg << "This dataset contains variables whose data type ( "<< var_type << " ) is not compatible with that data model, causing this request to FAIL. ";
-    msg << "You may try constraining your request to elide the problematic data type or ask for a different encoding such as NetCDF4 or DAP4 binary response encodings.";
+    msg << "To access this dataset ask for the DAP4 binary response encoding.";
 
     return msg.str();
 }

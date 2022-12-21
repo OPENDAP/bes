@@ -381,7 +381,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
                         }
                         else {
 
-                            int num_attrs = (int)(soinfo.num_attrs);
+                            auto num_attrs = (int)(soinfo.num_attrs);
 
                             // Loop through all the attributes to see if the GPM level 1 swath header exists.
                             for (int j = 0; j < num_attrs; j++) {
@@ -883,7 +883,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
          }
-         else ;// Other product, don't do anything.
+         // Other product, don't do anything.
     }
     else if (0 == has_smac_group) 
         return_flag = false;
@@ -926,7 +926,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
+    auto num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
     if (0 == num_elm) {
         string msg = "cannot get the number for the attribute ";
         msg += string(s_attr_name);
