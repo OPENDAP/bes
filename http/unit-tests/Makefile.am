@@ -6,7 +6,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DA
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
-AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
+AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
 LIBADD += $(CPPUNIT_LIBS)
 endif
 
