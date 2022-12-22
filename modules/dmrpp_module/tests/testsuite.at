@@ -273,6 +273,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int8.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint8.dap])
 
+# HDF5 fixed length string scalar and array tests with fill values.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str2.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str2.dap])
+
 # Test fill values plus compression. jhrg 5/25/22
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_compressed.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_compressed.dap])

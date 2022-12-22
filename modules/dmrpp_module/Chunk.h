@@ -323,7 +323,6 @@ public:
     {
         if(d_read_buffer_is_mine)
             delete[] d_read_buffer;
-
         d_read_buffer = new char[d_size];
         d_read_buffer_size = d_size;
         d_read_buffer_is_mine = true;
@@ -352,7 +351,6 @@ public:
                           bool assume_ownership = true ) {
         if(d_read_buffer_is_mine)
             delete[] d_read_buffer;
-
         d_read_buffer_is_mine = assume_ownership;
         d_read_buffer = buf;
         d_read_buffer_size = buf_size;
