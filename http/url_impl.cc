@@ -39,6 +39,7 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
+#include "BESInternalError.h"
 #include "HttpNames.h"
 
 #include "url_impl.h"
@@ -107,40 +108,21 @@ void url::parse() {
         BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
     else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){
-        string::const_iterator path_i = find(prot_i, parse_url_target.end(), '/');
+        // parse the host
+        const auto path_i = find(prot_i, parse_url_target.cend(), '/');
         d_host.reserve(distance(prot_i, path_i));
-        transform(prot_i, path_i,
-                  back_inserter(d_host),
-                  [](int c) { return tolower(c); });//  host is icase
-        string::const_iterator query_i = find(path_i, parse_url_target.end(), '?');
+        transform(prot_i, path_i, back_inserter(d_host), [](int c) { return tolower(c); });
+        // parse the path
+        auto query_i = find(path_i, parse_url_target.cend(), '?');
         d_path.assign(path_i, query_i);
-        if (query_i != parse_url_target.end())
+        // extract the query string
+        if (query_i != parse_url_target.cend())
             ++query_i;
-        d_query.assign(query_i, parse_url_target.end());
+        d_query.assign(query_i, parse_url_target.cend());
 
+        // parse the query string KVPs
         if (!d_query.empty()) {
-            vector<string> records;
-            string delimiters = "&";
-            BESUtil::tokenize(d_query, records, delimiters);
-            vector<string>::iterator i = records.begin();
-            for (; i != records.end(); i++) {
-                size_t index = i->find('=');
-                if (index != string::npos) {
-                    string key = i->substr(0, index);
-                    string value = i->substr(index + 1);
-                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                    map<string, vector<string> *>::const_iterator record_it;
-                    record_it = d_query_kvp.find(key);
-                    if (record_it != d_query_kvp.end()) {
-                        vector<string> *values = record_it->second;
-                        values->push_back(value);
-                    } else {
-                        vector<string> *values = new vector<string>();
-                        values->push_back(value);
-                        d_query_kvp.insert(pair<string, vector<string> *>(key, values));
-                    }
-                }
-            }
+            parse_query_string();
         }
     }
     else {
@@ -149,32 +131,84 @@ void url::parse() {
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, prolog << "END (parsing: '" << d_source_url_str << "')" << endl);
 
+    BESDEBUG(MODULE, prolog << "END (parsing: '" << d_source_url_str << "')" << endl);
 }
 
 /**
- * @param key
+ * @brief Helper method to parse the query string KVP data
+ */
+void url::parse_query_string() {
+    vector<string> records;
+    string delimiters = "&";
+    BESUtil::tokenize(d_query, records, delimiters);
+    for (const auto &kvp: records) {
+        size_t index = kvp.find('=');
+        if (index != string::npos) {
+            string key = kvp.substr(0, index);
+            string value = kvp.substr(index + 1);
+            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+
+            const auto &record_it = d_query_kvp.find(key);
+            if (record_it != d_query_kvp.end()) {
+                record_it->second.push_back(value);
+            } else {
+                vector<string> values{value};
+                d_query_kvp[key] = values;
+            }
+        }
+    }
+}
+
+/**
+ * @brief Get the value of a query string key.
+ * @param key Key for the KVP query params
  * @return The associated value for the key or an empty string if the key is not found.
  */
 string url::query_parameter_value(const string &key) const {
-    string value;
-    map<string, vector<string> *>::const_iterator it;
-    it = d_query_kvp.find(key);
+    const auto &it = d_query_kvp.find(key);
     if (it != d_query_kvp.end()) {
-        vector<string> *values = it->second;
-        if (!values->empty()) {
-            value = (*values)[0];
+        vector<string> values = it->second;
+        if (!it->second.empty()) {
+            return  it->second[0];
         }
     }
-    return value;
+    return "";
 }
 
 /**
- *
+ * @brief Return the number of query string values for a given key .
+ * @param key Key for the KVP query params
+ * @return Return the number of values or zero if the key is not found.
+ */
+size_t url::query_parameter_values_size(const std::string &key) const {
+    const auto &it = d_query_kvp.find(key);
+    if (it != d_query_kvp.end()) {
+        return it->second.size();
+    }
+    return 0;
+}
+
+/**
+ * @brief Get the vector of query string values for a given key.
+ * @param key Key for the KVP query params
+ * @return Return a const reference to a string of values. Throws BESInternalError
+ * if the key is not found.
+ * @see query_parameter_values_size() to test if the key is present.
+ */
+const vector<string> &url::query_parameter_values(const std::string &key) const {
+    const auto &it = d_query_kvp.find(key);
+    if (it != d_query_kvp.end()) {
+        return it->second;
+    }
+    else {
+        throw BESInternalError(string("Key '") + key + "' not found in url::query_parameter_values().", __FILE__, __LINE__);
+    }
+}
+
+/**
  * @return True if the URL appears within the REFRESH_THRESHOLD of the expires time
  * read from one of CLOUDFRONT_EXPIRES_HEADER_KEY or AMS_EXPIRES_HEADER_KEY.
- *
  */
 bool url::is_expired()
 {
@@ -183,76 +217,74 @@ bool url::is_expired()
 
     BESDEBUG(MODULE, prolog << "now: " << now << endl);
     // We set the expiration time to the default, in case other avenues don't work out so well.
-    std::time_t  expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
+    std::time_t expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
 
     string cf_expires = query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
     string aws_expires_str = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
 
-    if(!cf_expires.empty()){ // CloudFront expires header?
+    if (!cf_expires.empty()) { // CloudFront expires header?
         std::istringstream(cf_expires) >> expires_time;
-        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
+        BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
     }
-    else if(!aws_expires_str.empty()){
-
+    else if (!aws_expires_str.empty()) {
         long long aws_expires;
         std::istringstream(aws_expires_str) >> aws_expires;
         // AWS Expires header?
         //
-        // By default we'll use the time we made the URL object, ingest_time
+        // By default, we'll use the time we made the URL object, ingest_time
         std::time_t aws_start_time = ingest_time();
 
         // But if there's an AWS Date we'll parse that and compute the time
-        // @TODO move to NgapApi::decompose_url() and add the result to the map
         string aws_date = query_parameter_value(AWS_DATE_HEADER_KEY);
 
-        if(!aws_date.empty()){
+        if (!aws_date.empty()) {
+            // aws_date looks like: 20200624T175046Z
+            string year = aws_date.substr(0, 4);
+            string month = aws_date.substr(4, 2);
+            string day = aws_date.substr(6, 2);
+            string hour = aws_date.substr(9, 2);
+            string minute = aws_date.substr(11, 2);
+            string second = aws_date.substr(13, 2);
 
-            string date = aws_date; // 20200624T175046Z
-            string year = date.substr(0,4);
-            string month = date.substr(4,2);
-            string day = date.substr(6,2);
-            string hour = date.substr(9,2);
-            string minute = date.substr(11,2);
-            string second = date.substr(13,2);
-
-            BESDEBUG(MODULE, prolog << "date: "<< date <<
+            BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
-                                    " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+                                    " hour: " << hour << " minute: " << minute << " second: " << second << endl);
 
             std::time_t old_now;
             time(&old_now);  /* get current time; same as: timer = time(NULL)  */
             BESDEBUG(MODULE, prolog << "old_now: " << old_now << endl);
-            struct tm *ti = gmtime(&old_now);
-            ti->tm_year = stoll(year) - 1900;
-            ti->tm_mon = stoll(month) - 1;
-            ti->tm_mday = stoll(day);
-            ti->tm_hour = stoll(hour);
-            ti->tm_min = stoll(minute);
-            ti->tm_sec = stoll(second);
+            struct tm ti{0};
+            gmtime_r(&old_now, &ti);
+            ti.tm_year = stoi(year) - 1900;
+            ti.tm_mon = stoi(month) - 1;
+            ti.tm_mday = stoi(day);
+            ti.tm_hour = stoi(hour);
+            ti.tm_min = stoi(minute);
+            ti.tm_sec = stoi(second);
 
-            BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
-                                    " ti->tm_mon: " << ti->tm_mon <<
-                                    " ti->tm_mday: " << ti->tm_mday <<
-                                    " ti->tm_hour: " << ti->tm_hour <<
-                                    " ti->tm_min: " << ti->tm_min <<
-                                    " ti->tm_sec: " << ti->tm_sec << endl);
+            BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
+                                    " ti.tm_mon: " << ti.tm_mon <<
+                                    " ti.tm_mday: " << ti.tm_mday <<
+                                    " ti.tm_hour: " << ti.tm_hour <<
+                                    " ti.tm_min: " << ti.tm_min <<
+                                    " ti.tm_sec: " << ti.tm_sec << endl);
 
-
-            aws_start_time = mktime(ti);
+            aws_start_time = mktime(&ti);
             BESDEBUG(MODULE, prolog << "AWS start_time (computed): " << aws_start_time << endl);
         }
 
         expires_time = aws_start_time + aws_expires;
-        BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
+        BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                 " (expires_time: " << expires_time << ")" << endl);
     }
+
     std::time_t remaining = expires_time - now;
     BESDEBUG(MODULE, prolog << "expires_time: " << expires_time <<
                             "  remaining: " << remaining <<
                             " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
 
     stale = remaining < HTTP_URL_REFRESH_THRESHOLD;
-    BESDEBUG(MODULE, prolog << "stale: " << (stale?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "stale: " << (stale ? "true" : "false") << endl);
 
     return stale;
 }
@@ -273,14 +305,12 @@ string url::dump(){
     ss << indent << "d_path:       " << d_path << endl;
     ss << indent << "d_query:      " << d_query << endl;
 
-    std::map<std::string, std::vector<std::string>* >::iterator it;
-
     string idt = indent+indent_inc;
-    for(it=d_query_kvp.begin(); it !=d_query_kvp.end(); it++){
-        ss << indent << "d_query_kvp["<<it->first<<"]: " << endl;
-        std::vector<std::string> *values = it->second;
-        for(size_t i=0; i<values->size(); i++){
-            ss << idt << "value[" << i << "]: " << (*values)[i] << endl;
+    for(const auto &it: d_query_kvp) {
+        ss << indent << "d_query_kvp["<<it.first<<"]: " << endl;
+        int i = 0;
+        for(const auto &v: it.second) { // second is a vector<string>
+            ss << idt << "value[" << i++ << "]: " << v << endl;
         }
     }
     ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;

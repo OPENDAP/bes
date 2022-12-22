@@ -63,7 +63,6 @@ namespace http {
  *  that the URL may be reused. False otherwise
  */
 bool EffectiveUrl::is_expired() {
-
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     bool expired = false;
     bool found = false;
@@ -78,7 +77,7 @@ bool EffectiveUrl::is_expired() {
         BESDEBUG(MODULE, prolog << CACHE_CONTROL_HEADER_KEY << " '" << cc_hdr_val << "'" << endl);
 
         // Example: 'Cache-Control: private, max-age=600'
-        string max_age_key("max-age=");
+        string max_age_key{"max-age="};
         size_t max_age_index = cc_hdr_val.find(max_age_key);
         if (max_age_index != cc_hdr_val.npos) {
             string max_age_str = cc_hdr_val.substr(max_age_index + max_age_key.size());
@@ -126,6 +125,31 @@ void EffectiveUrl::get_header(const std::string &name, std::string &value, bool 
 }
 
 /**
+ * @brief Ingests the passed response hedaers.
+ * @param resp_hdrs The reponse headers to ingest.
+ */
+void EffectiveUrl::ingest_response_headers(const vector <string> &resp_hdrs) {
+    d_response_header_names.clear();
+    d_response_header_values.clear();
+
+    for (const auto &header: resp_hdrs){
+        size_t colon = header.find(':');
+        if (colon != string::npos) {
+            string key(header.substr(0, colon));
+            key = BESUtil::lowercase(key);
+            string value(header.substr(colon));
+            d_response_header_names.push_back(key);
+            d_response_header_values.push_back(value);
+            BESDEBUG(MODULE, prolog << "Ingested header: " << key << ": " << value << "(size: "
+                                    << d_response_header_values.size() << ")" << endl);
+        }
+        else {
+            ERROR_LOG(prolog << "Encounter malformed response header! Missing ':' delimiter. SKIPPING" << endl);
+        }
+    }
+}
+
+/**
  * @brief A string dump of the instance
  * @return A string containing readable instance state.
  */
@@ -143,36 +167,6 @@ string EffectiveUrl::dump(){
         ++value_itr;
     }
     return ss.str();
-}
-
-
-/**
- * @brief Ingests the passed response hedaers.
- * @param resp_hdrs The reponse headers to ingest.
- */
-void EffectiveUrl::ingest_response_headers(const vector<string> &resp_hdrs)
-{
-    d_resp_hdr_lines.clear();
-    d_resp_hdr_lines = resp_hdrs;
-    d_response_header_names.clear();
-    d_response_header_values.clear();
-
-    auto index = resp_hdrs.begin();
-    while(index!=resp_hdrs.end()){
-        size_t colon = (*index).find(":");
-        if(colon!=(*index).npos){
-            string key((*index).substr(0,colon));
-            key = BESUtil::lowercase(key);
-            string value((*index).substr(colon));
-            d_response_header_names.push_back(key);
-            d_response_header_values.push_back(value);
-            BESDEBUG(MODULE, prolog << "Ingested header: " << key << ": " << value << "(size: " << d_response_header_values.size() << ")" << endl);
-        }
-        else {
-            ERROR_LOG(prolog << "Encounter malformed response header! Missing ':' delimiter. SKIPPING" << endl);
-        }
-        index++;
-    }
 }
 
 } // namespace http

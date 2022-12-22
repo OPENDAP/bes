@@ -27,6 +27,7 @@
 
 #ifndef _bes_http_url_HH_
 #define _bes_http_url_HH_ 1
+
 #include <string>
 #include <map>
 #include <vector>
@@ -38,6 +39,9 @@ namespace http {
 class EffectiveUrlCache;
 
 class  url {
+public:
+    using kvp_map_t = std::map<std::string, std::vector<std::string>>;
+
 private:
 
     std::string d_source_url_str;
@@ -45,11 +49,14 @@ private:
     std::string d_host;
     std::string d_path;
     std::string d_query;
-    std::map<std::string, std::vector<std::string> * > d_query_kvp;
+    kvp_map_t d_query_kvp;
     std::chrono::system_clock::time_point d_ingest_time;
     bool d_trusted;
 
     void parse();
+    void parse_query_string();
+
+#if 0
 
     void copy_query_kvp(const std::map<std::string, std::vector<std::string> * > &src) {
         for (const auto & i : src) {
@@ -61,12 +68,16 @@ private:
         }
     }
 
+#endif
+
 public:
     url() : d_ingest_time(std::chrono::system_clock::now()), d_trusted(false) {
     }
 
-    url(const std::string &url_s, bool trusted = false) :
-            d_source_url_str(url_s), d_ingest_time(std::chrono::system_clock::now()), d_trusted(trusted) {
+    explicit url(std::string url_s, bool trusted = false) :
+            d_source_url_str(std::move(url_s)),
+            d_ingest_time(std::chrono::system_clock::now()),
+            d_trusted(trusted) {
         parse();
     }
 
@@ -76,9 +87,9 @@ public:
             d_host(src_url.d_host),
             d_path(src_url.d_path),
             d_query(src_url.d_query),
+            d_query_kvp(src_url.d_query_kvp),
             d_ingest_time(src_url.d_ingest_time),
             d_trusted(src_url.d_trusted) {
-        copy_query_kvp(src_url.d_query_kvp);
     }
 
     explicit url(const std::shared_ptr<http::url> &source_url) :
@@ -87,9 +98,9 @@ public:
             d_host(source_url->d_host),
             d_path(source_url->d_path),
             d_query(source_url->d_query),
+            d_query_kvp(source_url->d_query_kvp),
             d_ingest_time(source_url->d_ingest_time),
             d_trusted(source_url->d_trusted) {
-        copy_query_kvp(source_url->d_query_kvp);
     }
 
     url(const std::shared_ptr<http::url> &source_url, bool trusted) :
@@ -98,16 +109,14 @@ public:
             d_host(source_url->d_host),
             d_path(source_url->d_path),
             d_query(source_url->d_query),
+            d_query_kvp(source_url->d_query_kvp),
             d_ingest_time(source_url->d_ingest_time),
             d_trusted(trusted) {
-        copy_query_kvp(source_url->d_query_kvp);
     }
 
-    virtual ~url() {
-        for (const auto &it: d_query_kvp) {
-            delete it.second;
-        }
-    }
+    virtual ~url() = default;
+
+    url &operator=(const url &rhs) = delete;
 
     virtual std::string str() const { return d_source_url_str; }
 
@@ -123,23 +132,18 @@ public:
         return std::chrono::system_clock::to_time_t(d_ingest_time);
     }
 
-    virtual void set_ingest_time(const std::time_t &itime){
+    virtual void set_ingest_time(const std::time_t &itime) {
         d_ingest_time = std::chrono::system_clock::from_time_t(itime);
     }
 
     virtual std::string query_parameter_value(const std::string &key) const;
-
-#if 0
-
-    virtual void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
-
-#endif
+    virtual size_t query_parameter_values_size(const std::string &key) const;
+    virtual const std::vector<std::string> &query_parameter_values(const std::string &key) const;
 
     virtual bool is_expired();
     virtual bool is_trusted() { return d_trusted; };
 
     virtual std::string dump();
-
 };
 
 } // namespace http

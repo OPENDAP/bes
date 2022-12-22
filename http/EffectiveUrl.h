@@ -51,9 +51,6 @@ private:
     std::vector<std::string> d_response_header_names;
     std::vector<std::string> d_response_header_values;
 
-    // Raw headers
-    std::vector<std::string> d_resp_hdr_lines;
-
 public:
     EffectiveUrl() = default;
     EffectiveUrl(const EffectiveUrl &src_url) = default;
@@ -70,13 +67,11 @@ public:
     explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url)
         : http::url(source_url),
           d_response_header_names(source_url->d_response_header_names),
-          d_response_header_values(source_url->d_response_header_values),
-          d_resp_hdr_lines(source_url->d_resp_hdr_lines) {}
+          d_response_header_values(source_url->d_response_header_values) {}
     explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url, bool trusted)
         : http::url(source_url,trusted),
           d_response_header_names(source_url->d_response_header_names),
-          d_response_header_values(source_url->d_response_header_values),
-          d_resp_hdr_lines(source_url->d_resp_hdr_lines) {}
+          d_response_header_values(source_url->d_response_header_values) {}
 
     ~EffectiveUrl() override = default;
 

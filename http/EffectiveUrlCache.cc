@@ -196,10 +196,6 @@ bool EffectiveUrlCache::is_enabled()
     return d_enabled;
 }
 
-/**
- *
- * @return
- */
 void EffectiveUrlCache::set_skip_regex() {
     if (!d_skip_regex) {
         string pattern = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, "");
@@ -211,11 +207,8 @@ void EffectiveUrlCache::set_skip_regex() {
     }
 }
 
-/** @brief dumps information about this object
- *
- * Displays the pointer value of this instance along with the catalogs
- * registered in this list.
- *
+/**
+ * @brief dumps information about this object
  * @param strm C++ i/o stream to dump the information to
  */
 void EffectiveUrlCache::dump(ostream &strm) const
@@ -237,11 +230,8 @@ void EffectiveUrlCache::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-/** @brief dumps information about this object
- *
- * Displays the pointer value of this instance along with the catalogs
- * registered in this list.
- *
+/**
+ * @brief dumps information about this object
  * @param strm C++ i/o stream to dump the information to
  */
 string EffectiveUrlCache::dump() const
