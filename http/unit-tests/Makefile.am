@@ -83,7 +83,7 @@ endif
 
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
-	test ! -d (builddir)/cache || rm -rf ()/cache
+	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
 HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
