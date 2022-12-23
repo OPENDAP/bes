@@ -36,14 +36,19 @@
 
 namespace http {
 
-class EffectiveUrlCache;
-
+/**
+ * @brief Parse a URL into the protocol, host, path and query parts
+ * @note This class also manages time and time-based expiration using
+ * KVP info that AWS puts in the query string of the URL.
+ * @todo Should the expiration be moved out of this class (to an HTTP
+ *   cache class - maybe even EffectiveUrlCache)?
+ * @todo Remove the use of shared_ptr in the class interface.
+ */
 class  url {
 public:
     using kvp_map_t = std::map<std::string, std::vector<std::string>>;
 
 private:
-
     std::string d_source_url_str;
     std::string d_protocol;
     std::string d_host;
@@ -51,28 +56,15 @@ private:
     std::string d_query;
     kvp_map_t d_query_kvp;
     std::chrono::system_clock::time_point d_ingest_time;
-    bool d_trusted;
+    bool d_trusted = false;
 
     void parse();
     void parse_query_string();
 
-#if 0
-
-    void copy_query_kvp(const std::map<std::string, std::vector<std::string> * > &src) {
-        for (const auto & i : src) {
-            auto *v = new std::vector<std::string>();
-            for (const auto & j : *i.second) {
-                v->push_back(j);
-            }
-            d_query_kvp[i.first] = v;
-        }
-    }
-
-#endif
+    friend class HttpUrlTest;
 
 public:
-    url() : d_ingest_time(std::chrono::system_clock::now()), d_trusted(false) {
-    }
+    url() : d_ingest_time(std::chrono::system_clock::now()) { }
 
     explicit url(std::string url_s, bool trusted = false) :
             d_source_url_str(std::move(url_s)),
@@ -81,16 +73,7 @@ public:
         parse();
     }
 
-    url(const http::url &src_url) :
-            d_source_url_str(src_url.d_source_url_str),
-            d_protocol(src_url.d_protocol),
-            d_host(src_url.d_host),
-            d_path(src_url.d_path),
-            d_query(src_url.d_query),
-            d_query_kvp(src_url.d_query_kvp),
-            d_ingest_time(src_url.d_ingest_time),
-            d_trusted(src_url.d_trusted) {
-    }
+    url(const http::url &src_url) = default;
 
     explicit url(const std::shared_ptr<http::url> &source_url) :
             d_source_url_str(source_url->d_source_url_str),

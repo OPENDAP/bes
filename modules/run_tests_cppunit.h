@@ -50,12 +50,12 @@
 bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
 
 bool debug2 = false;
 
 #undef DBG2
-#define DBG2(x) do { if (debug2) (x); } while(false);
+#define DBG2(x) do { if (debug2) (x); } while(false)
 
 /**
  * @brief Run the test(s)
