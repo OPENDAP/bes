@@ -1832,6 +1832,7 @@ bool DmrppArray::read()
             delete array_to_read;
             array_to_read = nullptr;
         }
+        throw;
     }
 
     if (this->twiddle_bytes()) {
