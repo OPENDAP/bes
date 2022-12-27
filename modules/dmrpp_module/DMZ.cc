@@ -227,6 +227,9 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root)
     if (required_attrs_found != 1)
         throw BESInternalError("DMR++ XML dataset element missing one or more required attributes.", __FILE__, __LINE__);
 
+    if (href_attr.empty()) 
+        throw BESInternalError("DMR++ XML dataset element dmrpp:href is missing. ", __FILE__, __LINE__);
+
     d_dataset_elem_href.reset(new http::url(href_attr, href_trusted));
 }
 
