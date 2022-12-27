@@ -881,7 +881,7 @@ void Chunk::load_fill_values() {
     unsigned int value_size = 0;
     
     if (d_fill_value_type == libdap::dods_str_c) 
-        value_size = d_fill_value.size();
+        value_size = (unsigned int)d_fill_value.size();
     else 
         value_size = get_value_size(d_fill_value_type);
 
@@ -891,7 +891,7 @@ void Chunk::load_fill_values() {
 
     char *buffer = get_rbuf();
 
-    for (int i = 0; i < num_values; ++i, buffer += value_size) {
+    for (unsigned long long  i = 0; i < num_values; ++i, buffer += value_size) {
         memcpy(buffer, value, value_size);
     }
 
