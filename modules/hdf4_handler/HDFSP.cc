@@ -206,7 +206,6 @@ AttrContainer::~AttrContainer()
 // as the way to handle HDF-EOS2 files.
 File *
 File::Read (const char *path, int32 mysdid, int32 myfileid)
-throw (Exception)
 {
 
     // Allocate a new file object.
@@ -261,7 +260,6 @@ throw (Exception)
 // as the way to handle other HDF4 files.
 File *
 File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
-throw (Exception)
 {
     // New File 
     auto file = new File (path);
@@ -326,7 +324,7 @@ throw (Exception)
 
 // Retrieve lone vdata info.
 void
-File::ReadLoneVdatas(File *file) throw(Exception) {
+File::ReadLoneVdatas(File *file) const {
 
     int status = -1;
     // No need to start V interface again
@@ -561,7 +559,7 @@ cleanFail:
 
 // Handle non-attribute non-lone vdata for Hybrid HDF-EOS2 files.
 void
-File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
+File::ReadHybridNonLoneVdatas(const File *file) {
 
 
     int32 status         = -1;
@@ -883,7 +881,7 @@ cleanFail:
 // Else return true.
 
 bool
-File::Check_update_special(const string& grid_name) throw(Exception) {
+File::Check_update_special(const string& grid_name) const {
 
     set<string> dimnameset;
     set<SDField*> fldset; 
@@ -995,7 +993,7 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
 // 1) 
 
 bool
-File::Check_if_special(const string& grid_name) throw(Exception) {
+File::Check_if_special(const string& grid_name) {
 
 
      bool xdim_is_lon = false;
@@ -1016,7 +1014,7 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
 #endif
 
 void
-File::Handle_AIRS_L23() throw(Exception) {
+File::Handle_AIRS_L23() {
 
     File *file = this;
 
@@ -1281,7 +1279,6 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
 //  This method will check if the HDF4 file is one of TRMM or OBPG products or MODISARNSS we supported.
 void
 File::CheckSDType ()
-throw (Exception)
 {
 
     // check the TRMM version 7  cases
@@ -1573,7 +1570,6 @@ cerr<<"CSH products "<<endl;
 // Read SDS information from the HDF4 file
 SD *
 SD::Read (int32 sdfd, int32 fileid)
-throw (Exception)
 {
 
     // Indicator of status
@@ -1919,7 +1915,6 @@ throw (Exception)
 // Retrieve the extra SDS object info. from a hybrid HDF-EOS2 file
 SD *
 SD::Read_Hybrid (int32 sdfd, int32 fileid)
-throw (Exception)
 {
     // Indicator of status
     int32  status        = 0;
@@ -2344,7 +2339,6 @@ throw (Exception)
 // Retrieve Vdata information from the HDF4 file
 VDATA *
 VDATA::Read (int32 vdata_id, int32 obj_ref)
-throw (Exception)
 {
 
     // Vdata field size 
@@ -2526,7 +2520,6 @@ throw (Exception)
 // Read Vdata attributes and save them into vectors
 void
 VDATA::ReadAttributes (int32 vdata_id)
-throw (Exception)
 {
     // Vdata attribute name
      // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
@@ -2588,7 +2581,6 @@ throw (Exception)
 // Input parameters are vdata ID and vdata field index
 void
 VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
-throw (Exception)
 {
     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168. 
@@ -2651,7 +2643,7 @@ throw (Exception)
 }
 
 void 
-File::ReadVgattrs(int32 vgroup_id,const char*fullpath) throw(Exception) {
+File::ReadVgattrs(int32 vgroup_id,const char*fullpath) {
 
     intn status_n;
     //int  n_attr_value = 0;
@@ -2706,7 +2698,6 @@ File::ReadVgattrs(int32 vgroup_id,const char*fullpath) throw(Exception) {
 // Since it uses HDF4 library a lot, we keep the C style. KY 2010-7-13
 void
 File::InsertOrigFieldPath_ReadVgVdata ()
-throw (Exception)
 {
     /************************* Variable declaration **************************/
 
@@ -3032,7 +3023,6 @@ throw (Exception)
 void
 File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
 				   int32 pobj_ref)
-throw (Exception)
 {
     // Vgroup parent ID
     int32 vgroup_pid = -1;
@@ -3263,7 +3253,6 @@ cleanFail:
 // Also we only add minimum comments since this code may be removed in the future.
 void 
 SD::obtain_noneos2_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
-throw (Exception)
 {
 
     int32 vgroup_cid = -1;
@@ -3370,7 +3359,6 @@ cleanFail:
 
 void
 File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
-throw (Exception)
 {
 
     int32 vgroup_cid = -1;
@@ -3589,7 +3577,7 @@ cleanFail:
 // Handle SDS fakedim names: make the dimensions with the same dimension size 
 // share the same dimension name. In this way, we can reduce many fakedims.
 void
-File::handle_sds_fakedim_names() throw(Exception) {
+File::handle_sds_fakedim_names() {
 
     File *file = this;
 
@@ -3719,7 +3707,7 @@ void File::handle_sds_missing_fields() const {
 }
 
 // Create the final CF-compliant dimension name list for each field
-void File::handle_sds_final_dim_names() throw(Exception) {
+void File::handle_sds_final_dim_names() {
 
     File * file = this;
 
@@ -3761,7 +3749,7 @@ void File::handle_sds_final_dim_names() throw(Exception) {
 
 // Create the final CF-compliant field name list
 void 
-File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2) throw(Exception) 
+File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2) 
 {
 
     File * file = this;
@@ -3931,7 +3919,7 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
 
 // Create "coordinates", "units" CF attributes
 void
-File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std::string & lldimname2) throw(Exception) {
+File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std::string & lldimname2) {
 
     File *file = this;
 
@@ -4008,7 +3996,7 @@ File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std
     
 // Handle Vdata
 void 
-File::handle_vdata() const throw(Exception)  {
+File::handle_vdata() const  {
 
     // Define File 
     const File *file = this;
@@ -4043,7 +4031,7 @@ File::handle_vdata() const throw(Exception)  {
 
 // This is the main function that make the HDF SDS objects follow the CF convention.
 void
-File::Prepare() throw(Exception)
+File::Prepare() 
 {
 
     File *file = this;
@@ -4226,7 +4214,7 @@ void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
 }
 
 bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, 
-                                       const int lonsize, string& latname, string& lonname) throw(Exception) {
+                                       const int lonsize, string& latname, string& lonname) {
 
 
     int latname_index = -1;
@@ -4245,7 +4233,7 @@ bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize
     return (latname_index + lonname_index == 1);
 
 }
-void File::PrepareTRMML2_V7() throw(Exception) {
+void File::PrepareTRMML2_V7() {
 
     File *file = this;
 
@@ -4376,7 +4364,7 @@ void File::PrepareTRMML2_V7() throw(Exception) {
 }
 
 void
-File::PrepareTRMML3S_V7() throw(Exception) {
+File::PrepareTRMML3S_V7() {
 
     File *file = this;
     for (std::vector < SDField * >::iterator i =
@@ -4817,7 +4805,6 @@ File::PrepareTRMML3M_V7()  {
 /// Latitude and longitude are stored in one array(geolocation). Need to separate.
 void
 File::PrepareTRMML2_V6 ()
-throw (Exception)
 {
 
     File *file = this;
@@ -4970,7 +4957,6 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3B_V6 ()
-throw (Exception)
 {
 
     string tempnewdimname1;
@@ -5073,7 +5059,6 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3A_V6 ()
-throw (Exception)
 {
     std::string tempnewdimname1;
     std::string tempnewdimname2;
@@ -5218,7 +5203,6 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3C_V6 ()
-throw (Exception)
 {
 
     std::string tempnewdimname1;
@@ -5358,7 +5342,6 @@ throw (Exception)
 // A formula similar to swath dimension map needs to apply to this file.
 void
 File::PrepareOBPGL2 ()
-throw (Exception)
 {
     int pixels_per_scan_line = 0;
 
@@ -5436,7 +5419,6 @@ throw (Exception)
 // 
 void
 File::PrepareOBPGL3 ()
-throw (Exception)
 {
 
     std::string num_lat_name = "Number of Lines";
@@ -5579,7 +5561,6 @@ throw (Exception)
 // Latitude and longitude are provided; some redundant CO-Latitude and longitude are removed from the final DDS.
 void
 File::PrepareCERAVGSYN ()
-throw (Exception)
 {
 
     bool colatflag = false;
@@ -5654,7 +5635,6 @@ throw (Exception)
 // Handle CERES ES4 and ISCCP-GEO cases. Essentially the lat/lon need to be condensed to 1-D for the geographic projection.
 void
 File::PrepareCERES4IG ()
-throw (Exception)
 {
 
     std::string tempdimname1;
@@ -5782,7 +5762,6 @@ throw (Exception)
 // The dimension names and sizes are set according to the studies of these files.
 void
 File::PrepareCERSAVGID ()
-throw (Exception)
 {
 
     std::string tempdimname1 = "1.0 deg. regional colat. zones";
@@ -5917,7 +5896,6 @@ throw (Exception)
 // Only latitude is needed.
 void
 File::PrepareCERZAVG ()
-throw (Exception)
 {
 
     std::string tempdimname3 = "1.0 deg. zonal colat. zones";
@@ -5968,7 +5946,6 @@ throw (Exception)
 // as the lat and lon.
 void
 File::PrepareMODISARNSS ()
-throw (Exception)
 {
 
     std::set < std::string > tempfulldimnamelist;
@@ -6015,7 +5992,6 @@ throw (Exception)
 // when dimensional scale is applied.
 void
 File::PrepareOTHERHDF ()
-throw (Exception)
 {
 
     std::set < std::string > tempfulldimnamelist;

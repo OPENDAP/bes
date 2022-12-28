@@ -53,6 +53,7 @@ namespace http {
     void get_type_from_content_type(const std::string &ctype, std::string &type);
     void get_type_from_url(const std::string &url, std::string &type);
 
+    std::string url_encode(const std::string &s);
 
 } // namespace http
 

@@ -33,9 +33,6 @@ dset2.dims[1].attach_scale(dim1)
  
 # Create a group
 grp = f.create_group("g")
-#dim2s=np.arange(2,dtype=np.int32)
-#dim2 = grp.create_dataset("dim2",data=dim2s)
-#dim2.dims.create_scale(dim2)
  
 # Create dataset "temp2" and the corresponding attributes.
 data3 = np.arange(2,dtype=np.int32)

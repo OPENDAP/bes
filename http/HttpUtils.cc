@@ -189,6 +189,62 @@ size_t load_max_redirects_from_keys(){
     return max_redirects;
 }
 
+// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/package.html#encodeURIComponent()
+
+
+
+/**
+ * Thanks to https://gist.github.com/litefeel for this implementation
+ * @param c
+ * @param hex1
+ * @param hex2
+ */
+void hexchar(const unsigned char &c, unsigned char &hex1, unsigned char &hex2)
+{
+    hex1 = c / 16;
+    hex2 = c % 16;
+    hex1 += hex1 <= 9 ? '0' : 'a' - 10;
+    hex2 += hex2 <= 9 ? '0' : 'a' - 10;
+}
+
+/**
+ * Thanks to https://gist.github.com/litefeel for this implementation
+ * @param s
+ * @return s, but url encoded
+ */
+string url_encode(const string &s)
+{
+    const char *str = s.c_str();
+    vector<char> v(s.size());
+    v.clear();
+    for (size_t i = 0, l = s.size(); i < l; i++)
+    {
+        char c = str[i];
+        if ((c >= '0' && c <= '9') ||
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            c == '-' || c == '_' || c == '.' || c == '!' || c == '~' ||
+            c == '*' || c == '\'' || c == '(' || c == ')')
+        {
+            v.push_back(c);
+        }
+        else if (c == ' ')
+        {
+            v.push_back('+');
+        }
+        else
+        {
+            v.push_back('%');
+            unsigned char d1, d2;
+            hexchar(c, d1, d2);
+            v.push_back(d1);
+            v.push_back(d2);
+        }
+    }
+
+    return {v.cbegin(), v.cend()};
+}
+
 #if 0
     /**
      * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):

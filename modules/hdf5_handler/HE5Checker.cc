@@ -42,11 +42,10 @@ using namespace std;
 
 
 bool
-HE5Checker::check_grids_missing_projcode(HE5Parser* p) 
+HE5Checker::check_grids_missing_projcode(const HE5Parser* p) const
 {
     bool flag = false;
-    for (unsigned int i = 0; i <p->grid_list.size(); i++) {
-        HE5Grid g = p->grid_list.at(i);
+    for (const auto &g:p->grid_list) {
         if (HE5_GCTP_MISSING == g.projection) {
             flag = true; 
             break;
@@ -56,12 +55,10 @@ HE5Checker::check_grids_missing_projcode(HE5Parser* p)
 }
     
 bool
-HE5Checker::check_grids_unknown_parameters(HE5Parser* p) 
+HE5Checker::check_grids_unknown_parameters(const HE5Parser* p) const
 {
-    HE5Grid g;
     bool flag = false;
-    for (unsigned int i = 0; i <p->grid_list.size(); i++) {
-        g = p->grid_list.at(i);
+    for (const auto &g:p->grid_list) {
         if (HE5_GCTP_UNKNOWN == g.projection ||
             HE5_HDFE_UNKNOWN == g.pixelregistration ||
             HE5_HDFE_GD_UNKNOWN == g.gridorigin) {
@@ -73,11 +70,11 @@ HE5Checker::check_grids_unknown_parameters(HE5Parser* p)
 }
  
 void
-HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
+HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p) const
 {
     BESDEBUG("h5", "HE5Checker::set_missing_values(Grid Size=" 
          << p->grid_list.size() << ")" << endl);
-    for(unsigned int i=0; i < p->grid_list.size(); i++) {
+    for(auto &g: p->grid_list) {
 #if 0 
 // Unnecessary 
         unsigned int j = 0;
@@ -101,24 +98,23 @@ HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
         }
 #endif
 
-        if (HE5_HDFE_MISSING == (p->grid_list)[i].pixelregistration) 
-            (p->grid_list)[i].pixelregistration = HE5_HDFE_CENTER;
+        if (HE5_HDFE_MISSING == g.pixelregistration) 
+            g.pixelregistration = HE5_HDFE_CENTER;
 
-        if (HE5_HDFE_GD_MISSING == (p->grid_list)[i].gridorigin)
-            (p->grid_list)[i].gridorigin = HE5_HDFE_GD_UL;
+        if (HE5_HDFE_GD_MISSING == g.gridorigin)
+            g.gridorigin = HE5_HDFE_GD_UL;
     
     }
 }
 
 bool 
-HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
+HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p) const
 {
 
     // No need to check for the file that only has one grid or no grid.
     if (1 == p->grid_list.size() ||
         p->grid_list.empty() ) return false;
 
-    unsigned int i = 0;
     // Store name size pair.
     typedef map<string, int> Dimmap;
     Dimmap dim_map;
@@ -126,10 +122,8 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
 
     // Pick up the same dimension name with different sizes
     // This is not unusual since typically for grid since XDim and YDim are default for any EOS5 grid.
-    for(i=0; i < p->grid_list.size(); i++) {
-        HE5Grid g = p->grid_list.at(i);
-        for(unsigned int j=0; j < g.dim_list.size(); j++) {
-            HE5Dim d = g.dim_list.at(j);
+    for (const auto &g:p->grid_list) {
+        for (const auto &d:g.dim_list) {
             Dimmap::iterator iter = dim_map.find(d.name);
             if(iter != dim_map.end()){
                 if(d.size != iter->second){
@@ -155,12 +149,12 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
         EOS5GridPRType pixelreg = g.pixelregistration;      
         EOS5GridOriginType pixelorig =  g.gridorigin;
 
-        float lowercoor = g.point_lower;
-        float uppercoor = g.point_upper;
-        float leftcoor =g.point_left;
-        float rightcoor= g.point_right;
+        auto lowercoor = (float)(g.point_lower);
+        auto uppercoor = (float)(g.point_upper);
+        auto leftcoor = (float)(g.point_left);
+        auto rightcoor= (float)(g.point_right);
 
-        for(i=1; i < p->grid_list.size(); i++) {
+        for(unsigned int i=1; i < p->grid_list.size(); i++) {
             g = p->grid_list.at(i);
             if (projcode != g.projection ||
                 pixelreg != g.pixelregistration   ||
@@ -178,11 +172,10 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
     return flag;
 }
 
-bool HE5Checker::check_grids_support_projcode(HE5Parser*p) {
+bool HE5Checker::check_grids_support_projcode(const HE5Parser*p) const{
 
     bool flag = false;
-    for (unsigned int i = 0; i <p->grid_list.size(); i++) {
-        HE5Grid g = p->grid_list.at(i);
+    for (const auto &g:p->grid_list) {
         if (g.projection != HE5_GCTP_GEO && g.projection != HE5_GCTP_SNSOID
             && g.projection != HE5_GCTP_LAMAZ && g.projection != HE5_GCTP_PS) {
             flag = true;
@@ -190,7 +183,6 @@ bool HE5Checker::check_grids_support_projcode(HE5Parser*p) {
         }
     }
     return flag;
-
 
 }
 
