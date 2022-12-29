@@ -46,7 +46,9 @@ namespace http {
  * headers received with the final redirect response.
  */
 class EffectiveUrl : public url {
-private:
+    // inherit constructors. jhrg 12/29/22
+    using url::url;
+
     // We need order, so we use two vectors instead of a map to hold the header "map"
     std::vector<std::string> d_response_header_names;
     std::vector<std::string> d_response_header_values;
@@ -62,7 +64,6 @@ public:
     }
 
     explicit EffectiveUrl(const http::url &src_url) : http::url(src_url) {}
-    explicit EffectiveUrl(const std::shared_ptr<http::url> &source_url) : http::url(source_url) {}
 
     explicit EffectiveUrl(const std::shared_ptr<http::EffectiveUrl> &source_url)
         : http::url(source_url),

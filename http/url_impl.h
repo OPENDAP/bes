@@ -55,7 +55,7 @@ private:
     std::string d_path;
     std::string d_query;
     kvp_map_t d_query_kvp;
-    std::chrono::system_clock::time_point d_ingest_time;
+    std::chrono::system_clock::time_point d_ingest_time = std::chrono::system_clock::now();
     bool d_trusted = false;
 
     void parse();
@@ -64,11 +64,10 @@ private:
     friend class HttpUrlTest;
 
 public:
-    url() : d_ingest_time(std::chrono::system_clock::now()) { }
+    url() = default;
 
     explicit url(std::string url_s, bool trusted = false) :
             d_source_url_str(std::move(url_s)),
-            d_ingest_time(std::chrono::system_clock::now()),
             d_trusted(trusted) {
         parse();
     }

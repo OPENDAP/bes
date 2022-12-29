@@ -310,7 +310,8 @@ string url::dump(){
         ss << indent << "d_query_kvp["<<it.first<<"]: " << endl;
         int i = 0;
         for(const auto &v: it.second) { // second is a vector<string>
-            ss << idt << "value[" << i++ << "]: " << v << endl;
+            ss << idt << "value[" << i << "]: " << v << endl;
+            i += 1;
         }
     }
     ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;
