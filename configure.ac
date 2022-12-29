@@ -218,19 +218,26 @@ AM_PATH_PYTHON
 dnl NB: CentOS 6 does not support C++-11 but does support some features:
 dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
 dnl For now, I'm counting 0x as supporting C++-11 in our code.
+dnl
+dnl Not any more we dropped centos 6 support. jhrg 12/29/22
+dnl
+dnl Try adding c++14 instead so we can use make_shared. jhrg 12/29/22
 
-CXX11_FLAG=""
+CXX_VER_OPT=""
 
-CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
+CXX_FLAGS_CHECK([--std=c++11], [CXX_VER_OPT=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
+CXX_FLAGS_CHECK([--std=c++14], [CXX_VER_OPT=--std=c++14], [AC_MSG_WARN([C++14 not found.])])
 
-AC_SUBST(CXX11_FLAG)
+AC_SUBST(CXX_VER_OPT)
 
 dnl If CXXFLAGS is not set, set it to the empty string.
 AS_IF([test -z ${CXXFLAGS+set}], [CXXFLAGS=])
 
 AS_IF([test -n "$cxx_debug_flags"],
-      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX11_FLAG"],
-      [CXXFLAGS="$CXXFLAGS $CXX11_FLAG"])
+      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX_VER_OPT"],
+      [CXXFLAGS="$CXXFLAGS $CXX_VER_OPT"])
+
+AC_MSG_NOTICE([CXXFLAGS: $CXXFLAGS])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
@@ -1226,4 +1233,6 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([***])
 AC_MSG_NOTICE([Optional features: $OPTIONAL_FEATURES])
+AC_MSG_NOTICE([CXXFLAGS: $CXXFLAGS])
+AC_MSG_NOTICE([LDFLAGS: $LDFLAGS])
 AC_MSG_NOTICE([***])
