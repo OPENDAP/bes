@@ -226,7 +226,8 @@ dnl Try adding c++14 instead so we can use make_shared. jhrg 12/29/22
 CXX_VER_OPT=""
 
 CXX_FLAGS_CHECK([--std=c++11], [CXX_VER_OPT=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
-CXX_FLAGS_CHECK([--std=c++14], [CXX_VER_OPT=--std=c++14], [AC_MSG_WARN([C++14 not found.])])
+dnl TODO maybe drop back to WARN from ERROR for c++14. jhrg 12/29/22
+CXX_FLAGS_CHECK([--std=c++14], [CXX_VER_OPT=--std=c++14], [AC_MSG_ERROR([C++14 not found.])])
 
 AC_SUBST(CXX_VER_OPT)
 
