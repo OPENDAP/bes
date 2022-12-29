@@ -150,6 +150,10 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_threeD.h5.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dods])
 
+dnl add two unlimited dimension tests, data covers the partial chunk and the whole chunk.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/whole_chunk_unlim.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/part_chunk_unlim.h5.dap])
+
 dnl Test new types - jhrg 5/24/18
 dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dap], [xfail])
 dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dods], [xfail])
@@ -272,6 +276,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int8.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint8.dap])
+
+# HDF5 fixed length string scalar and array tests with fill values.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str2.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str2.dap])
 
 # Test fill values plus compression. jhrg 5/25/22
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_compressed.dmr])

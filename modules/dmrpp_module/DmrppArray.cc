@@ -728,6 +728,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  */
 void DmrppArray::read_contiguous()
 {
+
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -747,6 +748,7 @@ void DmrppArray::read_contiguous()
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
+
     }
     else {
         // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
@@ -840,7 +842,6 @@ void DmrppArray::read_contiguous()
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
     }
-
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity(get_size(false));
@@ -1831,6 +1832,7 @@ bool DmrppArray::read()
             delete array_to_read;
             array_to_read = nullptr;
         }
+        throw;
     }
 
     if (this->twiddle_bytes()) {
