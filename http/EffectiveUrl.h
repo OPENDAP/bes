@@ -57,8 +57,8 @@ public:
     EffectiveUrl() = default;
     EffectiveUrl(const EffectiveUrl &src_url) = default;
 
-    explicit EffectiveUrl(const std::string &url_s, bool trusted = false) : http::url(url_s, trusted) {};
-    explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs, bool trusted = false)
+    EffectiveUrl(const std::string &url_s, bool trusted) : http::url(url_s, trusted) {};
+    EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs, bool trusted = false)
             : http::url(url_s, trusted) {
         ingest_response_headers(resp_hdrs);
     }
