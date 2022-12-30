@@ -28,7 +28,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunk offset="5304" nBytes="32000"/>
         </dmrpp:chunks>
     </String>

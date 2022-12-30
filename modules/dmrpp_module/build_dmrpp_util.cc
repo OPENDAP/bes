@@ -338,9 +338,15 @@ get_value_as_string(hid_t h5_type_id, vector<char> &value)
             }
         }
 
-            // TODO jhrg 4/22/22
-        case H5T_STRING:
-            return "unsupported-string";
+        case H5T_STRING: {
+            // TODO: for variable length string KY 2022-12-22
+            if (H5Tis_variable_str(h5_type_id))
+                return "unsupported-variable-length-string";
+            else {
+                string str_fv(value.begin(),value.end());
+                return str_fv;
+            }
+        }
         case H5T_ARRAY:
             return "unsupported-array";
         case H5T_COMPOUND:
