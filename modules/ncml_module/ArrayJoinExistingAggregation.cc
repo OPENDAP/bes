@@ -212,13 +212,31 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
                     // find the mapped endpoint
                     // Basically, the fullspace endpoint mapped to local offset,
                     // clamped into the local granule size.
-                    int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead,
+
+                    // TODO: we will rewrite the following when we need to add the big array support.
+                    // Now we will replace the std:min() with our own version to avoid the
+                    // inconsistent type comparison. KY 2022-12-28              
+#if 0
+                   int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead,
                         (unsigned long long)currDatasetSize - 1);
+#endif
+                    int granuleStopIndex = outerDim.stop - outerDimIndexOfCurrDatasetHead;
+                    if (granuleStopIndex > (currDatasetSize - 1))
+                        granuleStopIndex = currDatasetSize - 1;
 
                     // we must clamp the stride to the interval of the
                     // dataset in order to avoid an exception in
                     // add_constraint on stride being larger than dataset.
+                    // TODO: we will rewrite the following when we need to add the big array support.
+                    // Now we will replace the std:min() with our own version to avoid the
+                    // inconsistent type comparison. KY 2022-12-28              
+#if 0
                     int clampedStride = std::min(outerDim.stride, (unsigned long long)currDatasetSize);
+#endif
+                    int clampedStride = outerDim.stride;
+                    if (clampedStride > currDatasetSize) 
+                        clampedStride = currDatasetSize;
+
                     // mapped endpoint clamped within this granule
                     granuleConstraintTemplate.add_constraint(outerDimIt, localGranuleIndex, clampedStride,
                         granuleStopIndex);
@@ -365,12 +383,31 @@ void ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataH
                 // find the mapped endpoint
                 // Basically, the fullspace endpoint mapped to local offset,
                 // clamped into the local granule size.
+
+                // TODO: we will rewrite the following when we need to add the big array support.
+                // Now we will replace the std:min() with our own version to avoid the
+                // inconsistent type comparison. KY 2022-12-28              
+#if 0
                 int granuleStopIndex = std::min(outerDim.stop - outerDimIndexOfCurrDatasetHead, (unsigned long long)currDatasetSize - 1);
+#endif
+                int granuleStopIndex = outerDim.stop - outerDimIndexOfCurrDatasetHead;
+                if (granuleStopIndex > (currDatasetSize - 1))
+                    granuleStopIndex = currDatasetSize - 1;
 
                 // we must clamp the stride to the interval of the
                 // dataset in order to avoid an exception in
                 // add_constraint on stride being larger than dataset.
+
+                // TODO: we will rewrite the following when we need to add the big array support.
+                // Now we will replace the std:min() with our own version to avoid the
+                // inconsistent type comparison. KY 2022-12-28              
+#if 0
                 int clampedStride = std::min(outerDim.stride, (unsigned long long) currDatasetSize);
+#endif
+                int clampedStride = outerDim.stride;
+                if (clampedStride > currDatasetSize)
+                    clampedStride = currDatasetSize;
+                
                 // mapped endpoint clamped within this granule
                 granuleConstraintTemplate.add_constraint(outerDimIt, localGranuleIndex, clampedStride, granuleStopIndex);
 
