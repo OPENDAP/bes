@@ -41,7 +41,6 @@ using namespace std;
 void
 BESRegex::init(const char *t)
 {
-    //d_preg = static_cast<void*>(new regex_t);
     d_preg.reset(new regex_t);
     
     int result = regcomp(d_preg.get(), t, REG_EXTENDED);
@@ -61,7 +60,7 @@ BESRegex::~BESRegex()
 }
 #endif
 
-/** Does the regular expression match the string?
+/** Look for a match to the regular expression in the string
 
     @param s The string
     @param len The length of string to consider
@@ -86,9 +85,8 @@ BESRegex::match(const char *s, int len, int pos) const
     	return -1;
     	
     unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
-    string ss = s;
 
-    int result = regexec(d_preg.get(), ss.substr(pos, len-pos).c_str(), len, pmatch.get(), 0);
+    int result = regexec(d_preg.get(), s + pos, len, pmatch.get(), 0);
     int matchnum;
     if (result == REG_NOMATCH)
         matchnum = -1;
@@ -100,7 +98,7 @@ BESRegex::match(const char *s, int len, int pos) const
 }
 
 /**
- * @brief Search for a match to the regex
+ * @brief Look for a match to the regular expression in the string
  * @param s The target for the search
  * @return The length of the matching substring, or -1 if no match was found
  */
@@ -116,7 +114,7 @@ BESRegex::match(const string &s) const
 #endif
 }
 
-/** Does the regular expression match the string? 
+/** @brief Search for a match to the regex in the string
 
     @param s The string
     @param len The length of string to consider
@@ -124,7 +122,7 @@ BESRegex::match(const string &s) const
     value-result parameter.
     @param pos Start looking at this position in the string
     @return The start position of the first match. This is different from 
-    POSIX regular expressions, whcih return the start position of the 
+    POSIX regular expressions, which return the start position of the
     longest match. */
 int 
 BESRegex::search(const char *s, int len, int& matchlen, int pos) const
@@ -155,9 +153,8 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
     	return -1;
 
     unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
-    string ss = s;
-     
-    int result = regexec(d_preg.get(), ss.substr(pos, len-pos).c_str(), len, pmatch.get(), 0);
+
+    int result = regexec(d_preg.get(), s + pos, len, pmatch.get(), 0);
     if (result == REG_NOMATCH)
         return -1;
 
@@ -175,7 +172,7 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
 }
 
 /**
- * @brief Search for a match to the regex
+ * @brief Search for a match to the regex in the string
  * @param s The target for the search
  * @param matchlen The number of characters that matched
  * @return The starting position of the first set of matching characters
