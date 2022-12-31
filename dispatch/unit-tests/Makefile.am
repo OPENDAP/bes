@@ -9,10 +9,9 @@ AUTOMAKE_OPTIONS = foreign
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS)
-# LDADD = /Users/ndp/OPeNDAP/hyrax/bes/dispatch/.libs/libbes_dispatch.dylib  $(DAP_LIBS)
+# LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS)
+LDADD = $(top_builddir)/dispatch/.libs/libbes_dispatch.la $(DAP_LIBS)
 # LDADD = $(DAP_LIBS) $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(BES_BZ2_LIBS)
-
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)

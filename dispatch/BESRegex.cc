@@ -23,101 +23,45 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
-//#define DODS_DEBUG
-
+// These headers are used when HAVE_WORKING_REGEX is not true. jhrg 12/30/22
 #include "config.h"
 
-#if 0
-#ifndef WIN32
-#include <alloca.h>
-#endif
-#include <stdlib.h>
- 
-#include <sys/types.h>
-#include <regex.h>
-
-#include <new>
 #include <string>
 #include <vector>
-#include <stdexcept>
-#endif
+#include <memory>
 
-#include <string>
-#include <vector>
-
-#include <regex.h>
-
-//#include <libdap/Error.h>
-#include <libdap/debug.h>
 #include <libdap/util.h>
 
-#include "BESError.h"
+#include "BESInternalError.h"
 #include "BESRegex.h"
-
-#if 0
-#include "util.h"
-#include "debug.h"
-#endif
 
 using namespace std;
 
+#if !HAVE_WORKING_REGEX
 void
 BESRegex::init(const char *t)
 {
-#if !USE_CPP_11_REGEX
-    d_preg = static_cast<void*>(new regex_t);
-
-    int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
+    //d_preg = static_cast<void*>(new regex_t);
+    d_preg.reset(new regex_t);
+    
+    int result = regcomp(d_preg.get(), t, REG_EXTENDED);
     if  (result != 0) {
-        size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg),
-                                  static_cast<char*>(nullptr),
-                                  static_cast<size_t>(0));
+        size_t msg_len = regerror(result, d_preg.get(), nullptr, (size_t)0);
 
         vector<char> msg(msg_len+1);
-        regerror(result, static_cast<regex_t*>(d_preg), msg.data(), msg_len);
+        regerror(result, d_preg.get(), msg.data(), msg_len);
         string err = string("BESRegex error: ") + string(msg.data(), msg_len);
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-#else
-    d_exp = regex(t);
-#endif
 }
 
-#if 0
-void
-BESRegex::init(const string &t)
-{
-    d_exp = regex(t);
-}
-#endif
-
-#if !USE_CPP_11_REGEX
 BESRegex::~BESRegex()
 {
-    regfree(static_cast<regex_t*>(d_preg));
-    delete static_cast<regex_t*>(d_preg); d_preg = 0;
+    regfree(d_preg.get());
 }
 #endif
 
-#if 0
-/** Initialize a POSIX regular expression (using the 'extended' features).
-
-    @param t The regular expression pattern. */
-BESRegex::BESRegex(const char* t)
-{
-    init(t);
-}
-
-/** Compatability ctor.
-    @see BESRegex::BESRegex(const char* t) */
-BESRegex::BESRegex(const char* t, int)
-{
-    init(t);
-}
-#endif
-
-/** Does the regular expression match the string? 
+/** Does the regular expression match the string?
 
     @param s The string
     @param len The length of string to consider
@@ -126,35 +70,32 @@ BESRegex::BESRegex(const char* t, int)
 int 
 BESRegex::match(const char *s, int len, int pos) const
 {
-#if !USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
+    if (pos > len)
+        throw BESInternalError("Position exceed length in BESRegex::match()", __FILE__, __LINE__);
+
+    smatch match;
+    // This is needed because in C++14, the first arg to regex_search() cannot be a
+    // temporary string. It seems the C++11 compilers on some linux dists are using
+    // regex headers that enforce c++14 rules. jhrg 12/2/21
+    auto target = string(s+pos, len-pos);
+    bool found = regex_search(target, match, d_exp);
+    return (found && match.ready()) ? (int)match.length(): -1;
+#else
     if (len > 32766)	// Integer overflow protection
     	return -1;
     	
-    regmatch_t *pmatch = new regmatch_t[len+1];
+    unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
     string ss = s;
 
-    int result = regexec(static_cast<regex_t*>(d_preg), 
-                         ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
-	int matchnum;
+    int result = regexec(d_preg.get(), ss.substr(pos, len-pos).c_str(), len, pmatch.get(), 0);
+    int matchnum;
     if (result == REG_NOMATCH)
         matchnum = -1;
-	else
-		matchnum = pmatch[0].rm_eo - pmatch[0].rm_so;
-		
-	delete[] pmatch; pmatch = 0;
-
-    return matchnum;
-#else
-    if (pos > len)
-        throw Error("Position exceed length in BESRegex::match()");
-
-    smatch match;
-    auto target = string(s+pos, len-pos);
-    bool found = regex_search(target, match, d_exp);
-    if (found)
-        return (int)match.size();
     else
-        return -1;
+        matchnum = (int)(pmatch[0].rm_eo - pmatch[0].rm_so);
+		
+    return matchnum;
 #endif
 }
 
@@ -166,15 +107,12 @@ BESRegex::match(const char *s, int len, int pos) const
 int
 BESRegex::match(const string &s) const
 {
-#if USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
     smatch match;
     bool found = regex_search(s, match, d_exp);
-    if (found)
-        return (int)match.size();
-    else
-        return -1;
+    return (found && match.ready()) ? (int)match.length(): -1;
 #else
-    return match(s.c_str(), s.size(), 0);
+    return match(s.c_str(), (int)s.size(), 0);
 #endif
 }
 
@@ -191,7 +129,19 @@ BESRegex::match(const string &s) const
 int 
 BESRegex::search(const char *s, int len, int& matchlen, int pos) const
 {
-#if !USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
+    smatch match;
+    auto target = string(s+pos, len-pos);
+    bool found = regex_search(target, match, d_exp);
+    if (found && match.ready()) {
+        matchlen = (int)match.length();
+        return (int)match.position();
+    }
+    else {
+        matchlen = -1;
+        return -1;
+    }
+#else
     // sanitize allocation
     if (!libdap::size_ok(sizeof(regmatch_t), len+1))
     	return -1;
@@ -204,15 +154,12 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
     if (len > 32766)
     	return -1;
 
-    regmatch_t *pmatch = new regmatch_t[len+1];
+    unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
     string ss = s;
      
-    int result = regexec(static_cast<regex_t*>(d_preg),
-                         ss.substr(pos, len-pos).c_str(), len, pmatch, 0);
-    if (result == REG_NOMATCH) {
-        delete[] pmatch; pmatch = 0;
+    int result = regexec(d_preg.get(), ss.substr(pos, len-pos).c_str(), len, pmatch.get(), 0);
+    if (result == REG_NOMATCH)
         return -1;
-    }
 
     // Match found, find the first one (pmatch lists the longest first)
     int m = 0;
@@ -220,23 +167,10 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
         if (pmatch[i].rm_so != -1 && pmatch[i].rm_so < pmatch[m].rm_so)
             m = i;
             
-    matchlen = pmatch[m].rm_eo - pmatch[m].rm_so;
-    int matchpos = pmatch[m].rm_so;
+    matchlen = (int)(pmatch[m].rm_eo - pmatch[m].rm_so);
+    auto matchpos = (int)pmatch[m].rm_so;
     
-    delete[] pmatch; pmatch = 0;
     return matchpos;
-#else
-    smatch match;
-    // This is needed because in C++14, the first arg to regex_search() cannot be a
-    // temporary string. It seems the C++11 compilers on some linux dists are using
-    // regex headers that enforce c++14 rules. jhrg 12/2/21
-    auto target = string(s+pos, len-pos);
-    bool found = regex_search(target, match, d_exp);
-    matchlen = (int)match.size();
-    if (found)
-        return (int)match.position();
-    else
-        return -1;
 #endif
 }
 
@@ -249,17 +183,19 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
 int
 BESRegex::search(const string &s, int& matchlen) const
 {
-#if USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
     smatch match;
     bool found = regex_search(s, match, d_exp);
-    matchlen = (int)match.size();
-    if (found)
+    if (found && match.ready()) {
+        matchlen = (int)match.length();
         return (int)match.position();
-    else
+    }
+    else {
+        matchlen = -1;
         return -1;
+    }
 #else
-    // search(const char *s, int len, int& matchlen, int pos) const
-    return search(s.c_str(), s.size(), matchlen, 0);
+    return search(s.c_str(), (int)s.size(), matchlen, 0);
 #endif
 }
 
