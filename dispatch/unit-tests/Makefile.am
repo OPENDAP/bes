@@ -7,11 +7,8 @@ AUTOMAKE_OPTIONS = foreign
 # parallel build. :-( jhrg 8/22/17
 .NOTPARALLEL:
 
-# Arrange to build with the backward compatibility mode enabled.
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-# LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS)
-LDADD = $(top_builddir)/dispatch/.libs/libbes_dispatch.la $(DAP_LIBS)
-# LDADD = $(DAP_LIBS) $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(BES_BZ2_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+LDADD = $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(DAP_LIBS) $(BES_BZ2_LIBS) $(BES_ZLIB_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -21,7 +18,7 @@ endif
 # These are not used by automake but are often useful for certain types of debugging.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-deprecated
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -120,7 +117,6 @@ clean-local:
 ############################################################################
 
 kvp_utils_test_SOURCES = kvp_utils_test.cc
-kvp_utils_test_LDADD = ../kvp_utils.o $(LDADD)
 
 constraintT_SOURCES = constraintT.cc
 
@@ -129,7 +125,6 @@ containerT_SOURCES = containerT.cc
 defT_SOURCES = defT.cc
 
 keysT_SOURCES = keysT.cc
-# keysT_LDADD = ../TheBESKeys.o $(LDADD)
 
 pfileT_SOURCES = pfileT.cc
 
@@ -146,7 +141,6 @@ reqlistT_SOURCES = reqlistT.cc TestRequestHandler.cc TestRequestHandler.h
 resplistT_SOURCES = resplistT.cc TestResponseHandler.cc TestResponseHandler.h
 
 infoT_SOURCES = infoT.cc
-infoT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 # agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
 
@@ -154,7 +148,13 @@ cacheT_SOURCES = cacheT.cc
 
 uncompressT_SOURCES = uncompressT.cc
 
+if BES_DEVELOPER
 debugT_SOURCES = debugT.cc
+endif
+
+if LIBDAP
+catT_SOURCES = test_utils.cc catT.cc
+endif
 
 utilT_SOURCES = utilT.cc
 
@@ -167,26 +167,15 @@ scrubT_SOURCES = scrubT.cc
 checkT_SOURCES = checkT.cc
 
 CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
-CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)
 
 CatalogItemTest_SOURCES = test_utils.cc CatalogItemTest.cc
-CatalogItemTest_LDADD = ../CatalogItem.o $(LDADD)
 
 servicesT_SOURCES = servicesT.cc
-servicesT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
 
 fsT_SOURCES = fsT.cc
 
-if LIBDAP
-catT_OBJ = ../BESCatalogResponseHandler.o
-catT_SOURCES = test_utils.cc catT.cc
-catT_CPPFLAGS = $(AM_CPPFLAGS) $(XML2_CFLAGS)
-catT_LDADD = $(catT_OBJ) $(LDADD)
-endif
-
 # Added Unit test for singleton class BESCatalogList. ndp 5/6/2013
 BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
-BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 
 # complete_catalog_lister_SOURCES = complete_catalog_lister.cc
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
@@ -194,6 +183,5 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
-ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
 
 RequestTimerTest_SOURCES = RequestTimerTest.cc
