@@ -84,9 +84,8 @@ BESRegex::match(const char *s, int len, int pos) const
     if (len > 32766)	// Integer overflow protection
     	return -1;
     	
-    unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
-
-    int result = regexec(d_preg.get(), s + pos, len, pmatch.get(), 0);
+    vector<regmatch_t> pmatch(len+1);
+    int result = regexec(d_preg.get(), s + pos, len, pmatch.data(), 0);
     int matchnum;
     if (result == REG_NOMATCH)
         matchnum = -1;
@@ -152,9 +151,8 @@ BESRegex::search(const char *s, int len, int& matchlen, int pos) const
     if (len > 32766)
     	return -1;
 
-    unique_ptr<regmatch_t[]> pmatch = unique_ptr<regmatch_t[]>(new regmatch_t[len+1]);
-
-    int result = regexec(d_preg.get(), s + pos, len, pmatch.get(), 0);
+    vector<regmatch_t> pmatch(len+1);
+    int result = regexec(d_preg.get(), s + pos, len, pmatch.data(), 0);
     if (result == REG_NOMATCH)
         return -1;
 
