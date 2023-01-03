@@ -99,7 +99,7 @@ private:
 #endif
 
     /**
-    * @brief Filter the cache and replaces all occurances each key in content_filters key with its associated value.
+    * @brief Filter the cache and replaces all occurrences each key in content_filters key with its associated value.
     *
     * WARNING: Does not lock cache. This method assumes that the process has already
     * acquired an exclusive lock on the cache file.
