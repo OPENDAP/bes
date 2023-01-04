@@ -74,11 +74,9 @@
 #include "FONcTransmitter.h"
 #include "history_utils.h"
 #include "FONcNames.h"
-#include "d4_tools.h"
 
 using namespace libdap;
 using namespace std;
-using namespace d4_tools;
 
 #define MODULE "fonc"
 #define prolog std::string("FONcTransform::").append(__func__).append("() - ")
@@ -711,8 +709,8 @@ void FONcTransform::transform_dap4() {
 
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
 
-    vector<string> projected_dap4_variable_inventory;
-    bool d4_true = _dmr->is_dap4_projected(projected_dap4_variable_inventory);
+    vector<string> inventory;
+    bool d4_true = _dmr->is_dap4_projected(inventory);
 
     if (d4_true && _returnAs == "netcdf"){
         stringstream msg;
@@ -722,8 +720,8 @@ void FONcTransform::transform_dap4() {
         msg << "your request will FAIL. " << endl;
         msg << "You may also try constraining your request to omit the problematic data type(s), ";
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
-        msg << "Number of non-compatible variables: " << projected_dap4_variable_inventory.size() << endl;
-        for(auto entry: projected_dap4_variable_inventory){
+        msg << "Number of non-compatible variables: " << inventory.size() << endl;
+        for(auto entry: inventory){
             msg << entry << endl;
         }
         throw BESSyntaxUserError(
