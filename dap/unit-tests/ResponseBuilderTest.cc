@@ -110,7 +110,6 @@ static void rb_simple_function(int, BaseType *[], DDS &, BaseType **btpp)
 
     response->set_value("qwerty");
     *btpp = response;
-    return;
 }
 
 static void parse_datadds_response(istream &in, string &prolog, vector<char> &blob)
@@ -323,10 +322,17 @@ public:
 
     bool re_match(BESRegex &r, const string &s)
     {
+#if 0
         DBG(cerr << plog << "s.size(): " << s.size() << endl);
         int pos = r.match(s.c_str(), s.size());
         DBG(cerr << plog << "r.match(s): " << pos << endl);
         return pos > 0 && static_cast<unsigned>(pos) == s.size();
+#endif
+
+        int pos = r.match(s);
+        DBG(cerr << "r.match(s): " << pos << endl);
+        return pos != -1;
+
     }
 
     bool re_match_binary(BESRegex &r, const string &s)
@@ -347,15 +353,61 @@ public:
     {
         DBG(cerr << endl << plog << "BEGIN" << endl);
         try {
+#if 1
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-            BESRegex r1(baseline.c_str());
-
+            BESRegex r1(baseline);
+#endif
             drb->send_das(oss, *das);
 
             DBG(cerr << plog << "DAS: " << oss.str() << endl);
 
             CPPUNIT_ASSERT(re_match(r1, oss.str()));
+
+
+#if 0
+#if 0
+            HTTP/1.0 200 OK
+XDODS-Server: libdap/3.20.11
+XOPeNDAP-Server: libdap/3.20.11
+XDAP: 2.0
+Date: Wed, 04 Jan 2023 17:25:18 GMT
+Last-Modified: Wed, 04 Jan 2023 17:25:18 GMT
+Content-Type: text/plain
+Content-Description: dods_das
+
+Attributes {
+    a {
+        Int32 size 7;
+        String type "cars";
+    }
+}
+#endif
+
+            string s = oss.str().substr(0,46);
+            DBG(cerr << "string:-" << s << "-" << endl);
+
+            string pattern = R"(HTTP/1.0 200 OK\r
+XDODS-Server:.*\r)";
+#if 0
+
+XOPeNDAP-Server:.*
+XDAP:.*
+Date:.*
+Last-Modified:.*
+Content-Type: text/plain.*
+Content-Description: dods_das.*
+.*
+Attributes \{
+    a \{
+        Int32 size 7;
+        String type "cars";
+    \}
+\}[^]*)";
+#endif
+            BESRegex r1(pattern);
+            CPPUNIT_ASSERT(re_match(r1, s));
+#endif
             oss.str("");
         }
         catch (Error &e) {

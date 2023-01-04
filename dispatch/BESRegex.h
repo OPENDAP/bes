@@ -87,8 +87,8 @@ private:
     std::regex d_exp;
     std::string d_pattern;
 
-    void init(const char *s) { d_exp = std::regex(s); }
-    void init(const std::string &s) { d_exp = std::regex(s); } // , std::regex::basic
+    void init(const char *s) { d_exp = std::regex(s, std::regex_constants::ECMAScript); }
+    void init(const std::string &s) { d_exp = std::regex(s, std::regex_constants::ECMAScript); } // , std::regex::basic
 #else
     // d_preg was a regex_t* but I needed to include both regex.h and config.h
     // to make the gnulib code work. Because this header is installed (and is

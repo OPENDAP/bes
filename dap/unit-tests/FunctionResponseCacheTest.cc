@@ -184,22 +184,6 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(BESRegex &r, const string &s)
-    {
-        DBG(cerr << "s.size(): " << s.size() << endl);
-        int pos = r.match(s.c_str(), s.size());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0 && static_cast<unsigned>(pos) == s.size();
-    }
-
-    bool re_match_binary(BESRegex &r, const string &s)
-    {
-        DBG(cerr << "s.size(): " << s.size() << endl);
-        int pos = r.match(s.c_str(), s.size());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0;
-    }
-
     // The directory 'never' does not exist; the cache won't be initialized,
     // so is_available() should be false
     void ctor_test_1()
