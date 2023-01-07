@@ -56,9 +56,6 @@ bool Debug = false;
 bool bes_debug = false;
 bool purge_cache = false;
 bool ngap_tests = false;
-#if 0
-string token;
-#endif
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false)
@@ -208,13 +205,6 @@ public:
 
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
-#if 0
-        if(!token.empty()){
-            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY,token);
-        }
-#endif
-
         if(purge_cache){
             purge_http_cache();
         }
@@ -269,67 +259,6 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
-
-#if 0
-    void get_ngap_ghrc_tea_url_test() {
-        DBG(cerr << "|--------------------------------------------------|" << endl);
-        if(!ngap_tests){
-            DBG(cerr << prolog << "SKIPPING." << endl);
-            return;
-        }
-        DBG(cerr << prolog << "BEGIN" << endl);
-        string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
-        DBG(cerr << prolog << "url: " << url << endl);
-        std::shared_ptr<http::url> url_ptr(new http::url(url));
-        http::RemoteResource rhr(url_ptr);
-        try {
-            rhr.retrieveResource();
-            string cache_filename = rhr.getCacheFileName();
-            DBG(cerr << prolog << "cache_filename: " << cache_filename << endl);
-            string content = get_file_as_string(cache_filename);
-            DBG(cerr << prolog << "retrieved content: " << content << endl);
-        }
-        catch (BESError &besE){
-            stringstream msg;
-            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-            cerr << msg.str();
-            CPPUNIT_FAIL(msg.str());
-        }
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    void get_ngap_harmony_url_test() {
-        DBG(cerr << "|--------------------------------------------------|" << endl);
-        if(!ngap_tests){
-            DBG(cerr << prolog << "SKIPPING." << endl);
-            return;
-        }
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
-                        "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
-
-        DBG(cerr << prolog << "url: " << url << endl);
-        std::shared_ptr<http::url> url_ptr(new http::url(url));
-        http::RemoteResource rhr(url_ptr);
-        try {
-            rhr.retrieveResource();
-            string cache_filename = rhr.getCacheFileName();
-            DBG(cerr << prolog << "cache_filename: " << cache_filename << endl);
-            string content = get_file_as_string(cache_filename);
-            DBG(cerr << prolog << "retrieved content: " << content << endl);
-            // CPPUNIT_ASSERT( content == expected_content );
-        }
-        catch (BESError &besE){
-            stringstream msg;
-            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-            cerr << msg.str();
-            CPPUNIT_FAIL(msg.str());
-        }
-        DBG(cerr << prolog << "END" << endl);
-    }
-#endif
 
     void get_file_url_test() {
         DBG(cerr << "|--------------------------------------------------|" << endl);
@@ -526,10 +455,6 @@ public:
     CPPUNIT_TEST(filter_test_more_focus);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
-#if 0
-    CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
-    CPPUNIT_TEST(get_ngap_harmony_url_test);
-#endif
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -558,22 +483,10 @@ int main(int argc, char*argv[])
             bes_debug = true;  // debug is a static global
             cerr << "bes_debug enabled" << endl;
             break;
-#if 0
-            case 'N':
-            ngap_tests = true;  // debug is a static global
-            cerr << "NGAP Tests Enabled." << endl;
-            break;
-#endif
         case 'P':
             purge_cache = true;  // debug is a static global
             cerr << "purge_cache enabled" << endl;
             break;
-#if 0
-            case 't':
-            token = optarg; // token is a static global
-            cerr << "Authorization header value: " << token << endl;
-            break;
-#endif
         default:
             break;
         }
@@ -582,18 +495,14 @@ int main(int argc, char*argv[])
     argv += optind;
 
     bool wasSuccessful = true;
-    string test = "";
     if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
+        wasSuccessful = runner.run("");         // run them all
     }
     else {
-        int i = 0;
-        while (i < argc) {
+        for (int i = 0; i < argc; ++i) {
             DBG(cerr << "Running " << argv[i] << endl);
-            test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);
+            string test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
         }
     }
 
