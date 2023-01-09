@@ -155,7 +155,6 @@ void RemoteResource::retrieveResource() {
  */
 void RemoteResource::retrieveResource(const map<string, string> &content_filters) {
     BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl->str() << endl);
-    bool mangle = true;
 
     if (d_initialized) {
         BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
@@ -173,6 +172,7 @@ void RemoteResource::retrieveResource(const map<string, string> &content_filters
     }
 
     // Get the name of the file in the cache (either the code finds this file or it makes it).
+    bool mangle = true;
     d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl->str(), mangle);
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
@@ -189,7 +189,7 @@ void RemoteResource::retrieveResource(const map<string, string> &content_filters
 
     try {
 #if 0
-        // NB: I am leaving this in place because want to referr to its logic. jhrg 11/6/22
+        // NB: I am leaving this in place because we may want to referr to its logic. jhrg 11/6/22
         if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
             if (cached_resource_is_expired()) {
                  update_file_and_headers(content_filters);
