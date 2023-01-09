@@ -167,15 +167,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CatalogItemTest);
 
 int main(int argc, char*argv[])
 {
-
-    int start = 0;
-
     int option_char;
-    while (option_char = getopt(argc, argv, "dh") != EOF)
+    while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd': {
             debug = 1;  // debug is a static global
-            start = 1;
             break;
         }
         case 'h': {     // help - show test names

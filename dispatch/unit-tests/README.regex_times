@@ -1,0 +1,40 @@
+
+Using the new C++ Regex code. Note that the complex regular expressions are
+faster, but the simple ones are slower (to compile and use).
+
+The NEW C++ regular expressions:
+dispatch/unit-tests % ./regexT -d const_test
+Running regexT::const_test
+.Using a simple regex:
+Running 10 000 regex compiles...
+It took me 0.137538 seconds.
+Running 10 000 regex compares with const Regexes...
+It took me 0.124893 seconds.
+Running 10 000 regex compares with const Regexes moved out of the loop...
+It took me 0.109953 seconds.
+Using a complex regex:
+Running 10 000 regex compiles...
+It took me 0.683581 seconds.
+Running 10 000 regex compares with const Regexes...
+It took me 0.683119 seconds.
+Running 10 000 regex compares with const Regexes moved out of the loop...
+It took me 0.508938 seconds.
+
+The OLD GNURegExp code:
+dispatch/unit-tests % ./regexT -d const_test
+Running regexT::const_test
+.Using a simple regex:
+Running 10 000 regex compiles...
+It took me 0.0435321 seconds.
+Running 10 000 regex compares with const Regexes...
+It took me 0.0332094 seconds.
+Running 10 000 regex compares with const Regexes moved out of the loop...
+It took me 0.0099605 seconds.
+Using a complex regex:
+Running 10 000 regex compiles...
+It took me 2.40457 seconds.
+Running 10 000 regex compares with const Regexes...
+It took me 2.39925 seconds.
+Running 10 000 regex compares with const Regexes moved out of the loop...
+It took me 0.0652565 seconds.
+
