@@ -721,7 +721,7 @@ void FONcTransform::transform_dap4() {
         msg << "You may also try constraining your request to omit the problematic data type(s), ";
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
         msg << "Number of non-compatible variables: " << inventory.size() << endl;
-        for(auto entry: inventory){
+        for(const auto &entry: inventory){
             msg << entry << endl;
         }
         throw BESSyntaxUserError(
