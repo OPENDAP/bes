@@ -53,8 +53,7 @@ using std::string;
 #include "BESError.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
-//#include "GetOpt.h"
+#include "test_config.h"
 
 string DebugArgs;
 static bool debug = false;

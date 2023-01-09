@@ -180,15 +180,14 @@ public:
     	unlink(real_name.c_str());
     }//get_lmt_test_2()
 
-CPPUNIT_TEST_SUITE( reqhandlerT );
+    CPPUNIT_TEST_SUITE( reqhandlerT );
 
-	CPPUNIT_TEST(get_lmt_test_1);
-	CPPUNIT_TEST(get_lmt_test_2);
+	    CPPUNIT_TEST(get_lmt_test_1);
+	    CPPUNIT_TEST(get_lmt_test_2);
 
-    CPPUNIT_TEST( do_test );
+        CPPUNIT_TEST( do_test );
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
     void do_test()
     {
@@ -196,7 +195,7 @@ CPPUNIT_TEST_SUITE( reqhandlerT );
         cout << "Entered reqhandlerT::run" << endl;
 
         TestRequestHandler trh("test");
-        int retVal = trh.test();
+        (void)trh.test();
 
         cout << "*****************************************" << endl;
         cout << "Returning from reqhandlerT::run" << endl;

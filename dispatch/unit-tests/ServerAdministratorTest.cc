@@ -204,16 +204,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ServerAdministratorTest);
 
 int main(int argc, char*argv[])
 {
-
-    int start = 0;
     int option_char;
     while ((option_char = getopt(argc, argv, "bdh")) != EOF)
         switch (option_char) {
-        case 'd': {
+        case 'd':
             debug = 1;  // debug is a static global
-            start = 1;
             break;
-        }
+
         case 'b': {
             bes_debug = 1;  // debug is a static global
             break;

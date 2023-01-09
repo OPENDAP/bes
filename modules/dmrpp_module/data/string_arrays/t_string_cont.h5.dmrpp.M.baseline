@@ -8,7 +8,7 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunk offset="2216" nBytes="28"/>
         </dmrpp:chunks>
         <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
@@ -22,7 +22,7 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunk offset="2273" nBytes="28"/>
         </dmrpp:chunks>
         <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
@@ -33,7 +33,7 @@
         <Attribute name="value" type="String">
             <Value>A</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunk offset="2301" nBytes="1"/>
         </dmrpp:chunks>
         <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
@@ -42,7 +42,7 @@
         <Attribute name="value" type="String">
             <Value>Parting is such sweet sorrow.</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunk offset="2244" nBytes="29"/>
         </dmrpp:chunks>
     </String>

@@ -378,7 +378,7 @@ CPPUNIT_TEST_SUITE( servicesT );
             registry->add_to_service("notexist", "something", "something description", "something format");
             CPPUNIT_ASSERT( !"success, should have failed" );
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
         }
 
         try {
@@ -387,10 +387,10 @@ CPPUNIT_TEST_SUITE( servicesT );
             registry->handles_service("csv", "noexist");
             CPPUNIT_ASSERT( !"success, should have failed" );
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
         }
 
-        bool does_it = false;
+
         cout << "*****************************************" << endl;
         cout << "does handle?" << endl;
         CPPUNIT_ASSERT( registry->does_handle_service( "nc", "dap" ) );

@@ -26,19 +26,50 @@
 #ifndef _Regex_h
 #define _Regex_h 1
 
-#define USE_CPP_11_REGEX 0
+// What's going on here? The regex.h header file is not C++ compliant. The preprocessor
+// '#if' below looks at the compiler and some macros to determine if the compiler has
+// a usable version of the C++11 regex library. If so, then the C++11 regex library is
+// used. If not, we fall back to the POSIX regex library.
+//
+// The code in the FORCE_OLD_REGEX macro is used to test the old code on OSX machines (and
+// others) for testing. Setting FORCE_OLD_REGEX to zero lets the compiler choose which code
+// to use. Setting it to one forces the use of the old POSIX-based code.
+//
+// See the README about regex tests in the unit-tests directory. Neither regex implementation
+// is faster in every case, but the new code handles complex expressions faster. jhrg 12/30/22
 
-#if USE_CPP_11_REGEX
+#define FORCE_OLD_REGEX 0
+#if FORCE_OLD_REGEX
+
+#include <string>
+#include <memory>
+#include <regex.h>
+#define HAVE_WORKING_REGEX 0
+
+#else   // FORCE_OLD_REGEX
+
+#if __cplusplus >= 201103L &&                             \
+          (!defined(__GLIBCXX__) || (__cplusplus >= 201402L) || \
+              (defined(_GLIBCXX_REGEX_DFS_QUANTIFIERS_LIMIT) || \
+               defined(_GLIBCXX_REGEX_STATE_LIMIT)           || \
+                   (defined(_GLIBCXX_RELEASE)                && \
+                   _GLIBCXX_RELEASE > 4)))
 #include <regex>
+#define HAVE_WORKING_REGEX 1
 #else
 #include <string>
-#endif
+#include <memory>
+#include <regex.h>
+#define HAVE_WORKING_REGEX 0
+#endif  // __cplusplus >= 201103L
+
+#endif  // FORCE_OLD_REGEX
 
 /**
  * @brief Regular expression matching
  *
  * This class provides an interface that mimics the libgnu C++ library
- * that was used with the first version of libdap (c. 1993). It can been
+ * that was used with the first version of libdap (c. 1993). It has been
  * re-implemented several times, this last time using the C++-11 regex
  * class. We found this was faster than the unix regex_t (man(3)) that
  * was being used.
@@ -52,7 +83,7 @@
 class BESRegex
 {
 private:
-#if USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
     std::regex d_exp;
     std::string d_pattern;
 
@@ -65,7 +96,7 @@ private:
     // regex.h and config.h (among other) includes to the implementation. It
     // would be cleaner to use a special class, but for one field that seems
     // like overkill.
-    void *d_preg;
+    std::unique_ptr<regex_t> d_preg;
     std::string d_pattern;
 
     void init(const char *t);
@@ -75,12 +106,12 @@ private:
 public:
     /// @brief initialize a BESRegex with a C string
     explicit BESRegex(const char *s) { init(s); }
-    /// @deprecated
-    BESRegex(const char *s, int) { init(s); }
     /// @brief initialize a BESRegex with a C++ string
     explicit BESRegex(const std::string &s) { init(s); }
+    /// @deprecated
+    BESRegex(const char *s, int) { init(s); }
 
-#if USE_CPP_11_REGEX
+#if HAVE_WORKING_REGEX
     ~BESRegex() = default;
 #else
     ~BESRegex();
@@ -93,9 +124,9 @@ public:
     /// @brief Does the pattern match.
     int match(const std::string &s) const;
 
-    /// @brief How much of the string does the pattern match.
+    /// @brief Where does the pattern match.
     int search(const char *s, int len, int &matchlen, int pos = 0) const ;
-    /// @brief How much of the string does the pattern match.
+    /// @brief Where does the pattern match.
     int search(const std::string &s, int &matchlen) const;
 };
 
