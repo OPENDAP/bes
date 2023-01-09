@@ -8,10 +8,10 @@ You may also try constraining your request to omit the problematic data type(s),
 Number of non-compatible variables: 10
 Int8 /b2@_FillValue
 Int8 /b2
-Int64 /i64@_FillValue
 Int64 /i64[phony_dim_0=2]
-Int8 /b4@_FillValue
+Int64 /i64@_FillValue
 Int8 /b4[phony_dim_0=2]
+Int8 /b4@_FillValue
 Group /b/
 UInt64 /b/b_data[m=2][n=3]
 Group /b/c/
