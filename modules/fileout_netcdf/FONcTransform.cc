@@ -74,11 +74,9 @@
 #include "FONcTransmitter.h"
 #include "history_utils.h"
 #include "FONcNames.h"
-#include "d4_tools.h"
 
 using namespace libdap;
 using namespace std;
-using namespace d4_tools;
 
 #define MODULE "fonc"
 #define prolog std::string("FONcTransform::").append(__func__).append("() - ")
@@ -711,18 +709,23 @@ void FONcTransform::transform_dap4() {
 
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
 
-    vector<BaseType *> projected_dap4_variable_inventory;
-    bool d4_true = d4_tools::is_dap4_projected(_dmr, projected_dap4_variable_inventory);
+    vector<string> inventory;
+    bool d4_true = _dmr->is_dap4_projected(inventory);
 
     if (d4_true && _returnAs == "netcdf"){
-        string msg ="This dataset contains variables/attributes whose data types are not compatible with the NetCDF-3 data model. If your request includes any of these incompatible variables or attributes and you choose the “NetCDF-3” download encoding, your request will FAIL.";
-        msg += "\r\n\t\t\t\t\t You may also try constraining your request to omit the problematic data type(s), or ask for a different encoding such as DAP4 binary or NetCDF-4";
-        msg += "\r\n\t\t\t\t\t [ Number of non-compatible variables: " + to_string(projected_dap4_variable_inventory.size()) + " ] ";
-        for (const BaseType* bt : projected_dap4_variable_inventory){
-            msg += "\r\n\t\t\t\t\t\t [ Variable: " + bt->name() + " | Type: " + bt->type_name() + " ] ";
+        stringstream msg;
+        msg << "This dataset contains variables/attributes whose data types are not compatible with the ";
+        msg << "NetCDF-3 data model. If your request includes any of variables reprsented by one of these ";
+        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, ";
+        msg << "your request will FAIL. " << endl;
+        msg << "You may also try constraining your request to omit the problematic data type(s), ";
+        msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
+        msg << "Number of non-compatible variables: " << inventory.size() << endl;
+        for(auto entry: inventory){
+            msg << entry << endl;
         }
         throw BESSyntaxUserError(
-                msg,
+                msg.str(),
                 __FILE__,
                 __LINE__);
     }
