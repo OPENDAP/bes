@@ -179,13 +179,13 @@ public:
     }
 
     /// @return The prefix used for items in an instance of BESFileLockingCache
-    const std::string get_cache_file_prefix()
+    std::string get_cache_file_prefix() const
     {
         return d_prefix;
     }
 
     /// @return The directory used for the an instance of BESFileLockingCache
-    const std::string get_cache_directory()
+    std::string get_cache_directory() const
     {
         return d_cache_dir;
     }

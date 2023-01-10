@@ -64,7 +64,7 @@ public:
         const std::string &prefix, unsigned long long size);
     static BESUncompressCache *get_instance();
 
-    virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
+    std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
 
     virtual ~BESUncompressCache();
 };

@@ -104,12 +104,14 @@ private:
 
 protected:
     RemoteResource() :
-            d_expires_interval(HttpCache::getCacheExpiresTime()) {
+            // FIXME !!!
+            d_expires_interval(3600 /*HttpCache::getCacheExpiresTime()*/) {
     }
 
 public:
     explicit RemoteResource(std::shared_ptr<http::url> target_url, std::string uid = "",
-                            unsigned long expires_interval = HttpCache::getCacheExpiresTime());
+                            // FIXME !!!
+                            unsigned long expires_interval = 3600 /*HttpCache::getCacheExpiresTime()*/);
 
     virtual ~RemoteResource();
 

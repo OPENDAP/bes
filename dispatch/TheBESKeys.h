@@ -164,6 +164,8 @@ public:
 
     int read_int_key(const std::string &key, int default_value);
 
+    unsigned long read_ulong_key(const std::string &key, unsigned long default_value);
+
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
     Keys_citer keys_begin() {

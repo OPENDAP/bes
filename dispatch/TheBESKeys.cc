@@ -467,6 +467,36 @@ int TheBESKeys::read_int_key(const string &key, int default_value)
     }
 }
 
+/**
+ * @brief Read an integer-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The integer value of \arg key.
+ */
+unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value)
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if found is true
+    if (found) {
+        std::istringstream iss(value);
+        int int_val;
+        iss >> int_val;
+        if (!iss.eof() || iss.bad() || iss.fail())
+            return default_value;
+        else
+            return int_val;
+    }
+    else {
+        return default_value;
+    }
+}
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with all of the keys.
