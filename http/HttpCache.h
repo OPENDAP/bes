@@ -53,12 +53,6 @@ class HttpCache : public BESFileLockingCache {
 private:
     static std::unique_ptr<HttpCache> d_instance;
 
-    static std::string getCacheDirFromConfig();
-
-    static std::string getCachePrefixFromConfig();
-
-    static unsigned long getCacheSizeFromConfig();
-
 public:
     HttpCache() = default;
     HttpCache(const HttpCache &src) = delete;
@@ -71,9 +65,12 @@ public:
     std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true);
 
     std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
-
-    unsigned long getCacheExpiresTime();
 };
+
+std::string get_http_cache_dir_from_config();
+std::string get_http_cache_prefix_from_config();
+unsigned long get_http_cache_size_from_config();
+unsigned long get_http_cache_exp_time_from_config();
 
 } /* namespace http */
 

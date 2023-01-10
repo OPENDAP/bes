@@ -40,6 +40,10 @@
 #ifndef HYRAX_GIT_RUN_TESTS_CPPUNIT_H
 #define HYRAX_GIT_RUN_TESTS_CPPUNIT_H
 
+#include <fstream>
+#include <string>
+#include <iterator>
+
 #include <unistd.h>
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -56,6 +60,20 @@ bool debug2 = false;
 
 #undef DBG2
 #define DBG2(x) do { if (debug2) (x); } while(false)
+
+void show_file(const std::string &filename)
+{
+    std::ifstream t(filename);
+
+    if (t.is_open()) {
+        std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+        std::cout << "##################################################################" << std::endl;
+        std::cout << "file: " << filename << std::endl;
+        std::cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << std::endl;
+        std::cout << file_content << std::endl;
+        std::cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << std::endl;
+    }
+}
 
 /**
  * @brief Run the test(s)

@@ -64,7 +64,7 @@ static void throw_if_key_not_found(const string &key, int line) {
     throw BESInternalError(msg, __FILE__, line);
 }
 
-unsigned long HttpCache::getCacheExpiresTime() {
+unsigned long get_http_cache_exp_time_from_config() {
     unsigned long time_in_seconds = TheBESKeys::TheKeys()->read_ulong_key(HTTP_CACHE_EXPIRES_TIME_KEY,
                                                                           REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL);
     return time_in_seconds;
@@ -72,7 +72,7 @@ unsigned long HttpCache::getCacheExpiresTime() {
 
 // FIXME Resolve this question: If these are errors and they are in the configuration file,
 //  should they be fatal errors and should they be detected when the daemon starts? jhrg 1/9/23
-unsigned long HttpCache::getCacheSizeFromConfig() {
+unsigned long get_http_cache_size_from_config() {
     unsigned long time_in_seconds = TheBESKeys::TheKeys()->read_ulong_key(HTTP_CACHE_SIZE_KEY, 0);
     if (time_in_seconds == 0) {
         throw_if_key_not_found(HTTP_CACHE_SIZE_KEY, __LINE__);
@@ -80,7 +80,7 @@ unsigned long HttpCache::getCacheSizeFromConfig() {
     return time_in_seconds;
 }
 
-string HttpCache::getCacheDirFromConfig() {
+string get_http_cache_dir_from_config() {
     string dir = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_DIR_KEY, "");
     if (dir.empty()) {
         throw_if_key_not_found(HTTP_CACHE_DIR_KEY, __LINE__);
@@ -88,7 +88,7 @@ string HttpCache::getCacheDirFromConfig() {
     return dir;
 }
 
-string HttpCache::getCachePrefixFromConfig() {
+string get_http_cache_prefix_from_config() {
     string prefix = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_PREFIX_KEY, "");
     if (prefix.empty()) {
         throw_if_key_not_found(HTTP_CACHE_PREFIX_KEY, __LINE__);
@@ -111,9 +111,9 @@ HttpCache::get_instance() {
             d_instance.reset(new HttpCache());
         });
 
-        string cacheDir = getCacheDirFromConfig();
-        string cachePrefix = getCachePrefixFromConfig();
-        unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
+        string cacheDir = get_http_cache_dir_from_config();
+        string cachePrefix = get_http_cache_prefix_from_config();
+        unsigned long cacheSizeMbytes = get_http_cache_size_from_config();
 
         BESDEBUG(HTTP_MODULE, prolog << "Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
                                      << cacheSizeMbytes << endl);
@@ -199,6 +199,5 @@ string HttpCache::get_cache_file_name(const string &src, bool mangle) {
     string uid;
     return get_cache_file_name(uid, src, mangle);
 }
-
 
 } // namespace http

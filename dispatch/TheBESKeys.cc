@@ -199,7 +199,7 @@ bool TheBESKeys::LoadedKeys(const string &key_file)
  * replaces all values for the key
  *
  * @param key name of the key/value pair to be set
- * @param val value of the key to be set
+ * @param val value of the key to be set; value is not set if empty.
  * @param addto Specifies whether to add the value to the key or set the
  * value. Default is to set, not add to
  */
@@ -229,7 +229,8 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
  * replaces all values for the key
  *
  * @param key name of the key/value pair to be set
- * @param values A collection of values to to associate with the key
+ * @param values A collection of values to to associate with the key; empty values
+ * are not set.
  * @param addto Specifies whether to append the values to the key or set the
  * value. Default is to set, not append to
  */
