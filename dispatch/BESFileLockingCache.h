@@ -90,7 +90,8 @@ class BESFileLockingCache: public BESObj {
 private:
     static const char DAP_CACHE_CHAR = '#';
 
-    bool d_cache_enabled;
+    // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
+    bool d_cache_enabled = true;
 
     // pathname of the cache directory
     std::string d_cache_dir;
@@ -100,14 +101,14 @@ private:
 
     /// How many bytes can the cache hold before we have to purge?
     /// A value of zero indicates a cache of unlimited size.
-    unsigned long long d_max_cache_size_in_bytes;
+    unsigned long long d_max_cache_size_in_bytes = 0;
 
     // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
-    unsigned long long d_target_size;
+    unsigned long long d_target_size = 0;
 
     // Name of the file that tracks the size of the cache
     std::string d_cache_info;
-    int d_cache_info_fd;
+    int d_cache_info_fd = -1;
 
     // map that relates files to the descriptor used to obtain a lock
     typedef std::multimap<std::string, int> FilesAndLockDescriptors;
@@ -123,22 +124,20 @@ private:
 #if USE_GET_SHARED_LOCK
     int m_find_descriptor(const std::string &file);
 #endif
-    // Suppress the assignment operator and default copy ctor, ...
-    BESFileLockingCache(const BESFileLockingCache &);
-    BESFileLockingCache &operator=(const BESFileLockingCache &rhs);
+
+    virtual void lock_cache_write();
+    virtual void lock_cache_read();
 
 public:
-    // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
-    BESFileLockingCache(): d_cache_enabled(true), d_cache_dir(""), d_prefix(""), d_max_cache_size_in_bytes(0),
-        d_target_size(0), d_cache_info(""), d_cache_info_fd(-1) { }
+    BESFileLockingCache() = default;
+    BESFileLockingCache(const BESFileLockingCache &) = delete;
+    BESFileLockingCache &operator=(const BESFileLockingCache &rhs) = delete;
 
-    BESFileLockingCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+    BESFileLockingCache(std::string cache_dir, std::string prefix, unsigned long long size);
 
-    virtual ~BESFileLockingCache()
-    {
+    ~BESFileLockingCache() override {
         if (d_cache_info_fd != -1) {
             close(d_cache_info_fd);
-            d_cache_info_fd = -1;
         }
     }
 
@@ -151,8 +150,12 @@ public:
     virtual void exclusive_to_shared_lock(int fd);
     virtual void unlock_and_close(const std::string &target);
 
+#if 0
+
     virtual void lock_cache_write();
     virtual void lock_cache_read();
+
+#endif
     virtual void unlock_cache();
 
     virtual unsigned long long update_cache_info(const std::string &target);
@@ -179,14 +182,12 @@ public:
     }
 
     /// @return The prefix used for items in an instance of BESFileLockingCache
-    std::string get_cache_file_prefix() const
-    {
+    std::string get_cache_file_prefix() const {
         return d_prefix;
     }
 
     /// @return The directory used for the an instance of BESFileLockingCache
-    std::string get_cache_directory() const
-    {
+    std::string get_cache_directory() const {
         return d_cache_dir;
     }
 
@@ -195,24 +196,21 @@ public:
     static bool dir_exists(const std::string &dir);
 
     /// @return Is this cache enabled?
-    bool cache_enabled() const
-    {
+    bool cache_enabled() const {
         return d_cache_enabled;
     }
 
     /// @brief Disable the cache
-    void disable()
-    {
+    void disable() {
         d_cache_enabled = false;
     }
 
     /// @brief Enable the cache
-    void enable()
-    {
+    void enable() {
         d_cache_enabled = true;
     }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESFileLockingCache_h_

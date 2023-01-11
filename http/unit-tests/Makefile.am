@@ -51,8 +51,8 @@ credentials.conf: credentials.conf.src
 	chmod 600 $@
 
 # Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using
-# configure's value for the parameter when running the distcheck target.
+# @abs_top_srcdir@ does not contain '../'. This happens when using the
+# configure value for the parameter when running the distcheck target.
 
 bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
