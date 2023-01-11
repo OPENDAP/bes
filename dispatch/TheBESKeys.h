@@ -46,6 +46,10 @@
 #define DC_CONFIG_KEY "config"
 #define DYNAMIC_CONFIG_ENABLED 0
 
+namespace http {
+class HttpCacheTest;
+}
+
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
  *
@@ -85,54 +89,27 @@
 class TheBESKeys: public BESObj {
 
     friend class keysT;
-
-private:
-
-    // TODO I don't think this needs to be a pointer - the code could be
-    // redesigned. jhrg 3/7/18
-    // Dropping this member variable because as far as I can tell it never serves a purpose. - ndp 08/05/2020
-    // std::ifstream * _keys_file;
+    friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
-    std::map<std::string, std::vector<std::string> > *d_the_keys;
-    std::map<std::string, std::vector<std::string> > *d_the_original_keys;
-    bool d_dynamic_config_in_use;
-    bool d_own_keys;
+    std::map<std::string, std::vector<std::string> > *d_the_keys = nullptr;
+    std::map<std::string, std::vector<std::string> > *d_the_original_keys = nullptr;
+    bool d_dynamic_config_in_use = false;
+    bool d_own_keys = false;
 
     static std::set<std::string> d_ingested_key_files;
 
     static bool LoadedKeys(const std::string &key_file);
 
-    void clean();
-
-    void initialize_keys();
-    static void initialize_instance();
-    static void  delete_instance();
-
-
-
-#if 0
-    //void load_keys();
-    //bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
-    //bool only_blanks(const char *line);
-    //void load_include_files(const std::string &files);
-    //void load_include_file(const std::string &file);
-#endif
-
-    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_dynamic_config_in_use(false), d_own_keys(false) {
-    }
-
-#if 0
-    TheBESKeys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > *keys);
-#endif
+    TheBESKeys() = default;
 
 protected:
-    TheBESKeys(const std::string &keys_file_name);
+    explicit TheBESKeys(const std::string &keys_file_name);
 
 public:
     static TheBESKeys *d_instance;
 
-    virtual ~TheBESKeys();
+    ~TheBESKeys() override;
 
     std::string keys_file_name() const {
         return d_keys_file_name;
@@ -185,10 +162,8 @@ public:
         return d_the_keys->end();
     }
 
-    virtual void dump(std::ostream &strm) const;
-    virtual std::string dump() const;
-
     std::string get_as_config() const;
+
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.
@@ -202,6 +177,11 @@ public:
 
     void load_dynamic_config(std::string name);
     bool using_dynamic_config();
+
+    void dump(std::ostream &strm) const override;
+    virtual std::string dump() const;
+
+
 };
 
 #endif // TheBESKeys_h_

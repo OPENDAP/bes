@@ -180,9 +180,14 @@ string get_real_name_extension(const string &identifier) {
 /**
  * Builds a cache file name that contains a hashed version of the src_id, the user id (uid) if non-empty, and a
  * human readable name that may be utilized when naming datasets whose data are held in the cache file.
+ *
+ * @note This function returns the name to use when storing data in the cache. It does not check to see if the
+ * file is already in the cache. That is the job of the caller. This function includes the UID in the name
+ * so that different users can cache the same information without overwriting each other's data.
+ *
  * @param uid The user id of the requesting user.
  * @param src_id The source identifier of the resource to cache.
- * @param mangle If true, the cache file names will be hashed (more or less).
+ * @param mangle If true, the cache file names will be hashed (more or less). Defaults to true.
  * @return The name of the cache file based on the inputs.
  */
 string HttpCache::get_cache_file_name(const string &uid, const string &src_id, bool mangle) {

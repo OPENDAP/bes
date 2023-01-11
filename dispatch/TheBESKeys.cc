@@ -121,30 +121,11 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-        d_keys_file_name(keys_file_name), d_the_keys(0), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(true)
+        d_keys_file_name(keys_file_name)
 {
     d_the_keys = new map<string, vector<string> >;
     d_the_original_keys = new map<string, vector<string> >;
-    initialize_keys();
-}
 
-#if 0
-TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-        d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(false)
-{
-    initialize_keys();
-}
-#endif
-
-/** @brief cleans up the key/value pair mapping
- */
-TheBESKeys::~TheBESKeys()
-{
-    clean();
-}
-
-void TheBESKeys::initialize_keys()
-{
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
     *d_the_original_keys = *d_the_keys;
     BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
@@ -152,15 +133,17 @@ void TheBESKeys::initialize_keys()
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 }
 
-void TheBESKeys::clean()
+/** @brief cleans up the key/value pair mapping
+ */
+TheBESKeys::~TheBESKeys()
 {
     if (d_the_keys && d_own_keys) {
         delete d_the_keys;
-        d_the_keys = 0;
+        d_the_keys = nullptr;
     }
-    if(d_the_original_keys){
+    if (d_the_original_keys) {
         delete d_the_original_keys;
-        d_the_original_keys = 0;
+        d_the_original_keys = nullptr;
     }
 }
 
@@ -173,16 +156,7 @@ void TheBESKeys::clean()
  */
 bool TheBESKeys::LoadedKeys(const string &key_file)
 {
-#if 0
-    vector<string>::const_iterator i = TheBESKeys::d_ingested_key_files.begin();
-    vector<string>::const_iterator e = TheBESKeys::d_ingested_key_files.end();
-    for (; i != e; i++) {
-        if ((*i) == key_file) {
-            return true;
-        }
-    }
-#endif
-    set<string>::iterator it = d_ingested_key_files.find(key_file);
+    const auto it = d_ingested_key_files.find(key_file);
 
     return it != d_ingested_key_files.end();
 }
@@ -244,10 +218,9 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
     }
     if (!addto) (*d_the_keys)[key].clear();
 
-    size_t j;
-    for(j = 0; j!=values.size(); j++){
-        if (!values[j].empty()) {
-            (*d_the_keys)[key].push_back(values[j]);
+    for(const auto &value: values) {
+        if (!value.empty()) {
+            (*d_the_keys)[key].push_back(value);
         }
     }
 }
