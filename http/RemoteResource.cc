@@ -33,6 +33,7 @@
 #include <fstream>
 #include <string>
 #include <utility>
+#include <memory>
 
 #include "rapidjson/document.h"
 

@@ -30,6 +30,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <memory>
 
 #include "PicoSHA2/picosha2.h"
 
