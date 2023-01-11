@@ -45,10 +45,7 @@
 
 #define prolog string("HttpCache::").append(__func__).append("() - ")
 
-using std::endl;
-using std::string;
-using std::vector;
-using std::stringstream;
+using namespace std;
 
 namespace http {
 
@@ -101,7 +98,7 @@ string get_http_cache_prefix_from_config() {
  * @brief Get the singleton instance of the HttpCache.
  * This will read "TheBESKeys" looking for the values of SUBDIR_KEY, PREFIX_KEY, and
  * SIZE_KEY to initialize the cache.
- * @exception Throws BESInternalError if the keys are not found.
+ * @exception BESInternalError if the keys are not found.
  * @return The singleton instance of the HttpCache.
  */
 HttpCache *
@@ -200,7 +197,13 @@ string HttpCache::get_cache_file_name(const string &uid, const string &src_id, b
     return BESUtil::assemblePath(get_cache_directory(), cache_filename);
 }
 
-
+/**
+ * @brief Get the cache file name for the given source identifier.
+ * This version of the method does not include the user id in the name.
+ * @param src The source identifier of the resource to cache.
+ * @param mangle If true, the cache file names will be hashed (more or less). Defaults to true.
+ * @return The name of the cache file based on the inputs.
+ */
 string HttpCache::get_cache_file_name(const string &src, bool mangle) {
     string uid;
     return get_cache_file_name(uid, src, mangle);

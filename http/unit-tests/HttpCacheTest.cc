@@ -49,6 +49,7 @@ namespace http {
 class HttpCacheTest : public CppUnit::TestFixture {
 public:
     string d_data_dir = TEST_DATA_DIR;
+    string d_build_dir = TEST_BUILD_DIR;
 
     // Called once before everything gets tested
     HttpCacheTest() = default;
@@ -90,7 +91,7 @@ public:
         string cache_dir = get_http_cache_dir_from_config();
         DBG(cerr << prolog << "cache_dir: " << cache_dir << endl);
 
-        CPPUNIT_ASSERT(cache_dir == "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache");
+        CPPUNIT_ASSERT(cache_dir == d_build_dir + "/cache");
 
         DBG(cerr << prolog << "END" << endl);
     }
@@ -211,7 +212,7 @@ public:
         auto cache = HttpCache::get_instance();
         CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return a non-null pointer", cache != nullptr);
         CPPUNIT_ASSERT_MESSAGE("Expected the cache directory",
-                               cache->get_cache_directory() == "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache");
+                               cache->get_cache_directory() == d_build_dir + "/cache");
         CPPUNIT_ASSERT_MESSAGE("Expected the cache prefix", cache->get_cache_file_prefix() == "hut_");
 
         DBG(cerr << prolog << "END" << endl);
@@ -246,9 +247,9 @@ public:
         DBG(cerr << "I'm done with my own work!" << endl);
 
         DBG(cerr << "Start querying" << endl);
-        auto c1 = futures[0].get();
-        auto c2 = futures[1].get();
-        auto c3 = futures[2].get();
+        const auto c1 = futures[0].get();
+        const auto c2 = futures[1].get();
+        const auto c3 = futures[2].get();
         DBG(cerr << "Done querying" << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same pointer", c1 == c2);
         CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same pointer", c2 == c3);
@@ -263,7 +264,7 @@ public:
         auto cache = HttpCache::get_instance();
         string url = "http://www.opendap.org";
         string file_name = cache->get_cache_file_name("bob", url);
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         const string hash = "ce3afbaa5fdeeb94ae3fb8e34571072c765f6922c6d5ebbed65da64b4b98ba90"; // sha256 hash of the url
         DBG(cerr << prolog << "file_name: " << file_name << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", file_name == prefix + "bob_" + hash);
@@ -278,7 +279,7 @@ public:
         auto cache = HttpCache::get_instance();
         string url = "http://www.opendap.org";
         string file_name = cache->get_cache_file_name("", url);
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         const string hash = "ce3afbaa5fdeeb94ae3fb8e34571072c765f6922c6d5ebbed65da64b4b98ba90"; // sha256 hash of the url
         DBG(cerr << prolog << "file_name: " << file_name << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", file_name == prefix + hash);
@@ -293,7 +294,7 @@ public:
         auto cache = HttpCache::get_instance();
         string url = "http://www.opendap.org";
         string file_name = cache->get_cache_file_name("", url, false);
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         DBG(cerr << prolog << "file_name: " << file_name << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", file_name == prefix + url);
 
@@ -307,7 +308,7 @@ public:
         auto cache = HttpCache::get_instance();
         string url = "http://www.opendap.org/opendap/data/file.nc.dap";
         string file_name = cache->get_cache_file_name("bob", url);
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         const string hash = "54afe4b284eef6f956f840871ae27b30bc600bcb4f330c35a8c16f4404e56edb#file.nc.dap"; // 'sha256 hash' of the url
         DBG(cerr << prolog << "file_name: " << file_name << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", file_name == prefix + "bob_" + hash);
@@ -324,7 +325,7 @@ public:
         auto cache = HttpCache::get_instance();
         string url = "http://www.opendap.org/opendap/data/file.nc.dap?dap4.ce=/stuff;/stuff/here;/stuff/here.there";
         string file_name = cache->get_cache_file_name("bob", url);
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         const string hash = "49fbd7c6653d2291399c8018cfebe34a98e368ad34485f641d52f282915d9d55#file.nc.dap"; // 'sha256 hash' of the url
         DBG(cerr << prolog << "file_name: " << file_name << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", file_name == prefix + "bob_" + hash);
@@ -353,17 +354,17 @@ public:
         DBG(cerr << "I'm done with my own work!" << endl);
 
         DBG(cerr << "Start querying" << endl);
-        auto c1 = futures[0].get();
-        auto c2 = futures[1].get();
-        auto c3 = futures[2].get();
+        auto fn1 = futures[0].get();
+        auto fn2 = futures[1].get();
+        auto fn3 = futures[2].get();
         DBG(cerr << "Done querying" << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", c1 == c2);
-        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", c2 == c3);
+        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", fn1 == fn2);
+        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", fn2 == fn3);
 
-        const string prefix = "/Users/jimg/src/opendap/hyrax/bes/http/unit-tests/cache/hut_";
+        const string prefix = d_build_dir + "/cache/hut_";
         const string hash = "49fbd7c6653d2291399c8018cfebe34a98e368ad34485f641d52f282915d9d55#file.nc.dap"; // 'sha256 hash' of the url
-        DBG(cerr << prolog << "file_name: " << c1 << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", c1 == prefix + "bob_" + hash);
+        DBG(cerr << prolog << "file_name: " << fn1 << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", fn1 == prefix + "bob_" + hash);
 
         DBG(cerr << prolog << "END" << endl);
     }
