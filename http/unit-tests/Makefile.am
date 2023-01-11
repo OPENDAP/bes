@@ -31,7 +31,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf
 
-BUILT_SOURCES = test_config.h credentials.conf
+BUILT_SOURCES = test_config.h credentials.conf bes.conf bes_ngap_s3_creds.conf
 
 noinst_HEADERS = test_config.h
 

@@ -8,7 +8,7 @@ BES.LogName=/dev/null
 Http.Cache.dir=@abs_top_builddir@/http/unit-tests/cache
 Http.Cache.prefix=hut_
 Http.Cache.size=500
-Http.Cache.expires.time=3600
+Http.Cache.expires.time=300
 
 Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
 Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
