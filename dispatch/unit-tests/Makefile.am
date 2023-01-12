@@ -32,10 +32,12 @@ if CPPUNIT
 # This determines what gets run by 'make check.'
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
-checkT servicesT fsT urlT containerT uncompressT cacheT			\
+checkT servicesT fsT urlT containerT uncompressT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
-RequestTimerTest
+RequestTimerTest BESFileLockingCacheTest
+
+# removed cacheT jhrg 1/11/23
 
 # Debugging code is compiled out of the project when
 # BES_DEVELOPER is not set, and so running the debugT tests
@@ -185,3 +187,5 @@ BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 
 RequestTimerTest_SOURCES = RequestTimerTest.cc
+
+BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc

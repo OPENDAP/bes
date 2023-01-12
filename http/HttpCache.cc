@@ -27,14 +27,10 @@
 
 #include <config.h>
 
-#include <sys/stat.h>
-
 #include <string>
-#include <fstream>
 #include <sstream>
 #include <vector>
-
-#include <cstdlib>
+#include <memory>
 
 #include "PicoSHA2/picosha2.h"
 
@@ -44,181 +40,88 @@
 #include <TheBESKeys.h>
 
 #include "HttpCache.h"
-#include "HttpUtils.h"
 #include "HttpNames.h"
 #include "url_impl.h"
 
-#ifdef HAVE_ATEXIT
-#define AT_EXIT(x) atexit((x))
-#else
-#define AT_EXIT(x)
-#endif
 #define prolog string("HttpCache::").append(__func__).append("() - ")
 
-using std::endl;
-using std::string;
-using std::vector;
-using std::stringstream;
+using namespace std;
 
 namespace http {
 
-HttpCache *HttpCache::d_instance = 0;
-bool HttpCache::d_enabled = true;
+std::unique_ptr<HttpCache> HttpCache::d_instance = nullptr;
 
-unsigned long HttpCache::getCacheSizeFromConfig() {
-    bool found = false;
-    string size;
-    unsigned long size_in_megabytes = 0;
-    TheBESKeys::TheKeys()->get_value(HTTP_CACHE_SIZE_KEY, size, found);
-
-    if (found) {
-        std::istringstream iss(size);
-        iss >> size_in_megabytes;
-    }
-    else {
-        stringstream msg;
-        msg << prolog << "The BES Key " << HTTP_CACHE_SIZE_KEY << " is not set.";
-        BESDEBUG(HTTP_MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-
-    return size_in_megabytes;
+/**
+ * @brief locally-scoped function for common exception code
+ * @param key The key that was not defined
+ * @param line The line number in the code where the exception is thrown
+ */
+static void throw_if_key_not_found(const string &key, int line) {
+    string msg = prolog + "The BES Key " + key + " is not set.";
+    BESDEBUG(HTTP_MODULE, msg << endl);
+    throw BESInternalError(msg, __FILE__, line);
 }
 
-unsigned long HttpCache::getCacheExpiresTime() {
-    bool found = false;
-    string time;
-    unsigned long time_in_seconds = 0;
-    TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EXPIRES_TIME_KEY, time, found);
-
-    if (found) {
-        std::istringstream iss(time);
-        iss >> time_in_seconds;
-    }
-    else {
-        time_in_seconds = REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL;
-    }
-
+unsigned long get_http_cache_exp_time_from_config() {
+    unsigned long time_in_seconds = TheBESKeys::TheKeys()->read_ulong_key(HTTP_CACHE_EXPIRES_TIME_KEY,
+                                                                          REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL);
     return time_in_seconds;
 }
 
-string HttpCache::getCacheDirFromConfig() {
-    bool found;
-    string subdir = "";
-    TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY, subdir, found);
-
-    if (!found) {
-        stringstream msg;
-        msg << prolog << "The BES Key " << HTTP_CACHE_DIR_KEY << " is not set.";
-        BESDEBUG(HTTP_MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+// FIXME Resolve this question: If these are errors and they are in the configuration file,
+//  should they be fatal errors and should they be detected when the daemon starts? jhrg 1/9/23
+unsigned long get_http_cache_size_from_config() {
+    unsigned long time_in_seconds = TheBESKeys::TheKeys()->read_ulong_key(HTTP_CACHE_SIZE_KEY, 0);
+    if (time_in_seconds == 0) {
+        throw_if_key_not_found(HTTP_CACHE_SIZE_KEY, __LINE__);
     }
-
-    return subdir;
+    return time_in_seconds;
 }
 
-string HttpCache::getCachePrefixFromConfig() {
-    bool found;
-    string prefix = "";
-    TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY, prefix, found);
-
-    if (found) {
-        prefix = BESUtil::lowercase(prefix);
+string get_http_cache_dir_from_config() {
+    string dir = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_DIR_KEY, "");
+    if (dir.empty()) {
+        throw_if_key_not_found(HTTP_CACHE_DIR_KEY, __LINE__);
     }
-    else {
-        stringstream msg;
-        msg << prolog << "The BES Key " << HTTP_CACHE_PREFIX_KEY << " is not set.";
-        BESDEBUG(HTTP_MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
+    return dir;
+}
 
+string get_http_cache_prefix_from_config() {
+    string prefix = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_PREFIX_KEY, "");
+    if (prefix.empty()) {
+        throw_if_key_not_found(HTTP_CACHE_PREFIX_KEY, __LINE__);
+    }
     return prefix;
 }
 
-HttpCache::HttpCache() {
-    BESDEBUG(HTTP_MODULE, prolog << "BEGIN" << endl);
-
-    string cacheDir = getCacheDirFromConfig();
-    string cachePrefix = getCachePrefixFromConfig();
-    unsigned long cacheSizeMbytes = getCacheSizeFromConfig();
-
-    BESDEBUG(HTTP_MODULE, prolog << "Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
-                                 << cacheSizeMbytes << endl);
-    initialize(cacheDir, cachePrefix, cacheSizeMbytes);
-
-    BESDEBUG(HTTP_MODULE, prolog << "END" << endl);
-}
-
-#if 1
-
-HttpCache::HttpCache(const string &cache_dir, const string &prefix, unsigned long long size) {
-
-    BESDEBUG(HTTP_MODULE, prolog << "BEGIN" << endl);
-
-    initialize(cache_dir, prefix, size);
-
-    BESDEBUG(HTTP_MODULE, prolog << "END" << endl);
-}
-
-#endif
-#if 0
-HttpCache *
-HttpCache::get_instance(const string &cache_dir, const string &cache_file_prefix,
-                             unsigned long long max_cache_size) {
-    if (d_enabled && d_instance == 0) {
-        if (dir_exists(cache_dir)) {
-            d_instance = new HttpCache(cache_dir, cache_file_prefix, max_cache_size);
-            d_enabled = d_instance->cache_enabled();
-            if (!d_enabled) {
-                delete d_instance;
-                d_instance = 0;
-                BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is DISABLED" << endl);
-            } else {
-                AT_EXIT(delete_instance);
-
-                BESDEBUG(HTTP_MODULE, "HttpCache::" << __func__ << "() - " << "Cache is ENABLED" << endl);
-            }
-        }
-    }
-
-    return d_instance;
-}
-#endif
-
-/** Get the default instance of the HttpdCatalogCache object. This will read "TheBESKeys" looking for the values
- * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
+/**
+ * @brief Get the singleton instance of the HttpCache.
+ * This will read "TheBESKeys" looking for the values of SUBDIR_KEY, PREFIX_KEY, and
+ * SIZE_KEY to initialize the cache.
+ * @exception BESInternalError if the keys are not found.
+ * @return The singleton instance of the HttpCache.
  */
 HttpCache *
 HttpCache::get_instance() {
-    if (d_enabled && d_instance == 0) {
-        try {
-            d_instance = new HttpCache();
-            d_enabled = d_instance->cache_enabled();
-            if (!d_enabled) {
-                delete d_instance;
-                d_instance = 0;
-                BESDEBUG(HTTP_MODULE, prolog << "Cache is DISABLED" << endl);
-            }
-            else {
-                AT_EXIT(delete_instance);
+    if (d_instance == nullptr) {
+        static std::once_flag d_euc_init_once;
+        std::call_once(d_euc_init_once, []() {
+            d_instance.reset(new HttpCache());
+        });
 
-                BESDEBUG(HTTP_MODULE, prolog << "Cache is ENABLED" << endl);
-            }
-        }
-        catch (BESInternalError &bie) {
-            BESDEBUG(HTTP_MODULE,
-                     "[ERROR] HttpCache::get_instance(): Failed to obtain cache! msg: " << bie.get_message()
-                                                                                        << endl);
-        }
+        string cacheDir = get_http_cache_dir_from_config();
+        string cachePrefix = get_http_cache_prefix_from_config();
+        unsigned long cacheSizeMbytes = get_http_cache_size_from_config();
+
+        BESDEBUG(HTTP_MODULE, prolog << "Cache configuration params: " << cacheDir << ", " << cachePrefix << ", "
+                                     << cacheSizeMbytes << endl);
+        d_instance->initialize(cacheDir, cachePrefix, cacheSizeMbytes);
     }
 
-    return d_instance;
+    return d_instance.get();
 }
 
-#if HASH_CACHE_FILENAME
-
-string
-HttpCache::get_hash(const string &s) {
+string get_hash(const string &s) {
     if (s.empty()) {
         string msg = "You cannot hash the empty string.";
         BESDEBUG(HTTP_MODULE, prolog << msg << endl);
@@ -226,7 +129,6 @@ HttpCache::get_hash(const string &s) {
     }
     return picosha2::hash256_hex_string(s[0] == '/' ? s : "/" + s);
 }
-
 
 bool is_url(const string &candidate) {
     size_t index = candidate.find(HTTP_PROTOCOL);
@@ -239,7 +141,6 @@ bool is_url(const string &candidate) {
     return true;
 }
 
-
 /**
  * This helper function looks at the passed identifier and tries to formulate
  * a human readable summary string for use in dataset naming etc.
@@ -248,14 +149,13 @@ bool is_url(const string &candidate) {
  * @return A human readable summary string for use in dataset naming etc.
  */
 string get_real_name_extension(const string &identifier) {
-    string real_name_extension;
-
     string path_part;
 
     if (is_url(identifier)) {
-        // Since it's a URL it might have a massive query string attached, and since wee
-        // have no idea what the query parameters mean, we'll just punt and look at the path part of the URL.
-        // We make an instance of http::url which will carve up the URL for us.
+        // Since it's a URL it might have a massive query string attached, and since we
+        // have no idea what the query parameters mean, we'll just punt and look at the
+        // path part of the URL. We make an instance of http::url which will carve up
+        // the URL for us.
         http::url target_url(identifier);
         path_part = target_url.path();
     }
@@ -263,8 +163,9 @@ string get_real_name_extension(const string &identifier) {
         path_part = identifier;
     }
 
+    string real_name_extension;
     vector<string> path_elements;
-    // Now that we a "path" (none of that query string mess) we can tokenize it.
+    // Now that we have a "path" (none of that query string mess) we can tokenize it.
     BESUtil::tokenize(path_part, path_elements);
     if (!path_elements.empty()) {
         string last = path_elements.back();
@@ -274,46 +175,38 @@ string get_real_name_extension(const string &identifier) {
     return real_name_extension;
 }
 
-
 /**
  * Builds a cache file name that contains a hashed version of the src_id, the user id (uid) if non-empty, and a
  * human readable name that may be utilized when naming datasets whose data are held in the cache file.
+ *
+ * @note This function returns the name to use when storing data in the cache. It does not check to see if the
+ * file is already in the cache. That is the job of the caller. This function includes the UID in the name
+ * so that different users can cache the same information without overwriting each other's data.
+ *
  * @param uid The user id of the requesting user.
  * @param src_id The source identifier of the resource to cache.
- * @param mangle If true, the cache file names will be hashed (more or less).
+ * @param mangle If true, the cache file names will be hashed (more or less). Defaults to true.
  * @return The name of the cache file based on the inputs.
  */
-string HttpCache::get_cache_file_name(const string &uid, const string &src_id, bool mangle) {
-    stringstream cache_filename;
-    string hashed_part;
-    string real_name_extension;
-    string uid_part;
+string HttpCache::get_cache_file_name(const string &uid, const string &src_id, bool mangle) const {
+    string uid_part = uid.empty() ? "" : uid + "_";
+    string src_id_part = mangle ? get_hash(src_id) : src_id;
 
-    if (!uid.empty())
-        uid_part = uid + "_";
+    string cache_filename = get_cache_file_prefix() + uid_part + src_id_part + get_real_name_extension(src_id);
 
-    if (mangle) {
-        hashed_part = get_hash(src_id);
-    }
-    else {
-        hashed_part = src_id;
-    }
-    real_name_extension = get_real_name_extension(src_id);
-
-    cache_filename << get_cache_file_prefix() << uid_part << hashed_part << real_name_extension;
-
-    string cf_name = BESUtil::assemblePath(this->get_cache_directory(), cache_filename.str());
-
-    return cf_name;
+    return BESUtil::assemblePath(get_cache_directory(), cache_filename);
 }
 
-
+/**
+ * @brief Get the cache file name for the given source identifier.
+ * This version of the method does not include the user id in the name.
+ * @param src The source identifier of the resource to cache.
+ * @param mangle If true, the cache file names will be hashed (more or less). Defaults to true.
+ * @return The name of the cache file based on the inputs.
+ */
 string HttpCache::get_cache_file_name(const string &src, bool mangle) {
     string uid;
     return get_cache_file_name(uid, src, mangle);
 }
-
-
-#endif
 
 } // namespace http

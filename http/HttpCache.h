@@ -30,8 +30,6 @@
 
 #include "BESFileLockingCache.h"
 
-#define HASH_CACHE_FILENAME 1
-
 namespace http {
 
 /**
@@ -53,54 +51,26 @@ namespace http {
  */
 class HttpCache : public BESFileLockingCache {
 private:
-    static bool d_enabled;
-    static HttpCache *d_instance;
-
-    static void delete_instance() {
-        delete d_instance;
-        d_instance = 0;
-    }
-
-    HttpCache();
-
-    HttpCache(const HttpCache &src);
-
-    static std::string getCacheDirFromConfig();
-
-    static std::string getCachePrefixFromConfig();
-
-    static unsigned long getCacheSizeFromConfig();
-
-protected:
-    /**
-     * @brief Not in general use, keeping for as yet unwritten unit-tests.
-     * @param cache_dir
-     * @param prefix
-     * @param size
-     */
-    HttpCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+    static std::unique_ptr<HttpCache> d_instance;
 
 public:
+    HttpCache() = default;
+    HttpCache(const HttpCache &src) = delete;
+    HttpCache &operator=(const HttpCache &rhs) = delete;
 
-    //static HttpCache *
-    //get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
+    ~HttpCache() override = default;
 
     static HttpCache *get_instance();
 
-    virtual ~HttpCache() {}
+    std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true) const;
 
-#if HASH_CACHE_FILENAME
-
-    static std::string get_hash(const std::string &s);
-
-    virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true);
-
-    virtual std::string get_cache_file_name(const std::string &src, bool mangle = true);
-
-#endif
-
-    static unsigned long getCacheExpiresTime();
+    std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
 };
+
+std::string get_http_cache_dir_from_config();
+std::string get_http_cache_prefix_from_config();
+unsigned long get_http_cache_size_from_config();
+unsigned long get_http_cache_exp_time_from_config();
 
 } /* namespace http */
 

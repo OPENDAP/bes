@@ -25,21 +25,15 @@
 
 #include "config.h"
 
-#include <unistd.h>  // for sleep
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>  // for closedir opendir
-
 #include <iostream>
 #include <sstream>
-#include <cstdlib>
-#include <cstring>
 #include <string>
-#include <iostream>
 
-#include <stdio.h>      /* printf */
-#include <time.h>
+#include <cstdlib>
+#include <cstdio>      /* printf */
 #include <ctime>
+
+#include <unistd.h>  // for sleep
 
 #include "TheBESKeys.h"
 #include "BESError.h"
@@ -55,16 +49,14 @@ using namespace std;
 #define LOCK_TEST_FILE "lock_test"
 #define TEST_CACHE_DIR TEST_BUILD_DIR"/cache"
 
-// const std::string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_BUILD_DIR, "cache");
-
 
 bool debug = false;
 bool bes_debug = false;
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
 #define prolog string("FileLockingCacheTest::").append(__func__).append("() - ")
 
-void run_sys(const string cmd)
+void run_sys(const string &cmd)
 {
     int status;
     DBG(cerr << prolog << " command: '" << cmd);
@@ -92,13 +84,9 @@ class FileLockingCacheTest {
 private:
 
 public:
-    FileLockingCacheTest()
-    {
-    }
+    FileLockingCacheTest() = default;
 
-    ~FileLockingCacheTest()
-    {
-    }
+    ~FileLockingCacheTest() = default;
 
     /**
      * Get a read lock for given time on a file. By default the file is the
