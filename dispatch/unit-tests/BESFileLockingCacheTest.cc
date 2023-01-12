@@ -76,7 +76,7 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
      *
      * @param cache_dir Directory that holds the cached files.
      */
-    void init_cache(const string &cache_dir) {
+    static void init_cache(const string &cache_dir) {
         DBG(cerr << __func__ << "() - BEGIN " << endl);
 
         string t_file = cache_dir + "/template.txt";
@@ -84,34 +84,24 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
             ostringstream s;
             s << BESUtil::assemblePath(cache_dir, CACHE_PREFIX) << "#usr#local#data#template0" << i << ".txt";
 
-            string cmd = "";
-            cmd += "cp -f " + t_file + " " + s.str();
+            string cmd = "cp " + t_file + " " + s.str();
             (void)system(cmd.c_str());
 
-            // FIXME This is a hack. The cache should be in the build dir, not the src dir.
-            cmd = "";
-            cmd += "chmod a+w " + s.str();
+            // This is a hack. The cache should be in the build dir, not the src dir.
+            cmd = "chmod a+w " + s.str();
             (void)system(cmd.c_str());
-
-#if 0
-            // No idea why this is here... To see an error if the files are not here? Burn time?
-            // jhrg 1/11/23
-            cmd = "";
-            cmd += "cat " + s.str() + " > /dev/null";
-            (void)system(cmd.c_str());
-#endif
         }
 
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    string show_cache(const string &cache_dir, const string &match_prefix) {
+    static string show_cache(const string &cache_dir, const string &match_prefix) {
         map<string, string> contents;
         ostringstream oss;
         DIR *dip = opendir(cache_dir.c_str());
         CPPUNIT_ASSERT(dip);
-        struct dirent *dit = nullptr;
-        while ((dit = readdir(dip)) != NULL) {
+        const struct dirent *dit = nullptr;
+        while ((dit = readdir(dip)) != nullptr) {
             string dirEntry = dit->d_name;
             if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) {
                 oss << dirEntry << endl;
@@ -123,33 +113,24 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
         return oss.str();
     }
 
-    void check_cache(const string &cache_dir, const string &should_be, unsigned int num_files) {
+    static void check_cache(const string &cache_dir, const string &should_be, unsigned int num_files) {
         DBG(cerr << __func__ << "() - BEGIN, should_be: " << should_be << ", num_files: " << num_files << endl);
 
-        map<string, string> contents;
-        string match_prefix = MATCH_PREFIX;
+        vector<string> contents;
         DIR *dip = opendir(cache_dir.c_str());
-        CPPUNIT_ASSERT(dip);
-        struct dirent *dit = nullptr;
-        while ((dit = readdir(dip)) != NULL) {
-            string dirEntry = dit->d_name;
-            if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) contents[dirEntry] = dirEntry;
+        CPPUNIT_ASSERT_MESSAGE("Could not open the cache directory", dip);
+        const struct dirent *dit = nullptr;
+        while ((dit = readdir(dip)) != nullptr) {
+            string entry = dit->d_name;
+            if (entry.find(MATCH_PREFIX) != string::npos) //(entry.compare(0, match_prefix.size(), match_prefix) == 0)
+                contents.emplace_back(entry);
         }
-
         closedir(dip);
 
-        CPPUNIT_ASSERT(num_files == contents.size());
+        CPPUNIT_ASSERT_MESSAGE("Number of entries did not match expected number", num_files == contents.size());
 
-        bool found = false;
-        for (map<string, string>::const_iterator ci = contents.begin(), ce = contents.end(); ci != ce; ci++) {
-            DBG(cerr << "contents: " << (*ci).first << endl);
-            if ((*ci).first == should_be) {
-                found = true;
-                break;
-            }
-        }
-
-        CPPUNIT_ASSERT(found);
+        auto the_entry = find(contents.begin(), contents.end(), should_be);
+        CPPUNIT_ASSERT_MESSAGE("Could not find the expected entry in the cache", the_entry != contents.end());
     }
 
 public:
@@ -165,13 +146,6 @@ public:
         DBG(cerr << endl);
         DBG(cerr << "setUp() - BEGIN" << endl);
 
-#if 0
-        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        DBG(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
-        DBG2(show_file(bes_conf));
-        TheBESKeys::ConfigFile = bes_conf;
-#endif
-
         init_cache(TEST_CACHE_DIR);
 
         DBG(cerr << "setUp() - END" << endl);
@@ -180,12 +154,6 @@ public:
     void tearDown() override {
         DBG(cerr << endl);
         DBG(cerr << "tearDown() - BEGIN" << endl);
-
-#if 0
-        // Reload the keys after every test.
-        delete TheBESKeys::d_instance;
-        TheBESKeys::d_instance = nullptr;
-#endif
 
         purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
 
@@ -398,5 +366,5 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BESFileLockingCacheTest);
 } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests<http::BESFileLockingCacheTest>(argc, argv, "cache,cache-lock,cache-lock-status") ? 0 : 1;
+    return bes_run_tests<http::BESFileLockingCacheTest>(argc, argv, "cerr,cache,cache-lock,cache-lock-status") ? 0 : 1;
 }
