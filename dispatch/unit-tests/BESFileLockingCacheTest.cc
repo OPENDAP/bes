@@ -33,7 +33,6 @@
 #include "BESFileLockingCache.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
-#include "TheBESKeys.h"
 #include "BESInternalError.h"
 
 #include "test_config.h"
@@ -95,6 +94,8 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
             (void)system(cmd.c_str());
 
 #if 0
+            // No idea why this is here... To see an error if the files are not here? Burn time?
+            // jhrg 1/11/23
             cmd = "";
             cmd += "cat " + s.str() + " > /dev/null";
             (void)system(cmd.c_str());
