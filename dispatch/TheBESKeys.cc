@@ -369,7 +369,7 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
  * key is set to "true", "yes", or "on", otherwise the key value is
  * interpreted as false. If \arg key is not set, return \arg default_value.
  */
-bool TheBESKeys::read_bool_key(const string &key, bool default_value)
+bool TheBESKeys::read_bool_key(const string &key, bool default_value) const
 {
     bool found = false;
     string value;
@@ -394,7 +394,7 @@ bool TheBESKeys::read_bool_key(const string &key, bool default_value)
  * @param default_value Return this value if \arg key is not found.
  * @return The string value of \arg key.
  */
-string TheBESKeys::read_string_key(const string &key, const string &default_value)
+string TheBESKeys::read_string_key(const string &key, const string &default_value) const
 {
     bool found = false;
     string value;
@@ -421,7 +421,7 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-int TheBESKeys::read_int_key(const string &key, int default_value)
+int TheBESKeys::read_int_key(const string &key, int default_value) const
 {
     bool found = false;
     string value;
@@ -451,7 +451,7 @@ int TheBESKeys::read_int_key(const string &key, int default_value)
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value)
+unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value) const
 {
     bool found = false;
     string value;

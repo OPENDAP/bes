@@ -131,7 +131,7 @@ public:
     void set_keys(const std::string &key, const std::vector<std::string> &values, bool addto);
 
     void set_keys(const std::string &key, const std::map<std::string, std::string> &values,
-                  const bool case_insensitive_map_keys, bool addto);
+                  bool case_insensitive_map_keys, bool addto);
 
     void get_value(const std::string &s, std::string &val, bool &found);
 
@@ -144,13 +144,13 @@ public:
                     const bool &case_insensitive_map_keys, bool &found);
 
 
-    bool read_bool_key(const std::string &key, bool default_value);
+    bool read_bool_key(const std::string &key, bool default_value) const;
 
-    std::string read_string_key(const std::string &key, const std::string &default_value);
+    std::string read_string_key(const std::string &key, const std::string &default_value) const;
 
-    int read_int_key(const std::string &key, int default_value);
+    int read_int_key(const std::string &key, int default_value) const;
 
-    unsigned long read_ulong_key(const std::string &key, unsigned long default_value);
+    unsigned long read_ulong_key(const std::string &key, unsigned long default_value) const;
 
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 

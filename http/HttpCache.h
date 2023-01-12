@@ -62,7 +62,7 @@ public:
 
     static HttpCache *get_instance();
 
-    std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true);
+    std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true) const;
 
     std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
 };

@@ -188,7 +188,7 @@ string get_real_name_extension(const string &identifier) {
  * @param mangle If true, the cache file names will be hashed (more or less). Defaults to true.
  * @return The name of the cache file based on the inputs.
  */
-string HttpCache::get_cache_file_name(const string &uid, const string &src_id, bool mangle) {
+string HttpCache::get_cache_file_name(const string &uid, const string &src_id, bool mangle) const {
     string uid_part = uid.empty() ? "" : uid + "_";
     string src_id_part = mangle ? get_hash(src_id) : src_id;
 

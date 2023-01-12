@@ -72,11 +72,8 @@ private:
     /// The raw HTTP response headers returned by the request for the remote resource.
     std::vector<std::string> d_response_headers; // Response headers
 
-    /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
-    // std::map<std::string, std::string> *d_http_response_headers = nullptr;; // Response headers
-
     /// The interval before a cache resource needs to be refreshed
-    unsigned long d_expires_interval;
+    unsigned long d_expires_interval = 3600;    // 1 hour. FIXME Make this configurable.
 
     /**
      * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
@@ -103,10 +100,7 @@ private:
     bool cached_resource_is_expired() const;
 
 protected:
-    RemoteResource() :
-            // FIXME !!!
-            d_expires_interval(3600 /*HttpCache::getCacheExpiresTime()*/) {
-    }
+    RemoteResource() = default;
 
 public:
     explicit RemoteResource(std::shared_ptr<http::url> target_url, std::string uid = "",
