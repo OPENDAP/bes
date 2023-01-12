@@ -27,6 +27,7 @@
 #include <iostream>
 #include <future>
 #include <thread>
+#include <algorithm>
 
 #include <dirent.h>
 
