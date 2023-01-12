@@ -3,11 +3,18 @@
     <getDAP>
         <BESError>
             <Type>3</Type>
-            <Message>This dataset contains variables/attributes whose data types are not compatible with the NetCDF-3 data model. If your request includes any of variables reprsented by one of these incompatible variables and/or attributes and you choose the &#8220;NetCDF-3&#8221; download encoding, your request will FAIL. 
-You may also try constraining your request to omit the problematic data type(s), or ask for a different encoding such as DAP4 binary or NetCDF-4.
-Number of non-compatible variables: 2
-Group /b/
-UInt64 /b/b_data[m=2][n=3]
+            <Message>This dataset contains variables/attributes whose data types are not compatible with the 
+NetCDF-3 data model. If your request includes any of variables represented by one of these 
+incompatible variables and/or attributes and you choose the &#8220;NetCDF-3&#8221; download encoding, 
+your request will FAIL. 
+
+You may also try constraining your request to omit the problematic data type(s), 
+or ask for a different encoding such as DAP4 binary or NetCDF-4.
+There are2 incompatible variables referenced in your request.
+Incompatible variables: 
+
+    Group /b/
+    UInt64 /b/b_data[m=2][n=3]
 </Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
