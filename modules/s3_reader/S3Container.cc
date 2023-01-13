@@ -178,7 +178,7 @@ string S3Container::access()
     string cachedResource = d_dmrpp_rresource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
-    type = d_dmrpp_rresource->getType();
+    const auto type = d_dmrpp_rresource->getType();
     set_container_type(type);
 
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
