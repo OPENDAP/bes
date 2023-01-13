@@ -66,8 +66,8 @@ HDFStructure::HDFStructure(const string &n, const string &d) :
 	Structure(n, d) {
 }
 
-HDFStructure::~HDFStructure() {
-}
+HDFStructure::~HDFStructure() = default;
+
 BaseType *HDFStructure::ptr_duplicate() {
 	return new HDFStructure(*this);
 }

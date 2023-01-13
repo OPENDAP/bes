@@ -30,14 +30,17 @@
  */
 #include "config.h"
 
-#include <stdlib.h>     /* atol */
+#include <cstdlib>     /* atol */
+#include <sstream>
 
-#include "rjson_utils.h"
+#include "JsonUtils.h"
 #include "BESDebug.h"
 
 #include "CmrNames.h"
-#include "CmrError.h"
+#include "CmrInternalError.h"
+#include "CmrNotFoundError.h"
 #include "Granule.h"
+#include "CmrApi.h"
 
 
 using namespace std;
@@ -46,114 +49,241 @@ using namespace std;
 
 
 namespace cmr {
-string granule_LINKS_REL_DATA_ACCES = "http://esipfed.org/ns/fedsearch/1.1/data#";
-string granule_LINKS_REL_METADATA_ACCESS = "http://esipfed.org/ns/fedsearch/1.1/data#";
-string granule_LINKS = "links";
-string granule_LINKS_REL= "rel";
-string granule_LINKS_HREFLANG = "hreflang";
-string granule_LINKS_HREF = "href";
-string granule_SIZE = "granule_size";
-string granule_LMT = "updated";
-
-string granule_ID = "id";
-
-string granule_NAME = "title";
-
-Granule::Granule(const rapidjson::Value& granule_obj){
-    setId(granule_obj);
-    setName(granule_obj);
-    setSize(granule_obj);
-    setDataAccessUrl(granule_obj);
-    setMetadataAccessUrl(granule_obj);
-    setLastModifiedStr(granule_obj);
+/**
+ * granule.umm_json
+{
+  "hits": 1,
+  "took": 399,
+  "items": [
+    {
+      "meta": {
+        "concept-type": "granule",
+        "concept-id": "G1216079418-GES_DISC",
+        "revision-id": 1,
+        "native-id": "AIRH2SUP.006:AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
+        "provider-id": "GES_DISC",
+        "format": "application/echo10+xml",
+        "revision-date": "2016-05-05T14:45:25.846Z"
+      },
+      "umm": {
+        "TemporalExtent": {
+          "RangeDateTime": {
+            "BeginningDateTime": "2002-11-16T23:59:26.000Z",
+            "EndingDateTime": "2002-11-17T00:05:26.000Z"
+          }
+        },
+        "GranuleUR": "AIRH2SUP.006:AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
+        "SpatialExtent": {
+          "HorizontalSpatialDomain": {
+            "Geometry": {
+              "BoundingRectangles": [
+                {
+                  "WestBoundingCoordinate": -163.196578979492,
+                  "EastBoundingCoordinate": -139.618240356445,
+                  "NorthBoundingCoordinate": -18.9448909759521,
+                  "SouthBoundingCoordinate": -42.5188293457031
+                }
+              ]
+            }
+          }
+        },
+        "ProviderDates": [
+          {
+            "Date": "2016-05-05T13:58:30.000Z",
+            "Type": "Insert"
+          },
+          {
+            "Date": "2016-05-05T13:58:30.000Z",
+            "Type": "Update"
+          }
+        ],
+        "CollectionReference": {
+          "ShortName": "AIRH2SUP",
+          "Version": "006"
+        },
+        "PGEVersionClass": {
+          "PGEVersion": "6.0.12.0"
+        },
+        "RelatedUrls": [
+          {
+            "URL": "http://discnrt1.gesdisc.eosdis.nasa.gov/data/Aqua_AIRS_Level2/AIRH2SUP.006/2002/320/AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
+            "Type": "GET DATA"
+          }
+        ],
+        "DataGranule": {
+          "DayNightFlag": "Day",
+          "Identifiers": [
+            {
+              "Identifier": "AIRS.2002.11.16.240.L2.RetSup_H.v6.0.12.0.G14105054018.hdf",
+              "IdentifierType": "ProducerGranuleId"
+            }
+          ],
+          "ProductionDateTime": "2014-04-15T09:40:21.000Z",
+          "ArchiveAndDistributionInformation": [
+            {
+              "Name": "Not provided",
+              "Size": 21.0902881622314,
+              "SizeUnit": "MB"
+            }
+          ]
+        },
+        "MetadataSpecification": {
+          "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.4",
+          "Name": "UMM-G",
+          "Version": "1.6.4"
+        }
+      }
+    }
+  ]
 }
 
-void Granule::setName(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_name = rju.getStringValue(go, granule_NAME);
+ */
+/** Builds Granule from granule.umm_json response from CMR.
+ *
+ * @param granule_json
+ */
+Granule::Granule(const nlohmann::json& granule_json)
+{
+    setId(granule_json);
+    setName(granule_json);
+    setSize(granule_json);
+    setDapServiceUrl(granule_json);
+    setDataGranuleUrl(granule_json);
+    setMetadataAccessUrl(granule_json);
+    setLastModifiedStr(granule_json);
 }
 
-void Granule::setId(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_id = rju.getStringValue(go, granule_ID);
+
+void Granule::setName(const nlohmann::json& granule_json)
+{
+    JsonUtils json;
+    d_name = json.get_str_if_present(CMR_V2_TITLE_KEY, granule_json);
 }
 
-void Granule::setSize(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_size_str = rju.getStringValue(go, granule_SIZE);
+
+void Granule::setId(const nlohmann::json& granule_json)
+{
+    JsonUtils json;
+    d_id = json.get_str_if_present(CMR_GRANULE_ID_KEY, granule_json);
 }
+
+
+void Granule::setSize(const nlohmann::json& granule_json)
+{
+    JsonUtils json;
+    d_size_str = json.get_str_if_present(CMR_GRANULE_SIZE_KEY, granule_json);
+}
+
 
 /**
- * Sets the last modified time of the granule as a string.
- */
-void Granule::setLastModifiedStr(const rapidjson::Value& go){
-    rjson_utils rju;
-    this->d_last_modified_time = rju.getStringValue(go, granule_LMT);
+  * Sets the last modified time of the granule as a string.
+  * @param go
+  */
+void Granule::setLastModifiedStr(const nlohmann::json& granule_json)
+{
+    JsonUtils json;
+    d_last_modified_time = json.get_str_if_present(CMR_GRANULE_LMT_KEY, granule_json);
 }
+
 
 /**
  * Internal method that retrieves the "links" array from the Granule's object.
  */
-const rapidjson::Value& Granule::get_links_array(const rapidjson::Value& go){
+const nlohmann::json& Granule::get_links_array(const nlohmann::json& granule_json) const
+{
+    JsonUtils json;
+    return json.qc_get_array(CMR_GRANULE_LINKS_KEY, granule_json);
+}
 
-    rapidjson::Value::ConstMemberIterator itr = go.FindMember(granule_LINKS.c_str());
-    bool result = itr != go.MemberEnd();
-    string msg = prolog + (result?"Located":"FAILED to locate") + " the value '"+granule_LINKS+"' in object.";
-    BESDEBUG(MODULE, msg << endl);
-    if(!result){
-        throw CmrError("ERROR: Failed to located '"+granule_LINKS+"' section for CMRGranule!",__FILE__,__LINE__);
+
+
+/**
+ * Sets the data access URL for the dataset granule.
+ */
+void Granule::setDataGranuleUrl(const nlohmann::json& granule_json)
+{
+    const auto& links = get_links_array(granule_json);
+    for(auto &link : links){
+        string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
+        if(rel == CMR_GRANULE_LINKS_REL_DATA_ACCESS){
+            d_data_access_url = link[CMR_GRANULE_LINKS_HREF];
+            return;
+        }
     }
-    const rapidjson::Value& links = itr->value;
-    if(!links.IsArray())
-        throw CmrError("ERROR: The '"+granule_LINKS+"' object is NOT an array!",__FILE__,__LINE__);
-
-    return links;
+    stringstream msg;
+    msg << "ERROR: Failed to locate granule data access link (";
+    msg << CMR_GRANULE_LINKS_REL_DATA_ACCESS << "), :(";
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
 }
 
 /**
  * Sets the data access URL for the dataset granule.
  */
-void Granule::setDataAccessUrl(const rapidjson::Value& go){
-    rjson_utils rju;
-
-    const rapidjson::Value& links = get_links_array(go);
-    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& link = links[i];
-        string rel = rju.getStringValue(link,granule_LINKS_REL);
-        if(rel == granule_LINKS_REL_DATA_ACCES){
-            this->d_data_access_url = rju.getStringValue(link,granule_LINKS_HREF);
-            return;
+void Granule::setDapServiceUrl(const nlohmann::json& granule_json)
+{
+    JsonUtils json;
+    BESDEBUG(MODULE, prolog << "JSON: " << endl << granule_json.dump(4) << endl);
+    const auto& links = get_links_array(granule_json);
+    for(auto &link : links){
+        string rel = json.get_str_if_present(CMR_GRANULE_LINKS_REL,link);
+        if (rel == CMR_GRANULE_LINKS_REL_SERVICE) {
+            // Check the service link title to see itf it's an OPeNDAP thing
+            string title = json.get_str_if_present(CMR_V2_TITLE_KEY,link);
+            // change to upper case
+            transform(title.begin(), title.end(), title.begin(), ::toupper);
+            if (title.find("OPENDAP") != string::npos) {
+                // Ooh! It's an OPeNDAP service link.
+                d_dap_service_url = json.get_str_if_present(CMR_GRANULE_LINKS_HREF, link);
+                return;
+            }
         }
     }
-    throw CmrError("ERROR: Failed to locate granule data access link ("+granule_LINKS_REL_DATA_ACCES+"). :(",__FILE__,__LINE__);
+    stringstream msg;
+    msg << "Failed to locate DAP service link (";
+    msg << CMR_GRANULE_LINKS_REL_SERVICE << "), :(";
+    BESDEBUG(MODULE, prolog << msg.str() << endl);
 }
+
 
 /**
  * Sets the metadata access URL for the dataset granule.
  */
-void Granule::setMetadataAccessUrl(const rapidjson::Value& go){
-    rjson_utils rju;
-
-    const rapidjson::Value& links = get_links_array(go);
-    for (rapidjson::SizeType i = 0; i < links.Size(); i++) { // Uses SizeType instead of size_t
-        const rapidjson::Value& link = links[i];
-        string rel = rju.getStringValue(link,granule_LINKS_REL);
-        if(rel == granule_LINKS_REL_METADATA_ACCESS){
-            this->d_metadata_access_url = rju.getStringValue(link,granule_LINKS_HREF);
+void Granule::setMetadataAccessUrl(const nlohmann::json& granule_json)
+{
+    const auto &links = get_links_array(granule_json);
+    for(auto &link : links){
+        string rel = link[CMR_GRANULE_LINKS_REL].get<string>();
+        if(rel == CMR_GRANULE_LINKS_REL_METADATA_ACCESS){
+            d_metadata_access_url = link[CMR_GRANULE_LINKS_HREF].get<string>();
             return;
         }
     }
-    throw CmrError("ERROR: Failed to locate granule metadata access link ("+granule_LINKS_REL_METADATA_ACCESS+"). :(",__FILE__,__LINE__);
+    stringstream msg;
+    msg << "ERROR: Failed to locate granule metadata access link (";
+    msg << CMR_GRANULE_LINKS_REL_METADATA_ACCESS << "), :(";
+    throw CmrInternalError(msg.str(), __FILE__, __LINE__);
+}
+
+size_t Granule::getSize() const {
+    double value = strtod(getSizeStr().c_str(), nullptr);
+    value *= 1024*1204;
+    return static_cast<size_t>(value);
 }
 
 
-bes::CatalogItem *Granule::getCatalogItem(BESCatalogUtils *d_catalog_utils){
-    bes::CatalogItem *item = new bes::CatalogItem();
+
+bes::CatalogItem *Granule::getCatalogItem(const BESCatalogUtils *d_catalog_utils) const
+{
+    auto *item = new bes::CatalogItem();
     item->set_type(bes::CatalogItem::leaf);
     item->set_name(getName());
     item->set_lmt(getLastModifiedStr());
     item->set_size(getSize());
     item->set_is_data(d_catalog_utils->is_data(item->get_name()));
+    if(!getDapServiceUrl().empty()) {
+        item->set_dap_service_url(getDapServiceUrl());
+    }
+
     return item;
 }
 

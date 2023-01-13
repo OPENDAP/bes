@@ -75,7 +75,6 @@
 #include "history_utils.h"
 #include "FONcNames.h"
 
-
 using namespace libdap;
 using namespace std;
 
@@ -444,6 +443,25 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
     _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
+#if 0 //removed due not being needed
+    vector<BaseType *> projected_dap4_variable_inventory;
+    bool d4_true = d4_tools::is_dap4_projected(_dds, projected_dap4_variable_inventory);
+
+    /**
+     * Implementation check list:
+     * -X- Explain that the request cannot be fulfilled because the response contains types that are not compatible with the requested encoding.
+     * -_- Contain the inventory of incompatible types so the user can see exactly where the issue is.
+     * -_- Direct the user to a more compatible data model or encoding (i.e. DAP4 and NetCDF-4) by suggesting a change in request suffix or DAP4 Data Request Form page.
+     */
+
+    if (d4_true){
+        throw BESSyntaxUserError(
+                "request cannot be fulfilled because the response contains types that are not compatible with the requested encoding",
+                __FILE__,
+                __LINE__);
+    }
+#endif
+
     throw_if_dap2_response_too_big(_dds, besDRB.get_ce());
 
     // Convert the DDS into an internal format to keep track of
@@ -689,8 +707,29 @@ void FONcTransform::transform_dap4() {
     BESDapResponseBuilder responseBuilder;
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
-
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
+
+    vector<string> inventory;
+    bool d4_true = _dmr->is_dap4_projected(inventory);
+
+    if (d4_true && _returnAs == "netcdf"){
+        stringstream msg;
+        msg << "This dataset contains variables/attributes whose data types are not compatible with the ";
+        msg << "NetCDF-3 data model. If your request includes any of variables reprsented by one of these ";
+        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, ";
+        msg << "your request will FAIL. " << endl;
+        msg << "You may also try constraining your request to omit the problematic data type(s), ";
+        msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
+        msg << "Number of non-compatible variables: " << inventory.size() << endl;
+        for(const auto &entry: inventory){
+            msg << entry << endl;
+        }
+        throw BESSyntaxUserError(
+                msg.str(),
+                __FILE__,
+                __LINE__);
+    }
+
     throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
 
     BESDapResponseBuilder besDRB;

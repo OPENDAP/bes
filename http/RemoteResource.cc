@@ -27,22 +27,18 @@
 #include "config.h"
 
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <iostream>
 #include <utility>
+#include <memory>
 
 #include "rapidjson/document.h"
 
 #include "BESInternalError.h"
-#include "BESForbiddenError.h"
-#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
-#include "BESTimeoutError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -60,28 +56,16 @@ using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
 
-#define prolog std::string("RemoteResource::").append(__func__).append("() - ")
+#define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
 
 namespace http {
 
-RemoteResource::RemoteResource(
-        std::shared_ptr<http::url> target_url,
-        const std::string &uid,
-        long long expiredInterval)
-        : d_remoteResourceUrl(std::move(target_url)) {
-
-    d_fd = 0;
-    d_initialized = false;
-
-    d_uid = uid;
+RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid, unsigned long expiredInterval)
+                               : d_remoteResourceUrl(std::move(target_url)), d_uid(std::move(uid)),
+                               d_expires_interval(expiredInterval) {
 
     d_resourceCacheFileName.clear();
-    d_response_headers = new vector<string>();
-    d_http_response_headers = new map<string, string>();
-
-    d_expires_interval = expiredInterval;
-
 
     if (d_remoteResourceUrl->protocol() == FILE_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "Found FILE protocol." << endl);
@@ -110,9 +94,6 @@ RemoteResource::RemoteResource(
         string err = prolog + "Unsupported protocol: " + d_remoteResourceUrl->protocol();
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-
-    // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
-
 }
 
 /**
@@ -121,10 +102,6 @@ RemoteResource::RemoteResource(
  */
 RemoteResource::~RemoteResource() {
     BESDEBUG(MODULE, prolog << "BEGIN resourceURL: " << d_remoteResourceUrl->str() << endl);
-
-    delete d_response_headers;
-    d_response_headers = 0;
-    BESDEBUG(MODULE, prolog << "Deleted d_response_headers." << endl);
 
     if (!d_resourceCacheFileName.empty()) {
         HttpCache *cache = HttpCache::get_instance();
@@ -141,7 +118,7 @@ RemoteResource::~RemoteResource() {
  * Returns the (read-locked) cache file name on the local system in which the content of the remote
  * resource is stored. Deleting of the instance of this class will release the read-lock.
  */
-std::string RemoteResource::getCacheFileName() {
+string RemoteResource::getCacheFileName() const {
     if (!d_initialized) {
         throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl->str() +
                                " has Not Been Retrieved.", __FILE__, __LINE__);
@@ -157,7 +134,7 @@ std::string RemoteResource::getCacheFileName() {
  * is available along with an open file descriptor for the (now read-locked) cache file.
  */
 void RemoteResource::retrieveResource() {
-    std::map<std::string, std::string> content_filters;
+    map<string, string> content_filters;
     retrieveResource(content_filters);
 }
 
@@ -177,9 +154,8 @@ void RemoteResource::retrieveResource() {
  * with the cached information, use methods like get_response_as_string() to access copies of the
  * data in the cached remote resource.
  */
-void RemoteResource::retrieveResource(const std::map<std::string, std::string> &content_filters) {
+void RemoteResource::retrieveResource(const map<string, string> &content_filters) {
     BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl->str() << endl);
-    bool mangle = true;
 
     if (d_initialized) {
         BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
@@ -197,15 +173,10 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     }
 
     // Get the name of the file in the cache (either the code finds this file or it makes it).
+    bool mangle = true;
     d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl->str(), mangle);
     BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
-    // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
-    //   We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
-    //   Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
-    //   to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
-    //   from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
-    //   But really - we gotta fix this.
     http::get_type_from_url(d_remoteResourceUrl->str(), d_type);
     if (d_type.empty()) {
         string err = prolog + "Unable to determine the type of data returned from '" + d_remoteResourceUrl->str()
@@ -219,7 +190,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
 
     try {
 #if 0
-        // NB: I am leaving this in place because want to referr to its logic. jhrg 11/6/22
+        // NB: I am leaving this in place because we may want to referr to its logic. jhrg 11/6/22
         if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
             if (cached_resource_is_expired()) {
                  update_file_and_headers(content_filters);
@@ -232,21 +203,21 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
             d_initialized = true;
          }
 #endif
-            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
-            // content into a local cache file, given that it's not in the cache.
-            // First make an empty file and get an exclusive lock on it.
-            if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
-                BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
-                writeResourceToFile(d_fd);
-                filter_retrieved_resource(content_filters);
-            }
-            else {
-                BESDEBUG(MODULE, prolog << " EXISTS - CHECKING EXPIRY " << endl);
-                cache->get_read_lock(d_resourceCacheFileName, d_fd);
-            }
-            d_initialized = true;
+        // Now we actually need to reach out across the interwebs and retrieve the remote resource and put its
+        // content into a local cache file, given that it's not in the cache.
+        // First make an empty file and get an exclusive lock on it.
+        if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
+            BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
+            writeResourceToFile(d_fd);
+            filter_retrieved_resource(content_filters);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << " EXISTS - CHECKING EXPIRY " << endl);
+            cache->get_read_lock(d_resourceCacheFileName, d_fd);
+        }
+        d_initialized = true;
     }
-    catch (BESError &besError) {
+    catch (const BESError &besError) {
         BESDEBUG(MODULE, prolog << "Caught BESError. type: " << besError.get_bes_error_type() <<
                                 " message: '" << besError.get_message() <<
                                 "' file: " << besError.get_file() << " line: " << besError.get_line() <<
@@ -272,7 +243,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
 bool RemoteResource::cached_resource_is_expired() const {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
-    struct stat statbuf;
+    struct stat statbuf{0};
     if (stat(d_resourceCacheFileName.c_str(), &statbuf) == -1) {
         throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
     }//end if
@@ -285,7 +256,7 @@ bool RemoteResource::cached_resource_is_expired() const {
     double diffSeconds = difftime(nowTime, cacheTime);
     BESDEBUG(MODULE, prolog << "Time difference between cacheTime and nowTime: " << diffSeconds << endl);
 
-    if (diffSeconds > d_expires_interval) {
+    if (diffSeconds > (double)d_expires_interval) {
         BESDEBUG(MODULE, prolog << " refresh = TRUE " << endl);
         return true;
     }
@@ -306,76 +277,38 @@ bool RemoteResource::cached_resource_is_expired() const {
 void RemoteResource::writeResourceToFile(int fd) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-    try {
 
-        BESStopWatch besTimer;
-        if (BESDebug::IsSet("rr") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
-            BESLog::TheLog()->is_verbose()) {
-            besTimer.start(prolog + "source url: " + d_remoteResourceUrl->str());
-        }
-
-        int status = lseek(fd, 0, SEEK_SET);
-        if (-1 == status)
-            throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
-        BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
-
-        status = ftruncate(fd, 0);
-        if (-1 == status)
-            throw BESInternalError("Could not truncate the file prior to updating from remote. ", __FILE__, __LINE__);
-        BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
-
-        BESDEBUG(MODULE,
-                 prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName
-                        << endl);
-        curl::http_get_and_write_resource(d_remoteResourceUrl, fd,
-                                          d_response_headers); // Throws BESInternalError if there is a curl error.
-
-        BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl->str() << " saved to cache file "
-                                << d_resourceCacheFileName << endl);
-
-        // rewind the file
-        status = lseek(fd, 0, SEEK_SET);
-        if (-1 == status)
-            throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
-        BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+    BESStopWatch besTimer;
+    if (BESDebug::IsSet("rr") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
+        BESLog::TheLog()->is_verbose()) {
+        besTimer.start(prolog + "source url: " + d_remoteResourceUrl->str());
     }
-    catch (BESError &e) {
-        throw;
-    }
+
+    int status = lseek(fd, 0, SEEK_SET);
+    if (-1 == status)
+        throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
+    BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+
+    status = ftruncate(fd, 0);
+    if (-1 == status)
+        throw BESInternalError("Could not truncate the file prior to updating from remote. ", __FILE__, __LINE__);
+    BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
+
+    BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file "
+                            << d_resourceCacheFileName << endl);
+    // Throws BESInternalError if there is a curl error.
+    curl::http_get_and_write_resource(d_remoteResourceUrl, fd, &d_response_headers);
+    BESDEBUG(MODULE, prolog << "Resource " << d_remoteResourceUrl->str() << " saved to cache file "
+                            << d_resourceCacheFileName << endl);
+
+    // rewind the file
+    status = lseek(fd, 0, SEEK_SET);
+    if (-1 == status)
+        throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
+    BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
-
-#if 0
-
-/**
- *
- */
-void RemoteResource::derive_type_from_url() {
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-    string type;
-
-    // still haven't figured out the type. Now check the actual URL
-    // and see if we can't match the URL to a MODULE name
-    BESDEBUG(MODULE, prolog << "Checking URL path for type information." << endl);
-    if (type.empty()) {
-        http::get_type_from_url(d_remoteResourceUrl->str(), type);
-        BESDEBUG(MODULE,
-                 prolog << "Evaluated url '" << d_remoteResourceUrl->str() << "' matched type: \"" << type << "\""
-                        << endl);
-    }
-    // still couldn't figure it out, punt
-    if (type.empty()) {
-        string err = prolog + "Unable to determine the type of data"
-                     + " returned from '" + d_remoteResourceUrl->str() + "'  Setting type to 'unknown'";
-        BESDEBUG(MODULE, err << endl);
-        type = "unknown";
-        //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
-    }
-    d_type = type;
-    BESDEBUG(MODULE, prolog << "END (dataset type: " << d_type << ")" << endl);
-}
-
-#endif
 
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
@@ -388,7 +321,7 @@ void RemoteResource::derive_type_from_url() {
  * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
  * resource will be replaced with its associated value.
  */
-void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::string> &content_filters) {
+void RemoteResource::filter_retrieved_resource(const map<string, string> &content_filters) const {
 
     // No filters?
     if (content_filters.empty()) {
@@ -397,10 +330,10 @@ void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::
     }
     string resource_content;
     {
-        std::stringstream buffer;
+        stringstream buffer;
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
         // Read the cached file into a string object
-        std::ifstream cr_istrm(d_resourceCacheFileName);
+        ifstream cr_istrm(d_resourceCacheFileName);
         if (!cr_istrm.is_open()) {
             string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
             BESDEBUG(MODULE, prolog << msg << endl);
@@ -420,7 +353,7 @@ void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::
 
     //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
     // Replace the contents of the cached file with the modified string.
-    std::ofstream cr_ostrm(d_resourceCacheFileName);
+    ofstream cr_ostrm(d_resourceCacheFileName);
     if (!cr_ostrm.is_open()) {
         string msg = "Could not open '" + d_resourceCacheFileName + "' to write modified cached response.";
         BESDEBUG(MODULE, prolog << msg << endl);
@@ -433,7 +366,7 @@ void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::
 /**
  * Returns cache file content in a string..
  */
-std::string RemoteResource::get_response_as_string() {
+string RemoteResource::get_response_as_string() const {
 
     if (!d_initialized) {
         stringstream msg;
@@ -444,13 +377,13 @@ std::string RemoteResource::get_response_as_string() {
     string cache_file = getCacheFileName();
     //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
     // Set up cache file input stream.
-    std::ifstream file_istream(cache_file, std::ofstream::in);
+    ifstream file_istream(cache_file, ofstream::in);
 
     // If the cache filename is not valid, the stream will not open. Empty is not valid.
     if (file_istream.is_open()) {
         // If it's open we've got a valid input stream.
         BESDEBUG(MODULE, prolog << "Using cached file: " << cache_file << endl);
-        std::stringstream buffer;
+        stringstream buffer;
         buffer << file_istream.rdbuf();
         return buffer.str();
     }
@@ -460,7 +393,6 @@ std::string RemoteResource::get_response_as_string() {
         BESDEBUG(MODULE, prolog << msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-
 }
 
 /**
@@ -470,7 +402,7 @@ std::string RemoteResource::get_response_as_string() {
  * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
  * @return JSON document parsed from the response document returned by target_url
  */
-rapidjson::Document RemoteResource::get_as_json() {
+rapidjson::Document RemoteResource::get_as_json() const {
     string response = get_response_as_string();
     rapidjson::Document d;
     d.Parse(response.c_str());

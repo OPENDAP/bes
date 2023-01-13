@@ -48,11 +48,13 @@
 
 
 class HDFByte:public libdap::Byte {
+
   public:
+
     HDFByte(const std::string & n, const std::string &d);
-     virtual ~ HDFByte();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFByte() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFBYTE_H

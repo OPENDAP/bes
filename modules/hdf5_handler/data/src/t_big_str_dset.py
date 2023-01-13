@@ -6,12 +6,12 @@
 import h5py
 import numpy as np
 from random import choice
-from string import lowercase
+from string import ascii_lowercase
 #
 # Create a new file using defaut properties.
 #
 n = 32768
-big_str="".join(choice(lowercase) for i in range(n))
+big_str="".join(choice(ascii_lowercase) for i in range(n))
 file = h5py.File('t_big_str_dset.h5','w')
 data=(big_str,big_str)
 dt=h5py.special_dtype(vlen=str)

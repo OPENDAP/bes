@@ -20,23 +20,21 @@
 class HDFSPArrayMissGeoField:public libdap::Array
 {
     public:
-        HDFSPArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+        HDFSPArrayMissGeoField (int rank, int tnumelm, const std::string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v), rank (rank), tnumelm (tnumelm) {
         }
-        virtual ~ HDFSPArrayMissGeoField ()
-        {
-        }
+        ~ HDFSPArrayMissGeoField () override = default;
 
         // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArrayMissGeoField (*this);
         }
 
-        virtual bool read ();
+        bool read () override;
 
     private:
 

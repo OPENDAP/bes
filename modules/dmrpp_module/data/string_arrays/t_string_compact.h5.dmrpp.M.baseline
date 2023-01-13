@@ -8,7 +8,7 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:chunks fillValue=""/>
         <dmrpp:compact>UGFydGluZ2lzIHNvICBzd2UgICAgICAgICAgIA==</dmrpp:compact>
         <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
     </String>
@@ -21,7 +21,7 @@
             <Value>swe    </Value>
             <Value>       </Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:chunks fillValue=""/>
         <dmrpp:compact>UGFydGluZ2lzIHNvICBzd2UgICAgICAgICAgIA==</dmrpp:compact>
         <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
     </String>
@@ -31,7 +31,7 @@
         <Attribute name="value" type="String">
             <Value>A</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:chunks fillValue=""/>
         <dmrpp:compact>QQ==</dmrpp:compact>
         <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
     </String>
@@ -39,7 +39,7 @@
         <Attribute name="value" type="String">
             <Value>Parting is such sweet sorrow.</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string"/>
+        <dmrpp:chunks fillValue=""/>
         <dmrpp:compact>UGFydGluZyBpcyBzdWNoIHN3ZWV0IHNvcnJvdy4=</dmrpp:compact>
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">

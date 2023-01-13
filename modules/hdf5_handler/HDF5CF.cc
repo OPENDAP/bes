@@ -46,7 +46,7 @@
 
 using namespace HDF5CF;
 
-Var::Var(Var *var)
+Var::Var(const Var *var)
 {
 
     newname = var->newname;
@@ -64,23 +64,23 @@ Var::Var(Var *var)
     dimnameflag = var->dimnameflag;
     coord_attr_add_path = var->coord_attr_add_path;
 
-    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
-        Attribute* attr = new Attribute();
-        attr->name = (*ira)->name;
-        attr->newname = (*ira)->newname;
-        attr->dtype = (*ira)->dtype;
-        attr->count = (*ira)->count;
-        attr->strsize = (*ira)->strsize;
-        attr->fstrsize = (*ira)->fstrsize;
-        attr->value = (*ira)->value;
+    for (const auto &vattr:var->attrs) {
+        auto attr = new Attribute();
+        attr->name = vattr->name;
+        attr->newname = vattr->newname;
+        attr->dtype = vattr->dtype;
+        attr->count = vattr->count;
+        attr->strsize = vattr->strsize;
+        attr->fstrsize = vattr->fstrsize;
+        attr->value = vattr->value;
         attrs.push_back(attr);
     }
 
-    for (auto ird = var->dims.begin(); ird != var->dims.end(); ++ird) {
-        Dimension *dim = new Dimension((*ird)->size);
-        dim->name = (*ird)->name;
-        dim->newname = (*ird)->newname;
-        dim->unlimited_dim = (*ird)->unlimited_dim;
+    for (const auto &vdim:var->dims) {
+        auto dim = new Dimension(vdim->size);
+        dim->name = vdim->name;
+        dim->newname = vdim->newname;
+        dim->unlimited_dim = vdim->unlimited_dim;
         dims.push_back(dim);
     }
 
@@ -95,14 +95,14 @@ bool CVar::isLatLon() const
         string lat_unit_value = "degrees_north";
         string lon_unit_value = "degrees_east";
 
-        for (auto ira = this->attrs.begin(); ira != this->attrs.end(); ira++) {
+        for (const auto &attr:this->attrs) {
 
-            if ((H5FSTRING == (*ira)->getType()) || (H5VSTRING == (*ira)->getType())) {
-                if (attr_name == (*ira)->newname) {
-                    string attr_value1((*ira)->getValue().begin(), (*ira)->getValue().end());
+            if ((H5FSTRING == attr->getType()) || (H5VSTRING == attr->getType())) {
+                if (attr_name == attr->newname) {
+                    string attr_value1(attr->getValue().begin(), attr->getValue().end());
 
-                    if ((*ira)->getCount() == 1) {
-                        string attr_value((*ira)->getValue().begin(), (*ira)->getValue().end());
+                    if (attr->getCount() == 1) {
+                        string attr_value(attr->getValue().begin(), attr->getValue().end());
                         if (attr_value.compare(0, lat_unit_value.size(), lat_unit_value) == 0) {
                             if (attr_value.size() == lat_unit_value.size()) {
                                 ret_value = true;
@@ -316,7 +316,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 // Retrieve group attribute if the attribute flag is true
                 if (true == include_attr) {
 
-                    int num_attrs = (int)(oinfo.num_attrs);
+                    auto num_attrs = (int)(oinfo.num_attrs);
                     bool temp_unsup_attr_dtype = false;
                     bool temp_unsup_attr_dspace = false;
 
@@ -378,7 +378,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 // Retrieve the attribute info. if asked
                 if (true == include_attr) {
 
-                    int num_attrs = (int)(oinfo.num_attrs);
+                    auto num_attrs = (int)(oinfo.num_attrs);
                     bool temp_unsup_attr_dtype = false;
                     bool temp_unsup_attr_dspace = false;
 
@@ -477,7 +477,7 @@ float File::Retrieve_H5_VarCompRatio(const Var *var, const hid_t dset_id) const
 
 }
 // Retrieve HDF5 dataset datatype
-void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dtype) 
+void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, bool &unsup_var_dtype) const 
 {
 
     hid_t ty_id = -1;
@@ -507,7 +507,7 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
         unsup_var_dtype = true;
 
     if (H5Tclose(ty_id) < 0)
-        throw1("Unable to close the HDF5 datatype ");;
+        throw1("Unable to close the HDF5 datatype ");
 }
 
 // Retrieve the HDF5 dataset dimension information
@@ -727,31 +727,29 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
 void File::Retrieve_H5_Supported_Attr_Values() 
 {
 
-    for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira)
-        Retrieve_H5_Attr_Value(*ira, "/");
+    for (auto &root_attr:this->root_attrs)
+        Retrieve_H5_Attr_Value(root_attr, "/");
 
-    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-        for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
-            Retrieve_H5_Attr_Value(*ira, (*irg)->path);
-        }
+    for (const auto &grp:this->groups) {
+        for (auto &grp_attr:grp->attrs) 
+            Retrieve_H5_Attr_Value(grp_attr, grp->path);
     }
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-            Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
+    for (const auto &var:this->vars) {
+        for (auto &var_attr:var->attrs) {
+            Retrieve_H5_Attr_Value(var_attr, var->fullpath);
         }
     }
 }
 
 void File::Retrieve_H5_Var_Attr_Values(Var *var) 
 {
-    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
-        Retrieve_H5_Attr_Value(*ira, var->fullpath);
-    }
+    for (auto &attr:var->attrs) 
+        Retrieve_H5_Attr_Value(attr, var->fullpath);
 }
 
 // Retrieve the values of a specific HDF5 attribute.
-void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name)
+void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name) const
 {
 
     // Define HDF5 object Ids.
@@ -797,9 +795,9 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, const string & obj_name)
                 throw4("Cannot obtain the value of the attribute ", attr->name, " of object ", obj_name);
 
             char *temp_bp = nullptr;
-            char *ptr_1stvlen_ptr = temp_buf.data();
+            const char *ptr_1stvlen_ptr = temp_buf.data();
             temp_bp = temp_buf.data();
-            char* onestring = nullptr;
+            const char* onestring = nullptr;
             string total_vstring = "";
 
             attr->strsize.resize(attr->count);
@@ -1013,7 +1011,7 @@ void File::Handle_Group_Unsupported_Dtype()
     // First root
     if (false == this->root_attrs.empty()) {
         if (true == this->unsupported_attr_dtype) {
-            for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end();) {
+            for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end();) {
                 H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
@@ -1028,14 +1026,14 @@ void File::Handle_Group_Unsupported_Dtype()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-            if (false == (*irg)->attrs.empty()) {
-                if (true == (*irg)->unsupported_attr_dtype) {
-                    for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
+        for (const auto &grp:this->groups) {
+            if (false == grp->attrs.empty()) {
+                if (true == grp->unsupported_attr_dtype) {
+                    for (auto ira = grp->attrs.begin(); ira != grp->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
-                            ira = (*irg)->attrs.erase(ira);
+                            ira = grp->attrs.erase(ira);
                         }
                         else {
                             ++ira;
@@ -1054,13 +1052,13 @@ void File::Gen_Group_Unsupported_Dtype_Info()
     // First root
     if (false == this->root_attrs.empty()) {
         //if (true == this->unsupported_attr_dtype) {
-            for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
-                H5DataType temp_dtype = (*ira)->getType();
+            for (const auto &root_attr:this->root_attrs) {
+                H5DataType temp_dtype = root_attr->getType();
                 // TODO: Don't know why we still include 64-bit integer here.
                 //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
                     || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
-                    this->add_ignored_info_attrs(true, "/", (*ira)->name);
+                    this->add_ignored_info_attrs(true, "/", root_attr->name);
                 }
             }
         //}
@@ -1068,16 +1066,16 @@ void File::Gen_Group_Unsupported_Dtype_Info()
 
     // Then the group attributes
     if (false == this->groups.empty()) {
-        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-            if (false == (*irg)->attrs.empty()) {
-                //if (true == (*irg)->unsupported_attr_dtype) {
-                    for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
+        for (const auto &grp:this->groups) {
+            if (false == grp->attrs.empty()) {
+                //if (true == grp->unsupported_attr_dtype) {
+                    for (const auto &grp_attr:grp->attrs) {
+                        H5DataType temp_dtype = grp_attr->getType();
                         // TODO: Don't know why we still include 64-bit integer here.
                         //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
                             || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
-                            this->add_ignored_info_attrs(true, (*irg)->path, (*ira)->name);
+                            this->add_ignored_info_attrs(true, grp->path, grp_attr->name);
                         }
                     }
                 //}
@@ -1112,13 +1110,13 @@ void File::Gen_Var_Unsupported_Dtype_Info()
 
     if (false == this->vars.empty()) {
         //if (true == this->unsupported_var_dtype) {
-            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                H5DataType temp_dtype = (*irv)->getType();
+            for (const auto &var:this->vars) {
+                H5DataType temp_dtype = var->getType();
                 //TODO: don't know why 64-bit integer is still listed here.
                 //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)
                     ||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
-                    this->add_ignored_info_objs(false, (*irv)->fullpath);
+                    this->add_ignored_info_objs(false, var->fullpath);
                 }
             }
         //}
@@ -1130,14 +1128,14 @@ void File::Gen_Var_Unsupported_Dtype_Info()
 void File::Handle_VarAttr_Unsupported_Dtype() 
 {
     if (false == this->vars.empty()) {
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            if (false == (*irv)->attrs.empty()) {
-                if (true == (*irv)->unsupported_attr_dtype) {
-                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
+        for (const auto &var:this->vars) {
+            if (false == var->attrs.empty()) {
+                if (true == var->unsupported_attr_dtype) {
+                    for (auto ira = var->attrs.begin(); ira != var->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
-                            ira = (*irv)->attrs.erase(ira);
+                            ira = var->attrs.erase(ira);
                         }
                         else {
                             ++ira;
@@ -1154,16 +1152,16 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
 {
 
     if (false == this->vars.empty()) {
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            if (false == (*irv)->attrs.empty()) {
-                //if (true == (*irv)->unsupported_attr_dtype) {
-                    for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                        H5DataType temp_dtype = (*ira)->getType();
+        for (const auto &var:this->vars) {
+            if (false == var->attrs.empty()) {
+                //if (true == var->unsupported_attr_dtype) {
+                    for (const auto &attr:var->attrs) {
+                        H5DataType temp_dtype = attr->getType();
                         // TODO: check why 64-bit integer is still listed here.
                         //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
                         if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
                             || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
-                            this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
+                            this->add_ignored_info_attrs(false, var->fullpath, attr->name);
                         }
                     }
                 //}
@@ -1179,24 +1177,24 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
 void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info() 
 {
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (const auto &var:this->vars) {
 
         // If the attribute REFERENCE_LIST comes with the attribut CLASS, the
         // attribute REFERENCE_LIST is okay to ignore. No need to report.
-        bool is_ignored = ignored_dimscale_ref_list((*irv));
-        if (false == (*irv)->attrs.empty()) {
-            //if (true == (*irv)->unsupported_attr_dtype) {
-                for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                    H5DataType temp_dtype = (*ira)->getType();
+        bool is_ignored = ignored_dimscale_ref_list(var);
+        if (false == var->attrs.empty()) {
+            //if (true == var->unsupported_attr_dtype) {
+                for (const auto &attr:var->attrs) {
+                    H5DataType temp_dtype = attr->getType();
                     // TODO: check why 64-bit is still listed here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
                         || (temp_dtype == H5INT64) || (temp_dtype == H5UINT64)) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
-                        if (("DIMENSION_LIST" != (*ira)->name)
-                            && ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
-                            this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
+                        if (("DIMENSION_LIST" != attr->name)
+                            && ("REFERENCE_LIST" != attr->name || true == is_ignored))
+                            this->add_ignored_info_attrs(false, var->fullpath, attr->name);
                     }
                 }
             //}
@@ -1250,13 +1248,13 @@ void File::Handle_VarAttr_Unsupported_Dspace()
 
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_attr_dspace) {
-            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (false == (*irv)->attrs.empty()) {
-                    if (true == (*irv)->unsupported_attr_dspace) {
-                        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
+            for (const auto &var:this->vars) {
+                if (false == var->attrs.empty()) {
+                    if (true == var->unsupported_attr_dspace) {
+                        for (auto ira = var->attrs.begin(); ira != var->attrs.end();) {
                             if (0 == (*ira)->count) {
                                 delete (*ira);
-                                ira = (*irv)->attrs.erase(ira);
+                                ira = var->attrs.erase(ira);
                             }
                             else {
                                 ++ira;
@@ -1306,9 +1304,9 @@ void File::Gen_Unsupported_Dspace_Info()
     // the only case this function checks is the H5S_NULL case.
     if (false == this->vars.empty()) {
         if (true == this->unsupported_var_dspace) {
-            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (true == (*irv)->unsupported_dspace) {
-                    this->add_ignored_info_objs(true, (*irv)->fullpath);
+            for (const auto &var:this->vars) {
+                if (true == var->unsupported_dspace) {
+                    this->add_ignored_info_objs(true, var->fullpath);
                 }
             }
         }
@@ -1346,10 +1344,10 @@ void File::Handle_Unsupported_Others(bool include_attr)
                 }
             }
 #endif
-            for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (true == Check_DropLongStr((*irv), nullptr)) {
+            for (const auto &var:this->vars) {
+                if (true == Check_DropLongStr(var, nullptr)) {
                     this->add_ignored_droplongstr_hdr();
-                    this->add_ignored_var_longstr_info((*irv), nullptr);
+                    this->add_ignored_var_longstr_info(var, nullptr);
                 }
                 // netCDF java doesn't have  limitation for attributes
 #if 0
@@ -1369,34 +1367,29 @@ void File::Handle_Unsupported_Others(bool include_attr)
 // Flatten the object name, mainly call get_CF_string.
 void File::Flatten_Obj_Name(bool include_attr) 
 {
-
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        (*irv)->newname = get_CF_string((*irv)->newname);
-
-        for (auto ird = (*irv)->dims.begin(); ird != (*irv)->dims.end(); ++ird) {
-            (*ird)->newname = get_CF_string((*ird)->newname);
-        }
+    for (auto &var:this->vars) {
+        var->newname = get_CF_string(var->newname);
+        for (auto &dim:var->dims) 
+            dim->newname = get_CF_string(dim->newname);
     }
 
     if (true == include_attr) {
 
-        for (auto ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
-            (*ira)->newname = get_CF_string((*ira)->newname);
+        for (auto &root_attr:this->root_attrs) {
+            root_attr->newname = get_CF_string(root_attr->newname);
         }
 
-        for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
-            (*irg)->newname = get_CF_string((*irg)->newname);
-            for (auto ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
-                (*ira)->newname = get_CF_string((*ira)->newname);
-            }
+        for (auto &grp:this->groups) {
+            grp->newname = get_CF_string(grp->newname);
+            for (auto &grp_attr:grp->attrs) 
+                grp_attr->newname = get_CF_string(grp_attr->newname);
         }
 
-        for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-            for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
-                (*ira)->newname = get_CF_string((*ira)->newname);
-            }
+        for (const auto &var:this->vars) {
+            for (auto attr:var->attrs) 
+                attr->newname = get_CF_string(attr->newname);
         }
-    } // "if (true == include_attr)"
+    } 
 }
 
 // Variable name clashing
@@ -1452,15 +1445,15 @@ void File::Handle_Obj_AttrNameClashing()
     Handle_General_NameClashing(objnameset, this->root_attrs);
 
     // For group attributes
-    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+    for (const auto &grp:this->groups) {
         objnameset.clear();
-        Handle_General_NameClashing(objnameset, (*irg)->attrs);
+        Handle_General_NameClashing(objnameset, grp->attrs);
     }
 
     // For variable attributes
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (const auto &var:this->vars) {
         objnameset.clear();
-        Handle_General_NameClashing(objnameset, (*irv)->attrs);
+        Handle_General_NameClashing(objnameset, var->attrs);
     }
 }
 
@@ -1477,19 +1470,17 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
     set<string>::iterator iss;
 
     vector<string> clashnamelist;
-    vector<string>::iterator ivs;
 
     map<int, int> cl_to_ol;
     int ol_index = 0;
     int cl_index = 0;
 
     /*class*/
-    typename vector<T*>::iterator irv;
 
-    for (irv = objvec.begin(); irv != objvec.end(); ++irv) {
-        setret = objnameset.insert((*irv)->newname);
+    for (const auto &obj:objvec) {
+        setret = objnameset.insert(obj->newname);
         if (false == setret.second) {
-            clashnamelist.insert(clashnamelist.end(), (*irv)->newname);
+            clashnamelist.insert(clashnamelist.end(), obj->newname);
             cl_to_ol[cl_index] = ol_index;
             cl_index++;
         }
@@ -1498,11 +1489,11 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
 
     // Now change the clashed elements to unique elements, 
     // Generate the set which has the same size as the original vector.
-    for (ivs = clashnamelist.begin(); ivs != clashnamelist.end(); ivs++) {
+    for (auto &clashname:clashnamelist) {
         int clash_index = 1;
-        string temp_clashname = *ivs + '_';
+        string temp_clashname = clashname + '_';
         HDF5CFUtil::gen_unique_name(temp_clashname, objnameset, clash_index);
-        *ivs = temp_clashname;
+        clashname = temp_clashname;
     }
 
     // Now go back to the original vector, make it unique.
@@ -1556,7 +1547,7 @@ void File::Insert_One_NameSizeMap_Element(string name, hsize_t size, bool unlimi
 
 // Similar to Inset_One_NameSizeMap_Element but the maps are provided as parameters.
 void File::Insert_One_NameSizeMap_Element2(map<string, hsize_t>& name_to_size, map<string, bool>& name_to_unlimited,
-    string name, hsize_t size, bool unlimited) 
+    string name, hsize_t size, bool unlimited) const
 {
     pair<map<string, hsize_t>::iterator, bool> mapret;
     mapret = name_to_size.insert(pair<string, hsize_t>(name, size));
@@ -1623,7 +1614,7 @@ void File::Add_One_FakeDim_Name(Dimension *dim)
             mapret = dimsize_to_fakedimname.insert(pair<hsize_t, string>(dim->size, dim->name));
             if (false == mapret.second)
             throw4("The dimension size ", dim->size, " should map to ", dim->name);
-        } // "if(false == setret.second)"
+        }
 
         // New dim name is inserted successfully, update the dimname_to_dimsize map.
         dim->name = added_dimname;
@@ -1686,15 +1677,15 @@ void File::Adjust_Duplicate_FakeDim_Name2(Dimension * dim, int dup_dim_size_inde
     // if no, build up the new FakeDim. 
     bool dup_dim_size_exist = false;
     int temp_dup_dim_size_index = 0;
-    for (unsigned i = 0; i <dup_dimsize_dimname.size();i++) {
+    for (const auto &one_dup_dimsize_dimname:dup_dimsize_dimname) {
         // The dup vector may include different size, so we need to check
         // if having the same size.
-        if(dim->size ==  dup_dimsize_dimname[i].first) { 
+        if(dim->size ==  one_dup_dimsize_dimname.first) { 
             temp_dup_dim_size_index++;
             // Make sure we obtain the correct index in the vector
             if(dup_dim_size_index == temp_dup_dim_size_index) {
                   dup_dim_size_exist = true;
-                  dim->name = dup_dimsize_dimname[i].second;
+                  dim->name = one_dup_dimsize_dimname.second;
                   dim->newname = dim->name;
                   break;
             }
@@ -1764,7 +1755,7 @@ void File::Use_Dim_Name_With_Size_All(const string dim_name, const size_t dim_si
 
 // Often times we need to add a CF attribute with string datatype because some products don't provide them 
 // Examples are units, comment etc.
-void File::Add_Str_Attr(Attribute* attr, const string &attrname, const string& strvalue) 
+void File::Add_Str_Attr(Attribute* attr, const string &attrname, const string& strvalue) const
 {
 
     attr->name = attrname;
@@ -1795,7 +1786,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 #endif
 
 // Rretrieve the variable attribute in string.var_path is the variable path.
-string File::Retrieve_Str_Attr_Value(Attribute *attr, const string & var_path)
+string File::Retrieve_Str_Attr_Value(Attribute *attr, const string & var_path) const
 {
 
     if (attr != nullptr && var_path != "") {
@@ -1834,7 +1825,7 @@ bool File::has_latlon_cf_units(Attribute *attr, const string &varfullpath, bool 
 }
 
 // This function is mainly to add _FillValue.
-void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float float_value) 
+void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float float_value) const
 {
     attr->name = attrname;
     attr->newname = attr->name;
@@ -1846,7 +1837,7 @@ void File::Add_One_Float_Attr(Attribute* attr, const string &attrname, float flo
 
 // Products like GPM use string type for MissingValue, we need to change them to the corresponding variable datatype and 
 // get the value corrected.
-void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) 
+void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var) const
 {
 
     char *pEnd;
@@ -1871,7 +1862,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var)
             throw5("Attribute type is unsigned char, the current attribute ", attr->name, " has the value ", num_sli,
                 ". It is overflowed. ");
         else {
-            unsigned char num_suc = (unsigned char) num_sli;
+            auto num_suc = (unsigned char) num_sli;
             attr->dtype = H5UCHAR;
             attr->value.resize(sizeof(unsigned char));
             memcpy(&(attr->value[0]), (void*) (&num_suc), sizeof(unsigned char));
@@ -1885,7 +1876,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var)
             throw5("Attribute type is signed char, the current attribute ", attr->name, " has the value ", num_sli,
                 ". It is overflowed. ");
         else {
-            char num_sc = (char) num_sli;
+            auto num_sc = (char) num_sli;
             attr->dtype = H5CHAR;
             attr->value.resize(sizeof(char));
             memcpy(&(attr->value[0]), (void*) (&num_sc), sizeof(char));
@@ -1899,7 +1890,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var)
             throw5("Attribute type is 16-bit integer, the current attribute ", attr->name, " has the value ", num_sli,
                 ". It is overflowed. ");
         else {
-            short num_ss = (short) num_sli;
+            auto num_ss = (short) num_sli;
             attr->dtype = H5INT16;
             attr->value.resize(sizeof(short));
             memcpy(&(attr->value[0]), (void*) (&num_ss), sizeof(short));
@@ -1913,7 +1904,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, const Var*var)
             throw5("Attribute type is unsigned 16-bit integer, the current attribute ", attr->name, " has the value ",
                 num_sli, ". It is overflowed. ");
         else {
-            unsigned short num_uss = (unsigned short) num_sli;
+            auto num_uss = (unsigned short) num_sli;
             attr->dtype = H5UINT16;
             attr->value.resize(sizeof(unsigned short));
             memcpy(&(attr->value[0]), (void*) (&num_uss), sizeof(unsigned short));
@@ -1971,9 +1962,9 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 
     bool rep_attr = true;
     bool rem_attr = false;
-    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
-        if ((*ira)->name == attr_name) {
-            if (true == Is_Str_Attr(*ira, var->fullpath, attr_name, strvalue))
+    for (auto &attr:var->attrs) {
+        if (attr->name == attr_name) {
+            if (true == Is_Str_Attr(attr, var->fullpath, attr_name, strvalue))
                 rep_attr = false;
             else
                 rem_attr = true;
@@ -2001,7 +1992,7 @@ void File::Replace_Var_Str_Attr(Var* var, const string &attr_name, const string&
 }
 
 // Check if this variable if latitude,longitude.We check the three name pairs(lat,lon),(latitude,longitude),(Latitude,Longitude)
-bool File::Is_geolatlon(const string & var_name, bool is_lat)
+bool File::Is_geolatlon(const string & var_name, bool is_lat) const
 {
 
     bool ret_value = false;
@@ -2030,47 +2021,46 @@ void File::Add_Supplement_Attrs(bool add_path)
     if (false == add_path) return;
 
     // Adding variable original name(origname) and full path(fullpath)
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto &var:this->vars) {
         auto attr = new Attribute();
-        const string varname = (*irv)->name;
+        const string varname = var->name;
         const string attrname = "origname";
         Add_Str_Attr(attr, attrname, varname);
-        (*irv)->attrs.push_back(attr);
+        var->attrs.push_back(attr);
     }
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto &var:this->vars) {
         // Turn off the fullnamepath attribute when zero_storage_size is 0.
         // Use the BES key since quite a few testing cases will be affected.
         // KY 2020-03-23
-        if((*irv)->zero_storage_size==false 
+        if (var->zero_storage_size==false 
            || HDF5RequestHandler::get_no_zero_size_fullnameattr() == false) {
             auto attr = new Attribute();
-            const string varname = (*irv)->fullpath;
+            const string varname = var->fullpath;
             const string attrname = "fullnamepath";
             Add_Str_Attr(attr, attrname, varname);
-            (*irv)->attrs.push_back(attr);
+            var->attrs.push_back(attr);
         }
     }
 
     // Adding group path
-    for (auto irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
+    for (const auto &grp:this->groups) {
         // Only when this group has attributes, the original path of the group has some values. So add it.
-        if (false == (*irg)->attrs.empty()) {
+        if (false == grp->attrs.empty()) {
 
             auto attr = new Attribute();
-            const string varname = (*irg)->path;
+            const string varname = grp->path;
             const string attrname = "fullnamepath";
             Add_Str_Attr(attr, attrname, varname);
-            (*irg)->attrs.push_back(attr);
+            grp->attrs.push_back(attr);
         }
     }
-
 }
 
 // Variable target will not be deleted, but rather its contents are replaced.
 // We may make this as an operator = in the future.
 // Note: the attributes can not be replaced.
-void File::Replace_Var_Info(Var *src, Var *target)
+void File::Replace_Var_Info(const Var *src, Var *target)
 {
 
 #if 0
@@ -2116,17 +2106,17 @@ void File::Replace_Var_Info(Var *src, Var *target)
     }
 #endif
 
-    for (auto ird = src->dims.begin(); ird != src->dims.end(); ++ird) {
-        auto dim = new Dimension((*ird)->size);
-        dim->name = (*ird)->name;
-        dim->newname = (*ird)->newname;
+    for (const auto& sdim:src->dims) {
+        auto dim = new Dimension(sdim->size);
+        dim->name = sdim->name;
+        dim->newname = sdim->newname;
         target->dims.push_back(dim);
     }
 
 }
 
 // Replace the attributes of target with src.
-void File::Replace_Var_Attrs(Var *src, Var *target)
+void File::Replace_Var_Attrs(const Var *src, Var *target)
 {
 
 #if 0
@@ -2140,15 +2130,15 @@ void File::Replace_Var_Attrs(Var *src, Var *target)
         delete (*ira);
         ira = target->attrs.erase(ira);
     }
-    for (auto ira = src->attrs.begin(); ira != src->attrs.end(); ++ira) {
+    for (const auto &sattr:src->attrs) {
         auto attr = new Attribute();
-        attr->name = (*ira)->name;
-        attr->newname = (*ira)->newname;
-        attr->dtype = (*ira)->dtype;
-        attr->count = (*ira)->count;
-        attr->strsize = (*ira)->strsize;
-        attr->fstrsize = (*ira)->fstrsize;
-        attr->value = (*ira)->value;
+        attr->name = sattr->name;
+        attr->newname = sattr->newname;
+        attr->dtype = sattr->dtype;
+        attr->count = sattr->count;
+        attr->strsize = sattr->strsize;
+        attr->fstrsize = sattr->fstrsize;
+        attr->value = sattr->value;
         target->attrs.push_back(attr);
     }
 
@@ -2158,41 +2148,38 @@ void File::Replace_Var_Attrs(Var *src, Var *target)
 // note: the variable's size at each dimension is also returned. The user must allocate the 
 // memory for the dimension sizes(an array(vector is perferred).
 bool File::is_var_under_group(const string &varname, const string &grpname, const int var_rank,
-    vector<size_t> & var_size)
+    vector<size_t> & var_size) const
 {
 
     bool ret_value = false;
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (const auto &var:this->vars) {
 
-        if ((*irv)->rank == var_rank) {
-            if ((*irv)->name == varname) {
+        if (var->rank == var_rank) {
+            if (var->name == varname) {
 
                 // Obtain the variable path
-                string var_path = HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath);
+                string var_path = HDF5CFUtil::obtain_string_before_lastslash(var->fullpath);
 
                 // Check if we find the variable under this group
                 if (grpname == var_path) {
                     ret_value = true;
                     for (int i = 0; i < var_rank; i++)
-                        var_size[i] = (*irv)->getDimensions()[i]->size;
+                        var_size[i] = var->getDimensions()[i]->size;
                     break;
                 }
             }
-        } // "if((*irv)->rank == var_rank)"
-    } // "for (vector<Var *>::iterator irv = this->vars.begin()"
-
+        }
+    } 
 
     return ret_value;
-
 }
+
 bool File::Have_Grid_Mapping_Attrs(){
 
     bool ret_value = false;
-    for (auto irv = this->vars.begin();
-            irv != this->vars.end(); ++irv) {
-        for (auto ira = (*irv)->attrs.begin();
-            ira != (*irv)->attrs.end(); ++ira) {
-            if((*ira)->name =="grid_mapping") {
+    for (const auto& var:this->vars) {
+        for (const auto& attr:var->attrs) {
+            if(attr->name =="grid_mapping") {
                 ret_value = true;
                 break;
             }
@@ -2202,16 +2189,15 @@ bool File::Have_Grid_Mapping_Attrs(){
     }
 
     return ret_value;
-
 }
 
 void File::Handle_Grid_Mapping_Vars(){
 
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+    for (auto &var:this->vars) {
         string attr_value;
-        for (auto ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
+        for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ++ira) {
             if((*ira)->name =="grid_mapping") {
-                Retrieve_H5_Attr_Value(*ira, (*irv)->fullpath);
+                Retrieve_H5_Attr_Value(*ira, var->fullpath);
                 attr_value.resize((*ira)->value.size());
                 copy((*ira)->value.begin(), (*ira)->value.end(), attr_value.begin());
                 break;
@@ -2219,29 +2205,29 @@ void File::Handle_Grid_Mapping_Vars(){
  
         }
         if(attr_value.find('/') ==string::npos){
-            string new_name = Check_Grid_Mapping_VarName(attr_value,(*irv)->fullpath);
+            string new_name = Check_Grid_Mapping_VarName(attr_value,var->fullpath);
             if(new_name != "")
-                Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
+                Replace_Var_Str_Attr(var,"grid_mapping",new_name);
  
         }
         else {
             string new_name = Check_Grid_Mapping_FullPath(attr_value);
             //Using new_name as the attribute value
             if(new_name != "")
-                Replace_Var_Str_Attr((*irv),"grid_mapping",new_name);
+                Replace_Var_Str_Attr(var,"grid_mapping",new_name);
         }
     }
 
 }
 
-string File::Check_Grid_Mapping_VarName(const string & a_value,const string & var_fpath) {
+string File::Check_Grid_Mapping_VarName(const string & a_value,const string & var_fpath) const {
     
     string var_path = HDF5CFUtil::obtain_string_before_lastslash(var_fpath);
     string gmap_new_name;
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        if((*irv)->name == a_value){
-            if(var_path == HDF5CFUtil::obtain_string_before_lastslash((*irv)->fullpath)) {
-                gmap_new_name = (*irv)->newname;
+    for (const auto &var:this->vars) {
+        if(var->name == a_value){
+            if(var_path == HDF5CFUtil::obtain_string_before_lastslash(var->fullpath)) {
+                gmap_new_name = var->newname;
                 break;
             }
         }
@@ -2250,12 +2236,12 @@ string File::Check_Grid_Mapping_VarName(const string & a_value,const string & va
 }
 
 
-string File::Check_Grid_Mapping_FullPath(const string & a_value) {
+string File::Check_Grid_Mapping_FullPath(const string & a_value) const {
 
     string gmap_new_name;
-    for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-        if((*irv)->fullpath == a_value){
-            gmap_new_name = (*irv)->newname;
+    for (const auto &var:this->vars) {
+        if(var->fullpath == a_value){
+            gmap_new_name = var->newname;
             break;
         }
     }
@@ -2266,20 +2252,20 @@ string File::Check_Grid_Mapping_FullPath(const string & a_value) {
 void File::remove_netCDF_internal_attributes(bool include_attr) {
 
     if(true == include_attr) {
-        for (auto irv = this->vars.begin();
-             irv != this->vars.end(); ++irv) {
+
+        for (const auto &var:this->vars) {
+
             bool var_has_dimscale = false;
             
-            for(auto ira = (*irv)->attrs.begin();
-                ira != (*irv)->attrs.end();) {
+            for (auto ira = var->attrs.begin(); ira != var->attrs.end();) {
                 if((*ira)->name == "CLASS") {
-                    string class_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
+                    string class_value = Retrieve_Str_Attr_Value(*ira,var->fullpath);
 
                     // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
                     // "DIMENSION_SCALE", which is 15.
                     if (0 == class_value.compare(0,15,"DIMENSION_SCALE")) {
                         delete(*ira);
-                        ira = (*irv)->attrs.erase(ira);
+                        ira = var->attrs.erase(ira);
                         var_has_dimscale = true;
                         
                     }
@@ -2294,16 +2280,16 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
                 }
 #if 0
                 else if((*ira)->name == "NAME") {// Add a BES Key 
-                    string name_value = Retrieve_Str_Attr_Value(*ira,(*irv)->fullpath);
-                    if( 0 == name_value.compare(0,(*irv)->name.size(),(*irv)->name)) {
+                    string name_value = Retrieve_Str_Attr_Value(*ira,var->fullpath);
+                    if( 0 == name_value.compare(0,var->name.size(),var->name)) {
                         delete(*ira);
-                        ira =(*irv)->attrs.erase(ira);
+                        ira =var->attrs.erase(ira);
                     }
                     else {
                         string netcdf_dim_mark= "This is a netCDF dimension but not a netCDF variable";
                         if( 0 == name_value.compare(0,netcdf_dim_mark.size(),netcdf_dim_mark)) {
                             delete(*ira);
-                            ira =(*irv)->attrs.erase(ira);
+                            ira =var->attrs.erase(ira);
                         }
                         else {
                             ++ira;
@@ -2314,16 +2300,16 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
 #endif
                 else if((*ira)->name == "_Netcdf4Dimid") {
                         delete(*ira);
-                        ira =(*irv)->attrs.erase(ira);
+                        ira =var->attrs.erase(ira);
                 }
                 else if((*ira)->name == "_Netcdf4Coordinates") {
                         delete(*ira);
-                        ira =(*irv)->attrs.erase(ira);
+                        ira =var->attrs.erase(ira);
                 }
 #if 0
                 else if((*ira)->name == "_nc3_strict") {
                         delete((*ira));
-                        ira =(*irv)->attrs.erase(ira);
+                        ira =var->attrs.erase(ira);
                 }
 #endif
                 else {
@@ -2332,11 +2318,11 @@ void File::remove_netCDF_internal_attributes(bool include_attr) {
             }
 
             if(true == var_has_dimscale) {
-                for(auto ira = (*irv)->attrs.begin();
-                    ira != (*irv)->attrs.end();++ira) {
+                for(auto ira = var->attrs.begin();
+                    ira != var->attrs.end();++ira) {
                     if((*ira)->name == "NAME") {// Add a BES Key 
                         delete(*ira);
-                        ira =(*irv)->attrs.erase(ira);
+                        ira =var->attrs.erase(ira);
                         break;
                     }
                 }
@@ -2520,7 +2506,7 @@ void File::add_no_ignored_info()
 
 // This function should only be used when the HDF5 file is following the netCDF data model.
 // Check if we should not report the Dimension scale related attributes as ignored.
-bool File::ignored_dimscale_ref_list(Var *var)
+bool File::ignored_dimscale_ref_list(const Var *var) const
 {
 
     bool ignored_dimscale = true;
@@ -2528,14 +2514,14 @@ bool File::ignored_dimscale_ref_list(Var *var)
 
     bool has_dimscale = false;
     bool has_reference_list = false;
-    for (auto ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
-        if ((*ira)->name == "REFERENCE_LIST" && false == HDF5CFUtil::cf_strict_support_type((*ira)->getType(),_is_dap4))
+    for (const auto &attr:var->attrs) {
+        if (attr->name == "REFERENCE_LIST" && false == HDF5CFUtil::cf_strict_support_type(attr->getType(),_is_dap4))
             has_reference_list = true;
-        if ((*ira)->name == "CLASS") {
-            Retrieve_H5_Attr_Value(*ira, var->fullpath);
+        if (attr->name == "CLASS") {
+            Retrieve_H5_Attr_Value(attr, var->fullpath);
             string class_value;
-            class_value.resize((*ira)->value.size());
-            copy((*ira)->value.begin(), (*ira)->value.end(), class_value.begin());
+            class_value.resize(attr->value.size());
+            copy(attr->value.begin(), attr->value.end(), class_value.begin());
 
             // Compare the attribute "CLASS" value with "DIMENSION_SCALE". We only compare the string with the size of
             // "DIMENSION_SCALE", which is 15.
@@ -2550,7 +2536,6 @@ bool File::ignored_dimscale_ref_list(Var *var)
         }
 
     }
-    //}
     return ignored_dimscale;
 }
 
@@ -2615,9 +2600,9 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
     else if (H5VSTRING == dtype) {
 
         unsigned long long total_elms = 1;
-        if (dims.size() != 0) {
-            for (unsigned int i = 0; i < dims.size(); i++)
-                total_elms = total_elms * ((dims[i])->size);
+        if (dims.empty() == false) {
+            for (const auto &dim:dims)
+                total_elms = total_elms * (dim->size);
         }
         vector<char> strval;
         strval.resize(total_elms * ty_size);

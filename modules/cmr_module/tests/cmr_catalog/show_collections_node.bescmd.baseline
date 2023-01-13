@@ -1,9 +1,99 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <showNode>
-        <node count="2" lastModified="removed date-time" name="/CMR">
-            <item lastModified="" name="C179003030-ORNL_DAAC" type="node"/>
-            <item lastModified="" name="C1276812863-GES_DISC" type="node"/>
+        <node count="14" lastModified="removed date-time" name="/CMR/SCIOPS">
+            <item lastModified="" name="C1214584278-SCIOPS" type="node">
+                <description>Monthly mean surface pseudo-stress using variational, subjective, and objective-subjective techniques in the Indian, Pacific, and Atlantic oceans.
+
+Data from the Joint World Meteorological Organization/Intergovernmental Oceanographic Commission Technical Commision for Oceanography and Marine Meteorology (JCOMM) Products Bulletin Data Products. The organization was formally known as the Integrated Global Ocean Services System (IGOSS) Data Products Bulletin.
+
+For further data products see:
+http://ingrid.ldeo.columbia.edu/SOURCES/.IGOSS/, http://ingrid.ldeo.columbia.edu/SOURCES/.IGOSS/.data_products.html, and http://iri.ldeo.columbia.edu/climate/monitoring/ipb/.</description>
+            </item>
+            <item lastModified="" name="C1214584279-SCIOPS" type="node">
+                <description>The Scripps Institution of Oceanography heat storage climatology was
+derived from the NODC Global Ocean Temperature/Salinity data set
+(1955-1988) and the Global Temperature/Salinity Pilot Project (GTSPP)
+data set (1989-1994). Temperatures were interpolated at 15 standard
+levels from 0 to 800 meters. The climatological series was based on
+the January 1980-December 1989 data.
+
+Data from the Joint World Meteorological
+Organization/Intergovernmental Oceanographic Commission Technical
+Commision for Oceanography and Marine Meteorology (JCOMM) Products
+Bulletin Data Products. The organization was formally known as the
+Integrated Global Ocean Services System (IGOSS) Data Products
+Bulletin.
+
+For further data products see:
+&quot;http://ingrid.ldeo.columbia.edu/SOURCES/.IGOSS/&quot;
+
+&quot;http://ingrid.ldeo.columbia.edu/SOURCES/.IGOSS/.data_products.html&quot;
+
+and
+&quot;http://iri.ldeo.columbia.edu/climate/monitoring/ipb/&quot;</description>
+            </item>
+            <item lastModified="" name="C1214608529-SCIOPS" type="node">
+                <description>Zonal and meridional wind stress from Cordone ECMWF five-day average
+wind stress, Level 2B data.</description>
+            </item>
+            <item lastModified="" name="C1214608719-SCIOPS" type="node">
+                <description>Sea Level anomaly field of CP model with data from tide gauge stations
+assimilated by reduced space Optimal Smoother (OS).</description>
+            </item>
+            <item lastModified="" name="C1214608721-SCIOPS" type="node">
+                <description>These data sets consist of locations of global occurrences of
+volcanoes and earthquakes. Each data set contains the latitude
+and longitude of the event. The earthquake data sets contains
+the magnitude of the earthquake and depth. The volcano data set
+contains the name of the volcano. An interactive map is
+available to view the information contained in the data sets.</description>
+            </item>
+            <item lastModified="" name="C1214608728-SCIOPS" type="node">
+                <description>Wind stresses from Alain Morliere models.</description>
+            </item>
+            <item lastModified="" name="C1214608753-SCIOPS" type="node">
+                <description>This gridded data set is constructed as described by Reverdin et al. (1994)
+from current data during the period 1987 to April 1992. Drifts of more than
+1000 surface buoys were merged with currents from current-meter moorings at 5
+sites (4 along the equator at 165E, 170W, 140W and 110W and one at 6N, 140W).
+The drifters were initially drogued by a sea anchor of various designs centered
+at 15 meters. The proportion of drifters with drogue present is large near the
+equator (more than 80%), but diminish to roughly 50% near 20N and 20S.
+Corrections were not made for drogue loss, and the systematic error on the 15m
+currents can therefore exceed 5 cm/s near 20N and 20S.</description>
+            </item>
+            <item lastModified="" name="C1214608794-SCIOPS" type="node">
+                <description>Zonal and meridional wind stress for the Atlantic Ocean.</description>
+            </item>
+            <item lastModified="" name="C1214608795-SCIOPS" type="node">
+                <description>Model output consists of surface diagnostics from an atmospheric model
+simulation that used Atmospheric Model Intercomparison Project (AMIP)
+boundary conditions. See http://www-pcmdi.llnl.gov/projects/amip/index.php
+
+Also included are sea surface temperature (SST) anomalies in the
+Pacific and Atlantic Oceans.</description>
+            </item>
+            <item lastModified="" name="C1214608796-SCIOPS" type="node">
+                <description>Sea surface temperature (SST) model runs from Atmospheric Model
+Intercomparison Project (AMIP) boundary conditions. See&quot;
+&quot;http://www-pcmdi.llnl.gov/amip/&quot;</description>
+            </item>
+            <item lastModified="" name="C1214608821-SCIOPS" type="node">
+                <description>River flow for Murray and Darling River in Australia.</description>
+            </item>
+            <item lastModified="" name="C1214608822-SCIOPS" type="node">
+                <description>Data set consists of eastward and northward ship surface drift
+velocity for a climatological period January - December.</description>
+            </item>
+            <item lastModified="" name="C1214610575-SCIOPS" type="node">
+                <description>Time series of sea level pressure (SLP) and sea level pressure
+anomalies to monitor climate change.</description>
+            </item>
+            <item lastModified="" name="C1214610576-SCIOPS" type="node">
+                <description>Time series of sea level pressure (SLP) and sea level pressure
+anomalies to monitor climate change.</description>
+            </item>
         </node>
     </showNode>
 </response>

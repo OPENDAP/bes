@@ -50,9 +50,9 @@
 class HDFUInt32:public libdap::UInt32 {
   public:
     HDFUInt32(const std::string &n, const std::string &d);
-    virtual ~ HDFUInt32();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFUInt32() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFUINT32_H

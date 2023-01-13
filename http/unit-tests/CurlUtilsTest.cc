@@ -24,16 +24,8 @@
 #include "config.h"
 
 #include <memory>
-#include <cstdio>
 #include <cstring>
 #include <iostream>
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include <unistd.h>
-#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -42,11 +34,8 @@
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
-#include "HttpNames.h"
 #include "CredentialsManager.h"
-#include "AccessCredentials.h"
 #include "BESForbiddenError.h"
-#include "BESSyntaxUserError.h"
 
 #include "test_config.h"
 
@@ -60,23 +49,6 @@ using namespace std;
 namespace http {
 
 class CurlUtilsTest : public CppUnit::TestFixture {
-private:
-    void show_file(string filename) {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cerr << endl << "#############################################################################" << endl;
-            cerr << "file: " << filename << endl;
-            cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cerr << file_content << endl;
-            cerr << "#############################################################################" << endl;
-        }
-        else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
-        }
-    }
 
 public:
     string d_data_dir = TEST_DATA_DIR;

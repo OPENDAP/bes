@@ -47,8 +47,7 @@
 
 class ReadTagRef {
   public:
-    virtual ~ ReadTagRef() {
-    } 
+    virtual ~ ReadTagRef() = default;
 
     virtual bool read_tagref(int32 tag, int32 ref, int &error) = 0;
 };

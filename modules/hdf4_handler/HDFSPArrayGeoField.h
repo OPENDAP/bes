@@ -18,7 +18,7 @@
 class HDFSPArrayGeoField:public libdap::Array
 {
     public:
-        HDFSPArrayGeoField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = 0):
+        HDFSPArrayGeoField (int32 rank, const std::string& filename, const int sdfd, int32 fieldref, int32 dtype, SPType sptype, int fieldtype, const std::string & fieldname, const std::string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v),
             rank (rank),
             filename(filename),
@@ -29,20 +29,18 @@ class HDFSPArrayGeoField:public libdap::Array
             fieldtype (fieldtype), 
             name (fieldname) {
         }
-        virtual ~ HDFSPArrayGeoField ()
-        {
-        }
+        ~ HDFSPArrayGeoField () override = default;
 
         // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArrayGeoField (*this);
         }
 
-        virtual bool read ();
+        bool read () override;
 
 
     private:
@@ -76,43 +74,43 @@ class HDFSPArrayGeoField:public libdap::Array
         std::string name;
 
         // Read TRMM level 2 version 6 lat/lon
-        void readtrmml3a_v6 (int32 *, int32 *, int32 *, int);
+        void readtrmml3a_v6 (const int32 *, const int32 *, const int32 *, int);
 
         // Read TRMM level 2 version 6 lat/lon
-        void readtrmml3c_v6 (int32 *, int32 *, int32 *, int);
+        void readtrmml3c_v6 (const int32 *, const int32 *, const int32 *, int);
         // Read TRMM level 2 version 6 lat/lon
-        void readtrmml2_v6 (int32 *, int32 *, int32 *, int);
+        void readtrmml2_v6 (const int32 *, const int32 *, const int32 *, int);
 
 
         // Read OBPG level 2 lat/lon
         void readobpgl2 (int32 *, int32 *, int32 *, int);
 
         // Read OBPG level 3 lat/lon
-        void readobpgl3 (int *, int *,  int);
+        void readobpgl3 (const int *, const int *,  int);
 
         // Read TRMM level 3 version 6 lat/lon
-        void readtrmml3b_v6 (int32 *, int32 *, int32 *, int);
+        void readtrmml3b_v6 (const int32 *, const int32 *, const int32 *, int);
 
         // Read TRMM level 3 version 7 lat/lon
-        void readtrmml3_v7 (int32 *,  int32 *, int);
+        void readtrmml3_v7 (const int32 *,  const int32 *, int);
 
 
         // Read CERES SAVG and CERES ICCP_DAYLIKE lat/lon
-        void readcersavgid1 (int *, int *, int *, int);
+        void readcersavgid1 (const int *, const int *, const int *, int);
 
         // Read CERES SAVG and ICCP_DAYLIKE lat/lon
-        void readcersavgid2 (int *, int *, int *, int);
+        void readcersavgid2 (const int *, const int *, const int *, int);
 
         // Read CERES ZAVG lat/lon
-        void readcerzavg (int32 *, int32 *, int32 *, int);
+        void readcerzavg (const int32 *, const int32 *, const int32 *, int);
 
         // Read CERES AVG and SYN lat/lon
         void readceravgsyn (int32 *, int32 *, int32 *, int);
 
         // Read CERES ES4 and ICCP_GEO lat/lon
-        void readceres4ig (int32 *, int32 *, int32 *, int);
+        void readceres4ig (const int32 *, const int32 *, const int32 *, int);
 
-        template <typename T>  void LatLon2DSubset (T* outlatlon, int ydim, int xdim, T* latlon, int32 * offset, int32 * count, int32 * step);
+        template <typename T>  void LatLon2DSubset (T* outlatlon, int xdim, T* latlon, const int32 * offset, const int32 * count, const int32 * step);
 
 
 

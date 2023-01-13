@@ -67,8 +67,8 @@ HDFArray::HDFArray(const string &n, const string &d, BaseType * v) :
 	Array(n, d, v) {
 }
 
-HDFArray::~HDFArray() {
-}
+HDFArray::~HDFArray() = default;
+
 
 BaseType *HDFArray::ptr_duplicate() {
 	return new HDFArray(*this);
@@ -98,7 +98,9 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err) {
 	string hdf_name = this->name();
 
 	// get slab constraint
-	vector<int> start, edge, stride;
+	vector<int> start;
+        vector<int>  edge;
+        vector<int>  stride;
 	bool isslab = GetSlabConstraint(start, edge, stride);
 
 	bool foundsds = false;
@@ -158,7 +160,9 @@ bool HDFArray::read_tagref(int32 tag, int32 ref, int &err) {
 // stride_array.  Returns true if there is a slab constraint, false otherwise.
 bool HDFArray::GetSlabConstraint(vector<int>&start_array,
 		vector<int>&edge_array, vector<int>&stride_array) {
-	int start = 0, stop = 0, stride = 0;
+	int start = 0;
+        int stop = 0;
+        int stride = 0;
 	int edge = 0;
 
 	start_array = vector<int> (0);
@@ -173,7 +177,7 @@ bool HDFArray::GetSlabConstraint(vector<int>&start_array,
 			return false; // no slab constraint
 		if (start > stop)
 			THROW(dhdferr_arrcons);
-		edge = (int) ((stop - start) / stride) + 1;
+		edge =  ((stop - start) / stride) + 1;
 		if (start + edge > dimension_size(p))
 			THROW(dhdferr_arrcons);
 
@@ -241,7 +245,7 @@ void HDFArray::transfer_dimension_attribute(AttrTable *dim) {
 	// Mark the table as not global
 	dim->set_is_global_attribute(false);
 	// copy the table
-	AttrTable *at = new AttrTable(*dim);
+	auto at = new AttrTable(*dim);
 	// add it to this variable using just the 'dim_<digit>' part of the name
 	string name = at->get_name().substr(at->get_name().find("dim"));
 	get_attr_table().append_container(at, name);

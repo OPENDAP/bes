@@ -764,6 +764,17 @@ AC_ARG_WITH([hdfeos2],
             [HDFEOS2_DIR=${withval}], 
             [HDFEOS2_DIR="$ac_bes_dependencies_prefix"])
 
+dnl Check if the HDF-EOS2 library exists.
+ac_hdfeos2_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include"
+AC_CHECK_HEADERS([HDFEOSVersion.h],[],[HDFEOS2_DIR=])
+CPPFLAGS="$ac_hdfeos2_save_CPPFLAGS"
+
+ac_hdfeos2_save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
+AC_CHECK_LIB(hdfeos,SWopen,[HDFEOS2_LDFLAGS=],[HDFEOS2_DIR=],[-lmfhdf -ldf -lz -ljpeg -lm])
+LDFLAGS="$ac_hdfeos2_save_LDFLAGS"
+
 AS_IF([test -n "$HDFEOS2_DIR"],
     [HDFEOS2_CPPFLAGS="-I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
     HDFEOS2_LDFLAGS="-L$HDFEOS2_DIR/lib"
@@ -774,6 +785,7 @@ AS_IF([test -n "$HDFEOS2_DIR"],
     [AC_MSG_NOTICE([HDFEOS2 set to false])
     AM_CONDITIONAL([HDFEOS2], [false])]
  )
+
     
 AC_SUBST([HDFEOS2_CPPFLAGS])
 AC_SUBST([HDFEOS2_LDFLAGS])
