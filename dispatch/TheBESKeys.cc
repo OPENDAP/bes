@@ -121,30 +121,11 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-        d_keys_file_name(keys_file_name), d_the_keys(0), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(true)
+        d_keys_file_name(keys_file_name)
 {
     d_the_keys = new map<string, vector<string> >;
     d_the_original_keys = new map<string, vector<string> >;
-    initialize_keys();
-}
 
-#if 0
-TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-        d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(false)
-{
-    initialize_keys();
-}
-#endif
-
-/** @brief cleans up the key/value pair mapping
- */
-TheBESKeys::~TheBESKeys()
-{
-    clean();
-}
-
-void TheBESKeys::initialize_keys()
-{
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
     *d_the_original_keys = *d_the_keys;
     BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
@@ -152,15 +133,17 @@ void TheBESKeys::initialize_keys()
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 }
 
-void TheBESKeys::clean()
+/** @brief cleans up the key/value pair mapping
+ */
+TheBESKeys::~TheBESKeys()
 {
     if (d_the_keys && d_own_keys) {
         delete d_the_keys;
-        d_the_keys = 0;
+        d_the_keys = nullptr;
     }
-    if(d_the_original_keys){
+    if (d_the_original_keys) {
         delete d_the_original_keys;
-        d_the_original_keys = 0;
+        d_the_original_keys = nullptr;
     }
 }
 
@@ -173,16 +156,7 @@ void TheBESKeys::clean()
  */
 bool TheBESKeys::LoadedKeys(const string &key_file)
 {
-#if 0
-    vector<string>::const_iterator i = TheBESKeys::d_ingested_key_files.begin();
-    vector<string>::const_iterator e = TheBESKeys::d_ingested_key_files.end();
-    for (; i != e; i++) {
-        if ((*i) == key_file) {
-            return true;
-        }
-    }
-#endif
-    set<string>::iterator it = d_ingested_key_files.find(key_file);
+    const auto it = d_ingested_key_files.find(key_file);
 
     return it != d_ingested_key_files.end();
 }
@@ -199,7 +173,7 @@ bool TheBESKeys::LoadedKeys(const string &key_file)
  * replaces all values for the key
  *
  * @param key name of the key/value pair to be set
- * @param val value of the key to be set
+ * @param val value of the key to be set; value is not set if empty.
  * @param addto Specifies whether to add the value to the key or set the
  * value. Default is to set, not add to
  */
@@ -229,7 +203,8 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
  * replaces all values for the key
  *
  * @param key name of the key/value pair to be set
- * @param values A collection of values to to associate with the key
+ * @param values A collection of values to to associate with the key; empty values
+ * are not set.
  * @param addto Specifies whether to append the values to the key or set the
  * value. Default is to set, not append to
  */
@@ -243,10 +218,9 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
     }
     if (!addto) (*d_the_keys)[key].clear();
 
-    size_t j;
-    for(j = 0; j!=values.size(); j++){
-        if (!values[j].empty()) {
-            (*d_the_keys)[key].push_back(values[j]);
+    for(const auto &value: values) {
+        if (!value.empty()) {
+            (*d_the_keys)[key].push_back(value);
         }
     }
 }
@@ -395,7 +369,7 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
  * key is set to "true", "yes", or "on", otherwise the key value is
  * interpreted as false. If \arg key is not set, return \arg default_value.
  */
-bool TheBESKeys::read_bool_key(const string &key, bool default_value)
+bool TheBESKeys::read_bool_key(const string &key, bool default_value) const
 {
     bool found = false;
     string value;
@@ -420,7 +394,7 @@ bool TheBESKeys::read_bool_key(const string &key, bool default_value)
  * @param default_value Return this value if \arg key is not found.
  * @return The string value of \arg key.
  */
-string TheBESKeys::read_string_key(const string &key, const string &default_value)
+string TheBESKeys::read_string_key(const string &key, const string &default_value) const
 {
     bool found = false;
     string value;
@@ -447,7 +421,37 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
  * @param default_value Return this value if \arg key is not found.
  * @return The integer value of \arg key.
  */
-int TheBESKeys::read_int_key(const string &key, int default_value)
+int TheBESKeys::read_int_key(const string &key, int default_value) const
+{
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if found is true
+    if (found) {
+        std::istringstream iss(value);
+        int int_val;
+        iss >> int_val;
+        if (!iss.eof() || iss.bad() || iss.fail())
+            return default_value;
+        else
+            return int_val;
+    }
+    else {
+        return default_value;
+    }
+}
+
+/**
+ * @brief Read an integer-valued key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to loop up
+ * @param default_value Return this value if \arg key is not found.
+ * @return The integer value of \arg key.
+ */
+unsigned long TheBESKeys::read_ulong_key(const string &key, unsigned long default_value) const
 {
     bool found = false;
     string value;

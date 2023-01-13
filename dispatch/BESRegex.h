@@ -37,8 +37,13 @@
 //
 // See the README about regex tests in the unit-tests directory. Neither regex implementation
 // is faster in every case, but the new code handles complex expressions faster. jhrg 12/30/22
+//
+// NB: I added this test for OSX because on my development machine, the C++11 regex library
+// does not quite work as it does currently on linux. jhrg 1/2/13
+#if __APPLE__
+#define FORCE_OLD_REGEX 1
+#endif
 
-#define FORCE_OLD_REGEX 0
 #if FORCE_OLD_REGEX
 
 #include <string>
