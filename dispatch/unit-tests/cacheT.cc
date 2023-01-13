@@ -30,36 +30,28 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-using namespace CppUnit;
-
 #include <unistd.h>  // for sleep
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>  // for closedir opendir
 
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <cstring>
-#include <unistd.h>
 
-using std::cerr;
-using std::endl;
-using std::ostringstream;
+#include <cppunit/TextTestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <TheBESKeys.h>
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESFileLockingCache.h>
+#include "TheBESKeys.h"
+#include "BESError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESFileLockingCache.h"
 
 #include "test_config.h"
 
 using namespace std;
+using namespace CppUnit;
 
 // Not run by default!
 // Set from the command-line invocation of the main only
@@ -82,7 +74,16 @@ static const unsigned long long FILE_SIZE_IN_MEGS_TEST_64 = 1024ULL; // in Mb
 static bool debug = false;
 static bool bes_debug = false;
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
+
+/// Run a command in a shell.
+void run_sys(const string &cmd)
+{
+    int status;
+    DBG(cerr << __func__ << " command: '" << cmd);
+    status = system(cmd.c_str());
+    DBG(cerr << "' status: " << status << endl);
+}
 
 /**
  * @brief Set up the cache.
@@ -93,13 +94,6 @@ static bool bes_debug = false;
  *
  * @param cache_dir Directory that holds the cached files.
  */
-void run_sys(const string cmd)
-{
-    int status;
-    DBG(cerr << __func__ << " command: '" << cmd);
-    status = system(cmd.c_str());
-    DBG(cerr << "' status: " << status << endl);
-}
 void init_cache(const string &cache_dir)
 {
     DBG(cerr << __func__ << "() - BEGIN " << endl);
@@ -117,8 +111,6 @@ void init_cache(const string &cache_dir)
         cmd.append("chmod a+w ").append(s.str());
         run_sys(cmd);
 
-        // DBG(cerr << __func__ << "() - sleeping for 1 second..." << endl);
-        //sleep(1);
         cmd = "";
         cmd.append("cat ").append(s.str()).append(" > /dev/null");
         run_sys(cmd);
@@ -169,18 +161,17 @@ void purge_cache(const string &cache_dir, const string &cache_prefix)
     DBG(cerr << __func__ << "() - BEGIN " << endl);
     ostringstream s;
     s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
-    DBG(cerr << __func__ << "() - cmd: " << s.str() << endl);
-    system(s.str().c_str());
+    run_sys(s.str());
     DBG(cerr << __func__ << "() - END " << endl);
 }
 
-string show_cache(const string cache_dir, const string match_prefix)
+string show_cache(const string &cache_dir, const string &match_prefix)
 {
     map<string, string> contents;
     ostringstream oss;
     DIR *dip = opendir(cache_dir.c_str());
     CPPUNIT_ASSERT(dip);
-    struct dirent *dit;
+    struct dirent *dit = nullptr;
     while ((dit = readdir(dip)) != NULL) {
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) {
@@ -194,18 +185,12 @@ string show_cache(const string cache_dir, const string match_prefix)
 }
 
 class cacheT: public TestFixture {
-private:
 
 public:
-    cacheT()
-    {
-    }
-    ~cacheT()
-    {
-    }
+    cacheT() = default;
+    ~cacheT() = default;
 
-    void setUp()
-    {
+    void setUp() override {
         string bes_conf = (string) TEST_SRC_DIR + "/cacheT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
 
@@ -215,8 +200,9 @@ public:
         }
     }
 
-    void tearDown()
-    {
+    void tearDown() override {
+        purge_cache(TEST_CACHE_DIR, CACHE_PREFIX);
+        purge_cache(CACHE_DIR_TEST_64, CACHE_PREFIX);
     }
 
     // Fill the test directory with files summing > 4Gb.
@@ -323,8 +309,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////////////////////
     // CPPUNIT
 
-    void test_empty_cache_dir_name_cache_creation()
-    {
+    void test_empty_cache_dir_name_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             // Should return a disabled cache if the dir is "";
@@ -334,9 +319,7 @@ public:
 
         }
         catch (BESError &e) {
-            DBG(
-                cerr << __func__ << "Failed to create disabled cache. That's BAD. " << "msg: " << e.get_message()
-                    << endl);
+            CPPUNIT_FAIL("Failed to create disabled cache. msg: " + e.get_verbose_message());
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
@@ -344,17 +327,11 @@ public:
     void test_missing_cache_dir_cache_creation()
     {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
-        try {
-        	//Only run this test if you don't have access (mainly for in case something is built in root)
-        		if (access("/", W_OK) != 0) {
-        			BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0);
-        			CPPUNIT_ASSERT(!"Created cache with non-existent dir");
-        		}
-        }
-        catch (BESError &e) {
-            DBG(
-                cerr << __func__ << "() - Unable to create cache in non-existent dir. " << "That's good. msg: "
-                    << e.get_message() << endl);
+        //Only run this test if you don't have access (mainly for in case something is built in root)
+        if (access("/", W_OK) != 0) {
+            CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception - should not be able to create cache in root dir",
+                                         BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0),
+                                         BESInternalError);
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
