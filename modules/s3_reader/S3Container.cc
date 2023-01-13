@@ -117,45 +117,36 @@ S3Container::~S3Container()
  */
 string S3Container::access()
 {
-    // TODO What if this wasn't the assumption? jhrg 10/18/22
-
-    // TODO Improve this because it's called multiple times and should check to see if
-    //  there is a cached object already. jhrg 10/19/22
-
-    // Since this is S3 we know that the real_name is a URL.
-    const string data_access_url_str = get_real_name();
-
-    // And we know that the dmr++ file should "right next to it" (side-car)
-    const string dmrpp_url_str = string(data_access_url_str).append(".dmrpp");
-
-    // And if there's a missing data file (side-car) it should be "right there" too.
-    const string missing_data_url_str = string(data_access_url_str).append(".missing");
-
-    BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
-    BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
-    BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
-
-    const string href = "href=\"";
-
-    const string data_access_url_key = string(href).append(DATA_ACCESS_URL_KEY).append("\"");
-    const string missing_data_access_url_key = string(href).append(MISSING_DATA_ACCESS_URL_KEY).append("\"");
-
-    const string trusted_url_hack = R"(" dmrpp:trust="true")";
-    const string data_access_url_with_trusted_attr_str = string(href).append(data_access_url_str).append(trusted_url_hack);
-    const string missing_data_url_with_trusted_attr_str = string(href).append(missing_data_url_str).append(trusted_url_hack);
-
-    BESDEBUG(MODULE, prolog << "        data_access_url_key: " << data_access_url_key << endl);
-    BESDEBUG(MODULE, prolog << "    data_access_url_trusted: " << data_access_url_with_trusted_attr_str << endl);
-    BESDEBUG(MODULE, prolog << "missing_data_access_url_key: " << missing_data_access_url_key << endl);
-    BESDEBUG(MODULE, prolog << "   missing_data_url_trusted: " << missing_data_url_with_trusted_attr_str << endl);
-
-    string type = get_container_type();
-    // 'type' will be set below, just be the code returns. jhrg 10/18/22
-    if (type == S3_NAME)
-        type = "";
-
     if (!d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
+
+        // TODO What if this wasn't the assumption? jhrg 10/18/22
+        // Since this is S3 we know that the real_name is a URL.
+        const string data_access_url_str = get_real_name();
+
+        // And we know that the dmr++ file should be "right next to it" (side-car)
+        const string dmrpp_url_str = string(data_access_url_str).append(".dmrpp");
+
+        // And if there's a missing data file (side-car) it should be "right there" too.
+        const string missing_data_url_str = string(data_access_url_str).append(".missing");
+
+        BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
+        BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
+        BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
+
+        const string href = "href=\"";
+
+        const string data_access_url_key = string(href).append(DATA_ACCESS_URL_KEY).append("\"");
+        const string missing_data_access_url_key = string(href).append(MISSING_DATA_ACCESS_URL_KEY).append("\"");
+
+        const string trusted_url_hack = R"(" dmrpp:trust="true")";
+        const string data_access_url_with_trusted_attr_str = string(href).append(data_access_url_str).append(trusted_url_hack);
+        const string missing_data_url_with_trusted_attr_str = string(href).append(missing_data_url_str).append(trusted_url_hack);
+
+        BESDEBUG(MODULE, prolog << "        data_access_url_key: " << data_access_url_key << endl);
+        BESDEBUG(MODULE, prolog << "    data_access_url_trusted: " << data_access_url_with_trusted_attr_str << endl);
+        BESDEBUG(MODULE, prolog << "missing_data_access_url_key: " << missing_data_access_url_key << endl);
+        BESDEBUG(MODULE, prolog << "   missing_data_url_trusted: " << missing_data_url_with_trusted_attr_str << endl);
 
         map<string, string> content_filters;
         if (S3RequestHandler::d_inject_data_url) {
@@ -177,7 +168,8 @@ string S3Container::access()
             d_dmrpp_rresource->retrieveResource(content_filters);
         }
 
-        BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
+        BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
+                 << d_dmrpp_rresource->getCacheFileName() << endl);
     }
 
     // RemoteResource has a destructor that unlocks the cached item. This string is
@@ -190,7 +182,6 @@ string S3Container::access()
     set_container_type(type);
 
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-    BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: " << (void *) this << ")" << endl);
 
     return cachedResource;    // this should return the dmr++ file name from the S3Cache
