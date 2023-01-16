@@ -148,7 +148,6 @@ void BESAsciiTransmit::send_dap4_csv_helper(ostream &out, DMR *dmr, const string
     // Verify the request hasn't exceeded bes_timeout.
     RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
 
-//cerr<<"before print_value "<<endl;
     print_values_as_ascii(dmr, out);
     out << flush;
 }
@@ -199,7 +198,6 @@ void BESAsciiTransmit::send_dap4_csv(BESResponseObject *obj, BESDataHandlerInter
             send_dap4_csv_helper(dhi.get_output_stream(), &function_result, dap4Constraint);
         }
         else {
-//cerr<<"coming to else "<<endl;
             send_dap4_csv_helper(dhi.get_output_stream(), dmr, dap4Constraint);
         }
 

@@ -281,7 +281,6 @@ static void print_complex_array(Array *a, ostream &strm, bool print_name, Crc32 
  */
 static void print_values_as_ascii(Array *a, bool print_name, ostream &strm, Crc32 &checksum)
 {
-//cerr<<"coming to print_values_as_ascii Array "<<endl;
     if (a->var()->is_simple_type()) {
         if (a->dimensions(true) > 1) {
             print_ndim_array(a, strm, print_name);
@@ -422,7 +421,6 @@ static void print_values_as_ascii(D4Opaque *v, bool print_name, ostream &strm, C
 
 static void print_values_as_ascii(D4Group *group, bool print_name, ostream &strm, Crc32 &checksum)
 {
-//cerr<<"coming to print_values group "<<endl;
     for (D4Group::groupsIter g = group->grp_begin(), e = group->grp_end(); g != e; ++g)
     	print_values_as_ascii(*g, print_name, strm, checksum);
 
@@ -436,9 +434,7 @@ static void print_values_as_ascii(D4Group *group, bool print_name, ostream &strm
 	for (Constructor::Vars_iter i = group->var_begin(), e = group->var_end(); i != e; ++i) {
 		// Only send the stuff in the current subset.
 		if ((*i)->send_p()) {
-//cerr<<"coming to print_values constr before intern "<<endl;
 			(*i)->intern_data();
-//cerr<<"before print in constructor"<<endl;
 			// print the data
 			print_values_as_ascii((*i), print_name, strm, checksum);
 			strm << endl;
