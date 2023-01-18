@@ -71,11 +71,12 @@ static void print_array_vector(Array *a, ostream &strm, bool print_name)
 
     // only one dimension
     // Added to support zero-length arrays. jhrg 2/2/16
-    if (a->dimension_size(a->dim_begin(), true) > 0) {
-        int end = a->dimension_size(a->dim_begin(), true) - 1;
+//cerr<<"coming to print_array_vector "<<endl;
+    if (a->dimension_size_ll(a->dim_begin(), true) > 0) {
+        int64_t end = a->dimension_size_ll(a->dim_begin(), true) - 1;
 
-        for (int i = 0; i < end; ++i) {
-            a->var(i)->print_val(strm, "", false /*print_decl*/);
+        for (int64_t i = 0; i < end; ++i) {
+            a->var_ll(i)->print_val(strm, "", false /*print_decl*/);
             strm << ", ";
         }
         a->var(end)->print_val(strm, "", false /*print_decl*/);
@@ -434,7 +435,6 @@ static void print_values_as_ascii(D4Group *group, bool print_name, ostream &strm
 		// Only send the stuff in the current subset.
 		if ((*i)->send_p()) {
 			(*i)->intern_data();
-
 			// print the data
 			print_values_as_ascii((*i), print_name, strm, checksum);
 			strm << endl;
