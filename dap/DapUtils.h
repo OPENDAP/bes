@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "AttrTable.h"
 #include "DDS.h"
