@@ -19,8 +19,8 @@ Incompatible variables:
 </Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>DapUtils.cc</File>
-                <Line>129</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDAS>
