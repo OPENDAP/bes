@@ -714,15 +714,18 @@ void FONcTransform::transform_dap4() {
 
     if (d4_true && _returnAs == "netcdf"){
         stringstream msg;
-        msg << "This dataset contains variables/attributes whose data types are not compatible with the ";
-        msg << "NetCDF-3 data model. If your request includes any of variables reprsented by one of these ";
-        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, ";
+        msg << "This dataset contains variables and/or attributes whose data types are not compatible with the " << endl;
+        msg << "NetCDF-3 data model. If your request includes any of variables represented by one of these " << endl;
+        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, " << endl;
         msg << "your request will FAIL. " << endl;
-        msg << "You may also try constraining your request to omit the problematic data type(s), ";
+        msg << endl;
+        msg << "You may also try constraining your request to omit the problematic data type(s), " << endl;
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
-        msg << "Number of non-compatible variables: " << inventory.size() << endl;
+        msg << "There are" << inventory.size() << " incompatible variables referenced in your request." << endl;
+        msg << "Incompatible variables: " << endl;
+        msg << endl;
         for(const auto &entry: inventory){
-            msg << entry << endl;
+            msg << "    " << entry << endl;
         }
         throw BESSyntaxUserError(
                 msg.str(),
