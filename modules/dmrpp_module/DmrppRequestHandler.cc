@@ -479,7 +479,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
             unique_ptr<DDS> dds(dmr.getDDS());
 
             dds->mark_all(true);
-            dap_utils::throw_for_dap4_typed_vars_or_attrs(dds.get());
+            dap_utils::throw_for_dap4_typed_vars_or_attrs(dds.get(), __FILE__, __LINE__);
 
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);

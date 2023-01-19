@@ -44,13 +44,11 @@ void log_request_and_memory_size(libdap::DDS *const *dds);
 
 void log_request_and_memory_size(/*const*/ libdap::DMR &dmr);
 
-bool has_dap4_typed_attributes(const std::string &path, libdap::AttrTable *atable, std::vector<std::string> &inventory);
-void throw_for_dap4_typed_attrs(libdap::DAS *das);
-void throw_for_dap4_typed_vars_or_attrs(libdap::DDS *dds);
-void throw_for_dap4_typed_vars_or_attrs(unique_ptr<libdap::DDS>);
+void throw_for_dap4_typed_attrs(libdap::DAS *das, const std::string &file, unsigned int line);
+void throw_for_dap4_typed_vars_or_attrs(libdap::DDS *dds, const std::string &file, unsigned int line);
 
-void throw_if_dap2_response_too_big(libdap::DDS *dds);
-void throw_if_dap4_response_too_big(libdap::DMR &dmr);
+void throw_if_dap2_response_too_big(libdap::DDS *dds, const std::string &file, unsigned int line);
+void throw_if_dap4_response_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line);
 
 }
 #endif //BES_DAPUTILS_H

@@ -378,7 +378,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DAS &das, bool with_mime_head
 {
     if (with_mime_headers) set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), "2.0");
 
-    dap_utils::throw_for_dap4_typed_attrs(&das);
+    dap_utils::throw_for_dap4_typed_attrs(&das, __FILE__, __LINE__);
 
     das.print(out);
 
@@ -419,7 +419,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
 
         BESUtil::conditional_timeout_cancel();
         (*dds)->mark_all(true);
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds);
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
 
         (*dds)->print_das(out);
         out << flush;
@@ -459,7 +459,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
     else {
         eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
 
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds);
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_text(out, dods_das, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -503,7 +503,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds);
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
 
         (*dds)->print(out);
         out << flush;
@@ -573,7 +573,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
     else {
         BESDEBUG(MODULE, prolog << "Simple constraint: " << d_dap2ce << endl);
         eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds); // Throws error if dap4 types will be in the response.
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__); // Throws error if dap4 types will be in the response.
 
         if (with_mime_headers)
             set_mime_text(out, dods_dds, x_plain, last_modified_time(d_dataset),(*dds)->get_dap_version());
@@ -937,7 +937,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         // Server functions might mark (i.e. setting send_p) so variables will use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
         // sent. If that is empty (there was only a function call) all
-        // of the variables in the intermediate DDS (i.e., the function
+        // the variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         dds->mark_all(false);
 
@@ -958,7 +958,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-    dap_utils::throw_if_dap2_response_too_big(dds);
+    dap_utils::throw_if_dap2_response_too_big(dds, __FILE__, __LINE__);
 
     // Iterate through the variables in the DataDDS and read
     // in the data if the variable has its send flag set.
@@ -1034,7 +1034,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_dap2_response_too_big(*dds);
+        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1055,8 +1055,8 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         eval.parse_constraint(get_ce(), **dds); // Throws Error if the ce doesn't parse.
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds);
-        dap_utils::throw_if_dap2_response_too_big(*dds);
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1154,7 +1154,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_dap2_response_too_big(*dds);
+        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1175,8 +1175,8 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         eval.parse_constraint(get_ce(), **dds); // Throws Error if the ce doesn't parse.
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds);
-        dap_utils::throw_if_dap2_response_too_big(*dds);
+        dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
+        dap_utils::throw_if_dap2_response_too_big(*dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1359,7 +1359,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     }
 
     dap_utils::log_request_and_memory_size(dmr);
-    dap_utils::throw_if_dap4_response_too_big(dmr);
+    dap_utils::throw_if_dap4_response_too_big(dmr, __FILE__, __LINE__);
 
     // The following block is for debugging purpose. KY 05/13/2020
 #if !NDEBUG
@@ -1410,7 +1410,7 @@ void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
         dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
-    dap_utils::throw_if_dap4_response_too_big(dmr);
+    dap_utils::throw_if_dap4_response_too_big(dmr, __FILE__, __LINE__);
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)

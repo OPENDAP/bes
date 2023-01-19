@@ -39,6 +39,10 @@ using namespace libdap;
 
 namespace dap_utils {
 
+/**
+ *
+ * @param req_size
+ */
 static void log_request_and_memory_size_helper(long req_size) {
     auto mem_size = BESUtil::get_current_memory_usage();    // size in KB or 0. jhrg 4/6/22
     if (mem_size) {
@@ -57,8 +61,7 @@ static void log_request_and_memory_size_helper(long req_size) {
  *
  * @param dds Use this DDS to get the size of the request.
  */
-void
-log_request_and_memory_size(DDS *const *dds)
+void log_request_and_memory_size(DDS *const *dds)
 {
     auto req_size = (long)(*dds)->get_request_size_kb(true);
     log_request_and_memory_size_helper(req_size);
@@ -72,42 +75,22 @@ log_request_and_memory_size(DDS *const *dds)
  *
  * @param dmr Use this DMR to get the size of the request.
  */
-void
-log_request_and_memory_size(/*const*/ DMR &dmr)
+void log_request_and_memory_size(/*const*/ DMR &dmr)
 {
     // The request_size_kb() method is not marked const. Fix. jhrg 4/6/22
     auto req_size = (long)dmr.request_size_kb(true);
     log_request_and_memory_size_helper(req_size);
 }
 
+
+
 /**
- *
- * @param dds
+ * @brief Throws an exception if the projected variables and or attributes of the DDS have dap4 types.
+ * @param dds The DDS to examine.
+ * @param file The file of the calling function/method
+ * @param line The line of the calling function/method.
  */
-void throw_for_dap4_typed_vars_or_attrs(unique_ptr<libdap::DDS> dds){
-    vector<string> inventory;
-    if(dds->is_dap4_projected(inventory)){
-        stringstream msg;
-        msg << endl;
-        msg << "ERROR: Unable to convert a DAP4 DMR for this dataset to a DAP2 DDS object. " << endl;
-        msg << "This dataset contains variables and/or attributes whose data types are not compatible " << endl;
-        msg << "with the DAP2 data model." << endl;
-        msg << endl;
-        msg << "There are " << inventory.size() << " incompatible variables and/or attributes referenced " << endl;
-        msg  << "in your request." << endl;
-        msg << "Incompatible variables: " << endl;
-        msg << endl;
-        for(const auto &entry: inventory){
-            msg << "    " << entry << endl;
-        }
-        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-    }
-
-}
-
-
-
-void throw_for_dap4_typed_vars_or_attrs(DDS *dds)
+void throw_for_dap4_typed_vars_or_attrs(DDS *dds, const std::string &file, unsigned int line)
 {
     vector<string> inventory;
     if(dds->is_dap4_projected(inventory)){
@@ -124,14 +107,20 @@ void throw_for_dap4_typed_vars_or_attrs(DDS *dds)
         for(const auto &entry: inventory){
             msg << "    " << entry << endl;
         }
-        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        throw BESSyntaxUserError(msg.str(), file, line);
     }
 }
 
-void throw_for_dap4_typed_attrs(DAS *das)
+/**
+ * @brief Throws an exception if the projected variables and or attributes of the DAS have dap4 types.
+ * @param dds The DDS to examine.
+ * @param file The file of the calling function/method
+ * @param line The line of the calling function/method.
+ */
+void throw_for_dap4_typed_attrs(DAS *das, const std::string &file, unsigned int line)
 {
     vector<string> inventory;
-    if(has_dap4_typed_attributes("", das->container(), inventory)){
+    if(das->container()->has_dap4_types("/",inventory)){
         stringstream msg;
         msg << endl;
         msg << "ERROR: Unable to convert a DAP4 DMR for this dataset to a DAP2 DAS object. " << endl;
@@ -145,45 +134,8 @@ void throw_for_dap4_typed_attrs(DAS *das)
         for(const auto &entry: inventory){
             msg << "    " << entry << endl;
         }
-        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        throw BESSyntaxUserError(msg.str(), file, line);
     }
-}
-
-
-bool has_dap4_typed_attributes(const std::string &path, AttrTable *atable, std::vector<std::string> &inventory)
-{
-    if(!atable)
-        return false;
-
-    bool has_d4_attr = false;
-    for(auto aitr=atable->attr_begin();aitr!=atable->attr_end();aitr++){
-        bool ima_d4_attr = false;
-        string attr_fqn = path + "@" + (*aitr)->name;
-        switch ((*aitr)->type) {
-            case Attr_int8:
-            case Attr_int64:
-            case Attr_uint64:
-            case Attr_enum:
-            case Attr_opaque:
-            {
-                ima_d4_attr = true;
-                break;
-            }
-            case Attr_container:
-            {
-                ima_d4_attr |= has_dap4_typed_attributes(attr_fqn, (*aitr)->attributes, inventory);
-                break;
-            }
-            default:
-                //noop;
-                break;
-        }
-        if(ima_d4_attr){
-            inventory.emplace_back(AttrType_to_String((*aitr)->type) + " " + attr_fqn);
-        }
-        has_d4_attr |= ima_d4_attr;
-    }
-    return has_d4_attr;
 }
 
 /**
@@ -192,26 +144,19 @@ bool has_dap4_typed_attributes(const std::string &path, AttrTable *atable, std::
  * param uses KB. The DMR uses KB throughout.
  * @param dds
  */
-void throw_if_dap2_response_too_big(DDS *dds)
+void throw_if_dap2_response_too_big(DDS *dds, const std::string &file, unsigned int line)
 {
     if (dds->too_big()) {
-#if 0
-        stringstream msg;
-        msg << "The Request for " << request_size / 1024 << " kilobytes is too large; ";
-        msg << "requests on this server are limited to "
-            + long_to_string(dds->get_response_limit() /1024) + "KB.";
-        throw Error(msg.str());
-#endif
         stringstream msg;
         msg << "The submitted DAP2 request will generate a " << dds->get_request_size_kb(true);
         msg <<  " kilobyte response, which is too large. ";
         msg << "The maximum response size for this server is limited to " << dds->get_response_limit_kb();
         msg << " kilobytes.";
-        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        throw BESSyntaxUserError(msg.str(),file, line);
     }
 }
 
-void throw_if_dap4_response_too_big(DMR &dmr)
+void throw_if_dap4_response_too_big(DMR &dmr, const std::string &file, unsigned int line)
 {
     if (dmr.too_big()) {
         stringstream msg;
@@ -219,7 +164,7 @@ void throw_if_dap4_response_too_big(DMR &dmr)
         msg <<  " kilobyte response, which is too large. ";
         msg << "The maximum response size for this server is limited to " << dmr.response_limit_kb();
         msg << " kilobytes.";
-        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+            throw BESSyntaxUserError(msg.str(), file, line);
     }
 }
 
