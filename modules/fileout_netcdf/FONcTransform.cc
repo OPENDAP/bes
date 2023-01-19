@@ -714,7 +714,7 @@ void FONcTransform::transform_dap4() {
 
     if (d4_true && _returnAs == "netcdf"){
         stringstream msg;
-        msg << "This dataset contains variables/attributes whose data types are not compatible with the " << endl;
+        msg << "This dataset contains variables and/or attributes whose data types are not compatible with the " << endl;
         msg << "NetCDF-3 data model. If your request includes any of variables represented by one of these " << endl;
         msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, " << endl;
         msg << "your request will FAIL. " << endl;

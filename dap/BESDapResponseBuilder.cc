@@ -131,7 +131,6 @@ const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 #define MODULE "dap"
 #define prolog std::string("BESDapResponseBuilder::").append(__func__).append("() - ")
 
-
 BESDapResponseBuilder::~BESDapResponseBuilder()
 {
 #if USE_LOCAL_TIMEOUT_SCHEME
@@ -572,7 +571,7 @@ void BESDapResponseBuilder::send_dds(ostream &out, DDS **dds, ConstraintEvaluato
         (*dds)->print_constrained(out);
     }
     else {
-        BESDEBUG(MODULE, prolog << "Simple constraint" << endl);
+        BESDEBUG(MODULE, prolog << "Simple constraint: " << d_dap2ce << endl);
         eval.parse_constraint(d_dap2ce, **dds); // Throws Error if the ce doesn't parse.
         dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds); // Throws error if dap4 types will be in the response.
 

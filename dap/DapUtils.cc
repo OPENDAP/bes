@@ -27,15 +27,13 @@
 #include <iostream>
 #include <sstream>
 
-#include "BESUtil.h"
-#include "BESLog.h"
-#include "BESSyntaxUserError.h"
-
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
 
+#include "BESUtil.h"
+#include "BESLog.h"
+#include "BESSyntaxUserError.h"
 #include "DapUtils.h"
-
 
 using namespace libdap;
 
