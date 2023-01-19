@@ -363,7 +363,7 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi
     string accessed = dhi.container->access();
 
     // Look in memory cache, if it's initialized
-    DDS *cached_dds_ptr = nullptr;
+    const DDS *cached_dds_ptr = nullptr;
     if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
         BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
         *dds = *cached_dds_ptr;
@@ -462,7 +462,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         string accessed = dhi.container->access();
 
         // Look in memory cache (if it's initialized)
-        DAS *cached_das_ptr = nullptr;
+        const DAS *cached_das_ptr = nullptr;
         if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
             *das = *cached_das_ptr;
