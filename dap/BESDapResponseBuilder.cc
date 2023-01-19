@@ -83,7 +83,6 @@
 #include <libdap/mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <libdap/escaping.h>
 #include <libdap/util.h>
-// #include <d4_function/D4FunctionEvaluator.h>
 
 #include "DapUtils.h"
 
@@ -125,6 +124,7 @@
 using namespace std;
 using namespace libdap;
 
+// @TODO make this std::endl (Is that hard?)
 const string CRLF = "\r\n";             // Change here, expr-test.cc
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
@@ -185,7 +185,7 @@ string BESDapResponseBuilder::get_dap4ce() const
  * @@brief Set the CE
  * @param _ce The constraint expression
  */
-void BESDapResponseBuilder::set_dap4ce(string _ce)
+void BESDapResponseBuilder::set_dap4ce(const string &_ce)
 {
     d_dap4ce = www2id(_ce, "%", "%20");
 }
@@ -209,7 +209,7 @@ string BESDapResponseBuilder::get_dap4function() const
  * @@brief Set the CE
  * @param _ce The constraint expression
  */
-void BESDapResponseBuilder::set_dap4function(string _func)
+void BESDapResponseBuilder::set_dap4function(const string &_func)
 {
     d_dap4function = www2id(_func, "%", "%20");
 }
@@ -219,7 +219,7 @@ std::string BESDapResponseBuilder::get_store_result() const
     return d_store_result;
 }
 
-void BESDapResponseBuilder::set_store_result(std::string _sr)
+void BESDapResponseBuilder::set_store_result(const std::string &_sr)
 {
     d_store_result = _sr;
     BESDEBUG(MODULE, prolog << "store_result: " << _sr << endl);
@@ -230,7 +230,7 @@ std::string BESDapResponseBuilder::get_async_accepted() const
     return d_async_accepted;
 }
 
-void BESDapResponseBuilder::set_async_accepted(std::string _aa)
+void BESDapResponseBuilder::set_async_accepted(const std::string &_aa)
 {
     d_async_accepted = _aa;
     BESDEBUG(MODULE, prolog << "set_async_accepted() - async_accepted: " << _aa << endl);
@@ -259,7 +259,7 @@ string BESDapResponseBuilder::get_dataset_name() const
  * @brief Set the dataset pathname.
  * @param ds The pathname (or equivalent) to the dataset.
  */
-void BESDapResponseBuilder::set_dataset_name(const string ds)
+void BESDapResponseBuilder::set_dataset_name(const string &ds)
 {
     d_dataset = www2id(ds, "%", "%20");
 }
@@ -318,7 +318,7 @@ void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &ex
     else
         ce = d_dap2ce;
 
-    string btp_function_ce = "";
+    string btp_function_ce;
     string::size_type pos = 0;
 
     // This hack assumes that the functions are listed first. Look for the first
@@ -705,7 +705,7 @@ void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, Con
     XDRStreamMarshaller m(out);
 
     // Send all variables in the current projection (send_p())
-    for (DDS::Vars_iter i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
+    for (auto i = (*dds)->var_begin(); i != (*dds)->var_end(); i++) {
         if ((*i)->send_p()) {
             RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit " + (*i)->name(), __FILE__, __LINE__);
             (*i)->serialize(eval, **dds, m, ce_eval);
@@ -816,7 +816,7 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
 
     dhi.first_container();
 
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj);
+    auto bdds = dynamic_cast<BESDDSResponse *>(obj);
     if (!bdds) throw BESInternalFatalError("Expected a BESDDSResponse instance", __FILE__, __LINE__);
 
     DDS *dds = bdds->get_dds();
@@ -838,7 +838,7 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (responseCache && responseCache->can_be_cached(dds, get_btp_func_ce())) {
             fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce());
         }
@@ -889,7 +889,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 
     dhi.first_container();
 
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(obj);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(obj);
     if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
 
     DDS *dds = bdds->get_dds();
@@ -902,7 +902,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         
     // This function is used by all fileout modules and they need to include the attributes in data access.
     // So obtain the attributes if necessary. KY 2019-10-30
-    if(bdds->get_ia_flag() == false) {
+    if(!bdds->get_ia_flag()) {
         BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
         besRH->add_attributes(dhi);
     }
@@ -961,8 +961,8 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     dap_utils::throw_if_dap2_response_too_big(dds);
 
     // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    for (DDS::Vars_iter i = dds->var_begin(), e = dds->var_end(); i != e; ++i) {
+    // in the data if the variable has its send flag set.
+    for (auto i = dds->var_begin(), e = dds->var_end(); i != e; ++i) {
         if ((*i)->send_p()) {
             try {
                 (*i)->intern_data(eval, *dds);
@@ -1013,7 +1013,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
             fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
@@ -1257,7 +1257,7 @@ void BESDapResponseBuilder::send_ddx(ostream &out, DDS **dds, ConstraintEvaluato
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
             fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
@@ -1506,7 +1506,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
  */
 bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 {
-    if (get_store_result().size() != 0) {
+    if (!get_store_result().empty()) {
         string serviceUrl = get_store_result();
 
         D4AsyncUtil d4au;
@@ -1514,14 +1514,14 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 
         // FIXME See above comment for store dap2 result
         bool found;
-        string *stylesheet_ref = 0, ss_ref_value;
+        string *stylesheet_ref = nullptr, ss_ref_value;
         TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
         if (found && !ss_ref_value.empty()) {
             stylesheet_ref = &ss_ref_value;
         }
 
         BESStoredDapResultCache *resultCache = BESStoredDapResultCache::get_instance();
-        if (resultCache == NULL) {
+        if (resultCache == nullptr) {
 
             /**
              * OOPS. Looks like the BES is not configured to use a Stored Result Cache.
@@ -1541,14 +1541,14 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
             return true;
         }
 
-        if (get_async_accepted().size() != 0) {
+        if (!get_async_accepted().empty()) {
 
             /**
              * Client accepts async responses so, woot! lets store this thing and tell them where to find it.
              */
             BESDEBUG(MODULE, prolog << "serviceUrl="<< serviceUrl << endl);
 
-            string storedResultId = "";
+            string storedResultId;
             storedResultId = resultCache->store_dap4_result(dmr, get_ce(), this);
 
             BESDEBUG(MODULE,prolog << "storedResultId='"<< storedResultId << "'" << endl);
@@ -1616,7 +1616,7 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
 {
     dhi.first_container();
 
-    BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
+    auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
 
     unique_ptr<DMR> dmr(bdmr->get_dmr());
@@ -1672,7 +1672,7 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
 }
 
 void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
-    for (D4Group::Vars_iter i = grp->var_begin(), e = grp->var_end(); i != e; ++i) {
+    for (auto i = grp->var_begin(), e = grp->var_end(); i != e; ++i) {
         BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
@@ -1680,7 +1680,7 @@ void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
         }
     }
 
-    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+    for (auto gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
         BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() group- "<< (*gi)->name() <<endl);
         intern_dap4_data_grp(*gi);
     }
