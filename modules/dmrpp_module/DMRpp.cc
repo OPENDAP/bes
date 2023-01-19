@@ -139,8 +139,7 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
  * @param xml
  * @param constrained
  */
-void
-DMRpp::print_dap4(XMLWriter &xml, bool constrained /* false */)
+void DMRpp::print_dap4(XMLWriter &xml, bool constrained /* false */)
 {
     print_dmrpp(xml, get_href(), constrained, get_print_chunks());
 }
