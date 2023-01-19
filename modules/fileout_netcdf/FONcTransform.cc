@@ -779,7 +779,7 @@ void FONcTransform::transform_dap4() {
 
         // Don't remove the following code, they are for debugging.
 #if !NDEBUG
-        map<string, unsigned long>::iterator it;
+        map<string, int64_t>::iterator it;
 
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
             BESDEBUG(MODULE,  prolog << "Final GFQN dim name is: " << it->first << endl);
@@ -796,7 +796,7 @@ void FONcTransform::transform_dap4() {
         // according to the corresponding variable sizes. Check section 8.6.2 at
         // https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
         //
-        map<string, unsigned long>::iterator git, vit;
+        map<string, int64_t>::iterator git, vit;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
             for (vit = VFQN_dimname_to_dimsize.begin(); vit != VFQN_dimname_to_dimsize.end(); ++vit) {
                 if (git->first == vit->first) {
@@ -1096,10 +1096,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         BESDEBUG(MODULE, prolog << "Fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
 #endif
 
-        unsigned long dimsize = (*di)->size();
+        int64_t dimsize = (*di)->size();
 
         // The dimension size may need to be updated because of the expression constraint.
-        map<string, unsigned long>::iterator it;
+        map<string, int64_t>::iterator it;
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
             if (it->first == (*di)->fully_qualified_name())
                 dimsize = it->second;
@@ -1299,7 +1299,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
             BESDEBUG(MODULE, prolog << "Dim size is: " << (*di)->size() << endl);
             BESDEBUG(MODULE, prolog << "Fully qualfied dim name: " << (*di)->fully_qualified_name() << endl);
 #endif
-            unsigned long dimsize = (*di)->size();
+            int64_t dimsize = (*di)->size();
             if ((*di)->constrained()) {
                 dimsize = ((*di)->c_stop() - (*di)->c_start()) / (*di)->c_stride() + 1;
 
@@ -1328,13 +1328,13 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
                             BESDEBUG(MODULE, prolog << "Check dim- fully_qualfied_dim name is: "
                                     << d4dim->fully_qualified_name() << endl);
 
-                            unsigned long dimsize = t_a->dimension_size(dim_i, true);
+                            int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
 #if !NDEBUG
                             BESDEBUG(MODULE, prolog << "Check dim- final dim size is: " << dimsize << endl);
 #endif
-                            pair<map<string, unsigned long>::iterator, bool> ret_it;
+                            pair<map<string, int64_t>::iterator, bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(
-                                    pair<string, unsigned long>(d4dim->fully_qualified_name(), dimsize));
+                                    pair<string, int64_t>(d4dim->fully_qualified_name(), dimsize));
                             if (ret_it.second == false && ret_it.first->second != dimsize) {
                                 string err = "fileout_netcdf-4: dimension found with the same name, but different size";
                                 throw BESInternalError(err, __FILE__, __LINE__);
@@ -1352,7 +1352,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
     }
 
 #if !NDEBUG
-    map<string, unsigned long>::iterator it;
+    map<string, int64_t>::iterator it;
     for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
         BESDEBUG(MODULE, prolog << "GFQN dim name is: " << it->first << endl);
         BESDEBUG(MODULE, prolog << "GFQN dim size is: " << it->second << endl);

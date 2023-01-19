@@ -68,8 +68,8 @@ private:
     std::vector<FONcBaseType *> _fonc_vars;
     std::vector<FONcBaseType *> _total_fonc_vars_in_grp;
     std::set<std::string> _included_grp_names;
-    std::map<std::string,unsigned long> GFQN_dimname_to_dimsize;
-    std::map<std::string,unsigned long> VFQN_dimname_to_dimsize;
+    std::map<std::string,int64_t> GFQN_dimname_to_dimsize;
+    std::map<std::string,int64_t> VFQN_dimname_to_dimsize;
     
 
 public:
