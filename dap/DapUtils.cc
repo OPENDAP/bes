@@ -120,7 +120,7 @@ void throw_for_dap4_typed_vars_or_attrs(DDS *dds, const std::string &file, unsig
 void throw_for_dap4_typed_attrs(DAS *das, const std::string &file, unsigned int line)
 {
     vector<string> inventory;
-    if(das->container()->has_dap4_types("/",inventory)){
+    if(das->get_top_level_attributes()->has_dap4_types("/",inventory)){
         stringstream msg;
         msg << endl;
         msg << "ERROR: Unable to convert a DAP4 DMR for this dataset to a DAP2 DAS object. " << endl;
