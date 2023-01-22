@@ -24,7 +24,6 @@
 // You can contact The HDF Group, Inc. at 1800 South Oak Street,
 // Suite 203, Champaign, IL 61820  
 
-// #define DODS_DEBUG
 
 /// \file HDF5Float64.cc
 /// \brief  Implementation fo mapping HDF5 64 bit float to DAP for the default option

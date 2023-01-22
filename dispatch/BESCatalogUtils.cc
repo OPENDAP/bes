@@ -447,7 +447,6 @@ BESCatalogUtils::is_data(const std::string &item) const
             return true;
         }
     }
-
     return false;
 }
 

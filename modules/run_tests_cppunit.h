@@ -27,12 +27,22 @@
  * This file contains a templated function that serves as the body of main()
  * for a CppUnit-based unit test.
  *
+ * @note How to use this:
+ *     int main(int argc, char *argv[]) {
+ *         return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0: 1;
+ *     }
+ * This main() supports -d, -D, -b and -h options (debug, debug2 and bes_debug).
+ *
  * @note This is a WIP now but is intended to cut down on duplicated code in both
  * the BES and libdap4 software repositories.
  */
 
 #ifndef HYRAX_GIT_RUN_TESTS_CPPUNIT_H
 #define HYRAX_GIT_RUN_TESTS_CPPUNIT_H
+
+#include <fstream>
+#include <string>
+#include <iterator>
 
 #include <unistd.h>
 #include <cppunit/TextTestRunner.h>
@@ -44,12 +54,26 @@
 bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
 
 bool debug2 = false;
 
 #undef DBG2
-#define DBG2(x) do { if (debug) (x); } while(false);
+#define DBG2(x) do { if (debug2) (x); } while(false)
+
+void show_file(const std::string &filename)
+{
+    std::ifstream t(filename);
+
+    if (t.is_open()) {
+        std::string file_content((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+        std::cout << "##################################################################" << std::endl;
+        std::cout << "file: " << filename << std::endl;
+        std::cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << std::endl;
+        std::cout << file_content << std::endl;
+        std::cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << std::endl;
+    }
+}
 
 /**
  * @brief Run the test(s)

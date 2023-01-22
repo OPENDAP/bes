@@ -6,7 +6,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/http -I$(top_srcdir)/dispatch $(DA
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 if CPPUNIT
-AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
+AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
 LIBADD += $(CPPUNIT_LIBS)
 endif
 
@@ -31,7 +31,7 @@ TESTS = $(UNIT_TESTS)
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf
 
-BUILT_SOURCES = test_config.h credentials.conf
+BUILT_SOURCES = test_config.h credentials.conf bes.conf bes_ngap_s3_creds.conf
 
 noinst_HEADERS = test_config.h
 
@@ -51,8 +51,8 @@ credentials.conf: credentials.conf.src
 	chmod 600 $@
 
 # Build the bes.conf used for testing so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using
-# configure's value for the parameter when running the distcheck target.
+# @abs_top_srcdir@ does not contain '../'. This happens when using the
+# configure value for the parameter when running the distcheck target.
 
 bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
@@ -67,8 +67,9 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest CredentialsManagerTest NgapCredentialsTest awsv4_test
+UNIT_TESTS =  HttpUtilsTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
+AllowedHostsTest CredentialsManagerTest NgapCredentialsTest awsv4_test CurlUtilsTest \
+HttpCacheTest
 else
 UNIT_TESTS =
 
@@ -83,6 +84,7 @@ endif
 
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
+	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
 HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
@@ -92,6 +94,9 @@ RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
 CurlUtilsTest_LDADD = $(LIBADD)
+
+HttpCacheTest_SOURCES = HttpCacheTest.cc
+HttpCacheTest_LDADD = $(LIBADD)
 
 EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
 EffectiveUrlCacheTest_LDADD = $(LIBADD)

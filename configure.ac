@@ -373,6 +373,9 @@ dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
 
+AC_MSG_CHECKING([on libdap])
+AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
+
 dnl AS_CASE([$variable], [foo*], [run1], [bar*], [run2], [catchall])
     
 dnl extra argument: --with-libwrap
@@ -404,8 +407,6 @@ AM_PATH_CPPUNIT(1.12.0,
 
 dnl Check for RHEL 8 and tirpc
 OX_RHEL8_TIRPC
-
-dnl Use this we add in SQL and DMR++. jhrg 10/9/17
 
 dnl AC_ARG_WITH([dap-exp-modules],
 dnl   [AS_HELP_STRING([--with-dap-exp-modules], [build the experimental dap modules (default is no)])],
@@ -754,6 +755,17 @@ AC_ARG_WITH([hdfeos2],
             [HDFEOS2_DIR=${withval}], 
             [HDFEOS2_DIR="$ac_bes_dependencies_prefix"])
 
+dnl Check if the HDF-EOS2 library exists.
+ac_hdfeos2_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS -I$HDFEOS2_DIR/include"
+AC_CHECK_HEADERS([HDFEOSVersion.h],[],[HDFEOS2_DIR=])
+CPPFLAGS="$ac_hdfeos2_save_CPPFLAGS"
+
+ac_hdfeos2_save_LDFLAGS="$LDFLAGS"
+LDFLAGS="$LDFLAGS -L$HDFEOS2_DIR/lib"
+AC_CHECK_LIB(hdfeos,SWopen,[HDFEOS2_LDFLAGS=],[HDFEOS2_DIR=],[-lmfhdf -ldf -lz -ljpeg -lm])
+LDFLAGS="$ac_hdfeos2_save_LDFLAGS"
+
 AS_IF([test -n "$HDFEOS2_DIR"],
     [HDFEOS2_CPPFLAGS="-I$HDFEOS2_DIR/include -DUSE_HDFEOS2_LIB"
     HDFEOS2_LDFLAGS="-L$HDFEOS2_DIR/lib"
@@ -764,13 +776,14 @@ AS_IF([test -n "$HDFEOS2_DIR"],
     [AC_MSG_NOTICE([HDFEOS2 set to false])
     AM_CONDITIONAL([HDFEOS2], [false])]
  )
+
     
 AC_SUBST([HDFEOS2_CPPFLAGS])
 AC_SUBST([HDFEOS2_LDFLAGS])
 AC_SUBST([HDFEOS2_LIBS])
 AC_SUBST([HDFEOS2_DIR])
 
-dnl HDF5 tests; We pass null for the tird argument - the interface number
+dnl HDF5 tests; We pass null for the third argument - the interface number
 AC_CHECK_HDF5(
   [AM_CONDITIONAL([BUILD_HDF5],[true])
   ],
@@ -978,6 +991,8 @@ AC_CONFIG_FILES([Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
+		 http/tests/Makefile
+		 http/tests/atlocal
 
 		 docs/Makefile
 		 
@@ -1013,7 +1028,7 @@ AC_CONFIG_FILES([Makefile
 		 ])
 
 dnl These need to be moved into the AC_CONFIG_FILES above 
-dnl when geo-functions is reenabled.
+dnl when geo-functions is re-enabled.
 dnl		 functions/geo-functions/Makefile
 dnl		 functions/geo-functions/unit-tests/Makefile
 
@@ -1029,6 +1044,7 @@ AC_CONFIG_FILES([server/hyraxctl], [chmod +x server/hyraxctl])
 
 AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
+AC_CONFIG_TESTDIR(http/tests, [remote_resource_tester])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])

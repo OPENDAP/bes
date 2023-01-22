@@ -30,72 +30,107 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-
-#include <unistd.h>
+//#include <unistd.h>
 #include <iostream>
 #include <chrono>
 
 #include "BESRegex.h"
 #include "BESError.h"
 
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "modules/run_tests_cppunit.h"
 
 using namespace CppUnit;
 using namespace std;
 
-static bool debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
-
 class regexT: public TestFixture {
-private:
 
 public:
-    regexT()
-    {
-    }
-    ~regexT()
-    {
-    }
-
-    void setUp()
-    {
-    }
-
-    void tearDown()
-    {
-    }
+    regexT() = default;
+    ~regexT() override = default;
 
     CPPUNIT_TEST_SUITE( regexT );
 
-    CPPUNIT_TEST( digit_test );
-    CPPUNIT_TEST( begin_end_test_1 );
-    CPPUNIT_TEST( begin_end_test_2 );
-    CPPUNIT_TEST( char_class_test_1 );
-    CPPUNIT_TEST( char_class_test_2 );
-    CPPUNIT_TEST( alternatives_test_1 );
-    CPPUNIT_TEST( alternatives_test_2 );
+        CPPUNIT_TEST( digit_test_1 );
+        CPPUNIT_TEST( digit_test_2 );
+        CPPUNIT_TEST( digit_test_3 );
+        CPPUNIT_TEST( digit_test_4 );
+        CPPUNIT_TEST( begin_end_test_1 );
+        CPPUNIT_TEST( begin_end_test_2 );
+        CPPUNIT_TEST( char_class_test_1 );
+        CPPUNIT_TEST( char_class_test_2 );
+        CPPUNIT_TEST( alternatives_test_1 );
+        CPPUNIT_TEST( alternatives_test_2 );
 
-#if INCLUDE_REGEX_TIMING
-    // By default, don't run this wiht every build. THe short answer is that
-    // 'const' alone is not a big win with regexes. For the best performance,
-    // the BESRegex objects need to be factored out of code they are built as
-    // infrequently as possible. jhrg 12/8/21
-    CPPUNIT_TEST( const_test );
+#if INCLUDE_REGEX_TIMING || true
+        // By default, don't run this wiht every build. THe short answer is that
+        // 'const' alone is not a big win with regexes. For the best performance,
+        // the BESRegex objects need to be factored out of code they are built as
+        // infrequently as possible. jhrg 12/8/21
+        CPPUNIT_TEST( const_test );
 #endif
     CPPUNIT_TEST_SUITE_END();
 
-    void digit_test() {
+    void digit_test_1() {
          try {
             DBG(cerr << "*****************************************" << endl);
             DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
             BESRegex reg_expr("123456");
             string inQuestion = "01234567";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
+            DBG(cerr << "result = " << result << endl);
             CPPUNIT_ASSERT(result == 6);
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT(!"Failed to match");
+        }
+    }
+
+    void digit_test_2() {
+        try {
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
+            BESRegex reg_expr("9");
+            string inQuestion = "01234567";
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
+            DBG(cerr << "result = " << result << endl);
+            CPPUNIT_ASSERT(result == -1);
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT(!"Failed to match");
+        }
+    }
+
+    void digit_test_3() {
+        try {
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
+            BESRegex reg_expr("123456");
+            string inQuestion = "01234567";
+            int match_len = 0;
+            int pos = reg_expr.search(inQuestion, match_len);
+            DBG(cerr << "position = " << pos << ", match len: " << match_len << endl);
+            CPPUNIT_ASSERT(pos == 1);
+            CPPUNIT_ASSERT(match_len == 6);
+        }
+        catch (BESError &e) {
+            cerr << e.get_message() << endl;
+            CPPUNIT_ASSERT(!"Failed to match");
+        }
+    }
+
+    void digit_test_4() {
+        try {
+            DBG(cerr << "*****************************************" << endl);
+            DBG(cerr << "Match reg ex 123456 against string 01234567" << endl);
+            BESRegex reg_expr("123456");
+            string inQuestion = "01091234567";
+            int match_len = 0;
+            int pos = reg_expr.search(inQuestion, match_len);
+            DBG(cerr << "position = " << pos << ", match len: " << match_len << endl);
+            CPPUNIT_ASSERT(pos == 4);
+            CPPUNIT_ASSERT(match_len == 6);
         }
         catch (BESError &e) {
             cerr << e.get_message() << endl;
@@ -109,7 +144,7 @@ public:
             DBG(cerr << "Match reg ex ^123456$ against string 01234567" << endl);
             BESRegex reg_expr("^123456$");
             string inQuestion = "01234567";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
             CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
@@ -126,6 +161,7 @@ public:
             BESRegex reg_expr("^123456$");
             string inQuestion = "123456";
             int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            DBG(cerr << "result = " << result << endl);
             CPPUNIT_ASSERT(result == 6);
         }
         catch (BESError &e) {
@@ -140,7 +176,8 @@ public:
             DBG(cerr << R"(Match reg ex ".*\.nc$;" against string fnoc1.nc)" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.nc";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
+            DBG(cerr << "result = " << result << endl);
             CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
@@ -155,7 +192,7 @@ public:
             DBG(cerr << "Match reg ex \".*\\.nc$;\" against string fnoc1.ncd" << endl);
             BESRegex reg_expr(".*\\.nc$");
             string inQuestion = "fnoc1.ncd";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
             CPPUNIT_ASSERT(result == -1);
         }
         catch (BESError &e) {
@@ -170,7 +207,7 @@ public:
             DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
             CPPUNIT_ASSERT(result == 8);
         }
         catch (BESError &e) {
@@ -185,7 +222,7 @@ public:
             DBG(cerr << "Match reg ex .*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$ against string fnoc1.nc.gz" << endl);
             BESRegex reg_expr(".*\\.(nc|NC)(\\.gz|\\.bz2|\\.Z)?$");
             string inQuestion = "fnoc1.nc.gz";
-            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), (int)inQuestion.size());
             CPPUNIT_ASSERT(result == 11);
         }
         catch (BESError &e) {
@@ -261,48 +298,6 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( regexT );
 
-int main(int argc, char*argv[])
-{
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
-        switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-        case 'h': {     // help - show test names
-            cerr << "Usage: regexT has the following tests:" << endl;
-            const std::vector<Test*> &tests = regexT::suite()->getTests();
-            unsigned int prefix_len = regexT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
-            }
-            break;
-        }
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = regexT::suite()->getName().append("::").append(argv[i++]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+int main(int argc, char *argv[]) {
+    return bes_run_tests<regexT>(argc, argv, "bes") ? 0: 1;
 }
-

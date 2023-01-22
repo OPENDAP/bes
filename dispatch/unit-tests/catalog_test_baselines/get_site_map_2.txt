@@ -1421,7 +1421,6 @@ https://machine/opendap/modules/hdf4_handler/HDFUrl.cc.html
 https://machine/opendap/modules/hdf4_handler/HDFCFStrField.h.html
 https://machine/opendap/modules/hdf4_handler/HE2CF.h.html
 https://machine/opendap/modules/hdf4_handler/BESH4MCache.cc.html
-https://machine/opendap/modules/hdf4_handler/hdf-dods.h.html
 https://machine/opendap/modules/hdf4_handler/HDFArray.cc.html
 https://machine/opendap/modules/hdf4_handler/dhdferr.h.html
 https://machine/opendap/modules/hdf4_handler/HDFSPArrayAddCVField.cc.html

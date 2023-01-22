@@ -76,4 +76,6 @@ std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
 std::string handle_string_special_characters(std::string &s);
 std::string handle_string_special_characters_in_path(const string &instr);
+
+std::string invalid_type_error_msg(const std::string &s);
 #endif                          //_H5GET_H

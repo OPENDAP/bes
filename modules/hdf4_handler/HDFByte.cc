@@ -48,9 +48,8 @@ HDFByte::HDFByte(const string & n, const string &d) : Byte(n, d)
 {
 }
 
-HDFByte::~HDFByte()
-{
-}
+HDFByte::~HDFByte() = default;
+
 BaseType *HDFByte::ptr_duplicate()
 {
     return new HDFByte(*this);

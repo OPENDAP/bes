@@ -30,7 +30,6 @@
 /// All rights reserved.
 
 #include "HDF5CFUtil.h"
-//#include "HE5GridPara.h"
 #include "HDF5RequestHandler.h"
 #include <set>
 #include <sstream>
@@ -678,7 +677,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     // values may be generated. To avoid, we change the function pointer names inside the GCTP library.
     int(*hinv_trans[100]) (double,double,double*,double*);  
     int(*hfor_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
-    double        arg1, arg2;
+    double        arg1;
+    double        arg2;
     double        pixadjX  = 0.;  /* Pixel adjustment (x)                 */
     double        pixadjY  = 0.;  /* Pixel adjustment (y)                 */
     double        lonrad0  = 0.;  /* Longitude in radians of upleft point */
@@ -687,7 +687,10 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     double          scaleY   = 0.;  /* Y scale factor                       */
     double          lonrad   = 0.;  /* Longitude in radians of point        */
     double          latrad   = 0.;  /* Latitude in radians of point         */
-    double          xMtr0, yMtr0, xMtr1, yMtr1;
+    double          xMtr0;
+    double          yMtr0;
+    double          xMtr1;
+    double          yMtr1;
 
 
 
@@ -1229,12 +1232,12 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+    for (const auto &pos_ele:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * pos_ele;
         start++;
     }
     return sum;

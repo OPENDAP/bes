@@ -26,6 +26,9 @@
 
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+# include "config.h"
+
+#include <sstream>
 
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
@@ -77,30 +80,6 @@ CmrContainer::CmrContainer(const string &sym_name,
         this->set_container_type("nc");
     }
 
-
-
-    /*
-
-    if (type.empty())
-        set_container_type("cmr");
-
-    BESUtil::url url_parts;
-    BESUtil::url_explode(real_name, url_parts);
-    url_parts.uname = "";
-    url_parts.psswd = "";
-    string use_real_name = BESUtil::url_create(url_parts);
-
-    if (!AllowedHosts::theHosts()->is_allowed(use_real_name)) {
-        string err = (string) "The specified URL " + real_name
-                + " does not match any of the accessible services in"
-                + " the allowed hosts list.";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
-    set_relative_name(real_name);
-    */
 
     BESDEBUG( MODULE, prolog << "END" << endl);
 
@@ -156,34 +135,26 @@ string CmrContainer::access() {
     string path  = get_real_name();
     BESDEBUG( MODULE, prolog << "path: " << path << endl);
 
-        Granule *granule = getTemporalFacetGranule(path);
-        if (!granule) {
-            throw BESNotFoundError("Failed locate a granule associated with the path " + path, __FILE__, __LINE__);
-        }
-        string url = granule->getDataAccessUrl();
-        delete granule;
-        granule = 0;
-
-    string type = get_container_type();
-    if (type == MODULE)
-        type = "";
+    auto granule = getTemporalFacetGranule(path);
+    if (!granule) {
+        throw BESNotFoundError("Failed to locate a granule associated with the path " + path, __FILE__, __LINE__);
+    }
+    string granule_url = granule->getDataGranuleUrl();
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        shared_ptr<http::url> target_url(new http::url(url));
+        shared_ptr<http::url> target_url(new http::url(granule_url,true));
         d_remoteResource = new http::RemoteResource(target_url);
         d_remoteResource->retrieveResource();
     }
-    BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
-
+    BESDEBUG( MODULE, prolog << "Retrieved RemoteResource." << endl );
 
     string cachedResource = d_remoteResource->getCacheFileName();
     BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
-    type = d_remoteResource->getType();
+    string type = d_remoteResource->getType();
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
-
 
     BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
@@ -205,7 +176,7 @@ bool CmrContainer::release() {
     if (d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_remoteResource;
-        d_remoteResource = 0;
+        d_remoteResource = nullptr;
     }
     BESDEBUG( MODULE, prolog << "END" << endl);
     return true;
@@ -226,70 +197,57 @@ void CmrContainer::dump(ostream &strm) const {
     if (d_remoteResource) {
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
                 << endl;
-        strm << BESIndent::LMarg << "response headers: ";
-
-        vector<string> *hdrs = d_remoteResource->getResponseHeaders();
-        if (hdrs) {
-            strm << endl;
-            BESIndent::Indent();
-            vector<string>::const_iterator i = hdrs->begin();
-            vector<string>::const_iterator e = hdrs->end();
-            for (; i != e; i++) {
-                string hdr_line = (*i);
-                strm << BESIndent::LMarg << hdr_line << endl;
-            }
-            BESIndent::UnIndent();
-        } else {
-            strm << "none" << endl;
-        }
-    } else {
+     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
     }
     BESIndent::UnIndent();
 }
 
-    Granule * CmrContainer::getTemporalFacetGranule(const std::string granule_path)
-    {
+/**
+ *
+ * @param granule_path
+ * @return
+ */
+unique_ptr<Granule> CmrContainer::getTemporalFacetGranule(const std::string &granule_path)
+{
+    const unsigned int PATH_SIZE = 7;
 
-        BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN  (granule_path: '" << granule_path  << ")" << endl);
 
-        string collection;
-        string facet = "temporal";
-        string year = "-";
-        string month = "-";
-        string day = "-";
-        string granule_id = "-";
+    string path = BESUtil::normalize_path(granule_path,false, false);
+    vector<string> path_elements = BESUtil::split(path);
+    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
-        string path = BESUtil::normalize_path(granule_path,false, false);
-        vector<string> path_elements = BESUtil::split(path);
-        BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
-        switch(path_elements.size()){
-            case 6:
-            {
-                collection = path_elements[0];
-                BESDEBUG(MODULE, prolog << "collection: '" << collection << endl);
-                facet = path_elements[1];
-                BESDEBUG(MODULE, prolog << "facet: '" << facet << endl);
-                year = path_elements[2];
-                BESDEBUG(MODULE, prolog << "year: '" << year << endl);
-                month = path_elements[3];
-                BESDEBUG(MODULE, prolog << "month: '" << month << endl);
-                day = path_elements[4];
-                BESDEBUG(MODULE, prolog << "day: '" << day << endl);
-                granule_id = path_elements[5];
-                BESDEBUG(MODULE, prolog << "granule_id: '" << granule_id << endl);
-            }
-                break;
-            default:
-            {
-                throw BESNotFoundError("Can't find it man...",__FILE__,__LINE__);
-            }
-                break;
-        }
-        CmrApi cmrApi;
-
-        return cmrApi.get_granule( collection, year, month, day, granule_id);
+    if(path_elements.size() != PATH_SIZE){
+        stringstream msg;
+        msg << "The path component: '" << granule_path << "' of your request has ";
+        msg << (path_elements.size()<PATH_SIZE?"too few components. ":"too many components. ");
+        msg << "I was expecting " << PATH_SIZE << " elements but I found " << path_elements.size() << ". ";
+        msg << "I was unable to locate a granule from what you provided.";
+        throw BESNotFoundError(msg.str(),__FILE__,__LINE__);
     }
+
+    // We don't need the provider_id for this operation, so commented out.
+    // string provider = path_elements[0];
+    // BESDEBUG(MODULE, prolog << "  provider: '" << provider << endl);
+
+    string collection = path_elements[1];
+    BESDEBUG(MODULE, prolog << "collection: '" << collection << endl);
+    string facet = path_elements[2];
+    BESDEBUG(MODULE, prolog << "     facet: '" << facet << endl);
+    string year = path_elements[3];
+    BESDEBUG(MODULE, prolog << "      year: '" << year << endl);
+    string month = path_elements[4];
+    BESDEBUG(MODULE, prolog << "     month: '" << month << endl);
+    string day = path_elements[5];
+    BESDEBUG(MODULE, prolog << "       day: '" << day << endl);
+    string granule_id = path_elements[6];
+    BESDEBUG(MODULE, prolog << "granule_id: '" << granule_id << endl);
+
+    CmrApi cmrApi;
+    return cmrApi.get_granule( collection, year, month, day, granule_id);
+}
+
+
 
 } // namespace cmr

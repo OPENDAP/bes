@@ -70,6 +70,8 @@ struct HDFCFUtil
     static void close_fileid(int32 sdfd,int32 file_id,int32 gridfd,int32 swathfd,bool pass_fileid_key);
 
 
+    // Remove the following function later because the functionality is acheieved in libdap4. KY 2022-11-22 
+#if 0
     /// A customized escaping function to escape special characters following OPeNDAP's escattr function
     /// that can be found at escaping.cc and escaping.h. i
     /// Note: the customized version will not treat
@@ -77,6 +79,8 @@ struct HDFCFUtil
     /// use this characters to make the attribute easy to read. Escaping these characters in the attributes
     /// will use \012 etc to replace \n etc. in these attributes and make attributes hard to read.
     static std::string escattr(std::string  s);
+#endif
+
     static std::string escattr_fvalue(std::string  s);
 
 

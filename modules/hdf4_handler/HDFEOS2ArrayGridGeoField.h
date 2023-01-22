@@ -54,7 +54,7 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
             return new HDFEOS2ArrayGridGeoField (*this);
         }
 
-        virtual bool read () override;
+        bool read () override;
 
     private:
 
@@ -124,7 +124,7 @@ class HDFEOS2ArrayGridGeoField:public libdap::Array
         // HDF-EOS2 field name
         std::string fieldname;
         // Calculate Lat and Lon based on HDF-EOS2 library.
-        void CalculateLatLon (int32 gridid, int fieldtype, int specialformat, float64 * outlatlon, float64* latlon_all, int32 * offset, int32 * count, int32 * step, int nelms,bool write_latlon_cache);
+        void CalculateLatLon (int32 gridid, int fieldtype, int specialformat, float64 * outlatlon, float64* latlon_all, const int32 * offset, const int32 * count, const int32 * step, int nelms,bool write_latlon_cache);
 
         // Calculate Special Latitude and Longitude.
         //One MOD13C2 file doesn't provide projection code

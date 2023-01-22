@@ -44,7 +44,7 @@ private:
     }
 
 public:
-    explicit HDF5DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn) {}
+    explicit HDF5DDS( const libdap::DDS *ddsIn) : libdap::DDS(*ddsIn) {}
 
     HDF5DDS(const HDF5DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);

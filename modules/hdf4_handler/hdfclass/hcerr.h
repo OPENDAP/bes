@@ -45,24 +45,21 @@
 
 #include <iostream>
 #include <string>
+#include <libdap/Error.h>
 
 class hcerr;
 
 using std::string;
 using std::ostream;
 
-#include <libdap/Error.h>
-
-using namespace libdap;
 
 #define THROW(x) throw x(__FILE__,__LINE__)
 
 // HDFClass exceptions class
-class hcerr: public Error {
+class hcerr: public libdap::Error {
 public:
 	hcerr(const char *msg, const char *file, int line);
-	virtual ~ hcerr(void) throw() {
-	}
+	virtual ~ hcerr(void) throw() override = default;
 };
 
 // Define valid HDFClass exceptions

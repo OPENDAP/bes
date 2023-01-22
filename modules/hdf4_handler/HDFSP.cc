@@ -206,7 +206,6 @@ AttrContainer::~AttrContainer()
 // as the way to handle HDF-EOS2 files.
 File *
 File::Read (const char *path, int32 mysdid, int32 myfileid)
-throw (Exception)
 {
 
     // Allocate a new file object.
@@ -261,7 +260,6 @@ throw (Exception)
 // as the way to handle other HDF4 files.
 File *
 File::Read_Hybrid (const char *path, int32 mysdid, int32 myfileid)
-throw (Exception)
 {
     // New File 
     auto file = new File (path);
@@ -326,7 +324,7 @@ throw (Exception)
 
 // Retrieve lone vdata info.
 void
-File::ReadLoneVdatas(File *file) throw(Exception) {
+File::ReadLoneVdatas(File *file) const {
 
     int status = -1;
     // No need to start V interface again
@@ -561,7 +559,7 @@ cleanFail:
 
 // Handle non-attribute non-lone vdata for Hybrid HDF-EOS2 files.
 void
-File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
+File::ReadHybridNonLoneVdatas(const File *file) {
 
 
     int32 status         = -1;
@@ -883,7 +881,7 @@ cleanFail:
 // Else return true.
 
 bool
-File::Check_update_special(const string& grid_name) throw(Exception) {
+File::Check_update_special(const string& grid_name) const {
 
     set<string> dimnameset;
     set<SDField*> fldset; 
@@ -995,7 +993,7 @@ File::Check_update_special(const string& grid_name) throw(Exception) {
 // 1) 
 
 bool
-File::Check_if_special(const string& grid_name) throw(Exception) {
+File::Check_if_special(const string& grid_name) {
 
 
      bool xdim_is_lon = false;
@@ -1016,7 +1014,7 @@ File::Check_if_special(const string& grid_name) throw(Exception) {
 #endif
 
 void
-File::Handle_AIRS_L23() throw(Exception) {
+File::Handle_AIRS_L23() {
 
     File *file = this;
 
@@ -1281,7 +1279,6 @@ cerr<<"new scaled dim. name "<<*sdim_it <<endl;
 //  This method will check if the HDF4 file is one of TRMM or OBPG products or MODISARNSS we supported.
 void
 File::CheckSDType ()
-throw (Exception)
 {
 
     // check the TRMM version 7  cases
@@ -1573,7 +1570,6 @@ cerr<<"CSH products "<<endl;
 // Read SDS information from the HDF4 file
 SD *
 SD::Read (int32 sdfd, int32 fileid)
-throw (Exception)
 {
 
     // Indicator of status
@@ -1919,7 +1915,6 @@ throw (Exception)
 // Retrieve the extra SDS object info. from a hybrid HDF-EOS2 file
 SD *
 SD::Read_Hybrid (int32 sdfd, int32 fileid)
-throw (Exception)
 {
     // Indicator of status
     int32  status        = 0;
@@ -2344,7 +2339,6 @@ throw (Exception)
 // Retrieve Vdata information from the HDF4 file
 VDATA *
 VDATA::Read (int32 vdata_id, int32 obj_ref)
-throw (Exception)
 {
 
     // Vdata field size 
@@ -2526,7 +2520,6 @@ throw (Exception)
 // Read Vdata attributes and save them into vectors
 void
 VDATA::ReadAttributes (int32 vdata_id)
-throw (Exception)
 {
     // Vdata attribute name
      // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
@@ -2588,7 +2581,6 @@ throw (Exception)
 // Input parameters are vdata ID and vdata field index
 void
 VDField::ReadAttributes (int32 vdata_id, int32 fieldindex)
-throw (Exception)
 {
     // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168. 
@@ -2651,7 +2643,7 @@ throw (Exception)
 }
 
 void 
-File::ReadVgattrs(int32 vgroup_id,const char*fullpath) throw(Exception) {
+File::ReadVgattrs(int32 vgroup_id,const char*fullpath) {
 
     intn status_n;
     //int  n_attr_value = 0;
@@ -2706,7 +2698,6 @@ File::ReadVgattrs(int32 vgroup_id,const char*fullpath) throw(Exception) {
 // Since it uses HDF4 library a lot, we keep the C style. KY 2010-7-13
 void
 File::InsertOrigFieldPath_ReadVgVdata ()
-throw (Exception)
 {
     /************************* Variable declaration **************************/
 
@@ -3032,7 +3023,6 @@ throw (Exception)
 void
 File::obtain_path (int32 file_id, int32 sd_id, char *full_path,
 				   int32 pobj_ref)
-throw (Exception)
 {
     // Vgroup parent ID
     int32 vgroup_pid = -1;
@@ -3263,7 +3253,6 @@ cleanFail:
 // Also we only add minimum comments since this code may be removed in the future.
 void 
 SD::obtain_noneos2_sds_path (int32 file_id, char *full_path, int32 pobj_ref)
-throw (Exception)
 {
 
     int32 vgroup_cid = -1;
@@ -3370,7 +3359,6 @@ cleanFail:
 
 void
 File::obtain_vdata_path (int32 file_id,  char *full_path, int32 pobj_ref)
-throw (Exception)
 {
 
     int32 vgroup_cid = -1;
@@ -3589,7 +3577,7 @@ cleanFail:
 // Handle SDS fakedim names: make the dimensions with the same dimension size 
 // share the same dimension name. In this way, we can reduce many fakedims.
 void
-File::handle_sds_fakedim_names() throw(Exception) {
+File::handle_sds_fakedim_names() {
 
     File *file = this;
 
@@ -3681,22 +3669,24 @@ void File::create_sds_dim_name_list() {
 }
 
 // Add the missing coordinate variables based on the corrected dimension name list
-void File::handle_sds_missing_fields() {
+void File::handle_sds_missing_fields() const {
 
-    File *file = this;
+    const File *file = this;
 
     // Adding the missing coordinate variables based on the corrected dimension name list
     // For some CERES products, there are so many vgroups, so there are potentially many missing fields.
-    // Go through the n1dimnamelist and check the map dimcvarlist; if no dimcvarlist[dimname], then this dimension namelist must be a missing field
+    // Go through the n1dimnamelist and check the map dimcvarlist,
+    // if no dimcvarlist[dimname], then this dimension namelist must be a missing field
     // Create the missing field and insert the missing field to the SDField list. 
 
     for (std::map < std::string, int32 >::const_iterator i =
          file->sd->n1dimnamelist.begin ();
          i != file->sd->n1dimnamelist.end (); ++i) {
 
-        if (file->sd->nonmisscvdimnamelist.find ((*i).first) == file->sd->nonmisscvdimnamelist.end ()) {// Create a missing Z-dimension field  
+        // Create a missing Z-dimension field
+        if (file->sd->nonmisscvdimnamelist.find ((*i).first) == file->sd->nonmisscvdimnamelist.end ()) {
 
-            SDField *missingfield = new SDField ();
+            auto missingfield = new SDField ();
 
             // The name of the missingfield is not necessary.
             // We only keep here for consistency.
@@ -3706,7 +3696,7 @@ void File::handle_sds_missing_fields() {
             missingfield->newname = (*i).first;
             missingfield->rank = 1;
             missingfield->fieldtype = 4;
-            Dimension *dim = new Dimension ((*i).first, (*i).second, 0);
+            auto dim = new Dimension ((*i).first, (*i).second, 0);
 
             missingfield->dims.push_back (dim);
             dim = new Dimension ((*i).first, (*i).second, 0);
@@ -3717,7 +3707,7 @@ void File::handle_sds_missing_fields() {
 }
 
 // Create the final CF-compliant dimension name list for each field
-void File::handle_sds_final_dim_names() throw(Exception) {
+void File::handle_sds_final_dim_names() {
 
     File * file = this;
 
@@ -3727,35 +3717,29 @@ void File::handle_sds_final_dim_names() throw(Exception) {
     // So still handle the name clashings.
 
     vector<string>tempfulldimnamelist;
-    for (std::set < std::string >::const_iterator i =
-        file->sd->fulldimnamelist.begin ();
-        i != file->sd->fulldimnamelist.end (); ++i) 
-        tempfulldimnamelist.push_back(HDFCFUtil::get_CF_string(*i));
+    
+    for (const auto &dimname:file->sd->fulldimnamelist)  
+        tempfulldimnamelist.push_back(HDFCFUtil::get_CF_string(dimname));
 
     HDFCFUtil::Handle_NameClashing(tempfulldimnamelist);
 
     // Not the most efficient way, but to keep the original code structure,KY 2012-6-27
     int total_dcounter = 0;
-    for (std::set < std::string >::const_iterator i =
-        file->sd->fulldimnamelist.begin ();
-        i != file->sd->fulldimnamelist.end (); ++i) {
-        HDFCFUtil::insert_map(file->sd->n2dimnamelist, (*i), tempfulldimnamelist[total_dcounter]);
+    for (const auto &dimname:file->sd->fulldimnamelist) {
+        HDFCFUtil::insert_map(file->sd->n2dimnamelist, dimname, tempfulldimnamelist[total_dcounter]);
         total_dcounter++;
     }
 
     // change the corrected dimension name list for each SDS field
     std::map < std::string, std::string >::iterator tempmapit;
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getCorrectedDimensions ().begin ();
-            j != (*i)->getCorrectedDimensions ().end (); ++j) {
-            tempmapit = file->sd->n2dimnamelist.find ((*j)->getName ());
+    for (const auto &sfd:file->sd->sdfields) {
+        for (const auto &dim:sfd->getCorrectedDimensions ()) {
+            tempmapit = file->sd->n2dimnamelist.find (dim->getName ());
             if (tempmapit != file->sd->n2dimnamelist.end ())
-                (*j)->name = tempmapit->second;
+                dim->name = tempmapit->second;
             else {	//When the dimension name is fakeDim***, we will ignore. this dimension will not have the corresponding coordinate variable. 
-                throw5 ("This dimension with the name ", (*j)->name,
-                        "and the field name ", (*i)->name,
+                throw5 ("This dimension with the name ", dim->name,
+                        "and the field name ", sfd->name,
                         " is not found in the dimension list.");
             }
         }
@@ -3765,7 +3749,7 @@ void File::handle_sds_final_dim_names() throw(Exception) {
 
 // Create the final CF-compliant field name list
 void 
-File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2) throw(Exception) 
+File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2) 
 {
 
     File * file = this;
@@ -3779,23 +3763,18 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
     // or set the H4.EnableCERESMERRAShortName=false
     // KY 2012-6-27
 
-#if 0
-    string check_ceres_short_name_key="H4.EnableCERESMERRAShortName";
-    bool turn_on_ceres_short_name_key= false;
-        
-    turn_on_ceres_short_name_key = HDFCFUtil::check_beskeys(check_ceres_short_name_key);
-#endif
-
-    //if (true == turn_on_ceres_short_name_key && (file->sptype == CER_ES4 || file->sptype == CER_SRB
     if (true == HDF4RequestHandler::get_enable_ceres_merra_short_name() && (file->sptype == CER_ES4 || file->sptype == CER_SRB
         || file->sptype == CER_CDAY || file->sptype == CER_CGEO
         || file->sptype == CER_SYN || file->sptype == CER_ZAVG
         || file->sptype == CER_AVG)) {
         
-        for (unsigned int i = 0; i < file->sd->sdfields.size (); ++i) {
-            file->sd->sdfields[i]->special_product_fullpath = file->sd->sdfields[i]->newname;
-            file->sd->sdfields[i]->newname = file->sd->sdfields[i]->name;
+
+        for (auto &sdf:file->sd->sdfields) {
+            sdf->special_product_fullpath = sdf->newname;
+            sdf->newname = sdf->name;
         }    
+
+
     }
 
         
@@ -3826,16 +3805,11 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
     int total_latlon_counter = 0;
     int total_nollcv_counter = 0;
 
-    //bool COARDFLAG = false;
-    //string lldimname1;
-    //string lldimname2;
-
     // change the corrected dimension name list for each SDS field
     std::map < std::string, std::string >::iterator tempmapit;
 
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
         // Handle dimension name to coordinate variable map 
         // Currently there is a backward compatibility  issue in the CF conventions,
@@ -3850,29 +3824,27 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
         // KY 2010-7-21
         // set a flag
 
-        if ((*i)->fieldtype != 0) {
-            if ((*i)->fieldtype == 1 || (*i)->fieldtype == 2) {
+        if (sdf->fieldtype != 0) {
+            if (sdf->fieldtype == 1 || sdf->fieldtype == 2) {
 
-                (*i)->newname = sd_latlon_fieldnamelist[total_latlon_counter];
+                sdf->newname = sd_latlon_fieldnamelist[total_latlon_counter];
                 total_latlon_counter++;
 
-                if ((*i)->getRank () > 2)
+                if (sdf->getRank () > 2)
                     throw3 ("the lat/lon rank should NOT be greater than 2",
-                            (*i)->name, (*i)->getRank ());
-                else if ((*i)->getRank () == 2) {// Each lat/lon must be 2-D under the same group.
-                    for (std::vector < Dimension * >::const_iterator j =
-                        (*i)->getCorrectedDimensions ().begin ();
-                        j != (*i)->getCorrectedDimensions ().end (); ++j) {
+                            sdf->name, sdf->getRank ());
+                else if (sdf->getRank () == 2) {// Each lat/lon must be 2-D under the same group.
+                    for (const auto &dim:sdf->getCorrectedDimensions()) {
                         tempmapit =
-                            file->sd->dimcvarlist.find ((*j)->getName ());
+                            file->sd->dimcvarlist.find (dim->getName ());
                         if (tempmapit == file->sd->dimcvarlist.end ()) {
-                            HDFCFUtil::insert_map(file->sd->dimcvarlist, (*j)->name, (*i)->newname);
+                            HDFCFUtil::insert_map(file->sd->dimcvarlist, dim->name, sdf->newname);
 
                             // Save this dim. to lldims
                             if (lldimname1 =="") 
-                                lldimname1 =(*j)->name;
+                                lldimname1 =dim->name;
                             else 
-                                lldimname2 = (*j)->name;
+                                lldimname2 = dim->name;
                             break;
                         }
                     }
@@ -3882,24 +3854,21 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
                     // When rank = 1, must follow COARD conventions. 
                     // Here we don't check name clashing for the performance
                     // reason, the chance of clashing is very,very rare.
-                    (*i)->newname =
-                        (*i)->getCorrectedDimensions ()[0]->getName ();
-                    HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+                    sdf->newname =
+                        sdf->getCorrectedDimensions ()[0]->getName ();
+                    HDFCFUtil::insert_map(file->sd->dimcvarlist, sdf->getCorrectedDimensions()[0]->getName(), sdf->newname);
                     COARDFLAG = true;
 
                 }
             }
         }
         else {
-            (*i)->newname = sd_data_fieldnamelist[total_data_counter];
+            sdf->newname = sd_data_fieldnamelist[total_data_counter];
             total_data_counter++;
         }
     }
 
-
-    for (std::vector < SDField * >::const_iterator i =
-         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
+    for (const auto &sdf:file->sd->sdfields) {
 
         // Handle dimension name to coordinate variable map 
         // Currently there is a backward compatibility  issue in the CF conventions,
@@ -3914,34 +3883,34 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
         // KY 2010-7-21
         // set a flag
 
-        if ((*i)->fieldtype != 0) {
-            if ((*i)->fieldtype != 1 && (*i)->fieldtype != 2) {	
+        if (sdf->fieldtype != 0) {
+            if (sdf->fieldtype != 1 && sdf->fieldtype != 2) {	
             // "Missing" coordinate variables or coordinate variables having dimensional scale data
 
-                (*i)->newname = sd_nollcv_fieldnamelist[total_nollcv_counter];
+                sdf->newname = sd_nollcv_fieldnamelist[total_nollcv_counter];
                 total_nollcv_counter++;
 
-                if ((*i)->getRank () > 1)
-                    throw3 ("The lat/lon rank should be 1", (*i)->name,
-                            (*i)->getRank ());
+                if (sdf->getRank () > 1)
+                    throw3 ("The lat/lon rank should be 1", sdf->name,
+                            sdf->getRank ());
 
                 // The current OTHERHDF case we support(MERRA and SDS dimension scale)
                 // follow COARDS conventions. Panoply fail to display the data,
                 // if we just follow CF conventions. So following COARD. KY-2011-3-4
 #if 0
                 if (COARDFLAG || file->sptype == OTHERHDF)//  Follow COARD Conventions
-                    (*i)->newname =
-                        (*i)->getCorrectedDimensions ()[0]->getName ();
+                    sdf->newname =
+                        sdf->getCorrectedDimensions ()[0]->getName ();
 	        else 
                 // It seems that netCDF Java stricts following COARDS conventions, so change the dimension name back. KY 2012-5-4
-                    (*i)->newname =
-                                   (*i)->getCorrectedDimensions ()[0]->getName ();
-//				(*i)->newname =
-//				(*i)->getCorrectedDimensions ()[0]->getName () + "_d";
+                    sdf->newname =
+                                   sdf->getCorrectedDimensions ()[0]->getName ();
+//				sdf->newname =
+//				sdf->getCorrectedDimensions ()[0]->getName () + "_d";
 #endif
-                (*i)->newname = (*i)->getCorrectedDimensions ()[0]->getName ();
+                sdf->newname = sdf->getCorrectedDimensions ()[0]->getName ();
 
-	        HDFCFUtil::insert_map(file->sd->dimcvarlist, (*i)->getCorrectedDimensions()[0]->getName(), (*i)->newname);
+	        HDFCFUtil::insert_map(file->sd->dimcvarlist, sdf->getCorrectedDimensions()[0]->getName(), sdf->newname);
 
             }
         }
@@ -3950,32 +3919,28 @@ File::handle_sds_names(bool & COARDFLAG, string & lldimname1, string&lldimname2)
 
 // Create "coordinates", "units" CF attributes
 void
-File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string & lldimname2) throw(Exception) {
+File::handle_sds_coords(bool COARDFLAG,const std::string & lldimname1, const std::string & lldimname2) {
 
     File *file = this;
 
     // 9. Generate "coordinates " attribute
 
     std::map < std::string, std::string >::iterator tempmapit;
-    int tempcount;
 
     std::string tempcoordinates;
     std::string tempfieldname;
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        if ((*i)->fieldtype == 0) {
-            tempcount = 0;
+    for (const auto &sdf:file->sd->sdfields) {
+        if (sdf->fieldtype == 0) {
+            int tempcount = 0;
             tempcoordinates = "";
             tempfieldname = "";
 
-            for (std::vector < Dimension * >::const_iterator j =
-                (*i)->getCorrectedDimensions ().begin ();
-                j != (*i)->getCorrectedDimensions ().end (); ++j) {
-                tempmapit = (file->sd->dimcvarlist).find ((*j)->getName ());
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
+                tempmapit = (file->sd->dimcvarlist).find (dim->getName ());
                 if (tempmapit != (file->sd->dimcvarlist).end ())
                     tempfieldname = tempmapit->second;
                 else
-                    throw3 ("The dimension with the name ", (*j)->getName (),
+                    throw3 ("The dimension with the name ", dim->getName (),
                             "must have corresponding coordinate variables.");
                 if (tempcount == 0)
                     tempcoordinates = tempfieldname;
@@ -3983,24 +3948,24 @@ File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string &
                     tempcoordinates = tempcoordinates + " " + tempfieldname;
                 tempcount++;
             }
-            (*i)->setCoordinates (tempcoordinates);
+            sdf->setCoordinates (tempcoordinates);
         }
 
         // Add units for latitude and longitude
-        if ((*i)->fieldtype == 1) {	// latitude,adding the "units" attribute  degrees_east.
+        if (sdf->fieldtype == 1) {	// latitude,adding the "units" attribute  degrees_east.
             std::string tempunits = "degrees_north";
-            (*i)->setUnits (tempunits);
+            sdf->setUnits (tempunits);
         }
 
-        if ((*i)->fieldtype == 2) {	// longitude, adding the units of
+        if (sdf->fieldtype == 2) {	// longitude, adding the units of
             std::string tempunits = "degrees_east";
-            (*i)->setUnits (tempunits);
+            sdf->setUnits (tempunits);
         }
 
         // Add units for Z-dimension, now it is always "level"
-        if (((*i)->fieldtype == 3) || ((*i)->fieldtype == 4)) {
+        if ((sdf->fieldtype == 3) || (sdf->fieldtype == 4)) {
             std::string tempunits = "level";
-            (*i)->setUnits (tempunits);
+            sdf->setUnits (tempunits);
         }
     }
 
@@ -4009,23 +3974,20 @@ File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string &
     // "coordinates" attribute may become "lat ???", which is not correct. Remove the coordinates for this case.
 
     if (false == COARDFLAG) {
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            if ((*i)->fieldtype == 0) {
+        for (const auto &sdf:file->sd->sdfields) {
+            if (sdf->fieldtype == 0) {
                 bool has_lldim1 = false;
                 bool has_lldim2 = false;
-                for (std::vector < Dimension * >::const_iterator j =
-                    (*i)->getCorrectedDimensions ().begin ();
-                    j != (*i)->getCorrectedDimensions ().end (); ++j) {
-                    if(lldimname1 == (*j)->name)
+                for (const auto &dim:sdf->getCorrectedDimensions()) {
+                    if(lldimname1 == dim->name)
                         has_lldim1 = true;
-                    else if(lldimname2 == (*j)->name)
+                    else if(lldimname2 == dim->name)
                         has_lldim2 = true;
                 }
 
                 // Currently we don't remove the "coordinates" attribute if no lat/lon dimension names are used.
                 if (has_lldim1^has_lldim2)
-                    (*i)->coordinates = "";
+                    sdf->coordinates = "";
             }
         }
     }
@@ -4034,10 +3996,10 @@ File::handle_sds_coords(bool & COARDFLAG,std::string & lldimname1, std::string &
     
 // Handle Vdata
 void 
-File::handle_vdata() throw(Exception) {
+File::handle_vdata() const  {
 
     // Define File 
-    File *file = this;
+    const File *file = this;
 
     // Handle vdata, only need to check name clashings and special characters for vdata field names 
     // 
@@ -4045,48 +4007,31 @@ File::handle_vdata() throw(Exception) {
     // to add performance burden, I won't consider the nameclashing check between SDS and Vdata fields. KY 2012-6-28
     // 
 
-#if 0
-    string check_disable_vdata_nameclashing_key="H4.DisableVdataNameclashingCheck";
-    bool turn_on_disable_vdata_nameclashing_key = false;
-
-    turn_on_disable_vdata_nameclashing_key = HDFCFUtil::check_beskeys(check_disable_vdata_nameclashing_key);
-#endif
-
-
-    //if (false == turn_on_disable_vdata_nameclashing_key) {
     if (false == HDF4RequestHandler::get_disable_vdata_nameclashing_check()) {
 
         vector<string> tempvdatafieldnamelist;
 
-	for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
-	    i != file->vds.end (); ++i) {
-	    for (std::vector < VDField * >::const_iterator j =
-                (*i)->getFields ().begin (); j != (*i)->getFields ().end ();
-                ++j) 
-                tempvdatafieldnamelist.push_back((*j)->newname);
-        }
+	for (const auto &vd:file->vds) 
+	    for (const auto &vdf:vd->getFields()) 
+                tempvdatafieldnamelist.push_back(vdf->newname);
 	
         HDFCFUtil::Handle_NameClashing(tempvdatafieldnamelist);	
 
         int total_vfd_counter = 0;
 
-        for (std::vector < VDATA * >::const_iterator i = file->vds.begin ();
-            i != file->vds.end (); ++i) {
-            for (std::vector < VDField * >::const_iterator j =
-                (*i)->getFields ().begin (); j != (*i)->getFields ().end ();
-                ++j) {
-                (*j)->newname = tempvdatafieldnamelist[total_vfd_counter];
+        for (const auto &vd:file->vds) {
+            for (const auto &vdf:vd->getFields()) {
+                vdf->newname = tempvdatafieldnamelist[total_vfd_counter];
                 total_vfd_counter++;
             }
         }
     }
 
-
 }
 
 // This is the main function that make the HDF SDS objects follow the CF convention.
 void
-File::Prepare() throw(Exception)
+File::Prepare() 
 {
 
     File *file = this;
@@ -4102,15 +4047,13 @@ File::Prepare() throw(Exception)
     // 2.1 Remove AttrContainer from the Dimension list for non-OTHERHDF products
     if (file->sptype != OTHERHDF) {
 
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            for (vector<AttrContainer *>::iterator j = (*i)->dims_info.begin();
-                j!= (*i)->dims_info.end(); ) { 
+        for (const auto &sdf:file->sd->sdfields) {
+            for (vector<AttrContainer *>::iterator j = sdf->dims_info.begin();
+                j!= sdf->dims_info.end(); ) { 
                 delete (*j);
-                j = (*i)->dims_info.erase(j);
-                //j--;
+                j = sdf->dims_info.erase(j);
             }
-            if ((*i)->dims_info.size() != 0) 
+            if (sdf->dims_info.empty()==false ) 
                 throw1("Not totally erase the dimension container ");
         }
     }
@@ -4249,17 +4192,15 @@ File::Prepare() throw(Exception)
 void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
      
     // No need to check if "GridHeader" etc. exists since this has been checked in the CheckSDType routine.
-    for (std::vector < Attribute * >::const_iterator i =
-        this->sd->getAttributes ().begin ();
-        i != this->sd->getAttributes ().end (); ++i) {
+    for (const auto &attr:this->sd->getAttributes()) {
  
-        if ((*i)->getName () == "GridHeader") {
+        if (attr->getName () == "GridHeader") {
             float lat_start = 0.;
             float lon_start = 0.;
             float lat_res = 1.;
             float lon_res = 1.;
             try {
-                HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
+                HDFCFUtil::parser_trmm_v7_gridheader(attr->getValue(),latsize,lonsize,
                                                  lat_start,lon_start,
                                                  lat_res,lon_res,false);
             }
@@ -4273,22 +4214,18 @@ void File:: Obtain_TRMML3S_V7_latlon_size(int &latsize, int&lonsize) {
 }
 
 bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize, 
-                                       const int lonsize, string& latname, string& lonname) throw(Exception) {
+                                       const int lonsize, string& latname, string& lonname) {
 
-//    bool latflag = false;
-//    bool lonflag = false;
 
     int latname_index = -1;
     int lonname_index = -1;
     for (int temp_index = 0; temp_index <sdfield->getRank(); ++temp_index) {
         if(-1==latname_index && sdfield->getCorrectedDimensions()[temp_index]->getSize() == latsize) { 
             latname_index = temp_index;
-//cerr<<"lat name index = "<<latname_index <<endl;
             latname = sdfield->getCorrectedDimensions()[temp_index]->getName();
         }
         else if (-1 == lonname_index && sdfield->getCorrectedDimensions()[temp_index]->getSize() == lonsize) {
             lonname_index = temp_index;
-//cerr<<"lon name index = "<<lonname_index <<endl;
             lonname = sdfield->getCorrectedDimensions()[temp_index]->getName();
         }
     }
@@ -4296,7 +4233,7 @@ bool File:: Obtain_TRMM_V7_latlon_name(const SDField* sdfield, const int latsize
     return (latname_index + lonname_index == 1);
 
 }
-void File::PrepareTRMML2_V7() throw(Exception) {
+void File::PrepareTRMML2_V7() {
 
     File *file = this;
 
@@ -4308,10 +4245,6 @@ void File::PrepareTRMML2_V7() throw(Exception) {
     std::string tempnewdimname2;
     std::string temppath;
 
-    //int32 tempdimsize1, tempdimsize2;
-    //SDField *longitude;
-    //SDField *latitude;
-
     // Create a temporary map from the dimension size to the dimension name
     std::set < int32 > tempdimsizeset;
     std::map < int32, std::string > tempdimsizenamelist;
@@ -4319,64 +4252,54 @@ void File::PrepareTRMML2_V7() throw(Exception) {
     std::pair < std::set < int32 >::iterator, bool > tempsetit;
 
     // Reduce the fakeDim list. FakeDim is found to be used by TRMM team.
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getCorrectedDimensions ().begin ();
-            j != (*i)->getCorrectedDimensions ().end (); ++j) {
-            if (((*j)->getName ()).find ("fakeDim") == std::string::npos) {	//No fakeDim in the string
-                tempsetit = tempdimsizeset.insert ((*j)->getSize ());
+    for (const auto &sdf:file->sd->sdfields) {
+        for (const auto &dim:sdf->getCorrectedDimensions()) {
+            if ((dim->getName ()).find ("fakeDim") == std::string::npos) {	//No fakeDim in the string
+                tempsetit = tempdimsizeset.insert (dim->getSize ());
                 if (tempsetit.second == true)
-                    tempdimsizenamelist[(*j)->getSize ()] = (*j)->getName ();
+                    tempdimsizenamelist[dim->getSize ()] = dim->getName ();
 	    }
         }
     }
 
     // Reduce the fakeDim list. FakeDim is found to be used by TRMM team.
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-        string temp_name = (*i)->newname.substr(1) ;
+    for (const auto &sdf:file->sd->sdfields) {
+        string temp_name = sdf->newname.substr(1) ;
         size_t temp_pos = temp_name.find_first_of('/');
         if (temp_pos !=string::npos) 
-            (*i)->newname = temp_name.substr(temp_pos+1);
-        
+            sdf->newname = temp_name.substr(temp_pos+1);
     }
 
+    for (const auto &sdf:file->sd->sdfields) {
 
-    for (std::vector < SDField * >::const_iterator i =
-         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-        if((*i)->getName() == "Latitude") {
-            if((*i)->getRank() ==2) {
+        if(sdf->getName() == "Latitude") {
+            if(sdf->getRank() ==2) {
 
                 tempnewdimname1 =
-                    ((*i)->getCorrectedDimensions ())[0]->getName ();
+                    (sdf->getCorrectedDimensions ())[0]->getName ();
                 tempnewdimname2 =
-                    ((*i)->getCorrectedDimensions ())[1]->getName ();
+                    (sdf->getCorrectedDimensions ())[1]->getName ();
             }
 
-            (*i)->fieldtype = 1;
+            sdf->fieldtype = 1;
 
         }
-        else if ((*i)->getName() == "Longitude") {
-            (*i)->fieldtype = 2;
+        else if (sdf->getName() == "Longitude") {
+            sdf->fieldtype = 2;
 
         }
         else {
 
             // Use the temp. map (size to name) to replace the name of "fakeDim???" with the dimension name having the same dimension length
             // This is done only for TRMM. It should be evaluated if this can be applied to other products.
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getCorrectedDimensions ().begin ();
-                k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                size_t fakeDimpos = ((*k)->getName ()).find ("fakeDim");
+            for (const auto &dim:sdf->getCorrectedDimensions ()) {
+                size_t fakeDimpos = (dim->getName ()).find ("fakeDim");
 
                 if (fakeDimpos != std::string::npos) {
                     tempsizemapit =
-                        tempdimsizenamelist.find ((*k)->getSize ());
+                        tempdimsizenamelist.find (dim->getSize ());
                     if (tempsizemapit != tempdimsizenamelist.end ())
-                        (*k)->name = tempdimsizenamelist[(*k)->getSize ()];// Change the dimension name
+                        dim->name = tempdimsizenamelist[dim->getSize ()];// Change the dimension name
                 }
             }
         
@@ -4392,61 +4315,56 @@ void File::PrepareTRMML2_V7() throw(Exception) {
 
     string base_filename;
     size_t last_slash_pos = file->getPath().find_last_of("/");
-    if(last_slash_pos != string::npos)
+    if (last_slash_pos != string::npos)
         base_filename = file->getPath().substr(last_slash_pos+1);
-    if(""==base_filename)
+    if (""==base_filename)
        base_filename = file->getPath();
 
+    if (base_filename.find("2A12")!=string::npos) {
 
-    if(base_filename.find("2A12")!=string::npos) {
-    SDField *nlayer = nullptr;
-    string nlayer_name ="nlayer";
-
-    for (vector < SDField * >::iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-         bool has_nlayer = false;
-
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
-
-            if((*k)->getSize() == 28 && (*k)->name == nlayer_name) {
-                 
-                nlayer = new SDField();
-                nlayer->name = nlayer_name;
-                nlayer->rank = 1;
-                nlayer->type = DFNT_FLOAT32;
-                nlayer->fieldtype = 6;
-
-                nlayer->newname = nlayer->name ;
-                Dimension *dim =
-                        new Dimension (nlayer->name, (*k)->getSize (), 0);
-                nlayer->dims.push_back(dim);
-
-                dim = new Dimension(nlayer->name,(*k)->getSize(),0);
-                nlayer->correcteddims.push_back(dim);
-
-                has_nlayer = true;
-                break;
+        SDField *nlayer = nullptr;
+        string nlayer_name ="nlayer";
+    
+        for (const auto &sdf:file->sd->sdfields) {
+    
+            bool has_nlayer = false;
+    
+            for (const auto &sdim:sdf->getDimensions()) {
+    
+                if(sdim->getSize() == 28 && sdim->name == nlayer_name) {
+                     
+                    nlayer = new SDField();
+                    nlayer->name = nlayer_name;
+                    nlayer->rank = 1;
+                    nlayer->type = DFNT_FLOAT32;
+                    nlayer->fieldtype = 6;
+    
+                    nlayer->newname = nlayer->name ;
+                    auto dim = new Dimension (nlayer->name, sdim->getSize (), 0);
+                    nlayer->dims.push_back(dim);
+    
+                    auto cdim = new Dimension(nlayer->name,sdim->getSize(),0);
+                    nlayer->correcteddims.push_back(cdim);
+    
+                    has_nlayer = true;
+                    break;
+                }
             }
-
+    
+            if(true == has_nlayer)
+              break;
         }
-
-        if(true == has_nlayer)
-          break;
+    
+        if(nlayer !=nullptr) {
+            file->sd->sdfields.push_back(nlayer);
+            file->sd->nonmisscvdimnamelist.insert (nlayer_name);
+        }
     }
-
-    if(nlayer !=nullptr) {
-        file->sd->sdfields.push_back(nlayer);
-        file->sd->nonmisscvdimnamelist.insert (nlayer_name);
-    }
- }
  
 }
 
 void
-File::PrepareTRMML3S_V7() throw(Exception) {
+File::PrepareTRMML3S_V7() {
 
     File *file = this;
     for (std::vector < SDField * >::iterator i =
@@ -4475,16 +4393,13 @@ File::PrepareTRMML3S_V7() throw(Exception) {
     SDField *nlayer = nullptr;
     string nlayer_name ="nlayer";
 
-    for (vector < SDField * >::iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
          bool has_nlayer = false;
 
-        for (vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+        for (const auto &sdim:sdf->getDimensions()) {
 
-            if((*k)->getSize() == 28 && (*k)->name == nlayer_name) {
+            if(sdim->getSize() == 28 && sdim->name == nlayer_name) {
                  
                 nlayer = new SDField();
                 nlayer->name = nlayer_name;
@@ -4493,12 +4408,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                 nlayer->fieldtype = 6;
 
                 nlayer->newname = nlayer->name ;
-                Dimension *dim =
-                        new Dimension (nlayer->name, (*k)->getSize (), 0);
+                auto dim = new Dimension (nlayer->name, sdim->getSize(), 0);
                 nlayer->dims.push_back(dim);
 
-                dim = new Dimension(nlayer->name,(*k)->getSize(),0);
-                nlayer->correcteddims.push_back(dim);
+                auto cdim = new Dimension(nlayer->name,sdim->getSize(),0);
+                nlayer->correcteddims.push_back(cdim);
 
                 has_nlayer = true;
                 break;
@@ -4519,55 +4433,49 @@ File::PrepareTRMML3S_V7() throw(Exception) {
     int lonsize = 0;
 
     Obtain_TRMML3S_V7_latlon_size(latsize,lonsize);
-//cerr<<"latsize "<<latsize <<endl;
-//cerr<<"lonsize "<<lonsize <<endl;
 
     string latname;
     string lonname;
 
     bool llname_found = false;
-    for (std::vector < SDField * >::iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        if(2 == (*i)->getRank()) {
+        if(2 == sdf->getRank()) {
 
-            llname_found = Obtain_TRMM_V7_latlon_name((*i),latsize,lonsize,latname,lonname);
+            llname_found = Obtain_TRMM_V7_latlon_name(sdf,latsize,lonsize,latname,lonname);
             if (true == llname_found)
                 break;
 
         }
     }
 
-//cerr<<"latitude name "<<latname <<endl;
-//cerr<<"longitude name "<<lonname <<endl;
     // Create lat/lon SD fields.
-    SDField* longitude = new SDField ();
+    auto longitude = new SDField ();
     longitude->name = lonname;
     longitude->rank = 1;
     longitude->type = DFNT_FLOAT32;
     longitude->fieldtype = 2;
 
     longitude->newname = longitude->name;
-    Dimension *dim =
-                    new Dimension (lonname, lonsize, 0);
+    auto dim = new Dimension (lonname, lonsize, 0);
     longitude->dims.push_back (dim);
 
-    dim = new Dimension (lonname, lonsize, 0);
-    longitude->correcteddims.push_back (dim);
+    auto cdim = new Dimension (lonname, lonsize, 0);
+    longitude->correcteddims.push_back (cdim);
     file->sd->sdfields.push_back(longitude);
 
-    SDField* latitude = new SDField ();
+    auto latitude = new SDField ();
     latitude->name = latname;
     latitude->rank = 1;
     latitude->type = DFNT_FLOAT32;
     latitude->fieldtype = 1;
 
     latitude->newname = latitude->name;
-    dim = new Dimension (latname, latsize, 0);
-    latitude->dims.push_back (dim);
+    auto latdim = new Dimension (latname, latsize, 0);
+    latitude->dims.push_back (latdim);
 
-    dim = new Dimension (latname, latsize, 0);
-    latitude->correcteddims.push_back (dim);
+    auto latcdim = new Dimension (latname, latsize, 0);
+    latitude->correcteddims.push_back (latcdim);
     file->sd->sdfields.push_back(latitude);
      
     // Create the <dimname,coordinate variable> map from the corresponding dimension names to the latitude and the longitude
@@ -4594,16 +4502,12 @@ File::PrepareTRMML3S_V7() throw(Exception) {
         SDField* nthrsh_hb = nullptr;
         SDField* nthrsh_srt = nullptr;
         
-        for (vector < SDField * >::iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (const auto &sdf:file->sd->sdfields) {
 
             if(ZOflag != true) {
-                if((*i)->name.find("Order")!=string::npos) {
-                    for (vector < Dimension * >::const_iterator k =
-                         (*i)->getDimensions ().begin ();
-                         k != (*i)->getDimensions ().end (); ++k) {
-
-                        if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
+                if(sdf->name.find("Order")!=string::npos) {
+                    for (const auto &sdim:sdf->getDimensions()) {
+                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
                             if(nthrsh_zo == nullptr) {// Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_zo = new SDField();
                                 nthrsh_zo->name = nthrsh_zo_name;
@@ -4612,12 +4516,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                                 nthrsh_zo->fieldtype = 6;
 
                                 nthrsh_zo->newname = nthrsh_zo->name ;
-                                Dimension *dim =
-                                        new Dimension (nthrsh_zo->name, (*k)->getSize (), 0);
-                                nthrsh_zo->dims.push_back(dim);
+                                auto nz_dim = new Dimension (nthrsh_zo->name, sdim->getSize (), 0);
+                                nthrsh_zo->dims.push_back(nz_dim);
 
-                                dim = new Dimension(nthrsh_zo->name,(*k)->getSize(),0);
-                                nthrsh_zo->correcteddims.push_back(dim);
+                                auto nz_cdim = new Dimension(nthrsh_zo->name,sdim->getSize(),0);
+                                nthrsh_zo->correcteddims.push_back(nz_cdim);
 
                                 ZOflag = true;
                             }
@@ -4629,13 +4532,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
             }
 
             else if(SRTflag != true) {
-                if((*i)->name.find("2A25")!=string::npos) {
+                if(sdf->name.find("2A25")!=string::npos) {
 
-                    for (vector < Dimension * >::const_iterator k =
-                         (*i)->getDimensions ().begin ();
-                         k != (*i)->getDimensions ().end (); ++k) {
+                    for (const auto &sdim:sdf->getDimensions ()) {
 
-                        if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
+                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
                             if(nthrsh_srt == nullptr) { // Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_srt = new SDField();
                                 nthrsh_srt->name = nthrsh_srt_name;
@@ -4644,12 +4545,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                                 nthrsh_srt->fieldtype = 6;
 
                                 nthrsh_srt->newname = nthrsh_srt->name ;
-                                Dimension *dim =
-                                     new Dimension (nthrsh_srt->name, (*k)->getSize (), 0);
-                                nthrsh_srt->dims.push_back(dim);
+                                auto ns_dim = new Dimension (nthrsh_srt->name, sdim->getSize (), 0);
+                                nthrsh_srt->dims.push_back(ns_dim);
 
-                            	dim = new Dimension(nthrsh_srt->name,(*k)->getSize(),0);
-                            	nthrsh_srt->correcteddims.push_back(dim);
+                            	auto ns_cdim = new Dimension(nthrsh_srt->name,sdim->getSize(),0);
+                            	nthrsh_srt->correcteddims.push_back(ns_cdim);
 
                             	SRTflag = true;
                             }
@@ -4659,13 +4559,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                 }
             }
             else if(HBflag != true) {
-                if((*i)->name.find("hb")!=string::npos || (*i)->name.find("HB")!=string::npos) {
+                if(sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos) {
 
-                    for (vector < Dimension * >::const_iterator k =
-                         (*i)->getDimensions ().begin ();
-                         k != (*i)->getDimensions ().end (); ++k) {
+                    for (const auto &sdim:sdf->getDimensions ()) {
 
-                        if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
+                        if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
 
                             if(nthrsh_hb == nullptr) {// Not necessary for this product, only makes coverity scan happy.
                                 nthrsh_hb = new SDField();
@@ -4675,12 +4573,11 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                                 nthrsh_hb->fieldtype = 6;
 
                                 nthrsh_hb->newname = nthrsh_hb->name ;
-                                Dimension *dim =
-                                        new Dimension (nthrsh_hb->name, (*k)->getSize (), 0);
-                                nthrsh_hb->dims.push_back(dim);
+                                auto nh_dim = new Dimension (nthrsh_hb->name, sdim->getSize (), 0);
+                                nthrsh_hb->dims.push_back(nh_dim);
 
-                                dim = new Dimension(nthrsh_hb->name,(*k)->getSize(),0);
-                                nthrsh_hb->correcteddims.push_back(dim);
+                                auto nh_cdim = new Dimension(nthrsh_hb->name,sdim->getSize(),0);
+                                nthrsh_hb->correcteddims.push_back(nh_cdim);
 
                                 HBflag = true;
                             }
@@ -4691,75 +4588,56 @@ File::PrepareTRMML3S_V7() throw(Exception) {
         }
 
 
-        for (vector < SDField * >::iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (const auto &sdf:file->sd->sdfields) {
 
-            if((*i)->name.find("Order")!=string::npos && ZOflag == true) {
-                for (vector < Dimension * >::const_iterator k =
-                     (*i)->getDimensions ().begin ();
-                     k != (*i)->getDimensions ().end (); ++k) {
-
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_zo_name;
+            if(sdf->name.find("Order")!=string::npos && ZOflag == true) {
+                for (const auto &sdim:sdf->getDimensions()) {
+                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                       sdim->name = nthrsh_zo_name;
                        break;
                     }
                 }
 
-                for (std::vector < Dimension * >::const_iterator k =
-                    (*i)->getCorrectedDimensions ().begin ();
-                    k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_zo_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_zo_name;
                        break;
                     }
                 }
  
             }
 
-            else if(((*i)->name.find("hb")!=string::npos || (*i)->name.find("HB")!=string::npos)&& HBflag == true) {
-                for (vector < Dimension * >::const_iterator k =
-                     (*i)->getDimensions ().begin ();
-                     k != (*i)->getDimensions ().end (); ++k) {
-
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_hb_name;
+            else if((sdf->name.find("hb")!=string::npos || sdf->name.find("HB")!=string::npos)&& HBflag == true) {
+                for (const auto &sdim:sdf->getDimensions()) {
+                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                       sdim->name = nthrsh_hb_name;
                        break;
                     }
                 }
 
-                for (std::vector < Dimension * >::const_iterator k =
-                    (*i)->getCorrectedDimensions ().begin ();
-                    k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_hb_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_hb_name;
                        break;
                     }
                 }
  
             }
-            else if(((*i)->name.find("2A25")!=string::npos) && SRTflag == true) {
-                for (vector < Dimension * >::const_iterator k =
-                     (*i)->getDimensions ().begin ();
-                     k != (*i)->getDimensions ().end (); ++k) {
-
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_srt_name;
+            else if((sdf->name.find("2A25")!=string::npos) && SRTflag == true) {
+                for (const auto &sdim:sdf->getDimensions()) {
+                    if(sdim->getSize() == 6  && sdim->name == nthrsh_base_name) {
+                       sdim->name = nthrsh_srt_name;
                        break;
                     }
                 }
 
-                for (std::vector < Dimension * >::const_iterator k =
-                    (*i)->getCorrectedDimensions ().begin ();
-                    k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                    if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                       (*k)->name = nthrsh_srt_name;
+                for (const auto &cor_dim:sdf->getCorrectedDimensions()) {
+                    if(cor_dim->getSize() == 6  && cor_dim->name == nthrsh_base_name) {
+                       cor_dim->name = nthrsh_srt_name;
                        break;
                     }
                 }
- 
             }
-
-
         }
 
         if(nthrsh_zo !=nullptr) {
@@ -4776,7 +4654,6 @@ File::PrepareTRMML3S_V7() throw(Exception) {
             file->sd->sdfields.push_back(nthrsh_srt);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_srt_name);
         }
-
     }
     
 }
@@ -4791,17 +4668,14 @@ File::PrepareTRMML3M_V7()  {
         if((*i)->name == "InputFileNames") {
             delete (*i);
             i = file->sd->sdfields.erase(i); 
-            //i--;
         }
         else if((*i)->name == "InputAlgorithmVersions") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
-            //i--;
         }
         else if((*i)->name == "InputGenerationDateTimes") {
             delete (*i);
             i = file->sd->sdfields.erase(i);
-            //i--;
         }
         else {
             ++i;
@@ -4831,12 +4705,10 @@ File::PrepareTRMML3M_V7()  {
     // as less as I can.
 
     int first_index = -1;
-    for (vector < Attribute * >::const_iterator i =
-        this->sd->getAttributes ().begin ();
-        i != this->sd->getAttributes ().end (); ++i) {
+    for (const auto &attr:this->sd->getAttributes()) {
             
-        if ((*i)->getName ().find("GridHeader")==0) {
-            string temp_name = (*i)->getName();
+        if (attr->getName ().find("GridHeader")==0) {
+            string temp_name = attr->getName();
 
             // The size of "GridHeader" is 10, no need to calculate.
             string str_num = temp_name.substr(10);
@@ -4856,7 +4728,7 @@ File::PrepareTRMML3M_V7()  {
             int lonsize = 0;
             
             try {
-                HDFCFUtil::parser_trmm_v7_gridheader((*i)->getValue(),latsize,lonsize,
+                HDFCFUtil::parser_trmm_v7_gridheader(attr->getValue(),latsize,lonsize,
                                                  lat_start,lon_start,
                                                  lat_res, lon_res, false);
             }
@@ -4868,31 +4740,30 @@ File::PrepareTRMML3M_V7()  {
             string lonname;
             
             bool llname_found = false;
-            for (std::vector < SDField * >::iterator i =
-                 file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+            for (const auto &sdf:file->sd->sdfields) {
  
                 // Just loop the 2-D fields to find the lat/lon size
-                if(2 == (*i)->getRank()) {
+                if(2 == sdf->getRank()) {
 
                     // If a grid has not been visited, we will check the fields attached to this grid.
-                    if ((*i)->newname !=(*i)->name) {
+                    if (sdf->newname !=sdf->name) {
 
-                        string temp_field_full_path = (*i)->getNewName();
+                        string temp_field_full_path = sdf->getNewName();
                         size_t last_path_pos = temp_field_full_path.find_last_of('/');
                         char str_index = temp_field_full_path[last_path_pos-1];
                         if(grid_index ==(int)(str_index - '0')) {
                             if(llname_found != true) 
-                                llname_found = Obtain_TRMM_V7_latlon_name((*i),latsize,lonsize,latname,lonname);
-                            (*i)->newname = (*i)->name;
+                                llname_found = Obtain_TRMM_V7_latlon_name(sdf,latsize,lonsize,latname,lonname);
+                            sdf->newname = sdf->name;
                         }
                     }
                 }
                 else if (first_index == grid_index)
-                    (*i)->newname = (*i)->name;
+                    sdf->newname = sdf->name;
             }   
 
             // Create lat/lon SD fields.
-            SDField* longitude = new SDField ();
+            auto longitude = new SDField ();
             longitude->name = lonname;
             longitude->rank = 1;
             longitude->type = DFNT_FLOAT32;
@@ -4900,15 +4771,14 @@ File::PrepareTRMML3M_V7()  {
             longitude->fieldref = grid_index;
 
             longitude->newname = longitude->name;
-            Dimension *dim =
-                    new Dimension (lonname, lonsize, 0);
-            longitude->dims.push_back (dim);
+            auto lon_dim = new Dimension (lonname, lonsize, 0);
+            longitude->dims.push_back (lon_dim);
 
-            dim = new Dimension (lonname, lonsize, 0);
-            longitude->correcteddims.push_back (dim);
+            auto lon_cdim = new Dimension (lonname, lonsize, 0);
+            longitude->correcteddims.push_back(lon_cdim);
             file->sd->sdfields.push_back(longitude);
 
-            SDField* latitude = new SDField ();
+            auto latitude = new SDField ();
             latitude->name = latname;
             latitude->rank = 1;
             latitude->type = DFNT_FLOAT32;
@@ -4916,11 +4786,11 @@ File::PrepareTRMML3M_V7()  {
             latitude->fieldref = grid_index;
 
             latitude->newname = latitude->name;
-            dim = new Dimension (latname, latsize, 0);
-            latitude->dims.push_back (dim);
+            auto lat_dim = new Dimension (latname, latsize, 0);
+            latitude->dims.push_back (lat_dim);
 
-            dim = new Dimension (latname, latsize, 0);
-            latitude->correcteddims.push_back (dim);
+            auto lat_cdim = new Dimension (latname, latsize, 0);
+            latitude->correcteddims.push_back (lat_cdim);
             file->sd->sdfields.push_back(latitude);
      
             // Create the <dimname,coordinate variable> map from the corresponding dimension names to the latitude and the longitude
@@ -4935,7 +4805,6 @@ File::PrepareTRMML3M_V7()  {
 /// Latitude and longitude are stored in one array(geolocation). Need to separate.
 void
 File::PrepareTRMML2_V6 ()
-throw (Exception)
 {
 
     File *file = this;
@@ -4960,87 +4829,84 @@ throw (Exception)
     std::pair < std::set < int32 >::iterator, bool > tempsetit;
 
     // Reduce the fakeDim list. FakeDim is found to be used by TRMM team.
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getCorrectedDimensions ().begin ();
-            j != (*i)->getCorrectedDimensions ().end (); ++j) {
-            if (((*j)->getName ()).find ("fakeDim") == std::string::npos) {	//No fakeDim in the string
-                tempsetit = tempdimsizeset.insert ((*j)->getSize ());
+    for (const auto &sdf:file->sd->sdfields) {
+        for (const auto &dim:sdf->getCorrectedDimensions()) {
+            if ((dim->getName ()).find ("fakeDim") == std::string::npos) {	//No fakeDim in the string
+                tempsetit = tempdimsizeset.insert (dim->getSize ());
                 if (tempsetit.second == true)
-                    tempdimsizenamelist[(*j)->getSize ()] = (*j)->getName ();
+                    tempdimsizenamelist[dim->getSize ()] = dim->getName ();
 	    }
         }
     }
 
-    for (std::vector < SDField * >::const_iterator i =
-         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        if ((*i)->getName () == "geolocation") {
+        if (sdf->getName () == "geolocation") {
 
             // Obtain the size and the name of the first two dimensions of the geolocation field;
             // make these two dimensions the dimensions of latitude and longtiude.
-            tempdimname1 = ((*i)->getDimensions ())[0]->getName ();
-            tempdimsize1 = ((*i)->getDimensions ())[0]->getSize ();
-            tempdimname2 = ((*i)->getDimensions ())[1]->getName ();
-            tempdimsize2 = ((*i)->getDimensions ())[1]->getSize ();
+            tempdimname1 = (sdf->getDimensions ())[0]->getName ();
+            tempdimsize1 = (sdf->getDimensions ())[0]->getSize ();
+            tempdimname2 = (sdf->getDimensions ())[1]->getName ();
+            tempdimsize2 = (sdf->getDimensions ())[1]->getSize ();
 
             tempnewdimname1 =
-                ((*i)->getCorrectedDimensions ())[0]->getName ();
+                (sdf->getCorrectedDimensions ())[0]->getName ();
             tempnewdimname2 =
-                ((*i)->getCorrectedDimensions ())[1]->getName ();
+                (sdf->getCorrectedDimensions ())[1]->getName ();
      
             // TRMM level 2 version 6 only has one geolocation field.
             // So latitude and longitude are only assigned once. 
             // However, coverity scan doesn't know this and complain about
             // the re-allocation of latitude and longitude that may cause the
             // potential resource leaks.  KY 2015-05-12
-            if(latitude == nullptr) {
+
+            if (latitude == nullptr) {
 
                 latitude = new SDField ();
                 latitude->name = "latitude";
                 latitude->rank = 2;
-                latitude->fieldref = (*i)->fieldref;
-                latitude->type = (*i)->getType ();
-                temppath = (*i)->newname.substr ((*i)->name.size ());
+                latitude->fieldref = sdf->fieldref;
+                latitude->type = sdf->getType ();
+                temppath = sdf->newname.substr (sdf->name.size ());
                 latitude->newname = latitude->name + temppath;
                 latitude->fieldtype = 1;
                 latitude->rootfieldname = "geolocation";
 
-                Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
+                auto lat_dim = new Dimension (tempdimname1, tempdimsize1, 0);
 
-                latitude->dims.push_back (dim);
+                latitude->dims.push_back (lat_dim);
 
-                dim = new Dimension (tempdimname2, tempdimsize2, 0);
-                latitude->dims.push_back (dim);
+                auto lat_dim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+                latitude->dims.push_back (lat_dim2);
 
-                dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
-                latitude->correcteddims.push_back (dim);
+                auto lat_cdim = new Dimension (tempnewdimname1, tempdimsize1, 0);
+                latitude->correcteddims.push_back (lat_cdim);
 
-                dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
-                latitude->correcteddims.push_back (dim);
+                auto lat_cdim2 = new Dimension (tempnewdimname2, tempdimsize2, 0);
+                latitude->correcteddims.push_back (lat_cdim2);
             }
 
             if(longitude == nullptr) {
                 longitude = new SDField ();
                 longitude->name = "longitude";
                 longitude->rank = 2;
-                longitude->fieldref = (*i)->fieldref;
-                longitude->type = (*i)->getType ();
+                longitude->fieldref = sdf->fieldref;
+                longitude->type = sdf->getType ();
                 longitude->newname = longitude->name + temppath;
                 longitude->fieldtype = 2;
                 longitude->rootfieldname = "geolocation";
 
-                Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
-                longitude->dims.push_back (dim);
-                dim = new Dimension (tempdimname2, tempdimsize2, 0);
-                longitude->dims.push_back (dim);
+                auto lon_dim = new Dimension (tempdimname1, tempdimsize1, 0);
+                longitude->dims.push_back (lon_dim);
+                auto lon_dim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+                longitude->dims.push_back (lon_dim2);
 
-                dim = new Dimension (tempnewdimname1, tempdimsize1, 0);
-                longitude->correcteddims.push_back (dim);
+                auto lon_cdim = new Dimension (tempnewdimname1, tempdimsize1, 0);
+                longitude->correcteddims.push_back (lon_cdim);
 
-                dim = new Dimension (tempnewdimname2, tempdimsize2, 0);
-                longitude->correcteddims.push_back (dim);
+                auto lon_cdim2 = new Dimension (tempnewdimname2, tempdimsize2, 0);
+                longitude->correcteddims.push_back (lon_cdim2);
             }
 
         }
@@ -5048,16 +4914,14 @@ throw (Exception)
 
             // Use the temp. map (size to name) to replace the name of "fakeDim???" with the dimension name having the same dimension length
             // This is done only for TRMM. It should be evaluated if this can be applied to other products.
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getCorrectedDimensions ().begin ();
-                k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                size_t fakeDimpos = ((*k)->getName ()).find ("fakeDim");
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
+                size_t fakeDimpos = (dim->getName ()).find ("fakeDim");
 
                 if (fakeDimpos != std::string::npos) {
                     tempsizemapit =
-                        tempdimsizenamelist.find ((*k)->getSize ());
+                        tempdimsizenamelist.find (dim->getSize ());
                     if (tempsizemapit != tempdimsizenamelist.end ())
-                        (*k)->name = tempdimsizenamelist[(*k)->getSize ()];// Change the dimension name
+                        dim->name = tempdimsizenamelist[dim->getSize ()];// Change the dimension name
                 }
             }
         }
@@ -5069,6 +4933,7 @@ throw (Exception)
     // 3. Remove the geolocation field from the field list
     SDField *origeo = nullptr;
 
+    // Note: not use auto range-for for this loop since it deletes an element. 
     std::vector < SDField * >::iterator toeraseit;
     for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
          i != file->sd->sdfields.end (); ++i) {
@@ -5092,32 +4957,29 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3B_V6 ()
-throw (Exception)
 {
 
-    std::string tempnewdimname1, tempnewdimname2;
+    string tempnewdimname1;
+    string tempnewdimname2;
     int latflag = 0;
     int lonflag = 0;
 
-    std::string temppath;
+    string temppath;
     SDField *latitude = nullptr;
     SDField *longitude = nullptr;
     File *file = this;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+        for (const auto &sdim:sdf->getDimensions()) {
 
             // This dimension has the dimension name
-            if ((((*k)->getName ()).find ("fakeDim")) == std::string::npos) {
+            if (((sdim->getName ()).find ("fakeDim")) == std::string::npos) {
 
-                temppath = (*i)->newname.substr ((*i)->name.size ());
+                temppath = sdf->newname.substr (sdf->name.size ());
                 // The lat/lon formula is from GES DISC web site. http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
                 // KY 2010-7-13
-                if ((*k)->getSize () == 1440 && (*k)->getType () == 0) {//No dimension scale
+                if (sdim->getSize () == 1440 && sdim->getType () == 0) {//No dimension scale
 
                     if(longitude == nullptr) { // Not necessary for this product, only makes coverity happy.
                         longitude = new SDField ();
@@ -5127,19 +4989,16 @@ throw (Exception)
                         longitude->fieldtype = 2;
 
                         longitude->newname = longitude->name + temppath;
-                        Dimension *dim =
-                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        auto dim =  new Dimension (sdim->getName (), sdim->getSize (), 0);
                         longitude->dims.push_back (dim);
-                        tempnewdimname2 = (*k)->getName ();
-
-                        dim =
-                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                        longitude->correcteddims.push_back (dim);
+                        tempnewdimname2 = sdim->getName ();
+                        auto cdim = new Dimension (sdim->getName (), sdim->getSize (), 0);
+                        longitude->correcteddims.push_back (cdim);
                         lonflag++;
                     }
                 }
 
-                if ((*k)->getSize () == 400 && (*k)->getType () == 0) {
+                if (sdim->getSize () == 400 && sdim->getType () == 0) {
 
                     if(latitude == nullptr) {
                         latitude = new SDField ();
@@ -5148,19 +5007,19 @@ throw (Exception)
                         latitude->type = DFNT_FLOAT32;
                         latitude->fieldtype = 1;
                         latitude->newname = latitude->name + temppath;
-                        Dimension *dim =
-                            new Dimension ((*k)->getName (), (*k)->getSize (), 0);
+                        auto dim =  new Dimension (sdim->getName (), sdim->getSize (), 0);
                         latitude->dims.push_back (dim);
-                        tempnewdimname1 = (*k)->getName ();
+                        tempnewdimname1 = sdim->getName ();
 
+#if 0
                         // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
                         // Leave here just as a reference.
-                        // std::string uniquedimname = (*k)->getName() +temppath;
+                        // std::string uniquedimname = sdim->getName() +temppath;
                         //  tempnewdimname1 = uniquedimname;
-                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                        dim =
-                             new Dimension ((*k)->getName (), (*k)->getSize (), 0);
-                        latitude->correcteddims.push_back (dim);
+                        //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
+#endif
+                        auto cdim = new Dimension (sdim->getName (), sdim->getSize (), 0);
+                        latitude->correcteddims.push_back (cdim);
                         latflag++;
                     }
                 }
@@ -5200,7 +5059,6 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3A_V6 ()
-throw (Exception)
 {
     std::string tempnewdimname1;
     std::string tempnewdimname2;
@@ -5211,95 +5069,77 @@ throw (Exception)
     SDField *longitude = nullptr;
     File *file = this;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
-            if ((((*k)->getName ()).find ("latitude")) == 0) 
-               (*k)->name = "fakeDim1";
-            if ((((*k)->getName()).find ("longitude")) == 0)
-               (*k)->name = "fakeDim2";
-
+    for (const auto &sdf:file->sd->sdfields) {
+        for (const auto &dim:sdf->getDimensions()) { 
+            if (((dim->getName ()).find ("latitude")) == 0) 
+               dim->name = "fakeDim1";
+            if (((dim->getName()).find ("longitude")) == 0)
+               dim->name = "fakeDim2";
         }
         
         // Since we use correctedims, we also need to change them. We may
         // need to remove correctedims from HDFSP space in the future.
-          for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getCorrectedDimensions ().begin ();
-            k != (*i)->getCorrectedDimensions ().end (); ++k) {
-            if ((((*k)->getName ()).find ("latitude")) == 0) 
-               (*k)->name = "fakeDim1";
-            if ((((*k)->getName()).find ("longitude")) == 0)
-               (*k)->name = "fakeDim2";
-
+        for (const auto &dim:sdf->getCorrectedDimensions()) {
+            if (((dim->getName ()).find ("latitude")) == 0) 
+               dim->name = "fakeDim1";
+            if (((dim->getName()).find ("longitude")) == 0)
+               dim->name = "fakeDim2";
         }
-   }
+    }
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
+        for (const auto &sdim:sdf->getDimensions()) {
 
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+            // The lat/lon formula is from GES DISC web site. http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
+            // KY 2010-7-13
+            if (sdim->getSize () == 360 && sdim->getType () == 0) {//No dimension scale
 
+                if(longitude == nullptr) {
+                    longitude = new SDField ();
+                    longitude->name = "longitude";
+                    longitude->rank = 1;
+                    longitude->type = DFNT_FLOAT32;
+                    longitude->fieldtype = 2;
 
-            // This dimension has the dimension name
-            //if ((((*k)->getName ()).find ("fakeDim")) == std::string::npos) 
+                    longitude->newname = longitude->name ;
+                    auto dim = new Dimension (longitude->getName (), sdim->getSize (), 0);
+                    longitude->dims.push_back (dim);
+                    tempnewdimname2 = longitude->name; 
 
-                // The lat/lon formula is from GES DISC web site. http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
-                // KY 2010-7-13
-                if ((*k)->getSize () == 360 && (*k)->getType () == 0) {//No dimension scale
-
-                    if(longitude == nullptr) {
-                        longitude = new SDField ();
-                        longitude->name = "longitude";
-                        longitude->rank = 1;
-                        longitude->type = DFNT_FLOAT32;
-                        longitude->fieldtype = 2;
-
-                        longitude->newname = longitude->name ;
-                        Dimension *dim =
-                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                        longitude->dims.push_back (dim);
-                        tempnewdimname2 = longitude->name; 
-
-                        dim =
-                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                        longitude->correcteddims.push_back (dim);
-                        lonflag = true;
-                    }
+                    auto cdim =  new Dimension (longitude->getName (), sdim->getSize (), 0);
+                    longitude->correcteddims.push_back (cdim);
+                    lonflag = true;
                 }
+            }
 
-                if ((*k)->getSize () == 180 && (*k)->getType () == 0) {
+            if (sdim->getSize () == 180 && sdim->getType () == 0) {
 
-                    if(latitude == nullptr) {
-                        latitude = new SDField ();
-                        latitude->name = "latitude";
-                        latitude->rank = 1;
-                        latitude->type = DFNT_FLOAT32;
-                        latitude->fieldtype = 1;
-                        latitude->newname = latitude->name ;
-                        Dimension *dim =
-                            new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                if(latitude == nullptr) {
+                    latitude = new SDField ();
+                    latitude->name = "latitude";
+                    latitude->rank = 1;
+                    latitude->type = DFNT_FLOAT32;
+                    latitude->fieldtype = 1;
+                    latitude->newname = latitude->name ;
+                    auto dim = new Dimension (latitude->getName (), sdim->getSize (), 0);
 
-                        latitude->dims.push_back (dim);
-                        tempnewdimname1 = latitude->getName ();
+                    latitude->dims.push_back (dim);
+                    tempnewdimname1 = latitude->getName ();
 
-                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                        // Leave here just as a reference.
-                        // std::string uniquedimname = (*k)->getName() +temppath;
-                        //  tempnewdimname1 = uniquedimname;
-                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                        dim =
-                             new Dimension (latitude->getName (), (*k)->getSize (), 0);
-                        latitude->correcteddims.push_back (dim);
-                        latflag = true;
-                    }
+#if 0
+                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                    // Leave here just as a reference.
+                    // std::string uniquedimname = sdim->getName() +temppath;
+                    //  tempnewdimname1 = uniquedimname;
+                    //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
+#endif
+                    auto cdim = new Dimension (latitude->getName (), sdim->getSize (), 0);
+                    latitude->correcteddims.push_back (cdim);
+                    latflag = true;
                 }
-            
+            }
+        
 
             if (latflag == true && lonflag == true)
                 break;
@@ -5324,34 +5164,27 @@ throw (Exception)
     }
 
     else {// Without else this is fine since throw5 will go before this. This is just make Coverity happy.KY 2015-10-23
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+        for (const auto &sdf:file->sd->sdfields) {
 
+            for (const auto &dim:sdf->getDimensions()) {
 
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getDimensions ().begin ();
-                k != (*i)->getDimensions ().end (); ++k) {
+                if (dim->getSize () == 360 ) 
+                    dim->name = longitude->name;
 
-                    if ((*k)->getSize () == 360 ) 
-                        (*k)->name = longitude->name;
-
-                    if ((*k)->getSize () == 180 ) 
-                        (*k)->name = latitude->name;
+                if (dim->getSize () == 180 ) 
+                    dim->name = latitude->name;
 
             }
 
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getCorrectedDimensions ().begin ();
-                k != (*i)->getCorrectedDimensions ().end (); ++k) {
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
 
-                    if ((*k)->getSize () == 360 ) 
-                        (*k)->name = longitude->name;
+                if (dim->getSize () == 360 ) 
+                    dim->name = longitude->name;
 
-                    if ((*k)->getSize () == 180 ) 
-                        (*k)->name = latitude->name;
+                if (dim->getSize () == 180 ) 
+                    dim->name = latitude->name;
 
             }
-
 
         }
 
@@ -5370,7 +5203,6 @@ throw (Exception)
 // Prepare TRMM Level 3, no lat/lon are in the original HDF4 file. Need to provide them.
 void
 File::PrepareTRMML3C_V6 ()
-throw (Exception)
 {
 
     std::string tempnewdimname1;
@@ -5386,98 +5218,79 @@ throw (Exception)
 
     File *file = this;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
+        for (const auto &sdim:sdf->getDimensions()) {
 
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
+            // The lat/lon formula is from GES DISC web site. http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
+            // KY 2010-7-13
+            if (sdim->getSize () == 720 && sdim->getType () == 0) {//No dimension scale
 
+                // TRMM only has one longitude and latitude. The following if only makes coverity happy.
+                if(longitude == nullptr) {
+                    longitude = new SDField ();
+                    longitude->name = "longitude";
+                    longitude->rank = 1;
+                    longitude->type = DFNT_FLOAT32;
+                    longitude->fieldtype = 2;
 
-            // This dimension has the dimension name
-            //if ((((*k)->getName ()).find ("fakeDim")) == std::string::npos) 
+                    longitude->newname = longitude->name ;
+                    auto dim = new Dimension (longitude->getName (), sdim->getSize (), 0);
+                    longitude->dims.push_back (dim);
+                    tempnewdimname2 = longitude->name; 
 
-                // The lat/lon formula is from GES DISC web site. http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
-                // KY 2010-7-13
-                if ((*k)->getSize () == 720 && (*k)->getType () == 0) {//No dimension scale
-
-                    // TRMM only has one longitude and latitude. The following if only makes coverity happy.
-                    if(longitude == nullptr) {
-                        longitude = new SDField ();
-                        longitude->name = "longitude";
-                        longitude->rank = 1;
-                        longitude->type = DFNT_FLOAT32;
-                        longitude->fieldtype = 2;
-
-                        longitude->newname = longitude->name ;
-                        Dimension *dim =
-                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                        longitude->dims.push_back (dim);
-                        tempnewdimname2 = longitude->name; 
-
-                        dim =
-                            new Dimension (longitude->getName (), (*k)->getSize (), 0);
-                        longitude->correcteddims.push_back (dim);
-                        lonflag = true;
-                    }
+                    auto cdim = new Dimension (longitude->getName (), sdim->getSize (), 0);
+                    longitude->correcteddims.push_back (cdim);
+                    lonflag = true;
                 }
+            }
 
-                if ((*k)->getSize () == 148 && (*k)->getType () == 0) {
+            if (sdim->getSize () == 148 && sdim->getType () == 0) {
 
-                    if(latitude == nullptr) {
-                        latitude = new SDField ();
-                        latitude->name = "latitude";
-                        latitude->rank = 1;
-                        latitude->type = DFNT_FLOAT32;
-                        latitude->fieldtype = 1;
-                        latitude->newname = latitude->name ;
-                        Dimension *dim =
-                            new Dimension (latitude->getName (), (*k)->getSize (), 0);
+                if(latitude == nullptr) {
+                    latitude = new SDField ();
+                    latitude->name = "latitude";
+                    latitude->rank = 1;
+                    latitude->type = DFNT_FLOAT32;
+                    latitude->fieldtype = 1;
+                    latitude->newname = latitude->name ;
+                    auto dim = new Dimension (latitude->getName (), sdim->getSize (), 0);
 
-                        latitude->dims.push_back (dim);
-                        tempnewdimname1 = latitude->getName ();
+                    latitude->dims.push_back (dim);
+                    tempnewdimname1 = latitude->getName ();
 
-                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                        // Leave here just as a reference.
-                        // std::string uniquedimname = (*k)->getName() +temppath;
-                        //  tempnewdimname1 = uniquedimname;
-                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                        dim =
-                             new Dimension (latitude->getName (), (*k)->getSize (), 0);
-                        latitude->correcteddims.push_back (dim);
-                        latflag = true;
-                    }
+#if 0
+                    // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
+                    // Leave here just as a reference.
+                    // std::string uniquedimname = sdim->getName() +temppath;
+                    //  tempnewdimname1 = uniquedimname;
+                    //   dim = new Dimension(uniquedimname,sdim->getSize(),sdf->getType());
+#endif
+                    auto cdim =  new Dimension (latitude->getName (), sdim->getSize (), 0);
+                    latitude->correcteddims.push_back (cdim);
+                    latflag = true;
                 }
+            }
 
-                if ((*k)->getSize () == 19 && (*k)->getType () == 0) {
+            if (sdim->getSize () == 19 && sdim->getType () == 0) {
 
-                    if(height == nullptr) {
-                        height = new SDField ();
-                        height->name = "height";
-                        height->rank = 1;
-                        height->type = DFNT_FLOAT32;
-                        height->fieldtype = 6;
-                        height->newname = height->name ;
-                        Dimension *dim =
-                            new Dimension (height->getName (), (*k)->getSize (), 0);
+                if(height == nullptr) {
+                    height = new SDField ();
+                    height->name = "height";
+                    height->rank = 1;
+                    height->type = DFNT_FLOAT32;
+                    height->fieldtype = 6;
+                    height->newname = height->name ;
+                    auto dim = new Dimension (height->getName (), sdim->getSize (), 0);
 
-                        height->dims.push_back (dim);
-                        tempnewdimname3 = height->getName ();
+                    height->dims.push_back (dim);
+                    tempnewdimname3 = height->getName ();
 
-                        // We donot need to generate the  unique dimension name based on the full path for all the current  cases we support.
-                        // Leave here just as a reference.
-                        // std::string uniquedimname = (*k)->getName() +temppath;
-                        //  tempnewdimname1 = uniquedimname;
-                        //   dim = new Dimension(uniquedimname,(*k)->getSize(),(*i)->getType());
-                        dim =
-                             new Dimension (height->getName (), (*k)->getSize (), 0);
-                        height->correcteddims.push_back (dim);
-                        heiflag = true;
-                    }
+                    auto cdim = new Dimension (height->getName (), sdim->getSize (), 0);
+                    height->correcteddims.push_back (cdim);
+                    heiflag = true;
                 }
-
-
+            }
 	} 
 
         if (latflag == true && lonflag == true)
@@ -5529,22 +5342,20 @@ throw (Exception)
 // A formula similar to swath dimension map needs to apply to this file.
 void
 File::PrepareOBPGL2 ()
-throw (Exception)
 {
     int pixels_per_scan_line = 0;
 
-    std::string pixels_per_scan_line_name = "Pixels per Scan Line";
-    std::string number_pixels_control_points = "Number of Pixel Control Points";
-    std::string tempnewdimname1, tempnewdimname2;
+    string pixels_per_scan_line_name = "Pixels per Scan Line";
+    string number_pixels_control_points = "Number of Pixel Control Points";
+    string tempnewdimname1;
+    string  tempnewdimname2;
 
     File *file = this;
 
     // 1. Obtain the expanded size of the latitude/longitude
-    for (std::vector < Attribute * >::const_iterator i =
-        file->sd->getAttributes ().begin ();
-	i != file->sd->getAttributes ().end (); ++i) {
-        if ((*i)->getName () == pixels_per_scan_line_name) {
-            int *attrvalueptr = (int *) (&((*i)->getValue ()[0]));
+    for (const auto &attr:file->sd->getAttributes()) {
+        if (attr->getName () == pixels_per_scan_line_name) {
+            auto attrvalueptr = (int *) (&(attr->getValue ()[0]));
             pixels_per_scan_line = *attrvalueptr;
             break;
         }
@@ -5555,45 +5366,39 @@ throw (Exception)
 
     // 2. Obtain the latitude and longitude information
     //    Assign the new dimension name and the dimension size
-    //   std::string temppath;
     int tempcountllflag = 0;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
+    for (const auto &sdf:file->sd->sdfields) {
 
-        if ((*i)->getName () == "longitude" || (*i)->getName () == "latitude") {
-            if ((*i)->getName () == "longitude")
-                (*i)->fieldtype = 2;
-	    if ((*i)->getName () == "latitude")
-                (*i)->fieldtype = 1;
+        if (sdf->getName () == "longitude" || sdf->getName () == "latitude") {
+            if (sdf->getName () == "longitude")
+                sdf->fieldtype = 2;
+	    if (sdf->getName () == "latitude")
+                sdf->fieldtype = 1;
 
             tempcountllflag++;
-            if ((*i)->getRank () != 2)
-                throw3 ("The lat/lon rank must be 2", (*i)->getName (),
-                         (*i)->getRank ());
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getDimensions ().begin ();
-                k != (*i)->getDimensions ().end (); ++k) {
-                if ((*k)->getName () == number_pixels_control_points) {
-                    (*k)->name = pixels_per_scan_line_name;
-                    (*k)->dimsize = pixels_per_scan_line;
+            if (sdf->getRank () != 2)
+                throw3 ("The lat/lon rank must be 2", sdf->getName (),
+                         sdf->getRank ());
+            for (const auto &dim:sdf->getDimensions()) {
+                if (dim->getName () == number_pixels_control_points) {
+                    dim->name = pixels_per_scan_line_name;
+                    dim->dimsize = pixels_per_scan_line;
                     break;
                 }
             }
 
-            for (std::vector < Dimension * >::const_iterator k =
-                (*i)->getCorrectedDimensions ().begin ();
-                k != (*i)->getCorrectedDimensions ().end (); ++k) {
-                if ((*k)->getName ().find (number_pixels_control_points) !=
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
+                if (dim->getName ().find (number_pixels_control_points) !=
                     std::string::npos) {
-                    (*k)->name = pixels_per_scan_line_name;
-                    (*k)->dimsize = pixels_per_scan_line;
+                    dim->name = pixels_per_scan_line_name;
+                    dim->dimsize = pixels_per_scan_line;
                     if (tempcountllflag == 1)
-                        tempnewdimname2 = (*k)->name;
+                        tempnewdimname2 = dim->name;
                 }
                 else {
                     if (tempcountllflag == 1)
-                        tempnewdimname1 = (*k)->name;
+                        tempnewdimname1 = dim->name;
                 }
             }
         }
@@ -5614,7 +5419,6 @@ throw (Exception)
 // 
 void
 File::PrepareOBPGL3 ()
-throw (Exception)
 {
 
     std::string num_lat_name = "Number of Lines";
@@ -5626,22 +5430,20 @@ throw (Exception)
 
     int tempcountllflag = 0;
 
-    for (std::vector < Attribute * >::const_iterator i =
-        file->sd->getAttributes ().begin ();
-        i != file->sd->getAttributes ().end (); ++i) {
+    for (const auto &attr:file->sd->getAttributes()) {
 
-        if ((*i)->getName () == num_lon_name) {
+        if (attr->getName () == num_lon_name) {
 
             // Check later if float can be changed to float32
-            int *attrvalue = (int *) (&((*i)->getValue ()[0]));
+            auto attrvalue = (int *) (&(attr->getValue ()[0]));
 
             num_lon = *attrvalue;
             tempcountllflag++;
         }
 
-        if ((*i)->getName () == num_lat_name) {
+        if (attr->getName () == num_lat_name) {
 
-            int *attrvalue = (int *) (&((*i)->getValue ()[0]));
+            auto attrvalue = (int *) (&(attr->getValue ()[0]));
 
             num_lat = *attrvalue;
             tempcountllflag++;
@@ -5651,7 +5453,7 @@ throw (Exception)
     }
 
     // Longitude
-    SDField *longitude = new SDField ();
+    auto longitude = new SDField ();
     if(longitude == nullptr)
         throw1("Allocate memory for longitude failed .");
 
@@ -5667,28 +5469,24 @@ throw (Exception)
         throw3("The size of the dimension of the longitude ",longitude->name," is 0.");
     }
 
-    Dimension *dim = new Dimension (num_lon_name, num_lon, 0);
-    if(dim == nullptr) {
+    auto lon_dim = new Dimension (num_lon_name, num_lon, 0);
+    if(lon_dim == nullptr) {
         delete longitude;
-        throw1("Allocate memory for dim failed .");
+        throw1("Allocate memory for longitude dim failed .");
     }
 
-    //if(longitude != nullptr) 
-    //// make coverity happy
-    longitude->dims.push_back (dim);
+    longitude->dims.push_back (lon_dim);
 
-    dim = nullptr;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
-    dim = new Dimension (num_lon_name, num_lon, 0);
-    if(dim == nullptr) {
+    auto lon_cdim = new Dimension (num_lon_name, num_lon, 0);
+    if(lon_cdim == nullptr) {
         delete longitude;
-        throw1("Allocate memory for dim failed .");
+        throw1("Allocate memory for corrected longitude dim failed .");
     }
-    //if(longitude != nullptr) 
-    longitude->correcteddims.push_back (dim);
+    longitude->correcteddims.push_back (lon_cdim);
 
     // Latitude
-    SDField *latitude = new SDField ();
+    auto latitude = new SDField ();
     if(latitude == nullptr) {
         delete latitude;
         throw1("Allocate memory for dim failed .");
@@ -5706,57 +5504,47 @@ throw (Exception)
         throw3("The size of the dimension of the latitude ",latitude->name," is 0.");
     }
             
-    dim = nullptr;
-    dim = new Dimension (num_lat_name, num_lat, 0);
-    if( dim == nullptr) {
+    auto lat_dim = new Dimension (num_lat_name, num_lat, 0);
+    if( lat_dim == nullptr) {
         delete longitude;
         delete latitude;
-        throw1("Allocate memory for dim failed .");
+        throw1("Allocate memory for latitude dim failed .");
     }
     
     if(latitude != nullptr) 
-        latitude->dims.push_back (dim);
+        latitude->dims.push_back (lat_dim);
 
-    dim = nullptr;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
-    dim = new Dimension (num_lat_name, num_lat, 0);
-    if(dim == nullptr) {
+    auto lat_cdim = new Dimension (num_lat_name, num_lat, 0);
+    if(lat_cdim == nullptr) {
         delete longitude;
         delete latitude;
         throw1("Allocate memory for dim failed .");
     }
-    //if(latitude != nullptr) 
-    latitude->correcteddims.push_back (dim);
+    latitude->correcteddims.push_back (lat_cdim);
 
     // The dimension names of the SDS are fakeDim, so need to change them to dimension names of latitude and longitude
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        if ((*i)->getRank () != 2) {
-            //if(latitude !=nullptr)
+    for (const auto &sdf:file->sd->sdfields) {
+        if (sdf->getRank () != 2) {
             delete latitude;
-            //if(longitude !=nullptr)
             delete longitude;
-            throw3 ("The lat/lon rank must be 2", (*i)->getName (),
-                    (*i)->getRank ());
+            throw3 ("The lat/lon rank must be 2", sdf->getName (),
+                    sdf->getRank ());
         }
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getDimensions ().begin ();
-            k != (*i)->getDimensions ().end (); ++k) {
-            if ((((*k)->getName ()).find ("fakeDim")) != std::string::npos) {
-                if ((*k)->getSize () == num_lon)
-                    (*k)->name = num_lon_name;
-                if ((*k)->getSize () == num_lat)
-                    (*k)->name = num_lat_name;
+        for (const auto &dim:sdf->getDimensions()) {
+            if (((dim->getName ()).find ("fakeDim")) != std::string::npos) {
+                if (dim->getSize () == num_lon)
+                    dim->name = num_lon_name;
+                if (dim->getSize () == num_lat)
+                    dim->name = num_lat_name;
             }
         }
-        for (std::vector < Dimension * >::const_iterator k =
-            (*i)->getCorrectedDimensions ().begin ();
-            k != (*i)->getCorrectedDimensions ().end (); ++k) {
-            if ((((*k)->getName ()).find ("fakeDim")) != std::string::npos) {
-                if ((*k)->getSize () == num_lon)
-                    (*k)->name = num_lon_name;
-                if ((*k)->getSize () == num_lat)
-                    (*k)->name = num_lat_name;
+        for (const auto &dim:sdf->getCorrectedDimensions()) {
+            if (((dim->getName ()).find ("fakeDim")) != std::string::npos) {
+                if (dim->getSize () == num_lon)
+                    dim->name = num_lon_name;
+                if (dim->getSize () == num_lat)
+                    dim->name = num_lat_name;
             }
         }
     }
@@ -5773,7 +5561,6 @@ throw (Exception)
 // Latitude and longitude are provided; some redundant CO-Latitude and longitude are removed from the final DDS.
 void
 File::PrepareCERAVGSYN ()
-throw (Exception)
 {
 
     bool colatflag = false;
@@ -5784,11 +5571,7 @@ throw (Exception)
     std::string tempcvarname1;
     std::string tempcvarname2;
     File *file = this;
-    // int eraseflag = 0; Unused jhrg 3/16/11
 
-    std::vector < SDField * >::iterator beerasedit;
-
-    // SDField *beerased; Unused jhrg 3/16/11
 
     for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
         i != file->sd->sdfields.end (); ) {
@@ -5824,10 +5607,6 @@ throw (Exception)
             else {//remove the redundant Colatitude field
                 delete (*i);
                 i = file->sd->sdfields.erase (i);
-                // When erasing the iterator, the iterator will 
-                // automatically go to the next element, 
-                // so we need to go back 1 in order not to miss the next element.
-                //i--;
             }
         }
 
@@ -5841,10 +5620,6 @@ throw (Exception)
             else {//remove the redundant Longitude field
                 delete (*i);
                 i = file->sd->sdfields.erase (i);
-                // When erasing the iterator, the iterator will 
-                // automatically go to the next element, so we need to go back 1 
-                // in order not to miss the next element.
-                //i--;
             }
         }
         else {
@@ -5860,7 +5635,6 @@ throw (Exception)
 // Handle CERES ES4 and ISCCP-GEO cases. Essentially the lat/lon need to be condensed to 1-D for the geographic projection.
 void
 File::PrepareCERES4IG ()
-throw (Exception)
 {
 
     std::string tempdimname1;
@@ -5873,7 +5647,6 @@ throw (Exception)
     std::set < std::string > tempdimnameset;
     std::pair < std::set < std::string >::iterator, bool > tempsetit;
 
-    // bool eraseflag = false; Unused jhrg 3/16/11
     bool cvflag = false;
     File *file = this;
 
@@ -5914,11 +5687,10 @@ throw (Exception)
                 (*i)->dims.clear ();
                 (*i)->correcteddims.clear ();
 
-                Dimension *dim =
-                    new Dimension (tempdimname1, tempdimsize1, 0);
+                auto dim =  new Dimension (tempdimname1, tempdimsize1, 0);
                 (*i)->dims.push_back (dim);
-                dim = new Dimension (tempdimname1, tempdimsize1, 0);
-                (*i)->correcteddims.push_back (dim);
+                auto cdim = new Dimension (tempdimname1, tempdimsize1, 0);
+                (*i)->correcteddims.push_back (cdim);
                 file->sd->nonmisscvdimnamelist.insert (tempdimname1);
                 cvflag = false;
                 ++i;
@@ -5926,11 +5698,6 @@ throw (Exception)
             else {//delete this element from the vector and erase it.
                 delete (*i);
                 i = file->sd->sdfields.erase (i);
-
-                // When erasing the iterator, the iterator will automatically 
-                // go to the next element, so we need to go back 1 in order not 
-                // to miss the next element.
-                //i--;
             }
         }
 
@@ -5966,11 +5733,10 @@ throw (Exception)
                 (*i)->dims.clear ();
                 (*i)->correcteddims.clear ();
 
-                Dimension *dim =
-                    new Dimension (tempdimname2, tempdimsize2, 0);
-                        (*i)->dims.push_back (dim);
-                dim = new Dimension (tempdimname2, tempdimsize2, 0);
-                (*i)->correcteddims.push_back (dim);
+                auto dim =  new Dimension (tempdimname2, tempdimsize2, 0);
+                (*i)->dims.push_back (dim);
+                auto cdim = new Dimension (tempdimname2, tempdimsize2, 0);
+                (*i)->correcteddims.push_back (cdim);
 
                 file->sd->nonmisscvdimnamelist.insert (tempdimname2);
                 cvflag = false;
@@ -5979,10 +5745,6 @@ throw (Exception)
             else{//delete this element from the vector and erase it.
                 delete (*i);
                 i = file->sd->sdfields.erase (i);
-                // When erasing the iterator, the iterator 
-                // will automatically go to the next element, 
-                // so we need to go back 1 in order not to miss the next element.
-                //i--;
             }
         }
         else {
@@ -6000,11 +5762,7 @@ throw (Exception)
 // The dimension names and sizes are set according to the studies of these files.
 void
 File::PrepareCERSAVGID ()
-throw (Exception)
 {
-
-    // bool colatflag = false; unused jhrg 3/16/11
-    // bool lonflag = false; Unused jhrg 3/16/11
 
     std::string tempdimname1 = "1.0 deg. regional colat. zones";
     std::string tempdimname2 = "1.0 deg. regional long. zones";
@@ -6023,7 +5781,7 @@ throw (Exception)
 
     file = this;
 
-    SDField *latitude = new SDField ();
+    auto latitude = new SDField ();
 
     latitude->name = "latitude";
     latitude->rank = 2;
@@ -6033,21 +5791,20 @@ throw (Exception)
     // No need to obtain the full path
     latitude->newname = latitude->name;
 
-    Dimension *dim = new Dimension (tempdimname1, tempdimsize1, 0);
-
+    auto dim = new Dimension (tempdimname1, tempdimsize1, 0);
     latitude->dims.push_back (dim);
 
-    dim = new Dimension (tempdimname2, tempdimsize2, 0);
-    latitude->dims.push_back (dim);
+    auto dim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+    latitude->dims.push_back (dim2);
 
-    dim = new Dimension (tempdimname1, tempdimsize1, 0);
-    latitude->correcteddims.push_back (dim);
+    auto cdim = new Dimension (tempdimname1, tempdimsize1, 0);
+    latitude->correcteddims.push_back (cdim);
 
-    dim = new Dimension (tempdimname2, tempdimsize2, 0);
-    latitude->correcteddims.push_back (dim);
+    auto cdim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+    latitude->correcteddims.push_back (cdim2);
     file->sd->sdfields.push_back (latitude);
 
-    SDField *longitude = new SDField ();
+    auto longitude = new SDField ();
 
     longitude->name = "longitude";
     longitude->rank = 2;
@@ -6057,24 +5814,24 @@ throw (Exception)
     // No need to obtain the full path
     longitude->newname = longitude->name;
 
-    dim = new Dimension (tempdimname1, tempdimsize1, 0);
-    longitude->dims.push_back (dim);
+    auto lon_dim = new Dimension (tempdimname1, tempdimsize1, 0);
+    longitude->dims.push_back (lon_dim);
 
-    dim = new Dimension (tempdimname2, tempdimsize2, 0);
-    longitude->dims.push_back (dim);
+    auto lon_dim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+    longitude->dims.push_back (lon_dim2);
 
-    dim = new Dimension (tempdimname1, tempdimsize1, 0);
-    longitude->correcteddims.push_back (dim);
+    auto lon_cdim = new Dimension (tempdimname1, tempdimsize1, 0);
+    longitude->correcteddims.push_back (lon_cdim);
 
-    dim = new Dimension (tempdimname2, tempdimsize2, 0);
-    longitude->correcteddims.push_back (dim);
+    auto lon_cdim2 = new Dimension (tempdimname2, tempdimsize2, 0);
+    longitude->correcteddims.push_back (lon_cdim2);
     file->sd->sdfields.push_back (longitude);
 
     // For the CER_SRB case, zonal average data is also included.
     // We need only provide the latitude.
     if (file->sptype == CER_SRB) {
 
-        SDField *latitudez = new SDField ();
+        auto latitudez = new SDField ();
 
         latitudez->name = "latitudez";
         latitudez->rank = 1;
@@ -6082,25 +5839,25 @@ throw (Exception)
         latitudez->fieldtype = 1;
         latitudez->newname = latitudez->name;
 
-        dim = new Dimension (tempdimname3, tempdimsize3, 0);
-        latitudez->dims.push_back (dim);
+        auto latz_dim = new Dimension (tempdimname3, tempdimsize3, 0);
+        latitudez->dims.push_back (latz_dim);
 
-        dim = new Dimension (tempdimname3, tempdimsize3, 0);
-        latitudez->correcteddims.push_back (dim);
+        auto latz_cdim = new Dimension (tempdimname3, tempdimsize3, 0);
+        latitudez->correcteddims.push_back (latz_cdim);
         file->sd->sdfields.push_back (latitudez);
 
-        SDField *longitudez = new SDField ();
+        auto longitudez = new SDField ();
         longitudez->name = "longitudez";
         longitudez->rank = 1;
         longitudez->type = DFNT_FLOAT32;
         longitudez->fieldtype = 2;
         longitudez->newname = longitudez->name;
 
-        dim = new Dimension (tempdimname4, tempdimsize4, 0);
-            longitudez->dims.push_back (dim);
+        auto lonz_dim = new Dimension (tempdimname4, tempdimsize4, 0);
+        longitudez->dims.push_back (lonz_dim);
 
-        dim = new Dimension (tempdimname4, tempdimsize4, 0);
-            longitudez->correcteddims.push_back (dim);
+        auto lonz_cdim = new Dimension (tempdimname4, tempdimsize4, 0);
+        longitudez->correcteddims.push_back (lonz_cdim);
         file->sd->sdfields.push_back (longitudez);
     }
 
@@ -6118,24 +5875,18 @@ throw (Exception)
 	string odddimname2 = "1.0 deg. regional Long. zones";
 
         // Add a loop to change the odddimnames to (normal)tempdimnames.
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            for (std::vector < Dimension * >::const_iterator j =
-                (*i)->getDimensions ().begin ();
-                j != (*i)->getDimensions ().end (); ++j) {
-                if (odddimname1 == (*j)->name)
-                    (*j)->name = tempdimname1;
-                if (odddimname2 == (*j)->name)
-                    (*j)->name = tempdimname2;
+        for (const auto &sdf:file->sd->sdfields) {
+            for (const auto &sdim:sdf->getDimensions()) {
+                if (odddimname1 == sdim->name)
+                    sdim->name = tempdimname1;
+                if (odddimname2 == sdim->name)
+                    sdim->name = tempdimname2;
             }
-            for (std::vector < Dimension * >::const_iterator j =
-                (*i)->getCorrectedDimensions ().begin ();
-                j != (*i)->getCorrectedDimensions ().end (); ++j) {
-                if (odddimname1 == (*j)->name)
-                    (*j)->name = tempdimname1;
-                if (odddimname2 == (*j)->name)
-                    (*j)->name = tempdimname2;
-
+            for (const auto &sdim:sdf->getCorrectedDimensions()) {
+                if (odddimname1 == sdim->name)
+                    sdim->name = tempdimname1;
+                if (odddimname2 == sdim->name)
+                    sdim->name = tempdimname2;
             }
         }
     }    
@@ -6145,7 +5896,6 @@ throw (Exception)
 // Only latitude is needed.
 void
 File::PrepareCERZAVG ()
-throw (Exception)
 {
 
     std::string tempdimname3 = "1.0 deg. zonal colat. zones";
@@ -6154,7 +5904,7 @@ throw (Exception)
     int tempdimsize4 = 1;
     File *file = this;
 
-    SDField *latitudez = new SDField ();
+    auto latitudez = new SDField ();
 
     latitudez->name = "latitudez";
     latitudez->rank = 1;
@@ -6163,26 +5913,26 @@ throw (Exception)
     latitudez->newname = latitudez->name;
 
 
-    Dimension *dim = new Dimension (tempdimname3, tempdimsize3, 0);
-    latitudez->dims.push_back (dim);
+    auto latz_dim = new Dimension (tempdimname3, tempdimsize3, 0);
+    latitudez->dims.push_back (latz_dim);
 
-    dim = new Dimension (tempdimname3, tempdimsize3, 0);
-    latitudez->correcteddims.push_back (dim);
+    auto latz_cdim = new Dimension (tempdimname3, tempdimsize3, 0);
+    latitudez->correcteddims.push_back (latz_cdim);
 
     file->sd->sdfields.push_back (latitudez);
-    SDField *longitudez = new SDField ();
 
+    auto longitudez = new SDField ();
     longitudez->name = "longitudez";
     longitudez->rank = 1;
     longitudez->type = DFNT_FLOAT32;
     longitudez->fieldtype = 2;
     longitudez->newname = longitudez->name;
 
-    dim = new Dimension (tempdimname4, tempdimsize4, 0);
-    longitudez->dims.push_back (dim);
+    auto lonz_dim = new Dimension (tempdimname4, tempdimsize4, 0);
+    longitudez->dims.push_back (lonz_dim);
 
-    dim = new Dimension (tempdimname4, tempdimsize4, 0);
-    longitudez->correcteddims.push_back (dim);
+    auto lonz_cdim = new Dimension (tempdimname4, tempdimsize4, 0);
+    longitudez->correcteddims.push_back (lonz_cdim);
 
     file->sd->sdfields.push_back (longitudez);
     file->sd->nonmisscvdimnamelist.insert (tempdimname3);
@@ -6196,7 +5946,6 @@ throw (Exception)
 // as the lat and lon.
 void
 File::PrepareMODISARNSS ()
-throw (Exception)
 {
 
     std::set < std::string > tempfulldimnamelist;
@@ -6206,37 +5955,32 @@ throw (Exception)
 
     File *file = this;
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        if ((*i)->getName () == "Latitude")
-            (*i)->fieldtype = 1;
-        if ((*i)->getName () == "Longitude") {
-            (*i)->fieldtype = 2;
+    for (const auto &sdf:file->sd->sdfields) {
+
+        if (sdf->getName () == "Latitude")
+            sdf->fieldtype = 1;
+        if (sdf->getName () == "Longitude") {
+            sdf->fieldtype = 2;
 
             // Fields associate with lat/lon use different dimension names;
             // To be consistent with other code, use size-dim map to change 
             // fields that have the same size as lat/lon to hold the same dimension names.
-            for (std::vector < Dimension * >::const_iterator j =
-                (*i)->getCorrectedDimensions ().begin ();
-                j != (*i)->getCorrectedDimensions ().end (); ++j) {
-                tempsizedimnamelist[(*j)->getSize ()] = (*j)->getName ();
-                file->sd->nonmisscvdimnamelist.insert ((*j)->getName ());
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
+                tempsizedimnamelist[dim->getSize ()] = dim->getName ();
+                file->sd->nonmisscvdimnamelist.insert (dim->getName ());
             }
         }
     }
 
-    for (std::vector < SDField * >::const_iterator i =
-        file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-        for (std::vector < Dimension * >::const_iterator j =
-            (*i)->getCorrectedDimensions ().begin ();
-            j != (*i)->getCorrectedDimensions ().end (); ++j) {
+    for (const auto &sdf:file->sd->sdfields) {
+        for (const auto &dim:sdf->getCorrectedDimensions()) {
 
             // Need to change those dimension names to be the same as lat/lon 
             // so that a coordinate variable dimension name map can be built.
-            if ((*i)->fieldtype == 0) {
-                if ((tempsizedimnamelist.find ((*j)->getSize ())) !=
+            if (sdf->fieldtype == 0) {
+                if ((tempsizedimnamelist.find (dim->getSize ())) !=
                     tempsizedimnamelist.end ())
-                    (*j)->name = tempsizedimnamelist[(*j)->getSize ()];
+                    dim->name = tempsizedimnamelist[dim->getSize ()];
             }
         }
     }
@@ -6248,7 +5992,6 @@ throw (Exception)
 // when dimensional scale is applied.
 void
 File::PrepareOTHERHDF ()
-throw (Exception)
 {
 
     std::set < std::string > tempfulldimnamelist;
@@ -6267,17 +6010,13 @@ throw (Exception)
     if ((found_forward_slash != string::npos) && 
         (((file->path).substr(found_forward_slash+1).compare(0,5,"MERRA"))==0)){
 
-        for (std::vector < Attribute * >::const_iterator i =
-            file->sd->getAttributes ().begin ();
-            i != file->sd->getAttributes ().end (); ++i) {
-
+        for (const auto &attr:file->sd->getAttributes()) {
             // CHeck if this MERRA file is an HDF-EOS2 or not.
-            if(((*i)->getName().compare(0, 14, "StructMetadata" )== 0) ||
-                ((*i)->getName().compare(0, 14, "structmetadata" )== 0)) {
+            if((attr->getName().compare(0, 14, "StructMetadata" )== 0) ||
+                (attr->getName().compare(0, 14, "structmetadata" )== 0)) {
                 merra_is_eos2 = true;
                 break;
             }
-
         }
     }
 
@@ -6285,35 +6024,30 @@ throw (Exception)
         vector <string> noneos_newnamelist; 
 
         // 1. Remove EOSGRID from the added-non-EOS field names(XDim:EOSGRID to XDim)
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            (*i)->special_product_fullpath = (*i)->newname;
+        for (const auto &sdf:file->sd->sdfields) {
+            sdf->special_product_fullpath = sdf->newname;
             // "EOSGRID" inside variable and dim. names needs to be trimmed out. KY 7-2-2012
             string EOSGRIDstring=":EOSGRID";
-            size_t found = ((*i)->name).rfind(EOSGRIDstring);
+            size_t found = (sdf->name).rfind(EOSGRIDstring);
 
-            if (found !=string::npos && (((*i)->name).size() == (found + EOSGRIDstring.size()))) {
+            if (found !=string::npos && ((sdf->name).size() == (found + EOSGRIDstring.size()))) {
                     
-                (*i)->newname = (*i)->name.substr(0,found);
-                noneos_newnamelist.push_back((*i)->newname);
+                sdf->newname = sdf->name.substr(0,found);
+                noneos_newnamelist.push_back(sdf->newname);
             }
             else
-                (*i)->newname = (*i)->name;
+                sdf->newname = sdf->name;
         }
 
         // 2. Make the redundant and clashing CVs such as XDim to XDim_EOS etc.
         // I don't want to remove these fields since a variable like Time is different than TIME
         // So still keep it in case it is useful for some users.
 
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-                        
-            for(vector<string>::const_iterator j = 
-                noneos_newnamelist.begin(); j !=noneos_newnamelist.end();++j) {
-
-                if ((*i)->newname == (*j) && (*i)->name == (*j)) {
+        for (const auto &sdf:file->sd->sdfields) {
+            for(const auto &noneos_name:noneos_newnamelist) {
+                if (sdf->newname == noneos_name && sdf->name == noneos_name) {
                     // Make XDim to XDim_EOS so that we don't have two "XDim".
-                    (*i)->newname = (*i)->newname +"_EOS";
+                    sdf->newname = sdf->newname +"_EOS";
                 }
             } 
         }
@@ -6321,40 +6055,33 @@ throw (Exception)
         // 3. Handle Dimension scales
         // 3.1 Change the dimension names for coordinate variables.
         map<string,string> dimname_to_newdimname;
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-            for (std::vector < Dimension * >::const_iterator j =
-                (*i)->getCorrectedDimensions ().begin ();
-                j != (*i)->getCorrectedDimensions ().end (); ++j) {
+        for (const auto &sdf:file->sd->sdfields) {
+            for (const auto &dim:sdf->getCorrectedDimensions()) {
                 // Find the dimension scale
-                if ((*j)->getType () != 0) {
-                    if ((*i)->name == (*j)->getName () && (*i)->getRank () == 1){
-                        (*i)->fieldtype = 3;
-                        (*i)->is_dim_scale = true;
-                        (*j)->name = (*i)->newname;
-                        // Build up the map from the original name to the new name, Note (*i)->name is the original
+                if (dim->getType () != 0) {
+                    if (sdf->name == dim->getName () && sdf->getRank () == 1){
+                        sdf->fieldtype = 3;
+                        sdf->is_dim_scale = true;
+                        dim->name = sdf->newname;
+                        // Build up the map from the original name to the new name, Note sdf->name is the original
                         // dimension name. 
-                        HDFCFUtil::insert_map(dimname_to_newdimname,(*i)->name,(*j)->name);
+                        HDFCFUtil::insert_map(dimname_to_newdimname,sdf->name,dim->name);
                     }
-                    file->sd->nonmisscvdimnamelist.insert ((*j)->name);
+                    file->sd->nonmisscvdimnamelist.insert (dim->name);
                 }
             }
         }
 
         // 3.2 Change the dimension names for data variables.
         map<string,string>::iterator itmap;
-        for (std::vector < SDField * >::const_iterator i =
-            file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
-
-            if (0 == (*i)->fieldtype) {
-                for (std::vector < Dimension * >::const_iterator j =
-                    (*i)->getCorrectedDimensions ().begin ();
-                    j != (*i)->getCorrectedDimensions ().end (); ++j) {
-                    itmap = dimname_to_newdimname.find((*j)->name);
+        for (const auto &sdf:file->sd->sdfields) {
+            if (0 == sdf->fieldtype) {
+                for (const auto &dim:sdf->getCorrectedDimensions()) {
+                    itmap = dimname_to_newdimname.find(dim->name);
                     if (itmap == dimname_to_newdimname.end()) 
-                         throw2("Cannot find the corresponding new dim. name for dim. name ",(*j)->name);
+                         throw2("Cannot find the corresponding new dim. name for dim. name ",dim->name);
                     else
-                        (*j)->name = (*itmap).second;
+                        dim->name = (*itmap).second;
 
                 }
             }
@@ -6362,6 +6089,7 @@ throw (Exception)
     }
     else {
             
+        // Note: the following cannot be changed to auto due to the extra condition in the for loop.
         for (std::vector < SDField * >::const_iterator i =
             file->sd->sdfields.begin (); i != file->sd->sdfields.end () && (false == this->OTHERHDF_Has_Dim_NoScale_Field); ++i) {
             for (std::vector < Dimension * >::const_iterator j =
@@ -6376,13 +6104,14 @@ throw (Exception)
                 else {
                     this->OTHERHDF_Has_Dim_NoScale_Field = true;
                 }
-	    }
-	}
+            }
+        }
 
         // For OTHERHDF cases, currently if we find that there are "no dimension scale" dimensions, we will NOT generate any "cooridnates" attributes.
-        // That means "nonmisscvdimnamelist" should be cleared if OTHERHDF_Has_Dim_NoScale_Field is true. 
+        // That means "nonmisscvdimnamelist" should be cleared if OTHERHDF_Has_Dim_NoScale_Field is true.
 
-        if (true == this->OTHERHDF_Has_Dim_NoScale_Field) 
+        if (true == this->OTHERHDF_Has_Dim_NoScale_Field)
             file->sd->nonmisscvdimnamelist.clear();
+
     }
 }

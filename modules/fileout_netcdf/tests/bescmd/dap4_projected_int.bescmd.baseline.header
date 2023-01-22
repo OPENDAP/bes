@@ -1,0 +1,14 @@
+netcdf test {
+dimensions:
+	phony_dim_0 = 2 ;
+variables:
+	int i8 ;
+		i8:_FillValue = -65535 ;
+	int i32(phony_dim_0) ;
+		i32:_FillValue = -65535 ;
+
+// global attributes:
+		:history = "removed date-timex dap4_projected.h5\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"dap4_projected.h5\"}]}]" ;
+}

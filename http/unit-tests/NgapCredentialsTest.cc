@@ -59,6 +59,7 @@
 #include "NgapS3Credentials.h"
 
 using namespace libdap;
+using namespace std;
 
 static bool debug = false;
 static bool bes_debug = false;

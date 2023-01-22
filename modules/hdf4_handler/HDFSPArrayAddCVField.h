@@ -24,7 +24,7 @@
 class HDFSPArrayAddCVField:public libdap::Array
 {
     public:
-        HDFSPArrayAddCVField (int32 dtype, SPType sptype, const std::string & fieldname, int tnumelm, const std::string & n = "", libdap::BaseType * v = 0):
+        HDFSPArrayAddCVField (int32 dtype, SPType sptype, const std::string & fieldname, int tnumelm, const std::string & n = "", libdap::BaseType * v = nullptr):
             libdap::Array (n, v), 
             dtype(dtype),
             sptype(sptype),
@@ -32,20 +32,19 @@ class HDFSPArrayAddCVField:public libdap::Array
             tnumelm (tnumelm)
         {
         }
-        virtual ~ HDFSPArrayAddCVField ()
-        {
-        }
+
+        ~ HDFSPArrayAddCVField () override = default;
 
         // Standard way of DAP handlers to pass the coordinates of the subsetted region to the handlers
         // Return the number of elements to read. 
         int format_constraint (int *cor, int *step, int *edg);
 
-        libdap::BaseType *ptr_duplicate ()
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFSPArrayAddCVField (*this);
         }
 
-        virtual bool read ();
+        bool read () override;
 
     private:
 

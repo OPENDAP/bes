@@ -161,7 +161,7 @@ void HDFSPArrayAddCVField:: Obtain_trmm_v7_layer(int nelms, vector<int>&offset,v
         vector<float>total_val;
         total_val.resize(tnumelm);
         for (int i = 0; i<20;i++)
-            total_val[i] = 0.5*(i+1);
+            total_val[i] = (float)(0.5*(i+1));
 
         for (int i = 20; i<28;i++)
             total_val[i] = total_val[19]+(i-19);
@@ -193,32 +193,32 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
 
     if(name =="nthrshZO") {
         
-        total_val[0] = 0.1;
-        total_val[1] = 0.2;
-        total_val[2] = 0.3;
-        total_val[3] = 0.5;
-        total_val[4] = 0.75;
-        total_val[5] = 50;
+        total_val[0] = 0.1f;
+        total_val[1] = 0.2f;
+        total_val[2] = 0.3f;
+        total_val[3] = 0.5f;
+        total_val[4] = 0.75f;
+        total_val[5] = 50.0f;
     }
 
     else if (name == "nthrshHB") {
 
-        total_val[0] = 0.1;
-        total_val[1] = 0.2;
-        total_val[2] = 0.3;
-        total_val[3] = 0.5;
-        total_val[4] = 0.75;
-        total_val[5] = 0.9999;
+        total_val[0] = 0.1f;
+        total_val[1] = 0.2f;
+        total_val[2] = 0.3f;
+        total_val[3] = 0.5f;
+        total_val[4] = 0.75f;
+        total_val[5] = 0.9999f;
     }
 
     else if(name =="nthrshSRT") {
 
-        total_val[0] = 1.5;
-        total_val[1] = 1.0;
-        total_val[2] = 0.8;
-        total_val[3] = 0.6;
-        total_val[4] = 0.4;
-        total_val[5] = 0.1;
+        total_val[0] = 1.5f;
+        total_val[1] = 1.0f;
+        total_val[2] = 0.8f;
+        total_val[3] = 0.6f;
+        total_val[4] = 0.4f;
+        total_val[5] = 0.1f;
  
     }
     else 
@@ -249,7 +249,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
 int
 HDFSPArrayAddCVField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -281,7 +281,7 @@ HDFSPArrayAddCVField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

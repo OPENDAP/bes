@@ -49,9 +49,8 @@ HDFInt32::HDFInt32(const string &n, const string &d) : Int32(n, d)
 {
 }
 
-HDFInt32::~HDFInt32()
-{
-}
+HDFInt32::~HDFInt32() = default;
+
 BaseType *HDFInt32::ptr_duplicate()
 {
     return new HDFInt32(*this);

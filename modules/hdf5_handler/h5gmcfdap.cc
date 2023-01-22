@@ -445,8 +445,8 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     bool dmr_64bit_support = false;
     if(HDF5RequestHandler::get_dmr_long_int()==true &&
         HDF5RequestHandler::get_dmr_64bit_int()!=nullptr) {
-        for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
-            if (H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
+        for (const auto &var:vars) {
+            if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
                 dmr_64bit_support = true;
                 break;
             }
@@ -463,21 +463,21 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     }
 
-    for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+    for (auto &var:vars) {
+        BESDEBUG("h5","variable full path= "<< var->getFullPath() <<endl);
         // Handle 64-integer DAP4 CF mapping
-        if(need_attr_values_for_dap4(*it_v) == true) 
-            f->Retrieve_H5_Var_Attr_Values(*it_v);
-        gen_dap_onevar_dds(dds,*it_v,fileid, filename);
+        if(need_attr_values_for_dap4(var) == true) 
+            f->Retrieve_H5_Var_Attr_Values(var);
+        gen_dap_onevar_dds(dds,var,fileid, filename);
     }
-    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_onegmcvar_dds(dds,*it_cv,fileid, filename);
+    for (const auto &cvar:cvars) {
+        BESDEBUG("h5","variable full path= "<< cvar->getFullPath() <<endl);
+        gen_dap_onegmcvar_dds(dds,cvar,fileid, filename);
     }
 
-    for (auto it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
-        BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
-        gen_dap_onegmspvar_dds(dds,*it_spv,fileid, filename);
+    for (const auto &spvar:spvars) {
+        BESDEBUG("h5","variable full path= "<< spvar->getFullPath() <<endl);
+        gen_dap_onegmspvar_dds(dds,spvar,fileid, filename);
     }
 
 }
@@ -516,48 +516,44 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         if (nullptr == at) 
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
-        for (auto it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) {
+        for (const auto &root_attr:root_attrs) {
             // Check and may update the 64-bit integer attributes in DAP4.
-            check_update_int64_attr("",*it_ra);
-            gen_dap_oneobj_das(at,*it_ra,nullptr);
+            check_update_int64_attr("",root_attr);
+            gen_dap_oneobj_das(at,root_attr,nullptr);
         }
     }
 
     if (false == grps.empty()) {
-        for (auto it_g = grps.begin();
-             it_g != grps.end(); ++it_g) {
-            AttrTable *at = das.get_table((*it_g)->getNewName());
+        for (const auto &grp:grps) {
+            AttrTable *at = das.get_table(grp->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_g)->getNewName(), new AttrTable);
-
-            for (auto it_ra = (*it_g)->getAttributes().begin();
-                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                check_update_int64_attr((*it_g)->getNewName(),*it_ra);
-                gen_dap_oneobj_das(at,*it_ra,nullptr);
+                at = das.add_table(grp->getNewName(), new AttrTable);
+            for (const auto &grp_attr:grp->getAttributes()) {
+                check_update_int64_attr(grp->getNewName(),grp_attr);
+                gen_dap_oneobj_das(at,grp_attr,nullptr);
             }
         }
     }
 
-    for (auto it_v = vars.begin();
-         it_v != vars.end(); ++it_v) {
-        if (false == ((*it_v)->getAttributes().empty())) {
+    for (const auto &var:vars) {
+
+        if (false == (var->getAttributes().empty())) {
 
             // Skip the 64-bit integer variables. The attribute mapping of 
             // DAP4 CF 64-bit integer variable support
             // has been taken care at the routine gen_dap_onevar_dds() 
             // defined at h5commoncfdap.cc
-            if(H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
+            if(H5INT64 == var->getType() || H5UINT64 == var->getType()){
                continue;
             }
 
-            AttrTable *at = das.get_table((*it_v)->getNewName());
+            AttrTable *at = das.get_table(var->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_v)->getNewName(), new AttrTable);
+                at = das.add_table(var->getNewName(), new AttrTable);
 
-            for (auto it_ra = (*it_v)->getAttributes().begin();
-                 it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
-                gen_dap_oneobj_das(at,*it_ra,*it_v);
-            }
+            for (const auto &attr:var->getAttributes())
+                gen_dap_oneobj_das(at,attr,var);
+
             // TODO: If a var has integer-64 bit datatype attributes, maybe 
             // we can just keep that attributes(not consistent but 
             // easy to implement) or we have to duplicate all 
@@ -568,51 +564,46 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         // GPM needs to be handled in a special way(mostly _FillValue)
         if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                           || GPM_L1 == f->getProductType()) 
-            update_GPM_special_attrs(das,*it_v,false);
+            update_GPM_special_attrs(das,var,false);
         
     }
 
-    for (auto it_cv = cvars.begin();
-         it_cv != cvars.end(); ++it_cv) {
-        if (false == ((*it_cv)->getAttributes().empty())) {
+    for (const auto &cvar:cvars) {
+        if (false == (cvar->getAttributes().empty())) {
 
             // TODO: Add 64-bit int support for coordinates, this has not been tackled.
-            if(H5INT64 == (*it_cv)->getType() || H5UINT64 == (*it_cv)->getType()){
+            if(H5INT64 == cvar->getType() || H5UINT64 == cvar->getType()){
                continue;
             }
 
-            AttrTable *at = das.get_table((*it_cv)->getNewName());
+            AttrTable *at = das.get_table(cvar->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_cv)->getNewName(), new AttrTable);
+                at = das.add_table(cvar->getNewName(), new AttrTable);
 
-            for (auto it_ra = (*it_cv)->getAttributes().begin();
-                 it_ra != (*it_cv)->getAttributes().end(); ++it_ra){ 
-                gen_dap_oneobj_das(at,*it_ra,*it_cv);
-            }
+            for (const auto &attr:cvar->getAttributes())
+                gen_dap_oneobj_das(at,attr,cvar);
                     
         }
         // Though CF doesn't allow _FillValue, still keep it to keep the original form.
         if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                           || GPM_L1 == f->getProductType()) 
-            update_GPM_special_attrs(das,*it_cv,true);
+            update_GPM_special_attrs(das,cvar,true);
 
     }
 
     // Currently the special variables are only limited to the ACOS/OCO2 64-bit integer variables
-    for (auto it_spv = spvars.begin();
-         it_spv != spvars.end(); ++it_spv) {
-        if (false == ((*it_spv)->getAttributes().empty())) {
+    for (const auto &spvar:spvars) {
+        if (false == (spvar->getAttributes().empty())) {
 
-            AttrTable *at = das.get_table((*it_spv)->getNewName());
+            AttrTable *at = das.get_table(spvar->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_spv)->getNewName(), new AttrTable);
+                at = das.add_table(spvar->getNewName(), new AttrTable);
 #if 0
-            // cerr<<"spv coordinate variable name "<<(*it_spv)->getNewName() <<endl;
+            // cerr<<"spv coordinate variable name "<<spvar->getNewName() <<endl;
 #endif
 
-            for (auto it_ra = (*it_spv)->getAttributes().begin();
-                 it_ra != (*it_spv)->getAttributes().end(); ++it_ra) 
-                gen_dap_oneobj_das(at,*it_ra,*it_spv);
+            for (const auto &attr:spvar->getAttributes())
+                gen_dap_oneobj_das(at,attr,spvar);
         }
     }
        
@@ -629,60 +620,57 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             // First check if we do have unlimited dimension in the coordinate variables.
             // Since unsupported fakedims are removed, we may not have unlimited dimensions.
             bool still_has_unlimited = false;
-            for (auto it_cv = cvars.begin();
-                it_cv != cvars.end(); ++it_cv) {
+            for (const auto &cvar:cvars) {
+
                 // Check unlimited dimension names.
-                for (auto ird = (*it_cv)->getDimensions().begin();
-                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+                for (const auto &dim:cvar->getDimensions()) {
 
                     // Currently we only check one unlimited dimension, which is the most
                     // common case. When receiving the conventions from JG, will add
                     // the support of multi-unlimited dimension. KY 2016-02-09
-                    if((*ird)->HaveUnlimitedDim() == true) {
+                    if(dim->HaveUnlimitedDim() == true) {
                         still_has_unlimited = true;
                         break;
-                    }// if((*ird) is HaveUnlimitedDim()
-                }// for (vector<Dimension*>::
+                    }
+                }
                 if(true == still_has_unlimited) 
                     break;
-            }// for (it_cv=cvars.begin();
+            }
  
-           if(true == still_has_unlimited) {
-            AttrTable* at = das.get_table("DODS_EXTRA");
-            if (nullptr == at)
-                at = das.add_table("DODS_EXTRA", new AttrTable);
-         
-            string unlimited_names;
-
-            for (auto it_cv = cvars.begin();
-                it_cv != cvars.end(); ++it_cv) {
+            if (true == still_has_unlimited) {
+                AttrTable* at = das.get_table("DODS_EXTRA");
+                if (nullptr == at)
+                    at = das.add_table("DODS_EXTRA", new AttrTable);
+             
+                string unlimited_names;
+    
+                for (const auto &cvar:cvars) {
 #if 0
-                bool has_unlimited_dim = false;
+                    bool has_unlimited_dim = false;
 #endif
-                // Check unlimited dimension names.
-                for (auto ird = (*it_cv)->getDimensions().begin();
-                     ird != (*it_cv)->getDimensions().end(); ++ird) {
-
-                    // Currently we only check one unlimited dimension, which is the most
-                    // common case. When receiving the conventions from JG, will add
-                    // the support of multi-unlimited dimension. KY 2016-02-09
-                    if((*ird)->HaveUnlimitedDim() == true) {
-                        if(unlimited_names=="") {
-                           unlimited_names = (*ird)->getNewName();
-                           if(at !=nullptr) 
-                                at->append_attr("Unlimited_Dimension","String",unlimited_names);
-                        }
-                        else {
-                            if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
-                                unlimited_names = unlimited_names+" "+(*ird)->getNewName();
-                                if(at !=nullptr) 
-                                    at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());
+                    // Check unlimited dimension names.
+                    for (const auto &dim:cvar->getDimensions()) {
+    
+                        // Currently we only check one unlimited dimension, which is the most
+                        // common case. When receiving the conventions from JG, will add
+                        // the support of multi-unlimited dimension. KY 2016-02-09
+                        if(dim->HaveUnlimitedDim() == true) {
+                            if(unlimited_names=="") {
+                               unlimited_names = dim->getNewName();
+                               if(at !=nullptr) 
+                                    at->append_attr("Unlimited_Dimension","String",unlimited_names);
                             }
-                        }
-                    }// if((*ird)->HaveUnlimitedDim()
-                }// for (vector<Dimension*>::
-            }// for (it_cv=cvars.begin();
-          }// if(true == still_has_unlimited)
+                            else {
+                                if(unlimited_names.rfind(dim->getNewName()) == string::npos) {
+                                    unlimited_names = unlimited_names+" "+dim->getNewName();
+                                    if(at !=nullptr) 
+                                        at->append_attr("Unlimited_Dimension","String",dim->getNewName());
+                                }
+                            }
+                        }// if(dim->HaveUnlimitedDim()
+                    }// for (vector<Dimension*>::
+                }// for (cvars
+            }// if(true == still_has_unlimited)
             
         }//if(cvars.size()>0)
 #if 0
@@ -707,49 +695,44 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
     vector<HDF5CF::Var *>::const_iterator       it_v;
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     // Root and low-level group attributes.
     if (false == root_attrs.empty()) {
-        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
-            map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
+        for (const auto &root_attr:root_attrs) 
+            map_cfh5_grp_attr_to_dap4(d4_root,root_attr);
     }
 
-    // TODO: Need to wait for HYRAX-687's decision
+    // When the DAP4 coverage is turned on, the coordinate variables should be before the variables.
     if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
 
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
-    }
-
-    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-        gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
-
-    }
-
-
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+            gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
+        }
+    
+        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
+        }
     }
     else {
-    // Read Variable info.
-    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-        gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
 
+        // Read Variable info.
+        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
+    
+        }
+        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+            gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
+        }
     }
 
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
-    }
-
-    }
     // GPM needs to be handled in a special way(mostly _FillValue)
     if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
                                       || GPM_L1 == f->getProductType())
         update_GPM_special_attrs_cfdmr(d4_root,cvars);
-    
 
     for (auto it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
         BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
@@ -758,19 +741,17 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
     // We use the attribute container to store the group attributes.
     if (false == grps.empty()) {
-        for (auto it_g = grps.begin();
-             it_g != grps.end(); ++it_g) {
+
+        for (const auto &grp:grps) {
 
             auto tmp_grp = new D4Attribute;
-            tmp_grp->set_name((*it_g)->getNewName());
+            tmp_grp->set_name(grp->getNewName());
 
             // Make the type as a container
             tmp_grp->set_type(attr_container_c);
 
-            for (it_ra = (*it_g)->getAttributes().begin();
-                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                map_cfh5_attr_container_to_dap4(tmp_grp,(*it_ra));
-            }
+            for (const auto &attr: grp->getAttributes()) 
+                map_cfh5_attr_container_to_dap4(tmp_grp,attr);
 
             d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
@@ -789,23 +770,22 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
             // First check if we do have unlimited dimension in the coordinate variables.
             // Since unsupported fakedims are removed, we may not have unlimited dimensions.
             bool still_has_unlimited = false;
-            for (it_cv = cvars.begin();
-                it_cv != cvars.end(); ++it_cv) {
+            for (const auto &cvar:cvars) {
+
                 // Check unlimited dimension names.
-                for (auto ird = (*it_cv)->getDimensions().begin();
-                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+                for (const auto &dim:cvar->getDimensions()) {
 
                     // Currently we only check one unlimited dimension, which is the most
                     // common case. When receiving the conventions from JG, will add
                     // the support of multi-unlimited dimension. KY 2016-02-09
-                    if((*ird)->HaveUnlimitedDim() == true) {
+                    if(dim->HaveUnlimitedDim() == true) {
                         still_has_unlimited = true;
                         break;
-                    }// if((*ird) is HaveUnlimitedDim()
-                }// for (vector<Dimension*>::
+                    }
+                }
                 if(true == still_has_unlimited) 
                     break;
-            }// for (it_cv=cvars.begin();
+            }
  
             if(true == still_has_unlimited) {
  
@@ -813,24 +793,23 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
                 // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
                 if(d4_root->attributes() != nullptr) {
-                // The following lines cause seg. fault in libdap4, needs to investigate
+
+                // TODO: The following lines cause seg. fault in libdap4, needs to investigate
                 //if((d4_root->attributes()->find(dods_extra))==nullptr) 
         
                     string unlimited_dim_names ="";
         
-                    for (it_cv = cvars.begin();
-                        it_cv != cvars.end(); it_cv++) {
+                    for (const auto &cvar:cvars) {
             
                         // Check unlimited dimension names.
-                        for (auto ird = (*it_cv)->getDimensions().begin();
-                             ird != (*it_cv)->getDimensions().end(); ++ird) {
+                        for (const auto& dim:cvar->getDimensions()) {
             
                             // Currently we only check one unlimited dimension, which is the most
                             // common case. When receiving the conventions from JG, will add
                             // the support of multi-unlimited dimension. KY 2016-02-09
-                            if((*ird)->HaveUnlimitedDim() == true) {
+                            if(dim->HaveUnlimitedDim() == true) {
                                 
-                                string unlimited_dim_name = (*ird)->getNewName();
+                                string unlimited_dim_name = dim->getNewName();
                                 if(unlimited_dim_names=="") 
                                    unlimited_dim_names = unlimited_dim_name;
                                 else {
@@ -1173,11 +1152,11 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         }
 
 
-        for(auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-            if (""==(*it_d)->getNewName()) 
-                ar->append_dim((int)((*it_d)->getSize()));
+        for(auto const &dim:dims) {
+            if (""==dim->getNewName()) 
+                ar->append_dim((int)(dim->getSize()));
             else 
-                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                ar->append_dim((int)(dim->getSize()), dim->getNewName());
         }
 
         dds.add_var(ar);
@@ -1278,14 +1257,14 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
             dods_int16_c == var_type ||
             dods_int8_c == var_type) {
  
-            D4Attribute *d4_attr = (*vi)->attributes()->find("_FillValue");
+            const D4Attribute *d4_attr = (*vi)->attributes()->find("_FillValue");
 
             // If we don't find the _FillValue, according to DAP2 implementation,
             // we need to add the corresponding fill values.
             if(!d4_attr) {
                 bool is_cvar = false;
-                for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-                    if ((*it_cv)->getNewName() == (*vi)->name()) {
+                for (const auto &cvar:cvars) {
+                    if (cvar->getNewName() == (*vi)->name()) {
                         is_cvar = true;
                         break;
                     }
@@ -1657,11 +1636,11 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         }
 
 
-        for(auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
-            if (""==(*it_d)->getNewName()) 
-                ar->append_dim((int)((*it_d)->getSize()));
+        for (const auto &dim:dims) {
+            if (""==dim->getNewName()) 
+                ar->append_dim((int)(dim->getSize()));
             else 
-                ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                ar->append_dim((int)(dim->getSize()), dim->getNewName());
         }
 
         ar->set_is_dap4(true);

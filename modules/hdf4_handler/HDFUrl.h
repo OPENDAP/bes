@@ -50,9 +50,9 @@
 class HDFUrl:public libdap::Url {
   public:
     HDFUrl(const std::string &n, const std::string &d);
-    virtual ~ HDFUrl();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFUrl() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFURL_H

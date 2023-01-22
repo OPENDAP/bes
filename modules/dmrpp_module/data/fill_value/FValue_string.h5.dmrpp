@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_string.h5" dmrpp:href="data/fill_value/FValue_string.h5">
+    <String name="fill_str">
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="aa"/>
+        <dmrpp:FixedLengthStringArray string_length="2" pad="null_term"/>
+    </String>
+</Dataset>

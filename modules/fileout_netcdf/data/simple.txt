@@ -1,0 +1,54 @@
+netcdf simple_nc4.nc {
+dimensions:
+	x = 2 ;
+	y = 4 ;
+variables:
+	ushort data(x, y) ;
+data:
+
+ data =
+  0, 1, 2, 3,
+  4, 5, 6, 7 ;
+
+group: grp1 {
+  dimensions:
+  	y = 3 ;
+  variables:
+  	uint64 grp1_data(x, y) ;
+  data:
+
+   grp1_data =
+  0, 1, 2,
+  3, 4, 5 ;
+  } // group grp1
+
+group: grp2 {
+  dimensions:
+  	y = 3 ;
+  variables:
+  	uint64 grp2_data(x, y) ;
+  data:
+
+   grp2_data =
+  0, 1, 2,
+  3, 4, 5 ;
+
+  group: grp3 {
+    dimensions:
+    	z = 4 ;
+    variables:
+    	float grp3_data(x, /y, z) ;
+    data:
+
+     grp3_data =
+  0, 1, 2, 3,
+  1, 2, 3, 4,
+  2, 3, 4, 5,
+  3, 4, 5, 6,
+  4, 5, 6, 7,
+  5, 6, 7, 8,
+  6, 7, 8, 9,
+  7, 8, 9, 10 ;
+    } // group grp3
+  } // group grp2
+}

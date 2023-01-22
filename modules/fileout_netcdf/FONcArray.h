@@ -100,7 +100,7 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
-    FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
+    FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 
     // Used in write()
     void write_for_nc4_types(int ncid);

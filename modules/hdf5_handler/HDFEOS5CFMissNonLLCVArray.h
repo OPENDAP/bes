@@ -37,7 +37,6 @@
 #include <vector>
 
 // DODS includes
-//#include <libdap/Array.h>
 #include "HDF5BaseArray.h"
 
 

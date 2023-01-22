@@ -30,8 +30,6 @@
 
 #include "BESFileLockingCache.h"
 
-#define HASH_CACHE_FILENAME 1
-
 namespace http {
 
 /**
@@ -51,54 +49,28 @@ namespace http {
  * and some of them are optional - this cache is not optional).
  *
  */
-    class HttpCache : public BESFileLockingCache {
-    private:
-        static bool d_enabled;
-        static HttpCache *d_instance;
+class HttpCache : public BESFileLockingCache {
+private:
+    static std::unique_ptr<HttpCache> d_instance;
 
-        static void delete_instance() {
-            delete d_instance;
-            d_instance = 0;
-        }
+public:
+    HttpCache() = default;
+    HttpCache(const HttpCache &src) = delete;
+    HttpCache &operator=(const HttpCache &rhs) = delete;
 
-        HttpCache();
+    ~HttpCache() override = default;
 
-        HttpCache(const HttpCache &src);
+    static HttpCache *get_instance();
 
-        static std::string getCacheDirFromConfig();
+    std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle = true) const;
 
-        static std::string getCachePrefixFromConfig();
+    std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
+};
 
-        static unsigned long getCacheSizeFromConfig();
-
-    protected:
-        /**
-         * @brief Not in general use, keeping for as yet unwritten unit-tests.
-         * @param cache_dir
-         * @param prefix
-         * @param size
-         */
-        HttpCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
-
-    public:
-
-        //static HttpCache *
-        //get_instance(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
-
-        static HttpCache *get_instance();
-
-        virtual ~HttpCache() {}
-
-#if HASH_CACHE_FILENAME
-        static std::string get_hash(const std::string &s);
-
-        virtual std::string get_cache_file_name(const std::string &uid, const std::string &src, bool mangle=true);
-
-        virtual std::string get_cache_file_name(const std::string &src, bool mangle=true);
-#endif
-
-        static unsigned long getCacheExpiresTime();
-    };
+std::string get_http_cache_dir_from_config();
+std::string get_http_cache_prefix_from_config();
+unsigned long get_http_cache_size_from_config();
+unsigned long get_http_cache_exp_time_from_config();
 
 } /* namespace http */
 

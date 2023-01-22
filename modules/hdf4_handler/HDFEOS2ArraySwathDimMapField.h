@@ -13,17 +13,14 @@
 #define HDFEOS2ARRAYSWATHDIMMAPFIELD_H
 
 #include <libdap/Array.h>
-using namespace libdap;
-
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"
-
 #include "HDFEOS2EnumType.h"
 
-class HDFEOS2ArraySwathDimMapField:public Array
+class HDFEOS2ArraySwathDimMapField:public libdap::Array
 {
     public:
-    HDFEOS2ArraySwathDimMapField (int rank,  const std::string & filename, bool isgeofile, const int sdfd, const int swathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, const std::vector < struct dimmap_entry >&dimmaps, SOType sotype, const string & n = "", BaseType * v = nullptr):
+    HDFEOS2ArraySwathDimMapField (int rank,  const std::string & filename, bool isgeofile, const int sdfd, const int swathfd, const std::string & gridname, const std::string & swathname, const std::string & fieldname, const std::vector < struct dimmap_entry >&dimmaps, SOType sotype, const string & n = "", libdap::BaseType * v = nullptr):
         Array (n, v),
         rank (rank),
         filename(filename),
@@ -60,13 +57,13 @@ class HDFEOS2ArraySwathDimMapField:public Array
         template < class T > bool Field3DSubset (T * outlatlon, std::vector<int32>& newdims, T * latlon, int32 * offset, int32 * count, int32 * step);
 
 #endif
-        BaseType *ptr_duplicate () override
+        libdap::BaseType *ptr_duplicate () override
         {
             return new HDFEOS2ArraySwathDimMapField (*this);
         }
 
-       // Read the data
-       virtual bool read () override;
+        // Read the data
+        bool read () override;
 
     private:
 
@@ -102,7 +99,7 @@ class HDFEOS2ArraySwathDimMapField:public Array
         int write_dap_data_scale_comp(int32 swid, const int nelms,   std::vector<int32> &offset32, std::vector<int32> &count32, std::vector<int32> &step32);
         int write_dap_data_disable_scale_comp(int32 swid, const int nelms,  std::vector<int32> &offset32,std::vector<int32> &count32,std::vector<int32> &step32);
         // Obtain Field value
-        template < class T > int GetFieldValue (int32, const std::string &,std::vector < struct dimmap_entry >&, std::vector < T > &, std::vector<int32>&);
+        template < class T > int GetFieldValue (int32, const std::string &,const std::vector < struct dimmap_entry >&, std::vector < T > &, std::vector<int32>&);
 
         // The internal routine to do the interpolation
         template < class T > int _expand_dimmap_field (std::vector < T > *pvals, int32 rank, int32 dimsa[], int dimindex, int32 ddimsize, int32 offset, int32 inc) const;

@@ -4,22 +4,12 @@ AT_INIT([bes/modules/gateway_module/tests testsuite])
 
 m4_include(../../../modules/handler_tests_macros.m4)
 
-# These tests use the server at RPI and it's often off line.
-# jhrg 12/1/14
-#
-# AT_BESCMD_RESPONSE_TEST([test.00.bescmd])
-# AT_BESCMD_RESPONSE_TEST([test.01.bescmd])
-# AT_BESCMD_BINARYDATA_RESPONSE_TEST([test.02.bescmd])
-
-# Utilizing FoNC to get netcdf files
-# Old macro - replaced with new below jhrg 6/2/20
-# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.das.bescmd])
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([gateway/fnoc1.nc.nc.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.nc.dods.bescmd])
-# Old macro - replaced with new below jhrg 6/2/20
-# AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
+
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([gateway/fnoc1.nc.nc.dmr.bescmd])
+
 # This next test fails because of the ever shifting history attribute added by FoNC.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.nc.dap.bescmd])
 

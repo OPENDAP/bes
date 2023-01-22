@@ -26,6 +26,7 @@
 
 #include <string>
 #include <ostream>
+#include <utility>
 
 #include "BESObj.h"
 
@@ -75,17 +76,19 @@ public:
 
 private:
     std::string d_name;
-    size_t d_size;
+    size_t d_size{0};
     std::string d_lmt;
-    bool d_is_data;
+    bool d_is_data{false};
     item_type d_type;
+    std::string d_description;
+    std::string d_dap_service_url;
 
     CatalogItem(const CatalogItem &rhs);
     CatalogItem &operator=(const CatalogItem &rhs);
 
 public:
     /// @brief Make an empty instance.
-    CatalogItem() : d_name(""), d_size(0), d_lmt(""), d_is_data(false),  d_type(unknown) { }
+    CatalogItem() : d_type(unknown) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog
@@ -102,7 +105,7 @@ public:
      * @param type
      */
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, item_type type)
-        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(false), d_type(type) { }
+        : d_name(name), d_size(size), d_lmt(lmt), d_type(type) { }
 
     /**
      * @brief Hold information about an item in a BES Catalog
@@ -132,7 +135,12 @@ public:
     /// @brief The name of this item in the node
     std::string get_name() const { return d_name; }
     /// @brief Set the name of the item
-    void set_name(std::string n) { d_name = n; }
+    void set_name(const std::string &n) { d_name = n; }
+
+    /// @brief The descrtiption of this item
+    std::string get_description() const { return d_description; }
+    /// @brief Set the name of the item
+    void set_description(const std::string &n) { d_description = n; }
 
     /// @brief The size (bytes) of the item
     size_t get_size() const { return d_size; }
@@ -142,19 +150,24 @@ public:
     /// @brief Get the last modified time for this item
     std::string get_lmt() const { return d_lmt; }
     /// @brief Set the LMT for this item.
-    void set_lmt(std::string lmt) { d_lmt = lmt; }
+    void set_lmt(const std::string &lmt) { d_lmt = lmt; }
 
     /// @brief Is this item recognized as data?
     bool is_data() const { return d_is_data; }
     /// @brief Is this item data that the BES should interpret?
     void set_is_data(bool id) { d_is_data = id; }
 
+    /// @brief The DAP Dataset URL for an external DAP service.
+    std::string get_dap_service_url() const { return d_dap_service_url; }
+    /// @brief Is this item data that the BES should interpret?
+    void set_dap_service_url( const std::string &url) { d_dap_service_url = url; }
+
     /// @brief Get the type of this item (unknown, node or leaf)
     item_type get_type() const { return d_type; }
     /// @brief Set the type for this item
     void set_type(item_type t) { d_type = t; }
 
-    void encode_item(BESInfo *info);
+    void encode_item(BESInfo *info) const;
 
     virtual void dump(std::ostream &strm) const;
 };

@@ -1,0 +1,16 @@
+netcdf test {
+dimensions:
+	bigdim = 5000000000 ;
+	dim = 2 ;
+variables:
+	int y(dim) ;
+
+// global attributes:
+		:history = "removed date-timex test_big_array_dim_whole.xml\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"test_big_array_dim_whole.xml\"}]}]" ;
+
+group: g1 {
+  variables:
+  	ubyte x(bigdim) ;
+  } // group g1
+}
