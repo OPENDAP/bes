@@ -146,7 +146,7 @@ void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
 /// \param[out] buf pointer to a buffer
 ///////////////////////////////////////////////////////////////////////////////
 int
-get_slabdata(hid_t dset, const int *offset, const int *step, const int *count, const int num_dim,
+get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64_t *count, const int num_dim,
              void *buf)
 {
     BESDEBUG("h5", ">get_slabdata() " << endl);
@@ -241,7 +241,7 @@ get_slabdata(hid_t dset, const int *offset, const int *step, const int *count, c
     return 0;
 }
 
-bool read_vlen_string(hid_t dsetid, const int nelms, const hsize_t *hoffset, const hsize_t *hstep, const hsize_t *hcount,vector<string> &finstrval)
+bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset, const hsize_t *hstep, const hsize_t *hcount,vector<string> &finstrval)
 {
 
     hid_t dspace = -1;

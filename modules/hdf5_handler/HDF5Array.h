@@ -51,43 +51,43 @@ class HDF5Array:public libdap::Array {
   private:
 
     int d_num_dim = 0;
-    int d_num_elm = 0;
+    hsize_t d_num_elm = 0;
     
     hsize_t d_memneed = 0;
     string var_path;
     
     // Parse constraint expression and make HDF5 coordinate point location.
     // return number of elements to read. 
-    int format_constraint(int *cor, int *step, int *edg);
+   int64_t format_constraint(int64_t *cor, int64_t *step, int64_t *edg);
 
 #if 0
     hid_t mkstr(int size, H5T_str_t pad);
 #endif
 
-    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,const int* offset,const int*count,const int*step);
+    bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,const int64_t* offset,const int64_t* count,const int64_t *step);
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
     bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
-    void m_array_of_atomic(hid_t, hid_t,int,int*,int*,int*);
+    void m_array_of_atomic(hid_t, hid_t,int64_t ,int64_t *,int64_t *,int64_t *);
 
-    void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int* count, int* step);
+    void do_array_read(hid_t dset_id,hid_t dtype_id,std::vector<char>&values,bool has_values,int values_offset,int64_t nelms,int64_t* offset,int64_t* count, int64_t* step);
 
-    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int at_nelms,int* at_offset,int*at_count,int* at_step);
+    bool do_h5_array_type_read(hid_t dsetid, hid_t memb_id,std::vector<char>&values,bool has_values,int values_offset, int64_t at_nelms,int64_t* at_offset,int64_t*at_count,int64_t* at_step);
 
-    inline int INDEX_nD_TO_1D (const std::vector < int > &dims,
-                                const std::vector < int > &pos) const;
-    bool obtain_next_pos(std::vector<int>& pos, std::vector<int>&start,std::vector<int>&end,std::vector<int>&step,int rank_change);
+    inline int64_t INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
+                                const std::vector < int64_t > &pos) const;
+    bool obtain_next_pos(std::vector<int64_t>& pos, std::vector<int64_t>&start,std::vector<int64_t>&end,std::vector<int64_t>&step,int rank_change);
 
     template<typename T>  int subset(
             const T input[],
             int rank,
-            std::vector<int> & dim,
-            int start[],
-            int stride[],
-            int edge[],
+            std::vector<int64_t> & dim,
+            int64_t start[],
+            int64_t stride[],
+            int64_t edge[],
             std::vector<T> *poutput,
-            std::vector<int>& pos,
+            std::vector<int64_t>& pos,
             int index);
     friend class HDF5Structure;
   public:
@@ -113,7 +113,7 @@ class HDF5Array:public libdap::Array {
     void set_numdim(int ndims);
 
     /// remembers number of elements in this array.  
-    void set_numelm(int nelms);
+    void set_numelm(hsize_t nelms);
 
     void set_varpath(const std::string& vpath) { var_path = vpath;}
     libdap::BaseType *h5dims_transform_to_dap4(libdap::D4Group *root,const std::vector<std::string> &dimpath);
