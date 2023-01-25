@@ -91,6 +91,12 @@
 #besstandalone -c tests/bes.conf -i tests/covjson/coads_climatology_abstract_object_METADATA.bescmd 
 #besstandalone -c tests/bes.conf -i tests/covjson/fnoc1_abstract_object_DATA.bescmd 
 
-besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/grid_1_3d_xyz_aug.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/grid_1_3d_xyz_aug.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/za_1_3d_yztd_aug.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/swath_1_2d_xyz.h5.dmr.bescmd
+
+#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/d_dset_big.h5.data.bescmd 
+besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.local/d_dset_big.h5.dap.bescmd 
+#besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.local/d_dset_big.h5.dap.bescmd | getdap4 -D -M -
+#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/d_dset_big.h5.data.bescmd | getdap -M -
+

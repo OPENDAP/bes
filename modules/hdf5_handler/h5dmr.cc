@@ -758,7 +758,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         // This essentially stores in the struct.
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
-        ar->set_numelm((int) (dt_inst.nelmts));
+        ar->set_numelm((dt_inst.nelmts));
         ar->set_varpath(varname);
 
  
@@ -782,9 +782,9 @@ cerr<<"ndims is "<<dt_inst.ndims <<endl;
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                 if(dt_inst.dimnames[dim_index] !="") 
-                    ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                 else 
-                    ar->append_dim(dt_inst.size[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
                     // D4dimension has to have a name. If no name, no D4dimension(from comments libdap4: Array.cc) 
             }
             dt_inst.dimnames.clear();
@@ -803,11 +803,11 @@ for (const auto & dname:dim_names)
             // For DAP4, no need to add dimension if no dimension name
             if (is_eos5_dims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index],dim_names[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index],dim_names[dim_index]);
             }
             else {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index]); 
+                    ar->append_dim_ll(dt_inst.size[dim_index]); 
             }
         }
 
@@ -911,8 +911,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             // These parameters are used in the data read function.
             ar->set_memneed(dt_inst.need);
             ar->set_numdim(dt_inst.ndims);
-            ar->set_numelm((int) (dt_inst.nelmts));
-            ar->set_length((int) (dt_inst.nelmts));
+            ar->set_numelm(dt_inst.nelmts);
+            ar->set_length(dt_inst.nelmts);
             ar->set_varpath(varname);
  
             // If having dimension names, add the dimension names to DAP.
@@ -930,15 +930,15 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             if(dimnames_size ==dt_inst.ndims) {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
                     if(dt_inst.dimnames[dim_index] !="")
-                        ar->append_dim(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
+                        ar->append_dim_ll(dt_inst.size[dim_index],dt_inst.dimnames[dim_index]);
                     else 
-                        ar->append_dim(dt_inst.size[dim_index]);
+                        ar->append_dim_ll(dt_inst.size[dim_index]);
                 }
                 dt_inst.dimnames.clear();
             }
             else {
                 for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
-                    ar->append_dim(dt_inst.size[dim_index]);
+                    ar->append_dim_ll(dt_inst.size[dim_index]);
                     
             }
 
