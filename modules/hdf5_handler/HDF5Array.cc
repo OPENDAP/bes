@@ -201,7 +201,7 @@ bool HDF5Array::read()
 }
 
 void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,bool has_values,int values_offset,
-                                   int64_t nelms,int64_t* offset,int64_t* count, int64_t* step)
+                                   int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step)
 {
 
     H5T_class_t  tcls = H5Tget_class(dtype_id);
