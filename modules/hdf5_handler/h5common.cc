@@ -112,7 +112,7 @@ void get_data(hid_t dset, void *buf)
 /// \param[out] buf pointer to a buf
 /// \return void
 ///////////////////////////////////////////////////////////////////////////////
-void get_strdata(int strindex, char *allbuf, char *buf, int elesize)
+void get_strdata(int64_t strindex, char *allbuf, char *buf, int elesize)
 {
     char *tempvalue = allbuf;   // The beginning of entire buffer.
 

@@ -217,7 +217,7 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,b
 }
 
 void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, 
-                                   int64_t nelms,int64_t* offset,int64_t* count, int64_t* step)
+                                   int64_t nelms,const int64_t* offset,const int64_t* count, const int64_t* step)
 {
     
     hid_t memtype = -1;
@@ -249,7 +249,7 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id,
             H5Tclose(memtype);
             throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
         }
-        set_value(finstrval,nelms);
+        set_value_ll(finstrval,nelms);
         H5Tclose(memtype);
 	return ;
     }
@@ -521,7 +521,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
                 field->set_read_p(true);
             } // end "for(unsigned u = 0)"
             h5s->set_read_p(true);
-            set_vec(element,h5s);
+            set_vec_ll((uint64_t)element,h5s);
             delete h5s;
         } // end "for (int element=0"
 
@@ -775,7 +775,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 		v_str[i] = varname;
 	    }
 	}
-	set_value(v_str.data(), nelms);
+	set_value_ll(v_str.data(), nelms);
 	return false;
     }
     catch (...) {
@@ -1308,7 +1308,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             h5s->set_read_p(true);
 
             // Save the value of this element to DAP structure.
-            set_vec(array_index,h5s);
+            set_vec_ll((uint64_t)array_index,h5s);
             delete h5s;
 
             vector<int64_t>at_offsetv(at_pos.size(),0);
@@ -1381,7 +1381,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                set_value(final_val.data(),at_nelms);
+                set_value_ll(final_val.data(),at_nelms);
 
 
             }
@@ -1575,7 +1575,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 #if 0
                 //field->set_value(total_strval,at_total_nelms);
 #endif
-                set_value(total_strval,at_total_nelms);
+                set_value_ll(total_strval,at_total_nelms);
             }
             else {// obtain subset for variable-length string.
 #if 0
@@ -1594,7 +1594,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                       0
                                      );
                 
-                set_value(final_val,at_nelms);
+                set_value_ll(final_val,at_nelms);
 
            }
 
@@ -1612,7 +1612,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 total_strval[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
 
             if(at_total_nelms == at_nelms)
-                set_value(total_strval,at_total_nelms);
+                set_value_ll(total_strval,at_total_nelms);
             else {
                 vector<string>final_val;
                 subset<string>(
@@ -1626,7 +1626,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                                at_pos,
                                0
                                );
-                set_value(final_val,at_nelms);
+                set_value_ll(final_val,at_nelms);
 
             }
         }
@@ -1655,7 +1655,7 @@ HDF5Array::INDEX_nD_TO_1D (const std::vector < int64_t > &dims,
     // 
     assert (dims.size () == pos.size ());
     int64_t sum = 0;
-    int64_t start = 1;
+    int start = 1;
 
     for (unsigned int p = 0; p < pos.size (); p++) {
         int64_t m = 1;

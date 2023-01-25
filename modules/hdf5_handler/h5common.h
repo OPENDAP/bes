@@ -38,7 +38,7 @@ void get_data(hid_t dset, void *buf);
 
 int get_slabdata(hid_t dset, const int64_t *, const int64_t *, const int64_t *, const int num_dim, void *);
 
-void get_strdata(int, char *, char *, int);
+void get_strdata(int64_t, char *, char *, int);
 
 bool read_vlen_string(hid_t d_dset_id, const int64_t nelms, const hsize_t *offset, const hsize_t *step, const hsize_t *count,std::vector<std::string> &finstrval);
 
