@@ -126,6 +126,9 @@ stages:
     if:  branch = master
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
+    # A way to skip a stage. jhrg 1/26/23
+  - name: off
+    if: branch = off
 
 jobs:
   include:
@@ -151,7 +154,7 @@ jobs:
       # packages for branches, but we want to be able to test builds without making pushes to master
       # and that means having the build-rpm.sh use the spec files on a branch.
 
-    - stage: build-and-package
+    - stage: off # build-and-package
       name: "Enterprise Linux 7 RPMs (via CentOS-7)"
       script:
         - export BES_BUILD=centos7
