@@ -30,6 +30,7 @@
 #include <mutex>
 #include <sstream>
 
+#include "BESLog.h"
 #include "BESDebug.h"
 #include "BESTimeoutError.h"
 #include "RequestServiceTimer.h"
@@ -132,7 +133,9 @@ milliseconds RequestServiceTimer::remaining() const {
 */
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return timeout_enabled && (remaining() <= milliseconds {0});
+    auto dt = remaining();
+    INFO_LOG(prolog + "remaining: " + std::to_string(dt.count()) + " ms\n");
+    return timeout_enabled && (dt <= milliseconds {0});
 }
 
 /** @brief Set the time_out is disabled.
@@ -186,8 +189,13 @@ void RequestServiceTimer::dump( ostream &strm ) const
 */
 void RequestServiceTimer::throw_if_timeout_expired(const string &message, const string &file, const int line)
 {
-    if (is_expired()) {
-        double time_out_seconds = d_bes_timeout.count()/1000.00;
+    bool expired = is_expired();
+
+    if (expired) {
+        double time_out_seconds = ((double)d_bes_timeout.count())/1000.00;
+        ERROR_LOG(prolog + "ERROR: Time to transmit timeout expired. time_out_seconds: " +
+                    std::to_string(time_out_seconds) + "\n");
+
         std::stringstream errMsg;
         errMsg << "The request that you submitted timed out. The server was unable to begin transmitting a response in ";
         errMsg << "the time allowed. Requests processed by this server must begin transmitting a response in less ";
