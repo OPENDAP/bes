@@ -64,7 +64,7 @@ private:
     // The actual number of dimensions of this array (if string, 1)
     int d_actual_ndims = 0;
     // The number of elements that will be stored in netcdf
-    int d_nelements = 1;
+    size_t d_nelements = 1;
     // The FONcDim dimensions to be used for this variable
     std::vector<FONcDim *> d_dims;
     // The netcdf dimension ids for this array from DAP4
@@ -128,6 +128,15 @@ public:
     virtual libdap::Array *array() { return d_a; }
 
     virtual void dump(std::ostream &strm) const override;
+
+    size_t obtain_max_chunk_size(size_t total_size, int m_num_chunks, int chunk_dim_size, int allowed_chunk_dim_size) {
+
+        int actual_num_chunks = total_size/(chunk_dim_size*chunk_dim_size);
+        if ((actual_num_chunks > m_num_chunks) && (chunk_dim_size < allowed_chunk_dim_size)) 
+            chunk_dim_size = obtain_max_chunk_size(total_size,m_num_chunks,2*chunk_dim_size,allowed_chunk_dim_size);
+        return chunk_dim_size;
+
+    }
     // The below line is not necessary. Still keep it here for the future use.
     // KY 2021-05-25
 #if 0

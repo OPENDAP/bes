@@ -171,6 +171,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     d_dim_ids.resize(d_ndims);
     d_dim_sizes.resize(d_ndims);
 
+    
     Array::Dim_iter di = d_a->dim_begin();
     Array::Dim_iter de = d_a->dim_end();
     int dimnum = 0;
@@ -178,12 +179,31 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         int64_t size = d_a->dimension_size_ll(di, true);
         d_dim_sizes[dimnum] = size;
         d_nelements *= size;
-
+#if 0
+        if (d_a->dimensions() <=2) 
+            d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
         // Set COMPRESSION CHUNK SIZE for each dimension.
-        d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+        // We found an array that has 3-D 365x8075*7814 elements. This will make the chunk size 365*1024*1024, which
+        // is too big and will cause potential bad performance for the application that uses the generated
+        // netcdf file. So reduce the chunk size when the similar case occurs. KY 2023-01-25
+
+        if (dimnum < 2) 
+            d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+        else {
+            size_t total_chunk_size_so_far = 1;
+            for (const auto &chunk_size:d_chunksizes)
+                total_chunk_size_so_far*=chunk_size;
+            size_t chunk_size_candidate = MAX_CHUNK_SIZE*MAX_CHUNK_SIZE/total_chunk_size_so_far;
+            if (chunk_size_candidate >size)
+                d_chunksizes.push_back(size<=MAX_CHUNK_SIZE? size : MAX_CHUNK_SIZE);
+            else 
+                d_chunksizes.push_back(chunk_size_candidate<=MAX_CHUNK_SIZE? chunk_size_candidate : MAX_CHUNK_SIZE);
+        }
 
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: "
                                                             << d_chunksizes[dimnum] << endl);
+#endif
+        BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
         // If this dimension is a D4 dimension defined in its group, just obtain the dimension ID.
@@ -216,6 +236,60 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
         dimnum++;
     }
+
+    // We found an array that has 3-D 365x8075*7814 elements. This will make the chunk size 365*1024*1024, which
+    // is too big and will cause potential bad performance for the application that uses the generated
+    // netcdf file. So reduce the chunk size when the similar case occurs.
+    // The following rules handle the cases described above.
+    // Given there may be a very large size array and also the chunk size cannot too big,
+    // we modify the maximum chunk size according to the array size if necessary. 
+    // The idea is we don't want to have too many chunks and we don't want to have the chunk size too big.
+    // So we do the following. 
+    // 1. We start from 1M(1024x1024), if the number of chunks for the array is >64, we increase the chunk size to be 2048x2048.
+    // 2. We can increase the chunk size to 16M(4096x4096) if the number of chunks is still >64.
+    // 3. The maximum chunk size is 16M(4096x4096) no matter how big the array size is.
+    // 4. We can increase the maximum chunk size to a bigger number in the future if necessary.
+    //    We can also change the maximum number of chunks.
+    // KY 2023-01-26
+
+    int max_num_chunks = 64;
+    size_t max_allowed_chunk_size = 4*MAX_CHUNK_SIZE;
+    size_t final_max_chunk_size = obtain_max_chunk_size(d_nelements,max_num_chunks,MAX_CHUNK_SIZE,max_allowed_chunk_size);
+
+    BESDEBUG("fonc", "FONcArray::CHUNK - final_max_chunk_size is " << final_max_chunk_size <<  endl);
+
+    // We have to walk the dimension backward to make sure the fastest changing dimension chunk sizes set properly.
+    vector<size_t>::iterator d_chunksize_it = d_chunksizes.begin();
+    for (int i = d_a->dimensions();i>0; i--) {
+
+        size_t size = d_dim_sizes[i-1];
+
+        BESDEBUG("fonc", "FONcArray::CHUNK - dim size backward: " << size << endl);
+        if (d_chunksizes.size() <2) 
+            d_chunksize_it = d_chunksizes.insert(d_chunksize_it, size <= final_max_chunk_size ? size : final_max_chunk_size);
+        else {
+            size_t total_chunk_size_so_far = 1;
+            for (const auto &chunk_size:d_chunksizes)
+                total_chunk_size_so_far*=chunk_size;
+
+            BESDEBUG("fonc", "FONcArray::CHUNK - total_chunk_size_so_far: " << total_chunk_size_so_far << endl);
+
+            size_t chunk_size_candidate = final_max_chunk_size*final_max_chunk_size/total_chunk_size_so_far;
+
+            BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size_candidate: "<< chunk_size_candidate << endl);
+            if (chunk_size_candidate >size)
+                d_chunksize_it = d_chunksizes.insert(d_chunksize_it,size<=final_max_chunk_size? size : final_max_chunk_size);
+            else 
+                d_chunksize_it = d_chunksizes.insert(d_chunksize_it,chunk_size_candidate<=final_max_chunk_size? chunk_size_candidate : final_max_chunk_size);
+        }
+
+    }
+
+#if 0
+for( const auto &chunk_size:d_chunksizes) 
+    BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
+#endif
+
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
@@ -686,7 +760,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 // There's no practical way to get rid of the value copy, be here we
                 // read directly from libdap::Array object's memory.
                 vector<short> data(d_nelements);
-                for (int d_i = 0; d_i < d_nelements; d_i++)
+                for (size_t d_i = 0; d_i < d_nelements; d_i++)
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
                 int stax = nc_put_var_short(ncid, d_varid, data.data());
@@ -777,7 +851,7 @@ void FONcArray::write_string_array(int ncid) {
     }
 
     auto const &d_a_str = d_a->get_str();
-    for (int element = 0; element < d_nelements; element++) {
+    for (size_t element = 0; element < d_nelements; element++) {
         var_count[d_ndims - 1] = d_a_str[element].size() + 1;
         var_start[d_ndims - 1] = 0;
 
