@@ -809,7 +809,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                             // the support of multi-unlimited dimension. KY 2016-02-09
                             if(dim->HaveUnlimitedDim() == true) {
                                 
-                                string unlimited_dim_name = cvar->getNewName();
+                                string unlimited_dim_name = dim->getNewName();
                                 if(unlimited_dim_names=="") 
                                    unlimited_dim_names = unlimited_dim_name;
                                 else {

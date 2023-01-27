@@ -175,7 +175,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     Array::Dim_iter de = d_a->dim_end();
     int dimnum = 0;
     for (; di != de; di++) {
-        int size = d_a->dimension_size(di, true);
+        int64_t size = d_a->dimension_size_ll(di, true);
         d_dim_sizes[dimnum] = size;
         d_nelements *= size;
 
@@ -336,7 +336,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
  * the size is different
  */
 FONcDim *
-FONcArray::find_dim(const vector<string> &embed, const string &name, int size, bool ignore_size) {
+FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t size, bool ignore_size) {
     string oname;
     string ename = FONcUtils::gen_name(embed, name, oname);
     FONcDim *ret_dim = nullptr;

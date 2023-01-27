@@ -558,7 +558,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
 
         if (is_streamable()) {
             // Verify the request hasn't exceeded bes_timeout.
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog +"ERROR: bes-timeout expired before transmitting data.", __FILE__, __LINE__);
 
             // Now that we are ready to start streaming the response data we
             // cancel any pending timeout alarm according to the configuration.
@@ -577,7 +577,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
 
             if (is_streamable()) {
                 // write the what's been written
@@ -590,7 +590,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit" , __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting data." , __FILE__, __LINE__);
 
         byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
         BESDEBUG(MODULE,  prolog << "After nc_close() count:  " << byteCount << endl);
@@ -714,15 +714,18 @@ void FONcTransform::transform_dap4() {
 
     if (d4_true && _returnAs == "netcdf"){
         stringstream msg;
-        msg << "This dataset contains variables/attributes whose data types are not compatible with the ";
-        msg << "NetCDF-3 data model. If your request includes any of variables reprsented by one of these ";
-        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, ";
+        msg << "This dataset contains variables and/or attributes whose data types are not compatible with the " << endl;
+        msg << "NetCDF-3 data model. If your request includes any of variables represented by one of these " << endl;
+        msg << "incompatible variables and/or attributes and you choose the “NetCDF-3” download encoding, " << endl;
         msg << "your request will FAIL. " << endl;
-        msg << "You may also try constraining your request to omit the problematic data type(s), ";
+        msg << endl;
+        msg << "You may also try constraining your request to omit the problematic data type(s), " << endl;
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
-        msg << "Number of non-compatible variables: " << inventory.size() << endl;
+        msg << "There are" << inventory.size() << " incompatible variables referenced in your request." << endl;
+        msg << "Incompatible variables: " << endl;
+        msg << endl;
         for(const auto &entry: inventory){
-            msg << entry << endl;
+            msg << "    " << entry << endl;
         }
         throw BESSyntaxUserError(
                 msg.str(),
@@ -779,7 +782,7 @@ void FONcTransform::transform_dap4() {
 
         // Don't remove the following code, they are for debugging.
 #if !NDEBUG
-        map<string, unsigned long>::iterator it;
+        map<string, int64_t>::iterator it;
 
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
             BESDEBUG(MODULE,  prolog << "Final GFQN dim name is: " << it->first << endl);
@@ -796,7 +799,7 @@ void FONcTransform::transform_dap4() {
         // according to the corresponding variable sizes. Check section 8.6.2 at
         // https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
         //
-        map<string, unsigned long>::iterator git, vit;
+        map<string, int64_t>::iterator git, vit;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
             for (vit = VFQN_dimname_to_dimsize.begin(); vit != VFQN_dimname_to_dimsize.end(); ++vit) {
                 if (git->first == vit->first) {
@@ -1012,7 +1015,7 @@ void FONcTransform::transform_dap4_no_group() {
         e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
             fbt->write(_ncid);
         }
@@ -1096,10 +1099,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         BESDEBUG(MODULE, prolog << "Fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
 #endif
 
-        unsigned long dimsize = (*di)->size();
+        int64_t dimsize = (*di)->size();
 
         // The dimension size may need to be updated because of the expression constraint.
-        map<string, unsigned long>::iterator it;
+        map<string, int64_t>::iterator it;
         for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
             if (it->first == (*di)->fully_qualified_name())
                 dimsize = it->second;
@@ -1186,7 +1189,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
-            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit " + fbt->name() , __FILE__, __LINE__);
+            RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);
             fbt->write(grp_id);
@@ -1299,7 +1302,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
             BESDEBUG(MODULE, prolog << "Dim size is: " << (*di)->size() << endl);
             BESDEBUG(MODULE, prolog << "Fully qualfied dim name: " << (*di)->fully_qualified_name() << endl);
 #endif
-            unsigned long dimsize = (*di)->size();
+            int64_t dimsize = (*di)->size();
             if ((*di)->constrained()) {
                 dimsize = ((*di)->c_stop() - (*di)->c_start()) / (*di)->c_stride() + 1;
 
@@ -1328,13 +1331,13 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
                             BESDEBUG(MODULE, prolog << "Check dim- fully_qualfied_dim name is: "
                                     << d4dim->fully_qualified_name() << endl);
 
-                            unsigned long dimsize = t_a->dimension_size(dim_i, true);
+                            int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
 #if !NDEBUG
                             BESDEBUG(MODULE, prolog << "Check dim- final dim size is: " << dimsize << endl);
 #endif
-                            pair<map<string, unsigned long>::iterator, bool> ret_it;
+                            pair<map<string, int64_t>::iterator, bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(
-                                    pair<string, unsigned long>(d4dim->fully_qualified_name(), dimsize));
+                                    pair<string, int64_t>(d4dim->fully_qualified_name(), dimsize));
                             if (ret_it.second == false && ret_it.first->second != dimsize) {
                                 string err = "fileout_netcdf-4: dimension found with the same name, but different size";
                                 throw BESInternalError(err, __FILE__, __LINE__);
@@ -1352,7 +1355,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
     }
 
 #if !NDEBUG
-    map<string, unsigned long>::iterator it;
+    map<string, int64_t>::iterator it;
     for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
         BESDEBUG(MODULE, prolog << "GFQN dim name is: " << it->first << endl);
         BESDEBUG(MODULE, prolog << "GFQN dim size is: " << it->second << endl);
