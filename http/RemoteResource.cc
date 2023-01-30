@@ -182,7 +182,7 @@ void RemoteResource::retrieveResource(const map<string, string> &content_filters
         string err = prolog + "Unable to determine the type of data returned from '" + d_remoteResourceUrl->str()
                 + ",' Setting type to 'unknown'";
         BESDEBUG(MODULE, err << endl);
-        INFO_LOG(err);
+        // INFO_LOG(err << endl);
         d_type = "unknown";
     }
 
