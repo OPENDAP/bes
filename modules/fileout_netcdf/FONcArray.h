@@ -129,6 +129,7 @@ public:
 
     virtual void dump(std::ostream &strm) const override;
 
+#if 0
     size_t obtain_max_chunk_size(size_t total_size, int m_num_chunks, int chunk_dim_size, int allowed_chunk_dim_size) {
 
         int actual_num_chunks = total_size/(chunk_dim_size*chunk_dim_size);
@@ -137,6 +138,7 @@ public:
         return chunk_dim_size;
 
     }
+#endif
     // The below line is not necessary. Still keep it here for the future use.
     // KY 2021-05-25
 #if 0

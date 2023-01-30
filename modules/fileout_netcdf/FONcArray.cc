@@ -338,7 +338,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
         // The chunk sizes of the two fastest changing dimensions are fixed(not exceeding the MAX_CHUNK_SIZE). So set them first.
         size_t two_fastest_chunk_dim_sizes=1;
-        vector<size_t>::iterator d_chunksize_it = d_chunksizes.begin();
+        auto d_chunksize_it = d_chunksizes.begin();
         for (int i = d_a->dimensions();i>d_a->dimensions()-2; i--) {
 
             size_t size = d_dim_sizes[i-1];
@@ -397,7 +397,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         size_t left_higher_dim_chunk_size = total_higher_dim_chunk_size;
         
         // We have to walk the dimension backward to make sure the fastest changing dimension chunk sizes set properly.
-        for (int i = rest_dim_stop_index;i>0; i--) {
+        for (size_t i = rest_dim_stop_index;i>0; i--) {
 
             size_t size = d_dim_sizes[i-1];
 
@@ -410,7 +410,9 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
                 BESDEBUG("fonc", "FONcArray::CHUNK - left_higher_dim_chunk_size " << left_higher_dim_chunk_size << endl);
                 if (size < left_higher_dim_chunk_size) {
                     d_chunksize_it = d_chunksizes.insert(d_chunksize_it,size);
-                    left_higher_dim_chunk_size = left_higher_dim_chunk_size/size;
+                    // Not necessary, just make the sonar cloud happy
+                    if (size !=0) 
+                        left_higher_dim_chunk_size = left_higher_dim_chunk_size/size;
                 }
                 else {
                     d_chunksize_it = d_chunksizes.insert(d_chunksize_it,left_higher_dim_chunk_size);
@@ -424,10 +426,10 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     }
 
-//#if 0
+#if 0
 for( const auto &chunk_size:d_chunksizes) 
     BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
-//#endif
+#endif
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
