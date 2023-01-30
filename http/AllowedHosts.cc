@@ -192,9 +192,9 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
 
         isAllowed = candidate_url->is_trusted() || check(candidate_url->str());
 
-        if (candidate_url->is_trusted()) {
-            INFO_LOG(prolog << "Candidate URL is marked trusted, allowing. url: " << candidate_url->str() <<  endl);
-        }
+        //if (candidate_url->is_trusted()) {
+        //    INFO_LOG(prolog << "Candidate URL is marked trusted, allowing. url: " << candidate_url->str() <<  endl);
+        //}
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     }
     else {
