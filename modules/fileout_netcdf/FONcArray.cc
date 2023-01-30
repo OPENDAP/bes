@@ -61,6 +61,12 @@ vector<FONcDim *> FONcArray::Dimensions;
 
 const int MAX_CHUNK_SIZE = 1024;
 
+// Set general total maximum chunk sizes to 1M(1024x1024)
+const int GENERAL_MAX_CHUNK_SIZES = 1048576; 
+
+// set normal 1-D maximum chunk sizes to 64K(64*1024)
+const int NORMAL_1D_MAX_CHUNK_SIZES = 65536;
+
 /** @brief Constructor for FONcArray that takes a DAP Array
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
@@ -179,8 +185,36 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         int64_t size = d_a->dimension_size_ll(di, true);
         d_dim_sizes[dimnum] = size;
         d_nelements *= size;
+        // Set COMPRESSION CHUNK SIZE for each dimension.
+        // Make the chunk size reasonable for 1-D case.
+        if (d_a->dimensions() == 1) {
+            if (size < NORMAL_1D_MAX_CHUNK_SIZES)
+                d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+            else if ( size >= NORMAL_1D_MAX_CHUNK_SIZES && size <=GENERAL_MAX_CHUNK_SIZES*16)
+                d_chunksizes.push_back(NORMAL_1D_MAX_CHUNK_SIZES);
+            else 
+                d_chunksizes.push_back(GENERAL_MAX_CHUNK_SIZES);
+        }
+        else if (d_a->dimensions() ==2) 
+            d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+        // We found an array that has 3-D 365x8075*7814 elements. This will make the chunk size 365*1024*1024, which
+        // is too big and will cause potential bad performance for the application that uses the generated
+        // netcdf file. So reduce the chunk size when the similar case occurs. 
+        // This will be handled in a separate for-loop below. KY 2023-01-25
 #if 0
-        if (d_a->dimensions() <=2) 
+        if (d_a->dimensions() == 1) {
+
+            if (size >= NORMAL_1D_MAX_CHUNK_SIZES)
+                d_chunksizes.push_back(NORMAL_1D_MAX_CHUNK_SIZES);
+            else 
+            if (size < NORMAL_1D_MAX_CHUNK_SIZES)
+                d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+            else if ( size >= NORMAL_1D_MAX_CHUNK_SIZES && size <=GENERAL_MAX_CHUNK_SIZES*16) 
+                d_chunksizes.push_back(NORMAL_1D_MAX_CHUNK_SIZE);
+            else 
+                d_chunksizes.push_back(GENERAL_MAX_CHUNK_SIZES);
+        }
+        else if (d_a->dimensions() ==2) 
             d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
         // Set COMPRESSION CHUNK SIZE for each dimension.
         // We found an array that has 3-D 365x8075*7814 elements. This will make the chunk size 365*1024*1024, which
@@ -252,10 +286,20 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     //    We can also change the maximum number of chunks.
     // KY 2023-01-26
 
+    // The above algorithm works well to reduce the number of chunks for a large array size as well as having a decent
+    // access time. However,
+    // it may increase the final file size when the fastest changing dimension size increases from 1024 to 2048 or 4096.
+    // So to find a good balance between the file size and the access time for NASA files,
+    // we fix the sizes of two fastest changing dimensions to be <=1024x1024. We will increase the higher chunk dimension size 
+    // from 1 to 2 or higher if the number of higher dimension size is >512. Why 512? Because we find the higher dimension
+    // may be time and one year is 365 days. We want to still keep the one day per slice if possible. 512 is not too big. 
+    // The chunk overhead is not that big.
+    // KY 2023-01-29
+
+#if 0
     int max_num_chunks = 64;
     size_t max_allowed_chunk_size = 4*MAX_CHUNK_SIZE;
     size_t final_max_chunk_size = obtain_max_chunk_size(d_nelements,max_num_chunks,MAX_CHUNK_SIZE,max_allowed_chunk_size);
-
     BESDEBUG("fonc", "FONcArray::CHUNK - final_max_chunk_size is " << final_max_chunk_size <<  endl);
 
     // We have to walk the dimension backward to make sure the fastest changing dimension chunk sizes set properly.
@@ -285,11 +329,105 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     }
 
+#endif 
+
+    // Chunk size is not set when the number of dimension is >2. It is set here.
+    // When the number of higher than 2 dimension sizes is <max_num_higher_chunks(512 now), we start increasing the higher chunk dimension size. 
+    // KY 2023-01-29
+    if (d_a->dimensions() >2) {
+
+        // The chunk sizes of the two fastest changing dimensions are fixed(not exceeding the MAX_CHUNK_SIZE). So set them first.
+        size_t two_fastest_chunk_dim_sizes=1;
+        vector<size_t>::iterator d_chunksize_it = d_chunksizes.begin();
+        for (int i = d_a->dimensions();i>d_a->dimensions()-2; i--) {
+
+            size_t size = d_dim_sizes[i-1];
+            BESDEBUG("fonc", "FONcArray::CHUNK - dim size backward: " << size << endl);
+            d_chunksize_it = d_chunksizes.insert(d_chunksize_it, size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+            two_fastest_chunk_dim_sizes *=d_chunksizes[0];
+        }
+        BESDEBUG("fonc", "FONcArray::CHUNK - two fastest dimchunk_sizes " << two_fastest_chunk_dim_sizes << endl);
+
+        // Set the chunk sizes for the rest dimensions if the array size is not too big.
+        // Calculate the dimension index when the total chunk sizes exceed 1024x1024.
+        size_t rest_dim_stop_index = d_a->dimensions()-2;
+        if (two_fastest_chunk_dim_sizes <= GENERAL_MAX_CHUNK_SIZES) {
+            size_t total_chunk_size_so_far = two_fastest_chunk_dim_sizes;
+            for (int i = d_a->dimensions()-2;i>0; i--) {
+                size_t size = d_dim_sizes[i-1];
+                BESDEBUG("fonc", "FONcArray::CHUNK - dim size backward: " << size << endl);
+                size_t chunk_size_candidate =((size<=MAX_CHUNK_SIZE)?size:MAX_CHUNK_SIZE); 
+                if (total_chunk_size_so_far * chunk_size_candidate <= GENERAL_MAX_CHUNK_SIZES) {
+                    total_chunk_size_so_far *=chunk_size_candidate;
+                    d_chunksize_it = d_chunksizes.insert(d_chunksize_it,chunk_size_candidate);
+                    if (i == 1)
+                        rest_dim_stop_index = 0;
+                }
+                else {
+                    rest_dim_stop_index = i;
+                    break;
+                }
+            }
+            BESDEBUG("fonc", "FONcArray::CHUNK - total_chunk_size_so_far: " << total_chunk_size_so_far << endl);
+        } 
+        BESDEBUG("fonc", "FONcArray::CHUNK - rest_dim_stop_index: " << rest_dim_stop_index << endl);
+            
 #if 0
-for( const auto &chunk_size:d_chunksizes) 
-    BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
+        for (int i = d_a->dimensions()-2;i>0; i--) {
+            size_t size = d_dim_sizes[i-1];
+            size_t chunk_size_candidate =(size<=MAX_CHUNK_SIZE) 
+            two_fastest_chunk_dim_sizes *=d_chunksizes[0];
+        }
 #endif
 
+        // 512x1x1 case will set chunk size to 1x1x1, we don't want this to happen. The reasonable chunk size is 1M(1024x1024). We will see
+        // if the current array is big enough to hold 1M. If yes, after achieving 1M chunk size,  we will then tackle the big array size case. 
+        // If the rest total dimension size is >512, we start increasing the higher chunk dimension size. 
+        // Calculate the total higher(>2) dimension sizes if the number of dimension is >2.
+        size_t higher_dimension_size = 1;
+        size_t total_higher_dim_chunk_size = 1;
+        int max_num_higher_chunks = 512;
+
+        for (int i = 0; i<rest_dim_stop_index; i++) 
+            higher_dimension_size *= d_dim_sizes[i];
+
+        if (higher_dimension_size > max_num_higher_chunks)
+            total_higher_dim_chunk_size = higher_dimension_size/max_num_higher_chunks;
+        
+        size_t left_higher_dim_chunk_size = total_higher_dim_chunk_size;
+        
+        // We have to walk the dimension backward to make sure the fastest changing dimension chunk sizes set properly.
+        for (int i = rest_dim_stop_index;i>0; i--) {
+
+            size_t size = d_dim_sizes[i-1];
+
+            BESDEBUG("fonc", "FONcArray::CHUNK - dim size backward: " << size << endl);
+#if 0
+            if (d_chunksizes.size() <2) 
+                d_chunksize_it = d_chunksizes.insert(d_chunksize_it, size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
+            else {
+#endif
+                BESDEBUG("fonc", "FONcArray::CHUNK - left_higher_dim_chunk_size " << left_higher_dim_chunk_size << endl);
+                if (size < left_higher_dim_chunk_size) {
+                    d_chunksize_it = d_chunksizes.insert(d_chunksize_it,size);
+                    left_higher_dim_chunk_size = left_higher_dim_chunk_size/size;
+                }
+                else {
+                    d_chunksize_it = d_chunksizes.insert(d_chunksize_it,left_higher_dim_chunk_size);
+                    // Set the left higher dim chunk size to 1 since all the left hgher chunk dimension size(if any) should be 1.
+                    left_higher_dim_chunk_size = 1;
+                }
+#if 0
+            }
+#endif
+        }
+
+    }
+
+//#if 0
+for( const auto &chunk_size:d_chunksizes) 
+    BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
+//#endif
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
@@ -807,7 +945,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                     d_a->intern_data(*get_eval(), *get_dds());
 
                 vector<int> data(d_nelements);
-                for (int d_i = 0; d_i < d_nelements; d_i++)
+                for (size_t d_i = 0; d_i < d_nelements; d_i++)
                     data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
 
                 int stax = nc_put_var_int(ncid, d_varid, data.data());
