@@ -214,23 +214,26 @@ dnl AC_PROG_LEX
 AM_PROG_LEX
 AM_PATH_PYTHON
 
+dnl Here we test for both C++11 and 14, but our code nominally requires 14.
+dnl We can use the C++11 test and CXX_STD_FLAG to build with 11 if we add a
+dnl compatibility layer for the missing features. jhrg 1/30/23.
 
-dnl NB: CentOS 6 does not support C++-11 but does support some features:
-dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
-dnl For now, I'm counting 0x as supporting C++-11 in our code.
+CXX_STD_FLAG=""
 
-CXX11_FLAG=""
+CXX_FLAGS_CHECK([--std=c++11], [CXX_STD_FLAG=--std=c++11], [AC_MSG_WARN([C++11 is required but not found.])])
+CXX_FLAGS_CHECK([--std=c++14], [CXX_STD_FLAG=--std=c++14],
+    [AC_MSG_WARN([C++14 is required but not found. Using C++11 compatability mode.])])
 
-CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
+AS_IF([test -z "$CXX_STD_FLAG"],
+      [AC_MSG_ERROR([Not using modern C++ (C++11 or 14)])],
+      [AC_MSG_NOTICE([Using $CXX_STD_FLAG])
+       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX_STD_FLAG"])
 
-AC_SUBST(CXX11_FLAG)
-
-dnl If CXXFLAGS is not set, set it to the empty string.
-AS_IF([test -z ${CXXFLAGS+set}], [CXXFLAGS=])
+AC_SUBST(CXX_STD_FLAG)
 
 AS_IF([test -n "$cxx_debug_flags"],
-      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX11_FLAG"],
-      [CXXFLAGS="$CXXFLAGS $CXX11_FLAG"])
+      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags"],
+      [CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
@@ -460,7 +463,7 @@ AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
 AC_SUBST(BES_HTTP_LIB)
 
-dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
+dnl These tests are for the dependencies of specific handlers. Added jhrg 11/17/13
 
 # This is used by 'usage' which builds the .info response. It's likely 
 # old and should be removed
