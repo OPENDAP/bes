@@ -347,7 +347,12 @@ public:
     {
         DBG(cerr << endl << plog << "BEGIN" << endl);
         try {
+#if HAVE_WORKING_REGEX
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline_C++11_regex.txt");
+#else
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
+#endif
+
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
             BESRegex r1(baseline.c_str());
 
@@ -368,7 +373,11 @@ public:
     {
         DBG(cerr << endl << plog << "BEGIN" << endl);
         try {
+#if HAVE_WORKING_REGEX
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline_C++11_regex.txt");
+#else
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
+#endif
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
             BESRegex r1(baseline.c_str());
 
@@ -715,7 +724,11 @@ public:
         DBG(cerr << endl << plog << "BEGIN" << endl);
 
         try {
+#if HAVE_WORKING_REGEX
+            string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline_C++11_regex.txt");
+#else
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
+#endif
             BESRegex r1(baseline.c_str());
 
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
