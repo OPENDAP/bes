@@ -129,6 +129,8 @@ public:
 
     virtual void dump(std::ostream &strm) const override;
 
+    // The following code is to calcuate the maximum possible chunk size one can use for array.
+    // It is not used now. But keep it for the potential future use.
 #if 0
     size_t obtain_max_chunk_size(size_t total_size, int m_num_chunks, int chunk_dim_size, int allowed_chunk_dim_size) {
 
