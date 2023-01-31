@@ -1,6 +1,5 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
-# subdir-objects jhrg 1/30/23
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
@@ -59,13 +58,21 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIB
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
+build_dmrpp_BUILT_SOURCES = h5common.cc h5common.h
+
+h5common.cc: Makefile
+	cp $(top_srcdir)/modules/hdf5_handler/h5common.cc ./h5common.cc
+
+h5common.h: Makefile
+	cp $(top_srcdir)/modules/hdf5_handler/h5common.h ./h5common.h
+
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
 build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-    $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
-    $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) \
+    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
+    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
@@ -84,7 +91,7 @@ EXTRA_PROGRAMS =
 
 EXTRA_DIST = dmrpp.conf.in
 
-CLEANFILES = *~ *.gcda *.gcno *.gcov dmrpp.conf
+CLEANFILES = *~ *.gcda *.gcno *.gcov dmrpp.conf h5common.cc h5common.h
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = dmrpp.conf
