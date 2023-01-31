@@ -1,12 +1,11 @@
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
+# subdir-objects jhrg 1/30/23
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http \
--I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+    -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
-
-BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
@@ -43,9 +42,6 @@ DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
 SuperChunk.cc DMZ.cc
 
-# Moved to bes/http
-# awsv4.cc CredentialsManager.cc AccessCredentials.cc NgapS3Credentials.cc
-
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
 DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
@@ -54,34 +50,22 @@ DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 DmrppMetadataStore.h DmrppNames.h byteswap_compat.h  \
 SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h
 
-# moved to bes/http
-# awsv4.h CredentialsManager.h AccessCredentials.h NgapS3Credentials.h
-
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
+    $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
-# Building these will recompile the code they use. I will move them to 'unused.'
-# jhrg 5/24/22
-# noinst_PROGRAMS = retriever superchunky
-
-STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
-
-# build_dmrpp config
-build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
+build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
-build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h $(srcdir)/../hdf5_handler/h5common.cc
-build_dmrpp_LDFLAGS = $(STATIC_DAP_MODULE)
-# Was using $(BES_DAP_LIB_LDFLAGS) which caused linking to the .so library. On linux
-# this is flagged as not portable. jhrg 1/21/22
+    build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
+build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
-$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+    $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
+    $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)

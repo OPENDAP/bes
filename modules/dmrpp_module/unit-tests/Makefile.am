@@ -2,6 +2,7 @@
 # Tests
 
 AUTOMAKE_OPTIONS = foreign
+# subdir-objects
 # using .cc files above this dir seems to break 'subdir-objects' jhrg 5/5/22
 
 # TODO set these with configure. jhrg 11/26/19
@@ -10,14 +11,13 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
-$(DAP_CFLAGS) $(OPENSSL_INC)
+    -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
+    $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
-STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
-LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
+    $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
@@ -82,8 +82,6 @@ if CPPUNIT
 UNIT_TESTS = DmrppArrayTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest CurlHandlePoolTest \
 DMZTest build_dmrpp_util_test DmrppChunkOdometerTest
 
-# DmrppMetadataStoreTest
-
 else
 
 UNIT_TESTS =
@@ -117,8 +115,8 @@ DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+# DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+# DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
@@ -130,5 +128,5 @@ DmrppChunkOdometerTest_SOURCES = DmrppChunkOdometerTest.cc
 DmrppChunkOdometerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 build_dmrpp_util_test_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
-build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc $(top_srcdir)/modules/hdf5_handler/h5common.cc
+build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc ../h5common.cc
 build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)

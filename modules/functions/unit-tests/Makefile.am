@@ -1,7 +1,7 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign 
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 # Removed jhrg 9.22.17 in an attempt to fix distcheck's build
 # subdir-objects
