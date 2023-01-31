@@ -58,7 +58,7 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIB
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
-build_dmrpp_BUILT_SOURCES = h5common.cc h5common.h
+BUILT_SOURCES = h5common.cc h5common.h
 
 h5common.cc: Makefile
 	cp $(top_srcdir)/modules/hdf5_handler/h5common.cc ./h5common.cc

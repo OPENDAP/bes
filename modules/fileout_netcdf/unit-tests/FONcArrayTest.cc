@@ -25,7 +25,7 @@
 #include <vector>
 #include <string>
 
-#include "run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 #include "test_config.h"
 
 #include "FONcArray.h"

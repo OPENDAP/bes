@@ -10,7 +10,7 @@ EXTRA_DIST = data/README read_test_baseline.cc read_test_baseline.h handler_test
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
-SUBDIRS = csv_handler freeform_handler functions usage asciival
+SUBDIRS = common csv_handler freeform_handler functions usage asciival
 
 if WITH_CMR
 SUBDIRS += cmr_module

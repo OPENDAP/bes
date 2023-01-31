@@ -1,23 +1,24 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 # subdir-objects
 # using .cc files above this dir seems to break 'subdir-objects' jhrg 5/5/22
 
 # TODO set these with configure. jhrg 11/26/19
 OPENSSL_LIBS=-lcrypto
 OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+OPENSSL_LD=-L/usr/local/opt/openssl/lib
 
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
-    -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
-    $(DAP_CFLAGS) $(OPENSSL_INC)
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+    -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
+    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
-    $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
+    -L$(top_builddir)/modules/common -lmodules_common $(BES_EXTRA_LIBS) $(H5_LDFLAGS) \
+    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LD) $(OPENSSL_LIBS) \
+    $(XML2_LIBS) -lz
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
@@ -112,13 +113,13 @@ DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppCommonTest_SOURCES = DmrppCommonTest.cc
 DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-# DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+# DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc
 # DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppArrayTest_SOURCES = DmrppArrayTest.cc
 DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DMZTest_SOURCES = DMZTest.cc

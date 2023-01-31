@@ -1056,6 +1056,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
     modules/configured_features.txt
+
+    modules/common/Makefile
+
     modules/csv_handler/Makefile
     modules/csv_handler/tests/Makefile
     modules/csv_handler/tests/atlocal

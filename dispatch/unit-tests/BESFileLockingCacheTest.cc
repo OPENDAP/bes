@@ -38,7 +38,7 @@
 
 #include "test_config.h"
 
-#include "modules/run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 
 using namespace std;
 
