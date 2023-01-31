@@ -81,3 +81,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/ATL13_20190330212241_00
 
 #HDF5 big array size
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_big.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_4d.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_4d_2.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_4d_3.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_4d_4.h5
