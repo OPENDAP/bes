@@ -1,7 +1,7 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.71])
+AC_PREREQ([2.69])
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
 AC_INIT([bes],[3.20.13],[support@opendap.org])
@@ -14,7 +14,8 @@ dnl people building the source, it's not customary to supply a build number (i.e
 dnl if you're building the code for your own use, a build number seems like overkill).
 dnl jhrg 3/16/21 (copied from libdap4's configure.ac)
 AC_ARG_WITH([build],
-            [AS_HELP_STRING([--with-build=<number>],[Inject the integer build number (default is to not define a build number)])],
+            [AS_HELP_STRING([--with-build=<number>],
+                   [Inject the integer build number (default is to not define a build number)])],
             [build_number=${withval}], [build_number=])
 
 dnl If a build number is given and valid (it must be an integer), use it. If it's
