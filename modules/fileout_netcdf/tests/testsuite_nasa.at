@@ -4,7 +4,7 @@ AT_INIT([modules/fileout_netcdf/tests testsuite_nasa])
 
 AT_TESTED([besstandalone])
 
-m4_include([../../../modules/handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 m4_include([local_handler_tests_macros.m4])
 
 dnl Add response that supports group(HDF5 default response et al.) for NASA files
