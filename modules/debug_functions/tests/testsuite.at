@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/debug_functions/tests testsuite])
 
-m4_include([../../handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 
 dnl I moved this here as part of an attempt to migrate from the local 
 dnl handler_tests_macros.m4 to the shared copy on bes/modules. However,

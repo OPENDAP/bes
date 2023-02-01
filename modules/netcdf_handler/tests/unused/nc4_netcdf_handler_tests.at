@@ -3,7 +3,7 @@
 AT_INIT([bes/modules/netcdf_handler/tests])
 
 #m4_include([handler_tests_macros.m4])
-m4_include(../../../modules/handler_tests_macros.m4)
+m4_include(../../common/handler_tests_macros.m4)
 
 # These are tests for netcdf4 support
 

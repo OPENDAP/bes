@@ -38,7 +38,7 @@
 #include "test_config.h"
 
 // Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
-#include "modules/run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 
 using namespace std;
 

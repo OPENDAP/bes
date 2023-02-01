@@ -144,10 +144,6 @@ resplistT_SOURCES = resplistT.cc TestResponseHandler.cc TestResponseHandler.h
 
 infoT_SOURCES = infoT.cc
 
-# agglistT_SOURCES = agglistT.cc TestAggServer.cc TestAggServer.h
-
-cacheT_SOURCES = cacheT.cc
-
 uncompressT_SOURCES = uncompressT.cc
 
 if BES_DEVELOPER

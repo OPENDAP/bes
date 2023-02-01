@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/functions/tests testsuite])
 
-m4_include([../../../modules/handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_0.dods.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/tabular_1.dods.bescmd)
