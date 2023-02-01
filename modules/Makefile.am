@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Might move these to a child directory for testing things. jhrg 5/16/18
-EXTRA_DIST = data/README read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4 run_tests_cppunit.h
+EXTRA_DIST = data/README
 
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
