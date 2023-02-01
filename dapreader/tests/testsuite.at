@@ -2,7 +2,7 @@
 
 AT_INIT([bes/dapreader/tests ./testsuite])
 
-m4_include([../common/handler_tests_macros.m4])
+m4_include([../../modules/common/handler_tests_macros.m4])
 
 ## These initial tests look at the basic operation of the dapreader
 ## handler.
