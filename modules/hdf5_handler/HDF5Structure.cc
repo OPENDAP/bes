@@ -188,11 +188,11 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                     throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
 
                 HDF5Array &h5_array_type = dynamic_cast<HDF5Array&>(*var(memb_name));
-                vector<int> at_offset(at_ndims,0);
-                vector<int> at_count(at_ndims,0);
-                vector<int> at_step(at_ndims,0);
+                vector<int64_t> at_offset(at_ndims,0);
+                vector<int64_t> at_count(at_ndims,0);
+                vector<int64_t> at_step(at_ndims,0);
 
-                int at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
+                int64_t at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
 
                 // Read the array data
                 h5_array_type.do_h5_array_type_read(dsetid, memb_id,values,has_values,memb_offset+values_offset,

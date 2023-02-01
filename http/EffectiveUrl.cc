@@ -56,133 +56,117 @@ using std::stringstream;
 
 namespace http {
 
-EffectiveUrl::EffectiveUrl() : http::url(""), d_response_header_names(), d_response_header_values() {
-    BESDEBUG(HTTP_MODULE, prolog << "created: " << ingest_time() << endl);
-};
+/**
+ * @brief Returns true if URL is reusable, false otherwise.
+ *
+ * @return Returns true if the query string parameters or response headers received with the EffectiveUrl indicate
+ *  that the URL may be reused. False otherwise
+ */
+bool EffectiveUrl::is_expired() {
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    bool expired = false;
+    bool found = false;
+    string cc_hdr_val;
 
-    /**
-     * @brief Returns true if URL is reusable, false otherwise.
-     *
-     * @return Returns true if the query string parameters or response headers received with the EffectiveUrl indicate
-     *  that the URL may be reused. False otherwise
-     */
-    bool EffectiveUrl::is_expired() {
+    auto now =  std::chrono::system_clock::now();
+    auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(now);
+    BESDEBUG(MODULE, prolog << "now_secs: " << now_secs.time_since_epoch().count() << endl);
 
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-        bool expired = false;
-        bool found = false;
-        string cc_hdr_val;
+    get_header(CACHE_CONTROL_HEADER_KEY, cc_hdr_val, found);
+    if (found) {
+        BESDEBUG(MODULE, prolog << CACHE_CONTROL_HEADER_KEY << " '" << cc_hdr_val << "'" << endl);
 
-        auto now =  std::chrono::system_clock::now();
-        auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(now);
-        BESDEBUG(MODULE, prolog << "now_secs: " << now_secs.time_since_epoch().count() << endl);
+        // Example: 'Cache-Control: private, max-age=600'
+        string max_age_key{"max-age="};
+        size_t max_age_index = cc_hdr_val.find(max_age_key);
+        if (max_age_index != cc_hdr_val.npos) {
+            string max_age_str = cc_hdr_val.substr(max_age_index + max_age_key.size());
+            long long msi;
+            std::istringstream(max_age_str) >> msi;
+            std::chrono::seconds max_age(msi);
+            auto itime = std::chrono::system_clock::from_time_t(ingest_time());
+            auto expires_time = std::chrono::time_point_cast<std::chrono::seconds>(itime + max_age);
+            expired = now_secs > expires_time;
 
-        get_header(CACHE_CONTROL_HEADER_KEY, cc_hdr_val, found);
-        if (found) {
-            BESDEBUG(MODULE, prolog << CACHE_CONTROL_HEADER_KEY << " '" << cc_hdr_val << "'" << endl);
+            BESDEBUG(MODULE, prolog << "expires_time: " << expires_time.time_since_epoch().count() <<
+                                    " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
 
-            // Example: 'Cache-Control: private, max-age=600'
-            string max_age_key("max-age=");
-            size_t max_age_index = cc_hdr_val.find(max_age_key);
-            if (max_age_index != cc_hdr_val.npos) {
-                string max_age_str = cc_hdr_val.substr(max_age_index + max_age_key.size());
-                long long msi;
-                std::istringstream(max_age_str) >> msi;
-                std::chrono::seconds max_age(msi);
-                auto itime = std::chrono::system_clock::from_time_t(ingest_time());
-                auto expires_time = std::chrono::time_point_cast<std::chrono::seconds>(itime + max_age);
-                expired = now_secs > expires_time;
-
-                BESDEBUG(MODULE, prolog << "expires_time: " << expires_time.time_since_epoch().count() <<
-                                        " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
-
-                BESDEBUG(MODULE, prolog << "expired: " << (expired ? "true" : "false") << endl);
-            }
-        }
-        if (!expired) {
-            expired = url::is_expired();
-        }
-        BESDEBUG(MODULE, prolog << "END expired: " << (expired ? "true" : "false") << endl);
-        return expired;
-    }
-
-
-
-
-    /**
-     * @brief get the value of the named header
-     * @param name Name of header value to retrieve
-     * @param value A return value parameter into which the value will be written.
-     * @param found A returned value parameter set to true if a value associated wit the header name
-     * is located, false otherwise.
-     */
-    void EffectiveUrl::get_header(const std::string &name, std::string &value, bool &found ) {
-        found = false;
-        string lc_name = BESUtil::lowercase(name);
-        auto rname_itr = d_response_header_names.rbegin();
-        auto rvalue_itr = d_response_header_values.rbegin();
-        while(!found && rname_itr != d_response_header_names.rend()){
-            string hdr_name = *rname_itr;
-            found = (lc_name == hdr_name);
-            if(found){
-                value = *rvalue_itr;
-            }
-            ++rname_itr;
-            ++rvalue_itr;
+            BESDEBUG(MODULE, prolog << "expired: " << (expired ? "true" : "false") << endl);
         }
     }
-
-    /**
-     * @brief A string dump of the instance
-     * @return A string containing readable instance state.
-     */
-    string EffectiveUrl::dump(){
-        stringstream ss;
-        string indent_inc = "  ";
-        string indent = indent_inc;
-
-        ss << url::dump();
-        auto name_itr = d_response_header_names.begin();
-        auto value_itr = d_response_header_values.begin();
-        while(name_itr!=d_response_header_names.end()){
-            ss << indent << "Header: " << *name_itr << ": " << *value_itr << endl;
-            ++name_itr;
-            ++value_itr;
-        }
-        return ss.str();
+    if (!expired) {
+        expired = url::is_expired();
     }
+    BESDEBUG(MODULE, prolog << "END expired: " << (expired ? "true" : "false") << endl);
+    return expired;
+}
 
+/**
+ * @brief get the value of the named header
+ * @param name Name of header value to retrieve
+ * @param value A return value parameter into which the value will be written.
+ * @param found A returned value parameter set to true if a value associated wit the header name
+ * is located, false otherwise.
+ */
+void EffectiveUrl::get_header(const std::string &name, std::string &value, bool &found ) {
+    found = false;
+    string lc_name = BESUtil::lowercase(name);
+    auto rname_itr = d_response_header_names.rbegin();
+    auto rvalue_itr = d_response_header_values.rbegin();
+    while(!found && rname_itr != d_response_header_names.rend()){
+        string hdr_name = *rname_itr;
+        found = (lc_name == hdr_name);
+        if(found){
+            value = *rvalue_itr;
+        }
+        ++rname_itr;
+        ++rvalue_itr;
+    }
+}
 
-    /**
-     * @brief Ingests the passed response hedaers.
-     * @param resp_hdrs The reponse headers to ingest.
-     */
-    void EffectiveUrl::ingest_response_headers(const vector<string> &resp_hdrs)
-    {
-        d_resp_hdr_lines.clear();
-        d_resp_hdr_lines = resp_hdrs;
-        d_response_header_names.clear();
-        d_response_header_values.clear();
+/**
+ * @brief Ingests the passed response hedaers.
+ * @param resp_hdrs The reponse headers to ingest.
+ */
+void EffectiveUrl::ingest_response_headers(const vector <string> &resp_hdrs) {
+    d_response_header_names.clear();
+    d_response_header_values.clear();
 
-        auto index = resp_hdrs.begin();
-        while(index!=resp_hdrs.end()){
-            size_t colon = (*index).find(":");
-            if(colon!=(*index).npos){
-                string key((*index).substr(0,colon));
-                key = BESUtil::lowercase(key);
-                string value((*index).substr(colon));
-                d_response_header_names.push_back(key);
-                d_response_header_values.push_back(value);
-                BESDEBUG(MODULE, prolog << "Ingested header: " << key << ": " << value << "(size: " << d_response_header_values.size() << ")" << endl);
-            }
-            else {
-                ERROR_LOG(prolog << "Encounter malformed response header! Missing ':' delimiter. SKIPPING" << endl);
-            }
-            index++;
+    for (const auto &header: resp_hdrs){
+        size_t colon = header.find(':');
+        if (colon != string::npos) {
+            string key(header.substr(0, colon));
+            key = BESUtil::lowercase(key);
+            string value(header.substr(colon));
+            d_response_header_names.push_back(key);
+            d_response_header_values.push_back(value);
+            BESDEBUG(MODULE, prolog << "Ingested header: " << key << ": " << value << "(size: "
+                                    << d_response_header_values.size() << ")" << endl);
+        }
+        else {
+            ERROR_LOG(prolog << "Encounter malformed response header! Missing ':' delimiter. SKIPPING" << endl);
         }
     }
+}
 
+/**
+ * @brief A string dump of the instance
+ * @return A string containing readable instance state.
+ */
+string EffectiveUrl::dump(){
+    stringstream ss;
+    string indent_inc = "  ";
+    string indent = indent_inc;
 
-
+    ss << url::dump();
+    auto name_itr = d_response_header_names.begin();
+    auto value_itr = d_response_header_values.begin();
+    while(name_itr!=d_response_header_names.end()){
+        ss << indent << "Header: " << *name_itr << ": " << *value_itr << endl;
+        ++name_itr;
+        ++value_itr;
+    }
+    return ss.str();
+}
 
 } // namespace http

@@ -575,7 +575,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     strncpy((*dt_inst_ptr).name, dname.c_str(), dname.size());
     (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
-        (*dt_inst_ptr).size[j] = (int)(size[j]);
+        (*dt_inst_ptr).size[j] = size[j];
 
     if(H5Tclose(dtype)<0) {
         H5Sclose(dspace);
@@ -733,7 +733,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
     strncpy((*dt_inst_ptr).name, dname.c_str(), dname.size());
     (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
-        (*dt_inst_ptr).size[j] = (int)(size[j]);
+        (*dt_inst_ptr).size[j] = size[j];
 
     // For DAP4 when dimension scales are used.
     if(true == use_dimscale) {
@@ -1291,7 +1291,7 @@ BaseType *Get_bt(const string &vname,
 
                 HDF5Array &h5_ar = static_cast < HDF5Array & >(*btp);
                 for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                    h5_ar.append_dim(size2[dim_index]);
+                    h5_ar.append_dim_ll(size2[dim_index]);
                     BESDEBUG("h5", "=Get_bt() " << size2[dim_index] << endl);
                     nelement = nelement * size2[dim_index];
                 }
@@ -1416,7 +1416,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                     // Set the size of the array.
                     int ndim = H5Tget_array_ndims(memb_type);
                     size_t size = H5Tget_size(memb_type);
-                    int nelement = 1;
+                    int64_t nelement = 1;
 
                     if (dtype_base < 0) {
                         throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
@@ -1448,7 +1448,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                         auto h5_ar = new HDF5Array(memb_name, dataset, s);
                     
                         for (int dim_index = 0; dim_index < ndim; dim_index++) {
-                            h5_ar->append_dim(size2[dim_index]);
+                            h5_ar->append_dim_ll(size2[dim_index]);
                             nelement = nelement * size2[dim_index];
                         }
 

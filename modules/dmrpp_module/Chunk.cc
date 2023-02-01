@@ -864,6 +864,8 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
         case libdap::dods_float64_c:
             fv.d = stod(v);
             return (const char *)&fv.d;
+        case libdap::dods_str_c:
+            return v.c_str();
 
         default:
             throw BESInternalError("Unknown fill value type.", __FILE__, __LINE__);
@@ -874,14 +876,22 @@ const char *get_value_ptr(fill_value &fv, libdap::Type type, const string &v)
  * @brief Load the chunk with fill values - temporary implementation
  */
 void Chunk::load_fill_values() {
+
     fill_value fv;
+    unsigned int value_size = 0;
+    
+    if (d_fill_value_type == libdap::dods_str_c) 
+        value_size = (unsigned int)d_fill_value.size();
+    else 
+        value_size = get_value_size(d_fill_value_type);
+
     const char *value = get_value_ptr(fv, d_fill_value_type, d_fill_value);
-    unsigned int value_size = get_value_size(d_fill_value_type);
 
     unsigned long long num_values = get_rbuf_size() / value_size;
+
     char *buffer = get_rbuf();
 
-    for (int i = 0; i < num_values; ++i, buffer += value_size) {
+    for (unsigned long long  i = 0; i < num_values; ++i, buffer += value_size) {
         memcpy(buffer, value, value_size);
     }
 

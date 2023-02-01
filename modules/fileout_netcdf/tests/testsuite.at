@@ -201,12 +201,18 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_1_2d_dap4.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char_aug.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char_aug.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_unlim.h5.dmrpp.bescmd)
  
 dnl Add response that checks the empty expression constraint
 dnl The whole file is supposed to convert to netCDF
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_to_4_ce_empty.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/d_group_dap4_ce_empty.h5.2.bescmd)
+
+dnl big array tests
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/test_ba_start.dap.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/test_ba_stride_stop.dap.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/test_ba_start_dim.dap.bescmd)
 
 dnl Add a test to check if the compression is turned on for netCDF-4 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd)
