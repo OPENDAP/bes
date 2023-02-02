@@ -112,12 +112,11 @@ class TheBESKeys: public BESObj {
 
     TheBESKeys() = default;
 
-protected:
+    static std::unique_ptr<TheBESKeys> d_instance;
+
     explicit TheBESKeys(const std::string &keys_file_name);
 
 public:
-
-    static std::unique_ptr<TheBESKeys> d_instance;
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.
