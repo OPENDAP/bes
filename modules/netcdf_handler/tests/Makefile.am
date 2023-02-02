@@ -50,7 +50,7 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal $(TESTSUITE) $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+check-local: atconfig atlocal $(TESTSUITE) $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
