@@ -64,21 +64,13 @@ static string get_the_config_filename() {
     if (config_file.empty()) {
         // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
         // so lets try some obvious places...
+        // Add to the vector to try more places.
 
-        string try_ini = "/usr/local/etc/bes/bes.conf";
-        if (access(try_ini.c_str(), R_OK) == 0) {
-            config_file = try_ini;
-        }
-        else {
-            try_ini = "/etc/bes/bes.conf";
-            if (access(try_ini.c_str(), R_OK) == 0) {
-                config_file = try_ini;
-            }
-            else {
-                try_ini = "/usr/etc/bes/bes.conf";
-                if (access(try_ini.c_str(), R_OK) == 0) {
-                    config_file = try_ini;
-                }
+        vector<string> try_ini{"/usr/local/etc/bes/bes.conf", "/etc/bes/bes.conf", "/usr/etc/bes/bes.conf"};
+        for (const auto &ini : try_ini) {
+            if (access(ini.c_str(), R_OK) == 0) {
+                config_file = ini;
+                break;
             }
         }
     }
@@ -114,11 +106,7 @@ TheBESKeys *TheBESKeys::TheKeys()
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name),
-    d_the_keys(make_unique<keys_kvp>())
-#if DYNAMIC_CONFIG_ENABLED
-, d_the_original_keys(make_unique<keys_kvp>())
-#endif
+TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name)
 {
     if (!d_keys_file_name.empty()) {
         kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);

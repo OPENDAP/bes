@@ -95,12 +95,13 @@ class TheBESKeys: public BESObj {
 
     std::string d_keys_file_name;
     /// The keys and values; `keys_kvp` is a map of string keys to a vector of string values.
-    using keys_kvp = std::map<std::string, std::vector<std::string> >;
+    using keys_kvp = typename std::map<std::string, std::vector<std::string>>;
 
     // TODO Refactor this so it's not a pointer. jhrg 2/2/23
-    std::unique_ptr<keys_kvp> d_the_keys = std::make_unique<keys_kvp>();
+    std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
+
 #if DYNAMIC_CONFIG_ENABLED
-    std::unique_ptr<keys_kvp> d_the_original_keys = std::make_unique<keys_kvp>();
+    std::unique_ptr<keys_kvp> d_the_original_keys{new keys_kvp()};
 #endif
 
     bool d_dynamic_config_in_use = false;
