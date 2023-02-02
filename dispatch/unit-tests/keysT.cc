@@ -364,7 +364,7 @@ public:
         if (debug) cout << __func__ << "() - END" << endl;
     }
 
-
+#if DYNAMIC_CONFIG_ENABLED
     /**
      *
      */
@@ -499,8 +499,6 @@ public:
      * DynamicConfig+=ghrc:config:H5.EnableDMR64bitInt=true
      * DynamicConfig+=ghrc:config:H5.EnableCF=true
      * DynamicConfig+=ghrc:config:FONc.ClassicModel=true
-     *
-     *
      */
     void map_map_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
@@ -557,7 +555,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-#if DYNAMIC_CONFIG_ENABLED
     void dynamic_config_test()  {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
@@ -702,7 +699,7 @@ public:
     CPPUNIT_TEST_SUITE( keysT );
 
     // I broke up the monolithic do_test() function, but
-    // I did not resolve the test independence so they must be run in
+    // I did not resolve the test independence, so they must be run in
     // order.
     CPPUNIT_TEST(bad_keys_test);
     CPPUNIT_TEST(good_keys_test);
@@ -720,11 +717,12 @@ public:
     CPPUNIT_TEST(add_val_multi_5_to_bes_key_multi_test);
     CPPUNIT_TEST(get_keys_from_regex_include_test);
     CPPUNIT_TEST(check_keys_test);
+
+#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(map_map_test);
 
-#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(dynamic_config_test);
 #endif
 
