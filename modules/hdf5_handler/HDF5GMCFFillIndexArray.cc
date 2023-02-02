@@ -67,7 +67,7 @@ void HDF5GMCFFillIndexArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,voi
     BESDEBUG("h5","Coming to HDF5GMCFFillIndexArray: read_data_NOT_from_mem_cache"<<endl);
 
 
-    int nelms = 0;
+    int64_t nelms = 0;
 
 #if 0
 cerr<<"coming to read function"<<endl;
@@ -79,11 +79,11 @@ cerr<<"file name " <<filename <<endl;
         throw InternalErr (__FILE__, __LINE__,
                           "Currently the rank of the dimension scale must be 1.");
 
-    vector<int> offset;
+    vector<int64_t> offset;
     offset.resize(rank);
-    vector<int>count;
+    vector<int64_t>count;
     count.resize(rank);
-    vector<int>step;
+    vector<int64_t>step;
     step.resize(rank);
 
     // Obtain the number of the subsetted elements
@@ -98,10 +98,10 @@ cerr<<"file name " <<filename <<endl;
             vector<unsigned char> val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (unsigned char)(offset[0] + step[0] * i);
 
-            set_value ((dods_byte *) val.data(), nelms);
+            set_value_ll ((dods_byte *) val.data(), nelms);
         } // case H5UCHAR
             break;
 
@@ -114,20 +114,20 @@ cerr<<"file name " <<filename <<endl;
                 vector<short>val;
                 val.resize(nelms);
 
-                for (int i = 0; i < count[0]; i++)
+                for (int64_t i = 0; i < count[0]; i++)
                     val[i] = (short)(offset[0] + step[0] * i);
                
-                set_value ((dods_int16 *) val.data(), nelms);
+                set_value_ll ((dods_int16 *) val.data(), nelms);
             }
             else {
 
                 vector<char> val;
                 val.resize(nelms);
 
-                for (int i = 0; i < count[0]; i++)
+                for (int64_t i = 0; i < count[0]; i++)
                     val[i] = (char)(offset[0] + step[0] * i);
 
-                set_value ((dods_int8 *) val.data(), nelms);
+                set_value_ll ((dods_int8 *) val.data(), nelms);
 
             }
         }// H5CHAR and H5INT16
@@ -141,10 +141,10 @@ cerr<<"file name " <<filename <<endl;
             vector<short>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (short)(offset[0] + step[0] * i);
                
-            set_value ((dods_int16 *) val.data(), nelms);
+            set_value_ll ((dods_int16 *) val.data(), nelms);
         }// H5CHAR and H5INT16
             break;
 
@@ -154,10 +154,10 @@ cerr<<"file name " <<filename <<endl;
             vector<unsigned short> val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (unsigned short)(offset[0] + step[0] * i);
                 
-            set_value ((dods_uint16 *) val.data(), nelms);
+            set_value_ll ((dods_uint16 *) val.data(), nelms);
         } // H5UINT16
             break;
 
@@ -167,10 +167,10 @@ cerr<<"file name " <<filename <<endl;
             vector<int>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value ((dods_int32 *) val.data(), nelms);
+            set_value_ll ((dods_int32 *) val.data(), nelms);
         } // case H5INT32
             break;
 
@@ -179,10 +179,10 @@ cerr<<"file name " <<filename <<endl;
             vector<unsigned int>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value ((dods_uint32 *) val.data(), nelms);
+            set_value_ll ((dods_uint32 *) val.data(), nelms);
         }
             break;
 
@@ -191,10 +191,10 @@ cerr<<"file name " <<filename <<endl;
             vector<long long>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value ((dods_int64 *) val.data(), nelms);
+            set_value_ll ((dods_int64 *) val.data(), nelms);
         } // case H5INT64
             break;
 
@@ -203,10 +203,10 @@ cerr<<"file name " <<filename <<endl;
             vector<unsigned long long>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value ((dods_uint64 *) val.data(), nelms);
+            set_value_ll ((dods_uint64 *) val.data(), nelms);
         }
             break;
 
@@ -216,10 +216,10 @@ cerr<<"file name " <<filename <<endl;
             vector<float>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (float)(offset[0] + step[0] * i);
 
-            set_value ((dods_float32 *) val.data(), nelms);
+            set_value_ll ((dods_float32 *) val.data(), nelms);
         }
             break;
 
@@ -230,10 +230,10 @@ cerr<<"file name " <<filename <<endl;
             vector<double>val;
             val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
+            for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value ((dods_float64 *) val.data(), nelms);
+            set_value_ll ((dods_float64 *) val.data(), nelms);
         } // case H5FLOAT64
             break;
 

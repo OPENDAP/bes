@@ -752,9 +752,9 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
         for (const auto &dim:dims) {
             if ("" == dim->getNewName())
-                ar->append_dim((int)(dim->getSize()));
+                ar->append_dim_ll(dim->getSize());
             else
-                ar->append_dim((int)(dim->getSize()), dim->getNewName());
+                ar->append_dim_ll(dim->getSize(), dim->getNewName());
         }
 
         delete bt;

@@ -70,19 +70,19 @@ bool HDF5BaseArray::read()
 
 // parse constraint expr. and make hdf5 coordinate point location.
 // return number of elements to read. 
-int
-HDF5BaseArray::format_constraint (int *offset, int *step, int *count)
+int64_t
+HDF5BaseArray::format_constraint (int64_t *offset, int64_t *step, int64_t *count)
 {
-    long nels = 1;
+    int64_t nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
 
     while (p != dim_end ()) {
 
-        int start = dimension_start (p, true);
-        int stride = dimension_stride (p, true);
-        int stop = dimension_stop (p, true);
+        int64_t start = dimension_start_ll (p, true);
+        int64_t stride = dimension_stride_ll (p, true);
+        int64_t stop = dimension_stop_ll (p, true);
 
         // Check for illegal  constraint
         if (start > stop) {
@@ -108,23 +108,23 @@ HDF5BaseArray::format_constraint (int *offset, int *step, int *count)
         p++;
     }// "while (p != dim_end ())"
 
-    return (int)nels;
+    return nels;
 }
 
-void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
+void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
     if (rank != 1) 
         throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
     
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
     offset.resize(rank);
     count.resize(rank);
     step.resize(rank);
 
 
-    int nelms = format_constraint(offset.data(), step.data(), count.data());
+    int64_t nelms = format_constraint(offset.data(), step.data(), count.data());
 
     // Since we always assign the the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always
@@ -133,14 +133,14 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
     val.resize(nelms);
 
     if (nelms == tnumelm) {
-        for (int i = 0; i < nelms; i++)
+        for (int64_t i = 0; i < nelms; i++)
             val[i] = i;
-        set_value(val.data(), nelms);
+        set_value_ll(val.data(), nelms);
     }
     else {
-        for (int i = 0; i < count[0]; i++)
+        for (int64_t i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;
-        set_value(val.data(), nelms);
+        set_value_ll(val.data(), nelms);
     }
 }
 
@@ -148,9 +148,9 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int tnumelm) {
 void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<size_t> &h5_dimsizes,void* buf,const bool is_dap4){
 
     BESDEBUG("h5", "Coming to read_data_from_mem_cache"<<endl);
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
 
     auto ndims = (int)(h5_dimsizes.size());
     if(ndims == 0)
@@ -160,11 +160,11 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     offset.resize(ndims);
     count.resize(ndims);
     step.resize(ndims);
-    int nelms = format_constraint (offset.data(), step.data(), count.data());
+    int64_t nelms = format_constraint (offset.data(), step.data(), count.data());
 
     // set the original position to the starting point
     vector<size_t>pos(ndims,0);
-    for (int i = 0; i< ndims; i++)
+    for (int64_t i = 0; i< ndims; i++)
         pos[i] = offset[i];
 
 
@@ -186,7 +186,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                       0
                                      );
 
-            set_value ((dods_byte *) val.data(), nelms);
+            set_value_ll ((dods_byte *) val.data(), nelms);
         } // case H5UCHAR
             break;
 
@@ -211,12 +211,12 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                 vector<short>newval;
                 newval.resize(nelms);
 
-                for (int counter = 0; counter < nelms; counter++)
+                for (int64_t counter = 0; counter < nelms; counter++)
                     newval[counter] = (short) (val[counter]);
-                set_value ((dods_int16 *) val.data(), nelms);
+                set_value_ll ((dods_int16 *) val.data(), nelms);
             }
             else 
-                set_value ((dods_int8 *) val.data(), nelms);
+                set_value_ll ((dods_int8 *) val.data(), nelms);
 
 
         } // case H5CHAR
@@ -238,7 +238,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                      );
 
 
-            set_value ((dods_int16 *) val.data(), nelms);
+            set_value_ll ((dods_int16 *) val.data(), nelms);
         }// H5INT16
             break;
 
@@ -259,7 +259,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                   );
 
                
-            set_value ((dods_uint16 *) val.data(), nelms);
+            set_value_ll ((dods_uint16 *) val.data(), nelms);
         } // H5UINT16
             break;
 
@@ -278,7 +278,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			0
 			);
 
-            set_value ((dods_int32 *) val.data(), nelms);
+            set_value_ll ((dods_int32 *) val.data(), nelms);
         } // case H5INT32
             break;
 
@@ -297,7 +297,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				0
 				);
 
-            set_value ((dods_uint32 *) val.data(), nelms);
+            set_value_ll ((dods_uint32 *) val.data(), nelms);
         }
             break;
         // Add the code for the CF option DAP4 support
@@ -319,7 +319,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			0
 			);
 
-            set_value ((dods_int64 *) val.data(), nelms);
+            set_value_ll ((dods_int64 *) val.data(), nelms);
         } // case H5INT64
             break;
 
@@ -338,7 +338,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				0
 				);
 
-            set_value ((dods_uint64 *) val.data(), nelms);
+            set_value_ll ((dods_uint64 *) val.data(), nelms);
         }
             break;
 
@@ -357,7 +357,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			  pos,
 			  0
 			  );
-            set_value ((dods_float32 *) val.data(), nelms);
+            set_value_ll ((dods_float32 *) val.data(), nelms);
         }
             break;
 
@@ -377,7 +377,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			    pos,
 			    0
 			    );
-            set_value ((dods_float64 *) val.data(), nelms);
+            set_value_ll ((dods_float64 *) val.data(), nelms);
         } // case H5FLOAT64
             break;
 
@@ -403,9 +403,9 @@ int HDF5BaseArray::subset(
     void* input,
     int rank,
     const vector<size_t> & dim,
-    int start[],
-    int stride[],
-    int edge[],
+    int64_t start[],
+    int64_t stride[],
+    int64_t edge[],
     vector<T> *poutput,
     vector<size_t>& pos,
     int index)
@@ -572,7 +572,7 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 	    Dim_iter i_dim = dim_begin();
 	    Dim_iter i_enddim = dim_end();
 	    while (i_dim != i_enddim) {
-	 	dim_sizes.push_back(dimension_size(i_dim));
+	 	dim_sizes.push_back(dimension_size_ll(i_dim));
 		++i_dim;
 	    }
             // read data from the memory cache

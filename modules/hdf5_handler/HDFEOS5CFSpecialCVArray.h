@@ -64,7 +64,7 @@ class HDFEOS5CFSpecialCVArray:public HDF5BaseArray {
         std::string filename;
         hid_t fileid;
         H5DataType dtype;
-        int total_num_elm;
+        int64_t total_num_elm;
         std::string varname;
 };
 

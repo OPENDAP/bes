@@ -65,9 +65,9 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
     vector<hsize_t>hoffset;
     vector<hsize_t>hcount;
     vector<hsize_t>hstep;
@@ -94,7 +94,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
         nelms = format_constraint (offset.data(), step.data(), count.data());
 
-        for (int i = 0; i <rank; i++) {
+        for (int64_t i = 0; i <rank; i++) {
             hoffset[i] = (hsize_t) offset[i];
             hcount[i] = (hsize_t) count[i];
             hstep[i] = (hsize_t) step[i];
@@ -269,11 +269,11 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     //  (orig_val/pow(sbit-1)))%(pow(10,nbits))
     // In this example, 34 = (1234/1)%(100) = 34
 
-    for (int i = 0; i <nelms; i ++) 
+    for (int64_t i = 0; i <nelms; i ++) 
         val[i] = (orig_val[i]/num_cut)%max_num;
 
 
-    set_value ((dods_int32 *)val.data(),nelms);
+    set_value_ll ((dods_int32 *)val.data(),nelms);
        
     H5Sclose(mspace);
     H5Tclose(dtypeid);
