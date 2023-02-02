@@ -38,12 +38,14 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "BESObj.h"
 
 #define DYNAMIC_CONFIG_KEY "DynamicConfig"
 #define DC_REGEX_KEY "regex"
 #define DC_CONFIG_KEY "config"
+
 #define DYNAMIC_CONFIG_ENABLED 0
 
 namespace http {
@@ -92,14 +94,21 @@ class TheBESKeys: public BESObj {
     friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
-    std::map<std::string, std::vector<std::string> > *d_the_keys = nullptr;
-    std::map<std::string, std::vector<std::string> > *d_the_original_keys = nullptr;
+    /// The keys and values; `keys_kvp` is a map of string keys to a vector of string values.
+    using keys_kvp = std::map<std::string, std::vector<std::string> >;
+
+    // TODO Refactor this so it's not a pointer. jhrg 2/2/23
+    std::unique_ptr<keys_kvp> d_the_keys = std::make_unique<keys_kvp>();
+#if DYNAMIC_CONFIG_ENABLED
+    std::unique_ptr<keys_kvp> d_the_original_keys = std::make_unique<keys_kvp>();
+#endif
+
     bool d_dynamic_config_in_use = false;
     bool d_own_keys = false;
 
-    static std::set<std::string> d_ingested_key_files;
+    std::set<std::string> d_ingested_key_files;
 
-    static bool LoadedKeys(const std::string &key_file);
+    bool is_loaded_key_file(const std::string &key_file);
 
     TheBESKeys() = default;
 
@@ -107,7 +116,7 @@ protected:
     explicit TheBESKeys(const std::string &keys_file_name);
 
 public:
-    // FIXME static TheBESKeys *d_instance;
+
     static std::unique_ptr<TheBESKeys> d_instance;
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
@@ -118,11 +127,15 @@ public:
     /// Access to the singleton.
     static TheBESKeys *TheKeys();
 
-    ~TheBESKeys() override;
+    ~TheBESKeys() override = default;
 
     std::string keys_file_name() const {
         return d_keys_file_name;
     }
+
+    void reload_keys(const std::string &keys_file_name);
+
+    void reload_keys();
 
     /**
      * @brief Delete the key
@@ -172,7 +185,7 @@ public:
 
     std::string get_as_config() const;
 
-    void load_dynamic_config(std::string name);
+    void load_dynamic_config(const std::string &name);
 
     bool using_dynamic_config() const {
         return d_dynamic_config_in_use;

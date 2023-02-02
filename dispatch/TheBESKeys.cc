@@ -40,6 +40,7 @@
 #include <vector>
 #include <map>
 #include <sstream>
+#include <memory>
 
 #include "BESDebug.h"
 #include "TheBESKeys.h"
@@ -54,13 +55,11 @@ using namespace std;
 #define MODULE "bes"
 #define prolog std::string("TheBESKeys::").append(__func__).append("() - ")
 
-set<string> TheBESKeys::d_ingested_key_files;
-
 std::unique_ptr<TheBESKeys> TheBESKeys::d_instance = nullptr;
 
 string TheBESKeys::ConfigFile;
 
-string get_the_config_filename() {
+static string get_the_config_filename() {
     string config_file = TheBESKeys::ConfigFile;
     if (config_file.empty()) {
         // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
@@ -97,40 +96,6 @@ TheBESKeys *TheBESKeys::TheKeys()
     }
 
     return d_instance.get();
-#if 0
-    if (d_instance) return d_instance;
-
-    if (!TheBESKeys::ConfigFile.empty()) {
-        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return d_instance;
-    }
-
-    // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
-    // so lets try some obvious places...
-
-    string try_ini = "/usr/local/etc/bes/bes.conf";
-    if (access(try_ini.c_str(), R_OK) == 0) {
-        TheBESKeys::ConfigFile = try_ini;
-        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return d_instance;
-    }
-
-    try_ini = "/etc/bes/bes.conf";
-    if (access(try_ini.c_str(), R_OK) == 0) {
-        TheBESKeys::ConfigFile = try_ini;
-        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return d_instance;
-    }
-
-    try_ini = "/usr/etc/bes/bes.conf";
-    if (access(try_ini.c_str(), R_OK) == 0) {
-        TheBESKeys::ConfigFile = try_ini;
-        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return d_instance;
-    }
-
-    throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
-#endif
 }
 
 /** @brief default constructor that reads loads key/value pairs from the
@@ -149,34 +114,26 @@ TheBESKeys *TheBESKeys::TheKeys()
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name)
+TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name),
+    d_the_keys(make_unique<keys_kvp>())
+#if DYNAMIC_CONFIG_ENABLED
+, d_the_original_keys(make_unique<keys_kvp>())
+#endif
 {
-    d_the_keys = new map<string, vector<string> >;
-    d_the_original_keys = new map<string, vector<string> >;
-
     if (!d_keys_file_name.empty()) {
         kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
+#if DYNAMIC_CONFIG_ENABLED
         *d_the_original_keys = *d_the_keys;
+#endif
     }
 
     BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
     BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
+#if DYNAMIC_CONFIG_ENABLED
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
+#endif
 }
 
-/** @brief cleans up the key/value pair mapping
- */
-TheBESKeys::~TheBESKeys()
-{
-    if (d_the_keys && d_own_keys) {
-        delete d_the_keys;
-        d_the_keys = nullptr;
-    }
-    if (d_the_original_keys) {
-        delete d_the_original_keys;
-        d_the_original_keys = nullptr;
-    }
-}
 
 /** @brief Determine if the specified key file has been loaded yet
  *
@@ -185,11 +142,33 @@ TheBESKeys::~TheBESKeys()
  *
  * @returns true if already started to load, false otherwise
  */
-bool TheBESKeys::LoadedKeys(const string &key_file)
+bool TheBESKeys::is_loaded_key_file(const string &key_file)
 {
     const auto it = d_ingested_key_files.find(key_file);
 
     return it != d_ingested_key_files.end();
+}
+
+/** @brief Reload the keys.
+ * Erase the existing keys and reload them from the file. This version
+ * provides a way to change the name of the file to load the keys from.
+ * @param keys_file_name The name of the file to load the keys from.
+ */
+void TheBESKeys::reload_keys(const std::string &keys_file_name)
+{
+    d_keys_file_name = keys_file_name;
+    reload_keys();
+}
+
+/** @brief Reload the keys.
+ * Erase the existing keys and reload them from the file. This
+ * uses the name of the keys file previously set in the constructor.
+ */
+void TheBESKeys::reload_keys()
+{
+    d_the_keys->clear();
+    d_ingested_key_files.clear();
+    kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
@@ -255,7 +234,6 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
         }
     }
 }
-
 
 /** @brief allows the user to encode a map in the Keys from within the application.
  *
@@ -523,15 +501,6 @@ string TheBESKeys::dump() const
     BESIndent::Indent();
     ss << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
 
-#if 0
-    if (_keys_file && *_keys_file) {
-        strm << BESIndent::LMarg << "key file is valid" << endl;
-    }
-    else {
-        strm << BESIndent::LMarg << "key file is NOT valid" << endl;
-    }
-#endif
-
     if (d_the_keys && d_the_keys->size()) {
         ss << BESIndent::LMarg << "  keys:" << endl;
         BESIndent::Indent();
@@ -556,7 +525,6 @@ string TheBESKeys::dump() const
     BESIndent::UnIndent();
     return ss.str();
 }
-
 
 string TheBESKeys::get_as_config() const
 {
@@ -705,7 +673,7 @@ void TheBESKeys::get_values(
  * @brief Loads the the applicable dynamic configuration or nothing if no configuration is applicable.
  * @param name
  */
-void TheBESKeys::load_dynamic_config(const string name)
+void TheBESKeys::load_dynamic_config(const string &name)
 {
 #if DYNAMIC_CONFIG_ENABLED
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
