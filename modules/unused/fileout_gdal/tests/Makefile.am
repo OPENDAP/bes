@@ -38,7 +38,7 @@ installcheck-local: $(TESTSUITE) atconfig atlocal
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at

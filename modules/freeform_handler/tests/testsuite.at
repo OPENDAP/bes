@@ -4,7 +4,7 @@
 
 AT_INIT([bes/modules/freeform_handler/tests testsuite])
 
-m4_include([../../../modules/handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_TEST([ff/avhrr.dat.0.bescmd])
 AT_BESCMD_RESPONSE_TEST([ff/avhrr.dat.1.bescmd])

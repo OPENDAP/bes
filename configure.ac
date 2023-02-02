@@ -1,10 +1,10 @@
 dnl -*- automake -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.63)
+AC_PREREQ([2.69])
 
 dnl Update version here and below at LIB_CURRENT, ..., if needed.
-AC_INIT(bes, 3.20.13, support@opendap.org)
+AC_INIT([bes],[3.20.13],[support@opendap.org])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
@@ -14,8 +14,8 @@ dnl people building the source, it's not customary to supply a build number (i.e
 dnl if you're building the code for your own use, a build number seems like overkill).
 dnl jhrg 3/16/21 (copied from libdap4's configure.ac)
 AC_ARG_WITH([build],
-            [AC_HELP_STRING([--with-build=<number>],
-             [Inject the integer build number (default is to not define a build number)])],
+            [AS_HELP_STRING([--with-build=<number>],
+                   [Inject the integer build number (default is to not define a build number)])],
             [build_number=${withval}], [build_number=])
 
 dnl If a build number is given and valid (it must be an integer), use it. If it's
@@ -76,6 +76,9 @@ dnl Removed "-g -O2" jhrg 2/8/22
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
     [Developer mode: Won't override CXXFLAGS on the command line])])
+
+dnl Explicitly set -DNDEBUG below when CXXFLAGS is set to ensure that
+dnl it's actually used - not all the source files include config.h. jhrg 1/30/23
 
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
@@ -211,26 +214,29 @@ AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
-AM_PROG_LEX
+
 AM_PATH_PYTHON
 
+dnl Here we test for both C++11 and 14, but our code nominally requires 14.
+dnl We can use the C++11 test and CXX_STD_FLAG to build with 11 if we add a
+dnl compatibility layer for the missing features. jhrg 1/30/23.
 
-dnl NB: CentOS 6 does not support C++-11 but does support some features:
-dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.
-dnl For now, I'm counting 0x as supporting C++-11 in our code.
+CXX_STD_FLAG=""
 
-CXX11_FLAG=""
+CXX_FLAGS_CHECK([--std=c++11], [CXX_STD_FLAG=--std=c++11], [AC_MSG_WARN([C++11 is required but not found.])])
+CXX_FLAGS_CHECK([--std=c++14], [CXX_STD_FLAG=--std=c++14],
+    [AC_MSG_WARN([C++14 is required but not found. Using C++11 compatability mode.])])
 
-CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
+AS_IF([test -z "$CXX_STD_FLAG"],
+      [AC_MSG_ERROR([Not using modern C++ (C++11 or 14)])],
+      [AC_MSG_NOTICE([Using $CXX_STD_FLAG])
+       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX_STD_FLAG"])
 
-AC_SUBST(CXX11_FLAG)
-
-dnl If CXXFLAGS is not set, set it to the empty string.
-AS_IF([test -z ${CXXFLAGS+set}], [CXXFLAGS=])
+AC_SUBST(CXX_STD_FLAG)
 
 AS_IF([test -n "$cxx_debug_flags"],
-      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX11_FLAG"],
-      [CXXFLAGS="$CXXFLAGS $CXX11_FLAG"])
+      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags"],
+      [CXXFLAGS="$CXXFLAGS $CXX_STD_FLAG -DNDEBUG"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
@@ -239,7 +245,7 @@ AC_CHECK_PROG(YACC,[bison],[bison])
 
 dnl Use libtool instead
 
-AM_PROG_LIBTOOL
+LT_INIT
 
 AC_SEARCH_LIBS([uuid_generate], [uuid],
     [],
@@ -263,9 +269,6 @@ AC_CHECK_HEADERS([curl/multi.h])
 AC_SEARCH_LIBS([curl_multi_wait], [curl],
     [AC_DEFINE([HAVE_CURL_MULTI_API],[1],[Does libcurl have the multi API])],
     [AC_DEFINE([HAVE_CURL_MULTI_API],[0],[Does libcurl have the multi API])], [])
-
-dnl Checks for header files.
-AC_HEADER_STDC
 
 AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h)
 AC_CHECK_HEADERS_ONCE(pthread.h bzlib.h string.h strings.h byteswap.h)
@@ -297,7 +300,6 @@ AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
 AC_FUNC_REALLOC
-AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 
@@ -366,7 +368,7 @@ AC_SUBST([XML2_LIBS])
 AC_SUBST([XML2_STATIC_LIBS])
 AC_SUBST([XML2_CFLAGS])
 
-SIC_VAR_SYS_ERRLIST
+dnl Removed jhrg 1/30/23 SIC_VAR_SYS_ERRLIST
 
 dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
@@ -391,8 +393,6 @@ AC_ARG_WITH(libwrap,
         ],
         [AC_MSG_RESULT(no)])],  dnl The default case (!= yes) is no.
     [AC_MSG_RESULT(no)])
-    
-AC_HEADER_TR1_FUNCTIONAL
 
 # Check for cppunit to enable unit testing.
 AM_PATH_CPPUNIT(1.12.0,
@@ -460,7 +460,7 @@ AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
 AC_SUBST(BES_HTTP_LIB)
 
-dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
+dnl These tests are for the dependencies of specific handlers. Added jhrg 11/17/13
 
 # This is used by 'usage' which builds the .info response. It's likely 
 # old and should be removed
@@ -622,7 +622,7 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     
     dnl else
     [AC_MSG_NOTICE([Looking for GDAL.])
-    AX_LIB_GDAL([1.10.0])
+    AX_LIB_GDAL([3.2.0])
     AS_IF([test ! -z "$GDAL_CFLAGS" -a ! -z "$GDAL_LDFLAGS"],
         [GDAL_FOUND=1
         AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])])])
@@ -751,7 +751,7 @@ AC_CHECK_HDF4(
 dnl Test for HDF-EOS2. If found, subst hdfeos2 symbols                                                                           
 
 AC_ARG_WITH([hdfeos2],
-            [AC_HELP_STRING([--with-hdfeos2=DIR], [Specify path to external hdfeos2 library.])],
+            [AS_HELP_STRING([--with-hdfeos2=DIR],[Specify path to external hdfeos2 library.])],
             [HDFEOS2_DIR=${withval}], 
             [HDFEOS2_DIR="$ac_bes_dependencies_prefix"])
 
@@ -834,7 +834,7 @@ libgf_ok="no"
 dnl NB: Hackery: if --with-gridfields is not given and ac_bes_dependencies_prefix 
 dnl is non-zero, use that as if --with-... was given. jhrg 12/1/14
 AC_ARG_WITH([gridfields],
-    [AC_HELP_STRING([--with-gridfields=path], [Use the gridfields library at this location.])],
+    [AS_HELP_STRING([--with-gridfields=path],[Use the gridfields library at this location.])],
 	[AS_IF([test x"$withval" = x"yes"],
 		[AC_MSG_ERROR([You must supply a path when using --with-gridfields; try --enable-gridfields.])],
 		[AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
@@ -846,7 +846,7 @@ AC_ARG_WITH([gridfields],
     [ libgf_ok="no" ])
 
 AC_ARG_ENABLE([gridfields],
-    AC_HELP_STRING([--enable-gridfields], [Enable gridfields (default is YES)]),
+    AS_HELP_STRING([--enable-gridfields],[Enable gridfields (default is YES)]),
     [ ],
     [enable_gridfields=yes])
  
@@ -1056,6 +1056,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
     modules/configured_features.txt
+
+    modules/common/Makefile
+
     modules/csv_handler/Makefile
     modules/csv_handler/tests/Makefile
     modules/csv_handler/tests/atlocal

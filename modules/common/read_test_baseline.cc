@@ -48,8 +48,6 @@ namespace bes {
 string
 read_test_baseline(const string &fn)
 {
-    int length;
-
     ifstream is;
     is.open (fn.c_str(), ios::binary );
 
@@ -58,7 +56,7 @@ read_test_baseline(const string &fn)
 
     // get length of file:
     is.seekg (0, ios::end);
-    length = is.tellg();
+    long length = is.tellg();
 
     // back to start
     is.seekg (0, ios::beg);
