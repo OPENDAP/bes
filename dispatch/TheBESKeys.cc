@@ -36,9 +36,6 @@
 #include <unistd.h>
 #endif
 
-#include <cerrno>
-#include <cstring>
-
 #include <string>
 #include <vector>
 #include <map>
@@ -48,13 +45,7 @@
 #include "TheBESKeys.h"
 #include "kvp_utils.h"
 #include "BESUtil.h"
-#include "BESRegex.h"
-#include "BESFSDir.h"
-#include "BESFSFile.h"
-#include "BESInternalFatalError.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
-#include "BESLog.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
 
@@ -65,11 +56,48 @@ using namespace std;
 
 set<string> TheBESKeys::d_ingested_key_files;
 
-TheBESKeys *TheBESKeys::d_instance = 0;
-string TheBESKeys::ConfigFile = "";
+std::unique_ptr<TheBESKeys> TheBESKeys::d_instance = nullptr;
+
+string TheBESKeys::ConfigFile;
+
+string get_the_config_filename() {
+    string config_file = TheBESKeys::ConfigFile;
+    if (config_file.empty()) {
+        // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
+        // so lets try some obvious places...
+
+        string try_ini = "/usr/local/etc/bes/bes.conf";
+        if (access(try_ini.c_str(), R_OK) == 0) {
+            config_file = try_ini;
+        }
+        else {
+            try_ini = "/etc/bes/bes.conf";
+            if (access(try_ini.c_str(), R_OK) == 0) {
+                config_file = try_ini;
+            }
+            else {
+                try_ini = "/usr/etc/bes/bes.conf";
+                if (access(try_ini.c_str(), R_OK) == 0) {
+                    config_file = try_ini;
+                }
+            }
+        }
+    }
+
+    return config_file;
+}
 
 TheBESKeys *TheBESKeys::TheKeys()
 {
+    if (d_instance == nullptr) {
+        static std::once_flag d_euc_init_once;
+        std::call_once(d_euc_init_once, []() {
+            d_instance.reset(new TheBESKeys(get_the_config_filename()));
+        });
+    }
+
+    return d_instance.get();
+#if 0
     if (d_instance) return d_instance;
 
     if (!TheBESKeys::ConfigFile.empty()) {
@@ -102,6 +130,7 @@ TheBESKeys *TheBESKeys::TheKeys()
     }
 
     throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
+#endif
 }
 
 /** @brief default constructor that reads loads key/value pairs from the
@@ -120,14 +149,16 @@ TheBESKeys *TheBESKeys::TheKeys()
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-TheBESKeys::TheBESKeys(const string &keys_file_name) :
-        d_keys_file_name(keys_file_name)
+TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name)
 {
     d_the_keys = new map<string, vector<string> >;
     d_the_original_keys = new map<string, vector<string> >;
 
-    kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
-    *d_the_original_keys = *d_the_keys;
+    if (!d_keys_file_name.empty()) {
+        kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
+        *d_the_original_keys = *d_the_keys;
+    }
+
     BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
     BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
@@ -274,8 +305,6 @@ void TheBESKeys::set_keys(
         }
     }
 }
-
-
 
 /** @brief allows the user to set key/value pairs from within the application.
  *
@@ -553,7 +582,6 @@ string TheBESKeys::get_as_config() const
     return ss.str();
 }
 
-
 #define MAP_SEPARATOR ":"
 
 bool parse_map_record(const string &map_record, const bool &case_insensitive_map_keys, string &key, string &value) {
@@ -568,7 +596,6 @@ bool parse_map_record(const string &map_record, const bool &case_insensitive_map
     }
     return false;
 }
-
 
 /**
  *
@@ -603,7 +630,6 @@ void TheBESKeys::get_values(
     }
 
 }
-
 
 /**
  *
@@ -673,10 +699,6 @@ void TheBESKeys::get_values(
     }
     BESDEBUG(MODULE, prolog << "END" << endl);
 
-}
-
-bool TheBESKeys::using_dynamic_config(){
-    return d_dynamic_config_in_use;
 }
 
 /**
@@ -785,6 +807,5 @@ void TheBESKeys::load_dynamic_config(const string name)
 #endif
 
     BESDEBUG("bes:keys",dump());
-
 }
 

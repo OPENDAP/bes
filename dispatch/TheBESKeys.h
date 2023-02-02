@@ -107,7 +107,16 @@ protected:
     explicit TheBESKeys(const std::string &keys_file_name);
 
 public:
-    static TheBESKeys *d_instance;
+    // FIXME static TheBESKeys *d_instance;
+    static std::unique_ptr<TheBESKeys> d_instance;
+    /**
+     * TheBESKeys::ConfigFile provides a way for the daemon and test code to
+     * set the location of a particular configuration file.
+     */
+    static std::string ConfigFile;
+
+    /// Access to the singleton.
+    static TheBESKeys *TheKeys();
 
     ~TheBESKeys() override;
 
@@ -143,7 +152,6 @@ public:
     void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string> > > &map,
                     const bool &case_insensitive_map_keys, bool &found);
 
-
     bool read_bool_key(const std::string &key, bool default_value) const;
 
     std::string read_string_key(const std::string &key, const std::string &default_value) const;
@@ -164,24 +172,14 @@ public:
 
     std::string get_as_config() const;
 
-    /**
-     * TheBESKeys::ConfigFile provides a way for the daemon and test code to
-     * set the location of a particular configuration file.
-     */
-    static std::string ConfigFile;
-
-    /**
-     * Access to the singleton.
-     */
-    static TheBESKeys *TheKeys();
-
     void load_dynamic_config(std::string name);
-    bool using_dynamic_config();
+
+    bool using_dynamic_config() const {
+        return d_dynamic_config_in_use;
+    }
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
-
-
 };
 
 #endif // TheBESKeys_h_

@@ -250,6 +250,7 @@ namespace kvp {
         std::ifstream keys_file(keys_file_name.c_str());
 
         if (!keys_file) {
+            // FIXME: protect against memory access errors. jhrg 2/2/23
             char path[500];
             getcwd(path, sizeof(path));
             string s = string("Cannot open configuration file '") + keys_file_name + "': ";
@@ -287,6 +288,7 @@ namespace kvp {
             std::map<std::string, std::vector<std::string> > &keystore
     ) {
         set<string> loaded_kvp_files;
+        // FIXME: Don't make this just to throw it away. jhrg 2/2/23
         load_keys(keys_file_name, loaded_kvp_files, keystore);
     }
 
