@@ -1216,7 +1216,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll (final_val.data(), nelms_to_send);
+                    set_value_ll ((dods_int64*)final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1256,7 +1256,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll (final_val.data(), nelms_to_send);
+                    set_value_ll ((dods_uint64*)final_val.data(), nelms_to_send);
                 }
                     break;
 
