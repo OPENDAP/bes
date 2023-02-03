@@ -38,12 +38,14 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "BESObj.h"
 
 #define DYNAMIC_CONFIG_KEY "DynamicConfig"
 #define DC_REGEX_KEY "regex"
 #define DC_CONFIG_KEY "config"
+
 #define DYNAMIC_CONFIG_ENABLED 0
 
 namespace http {
@@ -92,28 +94,48 @@ class TheBESKeys: public BESObj {
     friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
-    std::map<std::string, std::vector<std::string> > *d_the_keys = nullptr;
-    std::map<std::string, std::vector<std::string> > *d_the_original_keys = nullptr;
+    /// The keys and values; `keys_kvp` is a map of string keys to a vector of string values.
+    using keys_kvp = typename std::map<std::string, std::vector<std::string>>;
+
+    // TODO Refactor this so it's not a pointer. jhrg 2/2/23
+    //std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
+    keys_kvp d_the_keys;
+#if DYNAMIC_CONFIG_ENABLED
+    std::unique_ptr<keys_kvp> d_the_original_keys{new keys_kvp()};
+#endif
+
     bool d_dynamic_config_in_use = false;
     bool d_own_keys = false;
 
-    static std::set<std::string> d_ingested_key_files;
+    std::set<std::string> d_ingested_key_files;
 
-    static bool LoadedKeys(const std::string &key_file);
+    bool is_loaded_key_file(const std::string &key_file);
 
     TheBESKeys() = default;
 
-protected:
-    explicit TheBESKeys(const std::string &keys_file_name);
+    static std::unique_ptr<TheBESKeys> d_instance;
+
+    explicit TheBESKeys(std::string keys_file_name);
 
 public:
-    static TheBESKeys *d_instance;
+    /**
+     * TheBESKeys::ConfigFile provides a way for the daemon and test code to
+     * set the location of a particular configuration file.
+     */
+    static std::string ConfigFile;
 
-    ~TheBESKeys() override;
+    /// Access to the singleton.
+    static TheBESKeys *TheKeys();
+
+    ~TheBESKeys() override = default;
 
     std::string keys_file_name() const {
         return d_keys_file_name;
     }
+
+    void reload_keys(const std::string &keys_file_name);
+
+    void reload_keys();
 
     /**
      * @brief Delete the key
@@ -121,7 +143,7 @@ public:
      * @param key
      */
     void delete_key(const std::string &key) {
-        d_the_keys->erase(key);
+        d_the_keys.erase(key);
     }
 
     void set_key(const std::string &key, const std::string &val, bool addto = false);
@@ -143,7 +165,6 @@ public:
     void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string> > > &map,
                     const bool &case_insensitive_map_keys, bool &found);
 
-
     bool read_bool_key(const std::string &key, bool default_value) const;
 
     std::string read_string_key(const std::string &key, const std::string &default_value) const;
@@ -155,33 +176,23 @@ public:
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
     Keys_citer keys_begin() {
-        return d_the_keys->begin();
+        return d_the_keys.begin();
     }
 
     Keys_citer keys_end() {
-        return d_the_keys->end();
+        return d_the_keys.end();
     }
 
     std::string get_as_config() const;
 
-    /**
-     * TheBESKeys::ConfigFile provides a way for the daemon and test code to
-     * set the location of a particular configuration file.
-     */
-    static std::string ConfigFile;
+    void load_dynamic_config(const std::string &name);
 
-    /**
-     * Access to the singleton.
-     */
-    static TheBESKeys *TheKeys();
-
-    void load_dynamic_config(std::string name);
-    bool using_dynamic_config();
+    bool using_dynamic_config() const {
+        return d_dynamic_config_in_use;
+    }
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
-
-
 };
 
 #endif // TheBESKeys_h_

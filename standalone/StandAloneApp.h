@@ -55,7 +55,7 @@ private:
 public:
     StandAloneApp() = default;
 
-    ~StandAloneApp() override;
+    ~StandAloneApp() override = default;
 
     int initialize(int argC, char **argV) override;
 

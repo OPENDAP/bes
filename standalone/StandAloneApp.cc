@@ -53,11 +53,6 @@
 
 using namespace std;
 
-StandAloneApp::~StandAloneApp()
-{
-    delete TheBESKeys::TheKeys();
-}
-
 void StandAloneApp::showVersion()
 {
     cout << appName() << ": version 3.0" << endl;

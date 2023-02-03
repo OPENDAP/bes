@@ -67,15 +67,12 @@ private:
 public:
     keysT() = default;
 
-    ~keysT() = default;
+    ~keysT() override = default;
 
-    void setUp() {
+    void setUp() override {
         if (debug_2) BESDebug::SetUp("cerr,bes");
     }
 
-    /**
-     *
-     */
     void bad_keys_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/bad_keys1.ini";
@@ -90,9 +87,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void good_keys_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test.ini";
@@ -101,7 +95,7 @@ public:
         if (debug) cout << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
 
         try {
-            TheBESKeys::TheKeys();
+            TheBESKeys::TheKeys()->reload_keys();
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
@@ -111,9 +105,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_keys_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
@@ -133,9 +124,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_multi_for_single_value_key_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
@@ -147,9 +135,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_multi_valued_key_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
@@ -166,9 +151,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_value_on_multi_valued_key_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -184,9 +166,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_missing_key_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -197,9 +176,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_empty_valued_key_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -210,9 +186,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void get_empty_valued_key_from_included_file_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -223,9 +196,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void set_bad_key_missing_equals_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         try {
@@ -239,9 +209,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void set_bad_key_double_equals_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -259,9 +226,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void set_key7_to_val7_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -279,9 +243,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void set_key8_to_val8_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
@@ -299,9 +260,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-    /**
-     *
-     */
     void add_val_multi_5_to_bes_key_multi_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         vector <string> vals;
@@ -364,7 +322,7 @@ public:
         if (debug) cout << __func__ << "() - END" << endl;
     }
 
-
+#if DYNAMIC_CONFIG_ENABLED
     /**
      *
      */
@@ -499,8 +457,6 @@ public:
      * DynamicConfig+=ghrc:config:H5.EnableDMR64bitInt=true
      * DynamicConfig+=ghrc:config:H5.EnableCF=true
      * DynamicConfig+=ghrc:config:FONc.ClassicModel=true
-     *
-     *
      */
     void map_map_test() {
         if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
@@ -557,7 +513,6 @@ public:
         if (debug) cout << __func__ << END << endl;
     }
 
-#if DYNAMIC_CONFIG_ENABLED
     void dynamic_config_test()  {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
@@ -702,7 +657,7 @@ public:
     CPPUNIT_TEST_SUITE( keysT );
 
     // I broke up the monolithic do_test() function, but
-    // I did not resolve the test independence so they must be run in
+    // I did not resolve the test independence, so they must be run in
     // order.
     CPPUNIT_TEST(bad_keys_test);
     CPPUNIT_TEST(good_keys_test);
@@ -720,11 +675,12 @@ public:
     CPPUNIT_TEST(add_val_multi_5_to_bes_key_multi_test);
     CPPUNIT_TEST(get_keys_from_regex_include_test);
     CPPUNIT_TEST(check_keys_test);
+
+#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(map_map_test);
 
-#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(dynamic_config_test);
 #endif
 
