@@ -191,7 +191,13 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([ATL08_20181014084920_02400109_003_01.h5.dmr.bescm
 AT_BESCMD_CFDMR_RESPONSE_TEST([ATL13_20190330212241_00250301_002_01.h5.dmr.bescmd])
 #Other
 AT_BESCMD_CFDMR_RESPONSE_TEST([20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.h5.dmr.bescmd])
+
+#Big array size tests
+AT_BESCMD_CFDMR_RESPONSE_TEST([dset_big.dmr.bescmd])
+AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([dset_big_start.bescmd])
+AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([dset_big_stride.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([daymet_v4_daily_na_prcp_2010.nc.h5.dmr.bescmd])
+
 
 #The attribute generation order is different on Mac and Linux when the number of attribute is >8
 #For NASA, this is not a problem since the platform is always Linux. But it causes the failure on Mac. 

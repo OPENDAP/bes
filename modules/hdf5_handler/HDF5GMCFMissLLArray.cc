@@ -205,7 +205,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
         memcpy(buf, total_val.data(), 4 * LL_total_num);
     }
 
-    set_value((dods_float32 *) val.data(), nelms);
+    set_value_ll(val.data(), nelms);
     H5Gclose(rootid);
     HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
 }

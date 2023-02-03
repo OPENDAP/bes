@@ -72,7 +72,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     vector<hsize_t>hcount;
     vector<hsize_t>hstep;
 
-    int nelms = 0;
+    int64_t nelms = 0;
 
     if((otype != H5INT64 && otype !=H5UINT64) 
        || (dtype !=H5INT32)) 

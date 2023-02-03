@@ -74,7 +74,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int64_t nelms, vector<int64_t>&
     // 1-D with natural number 1,2,3,....
     // No need to change the set_value and int, they will never exceed the 2GB.
     if (nelms == tnumelm) {
-        set_value((dods_float32 *) total_val.data(), nelms);
+        set_value(total_val.data(), (int)nelms);
     }
     else {
 
@@ -83,7 +83,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int64_t nelms, vector<int64_t>&
 
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value((dods_float32 *) val.data(), nelms);
+        set_value(val.data(), (int)nelms);
     }
 }
 
@@ -108,7 +108,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int64_t nelms, vector<int64_t>
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value((dods_float32 *) total_val.data(), nelms);
+        set_value(total_val.data(), (int)nelms);
     }
     else {
 
@@ -117,7 +117,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int64_t nelms, vector<int64_t>
 
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value((dods_float32 *) val.data(), nelms);
+        set_value(val.data(), (int)nelms);
     }
 }
 
@@ -137,7 +137,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int64_t nelms, vector<int64_t>&of
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value((dods_float32 *) total_val.data(), nelms);
+        set_value(total_val.data(), (int)nelms);
     }
     else {
 
@@ -146,7 +146,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int64_t nelms, vector<int64_t>&of
 
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value((dods_float32 *) val.data(), nelms);
+        set_value(val.data(), (int)nelms);
     }
 }
 
@@ -166,7 +166,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int64_t nelms, vector<int64_t>&o
     // integer, so no need to check the type. The missing Z-dim is always
     // 1-D with natural number 1,2,3,....
     if (nelms == tnumelm) {
-        set_value((dods_float32 *) total_val.data(), nelms);
+        set_value(total_val.data(), (int)nelms);
     }
     else {
 
@@ -175,7 +175,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int64_t nelms, vector<int64_t>&o
 
         for (int i = 0; i < nelms; i++)
             val[i] = total_val[offset[0] + step[0] * i];
-        set_value((dods_float32 *) val.data(), nelms);
+        set_value(val.data(), (int)nelms);
     }
 }
 

@@ -115,6 +115,9 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
     if (rank != 1) 
         throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
+
+    if (tnumelm >DODS_INT_MAX)
+        throw InternalErr(__FILE__, __LINE__, "Currently the maximum number for this dimension is less than DODS_INT_MAX");
     
     vector<int64_t>offset;
     vector<int64_t>count;
@@ -134,12 +137,12 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
     if (nelms == tnumelm) {
         for (int64_t i = 0; i < nelms; i++)
-            val[i] = i;
+            val[i] = (int)i;
         set_value_ll(val.data(), nelms);
     }
     else {
         for (int64_t i = 0; i < count[0]; i++)
-            val[i] = offset[0] + step[0] * i;
+            val[i] = (int)(offset[0] + step[0] * i);
         set_value_ll(val.data(), nelms);
     }
 }

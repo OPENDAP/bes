@@ -253,7 +253,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             else {
                 // short-cut, no need to do subset.
                 if(total_elms == nelms)
-                    set_value_ll((dods_float64 *)var_value.data(),total_elms);
+                    set_value_ll(var_value.data(),total_elms);
                 else {
                     vector<double>val;
                     subset<double>(
@@ -266,7 +266,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-                    set_value_ll((dods_float64 *)val.data(),nelms);
+                    set_value_ll(val.data(),nelms);
                 }
                 return;
             }
@@ -323,7 +323,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     
     if(CV_LON_MISS == cvartype) {
         if(total_elms == nelms)
-            set_value_ll((dods_float64 *)lon.data(),total_elms);
+            set_value_ll(lon.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
@@ -336,14 +336,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-            set_value_ll((dods_float64 *)val.data(),nelms);
+            set_value_ll(val.data(),nelms);
         }
        
     }
     else if(CV_LAT_MISS == cvartype) {
 
         if(total_elms == nelms)
-            set_value_ll((dods_float64 *)lat.data(),total_elms);
+            set_value_ll(lat.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
@@ -356,7 +356,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-            set_value_ll((dods_float64 *)val.data(),nelms);
+            set_value_ll(val.data(),nelms);
         }
     }
     return;
@@ -568,7 +568,7 @@ for (int i =0; i <nelms; i++)
 "h5","final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
-    set_value_ll((dods_float32 *) val.data(), nelms);
+    set_value_ll(val.data(), nelms);
     
  
     return;

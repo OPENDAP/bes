@@ -117,7 +117,7 @@ cerr<<"file name " <<filename <<endl;
                 for (int64_t i = 0; i < count[0]; i++)
                     val[i] = (short)(offset[0] + step[0] * i);
                
-                set_value_ll ((dods_int16 *) val.data(), nelms);
+                set_value_ll (val.data(), nelms);
             }
             else {
 
@@ -127,13 +127,11 @@ cerr<<"file name " <<filename <<endl;
                 for (int64_t i = 0; i < count[0]; i++)
                     val[i] = (char)(offset[0] + step[0] * i);
 
-                set_value_ll ((dods_int8 *) val.data(), nelms);
+                set_value_ll ((dods_int8*)val.data(), nelms);
 
             }
         }// H5CHAR and H5INT16
             break;
-
-    
 
         case H5INT16:
         {
@@ -144,7 +142,7 @@ cerr<<"file name " <<filename <<endl;
             for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (short)(offset[0] + step[0] * i);
                
-            set_value_ll ((dods_int16 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }// H5CHAR and H5INT16
             break;
 
@@ -157,7 +155,7 @@ cerr<<"file name " <<filename <<endl;
             for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (unsigned short)(offset[0] + step[0] * i);
                 
-            set_value_ll ((dods_uint16 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // H5UINT16
             break;
 
@@ -168,9 +166,9 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int64_t i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (int)(offset[0] + step[0] * i);
 
-            set_value_ll ((dods_int32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // case H5INT32
             break;
 
@@ -180,9 +178,9 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int64_t i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (unsigned int)(offset[0] + step[0] * i);
 
-            set_value_ll ((dods_uint32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }
             break;
 
@@ -219,7 +217,7 @@ cerr<<"file name " <<filename <<endl;
             for (int64_t i = 0; i < count[0]; i++)
                 val[i] = (float)(offset[0] + step[0] * i);
 
-            set_value_ll ((dods_float32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }
             break;
 
@@ -233,7 +231,7 @@ cerr<<"file name " <<filename <<endl;
             for (int64_t i = 0; i < count[0]; i++)
                 val[i] = offset[0] + step[0] * i;
 
-            set_value_ll ((dods_float64 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // case H5FLOAT64
             break;
 

@@ -56,7 +56,6 @@ bool HDF5CFArray::read()
 {
 
     BESDEBUG("h5","Coming to HDF5CFArray read "<<endl);
-    BESDEBUG("h5","Coming to HDF5CFArray read again"<<endl);
     if(length() == 0)
         return true;
 
@@ -199,11 +198,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             hoffset[i] = (hsize_t) offset[i];
             hcount[i] = (hsize_t) count[i];
             hstep[i] = (hsize_t) step[i];
-            BESDEBUG("h5","hoffset[ "<<i<<"]= "<< hoffset[i] <<endl);
-            BESDEBUG("h5","hcount[ "<<i<<"]= "<< hcount[i] <<endl);
-            BESDEBUG("h5","hstep[ "<<i<<"]= "<< hstep[i] <<endl);
         }
-        BESDEBUG("h5","nelms= "<< nelms <<endl);
     }
 
     BESDEBUG("h5","after format_constraint "<<endl);
@@ -232,7 +227,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         string cache_fname=HDF5CFUtil::obtain_cache_fname(diskcache_prefix,filename,varname);
         cache_fpath = diskcache_dir + "/"+ cache_fname;
         
-        int temp_total_elems = 1;
+        int64_t temp_total_elems = 1;
         for (const auto &dimsize:dimsizes)
             temp_total_elems = temp_total_elems*dimsize;
 
@@ -241,7 +236,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         if(is_dap4 == false && dtype==H5CHAR) 
             dtype_size = 2;
 
-        int expected_file_size = dtype_size *temp_total_elems;
+        int64_t expected_file_size = dtype_size *temp_total_elems;
         int fd = 0;
         HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance(disk_cache_size,diskcache_dir,diskcache_prefix);
         if( true == disk_cache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
@@ -425,7 +420,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 for (int64_t counter = 0; counter < nelms; counter++)
                     newval[counter] = (short) (val[counter]);
     
-                set_value_ll((dods_int16 *) newval.data(), nelms);
+                set_value_ll(newval.data(), nelms);
             }
 
             if(true == data_to_disk_cache) {
@@ -467,9 +462,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             vector<char> val;
             val.resize(nelms*dtype_size);
             
-
-            BESDEBUG("h5","bytes to read "<< nelms*dtype_size <<endl);
-            BESDEBUG("h5","before H5Dread "<<endl);
             read_ret = H5Dread(dsetid,memtype,mspace,dspace,H5P_DEFAULT,val.data());
             if (read_ret < 0) {
                 H5Sclose(mspace);
@@ -936,7 +928,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
             vector<int64_t>cd_start(rank,0);
             vector<size_t>cd_pos(rank,0);
-            int nelms_to_send = 1;
+            int64_t nelms_to_send = 1;
             for(int i = 0; i <rank; i++)
                 nelms_to_send = nelms_to_send*cd_count[i];
 
@@ -1032,7 +1024,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_byte *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1070,7 +1062,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_int16 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1108,7 +1100,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_uint16 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1148,7 +1140,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                      );
 
 
-                    set_value_ll ((dods_int32 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1186,7 +1178,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_uint32 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1224,7 +1216,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_int64 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1264,7 +1256,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_uint64 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
 
@@ -1304,7 +1296,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                      );
 
 
-                    set_value_ll ((dods_float32 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
                 case H5FLOAT64:
@@ -1340,7 +1332,7 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
 
-                    set_value_ll ((dods_float64 *) final_val.data(), nelms_to_send);
+                    set_value_ll (final_val.data(), nelms_to_send);
                 }
                     break;
                 default:
