@@ -250,11 +250,10 @@ namespace kvp {
         std::ifstream keys_file(keys_file_name.c_str());
 
         if (!keys_file) {
-            // FIXME: protect against memory access errors. jhrg 2/2/23
             char path[500];
             getcwd(path, sizeof(path));
             string s = string("Cannot open configuration file '") + keys_file_name + "': ";
-            char *err = strerror(errno);
+            const char *err = strerror(errno);
             if (err)
                 s += err;
             else
@@ -268,20 +267,15 @@ namespace kvp {
             loaded_kvp_files.insert(keys_file_name);
             load_keys(keys_file_name, keys_file, loaded_kvp_files, keystore);
         }
-        catch (BESError &e) {
-            // be sure we're throwing a fatal error, since the BES can't run
-            // without the configuration file
-            //clean();
+        catch (const BESError &e) {
             throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
         }
-        catch (std::exception &e) {
-            //clean();
+        catch (const std::exception &e) {
             string s = (string) "Caught exception load keys from the BES configuration file '"
                        + keys_file_name + "' message:" + e.what();
             throw BESInternalFatalError(s, __FILE__, __LINE__);
         }
     }
-
 
     void load_keys(
             const std::string &keys_file_name,

@@ -106,17 +106,17 @@ TheBESKeys *TheBESKeys::TheKeys()
  * initialization file or a syntax error in the file, i.e. a malformed
  * key/value pair.
  */
-TheBESKeys::TheBESKeys(const string &keys_file_name) : d_keys_file_name(keys_file_name)
+TheBESKeys::TheBESKeys(string keys_file_name) : d_keys_file_name(std::move(keys_file_name))
 {
     if (!d_keys_file_name.empty()) {
-        kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
+        kvp::load_keys(d_keys_file_name, d_ingested_key_files, d_the_keys);
 #if DYNAMIC_CONFIG_ENABLED
-        *d_the_original_keys = *d_the_keys;
+        *d_the_original_keys = d_the_keys;
 #endif
     }
 
     BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
-    BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
+    BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys.size() << endl);
 #if DYNAMIC_CONFIG_ENABLED
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 #endif
@@ -154,9 +154,9 @@ void TheBESKeys::reload_keys(const std::string &keys_file_name)
  */
 void TheBESKeys::reload_keys()
 {
-    d_the_keys->clear();
+    d_the_keys.clear();
     d_ingested_key_files.clear();
-    kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
+    kvp::load_keys(d_keys_file_name, d_ingested_key_files, d_the_keys);
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
@@ -178,14 +178,14 @@ void TheBESKeys::reload_keys()
 void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = d_the_keys->find(key);
-    if (i == d_the_keys->end()) {
+    i = d_the_keys.find(key);
+    if (i == d_the_keys.end()) {
         vector<string> vals;
-        (*d_the_keys)[key] = vals;
+        (d_the_keys)[key] = vals;
     }
-    if (!addto) (*d_the_keys)[key].clear();
+    if (!addto) (d_the_keys)[key].clear();
     if (!val.empty()) {
-        (*d_the_keys)[key].push_back(val);
+        (d_the_keys)[key].push_back(val);
     }
 }
 
@@ -209,16 +209,16 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = d_the_keys->find(key);
-    if (i == d_the_keys->end()) {
+    i = d_the_keys.find(key);
+    if (i == d_the_keys.end()) {
         vector<string> vals;
-        (*d_the_keys)[key] = vals;
+        (d_the_keys)[key] = vals;
     }
-    if (!addto) (*d_the_keys)[key].clear();
+    if (!addto) (d_the_keys)[key].clear();
 
     for(const auto &value: values) {
         if (!value.empty()) {
-            (*d_the_keys)[key].push_back(value);
+            (d_the_keys)[key].push_back(value);
         }
     }
 }
@@ -247,13 +247,13 @@ void TheBESKeys::set_keys(
         bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = d_the_keys->find(key);
-    if (i == d_the_keys->end()) {
+    i = d_the_keys.find(key);
+    if (i == d_the_keys.end()) {
         vector<string> vals;
-        (*d_the_keys)[key] = vals;
+        (d_the_keys)[key] = vals;
     }
     if (!addto) {
-        (*d_the_keys)[key].clear();
+        (d_the_keys)[key].clear();
     }
 
     map<string, string>::const_iterator mit;
@@ -267,7 +267,7 @@ void TheBESKeys::set_keys(
                 map_key = BESUtil::lowercase(map_key);
             }
             string map_record=map_key+":"+mit->second;
-            (*d_the_keys)[key].push_back(map_record);
+            (d_the_keys)[key].push_back(map_record);
         }
     }
 }
@@ -306,19 +306,18 @@ void TheBESKeys::set_key(const string &pair)
  * @throws BESSyntaxUserError if multiple values are available for the
  * specified key
  */
-void TheBESKeys::get_value(const string &s, string &val, bool &found)
+void TheBESKeys::get_value(const string &key, string &val, bool &found)
 {
     found = false;
-    map<string, vector<string> >::iterator i;
-    i = d_the_keys->find(s);
-    if (i != d_the_keys->end()) {
+    const auto &i = d_the_keys.find(key);
+    if (i != d_the_keys.end()) {
         found = true;
-        if ((*i).second.size() > 1) {
-            string err = string("Multiple values for the key ") + s + " found, should only be one.";
+        if (i->second.size() > 1) {
+            string err = string("Multiple values for the key ") + key + " found, there should only be one.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-        if ((*i).second.size() == 1) {
-            val = (*i).second[0];
+        else if (i->second.size() == 1) {
+            val = i->second[0];
         }
         else {
             val = "";
@@ -332,23 +331,20 @@ void TheBESKeys::get_value(const string &s, string &val, bool &found)
  * specified key.
  *
  * @param s The key the user is looking for
- * @param vals The value set for the specified key
+ * @param vals The value set for the specified key. A value-result parameter.
  * @param found Set to true of the key is set or false if the key is not set.
  * The value of a key can be set to the empty string, which is why this
  * boolean is provided.
  */
-void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
+void TheBESKeys::get_values(const string& key, vector<string> &vals, bool &found)
 {
     found = false;
-    map<string, vector<string> >::iterator i;
-    i = d_the_keys->find(s);
-    if (i != d_the_keys->end()) {
+    const auto &i = d_the_keys.find(key);
+    if (i != d_the_keys.end()) {
         found = true;
-        vector<string>::iterator j;
-        for(j=(*i).second.begin(); j!=(*i).second.end(); j++){
-            vals.push_back(*j);
+        for (const auto &value: i->second) {
+            vals.push_back(value);
         }
-        // vals = (*i).second; // BUT WHY NOT?
     }
 }
 
@@ -489,21 +485,15 @@ string TheBESKeys::dump() const
     BESIndent::Indent();
     ss << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
 
-    if (d_the_keys && d_the_keys->size()) {
+    if (!d_the_keys.empty()) {
         ss << BESIndent::LMarg << "  keys:" << endl;
         BESIndent::Indent();
-        Keys_citer i = d_the_keys->begin();
-        Keys_citer ie = d_the_keys->end();
-        for (; i != ie; i++) {
-            ss << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
-            // BESIndent::Indent();
-            vector<string>::const_iterator v = (*i).second.begin();
-            vector<string>::const_iterator ve = (*i).second.end();
-            for (; v != ve; v++) {
-                ss << (*v) << " "; //endl;
+        for (auto &p: d_the_keys) { // p is the key value pair
+            ss << BESIndent::LMarg << p.first << ": ";
+            for (auto &value: p.second) {
+                ss << value << " ";
             }
             ss << endl;
-            //BESIndent::UnIndent();
         }
         BESIndent::UnIndent();
     }
@@ -519,14 +509,12 @@ string TheBESKeys::get_as_config() const
     stringstream ss;
     ss << endl;
     ss << "# TheBESKeys::get_as_config()" << endl;
-    if (d_the_keys && d_the_keys->size()) {
-        Keys_citer i = d_the_keys->begin();
-        Keys_citer ie = d_the_keys->end();
-        for (; i != ie; i++) {
-            string name = (*i).first;
-            vector<string> values = (*i).second;
+    if (!d_the_keys.empty()) {
+        for (const auto &kvp: d_the_keys) {
+            string name = kvp.first;
+            vector<string> values = kvp.second;
             bool first = true;
-            for(string value: values){
+            for(const string &value: values){
                 ss << name << (first?"=":"+=") << value << endl;
                 first = false;
             }
@@ -538,10 +526,10 @@ string TheBESKeys::get_as_config() const
     return ss.str();
 }
 
-#define MAP_SEPARATOR ":"
+#define MAP_SEPARATOR ':'
 
 bool parse_map_record(const string &map_record, const bool &case_insensitive_map_keys, string &key, string &value) {
-    int primary_index = map_record.find(MAP_SEPARATOR);
+    size_t primary_index = map_record.find(MAP_SEPARATOR);
     if (primary_index > 0) {
         key = map_record.substr(0, primary_index);
         if (case_insensitive_map_keys)
@@ -564,19 +552,31 @@ void TheBESKeys::get_values(
         const std::string &key,
         std::map<std::string,std::string> &map_values,
         const bool &case_insensitive_map_keys,
-        bool &found){
+        bool &found) {
 
     vector<string> values;
     get_values(key, values, found);
-    if(!found){
+    if (!found) {
         return;
     }
 
+    for (const auto &value: values) {
+        string map_key;
+        string map_value;
+        if (parse_map_record(value, case_insensitive_map_keys, map_key, map_value)) {
+            map_values.insert( std::pair<string,string>(map_key, map_value));
+        }
+        else {
+            BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
+                "formatted as a map record. The offending entry: " << value << " HAS BEEN SKIPPED." << endl);
+        }
+    }
+#if 0
     vector<string>::iterator it;
     for(it=values.begin();  it!=values.end(); it++){
         string map_key;
         string map_value;
-        if(parse_map_record(*it,case_insensitive_map_keys,map_key,map_value)){
+        if (parse_map_record(*it,case_insensitive_map_keys,map_key,map_value)) {
             map_values.insert( std::pair<string,string>(map_key,map_value));
         }
         else {
@@ -584,7 +584,7 @@ void TheBESKeys::get_values(
                 "formatted as a map record. The offending entry: " << *it << " HAS BEEN SKIPPED." << endl);
         }
     }
-
+#endif
 }
 
 /**
@@ -603,41 +603,37 @@ void TheBESKeys::get_values(
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     vector<string> values;
     get_values(key, values, found);
-    if(!found){
+    if (!found) {
         return;
     }
 
-    vector<string>::iterator it;
-    for(it=values.begin();  it!=values.end(); it++){
-        string map_record = *it;
+    for (const auto &map_record: values) {
         string primary_map_key;
         string primary_map_value;
-        if(parse_map_record(map_record,case_insensitive_map_keys,primary_map_key,primary_map_value)){
+        if (parse_map_record(map_record, case_insensitive_map_keys, primary_map_key, primary_map_value)) {
             string secondary_key;
             string secondary_value;
-            if(parse_map_record(primary_map_value,case_insensitive_map_keys,secondary_key,secondary_value)){
-                map<string, map<string,vector<string>>>::iterator pit;
-                pit = primary_map.find(primary_map_key);
-                if(pit!=primary_map.end()){
-                    map<string,vector<string>>::iterator sit;
-                    sit = pit->second.find(secondary_key);
-                    if(sit!=pit->second.end()){
+            if (parse_map_record(primary_map_value, case_insensitive_map_keys, secondary_key, secondary_value)) {
+                const auto &pit = primary_map.find(primary_map_key);
+                if (pit != primary_map.end()) {
+                    const auto &sit = pit->second.find(secondary_key);
+                    if (sit != pit->second.end()) {
                         sit->second.push_back(secondary_value);
                     }
                     else {
                         // How to make a vector<string>> and poke in to the secondary_map??
                         vector<string> secondary_map_entry_values;
                         secondary_map_entry_values.push_back(secondary_value);
-                        pit->second.insert(pair<string,vector<string>>(secondary_key,secondary_map_entry_values));
+                        pit->second.insert(pair<string, vector<string>>(secondary_key, secondary_map_entry_values));
                     }
                 }
                 else {
                     // How to make a map<string,vector<string>> and poke in to the primary_map??
-                    map<string,vector<string>> secondary_map_entry;
+                    map<string, vector<string>> secondary_map_entry;
                     vector<string> secondary_map_entry_values;
                     secondary_map_entry_values.push_back(secondary_value);
-                    secondary_map_entry.insert(pair<string,vector<string>>(secondary_key,secondary_map_entry_values));
-                    primary_map.insert(pair<string, map<string,vector<string>>>(primary_map_key,secondary_map_entry));
+                    secondary_map_entry.insert(pair<string, vector<string>>(secondary_key, secondary_map_entry_values));
+                    primary_map.insert(pair<string, map<string, vector<string>>>(primary_map_key, secondary_map_entry));
                 }
             }
             else {
@@ -670,8 +666,8 @@ void TheBESKeys::load_dynamic_config(const string &name)
     // the active keys (resets the keys to 'as read from config files')
     if( d_dynamic_config_in_use ){
         BESDEBUG(MODULE, prolog << "Unloading DynamicConfig." << endl);
-        d_the_keys->clear();
-        *d_the_keys = *d_the_original_keys;
+        d_the_keys.clear();
+        d_the_keys = *d_the_original_keys;
         d_dynamic_config_in_use =  false;
     }
 

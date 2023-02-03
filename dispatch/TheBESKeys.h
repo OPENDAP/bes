@@ -98,8 +98,8 @@ class TheBESKeys: public BESObj {
     using keys_kvp = typename std::map<std::string, std::vector<std::string>>;
 
     // TODO Refactor this so it's not a pointer. jhrg 2/2/23
-    std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
-
+    //std::unique_ptr<keys_kvp> d_the_keys{new keys_kvp()};
+    keys_kvp d_the_keys;
 #if DYNAMIC_CONFIG_ENABLED
     std::unique_ptr<keys_kvp> d_the_original_keys{new keys_kvp()};
 #endif
@@ -115,7 +115,7 @@ class TheBESKeys: public BESObj {
 
     static std::unique_ptr<TheBESKeys> d_instance;
 
-    explicit TheBESKeys(const std::string &keys_file_name);
+    explicit TheBESKeys(std::string keys_file_name);
 
 public:
     /**
@@ -143,7 +143,7 @@ public:
      * @param key
      */
     void delete_key(const std::string &key) {
-        d_the_keys->erase(key);
+        d_the_keys.erase(key);
     }
 
     void set_key(const std::string &key, const std::string &val, bool addto = false);
@@ -176,11 +176,11 @@ public:
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
     Keys_citer keys_begin() {
-        return d_the_keys->begin();
+        return d_the_keys.begin();
     }
 
     Keys_citer keys_end() {
-        return d_the_keys->end();
+        return d_the_keys.end();
     }
 
     std::string get_as_config() const;
