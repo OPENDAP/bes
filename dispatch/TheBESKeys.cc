@@ -181,11 +181,11 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
     i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
-        (d_the_keys)[key] = vals;
+        d_the_keys[key] = vals;
     }
-    if (!addto) (d_the_keys)[key].clear();
+    if (!addto) d_the_keys[key].clear();
     if (!val.empty()) {
-        (d_the_keys)[key].push_back(val);
+        d_the_keys[key].push_back(val);
     }
 }
 
@@ -212,13 +212,13 @@ void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool 
     i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
-        (d_the_keys)[key] = vals;
+        d_the_keys[key] = vals;
     }
-    if (!addto) (d_the_keys)[key].clear();
+    if (!addto) d_the_keys[key].clear();
 
     for(const auto &value: values) {
         if (!value.empty()) {
-            (d_the_keys)[key].push_back(value);
+            d_the_keys[key].push_back(value);
         }
     }
 }
@@ -250,10 +250,10 @@ void TheBESKeys::set_keys(
     i = d_the_keys.find(key);
     if (i == d_the_keys.end()) {
         vector<string> vals;
-        (d_the_keys)[key] = vals;
+        d_the_keys[key] = vals;
     }
     if (!addto) {
-        (d_the_keys)[key].clear();
+        d_the_keys[key].clear();
     }
 
     map<string, string>::const_iterator mit;
@@ -267,7 +267,7 @@ void TheBESKeys::set_keys(
                 map_key = BESUtil::lowercase(map_key);
             }
             string map_record=map_key+":"+mit->second;
-            (d_the_keys)[key].push_back(map_record);
+            d_the_keys[key].push_back(map_record);
         }
     }
 }
