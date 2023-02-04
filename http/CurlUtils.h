@@ -45,21 +45,11 @@ class url;
 }
 namespace curl {
 
-//void http_get_and_write_resource(const std::string &url,
-//                                 const int fd,
-//                                 std::vector<std::string> *http_response_headers){}
-
-void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
-                                 const int fd,
+void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
 void http_get(const std::string &url, char *response_buf, size_t bufsz);
 void http_get(const std::string &target_url, std::vector<char> &buf);
-
-#if 0
-// Never used
-std::string http_get_as_string(const std::string &url);
-#endif
 
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
@@ -105,6 +95,7 @@ bool eval_curl_easy_perform_code(CURL *ceh,
 bool eval_http_get_response(CURL *ceh, char *error_buffer, const std::string &requested_url);
 
 void super_easy_perform(CURL *ceh, const int fd);
+
 void super_easy_perform(CURL *ceh);
 
 std::string get_effective_url(CURL *ceh, std::string requested_url);
