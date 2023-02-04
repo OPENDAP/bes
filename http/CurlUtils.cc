@@ -25,15 +25,12 @@
 #include "config.h"
 
 #include <unistd.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <time.h>
 
 #include <curl/curl.h>
 
-#include <cstdio>
 #include <sstream>
-#include <iostream>
 #include <map>
 #include <vector>
 #include <algorithm>    // std::for_each
@@ -50,17 +47,14 @@
 #include "BESDebug.h"
 #include "BESRegex.h"
 #include "TheBESKeys.h"
-#include "BESUtil.h"
 #include "BESLog.h"
 #include "BESStopWatch.h"
 
-#include "BESSyntaxUserError.h"
 #include "HttpNames.h"
 #include "HttpUtils.h"
 #include "ProxyConfig.h"
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
-#include "EffectiveUrlCache.h"
 #include "CredentialsManager.h"
 
 #include "awsv4.h"
