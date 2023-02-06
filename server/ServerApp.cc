@@ -260,11 +260,6 @@ ServerApp::ServerApp() : BESModuleApp()
     d_pid = getpid();
 }
 
-ServerApp::~ServerApp()
-{
-    delete TheBESKeys::TheKeys();
-}
-
 int ServerApp::initialize(int argc, char **argv)
 {
     int c = 0;

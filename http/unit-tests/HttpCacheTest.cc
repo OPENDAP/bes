@@ -66,19 +66,9 @@ public:
         DBG(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
         DBG2(show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::TheKeys()->reload_keys();
 
         DBG(cerr << "setUp() - END" << endl);
-    }
-
-    void tearDown() override {
-        DBG(cerr << endl);
-        DBG(cerr << "tearDown() - BEGIN" << endl);
-
-        // Reload the keys after every test.
-        delete TheBESKeys::d_instance;
-        TheBESKeys::d_instance = nullptr;
-
-        DBG(cerr << "tearDown() - END" << endl);
     }
 
 /*##################################################################################################*/
