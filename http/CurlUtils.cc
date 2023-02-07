@@ -187,29 +187,6 @@ static string getCurlAuthTypeName(const int auth_type) {
 }
 
 /**
- * @brief A libcurl callback function that ignores the data entirely. nothing is written. Ever.
- */
-static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
-    return nmemb;
-}
-
-/**
- * libcurl call back function that is used to write data to a passed open file descriptor (that would
- * be instead of the default open FILE *)
- */
-static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
-
-    int *fd = (int *) userdata;
-
-    BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
-    int wrote = write(*fd, data, nmemb);
-    BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
-
-    return wrote;
-}
-
-
-/**
  * @brief A libcurl callback function used to read response headers.
  *
  * Read headers, line by line, from ptr.
@@ -477,7 +454,6 @@ CURL *init(CURL *ceh,
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
     }
 
-
     if (http_response_hdrs) {
         res = curl_easy_setopt(ceh, CURLOPT_HEADERFUNCTION, save_http_response_headers);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer, __FILE__, __LINE__);
@@ -505,7 +481,6 @@ CURL *init(CURL *ceh,
     res = curl_easy_setopt(ceh, CURLOPT_NOSIGNAL, 1L);
     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NOSIGNAL", error_buffer, __FILE__, __LINE__);
 
-
     // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
     // Authentication config.
     //
@@ -515,13 +490,11 @@ CURL *init(CURL *ceh,
     res = curl_easy_setopt(ceh, CURLOPT_FAILONERROR, 0L);
     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FAILONERROR", error_buffer, __FILE__, __LINE__);
 
-
     // CURLAUTH_ANY means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
     // choosing the the 'safest' one supported by the server.
     // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
     res = curl_easy_setopt(ceh, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", error_buffer, __FILE__, __LINE__);
-
 
     // CURLOPT_NETRC means to use the netrc file for credentials.
     // CURL_NETRC_OPTIONAL Means that if the supplied URL contains a username
@@ -538,7 +511,6 @@ CURL *init(CURL *ceh,
     }
     VERBOSE(prolog << " is using the netrc file '"
                    << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
-
 
     // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
     // Cookies
@@ -590,6 +562,15 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
 }
 
 /**
+ * @brief A libcurl callback function that ignores the data entirely. nothing is written. Ever.
+ *
+ * @note Used only by init_effective_url_retriever_handle(). jhrg 2/6/23
+ */
+static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
+    return nmemb;
+}
+
+/**
  * @brief Returns an cURL easy handle for tracing redirects.
  *
  * The returned cURL easy handle is configured to make a 4 byte
@@ -635,9 +616,28 @@ CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_
 }
 
 /**
+ * libcurl call back function that is used to write data to a passed open file descriptor (that would
+ * be instead of the default open FILE *)
+ *
+ * @note Used only by http_get_and_write_resource(). jhrg 2/6/23
+ */
+static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
+
+    int *fd = (int *) userdata;
+
+    BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
+    int wrote = write(*fd, data, nmemb);
+    BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
+
+    return wrote;
+}
+
+/**
  *
  * Use libcurl to dereference a URL. Read the information referenced by
- * url into the file pointed to by the open file descriptor fd.
+ * url into the file pointed to by the open file descriptor fd.\
+ *
+ * @note Used only by RemoteResource::writeResourceToFile(). jhrg 2/6/23
  *
  * @param target_url The URL to dereference.
  * @param fd  An open file descriptor (as in 'open' as opposed to 'fopen') which
@@ -731,6 +731,7 @@ string error_message(const CURLcode response_code, char *error_buffer) {
     return oss.str();
 }
 
+#if 0
 /**
  * @brief Used to pass memory into the original version of http_get()
  */
@@ -856,12 +857,11 @@ static size_t vector_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @param buf The vector<char> that will hold the response. New data will be
  * appended to this vector<char>. In most cases this should be zero-length vector,
  * but setting its capacity() to the suspected size may improve performance.
- *
  */
 void http_get(const string &target_url, vector<char> &buf) {
 
-    char errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-    CURL *ceh = nullptr;     ///< The libcurl handle object.
+    char errbuf[CURL_ERROR_SIZE];    ///< raw error message info from libcurl
+    CURL *ceh = nullptr;             ///< The libcurl handle object.
     CURLcode res;
 
     curl_slist *request_headers = nullptr;
@@ -904,6 +904,8 @@ void http_get(const string &target_url, vector<char> &buf) {
         throw;
     }
 }
+
+#endif
 
 /**
  * @brief Performs a curl_easy_perform(), retrying if certain types of errors are encountered.
@@ -1025,6 +1027,7 @@ void super_easy_perform(CURL *c_handle, const int fd)
     unset_error_buffer(c_handle);
 }
 
+#if 0
 /**
 * @brief http_get_as_json() This function de-references the target_url and parses the response into a JSON document.
 * No attempt to cache is performed, the HTTP request is made for each invocation of this method.
@@ -1040,6 +1043,7 @@ rapidjson::Document http_get_as_json(const std::string &target_url) {
     d.Parse(response_buf);
     return d;
 }
+#endif
 
 string get_cookie_file_base() {
     bool found = false;
@@ -1449,11 +1453,11 @@ string hyrax_user_agent() {
 }
 
 /**
- * @brief Evaluuates the CURLcode returned by curl_easy_setopt()
+ * @brief Evaluates the CURLcode returned by curl_easy_setopt()
  *
  * Throws a BESInternalError if curl_code != CURLE_OK
  *
- * A SSOT for this activity, which get's done a bunch.
+ * A SSOT for this activity, which gets done a bunch.
  *
  * @param result The CURLcode value returned by the call to curl_easy_setopt()
  * @param msg_base The prefix for any error message that gets generated.

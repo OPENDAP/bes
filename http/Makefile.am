@@ -53,8 +53,9 @@ SRCS = CurlUtils.cc \
     AllowedHosts.cc \
     AccessCredentials.cc \
     CredentialsManager.cc \
-    NgapS3Credentials.cc \
     awsv4.cc
+
+# removed jhrg 2/6/23 NgapS3Credentials.cc NgapS3Credentials.h
 
 HDRS = CurlUtils.h \
     HttpCache.h \
@@ -68,7 +69,6 @@ HDRS = CurlUtils.h \
     AllowedHosts.h \
     AccessCredentials.h \
     CredentialsManager.h \
-    NgapS3Credentials.h \
     awsv4.h
 
 moduledir = $(sysconfdir)/bes/modules

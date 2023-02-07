@@ -305,6 +305,7 @@ public:
         curl_slist_free_all(headers);
     }
 
+#if 0
     // Test the first version of http_get() function tht takes a fixed size buffer.
     // If the buffer is too small, buffer overflow.
     void http_get_test_1() {
@@ -453,6 +454,7 @@ public:
             CPPUNIT_ASSERT("Credentials are not set, so the test passes by default.");
         }
     }
+#endif
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -467,6 +469,7 @@ public:
     CPPUNIT_TEST(sign_s3_url_test_2);
     CPPUNIT_TEST(sign_s3_url_test_3);
 
+#if 0
     CPPUNIT_TEST(http_get_test_1);
     CPPUNIT_TEST_EXCEPTION(http_get_test_1_0, BESInternalError);
     CPPUNIT_TEST(http_get_test_2);
@@ -477,6 +480,7 @@ public:
     CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
     CPPUNIT_TEST(http_get_test_7);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 };

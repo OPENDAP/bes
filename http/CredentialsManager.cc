@@ -29,7 +29,6 @@
 #include <cstring>
 #include <iomanip>
 #include <sstream>
-#include <locale>
 #include <string>
 #include <sys/stat.h>
 
@@ -38,17 +37,18 @@
 #include "kvp_utils.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
-#include "CurlUtils.h"
 #include "HttpNames.h"
 
 #include "CredentialsManager.h"
+
+#if 0
 #include "NgapS3Credentials.h"
+#endif
 
 using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
-// TODO Should this be a member in the class? jhrg 10/31/22
 #define NGAP_S3_BASE_DEFAULT "https://"
 
 namespace http {
@@ -303,7 +303,11 @@ void CredentialsManager::load_credentials() {
         return;
     }
 
+#if 0
+    // We worked on adding support for the NGAP S3 credentials, but it has never been used.
+    // jhrg 2/6/23
     load_ngap_s3_credentials();
+#endif
 
     if (!file_exists(config_file)) {
         BESDEBUG(HTTP_MODULE, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
@@ -419,6 +423,7 @@ AccessCredentials *CredentialsManager::load_credentials_from_env() {
     return ac;
 }
 
+#if 0
 /**
  * Read the BESKeys (from bes.conf chain) and if NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY is present builds
  * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
@@ -459,5 +464,5 @@ void CredentialsManager::load_ngap_s3_credentials() {
                                      << " NGAP S3 Credentials NOT loaded." << endl);
     }
 }
-
+#endif
 } // namespace http

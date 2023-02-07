@@ -60,7 +60,10 @@ private:
 
     AccessCredentials *load_credentials_from_env();
 
+#if 0
+    // This was never used. jhrg 2/6/23
     void load_ngap_s3_credentials();
+#endif
 
 public:
     static CredentialsManager *theMngr;
