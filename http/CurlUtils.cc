@@ -1062,6 +1062,7 @@ string get_cookie_filename() {
     return cf_with_pid.str();
 }
 
+#if 0
 void clear_cookies() {
     string cf = get_cookie_filename();
     int ret = unlink(cf.c_str());
@@ -1071,7 +1072,7 @@ void clear_cookies() {
         BESDEBUG(MODULE, prolog << msg << endl);
     }
 }
-
+#endif
 
 /**
  * Checks to see if the entire url matches any of the "no retry" regular expressions held in the TheBESKeys
@@ -1395,10 +1396,10 @@ std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr
 }
 
 /**
- * @brief Return the location of the netrc file for Hyrax to utilize when
- * making requests for remote resources.
+ * @brief Return the location of the netrc file for Hyrax
  *
- * If no file is specifed an empty string is returned.
+ * This function looks in the BES Keys for the key Http.netrc.file.
+ * If no file is specified an empty string is returned.
  *
  * @return The name of the netrc file specified in the configuration, possibly the empty
  * string of none was specified.

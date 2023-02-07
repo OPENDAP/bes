@@ -48,23 +48,18 @@ namespace curl {
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url, int fd,
                                  std::vector<std::string> *http_response_headers);
 
-#if 0
-void http_get(const std::string &url, char *response_buf, size_t bufsz);
-void http_get(const std::string &target_url, std::vector<char> &buf);
-rapidjson::Document http_get_as_json(const std::string &target_url);
-#endif
-
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
 
 std::string get_netrc_filename();
 
 std::string get_cookie_filename();
 
-bool is_retryable(std::string url);
-
 unsigned long max_redirects();
 
 std::string hyrax_user_agent();
+
+bool is_retryable(std::string url);
+
 
 CURL *init(const std::string &target_url,
            const struct curl_slist *http_request_headers,
@@ -106,12 +101,6 @@ std::string get_range_arg_string(const unsigned long long &offset, const unsigne
 std::string http_status_to_string(int status);
 
 std::string error_message(CURLcode response_code, char *error_buf);
-
-size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
-
-#if 0
-void read_data(CURL *c_handle);
-#endif
 
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
 
