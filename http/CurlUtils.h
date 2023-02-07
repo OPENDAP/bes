@@ -109,7 +109,9 @@ std::string error_message(CURLcode response_code, char *error_buf);
 
 size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
+#if 0
 void read_data(CURL *c_handle);
+#endif
 
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
 
@@ -119,6 +121,8 @@ curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::Acce
                          curl_slist *req_headers);
 
 curl_slist *sign_url_for_s3_if_possible(const std::shared_ptr<http::url> &url,  curl_slist *request_headers);
+
+std::string url_encode(const std::string &s);
 
 } // namespace curl
 

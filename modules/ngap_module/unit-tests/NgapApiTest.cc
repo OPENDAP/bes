@@ -23,41 +23,27 @@
 
 #include "config.h"
 
-#include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
-#include <cstdio>
-#include <cstring>
 #include <iostream>
+#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <unistd.h>
-#include <libdap/util.h>
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
 
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
-#include "HttpUtils.h"
 #include "HttpNames.h"
 #include "url_impl.h"
-#include "RemoteResource.h"
-
-#include "test_config.h"
-
 
 #include "NgapApi.h"
-#include "NgapContainer.h"
 #include "NgapNames.h"
-// #include "NgapError.h"
-// #include "rjson_utils.h"
+#include "test_config.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -75,9 +61,6 @@ namespace ngap {
 
 class NgapApiTest: public CppUnit::TestFixture {
 private:
-
-    // char curl_error_buf[CURL_ERROR_SIZE];
-
     void show_file(string filename)
     {
         ifstream t(filename.c_str());
@@ -118,17 +101,10 @@ private:
 
 public:
     // Called once before everything gets tested
-    NgapApiTest()
-    {
-    }
+    NgapApiTest() = default;
+    ~NgapApiTest() override = default;
 
-    // Called at the end of the test
-    ~NgapApiTest()
-    {
-    }
-
-    // Called before each test
-    void setUp()
+    void setUp() override
     {
         if(debug) cerr << endl;
         if(Debug) cerr << "setUp() - BEGIN" << endl;
@@ -146,20 +122,6 @@ public:
         if(Debug) cerr << "setUp() - END" << endl;
     }
 
-    // Called after each test
-    void tearDown()
-    {
-    }
-
-    void show_vector(vector<string> v){
-        cerr << "show_vector(): Found " << v.size() << " elements." << endl;
-        // vector<string>::iterator it = v.begin();
-        for(size_t i=0;  i < v.size(); i++){
-            cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
-        }
-    }
-
-
     void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
         CPPUNIT_ASSERT (data_access_url.size() > granule_name.size() );
@@ -174,7 +136,6 @@ public:
         CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
 
     }
-
 
     /**
      * This test exercises the legacy 3 component restified path model
@@ -202,7 +163,7 @@ public:
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -236,7 +197,7 @@ public:
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -270,14 +231,13 @@ public:
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
         }
 
     }
-
 
     void cmr_access_entry_title_test() {
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -411,10 +371,6 @@ int main(int argc, char*argv[])
 
     argc -= optind;
     argv += optind;
-
-    /*cerr << "    debug: " << (debug?"enabled":"disabled") << endl;
-    cerr << "    Debug: " << (Debug?"enabled":"disabled") << endl;
-    cerr << "bes_debug: " << (bes_debug?"enabled":"disabled") << endl;*/
 
     bool wasSuccessful = true;
     string test = "";

@@ -45,13 +45,17 @@
 
 namespace http {
 
-    void load_mime_list_from_keys(std::map<std::string, std::string> &mime_list);
-    void load_proxy_from_keys();
+#if 0
+void load_mime_list_from_keys(std::map<std::string, std::string> &mime_list);
+
+void load_proxy_from_keys();
     size_t load_max_redirects_from_keys();
 
-    void get_type_from_disposition(const std::string &disp, std::string &type);
+void get_type_from_disposition(const std::string &disp, std::string &type);
     void get_type_from_content_type(const std::string &ctype, std::string &type);
-    void get_type_from_url(const std::string &url, std::string &type);
+
+void get_type_from_url(const std::string &url, std::string &type);
+#endif
 
     std::string url_encode(const std::string &s);
 

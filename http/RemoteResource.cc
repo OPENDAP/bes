@@ -40,11 +40,13 @@
 #include "BESInternalError.h"
 #include "BESNotFoundError.h"
 
+#include "BESCatalogList.h"
+#include "BESCatalogUtils.h"
 #include "BESDebug.h"
-#include "BESUtil.h"
+// #include "BESUtil.h"
 
 #include "HttpCache.h"
-#include "HttpUtils.h"
+// #include "HttpUtils.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
 #include "RemoteResource.h"
@@ -124,6 +126,23 @@ string RemoteResource::getCacheFileName() const {
                                " has Not Been Retrieved.", __FILE__, __LINE__);
     }
     return d_resourceCacheFileName;
+}
+
+/**
+ * Look for the type of handler that can read the url found in the \arg url.
+ * This function uses the BES Catalog Utils to find the handler that can read
+ * the data referenced by the URL. Essentially, it uses the filename extension
+ * to make the determination.
+ *
+ * @note This function is only called from RemoteResource::retrieveResource()
+ *
+ * @param url The URL to the data
+ * @param type The type of the handler that can read this file or the empty string.
+ */
+static void get_type_from_url(const string &url, string &type) {
+    const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
+
+    type = utils->get_handler_name(url);
 }
 
 /**

@@ -51,7 +51,7 @@
 #include "BESStopWatch.h"
 
 #include "HttpNames.h"
-#include "HttpUtils.h"
+// #include "HttpUtils.h"
 #include "ProxyConfig.h"
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
@@ -1482,7 +1482,7 @@ void eval_curl_easy_setopt_result(
 }
 
 unsigned long max_redirects() {
-    return http::load_max_redirects_from_keys();
+    return TheBESKeys::TheKeys()->read_ulong_key(HTTP_MAX_REDIRECTS_KEY, HTTP_MAX_REDIRECTS_DEFAULT);
 }
 
 /**
@@ -1503,7 +1503,6 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
     full_header.append(": ").append(value);
 
     BESDEBUG(MODULE, prolog << full_header << endl);
-    // std::cerr << prolog << full_header << endl;
 
     struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
     if (!temp){
@@ -1629,6 +1628,13 @@ sign_url_for_s3_if_possible(const shared_ptr<url> &url,  curl_slist *request_hea
 /**
  * @brief Queries the passed cURL easy handle, ceh, for the value of CURLINFO_EFFECTIVE_URL and returns said value.
  *
+ * @note This method is used to determine the actual URL that was used to make the request.
+ * The URL may be different than the original URL that was passed to the cURL handle, or it
+ * may be the same. This method may be called both before and after the call to curl_easy_perform.
+ * If it is called before the call to curl_easy_perform, then the value returned will be the
+ * the initial value of the URL. So, this is a way to get the original URL that was assigned to
+ * the cURL handle.
+ *
  * @param ceh The cURL easy handle to query
  * @param requested_url The original URL that was set in the cURL handle prior to a call to curl_easy_perform.
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
@@ -1643,6 +1649,60 @@ string get_effective_url(CURL *ceh, string requested_url) {
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return effective_url;
+}
+
+// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/package.html#encodeURIComponent()
+
+/**
+ * Thanks to https://gist.github.com/litefeel for this implementation
+ * @param c
+ * @param hex1
+ * @param hex2
+ */
+static void hexchar(const unsigned char &c, unsigned char &hex1, unsigned char &hex2)
+{
+    hex1 = c / 16;
+    hex2 = c % 16;
+    hex1 += hex1 <= 9 ? '0' : 'a' - 10;
+    hex2 += hex2 <= 9 ? '0' : 'a' - 10;
+}
+
+/**
+ * Thanks to https://gist.github.com/litefeel for this implementation
+ * @param s
+ * @return s, but url encoded
+ */
+string url_encode(const string &s)
+{
+    const char *str = s.c_str();
+    vector<char> v(s.size());
+    v.clear();
+    for (size_t i = 0, l = s.size(); i < l; i++)
+    {
+        char c = str[i];
+        if ((c >= '0' && c <= '9') ||
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z') ||
+            c == '-' || c == '_' || c == '.' || c == '!' || c == '~' ||
+            c == '*' || c == '\'' || c == '(' || c == ')')
+        {
+            v.push_back(c);
+        }
+        else if (c == ' ')
+        {
+            v.push_back('+');
+        }
+        else
+        {
+            v.push_back('%');
+            unsigned char d1, d2;
+            hexchar(c, d1, d2);
+            v.push_back(d1);
+            v.push_back(d2);
+        }
+    }
+
+    return {v.cbegin(), v.cend()};
 }
 
 } /* namespace curl */

@@ -3,7 +3,7 @@
 // This file is part of cmr_module, A C++ MODULE that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2022 OPeNDAP, Inc.
+// Copyright (c) 2018, 2022 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -28,22 +28,17 @@
  *  Created on: July, 13 2018
  *      Author: ndp
  */
+
 #include <memory>
-#include <cstdio>
-#include <cstring>
 #include <iostream>
 #include <sstream>
 
 #include "nlohmann/json.hpp"
 
-#include <libdap/util.h>
-#include <libdap/debug.h>
-
-#include "HttpUtils.h"
+#include "CurlUtils.h"
 
 #include "BESError.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -55,15 +50,16 @@
 #include "CmrNotFoundError.h"
 #include "JsonUtils.h"
 
-using std::string;
+using namespace std;
 using json = nlohmann::json;
 
 #define prolog string("CmrApi::").append(__func__).append("() - ")
 
 namespace cmr {
 
-std::string truth(bool t){ if(t){return "true";} return "false"; }
-
+#if 0
+string truth(bool t){ if(t){return "true";} return "false"; }
+#endif
 
 CmrApi::CmrApi() {
     bool found;
@@ -103,7 +99,6 @@ const nlohmann::json& CmrApi::get_related_urls_array(const nlohmann::json& json_
     JsonUtils json;
     return json.qc_get_array(CMR_UMM_RELATED_URLS_KEY,json_obj);
 }
-
 
 /**
   * Locates and QC's the child object named "children" (aka CMR_V2_CHILDREN_KEY)
@@ -213,7 +208,6 @@ const nlohmann::json &CmrApi::get_temporal_group(const nlohmann::json &cmr_doc) 
     throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
 } // CmrApi::get_temporal_group()
 
-
 /**
  *
  * @param cmr_doc
@@ -261,7 +255,7 @@ const nlohmann::json &CmrApi::get_years(const nlohmann::json &cmr_doc) const
  * @param cmr_doc
  * @return
  */
-const nlohmann::json &CmrApi::get_year(const std::string &target_year, const nlohmann::json &cmr_doc) const
+const nlohmann::json &CmrApi::get_year(const string &target_year, const nlohmann::json &cmr_doc) const
 {
     const auto &years = get_years(cmr_doc);
     for( auto &year:years) {
@@ -282,7 +276,7 @@ const nlohmann::json &CmrApi::get_year(const std::string &target_year, const nlo
  * @param cmr_doc
  * @return
  */
-const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, const nlohmann::json &cmr_doc) const
+const nlohmann::json &CmrApi::get_month_group(const string &target_year, const nlohmann::json &cmr_doc) const
 {
 
 
@@ -332,19 +326,15 @@ const nlohmann::json &CmrApi::get_month_group(const std::string &target_year, co
     throw CmrInternalError(msg, __FILE__, __LINE__);
 }
 
-
-
 /**
- *
- *
  * @param target_month
  * @param target_year
  * @param cmr_doc
  * @return
  */
 const nlohmann::json &
-CmrApi::get_month(const std::string &target_month,
-                  const std::string &target_year,
+CmrApi::get_month(const string &target_month,
+                  const string &target_year,
                   const nlohmann::json &cmr_doc)
  const {
 
@@ -372,10 +362,6 @@ CmrApi::get_month(const std::string &target_month,
 
 }
 
-
-
-
-
 /**
  *
  * @param target_month
@@ -384,8 +370,8 @@ CmrApi::get_month(const std::string &target_month,
  * @return
  */
 const nlohmann::json &
-CmrApi::get_day_group(const std::string &target_month,
-                        const std::string &target_year,
+CmrApi::get_day_group(const string &target_month,
+                        const string &target_year,
                         const nlohmann::json &cmr_doc)
 const {
 
@@ -435,8 +421,6 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
     }
 } // CmrApi::get_years()
 
-
-
 /**
  * Queries CMR for the 'collection_name' and returns the span of years covered by the collection.
  *
@@ -456,7 +440,7 @@ CmrApi::get_months(const string &collection_name,
     cmr_query_url << d_cmr_granules_search_endpoint_url << "?" ;
     cmr_query_url << "concept_id=" << collection_name << "&";
     cmr_query_url << "include_facets=v2&";
-    cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year;
+    cmr_query_url << curl::url_encode("temporal_facet[0][year]") << "=" << r_year;
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
 
     const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
@@ -505,9 +489,6 @@ CmrApi::get_months(const string &collection_name,
 
 } // CmrApi::get_months()
 
-
-
-
 /**
  *
  * @param collection_concept_id
@@ -526,8 +507,8 @@ void CmrApi::get_days(const string &collection_concept_id,
     stringstream cmr_query_string;
     cmr_query_string << "concept_id=" << collection_concept_id << "&";
     cmr_query_string << "include_facets=v2" << "&";
-    cmr_query_string << http::url_encode("temporal_facet[0][year]") << "=" << r_year << "&";
-    cmr_query_string << http::url_encode("temporal_facet[0][month]") << "=" << r_month;
+    cmr_query_string << curl::url_encode("temporal_facet[0][year]") << "=" << r_year << "&";
+    cmr_query_string << curl::url_encode("temporal_facet[0][month]") << "=" << r_month;
     cmr_query_url << cmr_query_string.str();
     BESDEBUG(MODULE, prolog << "CMR Query URL: " << cmr_query_url.str() << endl);
 
@@ -558,11 +539,11 @@ void CmrApi::get_days(const string &collection_concept_id,
  * @param r_day
  * @param granule_ids
  */
-void CmrApi::get_granule_ids(const std::string& collection_name,
-                             const std::string& r_year,
-                             const std::string &r_month,
-                             const std::string &r_day,
-                             std::vector<std::string> &granule_ids) const
+void CmrApi::get_granule_ids(const string& collection_name,
+                             const string& r_year,
+                             const string &r_month,
+                             const string &r_day,
+                             std::vector<string> &granule_ids) const
 {
     json cmr_doc;
 
@@ -605,10 +586,10 @@ unsigned long CmrApi::granule_count(const string &collection_name,
  * Locates granules in the collection matching the year, month, and day. Any or all of
  * year, month, and day may be the empty string.
  */
-void CmrApi::granule_search(const std::string &collection_name,
-                            const std::string &r_year,
-                            const std::string &r_month,
-                            const std::string &r_day,
+void CmrApi::granule_search(const string &collection_name,
+                            const string &r_year,
+                            const string &r_month,
+                            const string &r_day,
                             nlohmann::json &cmr_doc) const
 {
 
@@ -621,13 +602,13 @@ void CmrApi::granule_search(const std::string &collection_name,
     cmr_query_url << "page_size=" << CMR_MAX_PAGE_SIZE << "&";
 
     if(!r_year.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year<< "&";
+        cmr_query_url << curl::url_encode("temporal_facet[0][year]") << "=" << r_year<< "&";
     }
     if(!r_month.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][month]") << "=" << r_month<< "&";
+        cmr_query_url << curl::url_encode("temporal_facet[0][month]") << "=" << r_month<< "&";
     }
     if(!r_day.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][day]") << "=" << r_day;
+        cmr_query_url << curl::url_encode("temporal_facet[0][day]") << "=" << r_day;
     }
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
@@ -642,10 +623,10 @@ void CmrApi::granule_search(const std::string &collection_name,
  * Locates granules in the collection matching the year, month, and day. Any or all of
  * year, month, and day may be the empty string.
  */
-void CmrApi::granule_umm_search(const std::string &collection_name,
-                                const std::string &r_year,
-                                const std::string &r_month,
-                                const std::string &r_day,
+void CmrApi::granule_umm_search(const string &collection_name,
+                                const string &r_year,
+                                const string &r_month,
+                                const string &r_day,
                                 nlohmann::json &cmr_doc)
 const {
 
@@ -657,13 +638,13 @@ const {
     cmr_query_url << "page_size=" << CMR_MAX_PAGE_SIZE << "&";
 
     if(!r_year.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year<< "&";
+        cmr_query_url << curl::url_encode("temporal_facet[0][year]") << "=" << r_year<< "&";
     }
     if(!r_month.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][month]") << "=" << r_month<< "&";
+        cmr_query_url << curl::url_encode("temporal_facet[0][month]") << "=" << r_month<< "&";
     }
     if(!r_day.empty()) {
-        cmr_query_url << http::url_encode("temporal_facet[0][day]") << "=" << r_day;
+        cmr_query_url << curl::url_encode("temporal_facet[0][day]") << "=" << r_day;
     }
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
@@ -677,10 +658,10 @@ const {
 /**
  * Returns all of the Granules in the collection matching the date.
  */
-void CmrApi::get_granules(const std::string& collection_name,
-                          const std::string &r_year,
-                          const std::string &r_month,
-                          const std::string &r_day,
+void CmrApi::get_granules(const string& collection_name,
+                          const string &r_year,
+                          const string &r_month,
+                          const string &r_day,
                           std::vector<unique_ptr<cmr::Granule>> &granule_objs)
 const {
     stringstream msg;
@@ -699,10 +680,10 @@ const {
 /**
  * Returns all of the GranuleUMMs in the collection matching the date.
  */
-void CmrApi::get_granules_umm(const std::string& collection_name,
-                          const std::string &r_year,
-                          const std::string &r_month,
-                          const std::string &r_day,
+void CmrApi::get_granules_umm(const string& collection_name,
+                          const string &r_year,
+                          const string &r_month,
+                          const string &r_day,
                           std::vector<unique_ptr<cmr::GranuleUMM>> &granule_objs) const
 {
     stringstream msg;
@@ -720,7 +701,7 @@ void CmrApi::get_granules_umm(const std::string& collection_name,
 
 
 
-void CmrApi::get_collection_ids(std::vector<std::string> &collection_ids) const
+void CmrApi::get_collection_ids(std::vector<string> &collection_ids) const
 {
     bool found = false;
     TheBESKeys::TheKeys()->get_values(CMR_COLLECTIONS_KEY, collection_ids, found);
@@ -764,13 +745,12 @@ const {
     return result;
 }
 
-
 /**
  * https://cmr.earthdata.nasa.gov/legacy-services/rest/providers/LPDAAC_ECS.json
  * @param provider_id
  * @return
  */
-Provider CmrApi::get_provider(const std::string &provider_id) const
+Provider CmrApi::get_provider(const string &provider_id) const
 {
     JsonUtils json;
 
@@ -846,9 +826,8 @@ unsigned long int CmrApi::get_opendap_collections_count(const string &provider_i
     return hits;
 }
 
-
-void CmrApi::get_collections_worker( const std::string &provider_id,
-                                    std::map<std::string, std::unique_ptr<cmr::Collection>> &collections,
+void CmrApi::get_collections_worker( const string &provider_id,
+                                    std::map<string, std::unique_ptr<cmr::Collection>> &collections,
                                     unsigned int page_size,
                                     bool just_opendap)
 const {
@@ -894,21 +873,14 @@ const {
 
 }
 
-
-
-void CmrApi::get_opendap_collections(const std::string &provider_id,
-                                     std::map<std::string,std::unique_ptr<cmr::Collection>> &collections) const{
+void CmrApi::get_opendap_collections(const string &provider_id,
+                                     std::map<string,std::unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, true);
 }
-void CmrApi::get_collections(const std::string &provider_id,
-                             std::map<std::string,std::unique_ptr<cmr::Collection>> &collections) const{
+void CmrApi::get_collections(const string &provider_id,
+                             std::map<string,std::unique_ptr<cmr::Collection>> &collections) const{
     get_collections_worker(provider_id,collections, CMR_MAX_PAGE_SIZE, false);
 }
-
-
-
-
-
 
 } // namespace cmr
 

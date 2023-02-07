@@ -45,7 +45,6 @@ DISTCLEANFILES = http.conf
 SRCS = CurlUtils.cc \
     HttpCache.cc \
     RemoteResource.cc \
-    HttpUtils.cc \
     ProxyConfig.cc \
     EffectiveUrlCache.cc \
     url_impl.cc \
@@ -55,12 +54,11 @@ SRCS = CurlUtils.cc \
     CredentialsManager.cc \
     awsv4.cc
 
-# removed jhrg 2/6/23 NgapS3Credentials.cc NgapS3Credentials.h
+# removed jhrg 2/6/23 NgapS3Credentials.cc NgapS3Credentials.h HttpUtils.cc HttpUtils.h
 
 HDRS = CurlUtils.h \
     HttpCache.h \
     RemoteResource.h \
-    HttpUtils.h \
     ProxyConfig.h \
     HttpNames.h \
     EffectiveUrlCache.h \
