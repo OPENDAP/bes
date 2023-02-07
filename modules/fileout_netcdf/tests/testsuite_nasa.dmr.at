@@ -71,7 +71,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/acos_L
 #The size of a variable precip of this daymet file is too big for Hyrax to handle. The variable size is 365*8075*7814*4/1024/1024/1024=85GB. 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_ba_h5_whole.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_ba_grp_dim_whole.h5.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/daymet_v4_daily_na_prcp_2010.nc.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/daymet_v4_daily_na_prcp_2010.nc.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5_sin_multi_grids.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5_sin_one_grid.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5lamaz.h5.bescmd)
