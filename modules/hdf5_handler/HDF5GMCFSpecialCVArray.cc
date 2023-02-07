@@ -58,7 +58,7 @@ bool HDF5GMCFSpecialCVArray::read()
 
 // This is according to https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf(section 5.32), the definition of nlayer
 // The top of each layer is 0.5,1.0,....., 10.0,11.0.....18.0 km.
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int64_t nelms, vector<int64_t>&offset, vector<int64_t>&step, vector<int64_t>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int64_t nelms, const vector<int64_t>&offset, const vector<int64_t>&step, const vector<int64_t>&/*count*/)
 {
 
     vector<float> total_val;
@@ -92,7 +92,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer(int64_t nelms, vector<int64_t>&
 // section 8.1. Number of layers at the fixed heights of 0.0-0.5km,0.5-1.0 km,.....
 // Like obtain_gpm_l3_layer1, we use the top height value 0.5 km, 1.0 km,2km,.....,18 km.
 // See also section 4.1.1 and 3.1.1 of http://www.eorc.jaxa.jp/GPM/doc/product/format/en/06.%20GPM_Combined%20Product%20Format_E.pdf
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int64_t nelms, vector<int64_t>&offset, vector<int64_t>&step, const vector<int64_t>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int64_t nelms, const vector<int64_t>&offset, const vector<int64_t>&step, const vector<int64_t>&/*count*/)
 {
 
     // No need to add the large array support. It will never happen to this product.
@@ -121,7 +121,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_layer2(int64_t nelms, vector<int64_t>
     }
 }
 
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int64_t nelms, vector<int64_t>&offset, vector<int64_t>&step, const vector<int64_t>&/*count*/)
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt_hgt(int64_t nelms, const vector<int64_t>&offset, const vector<int64_t>&step, const vector<int64_t>&/*count*/)
 {
 
     // No need to add the large array support. It will never happen to this product.
@@ -150,7 +150,8 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_hgt(int64_t nelms, vector<int64_t>&of
     }
 }
 
-void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int64_t nelms, vector<int64_t>&offset, vector<int64_t>&step, const vector<int64_t>&/*count*/)
+#if 0
+void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int64_t nelms, const vector<int64_t>&offset, const vector<int64_t>&step, const vector<int64_t>&/*count*/)
 {
     // No need to add the large array support. It will never happen to this product.
     vector<float> total_val;
@@ -178,6 +179,7 @@ void HDF5GMCFSpecialCVArray::obtain_gpm_l3_nalt(int64_t nelms, vector<int64_t>&o
         set_value(val.data(), (int)nelms);
     }
 }
+#endif
 
 void HDF5GMCFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, void*/*buf*/)
 {
@@ -203,9 +205,9 @@ void HDF5GMCFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, vo
         else if (varname == "nlayer" && 19 == tnumelm)
             obtain_gpm_l3_layer2(nelms, offset, step, count);
         else if (varname == "hgt" && 5 == tnumelm) {
-            obtain_gpm_l3_hgt(nelms, offset, step, count);
+            obtain_gpm_l3_nalt_hgt(nelms, offset, step, count);
         }
-        else if (varname == "nalt" && 5 == tnumelm) obtain_gpm_l3_nalt(nelms, offset, step, count);
+        else if (varname == "nalt" && 5 == tnumelm) obtain_gpm_l3_nalt_hgt(nelms, offset, step, count);
     }
 
     return;

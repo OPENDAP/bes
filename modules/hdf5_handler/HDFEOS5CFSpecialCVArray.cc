@@ -246,7 +246,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];
 
-    set_value(val.data(), nelms);
+    set_value_ll(val.data(), nelms);
     H5Tclose(attr_type);
     H5Tclose(attr_mem_type);
     H5Aclose(cv_attr_id);

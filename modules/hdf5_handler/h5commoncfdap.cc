@@ -1299,7 +1299,7 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
         char sep=' ';
         vector<string>cvalue_vec;
         HDF5CFUtil::Split_helper(cvalue_vec,tempstring2,sep);
-        for (int i = 0; i<cvalue_vec.size();i++) {
+        for (unsigned int i = 0; i<cvalue_vec.size();i++) {
             HDF5CFUtil::cha_co(cvalue_vec[i],var_path);
             string t_str = get_cf_string(cvalue_vec[i]);
             if(i == 0) 
@@ -1521,9 +1521,9 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
                 bool has_dim0 = false;
                 bool has_dim1 = false;
                 for(;dim_i !=dim_e;dim_i++) {
-                    if((*dim_i).name == dim0name && (*dim_i).size == dim0size)
+                    if((*dim_i).name == dim0name && (*dim_i).size == (int64_t)dim0size)
                         has_dim0 = true;
-                    else if((*dim_i).name == dim1name && (*dim_i).size == dim1size)                              
+                    else if((*dim_i).name == dim1name && (*dim_i).size == (int64_t)dim1size)                              
                         has_dim1 = true;
                 }
 

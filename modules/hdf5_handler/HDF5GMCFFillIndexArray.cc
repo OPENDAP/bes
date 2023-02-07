@@ -229,7 +229,7 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int64_t i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (double)(offset[0] + step[0] * i);
 
             set_value_ll (val.data(), nelms);
         } // case H5FLOAT64

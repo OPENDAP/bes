@@ -60,14 +60,16 @@ private:
     CVType cvartype = CV_UNSUPPORTED;
 
     // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
-    void obtain_gpm_l3_layer(int64_t, std::vector<int64_t>&, std::vector<int64_t>&, std::vector<int64_t>& );
+    void obtain_gpm_l3_layer(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>& );
 
     // GPM version 4.0 nlayer values are from the document
     // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
-    void obtain_gpm_l3_layer2(int64_t, std::vector<int64_t>&, std::vector<int64_t>&, const std::vector<int64_t>&);
+    void obtain_gpm_l3_layer2(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
 
-    void obtain_gpm_l3_hgt(int64_t, std::vector<int64_t>&, std::vector<int64_t>&, const std::vector<int64_t>&);
-    void obtain_gpm_l3_nalt(int64_t, std::vector<int64_t>&, std::vector<int64_t>&, const std::vector<int64_t>&);
+    void obtain_gpm_l3_nalt_hgt(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
+#if 0
+    void obtain_gpm_l3_nalt(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
+#endif
     void read_data_NOT_from_mem_cache(bool add_cache, void*buf) override;
 
 };

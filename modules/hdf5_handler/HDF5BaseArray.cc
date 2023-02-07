@@ -241,7 +241,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                      );
 
 
-            set_value_ll ((dods_int16 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }// H5INT16
             break;
 
@@ -262,7 +262,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                   );
 
                
-            set_value_ll ((dods_uint16 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // H5UINT16
             break;
 
@@ -281,7 +281,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			0
 			);
 
-            set_value_ll ((dods_int32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // case H5INT32
             break;
 
@@ -300,7 +300,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 				0
 				);
 
-            set_value_ll ((dods_uint32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }
             break;
         // Add the code for the CF option DAP4 support
@@ -360,7 +360,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			  pos,
 			  0
 			  );
-            set_value_ll ((dods_float32 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         }
             break;
 
@@ -380,7 +380,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
 			    pos,
 			    0
 			    );
-            set_value_ll ((dods_float64 *) val.data(), nelms);
+            set_value_ll (val.data(), nelms);
         } // case H5FLOAT64
             break;
 
