@@ -1004,7 +1004,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         delete[] rbuf;
         H5Sclose(mem_space_id);
         H5Sclose(file_space_id);
-	    set_value(v_str.data(), nelms);
+	set_value_ll(v_str.data(), nelms);
         return false;
     }
     catch (...) {

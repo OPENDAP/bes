@@ -85,7 +85,7 @@ bool HDF5GMCFMissLLArray::read()
             Dim_iter i_dim = dim_begin();
             Dim_iter i_enddim = dim_end();
             while (i_dim != i_enddim) {
-                dim_sizes.push_back(dimension_size(i_dim));
+                dim_sizes.push_back(dimension_size_ll(i_dim));
                 ++i_dim;
             }
 
@@ -102,7 +102,7 @@ bool HDF5GMCFMissLLArray::read()
 }
 
 // Obtain latitude and longitude for Aquarius and OBPG level 3 products
-void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int* offset, const int* step, int nelms, bool add_cache, void* buf)
+void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int64_t* step, int64_t nelms, bool add_cache, void* buf)
 {
 
     BESDEBUG("h5", "Coming to obtain_aqu_obpg_l3_ll read "<<endl);
@@ -194,24 +194,24 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int* offset, const int* st
             "The number of elements exceeds the total number of  Latitude or Longitude");
     }
 
-    for (int i = 0; i < nelms; ++i)
+    for (int64_t i = 0; i < nelms; ++i)
         val[i] = LL_first_point + (offset[0] + i * step[0]) * LL_step;
 
     if (true == add_cache) {
         vector<float> total_val;
         total_val.resize(LL_total_num);
-        for (int total_i = 0; total_i < LL_total_num; total_i++)
+        for (int64_t total_i = 0; total_i < LL_total_num; total_i++)
             total_val[total_i] = LL_first_point + total_i * LL_step;
         memcpy(buf, total_val.data(), 4 * LL_total_num);
     }
 
-    set_value((dods_float32 *) val.data(), nelms);
+    set_value_ll(val.data(), nelms);
     H5Gclose(rootid);
     HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
 }
 
 // Obtain lat/lon for GPM level 3 products
-void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int* offset, const int* step, int nelms, bool add_cache, void*buf)
+void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t* step, int64_t nelms, bool add_cache, void*buf)
 {
 
     if (1 != rank)
@@ -371,7 +371,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int* offset, const int* step, i
             throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Latitude ");
 
         }
-        for (int i = 0; i < nelms; ++i)
+        for (int64_t i = 0; i < nelms; ++i)
             val[i] = lat_start + offset[0] * lat_res + lat_res / 2 + i * lat_res * step[0];
 
         if (add_cache == true) {
@@ -839,8 +839,8 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const vector<char>& grid_info_va
 #endif
 
 void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,const float lat_start,const float lon_start,
-                                                const float lat_res,const float lon_res, const int* offset,const int* step,
-                                                const int nelms,const bool add_cache, void*buf) {
+                                                const float lat_res,const float lon_res, const int64_t* offset,const int64_t* step,
+                                                const int64_t nelms,const bool add_cache, void*buf) {
 
 
     if (0 == latsize || 0 == lonsize) {
@@ -856,13 +856,13 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
             throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Latitude ");
 
         }
-        for (int i = 0; i < nelms; ++i)
+        for (int64_t i = 0; i < nelms; ++i)
             val[i] = lat_start + offset[0] * lat_res + lat_res / 2 + i * lat_res * step[0];
 
         if (add_cache == true) {
             vector<float> total_val;
             total_val.resize(latsize);
-            for (int total_i = 0; total_i < latsize; total_i++)
+            for (int64_t total_i = 0; total_i < latsize; total_i++)
                 total_val[total_i] = lat_start + lat_res / 2 + total_i * lat_res;
             memcpy(buf, total_val.data(), 4 * latsize);
         }
@@ -877,7 +877,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
             throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Longitude");
         }
 
-        for (int i = 0; i < nelms; ++i)
+        for (int64_t i = 0; i < nelms; ++i)
             val[i] = lon_start + offset[0] * lon_res + lon_res / 2 + i * lon_res * step[0];
 
         if (add_cache == true) {
@@ -890,7 +890,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
 
     }
 
-    set_value((dods_float32 *) val.data(), nelms);
+    set_value_ll((dods_float32 *) val.data(), nelms);
 
 }
 
@@ -901,15 +901,15 @@ void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf)
 
     // Here we still use vector just in case we need to tackle "rank>1" in the future.
     // Also we would like to keep it consistent with other similar handlings.
-    vector<int> offset;
-    vector<int> count;
-    vector<int> step;
+    vector<int64_t> offset;
+    vector<int64_t> count;
+    vector<int64_t> step;
 
     offset.resize(rank);
     count.resize(rank);
     step.resize(rank);
 
-    int nelms = format_constraint(offset.data(), step.data(), count.data());
+    int64_t nelms = format_constraint(offset.data(), step.data(), count.data());
 
     if (GPMM_L3 == product_type || GPMS_L3 == product_type || GPM_L3_New == product_type)
         obtain_gpm_l3_ll(offset.data(), step.data(), nelms, add_cache, buf);

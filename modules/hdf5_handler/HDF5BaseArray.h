@@ -67,8 +67,8 @@ protected:
     //virtual BaseType *ptr_duplicate();
     //virtual bool read();
 #endif
-    int format_constraint(int *cor, int *step, int *edg);
-    void write_nature_number_buffer(int rank, int tnumelm);
+    int64_t format_constraint(int64_t *cor, int64_t *step, int64_t *edg);
+    void write_nature_number_buffer(int rank, int64_t tnumelm);
     void read_data_from_mem_cache(H5DataType h5type, const std::vector<size_t> &h5_dimsizes, void*buf,const bool is_dap4);
     virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf) = 0;
 
@@ -77,9 +77,9 @@ protected:
     template<typename T> int subset(    void* input,
                                         int rank,
                                         const std::vector<size_t> & dim,
-                                        int start[],
-                                        int stride[],
-                                        int edge[],
+                                        int64_t start[],
+                                        int64_t stride[],
+                                        int64_t edge[],
                                         std::vector<T> *poutput,
                                         std::vector<size_t>& pos,
                                         int index);
