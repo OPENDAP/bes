@@ -30,8 +30,10 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#if 0
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
+#endif
 
 #include "BESError.h"
 #include "BESDebug.h"

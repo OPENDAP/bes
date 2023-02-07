@@ -58,9 +58,7 @@ public:
 
     NgapApi();
 
-    std::string convert_ngap_resty_path_to_data_access_url(
-            const std::string &restified_path,
-            const std::string &uid="");
+    std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path, const std::string &uid="");
 
     static bool signed_url_is_expired(const http::url &signed_url) ;
 
@@ -75,7 +73,6 @@ public:
     unsigned long granule_count(std::string collection_name,std:: string r_year, std::string r_month, std::string r_day);
     ngap::Granule *get_granule(const std::string path);
     ngap::Granule *get_granule(std::string collection_name, std::string r_year, std::string r_month, std::string r_day, std::string granule_id);
-};
 #endif
 };
 

@@ -24,24 +24,15 @@
 
 #include "config.h"
 
-//#include <cstdio>
-//#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <memory>
-#include <time.h>
+#include <ctime>
 #include <curl/curl.h>
-
-//#include <libdap/util.h>
-//#include <libdap/debug.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
-//#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 
-//#include "BESError.h"
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
@@ -51,13 +42,11 @@
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "TheBESKeys.h"
-//#include "CurlUtils.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-// #include "NgapError.h"
 
 using namespace std;
 
@@ -81,15 +70,11 @@ NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endp
     if (found) {
         d_cmr_search_endpoint_path = cmr_search_endpoint_path;
     }
-
-
 }
 
 std::string NgapApi::get_cmr_search_endpoint_url(){
     return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
 }
-
-
 
 /**
  * @brief Converts an NGAP restified path into the corresponding CMR query URL.
@@ -137,7 +122,8 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
     if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << (use_collection_concept_id?NGAP_CONCEPTS_KEY:NGAP_COLLECTIONS_KEY) << "' located in the incorrect position (";
+        msg << " has the path element '" << (use_collection_concept_id?NGAP_CONCEPTS_KEY:NGAP_COLLECTIONS_KEY);
+        msg << "' located in the incorrect position (";
         msg << collection_index << ") expected at least " << provider_index+1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
@@ -311,7 +297,8 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
-std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
+                                                                 rapidjson::Document &cmr_granule_response)
 {
 
     string data_access_url;

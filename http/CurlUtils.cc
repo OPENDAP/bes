@@ -130,9 +130,9 @@ const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] = {
  */
 string http_status_to_string(int status) {
     if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
-        return string(http_client_errors[status - CLIENT_ERR_MIN]);
+        return {http_client_errors[status - CLIENT_ERR_MIN]};
     else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
-        return string(http_server_errors[status - SERVER_ERR_MIN]);
+        return {http_server_errors[status - SERVER_ERR_MIN]};
     else {
         stringstream msg;
         msg << "Unknown HTTP Error: " << status;
