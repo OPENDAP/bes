@@ -30,7 +30,6 @@
 /// All rights reserved.
 
 #include "HDF5CFUtil.h"
-//#include "HE5GridPara.h"
 #include "HDF5RequestHandler.h"
 #include <set>
 #include <sstream>
@@ -678,7 +677,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     // values may be generated. To avoid, we change the function pointer names inside the GCTP library.
     int(*hinv_trans[100]) (double,double,double*,double*);  
     int(*hfor_trans[100]) (double,double,double*,double*);  /* GCTP function pointer */
-    double        arg1, arg2;
+    double        arg1;
+    double        arg2;
     double        pixadjX  = 0.;  /* Pixel adjustment (x)                 */
     double        pixadjY  = 0.;  /* Pixel adjustment (y)                 */
     double        lonrad0  = 0.;  /* Longitude in radians of upleft point */
@@ -687,7 +687,10 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
     double          scaleY   = 0.;  /* Y scale factor                       */
     double          lonrad   = 0.;  /* Longitude in radians of point        */
     double          latrad   = 0.;  /* Latitude in radians of point         */
-    double          xMtr0, yMtr0, xMtr1, yMtr1;
+    double          xMtr0;
+    double          yMtr0;
+    double          xMtr1;
+    double          yMtr1;
 
 
 
@@ -1229,21 +1232,23 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+    for (const auto &pos_ele:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * pos_ele;
         start++;
     }
     return sum;
 }
 
+// Supposed string temp_str contains several relpath, Obtain all the positions of relpath in temp_str.
+// The positions are stored in a vector of size_t and returns.
 void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, vector<size_t>&s_pos) {
 
 
-    //vector<size_t> positions; // holds all the positions that sub occurs within str
+    //s_pos holds all the positions that relpath appears within the temp_str
 
     size_t pos = temp_str.find(relpath, 0);
     while(pos != string::npos)
@@ -1260,6 +1265,7 @@ void HDF5CFUtil::get_relpath_pos(const string& temp_str, const string& relpath, 
 
 }
 
+
 void HDF5CFUtil::cha_co(string &co,const string & vpath) {
 
     string sep="/";
@@ -1272,9 +1278,11 @@ void HDF5CFUtil::cha_co(string &co,const string & vpath) {
                 get_relpath_pos(vpath,sep,var_sep_pos);
                 vector<size_t>co_rp_sep_pos;
                 get_relpath_pos(co,rp_sep,co_rp_sep_pos);
+                // We only support when "../" is at position 0. 
                 if(co_rp_sep_pos[0]==0) {
                     // Obtain the '../' position at co 
                     if(co_rp_sep_pos.size() <var_sep_pos.size()) {
+                        // We obtain the suffix of CO and the path from vpath.
                         size_t var_prefix_pos=var_sep_pos[var_sep_pos.size()-co_rp_sep_pos.size()-1];
                         string var_prefix=vpath.substr(1,var_prefix_pos);
                         string co_suffix = co.substr(co_rp_sep_pos[co_rp_sep_pos.size()-1]+rp_sep.size());

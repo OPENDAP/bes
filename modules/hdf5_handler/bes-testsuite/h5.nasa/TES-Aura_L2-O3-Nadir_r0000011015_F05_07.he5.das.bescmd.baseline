@@ -823,39 +823,39 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5";
+                    String VALUE "\"TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-12-31T00:59:19.000Z";
+                    String VALUE "\"2009-12-31T00:59:19.000Z\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "L2_Products_Main:R11.01.00";
+                    String VALUE "\"L2_Products_Main:R11.01.00\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Not Investigated";
-                            String CLASS "1";
+                            String VALUE "\"Not Investigated\"";
+                            String CLASS "\"1\"";
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Granule";
+                        String VALUE "\"Granule\"";
                     }
                 }
             }
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "TL2O3N";
+                    String VALUE "\"TL2O3N\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -865,7 +865,7 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 1;
-                    String VALUE "Production History at block: /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PRODUCTION_HISTORY";
+                    String VALUE "\"Production History at block: /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PRODUCTION_HISTORY\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -892,56 +892,56 @@ Attributes {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
             }
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-12-20";
+                    String VALUE "\"2009-12-20\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "10:16:00.195053Z";
+                    String VALUE "\"10:16:00.195053Z\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "12:15:06.119552Z";
+                    String VALUE "\"12:15:06.119552Z\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-12-21";
+                    String VALUE "\"2009-12-21\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "R11.01.00";
+                    String VALUE "\"R11.01.00\"";
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     OPERATIONMODE {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Routine";
+                        String VALUE "\"Routine\"";
                     }
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Aura";
+                        String VALUE "\"Aura\"";
                     }
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "FTS";
+                        String VALUE "\"FTS\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "TES";
+                        String VALUE "\"TES\"";
                     }
                 }
             }

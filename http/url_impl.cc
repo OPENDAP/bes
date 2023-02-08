@@ -34,11 +34,12 @@
 #include <algorithm>
 #include <cctype>
 #include <functional>
-#include <time.h>
+#include <ctime>
 
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
+#include "BESInternalError.h"
 #include "HttpNames.h"
 
 #include "url_impl.h"
@@ -49,101 +50,12 @@ using std::chrono::system_clock;
 #define MODULE HTTP_MODULE
 #define prolog string("url::").append(__func__).append("() - ")
 
-#define PROTOCOL_KEY "http_url_protocol"
-#define HOST_KEY  "http_url_host"
-#define PATH_KEY  "http_url_path"
-#define QUERY_KEY "http_url_query"
-#define SOURCE_URL_KEY  "http_url_target_url"
-#define INGEST_TIME_KEY  "http_url_ingest_time"
-
-
 namespace http {
-
-#if 0
-/**
- *
- * @param kvp
- */
-url::url(const map<string,string> &kvp)
-{
-    map<string,string> kvp_copy = kvp;
-    map<string,string>::const_iterator it;
-    map<string,string>::const_iterator itc;
-
-    it = kvp.find(PROTOCOL_KEY);
-    itc = kvp_copy.find(PROTOCOL_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_protocol = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located PROTOCOL_KEY(" << PROTOCOL_KEY << ") value: " << d_protocol << endl);
-    }
-    it = kvp.find(HOST_KEY);
-    itc = kvp_copy.find(HOST_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_host = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located HOST_KEY(" << HOST_KEY << ") value: " << d_host << endl);
-    }
-    it = kvp.find(PATH_KEY);
-    itc = kvp_copy.find(PATH_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_path = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located PATH_KEY(" << PATH_KEY << ") value: " << d_path << endl);
-    }
-    it = kvp.find(QUERY_KEY);
-    itc = kvp_copy.find(QUERY_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_query = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located QUERY_KEY(" << QUERY_KEY << ") value: " << d_query << endl);
-    }
-    it = kvp.find(SOURCE_URL_KEY);
-    itc = kvp_copy.find(SOURCE_URL_KEY);
-    if(it != kvp.end() && itc != kvp_copy.end()){
-        d_source_url_str = it->second;
-        kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url_str << endl);
-    }
-
-    for(itc = kvp_copy.begin(); itc != kvp_copy.end(); itc++){
-        string key =  itc->first;
-        string value = itc->second;
-        map<string, vector<string>* >::const_iterator record_it;
-        record_it = d_query_kvp.find(key);
-        if(record_it != d_query_kvp.end()){
-            vector<string> *values = record_it->second;
-            values->push_back(value);
-        }
-        else {
-            vector<string> *values = new vector<string>();
-            values->push_back(value);
-            d_query_kvp.insert(pair<string, vector<string>*>(key, values));
-        }
-    }
-
-}
-#endif
-
-/**
- *
- */
-url::~url()
-{
-    if(!d_query_kvp.empty()){
-        map<string, vector<string>* >::const_iterator it;
-        for(it = d_query_kvp.begin() ; it != d_query_kvp.end(); it++){
-            delete it->second;
-        }
-    }
-}
-
 
 /**
  * @brief Parses the URL into it's components and makes some BES file system magic.
  *
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
- * @param source_url
  */
 void url::parse() {
     const string protocol_end("://");
@@ -156,10 +68,10 @@ void url::parse() {
     if(d_source_url_str.find(protocol_end) == string::npos){
         // Since we want a valid path in the file system tree for data, we make it so by adding
         // the file path that starts with the catalog root dir.
-        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
+        const BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
         BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
-        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
+        const BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (bcat) {
             BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
         } else {
@@ -178,11 +90,11 @@ void url::parse() {
 
     const string parse_url_target(d_source_url_str);
 
-    string::const_iterator prot_i = search(parse_url_target.begin(), parse_url_target.end(),
-                                           protocol_end.begin(), protocol_end.end());
+    auto prot_i = search(parse_url_target.cbegin(), parse_url_target.cend(),
+                         protocol_end.begin(), protocol_end.end());
 
     if (prot_i != parse_url_target.end())
-        advance(prot_i, protocol_end.length());
+        advance(prot_i, protocol_end.size());
 
     d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
     transform(parse_url_target.begin(), prot_i,
@@ -192,44 +104,25 @@ void url::parse() {
         return;
 
     if (d_protocol == FILE_PROTOCOL) {
-        d_path = parse_url_target.substr(d_protocol.length());
+        d_path = parse_url_target.substr(d_protocol.size());
         BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
     else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){
-        string::const_iterator path_i = find(prot_i, parse_url_target.end(), '/');
+        // parse the host
+        const auto path_i = find(prot_i, parse_url_target.cend(), '/');
         d_host.reserve(distance(prot_i, path_i));
-        transform(prot_i, path_i,
-                  back_inserter(d_host),
-                  [](int c) { return tolower(c); });//  host is icase
-        string::const_iterator query_i = find(path_i, parse_url_target.end(), '?');
+        transform(prot_i, path_i, back_inserter(d_host), [](int c) { return tolower(c); });
+        // parse the path
+        auto query_i = find(path_i, parse_url_target.cend(), '?');
         d_path.assign(path_i, query_i);
-        if (query_i != parse_url_target.end())
+        // extract the query string
+        if (query_i != parse_url_target.cend())
             ++query_i;
-        d_query.assign(query_i, parse_url_target.end());
+        d_query.assign(query_i, parse_url_target.cend());
 
+        // parse the query string KVPs
         if (!d_query.empty()) {
-            vector<string> records;
-            string delimiters = "&";
-            BESUtil::tokenize(d_query, records, delimiters);
-            vector<string>::iterator i = records.begin();
-            for (; i != records.end(); i++) {
-                size_t index = i->find('=');
-                if (index != string::npos) {
-                    string key = i->substr(0, index);
-                    string value = i->substr(index + 1);
-                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                    map<string, vector<string> *>::const_iterator record_it;
-                    record_it = d_query_kvp.find(key);
-                    if (record_it != d_query_kvp.end()) {
-                        vector<string> *values = record_it->second;
-                        values->push_back(value);
-                    } else {
-                        vector<string> *values = new vector<string>();
-                        values->push_back(value);
-                        d_query_kvp.insert(pair<string, vector<string> *>(key, values));
-                    }
-                }
-            }
+            parse_query_string();
         }
     }
     else {
@@ -238,154 +131,160 @@ void url::parse() {
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, prolog << "END (parsing: '" << d_source_url_str << "')" << endl);
 
+    BESDEBUG(MODULE, prolog << "END (parsing: '" << d_source_url_str << "')" << endl);
 }
 
-
 /**
- *
- * @param key
- * @return
+ * @brief Helper method to parse the query string KVP data
  */
-string url::query_parameter_value(const string &key) const
-{
-    string value;
-    map<string, vector<string>* >::const_iterator it;
-    it = d_query_kvp.find(key);
-    if(it != d_query_kvp.end()){
-        vector<string> *values = it->second;
-        if(!values->empty()){
-            value = (*values)[0];
+void url::parse_query_string() {
+    vector<string> records;
+    string delimiters = "&";
+    BESUtil::tokenize(d_query, records, delimiters);
+    for (const auto &kvp: records) {
+        size_t index = kvp.find('=');
+        if (index != string::npos) {
+            string key = kvp.substr(0, index);
+            string value = kvp.substr(index + 1);
+            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+
+            const auto &record_it = d_query_kvp.find(key);
+            if (record_it != d_query_kvp.end()) {
+                record_it->second.push_back(value);
+            } else {
+                vector<string> values{value};
+                d_query_kvp[key] = values;
+            }
         }
     }
-    return value;
 }
 
 /**
- *
- * @param key
- * @param values
+ * @brief Get the value of a query string key.
+ * @param key Key for the KVP query params
+ * @return The associated value for the key or an empty string if the key is not found.
  */
-void url::query_parameter_values(const string &key, vector<string> &values) const
-{
-    map<string, vector<string>* >::const_iterator it;
-    it = d_query_kvp.find(key);
-    if(it != d_query_kvp.end()){
-        values = *it->second;
+string url::query_parameter_value(const string &key) const {
+    const auto &it = d_query_kvp.find(key);
+    if (it != d_query_kvp.end()) {
+        vector<string> values = it->second;
+        if (!it->second.empty()) {
+            return  it->second[0];
+        }
+    }
+    return "";
+}
+
+/**
+ * @brief Return the number of query string values for a given key .
+ * @param key Key for the KVP query params
+ * @return Return the number of values or zero if the key is not found.
+ */
+size_t url::query_parameter_values_size(const std::string &key) const {
+    const auto &it = d_query_kvp.find(key);
+    if (it != d_query_kvp.end()) {
+        return it->second.size();
+    }
+    return 0;
+}
+
+/**
+ * @brief Get the vector of query string values for a given key.
+ * @param key Key for the KVP query params
+ * @return Return a const reference to a string of values. Throws BESInternalError
+ * if the key is not found.
+ * @see query_parameter_values_size() to test if the key is present.
+ */
+const vector<string> &url::query_parameter_values(const std::string &key) const {
+    const auto &it = d_query_kvp.find(key);
+    if (it != d_query_kvp.end()) {
+        return it->second;
+    }
+    else {
+        throw BESInternalError(string("Key '") + key + "' not found in url::query_parameter_values().", __FILE__, __LINE__);
     }
 }
 
-#if 0
-
 /**
- *
- * @param kvp
- */
-void url::kvp(map<string,string>  &kvp){
-    stringstream ss;
-
-    // Do the basic stuff
-    kvp.insert(pair<string,string>(PROTOCOL_KEY, d_protocol));
-    kvp.insert(pair<string,string>(HOST_KEY, d_host));
-    kvp.insert(pair<string,string>(PATH_KEY, d_path));
-    kvp.insert(pair<string,string>(QUERY_KEY, d_query));
-    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url_str));
-    ss << d_ingest_time;
-    kvp.insert(pair<string,string>(INGEST_TIME_KEY,ss.str()));
-
-    // Now grab the query string. Only the first value of multi valued keys is used.
-    map<string, vector<string>* >::const_iterator it;
-    for(it=d_query_kvp.begin(); it != d_query_kvp.end(); it++){
-        kvp.insert(pair<string,string>(it->first,(*it->second)[0]));
-    }
-}
-#endif
-
-/**
- *
- * @return True if the URL appears within the REFRESH_THRESHOLD of the
- * expires time read from one of CLOUDFRONT_EXPIRES_HEADER_KEY, AMS_EXPIRES_HEADER_KEY;
- *
+ * @return True if the URL appears within the REFRESH_THRESHOLD of the expires time
+ * read from one of CLOUDFRONT_EXPIRES_HEADER_KEY or AMS_EXPIRES_HEADER_KEY.
  */
 bool url::is_expired()
 {
-
     bool stale;
     std::time_t now = system_clock::to_time_t(system_clock::now());
 
     BESDEBUG(MODULE, prolog << "now: " << now << endl);
     // We set the expiration time to the default, in case other avenues don't work out so well.
-    std::time_t  expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
+    std::time_t expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
 
     string cf_expires = query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
     string aws_expires_str = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
 
-    if(!cf_expires.empty()){ // CloudFront expires header?
+    if (!cf_expires.empty()) { // CloudFront expires header?
         std::istringstream(cf_expires) >> expires_time;
-        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
+        BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
     }
-    else if(!aws_expires_str.empty()){
-
+    else if (!aws_expires_str.empty()) {
         long long aws_expires;
         std::istringstream(aws_expires_str) >> aws_expires;
         // AWS Expires header?
         //
-        // By default we'll use the time we made the URL object, ingest_time
+        // By default, we'll use the time we made the URL object, ingest_time
         std::time_t aws_start_time = ingest_time();
 
         // But if there's an AWS Date we'll parse that and compute the time
-        // @TODO move to NgapApi::decompose_url() and add the result to the map
         string aws_date = query_parameter_value(AWS_DATE_HEADER_KEY);
 
-        if(!aws_date.empty()){
+        if (!aws_date.empty()) {
+            // aws_date looks like: 20200624T175046Z
+            string year = aws_date.substr(0, 4);
+            string month = aws_date.substr(4, 2);
+            string day = aws_date.substr(6, 2);
+            string hour = aws_date.substr(9, 2);
+            string minute = aws_date.substr(11, 2);
+            string second = aws_date.substr(13, 2);
 
-            string date = aws_date; // 20200624T175046Z
-            string year = date.substr(0,4);
-            string month = date.substr(4,2);
-            string day = date.substr(6,2);
-            string hour = date.substr(9,2);
-            string minute = date.substr(11,2);
-            string second = date.substr(13,2);
-
-            BESDEBUG(MODULE, prolog << "date: "<< date <<
+            BESDEBUG(MODULE, prolog << "date: " << aws_date <<
                                     " year: " << year << " month: " << month << " day: " << day <<
-                                    " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
+                                    " hour: " << hour << " minute: " << minute << " second: " << second << endl);
 
             std::time_t old_now;
             time(&old_now);  /* get current time; same as: timer = time(NULL)  */
             BESDEBUG(MODULE, prolog << "old_now: " << old_now << endl);
-            struct tm *ti = gmtime(&old_now);
-            ti->tm_year = stoll(year) - 1900;
-            ti->tm_mon = stoll(month) - 1;
-            ti->tm_mday = stoll(day);
-            ti->tm_hour = stoll(hour);
-            ti->tm_min = stoll(minute);
-            ti->tm_sec = stoll(second);
+            struct tm ti{0};
+            gmtime_r(&old_now, &ti);
+            ti.tm_year = stoi(year) - 1900;
+            ti.tm_mon = stoi(month) - 1;
+            ti.tm_mday = stoi(day);
+            ti.tm_hour = stoi(hour);
+            ti.tm_min = stoi(minute);
+            ti.tm_sec = stoi(second);
 
-            BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
-                                    " ti->tm_mon: " << ti->tm_mon <<
-                                    " ti->tm_mday: " << ti->tm_mday <<
-                                    " ti->tm_hour: " << ti->tm_hour <<
-                                    " ti->tm_min: " << ti->tm_min <<
-                                    " ti->tm_sec: " << ti->tm_sec << endl);
+            BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
+                                    " ti.tm_mon: " << ti.tm_mon <<
+                                    " ti.tm_mday: " << ti.tm_mday <<
+                                    " ti.tm_hour: " << ti.tm_hour <<
+                                    " ti.tm_min: " << ti.tm_min <<
+                                    " ti.tm_sec: " << ti.tm_sec << endl);
 
-
-            aws_start_time = mktime(ti);
+            aws_start_time = mktime(&ti);
             BESDEBUG(MODULE, prolog << "AWS start_time (computed): " << aws_start_time << endl);
         }
 
         expires_time = aws_start_time + aws_expires;
-        BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
+        BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                 " (expires_time: " << expires_time << ")" << endl);
     }
+
     std::time_t remaining = expires_time - now;
     BESDEBUG(MODULE, prolog << "expires_time: " << expires_time <<
                             "  remaining: " << remaining <<
                             " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
 
     stale = remaining < HTTP_URL_REFRESH_THRESHOLD;
-    BESDEBUG(MODULE, prolog << "stale: " << (stale?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "stale: " << (stale ? "true" : "false") << endl);
 
     return stale;
 }
@@ -406,14 +305,13 @@ string url::dump(){
     ss << indent << "d_path:       " << d_path << endl;
     ss << indent << "d_query:      " << d_query << endl;
 
-    std::map<std::string, std::vector<std::string>* >::iterator it;
-
     string idt = indent+indent_inc;
-    for(it=d_query_kvp.begin(); it !=d_query_kvp.end(); it++){
-        ss << indent << "d_query_kvp["<<it->first<<"]: " << endl;
-        std::vector<std::string> *values = it->second;
-        for(size_t i=0; i<values->size(); i++){
-            ss << idt << "value[" << i << "]: " << (*values)[i] << endl;
+    for(const auto &it: d_query_kvp) {
+        ss << indent << "d_query_kvp["<<it.first<<"]: " << endl;
+        int i = 0;
+        for(const auto &v: it.second) { // second is a vector<string>
+            ss << idt << "value[" << i << "]: " << v << endl;
+            i += 1;
         }
     }
     ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;

@@ -37,9 +37,9 @@
 class HDFInt16:public libdap::Int16 {
   public:
     HDFInt16(const std::string &n, const std::string &d);
-    virtual ~ HDFInt16();
-    virtual libdap::BaseType *ptr_duplicate();
-    virtual bool read();
+    ~ HDFInt16() override;
+    libdap::BaseType *ptr_duplicate() override;
+    bool read() override;
 };
 
 #endif                          // _HDFINT16_H

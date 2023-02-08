@@ -28,11 +28,13 @@
 namespace libdap {
 class BaseType;
 class DDS;
+class DMR;
 }
 
 namespace functions {
 
-void function_grid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+void function_dap2_grid(int argc, libdap::BaseType *argv[], libdap::DDS &dds, libdap::BaseType **btpp);
+libdap::BaseType *function_dap4_grid(libdap::D4RValueList *args, libdap::DMR &dmr);
 
 class GridFunction: public libdap::ServerFunction
 {
@@ -44,7 +46,8 @@ public:
         setUsageString("grid(...)");
         setRole("http://services.opendap.org/dap4/server-side-function/grid");
         setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
-        setFunction(function_grid);
+        setFunction(function_dap2_grid);
+        setFunction(function_dap4_grid);
         setVersion("1.0");
     }
     virtual ~GridFunction()
@@ -52,6 +55,7 @@ public:
     }
 
     bool canOperateOn(libdap::DDS &dds);
+    bool canOperateOn(libdap::DMR &dmr);
 };
 
 } // functions namespace

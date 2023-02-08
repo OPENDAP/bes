@@ -35,6 +35,14 @@ dimensions:
 	dim28 = 3457713 ;
 	dim29 = 1124660 ;
 variables:
+	double VNP_Grid_1km_2D_lon(VNP_Grid_1km_2D_YDim, VNP_Grid_1km_2D_XDim) ;
+		VNP_Grid_1km_2D_lon:units = "degrees_east" ;
+	double VNP_Grid_1km_2D_lat(VNP_Grid_1km_2D_YDim, VNP_Grid_1km_2D_XDim) ;
+		VNP_Grid_1km_2D_lat:units = "degrees_north" ;
+	double VNP_Grid_500m_2D_lon(VNP_Grid_500m_2D_YDim, VNP_Grid_500m_2D_XDim) ;
+		VNP_Grid_500m_2D_lon:units = "degrees_east" ;
+	double VNP_Grid_500m_2D_lat(VNP_Grid_500m_2D_YDim, VNP_Grid_500m_2D_XDim) ;
+		VNP_Grid_500m_2D_lat:units = "degrees_north" ;
 	short VNP_Grid_1km_2D_SensorAzimuth_1(VNP_Grid_1km_2D_YDim, VNP_Grid_1km_2D_XDim) ;
 		VNP_Grid_1km_2D_SensorAzimuth_1:long_name = "Sensor azimuth - first layer" ;
 		VNP_Grid_1km_2D_SensorAzimuth_1:units = "degree" ;
@@ -664,14 +672,6 @@ variables:
 		VNP_Grid_500m_2D_XDim:long_name = "x coordinate of projection " ;
 		VNP_Grid_500m_2D_XDim:units = "meter" ;
 		VNP_Grid_500m_2D_XDim:_CoordinateAxisType = "GeoX" ;
-	double VNP_Grid_1km_2D_lon(VNP_Grid_1km_2D_YDim, VNP_Grid_1km_2D_XDim) ;
-		VNP_Grid_1km_2D_lon:units = "degrees_east" ;
-	double VNP_Grid_1km_2D_lat(VNP_Grid_1km_2D_YDim, VNP_Grid_1km_2D_XDim) ;
-		VNP_Grid_1km_2D_lat:units = "degrees_north" ;
-	double VNP_Grid_500m_2D_lon(VNP_Grid_500m_2D_YDim, VNP_Grid_500m_2D_XDim) ;
-		VNP_Grid_500m_2D_lon:units = "degrees_east" ;
-	double VNP_Grid_500m_2D_lat(VNP_Grid_500m_2D_YDim, VNP_Grid_500m_2D_XDim) ;
-		VNP_Grid_500m_2D_lat:units = "degrees_north" ;
 
 // global attributes:
 		:maximum_observations_1km = 4b ;

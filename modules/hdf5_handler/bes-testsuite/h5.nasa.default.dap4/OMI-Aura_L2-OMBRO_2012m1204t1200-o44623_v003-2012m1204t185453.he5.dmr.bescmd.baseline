@@ -110,17 +110,25 @@
             </Group>
         </Group>
         <Group name="SWATHS">
-            <Group name="OMI Total Column Amount BrO">
+            <Group name="OMI_Total_Column_Amount_BrO">
+                <Dimension name="nTimes" size="1643"/>
+                <Dimension name="nXtrack" size="60"/>
+                <Dimension name="nTimes_1" size="1644"/>
+                <Dimension name="nXtrack_1" size="61"/>
+                <Dimension name="nUTCdim" size="6"/>
+                <Dimension name="_1" size="1"/>
+                <Dimension name="_2" size="2"/>
+                <Dimension name="_4" size="4"/>
                 <Attribute name="VerticalCoordinate" type="String">
                     <Value>Total Column</Value>
                 </Attribute>
                 <Attribute name="EarthSunDistance" type="Float32">
                     <Value>1.474293105e+11</Value>
                 </Attribute>
-                <Group name="Data Fields">
+                <Group name="Data_Fields">
                     <Float32 name="AMFCloudFraction">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -146,10 +154,13 @@
                             <Value>0.</Value>
                             <Value>1.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AMFCloudFraction</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="AMFCloudPressure">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -175,10 +186,13 @@
                             <Value>0.</Value>
                             <Value>1.000000015e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AMFCloudPressure</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="AdjustedSceneAlbedo">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -204,10 +218,13 @@
                             <Value>0.</Value>
                             <Value>1.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AdjustedSceneAlbedo</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="AirMassFactor">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -233,10 +250,13 @@
                             <Value>0.</Value>
                             <Value>1.000000015e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactor</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="AirMassFactorDiagnosticFlag">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -262,10 +282,13 @@
                             <Value>-2</Value>
                             <Value>13127</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactorDiagnosticFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="AirMassFactorGeometric">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -291,9 +314,12 @@
                             <Value>0.</Value>
                             <Value>1.000000015e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AirMassFactorGeometric</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="AverageColumnAmount">
-                        <Dim size="1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_1"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -319,9 +345,12 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageColumnAmount</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="AverageColumnUncertainty">
-                        <Dim size="1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_1"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -347,9 +376,12 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageColumnUncertainty</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="AverageFittingRMS">
-                        <Dim size="1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_1"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -375,10 +407,13 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/AverageFittingRMS</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="ColumnAmount">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -404,10 +439,13 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnAmount</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="ColumnAmountDestriped">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -433,10 +471,13 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnAmountDestriped</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="ColumnUncertainty">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -462,10 +503,13 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/ColumnUncertainty</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="FitConvergenceFlag">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -491,10 +535,13 @@
                             <Value>-10</Value>
                             <Value>12344</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/FitConvergenceFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="FittingRMS">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -520,10 +567,13 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/FittingRMS</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="MainDataQualityFlag">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -549,9 +599,12 @@
                             <Value>-1</Value>
                             <Value>2</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/MainDataQualityFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="MaximumColumnAmount">
-                        <Dim size="1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_1"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -577,9 +630,12 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/MaximumColumnAmount</Value>
+                        </Attribute>
                     </Float64>
                     <Float32 name="PixelArea">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -605,10 +661,13 @@
                             <Value>0.</Value>
                             <Value>413294400.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelArea</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="PixelCornerLatitudes">
-                        <Dim size="1644"/>
-                        <Dim size="61"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes_1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack_1"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -634,10 +693,13 @@
                             <Value>-90.</Value>
                             <Value>90.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelCornerLatitudes</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="PixelCornerLongitudes">
-                        <Dim size="1644"/>
-                        <Dim size="61"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes_1"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack_1"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -663,9 +725,12 @@
                             <Value>-180.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/PixelCornerLongitudes</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="RadianceReferenceColumnAmount">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -691,9 +756,12 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnAmount</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="RadianceReferenceColumnUncertainty">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -719,9 +787,12 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnUncertainty</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="RadianceReferenceColumnXTRFit">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -747,9 +818,12 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceColumnXTRFit</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="RadianceReferenceConvergenceFlag">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -775,9 +849,12 @@
                             <Value>-10</Value>
                             <Value>12344</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceConvergenceFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="RadianceReferenceFittingRMS">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -803,9 +880,12 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceFittingRMS</Value>
+                        </Attribute>
                     </Float64>
                     <Float32 name="RadianceReferenceLatitudeRange">
-                        <Dim size="4"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_4"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -831,9 +911,12 @@
                             <Value>-90.</Value>
                             <Value>90.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceReferenceLatitudeRange</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="RadianceWavCalConvergenceFlag">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -859,9 +942,12 @@
                             <Value>-10</Value>
                             <Value>12344</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceWavCalConvergenceFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="RadianceWavCalLatitudeRange">
-                        <Dim size="4"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/_4"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -887,10 +973,13 @@
                             <Value>-90.</Value>
                             <Value>90.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/RadianceWavCalLatitudeRange</Value>
+                        </Attribute>
                     </Float32>
                     <Float64 name="SlantColumnAmount">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -916,10 +1005,13 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnAmount</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="SlantColumnAmountDestriped">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -945,10 +1037,13 @@
                             <Value>-1e+30</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnAmountDestriped</Value>
+                        </Attribute>
                     </Float64>
                     <Float64 name="SlantColumnUncertainty">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -974,10 +1069,13 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantColumnUncertainty</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="SlantFitConvergenceFlag">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -1003,10 +1101,13 @@
                             <Value>-10</Value>
                             <Value>12344</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantFitConvergenceFlag</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="SlantFittingRMS">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -1032,9 +1133,12 @@
                             <Value>0.</Value>
                             <Value>1e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SlantFittingRMS</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="SolarWavCalConvergenceFlag">
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -1060,12 +1164,15 @@
                             <Value>-10</Value>
                             <Value>12344</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Data Fields/SolarWavCalConvergenceFlag</Value>
+                        </Attribute>
                     </Int16>
                 </Group>
-                <Group name="Geolocation Fields">
+                <Group name="Geolocation_Fields">
                     <Float32 name="Latitude">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1091,10 +1198,13 @@
                             <Value>-90.</Value>
                             <Value>90.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Latitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="Longitude">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1120,10 +1230,13 @@
                             <Value>-180.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Longitude</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarAzimuthAngle">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1149,10 +1262,13 @@
                             <Value>-180.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SolarAzimuthAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SolarZenithAngle">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1178,9 +1294,12 @@
                             <Value>0.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SolarZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="SpacecraftAltitude">
-                        <Dim size="1643"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1206,10 +1325,13 @@
                             <Value>0.</Value>
                             <Value>1.000000015e+30</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/SpacecraftAltitude</Value>
+                        </Attribute>
                     </Float32>
                     <Int16 name="TerrainHeight">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -1235,9 +1357,12 @@
                             <Value>-1000</Value>
                             <Value>10000</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/TerrainHeight</Value>
+                        </Attribute>
                     </Int16>
                     <Float64 name="Time">
-                        <Dim size="1643"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
                         <Attribute name="_FillValue" type="Float64">
                             <Value>-1e+30</Value>
                         </Attribute>
@@ -1263,10 +1388,13 @@
                             <Value>0.</Value>
                             <Value>10000000000.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/Time</Value>
+                        </Attribute>
                     </Float64>
                     <Int16 name="TimeUTC">
-                        <Dim size="1643"/>
-                        <Dim size="6"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nUTCdim"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -1292,10 +1420,13 @@
                             <Value>0</Value>
                             <Value>9999</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/TimeUTC</Value>
+                        </Attribute>
                     </Int16>
                     <Float32 name="ViewingAzimuthAngle">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1321,10 +1452,13 @@
                             <Value>-180.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/ViewingAzimuthAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Float32 name="ViewingZenithAngle">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Float32">
                             <Value>-1.000000015e+30</Value>
                         </Attribute>
@@ -1350,10 +1484,13 @@
                             <Value>0.</Value>
                             <Value>180.</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/ViewingZenithAngle</Value>
+                        </Attribute>
                     </Float32>
                     <Int8 name="XtrackQualityFlags">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int8">
                             <Value>-127</Value>
                         </Attribute>
@@ -1379,10 +1516,13 @@
                             <Value>0</Value>
                             <Value>127</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/XtrackQualityFlags</Value>
+                        </Attribute>
                     </Int8>
                     <Int16 name="XtrackQualityFlagsExpanded">
-                        <Dim size="1643"/>
-                        <Dim size="60"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nTimes"/>
+                        <Dim name="/HDFEOS/SWATHS/OMI_Total_Column_Amount_BrO/nXtrack"/>
                         <Attribute name="_FillValue" type="Int16">
                             <Value>-30000</Value>
                         </Attribute>
@@ -1408,15 +1548,30 @@
                             <Value>0</Value>
                             <Value>11147</Value>
                         </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/SWATHS/OMI Total Column Amount BrO/Geolocation Fields/XtrackQualityFlagsExpanded</Value>
+                        </Attribute>
                     </Int16>
                 </Group>
             </Group>
         </Group>
     </Group>
-    <Group name="HDFEOS INFORMATION">
-        <String name="ArchiveMetadata"/>
-        <String name="CoreMetadata"/>
-        <String name="StructMetadata.0"/>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="ArchiveMetadata">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/ArchiveMetadata</Value>
+            </Attribute>
+        </String>
+        <String name="CoreMetadata">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/CoreMetadata</Value>
+            </Attribute>
+        </String>
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
         <Attribute name="HDFEOSVersion" type="String">
             <Value>HDFEOS_5.1.11</Value>
         </Attribute>

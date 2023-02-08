@@ -60,8 +60,6 @@
 #include <BESDebug.h>
 #include <libdap/debug.h>
 
-
-using namespace std;
 // HDF and HDFClass includes
 // Include this on linux to suppres an annoying warning about multiple
 // definitions of MIN and MAX.
@@ -91,6 +89,8 @@ using namespace std;
 #include "hdf-maps.h"
 #include <libdap/debug.h>
 
+using namespace std;
+using namespace libdap;
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98
 // jhrg.
@@ -104,8 +104,7 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row);
 // STL predicate comparing equality of hdf_field objects based on their names
 class fieldeq {
 public:
-    explicit fieldeq(const string & s) {
-        _val = s;
+    explicit fieldeq(const string & s):_val(s) {
     }
 
     bool operator() (const hdf_field & f) const {
@@ -121,18 +120,61 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
 {
     // check to make sure hdf_vdata object is set up properly
     // Vdata must have a name
-    if (!vd || vd.fields.size() == 0 || vd.name.empty())
-        return 0;
+    if (!vd || vd.fields.empty() || vd.name.empty())
+        return nullptr;
 
     // construct HDFSequence
-    HDFSequence *seq = new HDFSequence(vd.name, dataset);
+    auto seq = new HDFSequence(vd.name, dataset);
 
     // step through each field and create a variable in the DAP Sequence
+    for (const auto &vdf:vd.fields) {
+        if (!vdf || vdf.vals.size() < 1 ||
+            vdf.name.empty()) {
+            delete seq;         // problem with the field
+            return nullptr;
+        }
+        HDFStructure *st = 0;
+        try {
+            st = new HDFStructure(vdf.name, dataset);
+
+            // for each subfield add the subfield to st
+            if (vdf.vals[0].number_type() == DFNT_CHAR8
+                || vdf.vals[0].number_type() == DFNT_UCHAR8) {
+
+                // collapse char subfields into one string
+                string subname = vdf.name + "__0";
+                BaseType *bt = new HDFStr(subname, dataset);
+                st->add_var(bt); // *st now manages *bt
+                delete bt;
+            }
+            else {
+                // create a DODS variable for each subfield
+                for (int j = 0; j < (int) vdf.vals.size(); ++j) {
+                    ostringstream strm;
+                    strm << vdf.name << "__" << j;
+                    BaseType *bt =
+                        NewDAPVar(strm.str(), dataset,
+                                  vdf.vals[j].number_type());
+                    st->add_var(bt); // *st now manages *bt
+                    delete bt;
+                }
+            }
+            seq->add_var(st); // *seq now manages *st
+            delete st;
+        }
+        catch (...) {
+            delete seq;
+            delete st;
+            throw;
+        }
+    }
+
+#if 0
     for (int i = 0; i < (int) vd.fields.size(); ++i) {
         if (!vd.fields[i] || vd.fields[i].vals.size() < 1 ||
             vd.fields[i].name.empty()) {
             delete seq;         // problem with the field
-            return 0;
+            return nullptr;
         }
         HDFStructure *st = 0;
         try {
@@ -169,6 +211,7 @@ HDFSequence *NewSequenceFromVdata(const hdf_vdata &vd, const string &dataset)
             throw;
         }
     }
+#endif
 
     return seq;
 }
@@ -179,17 +222,17 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
                                      gr_map &grmap, const string &dataset)
 {
     // check to make sure hdf_vgroup object is set up properly
-    if (vg.name.length() == 0)  // Vgroup must have a name
-        return 0;
+    if (vg.name.size() == 0)  // Vgroup must have a name
+        return nullptr;
     if (!vg)                    // Vgroup must have some tagrefs
-        return 0;
+        return nullptr;
 
     // construct HDFStructure
     HDFStructure *str = new HDFStructure(vg.name, dataset);
     bool nonempty = false;
 
     // I think coverity is unreasonable on this one. The code is sound. KY 2016-05-12
-    BaseType *bt = 0;
+    BaseType *bt = nullptr;
     try {
         // step through each tagref and copy its contents to DAP
         for (int i = 0; i < (int) vg.tags.size(); ++i) {
@@ -222,7 +265,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
             if (bt) {
                 str->add_var(bt);   // *st now manages *bt
                 delete bt;
-                bt = 0; // See if coverity scan can pass this.
+                bt = nullptr; // See if coverity scan can pass this.
                 nonempty = true;
             }
         }
@@ -237,31 +280,31 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup &vg, vg_map &vgmap,
         return str;
     } else {
         delete str;
-        return 0;
+        return nullptr;
     }
 }
 
 // Create a DAP HDFArray out of the primary array in an hdf_sds
 HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 {
-    if (sds.name.length() == 0) // SDS must have a name
-        return 0;
+    if (sds.name.size() == 0) // SDS must have a name
+        return nullptr;
     if (sds.dims.size() == 0)   // SDS must have rank > 0
-        return 0;
+        return nullptr;
 
     // construct HDFArray, assign data type
     BaseType *bt = NewDAPVar(sds.name, dataset, sds.data.number_type());
-    if (bt == 0) {              // something is not right with SDS number type?
-        return 0;
+    if (bt == nullptr) {              // something is not right with SDS number type?
+        return nullptr;
     }
     try {
-        HDFArray *ar = 0;
+        HDFArray *ar = nullptr;
         ar = new HDFArray(sds.name,dataset,bt);
         delete bt;
 
         // add dimension info to HDFArray
-        for (int i = 0; i < (int) sds.dims.size(); ++i)
-            ar->append_dim(sds.dims[i].count, sds.dims[i].name);
+        for (const auto &sds_dim:sds.dims)
+            ar->append_dim(sds_dim.count, sds_dim.name);
 
         return ar;
     }
@@ -274,17 +317,17 @@ HDFArray *NewArrayFromSDS(const hdf_sds & sds, const string &dataset)
 // Create a DAP HDFArray out of a general raster
 HDFArray *NewArrayFromGR(const hdf_gri & gr, const string &dataset)
 {
-    if (gr.name.length() == 0)  // GR must have a name
-        return 0;
+    if (gr.name.size() == 0)  // GR must have a name
+        return nullptr;
 
     // construct HDFArray, assign data type
     BaseType *bt = NewDAPVar(gr.name, dataset, gr.image.number_type());
     if (bt == 0) {              // something is not right with GR number type?
-        return 0;
+        return nullptr;
     }
 
     try {
-        HDFArray *ar = 0;
+        HDFArray *ar = nullptr;
         ar = new HDFArray(gr.name, dataset, bt);
 
         // Array duplicates the base type passed, so delete here
@@ -308,17 +351,17 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
 {
     BESDEBUG("h4", "NewGridFromSDS" << endl);
     if (!sds.has_scale())       // we need a dim scale to make a Grid
-        return 0;
+        return nullptr;
 
     // Create the HDFGrid and the primary array.  Add the primary array to
     // the HDFGrid.
     HDFArray *ar = NewArrayFromSDS(sds, dataset);
-    if (ar == 0)
-        return 0;
+    if (ar == nullptr)
+        return nullptr;
 
-    HDFGrid *gr = 0;
-    HDFArray *dmar = 0;
-    BaseType *dsbt = 0;
+    HDFGrid *gr = nullptr;
+    HDFArray *dmar = nullptr;
+    BaseType *dsbt = nullptr;
     try {
         gr = new HDFGrid(sds.name, dataset);
         gr->add_var(ar, libdap::array); // note: gr now manages ar
@@ -327,20 +370,20 @@ HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset)
         // create dimension scale HDFArrays (i.e., maps) and
         // add them to the HDFGrid
         string mapname;
-        for (int i = 0; i < (int) sds.dims.size(); ++i) {
-            if (sds.dims[i].name.length() == 0) { // the dim must be named
+        for (const auto & sds_dim:sds.dims) {
+            if (sds_dim.name.size() == 0) { // the dim must be named
                 delete gr;
-                return 0;
+                return nullptr;
             }
-            mapname = sds.dims[i].name;
+            mapname = sds_dim.name;
             if ((dsbt = NewDAPVar(mapname, dataset,
-                                  sds.dims[i].scale.number_type())) == 0) {
+                                  sds_dim.scale.number_type())) == nullptr) {
                 delete gr; // note: ~HDFGrid() cleans up the attached ar
-                return 0;
+                return nullptr;
             }
             dmar = new HDFArray(mapname, dataset, dsbt);
             delete dsbt;
-            dmar->append_dim(sds.dims[i].count); // set dimension size
+            dmar->append_dim(sds_dim.count); // set dimension size
             gr->add_var(dmar, maps); // add dimension map to grid;
             delete dmar;
         }
@@ -444,6 +487,14 @@ string DAPTypeName(int32 hdf_type)
 void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
 {
 #ifdef SIGNED_BYTE_TO_INT32
+    if (sds.data.number_type() == DFNT_INT8) {
+        char *data = static_cast < char *>(ExportDataForDODS(sds.data));
+        ar->val2buf(data);
+        delete[]data;
+    }
+    else
+        ar->val2buf(const_cast < char *>(sds.data.data()));
+#if 0
     switch (sds.data.number_type()) {
     case DFNT_INT8:{
         char *data = static_cast < char *>(ExportDataForDODS(sds.data));
@@ -454,6 +505,7 @@ void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
     default:
         ar->val2buf(const_cast < char *>(sds.data.data()));
     }
+#endif
 #else
     ar->val2buf(const_cast < char *>(sds.data.data()));
 #endif
@@ -464,6 +516,14 @@ void LoadArrayFromSDS(HDFArray * ar, const hdf_sds & sds)
 void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr)
 {
 #ifdef SIGNED_BYTE_TO_INT32
+    if (gr.image.number_type() == DFNT_INT8) {
+        char *data = static_cast < char *>(ExportDataForDODS(gr.image));
+        ar->val2buf(data);
+        delete[]data;
+    }
+    else
+        ar->val2buf(const_cast < char *>(gr.image.data()));
+#if 0
     switch (gr.image.number_type()) {
     case DFNT_INT8:{
         char *data = static_cast < char *>(ExportDataForDODS(gr.image));
@@ -471,10 +531,10 @@ void LoadArrayFromGR(HDFArray * ar, const hdf_gri & gr)
         delete[]data;
         break;
     }
-
     default:
         ar->val2buf(const_cast < char *>(gr.image.data()));
     }
+#endif
 #else
     ar->val2buf(const_cast < char *>(gr.image.data()));
 #endif
@@ -488,7 +548,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 {
 
     // load data into primary array
-    HDFArray & primary_array = static_cast < HDFArray & >(*gr->array_var());
+    auto primary_array = static_cast < HDFArray & >(*gr->array_var());
     if (primary_array.send_p()) {
         LoadArrayFromSDS(&primary_array, sds);
         primary_array.set_read_p(true);
@@ -502,6 +562,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
          i < sds.dims.size() && p != gr->map_end(); ++i, ++p) {
         if ((*p)->send_p()) {
 #ifdef SIGNED_BYTE_TO_INT32
+#if 0
             switch (sds.dims[i].scale.number_type()) {
             case DFNT_INT8:{
                 char *data = static_cast < char *>(ExportDataForDODS(sds.dims[i].scale));
@@ -513,6 +574,15 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
                 (*p)->val2buf(const_cast < char *>
                               (sds.dims[i].scale.data()));
             }
+#endif
+            if (sds.dims[i].scale.number_type() == DFNT_INT8) {
+                char *data = static_cast < char *>(ExportDataForDODS(sds.dims[i].scale));
+                (*p)->val2buf(data);
+                delete[]data;
+            }
+            else
+                (*p)->val2buf(const_cast<char *>(sds.dims[i].scale.data()));
+
 #else
             (*p)->val2buf(const_cast < char *>(sds.dims[i].scale.data()));
 #endif
@@ -525,8 +595,7 @@ void LoadGridFromSDS(HDFGrid * gr, const hdf_sds & sds)
 // load an HDFSequence from a row of an hdf_vdata
 void LoadSequenceFromVdata(HDFSequence * seq, hdf_vdata & vd, int row)
 {
-    Constructor::Vars_iter p;
-    for (p = seq->var_begin(); p != seq->var_end(); ++p) {
+    for (Constructor::Vars_iter p = seq->var_begin(); p != seq->var_end(); ++p) {
         HDFStructure & stru = static_cast < HDFStructure & >(**p);
 
         // find corresponding field in vd
@@ -558,19 +627,21 @@ void LoadStructureFromField(HDFStructure * stru, hdf_field & f, int row)
         // contain.  In that case, concatenate the different char8
         // components of the field and load the DODS String with the value.
         string str = "";
+#if 0
         for (unsigned int i = 0; i < f.vals.size(); ++i) {
-            //DBG(cerr << i << ": " << f.vals[i].elt_char8(row) << endl);
             str += f.vals[i].elt_char8(row);
         }
+#endif
+        for (const auto & fval:f.vals) 
+            str += fval.elt_char8(row);
 
-        firstp->val2buf(static_cast < void *>(&str));   // data);
+        firstp->val2buf(static_cast < void *>(&str));  
         firstp->set_read_p(true);
     } else {
         // for each component of the field, load the corresponding component
         // of the DODS Structure.
         int i = 0;
-        Constructor::Vars_iter q;
-        for (q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
+        for (Constructor::Vars_iter q = stru->var_begin(); q != stru->var_end(); ++q, ++i) {
             char *val = static_cast <char *>(ExportDataForDODS(f.vals[i], row));
             (*q)->val2buf(val);
 #if 0
@@ -590,8 +661,7 @@ void LoadStructureFromVgroup(HDFStructure * str, const hdf_vgroup & vg,
 {
     int i = 0;
     int err = 0;
-    Constructor::Vars_iter q;
-    for (q = str->var_begin(); err == 0 && q != str->var_end(); ++q, ++i) {
+    for (Constructor::Vars_iter q = str->var_begin(); err == 0 && q != str->var_end(); ++q, ++i) {
         BaseType *p = *q;
         BESDEBUG("h4", "Reading within LoadStructureFromVgroup: " << p->name()
         	 << ", send_p: " << p->send_p() << ", vg.names[" << i << "]: "

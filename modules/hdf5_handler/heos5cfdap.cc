@@ -414,7 +414,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 }
 
 // Generate DDS for the EOS5
-void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
+void gen_eos5_cfdds(DDS &dds,  const HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function gen_eos5_cfdds  "<<endl);
     const vector<HDF5CF::Var *>& vars       = f->getVars();
@@ -423,31 +423,28 @@ void gen_eos5_cfdds(DDS &dds,  HDF5CF::EOS5File *f) {
     const hid_t file_id = f->getFileID();
 
     // Read Variable info.
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
-
-    for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
-        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-        gen_dap_onevar_dds(dds,*it_v,file_id,filename);
+    for (const auto &var:vars) {
+        BESDEBUG("h5","variable full path= "<< var->getFullPath() <<endl);
+        gen_dap_onevar_dds(dds,var,file_id,filename);
     }
 
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_oneeos5cvar_dds(dds,*it_cv,file_id,filename);
-
+    for (const auto &cvar:cvars) {
+        BESDEBUG("h5","variable full path= "<< cvar->getFullPath() <<endl);
+        gen_dap_oneeos5cvar_dds(dds,cvar,file_id,filename);
     }
 
     // We need to provide grid_mapping info. for multiple grids.
     // Here cv_lat_miss_index represents the missing latitude(HDF-EOS grid without the latitude field) cv index
     // This index is used to create the grid_mapping variable for different grids.
     unsigned short cv_lat_miss_index = 1;
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+    for (const auto &cvar:cvars) {
+        if(cvar->getCVType() == CV_LAT_MISS) {
+            if(cvar->getProjCode() != HE5_GCTP_GEO) {
                 // Here we need to add grid_mapping variables for each grid
                 // For projections other than sinusoidal since attribute values for LAMAZ and PS
                 // are different for each grid.
-                gen_dap_oneeos5cf_dds(dds,*it_cv);
-                add_cf_grid_mapinfo_var(dds,(*it_cv)->getProjCode(),cv_lat_miss_index);
+                gen_dap_oneeos5cf_dds(dds,cvar);
+                add_cf_grid_mapinfo_var(dds,cvar->getProjCode(),cv_lat_miss_index);
                 cv_lat_miss_index++;
             }
         }
@@ -739,7 +736,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 }
 
 // Generate EOS5 DAS
-void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
+void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) { 
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DAS generation function gen_eos5_cfdas  "<<endl);
 
@@ -754,8 +751,10 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
+#if 0
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
+#endif
 
     // Handling the file attributes(attributes under the root group)
     // The table name is "HDF_GLOBAL".
@@ -764,94 +763,90 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
         if (nullptr == at)
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
-        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); it_ra++) {
-            gen_dap_oneobj_das(at,*it_ra,nullptr);
-        }
+        for (const auto &root_attr:root_attrs) 
+            gen_dap_oneobj_das(at,root_attr,nullptr);
+        
     }
 
     if (false == grps.empty()) {
-        for (auto it_g = grps.begin(); it_g != grps.end(); ++it_g) {
-            AttrTable *at = das.get_table((*it_g)->getNewName());
+        for (const auto &grp:grps) {
+            AttrTable *at = das.get_table(grp->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_g)->getNewName(), new AttrTable);
+                at = das.add_table(grp->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_g)->getAttributes().begin();
-                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
+            for (const auto &attr:grp->getAttributes()) {
 #if 0
-                //gen_dap_oneobj_das(at,*it_ra,nullptr);
+                //gen_dap_oneobj_das(at,attr,nullptr);
 #endif
                 // TODO: ADDING a BES KEY
-                if((*it_ra)->getNewName()=="Conventions" &&((*it_g)->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
+                if(attr->getNewName()=="Conventions" &&(grp->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
                         && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
                     AttrTable *at_das = das.get_table(FILE_ATTR_TABLE_NAME);
                     if (nullptr == at_das)
                         at_das = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
-                    gen_dap_oneobj_das(at_das,*it_ra,nullptr);
+                    gen_dap_oneobj_das(at_das,attr,nullptr);
                 }
                 else 
-                    gen_dap_oneobj_das(at,*it_ra,nullptr);
+                    gen_dap_oneobj_das(at,attr,nullptr);
             }
         }
     }
 
-    for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
-        if (false == ((*it_v)->getAttributes().empty())) {
+    for (const auto &var:vars) {
+        if (false == (var->getAttributes().empty())) {
 
             // TODO: Need to handle 64-bit int support for DAP4 CF.
-            if(H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
+            if(H5INT64 == var->getType() || H5UINT64 == var->getType()){
                continue;
             }
 
-            AttrTable *at = das.get_table((*it_v)->getNewName());
+            AttrTable *at = das.get_table(var->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_v)->getNewName(), new AttrTable);
+                at = das.add_table(var->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_v)->getAttributes().begin();
-                 it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
-                gen_dap_oneobj_das(at,*it_ra,*it_v);
-            }
+            for (const auto &attr:var->getAttributes()) 
+                gen_dap_oneobj_das(at,attr,var);
         }
     }
  
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();it_cv++) {
+    for (const auto &cvar:cvars) {
 
-        if (false == ((*it_cv)->getAttributes().empty())) {
+        if (false == (cvar->getAttributes().empty())) {
             
             // TODO: Need to handle 64-bit int support for DAP4 CF.
-            if(H5INT64 == (*it_cv)->getType() || H5UINT64 == (*it_cv)->getType()){
+            if(H5INT64 == cvar->getType() || H5UINT64 == cvar->getType()){
                continue;
             }
 
-            AttrTable *at = das.get_table((*it_cv)->getNewName());
+            AttrTable *at = das.get_table(cvar->getNewName());
             if (nullptr == at)
-                at = das.add_table((*it_cv)->getNewName(), new AttrTable);
+                at = das.add_table(cvar->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_cv)->getAttributes().begin();
-                 it_ra != (*it_cv)->getAttributes().end(); ++it_ra) {
-                 gen_dap_oneobj_das(at,*it_ra,*it_cv);
-            }
+            for (const auto &attr:cvar->getAttributes()) 
+                 gen_dap_oneobj_das(at,attr,cvar);
+            
         }
     }
 
     // Add CF 1-D projection variables
     unsigned short cv_lat_miss_index = 1;
     // This code block will add grid_mapping attribute info. to corresponding variables.
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                gen_dap_oneeos5cf_das(das,vars,*it_cv,cv_lat_miss_index);
+    for (const auto &cvar:cvars) {
+        if(cvar->getCVType() == CV_LAT_MISS) {
+            if(cvar->getProjCode() != HE5_GCTP_GEO) {
+                gen_dap_oneeos5cf_das(das,vars,cvar,cv_lat_miss_index);
                 cv_lat_miss_index++;
             }
         }
     }
 
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getProjCode() == HE5_GCTP_LAMAZ) {
-            if((*it_cv)->getCVType() == CV_LAT_MISS || (*it_cv)->getCVType() == CV_LON_MISS) {
-                AttrTable *at = das.get_table((*it_cv)->getNewName());
+    for (const auto &cvar:cvars) {
+        if(cvar->getProjCode() == HE5_GCTP_LAMAZ) {
+            if(cvar->getCVType() == CV_LAT_MISS || cvar->getCVType() == CV_LON_MISS) {
+                AttrTable *at = das.get_table(cvar->getNewName());
                 if (nullptr == at)
-                    at = das.add_table((*it_cv)->getNewName(), new AttrTable);
-                if((*it_cv)->getCVType() == CV_LAT_MISS)
+                    at = das.add_table(cvar->getNewName(), new AttrTable);
+                if(cvar->getCVType() == CV_LAT_MISS)
                     add_ll_valid_range(at,true);
                 else 
                     add_ll_valid_range(at,false);
@@ -904,7 +899,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
                 at = das.add_table("StructMetadata", new AttrTable);
             parser_arg arg(at);
 
-            he5das_scan_string((const char*) st_str.c_str());
+            he5das_scan_string(st_str.c_str());
             if (he5dasparse(&arg) != 0
                 || false == arg.status()){
 
@@ -922,7 +917,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (nullptr == at)
             at = das.add_table("CoreMetadata", new AttrTable);
         parser_arg arg(at);
-        he5das_scan_string((const char*) core_str.c_str());
+        he5das_scan_string(core_str.c_str());
         if (he5dasparse(&arg) != 0
                 || false == arg.status()){
 
@@ -937,7 +932,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (nullptr == at)
             at = das.add_table("ArchiveMetadata", new AttrTable);
         parser_arg arg(at);
-        he5das_scan_string((const char*) arch_str.c_str());
+        he5das_scan_string(arch_str.c_str());
         if (he5dasparse(&arg) != 0
             || false == arg.status()){
 
@@ -966,7 +961,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (nullptr == at)
             at = das.add_table("SubsetMetadata", new AttrTable);
         parser_arg arg(at);
-        he5das_scan_string((const char*) subset_str.c_str());
+        he5das_scan_string(subset_str.c_str());
         if (he5dasparse(&arg) != 0
                 || false == arg.status()) {
 
@@ -980,7 +975,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (nullptr == at)
             at = das.add_table("ProductMetadata", new AttrTable);
         parser_arg arg(at);
-        he5das_scan_string((const char*) product_str.c_str());
+        he5das_scan_string(product_str.c_str());
         if (he5dasparse(&arg) != 0
                 || false == arg.status()){
             ERROR_LOG("HDF-EOS5 parse error while processing a "
@@ -1008,28 +1003,26 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
             at = das.add_table("DODS_EXTRA", new AttrTable);
         string unlimited_names;
 
-        for (it_cv = cvars.begin();
-            it_cv != cvars.end(); it_cv++) {
+        for (const auto &cvar: cvars) {
 #if 0
             bool has_unlimited_dim = false;
 #endif
             // Check unlimited dimension names.
-            for (auto ird = (*it_cv)->getDimensions().begin();
-                 ird != (*it_cv)->getDimensions().end(); ++ird) {
+            for (const auto &dim:cvar->getDimensions()) {
 
                 // Currently we only check one unlimited dimension, which is the most
                 // common case. When receiving the conventions from JG, will add
                 // the support of multi-unlimited dimension. KY 2016-02-09
-                if((*ird)->HaveUnlimitedDim() == true) {
+                if(dim->HaveUnlimitedDim() == true) {
                     
                     if(unlimited_names=="") {
-                       unlimited_names = (*ird)->getNewName();
+                       unlimited_names = dim->getNewName();
                        at->append_attr("Unlimited_Dimension","String",unlimited_names);                       
                     }
                     else {
-                        if(unlimited_names.rfind((*ird)->getNewName()) == string::npos) {
-                            unlimited_names = unlimited_names+" "+(*ird)->getNewName();
-                            at->append_attr("Unlimited_Dimension","String",(*ird)->getNewName());                       
+                        if(unlimited_names.rfind(dim->getNewName()) == string::npos) {
+                            unlimited_names = unlimited_names+" "+dim->getNewName();
+                            at->append_attr("Unlimited_Dimension","String",dim->getNewName());                       
                         }
                     }
                 }
@@ -2063,7 +2056,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
 }
 
-void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
+void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function   "<<endl);
     const vector<HDF5CF::Var *>& vars       = f->getVars();
@@ -2073,42 +2066,37 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
     if (false == root_attrs.empty()) {
-        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
-            map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
+        for (const auto &root_attr:root_attrs) 
+            map_cfh5_grp_attr_to_dap4(d4_root,root_attr);
     }
 
     // We use the container since we claim to have no hierarchy.
     if (false == grps.empty()) {
-        for (auto it_g = grps.begin(); it_g != grps.end(); ++it_g) {
+        for (const auto &grp:grps) {
             auto tmp_grp = new D4Attribute;
-            tmp_grp->set_name((*it_g)->getNewName());
+            tmp_grp->set_name(grp->getNewName());
             tmp_grp->set_type(attr_container_c);
 
-            for (it_ra = (*it_g)->getAttributes().begin();
-                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                map_cfh5_attr_container_to_dap4(tmp_grp,(*it_ra));
-            }
+            for (const auto &attr:grp->getAttributes()) 
+                map_cfh5_attr_container_to_dap4(tmp_grp,attr);
             d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
     }
 
     // Read Variable info.
     // TODO: We may need to make the cvar first for coverage support.
-    vector<HDF5CF::Var *>::const_iterator it_v;
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
     if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
-        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-            gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+        for (const auto &cvar:cvars) {
+            BESDEBUG("h5","variable full path= "<< cvar->getFullPath() <<endl);
+            gen_dap_oneeos5cvar_dmr(d4_root,cvar,file_id,filename);
     
         }
-        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-            gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+        for (const auto &var:vars) {
+            BESDEBUG("h5","variable full path= "<< var->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,var,file_id,filename);
         }
     
         // Handle EOS5 grid mapping info.
@@ -2117,19 +2105,18 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
     }
     else {
-        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
-            BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
-            gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+        for (const auto &var:vars) {
+            BESDEBUG("h5","variable full path= "<< var->getFullPath() <<endl);
+            gen_dap_onevar_dmr(d4_root,var,file_id,filename);
         }
     
         // Handle EOS5 grid mapping info.
         if (f->Have_EOS5_Grids()==true) 
             gen_dap_eos5cf_gm_dmr(d4_root,f);
     
-        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-            BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-            gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
-    
+        for (const auto &cvar:cvars) {
+            BESDEBUG("h5","variable full path= "<< cvar->getFullPath() <<endl);
+            gen_dap_oneeos5cvar_dmr(d4_root,cvar,file_id,filename);
         }
 
     }
@@ -2146,23 +2133,21 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 #endif
             string unlimited_dim_names ="";
 
-            for (it_cv = cvars.begin();
-                it_cv != cvars.end(); it_cv++) {
+            for (const auto &cvar:cvars) {
     
                 // Check unlimited dimension names.
-                for (auto ird = (*it_cv)->getDimensions().begin();
-                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+                for (const auto &dim:cvar->getDimensions()) {
     
                     // Currently we only check one unlimited dimension, which is the most
                     // common case. When receiving the conventions from JG, will add
                     // the support of multi-unlimited dimension. KY 2016-02-09
-                    if((*ird)->HaveUnlimitedDim() == true) {
+                    if(dim->HaveUnlimitedDim() == true) {
                         
                         if(unlimited_dim_names=="") 
-                           unlimited_dim_names = (*ird)->getNewName();
+                           unlimited_dim_names = dim->getNewName();
                         else {
-                            if(unlimited_dim_names.rfind((*ird)->getNewName()) == string::npos) {
-                                unlimited_dim_names = unlimited_dim_names+" "+(*ird)->getNewName();
+                            if(unlimited_dim_names.rfind(dim->getNewName()) == string::npos) {
+                                unlimited_dim_names = unlimited_dim_names+" "+dim->getNewName();
                             }
                         }
                     }
@@ -2188,8 +2173,8 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
         // Obtain the coordinate variable names, these are mapped variables.
         vector <string> cvar_name;
-        for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) 
-            cvar_name.emplace_back((*it_cv)->getNewName()); 
+        for (const auto &cvar:cvars) 
+            cvar_name.emplace_back(cvar->getNewName()); 
            
         add_dap4_coverage(d4_root,cvar_name,f->getIsCOARD());
     }
@@ -2267,9 +2252,9 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2321,9 +2306,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2362,9 +2347,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2409,9 +2394,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d){
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2434,7 +2419,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
 
 // generate dmr info for grid mapping (gm: grid mapping)
-void  gen_dap_eos5cf_gm_dmr(libdap::D4Group* d4_root,HDF5CF::EOS5File*f) {
+void  gen_dap_eos5cf_gm_dmr(libdap::D4Group* d4_root,const HDF5CF::EOS5File*f) {
 
     // grid mapping projection vars 
     // and add grid_mapping attribute for non-cv vars
@@ -2455,10 +2440,10 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,const HDF5CF::EOS5File* f) {
     // For multiple grids, multiple grid mapping variables are needed.
     // We use EOS5 coordinate variables to track this.
     unsigned short cv_lat_miss_index = 1;
-    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                gen_gm_oneproj_var(d4_root,*it_cv,cv_lat_miss_index,f);
+    for (const auto &cvar:cvars) {
+        if(cvar->getCVType() == CV_LAT_MISS) {
+            if(cvar->getProjCode() != HE5_GCTP_GEO) {
+                gen_gm_oneproj_var(d4_root,cvar,cv_lat_miss_index,f);
                 cv_lat_miss_index++;
             }
         }
@@ -2516,8 +2501,8 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
         vector<string> cvar_name;
         if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
             const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
-            for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) 
-                cvar_name.emplace_back((*it_cv)->getNewName()); 
+            for (const auto &gm_cvar:cvars) 
+                cvar_name.emplace_back(gm_cvar->getNewName()); 
 
         }
         add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims,cvar_name);
@@ -2531,10 +2516,10 @@ void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,const HDF5CF::EOS5File* f){
     BESDEBUG("h5","Coming to HDF-EOS5 products grid mapping variable generation function   "<<endl);
     const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
 
-    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) 
-                gen_gm_oneproj_spvar(d4_root,*it_cv);
+    for (const auto &cvar:cvars) {
+        if(cvar->getCVType() == CV_LAT_MISS) {
+            if(cvar->getProjCode() != HE5_GCTP_GEO) 
+                gen_gm_oneproj_spvar(d4_root,cvar);
         }
     }
 }

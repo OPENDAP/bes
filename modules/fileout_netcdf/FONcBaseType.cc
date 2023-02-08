@@ -41,10 +41,10 @@ using namespace libdap;
 
 void FONcBaseType::convert(const vector<string> embed, bool _dap4, bool dap4_group)
 {
-    _embed = embed;
-    _varname = name();
-    is_dap4_group = dap4_group;
-    is_dap4 = _dap4;
+    d_embed = embed;
+    d_varname = name();
+    d_is_dap4_group = dap4_group;
+    d_is_dap4 = _dap4;
 }
 
 /** @brief Define the variable in the netcdf file
@@ -59,21 +59,21 @@ void FONcBaseType::convert(const vector<string> embed, bool _dap4, bool dap4_gro
  */
 void FONcBaseType::define(int ncid)
 {
-    if (!_defined) {
-        _varname = FONcUtils::gen_name(_embed, _varname, _orig_varname);
-        BESDEBUG("fonc", "FONcBaseType::define - defining '" << _varname << "'" << endl);
-        int stax = nc_def_var(ncid, _varname.c_str(), type(), 0, nullptr, &_varid);
+    if (!d_defined) {
+        d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
+        BESDEBUG("fonc", "FONcBaseType::define - defining '" << d_varname << "'" << endl);
+        int stax = nc_def_var(ncid, d_varname.c_str(), type(), 0, nullptr, &d_varid);
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to define variable " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to define variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
-        stax = nc_def_var_fill(ncid, _varid, NC_NOFILL, NULL );
+        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + _varname;
+            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        BESDEBUG("fonc", "FONcBaseType::define - done defining " << _varname << endl);
+        BESDEBUG("fonc", "FONcBaseType::define - done defining " << d_varname << endl);
     }
 }
 
@@ -92,37 +92,37 @@ nc_type FONcBaseType::type()
  */
 void FONcBaseType::clear_embedded()
 {
-    _embed.clear();
+    d_embed.clear();
 }
 
 /** @brief Identifies variable with use of NetCDF4 features
  */
 void FONcBaseType::setVersion(const string &version)
 {
-    _ncVersion = version;
+    d_ncVersion = version;
 
-    BESDEBUG("fonc", "FONcBaseType::setVersion() - version: '" << _ncVersion << "'" << endl);
+    BESDEBUG("fonc", "FONcBaseType::setVersion() - version: '" << d_ncVersion << "'" << endl);
 }
 
 /** @brief Identifies the netCDF4 data model (CLASSIC or ENHANCED)
  */
 void FONcBaseType::setNC4DataModel(const string &nc4_datamodel)
 {
-    _nc4_datamodel = nc4_datamodel;
+    d_nc4_datamodel = nc4_datamodel;
 
-    BESDEBUG("fonc", "FONcBaseType::setNC4DataModel() - data model: '" << _nc4_datamodel << "'" << endl);
+    BESDEBUG("fonc", "FONcBaseType::setNC4DataModel() - data model: '" << d_nc4_datamodel << "'" << endl);
 }
 
 /** @brief Returns true if NetCDF4 features will be required
  */
 bool FONcBaseType::isNetCDF4()
 {
-    return FONcBaseType::_ncVersion == FONC_RETURN_AS_NETCDF4;
+    return FONcBaseType::d_ncVersion == FONC_RETURN_AS_NETCDF4;
 }
 
 bool FONcBaseType::isNetCDF4_ENHANCED()
 {
-    return FONcBaseType::_nc4_datamodel == FONC_NC4_ENHANCED;
+    return FONcBaseType::d_nc4_datamodel == FONC_NC4_ENHANCED;
 }
 
 void FONcBaseType::updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t)
@@ -213,10 +213,8 @@ D4AttributeType FONcBaseType::getD4AttrType(nc_type nct)
     D4AttributeType atype = attr_null_c;
     switch (nct) {
         case NC_BYTE:
-            if (isNetCDF4_ENHANCED())
-                atype = attr_int8_c;
-            else
-                atype = attr_int16_c;
+            // netCDF-classic also supports 8-bit signed integer
+            atype = attr_int8_c;
             break;
         case NC_SHORT:
             atype = attr_int16_c;

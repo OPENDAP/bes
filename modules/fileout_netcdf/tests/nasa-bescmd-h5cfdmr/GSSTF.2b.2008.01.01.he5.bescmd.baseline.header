@@ -1,9 +1,13 @@
 netcdf test {
 dimensions:
-	lat = 180 ;
 	lon = 360 ;
+	lat = 180 ;
 	StructMetadata_0_len = 4103 ;
 variables:
+	float lon(lon) ;
+		lon:units = "degrees_east" ;
+	float lat(lat) ;
+		lat:units = "degrees_north" ;
 	float SET1_DQ(lat, lon) ;
 		SET1_DQ:_FillValue = -999.f ;
 		SET1_DQ:LongName = "sea-air humidity difference" ;
@@ -133,10 +137,6 @@ variables:
 	char StructMetadata_0(StructMetadata_0_len) ;
 		StructMetadata_0:origname = "StructMetadata.0" ;
 		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
-	float lon(lon) ;
-		lon:units = "degrees_east" ;
-	float lat(lat) ;
-		lat:units = "degrees_north" ;
 
 // global attributes:
 		:HDFEOS_ADDITIONAL_FILE_ATTRIBUTES.BeginDate = "2008-01-01" ;

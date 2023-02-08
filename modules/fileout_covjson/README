@@ -1,5 +1,4 @@
-For just compiling: make
-
-For compile and unit tests: make check
-
-For compile and install: make install
+10/25/2022:
+The module has been largely modified to make it correctly follow the coverage json specification(covjson.org).
+Currently the simple geographic grid, point, point series and vertical profile that follow the CF conventions
+are supported.

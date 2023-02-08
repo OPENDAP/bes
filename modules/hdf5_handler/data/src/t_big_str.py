@@ -6,12 +6,12 @@
 import h5py
 import numpy as np
 from random import choice
-from string import lowercase
+from string import ascii_lowercase
 #
 # Create a new file using defaut properties.
 #
 n = 32768
-sca_big_str="".join(choice(lowercase) for i in range(n))
+sca_big_str="".join(choice(ascii_lowercase) for i in range(n))
 
 #print glo_attr_str
 #This attribute is greater than netCDF java limit.
@@ -21,7 +21,7 @@ file.attrs["glo_sca_attr"]=sca_big_str
 n = 16384
 #Note although the string size is bigger, but it doesn't exceed 
 # netCDF java limitation.
-glo_attr_str_ar1 = "".join(choice(lowercase) for i in range(n))
+glo_attr_str_ar1 = "".join(choice(ascii_lowercase) for i in range(n))
 glo_attr_str_ar2 = glo_attr_str_ar1
 data=(glo_attr_str_ar1,glo_attr_str_ar2)
 dt=h5py.special_dtype(vlen=str)

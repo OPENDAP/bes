@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/dmrpp_module/tests testsuite])
 
-m4_include([../../../modules/handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 
 dnl Using the file:/... URLs
 AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.dmr])
@@ -24,6 +24,9 @@ dnl Broken. Fix these by implementing DmrppStr. jhrg 4/25/18
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.dap], xpass)
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.dods], xpass)
 
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.das])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_special_char.h5.dmrpp.ddx])
+
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dmr])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.das])
 AT_BESCMD_RESPONSE_TEST([contiguous/coads_climatology.dds])
@@ -39,6 +42,9 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.2.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/grid_2_2d.h5.3.dods])
 
+
+dnl Check netCDF's var name = dimension name handling
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/nc4_group_var_dim_name_same.h5.dap])
 
 dnl Read chunked data
 
@@ -144,6 +150,10 @@ AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_threeD.h5.dods])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([chunked/chunked_shufzip_twoD.h5.dods])
 
+dnl add two unlimited dimension tests, data covers the partial chunk and the whole chunk.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/whole_chunk_unlim.h5.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/part_chunk_unlim.h5.dap])
+
 dnl Test new types - jhrg 5/24/18
 dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dap], [xfail])
 dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/chunked_scalar_string.h5.dods], [xfail])
@@ -188,7 +198,7 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int8_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int32_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.dds])
-AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/int32_array_compact.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/int32_array_compact.dods])
 
 AT_BESCMD_RESPONSE_TEST([compact/int64_array_compact.dmr])
@@ -197,31 +207,31 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int64_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/float32_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.dds])
-AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/float32_array_compact.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/float32_array_compact.dods])
 
 AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/float64_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.dds])
-AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/float64_array_compact.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/float64_array_compact.dods])
 
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_release.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/string_array_compact_release.dap])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_release.dds])
-AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_release.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/string_array_compact_release.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_release.dods])
 
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_version.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/string_array_compact_version.dap])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_version.dds])
-AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_version.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/string_array_compact_version.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_version.dods])
 
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/string_array_compact_utc.dap])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.dds])
-AT_BESCMD_RESPONSE_TEST([compact/string_array_compact_utc.das])
+AT_BESCMD_ERROR_RESPONSE_TEST([compact/string_array_compact_utc.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact_utc.dods])
 
 dnl scalar variable tests for the compact storage
@@ -267,6 +277,12 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint64.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_int8.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_uint8.dap])
 
+# HDF5 fixed length string scalar and array tests with fill values.
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_scalar_str2.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_str2.dap])
+
 # Test fill values plus compression. jhrg 5/25/22
 AT_BESCMD_RESPONSE_TEST([fill_value/fvalue_compressed.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_compressed.dap])
@@ -298,5 +314,11 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_c_c.h5.dap])
 #Also add a shuffle + deflate + deflate special case.
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([deflate_twice/fill_some_chunks_s_c_c.h5.dap])
 
-
+#############################################################################
+# Arrays of Fixed Length String tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_str_dset.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_chunk.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_compact.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cont.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_string_cstr.h5.dmrpp.dap])
 

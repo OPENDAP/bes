@@ -58,7 +58,6 @@
 #include <libdap/InternalErr.h>
 #include <hdf5.h>
 
-
 /// Maximum number of dimensions in an array(default option only).
 const int DODS_MAX_RANK=30;
 /// Maximum length of variable or attribute name(default option only).
@@ -84,7 +83,7 @@ typedef struct DS {
     /// Number of dimensions
     int ndims;
     /// Size of each dimension
-    int size[DODS_MAX_RANK];
+    hsize_t size[DODS_MAX_RANK];
     vector <string> dimnames;
     vector <string> dimnames_path;
     /// Number of elements 
@@ -101,6 +100,7 @@ typedef struct DSattr {
     /// Number of dimensions
     int ndims;
     /// Size of each dimension
+    /// Note: We don't expect we have a large array>4GB attribute.
     int size[DODS_MAX_RANK];
     /// Number of elements 
     hsize_t nelmts;

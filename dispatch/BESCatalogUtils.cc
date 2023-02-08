@@ -195,8 +195,8 @@ bool BESCatalogUtils::include(const string &inQuestion) const
                     // must match exactly, meaning result is = to length of string
                     // in question
                     BESRegex reg_expr(reg.c_str());
-                    if (reg_expr.match(inQuestion.c_str(), inQuestion.length())
-                        == static_cast<int>(inQuestion.length())) {
+                    if (reg_expr.match(inQuestion.c_str(), inQuestion.size())
+                        == static_cast<int>(inQuestion.size())) {
                         toInclude = true;
                     }
                 }
@@ -235,7 +235,7 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
         if (!reg.empty()) {
             try {
                 BESRegex reg_expr(reg.c_str());
-                if (reg_expr.match(inQuestion.c_str(), inQuestion.length()) == static_cast<int>(inQuestion.length())) {
+                if (reg_expr.match(inQuestion.c_str(), inQuestion.size()) == static_cast<int>(inQuestion.size())) {
                     return true;
                 }
             }
@@ -418,7 +418,7 @@ BESCatalogUtils::get_handler_name(const std::string &item) const
 {
     for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
-        if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
+        if (expr.match(item.c_str(), item.size()) == (int)item.size()) {
             return (*i).handler;
         }
     }
@@ -443,11 +443,10 @@ BESCatalogUtils::is_data(const std::string &item) const
 {
     for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
-        if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
+        if (expr.match(item.c_str(), item.size()) == (int)item.size()) {
             return true;
         }
     }
-
     return false;
 }
 

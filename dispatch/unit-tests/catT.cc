@@ -40,6 +40,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -184,12 +185,9 @@ private:
     }
 
 public:
-    catT()
-    {
-    }
-    ~catT()
-    {
-    }
+    catT() = default;
+
+    ~catT() = default;
 
     void setUp()
     {
@@ -207,14 +205,8 @@ public:
             cerr << e.get_message() << endl;
             throw e;
         }
+
         if (bes_debug) BESDebug::SetUp("cerr,bes");
-
-    }
-
-    void tearDown()
-    {
-        delete TheBESKeys::d_instance;
-        TheBESKeys::d_instance = 0;
     }
 
     CPPUNIT_TEST_SUITE( catT );
@@ -942,7 +934,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: catT has the following tests:" << endl;
             const std::vector<Test*> &tests = catT::suite()->getTests();
-            unsigned int prefix_len = catT::suite()->getName().append("::").length();
+            unsigned int prefix_len = catT::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

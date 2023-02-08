@@ -250,7 +250,7 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
                 cerr << "FoJsonTest::test_abstract_object_data_representation() - baseline.compare(result): "
                     << baseline.compare(result) << endl);
 
-            CPPUNIT_ASSERT(baseline.length() == result.length());
+            CPPUNIT_ASSERT(baseline.size() == result.size());
             CPPUNIT_ASSERT(baseline.compare(result) == 0);
 
             DBG(
@@ -689,7 +689,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             std::cerr << "Usage: FoJsonTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = fojson::FoJsonTest::suite()->getTests();
-            unsigned int prefix_len = fojson::FoJsonTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = fojson::FoJsonTest::suite()->getName().append("::").size();
             for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
             }

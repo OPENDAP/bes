@@ -32,7 +32,6 @@ dset1.dims[0].attach_scale(dim1)
  
 # Create a group
 grp = f.create_group("g")
-#dim2s=np.arange(2,dtype=np.int32)
 #dim2 = grp.create_dataset("dim2",data=dim2s)
 #dim2.dims.create_scale(dim2)
  

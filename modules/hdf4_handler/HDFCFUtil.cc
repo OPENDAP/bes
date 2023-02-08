@@ -307,8 +307,12 @@ HDFCFUtil::print_attr(int32 type, int loc, void *vals)
     case DFNT_UCHAR:
     case DFNT_CHAR:
         {
+#if 0
             // Use the customized escattr function. Don't escape \n,\t and \r. KY 2013-10-14
             return escattr(static_cast<const char*>(vals));
+#endif
+            string tmp_str = static_cast<const char*>(vals);
+            return tmp_str;
         }
 
     case DFNT_INT16:
@@ -521,7 +525,8 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
     // Find the correct index
     int dim0count = count[0];
     int dim1count = count[1];
-    int dim0index[dim0count], dim1index[dim1count];
+    vector<int> dim0index(dim0count);
+    vector<int> dim1index(dim1count);
 
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];
@@ -570,6 +575,7 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                     // String fillvalue is always represented as /+octal numbers when its type is forced to
                     // change to string(check HFRHANDLER-223). So we have to retrieve it back.
+                    fillvalue = escattr_fvalue(fillvalue);
                     if(fillvalue.size() >1) {
 
                         long int fillvalue_int = 0;
@@ -584,16 +590,18 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
 
                         // If somehow the fillvalue type is DFNT_CHAR or DFNT_UCHAR, and the size is 1,
                         // that means the fillvalue type is wrongly defined, we treat as a 8-bit integer number.
-                        // Note, the code will only assume the value ranges from 0 to 128.(JIRA HFRHANDLER-248).
+                        // Note, the code will only assume the value ranges from 0 to 255.(JIRA HFRHANDLER-248).
                         // KY 2014-04-24
                           
                         short fillvalue_int = fillvalue.at(0);
 
                         stringstream convert_str;
                         convert_str << fillvalue_int;
-                        if(fillvalue_int <0 || fillvalue_int >128)
+#if 0
+                        if(fillvalue_int <0 || fillvalue_int >255)
                             throw InternalErr(__FILE__,__LINE__,
-                            "If the fillvalue is a char type, the value must be between 0 and 128.");
+                            "If the fillvalue is a char type, the value must be between 0 and 255.");
+#endif
 
 
                         at->append_attr("_FillValue",var_type,convert_str.str());               
@@ -733,7 +741,7 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
     // Otherwise, continue checking the scale and offset names.
     // KY 2013-12-13
 
-    if(scaletype!=DEFAULT_CF_EQU && at!=nullptr)
+    if(scaletype!=SOType::DEFAULT_CF_EQU && at!=nullptr)
     {
         AttrTable::Attr_iter it = at->attr_begin();
         string  scale_factor_value="";
@@ -777,11 +785,11 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
             it++;
         }
 
-        if((radiance_scales_value.length()!=0 && radiance_offsets_value.length()!=0) 
-            || (reflectance_scales_value.length()!=0 && reflectance_offsets_value.length()!=0))
+        if((radiance_scales_value.size()!=0 && radiance_offsets_value.size()!=0)
+            || (reflectance_scales_value.size()!=0 && reflectance_offsets_value.size()!=0))
             return true;
 		
-        if(scale_factor_value.length()!=0) 
+        if(scale_factor_value.size()!=0)
         {
             if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) 
                 return true;
@@ -1051,8 +1059,8 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
     // KY 2014-01-13
 
     
-    if(scale_factor_value.length()!=0) {
-        if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+    if(scale_factor_value.size()!=0) {
+        if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
             if (orig_scale_value_float > 1 || orig_scale_value_double >1) {
 
                 bool need_change_scale = true;
@@ -1066,7 +1074,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                         need_change_scale = false;
                 }
                 if(true == need_change_scale)  {
-                    sotype = MODIS_DIV_SCALE;
+                    sotype = SOType::MODIS_DIV_SCALE;
                     (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                    << " Now change it to MODIS_DIV_SCALE. "<<endl;
@@ -1074,9 +1082,9 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
             }
         }
 
-        if (MODIS_DIV_SCALE == sotype) {
+        if (SOType::MODIS_DIV_SCALE == sotype) {
             if (orig_scale_value_float < 1 || orig_scale_value_double<1) {
-                sotype = MODIS_MUL_SCALE;
+                sotype = SOType::MODIS_MUL_SCALE;
                 (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< scale_factor_value << endl
                                    << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
                                    << " Now change it to MODIS_MUL_SCALE. "<<endl;
@@ -1084,7 +1092,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
         }
 
 
-        if ((MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
+        if ((SOType::MODIS_MUL_SCALE == sotype) &&(true == add_offset_found)) {
 
             float new_offset_value_float=0;
             double new_offset_value_double=0;
@@ -1099,7 +1107,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
       
         }    
 
-        if (MODIS_DIV_SCALE == sotype) {
+        if (SOType::MODIS_DIV_SCALE == sotype) {
 
             float new_scale_value_float=1;
             double new_scale_value_double=1;
@@ -1108,7 +1116,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
  
 
             if(scale_factor_type !="Float64") {
-                new_scale_value_float = 1.0/orig_scale_value_float;
+                new_scale_value_float = 1.0f/orig_scale_value_float;
                 if (true == add_offset_found) {
                     if(add_offset_type !="Float64") 
                         new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_float); 
@@ -1121,7 +1129,7 @@ void HDFCFUtil::handle_modis_special_attrs_disable_scale_comp(AttrTable *at,
                 new_scale_value_double = 1.0/orig_scale_value_double;
                 if (true == add_offset_found) {
                     if(add_offset_type !="Float64") 
-                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1 * orig_offset_value_float *new_scale_value_double); 
+                        new_offset_value_float = (orig_offset_value_float==0)?0:(-1.0f * orig_offset_value_float *((float)new_scale_value_double)); 
                     else 
                         new_offset_value_double = (orig_offset_value_double==0)?0:(-1 * orig_offset_value_double *new_scale_value_double); 
                 }
@@ -1243,7 +1251,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
 
     // Rename scale_factor and add_offset attribute names. Otherwise, they will be 
     // misused by CF tools to generate wrong data values based on the CF scale and offset rule.
-    if(scale_factor_value.length()!=0)
+    if(scale_factor_value.size()!=0)
     {
         if(!(atof(scale_factor_value.c_str())==1 && atof(add_offset_value.c_str())==0)) //Rename them.
         {
@@ -1258,7 +1266,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
     }
 
     // Change _FillValue datatype
-    if(true == changedtype && fillvalue.length()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64") 
+    if(true == changedtype && fillvalue.size()!=0 && fillvalue_type!="Float32" && fillvalue_type!="Float64")
     {
         change_fvtype = true;
         at->del_attr("_FillValue");
@@ -1274,7 +1282,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
     // MODIS level 1B's Emissive and RefSB fields' scale_factor and add_offset 
     // get changed according to different vertical levels.
     // So we need to handle them specifically.
-    if (sotype == MODIS_MUL_SCALE && true ==changedtype) {
+    if (sotype == SOType::MODIS_MUL_SCALE && true ==changedtype) {
 
         // Emissive should be at the end of the field name such as "..._Emissive"
         string emissive_str = "Emissive";
@@ -1439,7 +1447,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
         // If the gridname_change_valid_range is true, call a special function to handle this.
         if (true == gridname_change_valid_range) 
             HDFCFUtil::handle_modis_vip_special_attrs(valid_range_value,scale_factor_value,valid_min,valid_max);
-        else if(scale_factor_value.length()!=0) {
+        else if(scale_factor_value.size()!=0) {
 
             // We found MODIS products always scale to a smaller value. If somehow the original scale factor
             // is smaller than 1, the scale/offset should be the multiplication rule.(new_data =scale*(old_data-offset))
@@ -1458,7 +1466,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
             // we don't want to change the scale and offset settings. 
             // KY 2014-01-13
 
-            if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+            if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
                 if (orig_scale_value > 1) {
                   
                     bool need_change_scale = true;
@@ -1473,7 +1481,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                             need_change_scale = false;
                     }
                     if(true == need_change_scale) {
-                        sotype = MODIS_DIV_SCALE;
+                        sotype = SOType::MODIS_DIV_SCALE;
                         (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
                                  << " But the original scale factor type is MODIS_MUL_SCALE or MODIS_EQ_SCALE. " << endl
                                  << " Now change it to MODIS_DIV_SCALE. "<<endl;
@@ -1481,34 +1489,34 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
                 }
             }
 
-            if (MODIS_DIV_SCALE == sotype) {
+            if (SOType::MODIS_DIV_SCALE == sotype) {
                 if (orig_scale_value < 1) {
-                    sotype = MODIS_MUL_SCALE;
+                    sotype = SOType::MODIS_MUL_SCALE;
                     (*BESLog::TheLog())<< "The field " << newfname << " scale factor is "<< orig_scale_value << endl
                                  << " But the original scale factor type is MODIS_DIV_SCALE. " << endl
                                  << " Now change it to MODIS_MUL_SCALE. "<<endl;
                 }
             }
 
-            if(sotype == MODIS_MUL_SCALE) {
+            if(sotype == SOType::MODIS_MUL_SCALE) {
                 valid_min = (orig_valid_min - orig_offset_value)*orig_scale_value;
                 valid_max = (orig_valid_max - orig_offset_value)*orig_scale_value;
             }
-            else if (sotype == MODIS_DIV_SCALE) {
+            else if (sotype == SOType::MODIS_DIV_SCALE) {
                 valid_min = (orig_valid_min - orig_offset_value)/orig_scale_value;
                 valid_max = (orig_valid_max - orig_offset_value)/orig_scale_value;
             }
-            else if (sotype == MODIS_EQ_SCALE) {
+            else if (sotype == SOType::MODIS_EQ_SCALE) {
                 valid_min = orig_valid_min * orig_scale_value + orig_offset_value;
                 valid_max = orig_valid_max * orig_scale_value + orig_offset_value;
             }
         }
         else {// This is our current assumption.
-            if (MODIS_MUL_SCALE == sotype || MODIS_DIV_SCALE == sotype) {
+            if (SOType::MODIS_MUL_SCALE == sotype || SOType::MODIS_DIV_SCALE == sotype) {
                 valid_min = orig_valid_min - orig_offset_value;
                 valid_max = orig_valid_max - orig_offset_value;
             }
-            else if (MODIS_EQ_SCALE == sotype) {
+            else if (SOType::MODIS_EQ_SCALE == sotype) {
                 valid_min = orig_valid_min + orig_offset_value;
                 valid_max = orig_valid_max + orig_offset_value;
             }
@@ -2636,8 +2644,8 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                     string scale_value = *at->get_attr_vector(it)->begin();
                             
                                     if(true == has_dBm) {
-                                       short valid_min = (short)(-120 *strtof(scale_value.c_str(),nullptr));
-                                       short valid_max = (short)(-20 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_min = (short)(-120 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_max = (short)(-20 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2647,8 +2655,8 @@ HDFCFUtil::add_missing_cf_attrs(const HDFSP::File*f,DAS &das) {
                                     }
 
                                     else if(true == has_dBZ){
-                                       short valid_min = (short)(-20 *strtof(scale_value.c_str(),nullptr));
-                                       short valid_max = (short)(80 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_min = (short)(-20 *strtof(scale_value.c_str(),nullptr));
+                                       auto valid_max = (short)(80 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2879,7 +2887,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                         string tempstring2(va->getValue().begin(),va->getValue().end());
                         string tempfinalstr= string(tempstring2.c_str());
+#if 0
                         at->append_attr(VDattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                        at->append_attr(VDattrprefix+va->getNewName(), "String" , tempfinalstr);
                     }
                     else {
                         for (int loc=0; loc < va->getCount() ; loc++) {
@@ -2913,7 +2924,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
 
                                     string tempstring2(va->getValue().begin(),va->getValue().end());
                                     string tempfinalstr= string(tempstring2.c_str());
+#if 0
                                     at_v->append_attr(va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                    at_v->append_attr(va->getNewName(), "String" , tempfinalstr);
                                 }
                                 else {
                                     for (int loc=0; loc < va->getCount() ; loc++) {
@@ -2938,7 +2952,10 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             string tempfinalstr;
                             tempfinalstr.resize(vdf->getValue().size());
                             copy(vdf->getValue().begin(),vdf->getValue().end(),tempfinalstr.begin());
+#if 0
                             at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                            at->append_attr(VDfieldprefix+vdf->getNewName(), "String" , tempfinalstr);
                         }
                         else {
                             for ( int loc=0; loc < vdf->getNumRec(); loc++) {
@@ -2956,8 +2973,11 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                         if(vdf->getNumRec()==1){
                             if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
                                 string tempstring2(vdf->getValue().begin(),vdf->getValue().end());
-                                string tempfinalstr= string(tempstring2.c_str());
+                                auto tempfinalstr= string(tempstring2.c_str());
+#if 0
                                 at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempfinalstr);
                             }
                             else {
                                 for (int loc=0; loc < vdf->getFieldOrder(); loc++) {
@@ -2975,9 +2995,12 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                                     vector<char>::const_iterator tempit;
                                     tempit = vdf->getValue().begin()+tempcount*(vdf->getFieldOrder());
                                     string tempstring2(tempit,tempit+vdf->getFieldOrder());
-                                    string tempfinalstr= string(tempstring2.c_str());
+                                    auto tempfinalstr= string(tempstring2.c_str());
                                     string tempoutstring = "'"+tempfinalstr+"'";
+#if 0
                                     at->append_attr(VDfieldprefix+vdf->getNewName(),"String",HDFCFUtil::escattr(tempoutstring));
+#endif
+                                    at->append_attr(VDfieldprefix+vdf->getNewName(),"String",tempoutstring);
                                 }
                             }
 
@@ -3001,8 +3024,11 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             if(va->getType()==DFNT_UCHAR || va->getType() == DFNT_CHAR){
 
                                 string tempstring2(va->getValue().begin(),va->getValue().end());
-                                string tempfinalstr= string(tempstring2.c_str());
+                                auto tempfinalstr= string(tempstring2.c_str());
+#if 0
                                 at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , HDFCFUtil::escattr(tempfinalstr));
+#endif
+                                at->append_attr(VDfieldattrprefix+va->getNewName(), "String" , tempfinalstr);
                             }
                             else {
                                 for (int loc=0; loc < va->getCount() ; loc++) {
@@ -3216,7 +3242,9 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
     for(int i = 0; i<num_gobjects;i++) {
 
-        int32 obj_tag, obj_ref;
+        int32 obj_tag;
+        int32 obj_ref;
+
         if (Vgettagref(obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) 
             throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
 
@@ -3281,7 +3309,10 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                     string tempstring(vdata_value.begin(),vdata_value.end());
                     // Remove the nullptr term
                     auto tempstring2 = string(tempstring.c_str());
+#if 0
                     at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
+#endif
+                    at->append_attr(vdataname_cfstr,"String",tempstring2);
                 }
                 else {
                     string print_rep = HDFCFUtil::print_attr(fieldtype, 0, (void*) vdata_value.data());
@@ -3297,6 +3328,9 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
     return;
 }
 
+// The function that escapes the special characters is no longer needed after we move that functionality to libdap4.
+// Will keep the following function as an #if 0/#endif block for a while and then the code should be removed. KY 2022-11-22
+#if 0
 // Part of a large fix for attributes. Escaping the values of the attributes
 // may have been a bad idea. It breaks using JSON, for example. If this is a
 // bad idea - to turn of escaping - then we'll have to figure out how to store
@@ -3308,9 +3342,11 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
 string HDFCFUtil::escattr(string s)
 {
+// We should not handle any special characters here. These will be handled by libdap4. Still leave the code here for the time being.
+// Eventually this function will be removed. KY 2022-08-25
+#if ESCAPE_STRING_ATTRIBUTES
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
-#if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
@@ -3319,7 +3355,7 @@ string HDFCFUtil::escattr(string s)
     size_t ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
-        ind += DOUBLE_ESC.length();
+        ind += DOUBLE_ESC.size();
     }
 
     // escape " with backslash
@@ -3327,10 +3363,24 @@ string HDFCFUtil::escattr(string s)
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         //comment out the following line since it wastes the CPU operation.
         s.replace(ind, 1, ESCQUOTE);
-        ind += ESCQUOTE.length();
+        ind += ESCQUOTE.size();
+    }
+
+    size_t ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
+        s.replace(ind, 1, ESC + octstring(s[ind]));
     }
 #endif
 
+    return s;
+}
+#endif
+
+// This function is necessary since char is represented as string. For fillvalue, this has to be resumed. 
+string HDFCFUtil::escattr_fvalue(string s)
+{
+    const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
+    const string ESC = "\\";
     size_t ind = 0;
     while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
         s.replace(ind, 1, ESC + octstring(s[ind]));

@@ -20,7 +20,6 @@
 // along with this software; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// #define DODS_DEBUG
 /// \file HDF5Structure.cc
 /// \brief The implementation of converting HDF5 compound type into DAP structure for the default option.
 /// \author Kent Yang
@@ -189,11 +188,11 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                     throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
 
                 HDF5Array &h5_array_type = dynamic_cast<HDF5Array&>(*var(memb_name));
-                vector<int> at_offset(at_ndims,0);
-                vector<int> at_count(at_ndims,0);
-                vector<int> at_step(at_ndims,0);
+                vector<int64_t> at_offset(at_ndims,0);
+                vector<int64_t> at_count(at_ndims,0);
+                vector<int64_t> at_step(at_ndims,0);
 
-                int at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
+                int64_t at_nelms = h5_array_type.format_constraint(at_offset.data(),at_step.data(),at_count.data());
 
                 // Read the array data
                 h5_array_type.do_h5_array_type_read(dsetid, memb_id,values,has_values,memb_offset+values_offset,
@@ -219,7 +218,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                 if(true == H5Tis_variable_str(memb_id)) {
 
                     void *src = (void*)(values.data()+values_offset + memb_offset);
-                    char*temp_bp = (char*)src;
+                    auto temp_bp = (char*)src;
                     string final_str ="";
                     get_vlen_str_data(temp_bp,final_str);
                     var(memb_name)->val2buf((void*)&final_str);

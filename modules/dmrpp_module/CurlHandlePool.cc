@@ -59,6 +59,7 @@
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 using namespace dmrpp;
+using namespace http;
 using namespace std;
 
 string pthread_error(unsigned int err){
@@ -394,6 +395,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
 
+        // TODO Code between here and below may have been turned into a method in AccessCredentials. jhrg 11/2/22
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->is_s3_cred()) {
             BESDEBUG(DMRPP_CURL,
@@ -416,7 +418,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
-
+            // TODO here. jhrg 11/2/22
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
         }

@@ -507,100 +507,100 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5";
+                    String VALUE "\"OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-06-02T12:39:20.000Z";
+                    String VALUE "\"2009-06-02T12:39:20.000Z\"";
                 }
                 DAYNIGHTFLAG {
                     Int32 NUM_VAL 1;
-                    String VALUE "Day";
+                    String VALUE "\"Day\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "processed 1 time";
+                    String VALUE "\"processed 1 time\"";
                 }
                 LOCALVERSIONID {
                     Int32 NUM_VAL 1;
-                    String VALUE "RFC1321 MD5 = not yet calculated";
+                    String VALUE "\"RFC1321 MD5 = not yet calculated\"";
                 }
                 REPROCESSINGPLANNED {
                     Int32 NUM_VAL 1;
-                    String VALUE "further update is anticipated";
+                    String VALUE "\"further update is anticipated\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Not Investigated";
-                            String CLASS "1";
+                            String VALUE "\"Not Investigated\"";
+                            String CLASS "\"1\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "An automatic quality investigation has not yet been devised.";
+                            String CLASS "\"1\"";
+                            String VALUE "\"An automatic quality investigation has not yet been devised.\"";
                         }
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Failed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Failed\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String VALUE "This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.";
-                            String CLASS "1";
+                            String VALUE "\"This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.\"";
+                            String CLASS "\"1\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String VALUE "Passed";
-                            String CLASS "1";
+                            String VALUE "\"Passed\"";
+                            String CLASS "\"1\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String VALUE "An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.";
-                            String CLASS "1";
+                            String VALUE "\"An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.\"";
+                            String CLASS "\"1\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
                     PARAMETERNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Total Column Ozone Gridded";
+                        String VALUE "\"Total Column Ozone Gridded\"";
                     }
                 }
             }
             ORBITCALCULATEDSPATIALDOMAIN {
                 ORBITCALCULATEDSPATIALDOMAINCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                     EQUATORCROSSINGDATE {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01", "2004-10-01";
+                        String VALUE "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"", "\"2004-10-01\"";
                     }
                     EQUATORCROSSINGTIME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "00:52:22.000000", "02:31:15.000000", "04:10:08.000000", "05:49:01.000000", "07:27:54.000000", "09:06:47.000000", "10:45:40.000000", "12:24:33.000000", "14:03:26.000000", "15:42:19.000000", "17:21:12.000000", "19:00:05.000000", "20:38:58.000000", "22:17:51.000000", "23:56:44.000000";
+                        String VALUE "\"00:52:22.000000\"", "\"02:31:15.000000\"", "\"04:10:08.000000\"", "\"05:49:01.000000\"", "\"07:27:54.000000\"", "\"09:06:47.000000\"", "\"10:45:40.000000\"", "\"12:24:33.000000\"", "\"14:03:26.000000\"", "\"15:42:19.000000\"", "\"17:21:12.000000\"", "\"19:00:05.000000\"", "\"20:38:58.000000\"", "\"22:17:51.000000\"", "\"23:56:44.000000\"";
                     }
                     ORBITNUMBER {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
                         Int32 VALUE 1132, 1133, 1134, 1135, 1136, 1137, 1138, 1139, 1140, 1141, 1142, 1143, 1144, 1145, 1146;
                     }
                     EQUATORCROSSINGLONGITUDE {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"", "\"11\"", "\"12\"", "\"13\"", "\"14\"", "\"15\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
                         Float64 VALUE -167.57, 167.71, 142.99, 118.27, 93.55, 68.83, 44.1, 19.38, -5.34, -30.06, -54.78, -79.5, -104.22, -128.94, -153.66;
                     }
@@ -613,16 +613,16 @@ Attributes {
                 }
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "OMTO3G";
+                    String VALUE "\"OMTO3G\"";
                 }
             }
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 15;
-                    String VALUE "OMI-Aura_L2-OMTO3_2004m1001t0003-o01132_v003-2009m0531t100121.he5", "OMI-Aura_L2-OMTO3_2004m1001t0141-o01133_v003-2009m0531t095703.he5", "OMI-Aura_L2-OMTO3_2004m1001t0320-o01134_v003-2009m0531t095656.he5", "
-          OMI-Aura_L2-OMTO3_2004m1001t0459-o01135_v003-2009m0531t100110.he5", "OMI-Aura_L2-OMTO3_2004m1001t0638-o01136_v003-2009m0531t095551.he5", "OMI-Aura_L2-OMTO3_2004m1001t0817-o01137_v003-2009m0531t100145.he5", "OMI-Aura_L2-OMTO3_2004m1001t0956-o01138_v003-2009m0531t095639.he5", "
-          OMI-Aura_L2-OMTO3_2004m1001t1135-o01139_v003-2009m0531t095651.he5", "OMI-Aura_L2-OMTO3_2004m1001t1314-o01140_v003-2009m0531t095815.he5", "OMI-Aura_L2-OMTO3_2004m1001t1452-o01141_v003-2009m0531t095647.he5", "OMI-Aura_L2-OMTO3_2004m1001t1631-o01142_v003-2009m0531t095639.he5", "
-          OMI-Aura_L2-OMTO3_2004m1001t1810-o01143_v003-2009m0531t095702.he5", "OMI-Aura_L2-OMTO3_2004m1001t1949-o01144_v003-2009m0531t100315.he5", "OMI-Aura_L2-OMTO3_2004m1001t2128-o01145_v003-2009m0531t095712.he5", "OMI-Aura_L2-OMTO3_2004m1001t2307-o01146_v003-2009m0531t095143.he5";
+                    String VALUE "\"OMI-Aura_L2-OMTO3_2004m1001t0003-o01132_v003-2009m0531t100121.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t0141-o01133_v003-2009m0531t095703.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t0320-o01134_v003-2009m0531t095656.he5\"", "\"
+          OMI-Aura_L2-OMTO3_2004m1001t0459-o01135_v003-2009m0531t100110.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t0638-o01136_v003-2009m0531t095551.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t0817-o01137_v003-2009m0531t100145.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t0956-o01138_v003-2009m0531t095639.he5\"", "\"
+          OMI-Aura_L2-OMTO3_2004m1001t1135-o01139_v003-2009m0531t095651.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t1314-o01140_v003-2009m0531t095815.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t1452-o01141_v003-2009m0531t095647.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t1631-o01142_v003-2009m0531t095639.he5\"", "\"
+          OMI-Aura_L2-OMTO3_2004m1001t1810-o01143_v003-2009m0531t095702.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t1949-o01144_v003-2009m0531t100315.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t2128-o01145_v003-2009m0531t095712.he5\"", "\"OMI-Aura_L2-OMTO3_2004m1001t2307-o01146_v003-2009m0531t095143.he5\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -649,68 +649,68 @@ Attributes {
                 GRANULELOCALITY {
                     LOCALITYVALUE {
                         Int32 NUM_VAL 1;
-                        String VALUE "Global";
+                        String VALUE "\"Global\"";
                     }
                 }
             }
             RANGEDATETIME {
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2004-10-01";
+                    String VALUE "\"2004-10-01\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "23:59:59.999999";
+                    String VALUE "\"23:59:59.999999\"";
                 }
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2004-10-01";
+                    String VALUE "\"2004-10-01\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:00:00.000000";
+                    String VALUE "\"00:00:00.000000\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "1.0.3.1";
+                    String VALUE "\"1.0.3.1\"";
                 }
             }
             ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
                 ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     ASSOCIATEDSENSORSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "CCD Ultra Violet";
+                        String VALUE "\"CCD Ultra Violet\"";
                     }
                     ASSOCIATEDPLATFORMSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "Aura";
+                        String VALUE "\"Aura\"";
                     }
                     ASSOCIATEDINSTRUMENTSHORTNAME {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         Int32 NUM_VAL 1;
-                        String VALUE "OMI";
+                        String VALUE "\"OMI\"";
                     }
                 }
             }
             ADDITIONALATTRIBUTES {
                 ADDITIONALATTRIBUTESCONTAINER {
-                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                    String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"";
                     ADDITIONALATTRIBUTENAME {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"";
                         Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
-                        String VALUE "NrMeasurements", "NrZoom", "NrSpatialZoom", "NrSpectralZoom", "ExpeditedData", "SouthAtlanticAnomalyCrossing", "SpacecraftManeuverFlag", "SolarEclipse", "MasterClockPeriods", "ExposureTimes";
+                        String VALUE "\"NrMeasurements\"", "\"NrZoom\"", "\"NrSpatialZoom\"", "\"NrSpectralZoom\"", "\"ExpeditedData\"", "\"SouthAtlanticAnomalyCrossing\"", "\"SpacecraftManeuverFlag\"", "\"SolarEclipse\"", "\"MasterClockPeriods\"", "\"ExposureTimes\"";
                     }
                     INFORMATIONCONTENT {
-                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
+                        String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"";
                         PARAMETERVALUE {
                             Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 3;
-                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10";
-                            String VALUE "23778", "0", "0", "0", "FALSE", "TRUE", "FALSE", "FALSE", "2.000400", "1.000200", "0.500100", "0.400080";
+                            String CLASS "\"1\"", "\"2\"", "\"3\"", "\"4\"", "\"5\"", "\"6\"", "\"7\"", "\"8\"", "\"9\"", "\"10\"";
+                            String VALUE "\"23778\"", "\"0\"", "\"0\"", "\"0\"", "\"FALSE\"", "\"TRUE\"", "\"FALSE\"", "\"FALSE\"", "\"2.000400\"", "\"1.000200\"", "\"0.500100\"", "\"0.400080\"";
                         }
                     }
                 }
@@ -726,11 +726,11 @@ Attributes {
             String GROUPTYPE "MASTERGROUP";
             LONGNAME {
                 Int32 NUM_VAL 1;
-                String VALUE "OMI/Aura Ozone (O3) Total Column Daily L2 Global 0.25deg Lat/Lon Grid";
+                String VALUE "\"OMI/Aura Ozone (O3) Total Column Daily L2 Global 0.25deg Lat/Lon Grid\"";
             }
             ESDTDESCRIPTORREVISION {
                 Int32 NUM_VAL 1;
-                String VALUE "2.0.00";
+                String VALUE "\"2.0.00\"";
             }
         }
     }

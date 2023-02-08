@@ -34,7 +34,6 @@
 ///
 
 
-// #define DODS_DEBUG
 #include <string>
 #include <ctype.h>
 

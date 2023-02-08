@@ -204,16 +204,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ServerAdministratorTest);
 
 int main(int argc, char*argv[])
 {
-
-    int start = 0;
     int option_char;
     while ((option_char = getopt(argc, argv, "bdh")) != EOF)
         switch (option_char) {
-        case 'd': {
+        case 'd':
             debug = 1;  // debug is a static global
-            start = 1;
             break;
-        }
+
         case 'b': {
             bes_debug = 1;  // debug is a static global
             break;
@@ -221,7 +218,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: ServerAdministratorTest has the following tests:" << endl;
             const std::vector<Test*> &tests = ServerAdministratorTest::suite()->getTests();
-            unsigned int prefix_len = ServerAdministratorTest::suite()->getName().append("::").length();
+            unsigned int prefix_len = ServerAdministratorTest::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

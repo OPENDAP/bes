@@ -188,7 +188,10 @@ decode_inverse_relop(int op)
 GSEClause *
 build_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val)
 {
-    return new GSEClause(arg->get_grid(), (string)id, val, decode_relop(op));
+    if (arg->get_grid())
+        return new GSEClause(arg->get_grid(), (string)id, val, decode_relop(op));
+    else
+        return new GSEClause(arg->get_coverage(), (string)id, val, decode_relop(op));
 }
 
 // Build a GSE Clause given that the operands are reversed.
@@ -196,7 +199,10 @@ build_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val)
 GSEClause *
 build_rev_gse_clause(gse_arg *arg, char id[ID_MAX], int op, double val)
 {
-    return new GSEClause(arg->get_grid(), (string)id, val, decode_inverse_relop(op));
+    if (arg->get_grid())
+        return new GSEClause(arg->get_grid(), (string)id, val, decode_inverse_relop(op));
+    else
+        return new GSEClause(arg->get_coverage(), (string)id, val, decode_inverse_relop(op));
 }
 
 GSEClause *
@@ -226,6 +232,10 @@ build_dual_gse_clause(gse_arg *arg, char id[ID_MAX], int op1, double val1, int o
 	throw Error(malformed_expr, "Unrecognized relational operator.");
     }
 
-    return new GSEClause(arg->get_grid(), (string)id, val1, rop1, val2, rop2);
+    if (arg->get_grid())
+        return new GSEClause(arg->get_grid(), (string)id, val1, rop1, val2, rop2);
+    else
+        return new GSEClause(arg->get_coverage(),(string)id, val1, rop1, val2, rop2);
+
 }
 

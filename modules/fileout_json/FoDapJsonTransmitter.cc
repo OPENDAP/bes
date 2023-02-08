@@ -92,7 +92,7 @@ FoDapJsonTransmitter::FoDapJsonTransmitter() : BESTransmitter()
         if (!found || FoDapJsonTransmitter::temp_dir.empty()) {
         	FoDapJsonTransmitter::temp_dir = FO_JSON_TEMP_DIR;
         }
-        string::size_type len = FoDapJsonTransmitter::temp_dir.length();
+        string::size_type len = FoDapJsonTransmitter::temp_dir.size();
         if (FoDapJsonTransmitter::temp_dir[len - 1] == '/') {
         	FoDapJsonTransmitter::temp_dir = FoDapJsonTransmitter::temp_dir.substr(0, len - 1);
         }

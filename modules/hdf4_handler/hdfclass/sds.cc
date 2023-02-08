@@ -211,11 +211,11 @@ void hdfistream_sds::_seek_arr_ref(int ref)
 
 
 // constructor
-hdfistream_sds::hdfistream_sds(const string filename):
+hdfistream_sds::hdfistream_sds(const string& filename):
 hdfistream_obj(filename)
 {
     _init();
-    if (_filename.length() != 0)        // if ctor specified a file to open
+    if (_filename.size() != 0)        // if ctor specified a file to open
         open(_filename.c_str());
     return;
 }
@@ -223,7 +223,7 @@ hdfistream_obj(filename)
 // check to see if stream has been positioned past last SDS in file
 bool hdfistream_sds::eos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nsds == 0)             // eos() is always true of there are no SDS's in file
         return true;
@@ -238,7 +238,7 @@ bool hdfistream_sds::eos(void) const
 // check to see if stream is positioned in front of the first SDS in file
 bool hdfistream_sds::bos(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (_nsds == 0)
         return true;            // if there are no SDS's we still want to read file attrs so both eos() and bos() are true
@@ -252,7 +252,7 @@ bool hdfistream_sds::bos(void) const
 // open SDS
 bool hdfistream_sds::eo_attr(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eos() && !bos())        // if eos(), then always eo_attr()
         return true;
@@ -268,7 +268,7 @@ bool hdfistream_sds::eo_attr(void) const
 // open SDS
 bool hdfistream_sds::eo_dim(void) const
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eos())                  // if eos(), then always eo_dim()
         return true;
@@ -283,7 +283,7 @@ bool hdfistream_sds::eo_dim(void) const
 // open a new file
 void hdfistream_sds::open(const char *filename)
 {
-    if (filename == 0)          // no filename given
+    if (filename == nullptr)          // no filename given
         THROW(hcerr_openfile);
     BESDEBUG("h4", "sds opening file " << filename << endl);
     if (_file_id != 0)          // close any currently open file
@@ -316,7 +316,7 @@ void hdfistream_sds::close(void)
 // position SDS array index to index'th SDS array (not necessarily index'th SDS)
 void hdfistream_sds::seek(int index)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr(index);           // seek to index'th SDS array
@@ -327,7 +327,7 @@ void hdfistream_sds::seek(int index)
 // position SDS array index to SDS array with name "name"
 void hdfistream_sds::seek(const char *name)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr(string(name));    // seek to index'th SDS array
@@ -338,7 +338,7 @@ void hdfistream_sds::seek(const char *name)
 // position SDS array index in front of first SDS array
 void hdfistream_sds::rewind(void)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any already open SDS
     _rewind();                  // seek to BOS
@@ -347,7 +347,7 @@ void hdfistream_sds::rewind(void)
 // position to next SDS array in file
 void hdfistream_sds::seek_next(void)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _seek_next_arr();           // seek to next SDS array
     if (!eos())                 // if not EOS, get SDS information
@@ -357,7 +357,7 @@ void hdfistream_sds::seek_next(void)
 // position to SDS array by ref
 void hdfistream_sds::seek_ref(int ref)
 {
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     _close_sds();               // close any currently open SDS
     _seek_arr_ref(ref);         // seek to SDS array by reference
@@ -374,8 +374,7 @@ void hdfistream_sds::setslab(vector < int >start, vector < int >edge,
         || start.size() == 0)
         THROW(hcerr_invslab);
 
-    int i;
-    for (i = 0; i < (int) start.size() && i < hdfclass::MAXDIMS; ++i) {
+    for (int i = 0; i < (int) start.size() && i < hdfclass::MAXDIMS; ++i) {
         if (start[i] < 0)
             THROW(hcerr_invslab);
         if (edge[i] <= 0)
@@ -402,7 +401,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
     hs.data = hdf_genvec();
     hs.name = string();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (bos())                  // if at BOS, advance to first SDS array
         seek(0);
@@ -425,10 +424,10 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
     *this >> hs.dims;
     *this >> hs.attrs;
     hs.name = name;             // assign SDS name
-    char *data = 0;
+    char *data = nullptr;
     int nelts = 1;
     if (_meta)                  // if _meta is set, just load type information
-        hs.data.import(number_type);
+        hs.data.import_vec(number_type);
     else {
         if (_slab.set) {        // load a slab of SDS array data
             for (int i = 0; i < rank; ++i)
@@ -437,7 +436,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
             // allocate a temporary C array to hold the data from SDreaddata()
             int datasize = nelts * DFKNTsize(number_type);
             data = new char[datasize];
-            if (data == 0)
+            if (data == nullptr)
                 THROW(hcerr_nomemory);
             BESDEBUG("h4", "SDreaddata() on line 387. _sds_id: " << _sds_id
                 << endl);
@@ -458,17 +457,17 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
             // allocate a temporary C array to hold the data from SDreaddata()
             int datasize = nelts * DFKNTsize(number_type);
             data = new char[datasize];
-            if (data == 0)
+            if (data == nullptr)
                 THROW(hcerr_nomemory);
 
             // read the data and store it in an hdf_genvec
-            if (SDreaddata(_sds_id, zero, 0, dim_sizes, data) < 0) {
+            if (SDreaddata(_sds_id, zero, nullptr, dim_sizes, data) < 0) {
                 delete[]data;   // problem: clean up and throw an exception
                 THROW(hcerr_sdsread);
             }
         }
 
-        hs.data.import(number_type, data, nelts);
+        hs.data.import_vec(number_type, data, nelts);
         delete[]data;           // deallocate temporary C array
     }
 
@@ -481,8 +480,9 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
 class ce_name_match:public std::unary_function < array_ce, bool > {
     string name;
   public:
-    ce_name_match(const string & n):name(n) {
-    } bool operator() (const array_ce & a_ce) {
+    explicit ce_name_match(const string & n):name(n) {
+    } 
+    bool operator() (const array_ce & a_ce) const {
         return name == a_ce.name;
     }
 };
@@ -497,7 +497,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
     hd.scale = hdf_genvec();
     hd.attrs = vector < hdf_attr > ();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (bos())                  // if at BOS, advance to first SDS array
         seek(0);
@@ -528,7 +528,9 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
     // get dimension information
 
     char name[hdfclass::MAXSTR];
-    int32 count, number_type, nattrs;
+    int32 count;
+    int32 number_type;
+    int32 nattrs;
     if (SDdiminfo(dim_id, name, &count, &number_type, &nattrs) < 0)
         THROW(hcerr_sdsinfo);
     else
@@ -557,8 +559,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
 #endif
 
         vector < array_ce > ce = get_map_ce();
-        vector < array_ce >::iterator ce_iter =
-            find_if(ce.begin(), ce.end(), ce_name_match(string(name)));
+        auto ce_iter = find_if(ce.begin(), ce.end(), ce_name_match(string(name)));
 #if 0
         cerr << "ce name: " << ce_iter->name << endl;
         cerr << "ce set: " << (ce_iter->start != 0 || ce_iter->edge != 0
@@ -617,9 +618,9 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
             if (number_type != DFNT_CHAR) {
                 // allocate a temporary C array to hold data from
                 // SDgetdimscale()
-                char *data = new char[count * DFKNTsize(number_type)];
+                auto data = new char[count * DFKNTsize(number_type)];
 
-                if (data == 0)
+                if (data == nullptr)
                     THROW(hcerr_nomemory);
 
                 // read the scale data and store it in an hdf_genvec
@@ -629,7 +630,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_dim & hd)
                 }
 
                 if (_slab.set) {
-                    void *datastart = (char *) data +
+                    void *datastart = data +
                         _slab.start[_dim_index] * DFKNTsize(number_type);
                     hd.scale = hdf_genvec(number_type, datastart, 0,
                                           _slab.edge[_dim_index] *
@@ -667,7 +668,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_attr & ha)
     ha.name = string();
     ha.values = hdf_genvec();
 
-    if (_filename.length() == 0)        // no file open
+    if (_filename.size() == 0)        // no file open
         THROW(hcerr_invstream);
     if (eo_attr())              // if positioned past last attribute, do nothing
         return *this;
@@ -675,23 +676,21 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_attr & ha)
     // prepare to read attribute information: set nattrs, id depending on whether
     // reading file attributes or SDS attributes
     int32 id;
-    //int nattrs;
     if (bos()) {                // if at BOS, then read file attributes
-        //nattrs = _nfattrs;
         id = _file_id;
     } else {                    // else read SDS attributes
-        //nattrs = _nattrs;
         id = _sds_id;
     }
     char name[hdfclass::MAXSTR];
-    int32 number_type, count;
+    int32 number_type;
+    int32 count;
+
     if (SDattrinfo(id, _attr_index, name, &number_type, &count) < 0)
         THROW(hcerr_sdsinfo);
 
     // allowcate a temporary C array to hold data from SDreadattr()
-    char *data;
-    data = new char[count * DFKNTsize(number_type)];
-    if (data == 0)
+    auto data = new char[count * DFKNTsize(number_type)];
+    if (data == nullptr)
         THROW(hcerr_nomemory);
 
     // read attribute values and store them in an hdf_genvec
@@ -708,14 +707,8 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_attr & ha)
         count = (int32) min((int) count, (int) strlen((char *) data));
 #endif
 
-    // try { // try to allocate an hdf_genvec
     if (count > 0) {
         ha.values = hdf_genvec(number_type, data, count);
-        // }
-        // catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-        //    delete []data;
-        //    throw;
-        // }
     }
     delete[]data;               // deallocate temporary C array
 
@@ -787,11 +780,11 @@ bool hdf_sds::_ok(bool * has_scale) const
 
     // Check to see that for each SDS dimension scale, that the length of the
     // scale matches the size of the dimension.
-    for (int i = 0; i < (int) dims.size(); ++i)
-        if (dims[i].scale.size() != 0) {
+    for (const auto & dim:dims)
+        if (dim.scale.size() != 0) {
             if (has_scale)
                 *has_scale = true;
-            if (dims[i].scale.size() != dims[i].count)
+            if (dim.scale.size() != dim.count)
                 return false;
         }
 

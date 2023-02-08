@@ -345,7 +345,7 @@ bool configureProxy(CURL *curl, const string &url) {
         if (!CmrUtils::NoProxyRegex.empty()) {
             BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
             libdap::BESRegex r(CmrUtils::NoProxyRegex.c_str());
-            if (r.match(url.c_str(), url.length()) != -1) {
+            if (r.match(url.c_str(), url.size()) != -1) {
                 BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. BESRegex: " << CmrUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }

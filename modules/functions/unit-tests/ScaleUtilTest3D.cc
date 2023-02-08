@@ -403,7 +403,7 @@ public:
                     int y_size = band->GetYSize();
                     DBG(cerr << "band y_size: " << band->GetYSize() << endl);
 
-                    vector<dods_float32> buf(x->length() * y->length());
+                    vector<dods_float32> buf(x->size() * y->size());
                     CPLErr error = band->RasterIO(GF_Read, 0, 0, x_size, y_size, buf.data(), x_size, y_size, get_array_type(data), 0, 0);
                     if (error != CPLE_None)
                         throw Error(string("Could not extract data for translated GDAL Dataset.") + CPLGetLastErrorMsg());
@@ -458,7 +458,7 @@ public:
             DBG(lon->print_val(cerr))
             DBG(cerr << endl);
 
-            for (int i = 0; i < t->length(); i++) {
+            for (int i = 0; i < t->size(); i++) {
 
                 DBG(cerr << "========= i = " << i << endl);
 
@@ -598,7 +598,7 @@ public:
         DBG(cerr << endl);
 
         // Build Time map
-       int t_size = t->length();
+       int t_size = t->size();
 
        DBG(cerr << "t_size = " << t_size << endl);
        bool name_maps = false;
@@ -704,7 +704,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: ScaleUtilTest has the following tests:" << endl;
             const std::vector<Test*> &tests = ScaleUtilTest3D::suite()->getTests();
-            unsigned int prefix_len = ScaleUtilTest3D::suite()->getName().append("::").length();
+            unsigned int prefix_len = ScaleUtilTest3D::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

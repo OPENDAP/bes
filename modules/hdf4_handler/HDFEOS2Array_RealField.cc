@@ -31,7 +31,7 @@ HDFEOS2Array_RealField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFEOS2_Array_RealField read "<<endl);
-    if(length() == 0)        
+    if(length() == 0)
         return true;
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
@@ -364,7 +364,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     bool  has_Key_attr = false;
 
     int32 sdfileid = -1;
-    if(sotype!=DEFAULT_CF_EQU) {
+    if(sotype!=SOType::DEFAULT_CF_EQU) {
 
         bool field_is_vdata = false;
 
@@ -1036,8 +1036,8 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
                         // This part of code may not be called. 
                         // If it is called, mostly the value is within the floating-point range.
                         // KY 2013-01-29
-                        orig_valid_min = temp_valid_range[0];
-                        orig_valid_max = temp_valid_range[1];
+                        orig_valid_min = (float)temp_valid_range[0];
+                        orig_valid_max = (float)temp_valid_range[1];
                     }
                     break;
                     default: {
@@ -1282,7 +1282,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
     // for Range_1 of MOD09 products.
     // KY 2014-01-13
 
-    if (MODIS_EQ_SCALE == sotype || MODIS_MUL_SCALE == sotype) {
+    if (SOType::MODIS_EQ_SCALE == sotype || SOType::MODIS_MUL_SCALE == sotype) {
         if (scale > 1) {
             bool need_change_scale = true;           
             if(gridname!="") {
@@ -1307,7 +1307,7 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
  
             }
             if(true == need_change_scale) { 
-                sotype = MODIS_DIV_SCALE;
+                sotype = SOType::MODIS_DIV_SCALE;
                 (*BESLog::TheLog())
                  << "The field " << fieldname << " scale factor is "
                  << scale << " ."<<endl
@@ -1318,9 +1318,9 @@ cerr<<"tmp_rank is "<<tmp_rank <<endl;
         }
     }
     
-    if (MODIS_DIV_SCALE == sotype) {
+    if (SOType::MODIS_DIV_SCALE == sotype) {
         if (scale < 1) {
-            sotype = MODIS_MUL_SCALE;
+            sotype = SOType::MODIS_MUL_SCALE;
             (*BESLog::TheLog())<< "The field " << fieldname << " scale factor is "
                                << scale << " ."<<endl
                                << " But the original scale factor type is MODIS_DIV_SCALE. " 
@@ -1486,7 +1486,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
 #define RECALCULATE(CAST, DODS_CAST, VAL) \
 { \
     bool change_data_value = false; \
-    if(sotype!=DEFAULT_CF_EQU) \
+    if(sotype!=SOType::DEFAULT_CF_EQU) \
     { \
         vector<float>tmpval; \
         tmpval.resize(nelms); \
@@ -1506,9 +1506,9 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         { \
             float temp_scale = scale; \
             float temp_offset = field_offset; \
-            if(sotype==MODIS_MUL_SCALE) \
+            if(sotype==SOType::MODIS_MUL_SCALE) \
                 temp_offset = -1. *field_offset*temp_scale;\
-            else if (sotype==MODIS_DIV_SCALE) \
+            else if (sotype==SOType::MODIS_DIV_SCALE) \
             {\
                 temp_scale = 1/scale; \
                 temp_offset = -1. *field_offset*temp_scale;\
@@ -1558,11 +1558,11 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                         { \
                             if(false == HDFCFUtil::is_special_value(field_dtype,fillvalue,tmptr[index]))\
                             { \
-                                if(sotype==MODIS_MUL_SCALE) \
+                                if(sotype==SOType::MODIS_MUL_SCALE) \
                                     tmpval[index] = (tmptr[index]-tmpoffset)*tmpscale; \
-                                else if(sotype==MODIS_EQ_SCALE) \
+                                else if(sotype==SOType::MODIS_EQ_SCALE) \
                                     tmpval[index] = tmptr[index]*tmpscale+tmpoffset; \
-                                else if(sotype==MODIS_DIV_SCALE) \
+                                else if(sotype==SOType::MODIS_DIV_SCALE) \
                                     tmpval[index] = (tmptr[index]-tmpoffset)/tmpscale; \
                             } \
                         } \
@@ -1605,7 +1605,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             for (int counter = 0; counter < nelms; counter++)
                 newval[counter] = (int32) (val[counter]);
 
-            RECALCULATE(int32*, dods_int32*, newval.data());
+            RECALCULATE(int32*, dods_int32*, newval.data())
 #endif
         }
             break;
@@ -1626,7 +1626,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint8*, dods_byte*, val.data());
+            RECALCULATE(uint8*, dods_byte*, val.data())
         }
             break;
 
@@ -1646,7 +1646,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
                 eherr << "field " << fieldname.c_str () << "cannot be read.";
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
-            RECALCULATE(int16*, dods_int16*, val.data());
+            RECALCULATE(int16*, dods_int16*, val.data())
         }
             break;
         case DFNT_UINT16:
@@ -1682,7 +1682,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint16*, dods_uint16*, val.data());
+            RECALCULATE(uint16*, dods_uint16*, val.data())
         }
             break;
         case DFNT_INT32:
@@ -1701,7 +1701,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(int32*, dods_int32*, val.data());
+            RECALCULATE(int32*, dods_int32*, val.data())
         }
             break;
         case DFNT_UINT32:
@@ -1720,7 +1720,7 @@ if (r != 0) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
             }
 
-            RECALCULATE(uint32*, dods_uint32*, val.data());
+            RECALCULATE(uint32*, dods_uint32*, val.data())
         }
             break;
         case DFNT_FLOAT32:
@@ -1740,7 +1740,7 @@ if (r != 0) {
             }
 
             // Recalculate seems not necessary.
-            RECALCULATE(float32*, dods_float32*, val.data());
+            RECALCULATE(float32*, dods_float32*, val.data())
             //set_value((dods_float32*)val.data(),nelms);
         }
             break;
@@ -2019,7 +2019,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
 int
 HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -2051,13 +2051,13 @@ HDFEOS2Array_RealField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }
 
 
-void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) {
+void HDFEOS2Array_RealField::close_fileid(const int gsfileid, const int sdfileid) const{
 
     if(true == isgeofile || false == HDF4RequestHandler::get_pass_fileid()) {
 

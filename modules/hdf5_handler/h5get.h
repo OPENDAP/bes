@@ -45,7 +45,7 @@ hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);
 
 std::string get_dap_type(hid_t type,bool);
 
-void get_dataset_dmr(const hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale, bool &is_pure_dims,std::vector<link_info_t> &);
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr,bool has_dimscale, bool is_eos5, bool &is_pure_dims,std::vector<link_info_t> &);
 void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr);
 
 hid_t get_fileid(const char *filename);
@@ -66,7 +66,7 @@ libdap::Structure *Get_structure(const std::string &varname,const std::string &v
 
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
-void obtain_dimnames(const hid_t file_id, hid_t dset,int, DS_t*dt_inst_ptr, std::vector<link_info_t>&);
+void obtain_dimnames(const hid_t file_id, hid_t dset,int, DS_t*dt_inst_ptr, std::vector<link_info_t>&,bool is_eos5);
 
 void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr, libdap::AttrTable* d2_attr,bool is_dap4);
 
@@ -74,4 +74,8 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> &);
 
+std::string handle_string_special_characters(std::string &s);
+std::string handle_string_special_characters_in_path(const string &instr);
+
+std::string invalid_type_error_msg(const std::string &s);
 #endif                          //_H5GET_H

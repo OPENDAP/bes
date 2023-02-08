@@ -24,16 +24,8 @@
 #include "config.h"
 
 #include <memory>
-#include <cstdio>
 #include <cstring>
 #include <iostream>
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
-
-#include <unistd.h>
-#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -42,316 +34,457 @@
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 #include "CurlUtils.h"
-#include "HttpNames.h"
+#include "CredentialsManager.h"
+#include "BESForbiddenError.h"
 
 #include "test_config.h"
 
+// Maybe the common testing code in modules should be moved up one level? jhrg 11/3/22
+#include "modules/common/run_tests_cppunit.h"
+
 using namespace std;
-
-static bool debug = false;
-static bool Debug = false;
-static bool bes_debug = false;
-static bool purge_cache = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 
 #define prolog std::string("CurlUtilsTest::").append(__func__).append("() - ")
 
 namespace http {
 
-    class CurlUtilsTest: public CppUnit::TestFixture {
-    private:
+class CurlUtilsTest : public CppUnit::TestFixture {
 
-        /**
-         *
-         */
-        void show_file(string filename)
-        {
-            ifstream t(filename.c_str());
+public:
+    string d_data_dir = TEST_DATA_DIR;
 
-            if (t.is_open()) {
-                string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-                t.close();
-                cerr << endl << "#############################################################################" << endl;
-                cerr << "file: " << filename << endl;
-                cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-                cerr << file_content << endl;
-                cerr << "#############################################################################" << endl;
-            }
-            else {
-                cerr << "FAILED TO OPEN FILE: " << filename << endl;
-            }
-        }
-#if 0
-        std::string get_file_as_string(string filename)
-        {
-            ifstream t(filename.c_str());
+    // Called once before everything gets tested
+    CurlUtilsTest() = default;
 
-            if (t.is_open()) {
-                string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-                t.close();
-                if(Debug) cerr << endl << "#############################################################################" << endl;
-                if(Debug) cerr << "file: " << filename << endl;
-                if(Debug) cerr <<         ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-                if(Debug) cerr << file_content << endl;
-                if(Debug) cerr << "#############################################################################" << endl;
-                return file_content;
-            }
-            else {
-                cerr << "FAILED TO OPEN FILE: " << filename << endl;
-                CPPUNIT_ASSERT(false);
-                return "";
-            }
-        }
+    // Called at the end of the test
+    ~CurlUtilsTest() override = default;
 
-        /**
-         *
-         */
-        string get_data_file_url(string name){
-            string data_file = BESUtil::assemblePath(d_data_dir,name);
-            if(debug) cerr << prolog << "data_file: " << data_file << endl;
-            if(Debug) show_file(data_file);
+    // Called before each test
+    void setUp() override {
+        if (debug) cerr << endl;
+        if (debug) cerr << "setUp() - BEGIN" << endl;
+        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
+        if (debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        if (debug2) show_file(bes_conf);
+        TheBESKeys::ConfigFile = bes_conf;
 
-            string data_file_url = "file://" + data_file;
-            if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
-            return data_file_url;
-        }
-#endif
+        if (debug) cerr << "setUp() - END" << endl;
+    }
 
-    public:
-        string d_data_dir;
-
-        // Called once before everything gets tested
-        CurlUtilsTest()
-        {
-            d_data_dir = TEST_DATA_DIR;;
-            cerr << "data_dir: " << d_data_dir << endl;
-        }
-
-        // Called at the end of the test
-        ~CurlUtilsTest()
-        {
-        }
-
-        // Called before each test
-        void setUp()
-        {
-            if(Debug || debug ) cerr << endl;
-            if(Debug) cerr << "setUp() - BEGIN" << endl;
-            string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-            if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-            if (bes_debug) show_file(bes_conf);
-            TheBESKeys::ConfigFile = bes_conf;
-
-            if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl");
-
-            if(Debug) cerr << "setUp() - END" << endl;
-        }
-
-        // Called after each test
-        void tearDown()
-        {
-        }
-
+    // Called after each test
+    void tearDown() override {
+        // These are set in add_edl_auth_headers_test() and not 'unsetting' them
+        // causes other odd behavior in subsequent tests (Forbidden exceptions
+        // become SyntaxUser ones). Adding the unset operations here ensures they
+        // happen even if exceptions are thrown by the add_edl...() test.
+        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
+    }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
-        void is_retryable_test() {
-            if(debug) cerr << prolog << "BEGIN" << endl;
-            bool isRetryable;
+    void is_retryable_test() {
+        if (debug) cerr << prolog << "BEGIN" << endl;
+        bool isRetryable;
 
-            try {
-                string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-                isRetryable = curl::is_retryable(url);
-                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
-                CPPUNIT_ASSERT(isRetryable);
+        try {
+            string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
+            isRetryable = curl::is_retryable(url);
+            if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+            CPPUNIT_ASSERT(isRetryable);
 
-                url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
-                isRetryable = curl::is_retryable(url);
-                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
-                CPPUNIT_ASSERT(!isRetryable);
+            url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
+            isRetryable = curl::is_retryable(url);
+            if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+            CPPUNIT_ASSERT(!isRetryable);
 
-                url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
-                isRetryable = curl::is_retryable(url);
-                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
-                CPPUNIT_ASSERT(isRetryable);
+            url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
+            isRetryable = curl::is_retryable(url);
+            if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+            CPPUNIT_ASSERT(isRetryable);
 
-                url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=8800da07f823dfce312ee85e44c9e89efdf6bd9d776b1cb8666029ba2c8d257e&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040107v7%2Enc";
-                isRetryable = curl::is_retryable(url);
-                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
-                CPPUNIT_ASSERT(!isRetryable);
+            url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=8800da07f823dfce312ee85e44c9e89efdf6bd9d776b1cb8666029ba2c8d257e&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040107v7%2Enc";
+            isRetryable = curl::is_retryable(url);
+            if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+            CPPUNIT_ASSERT(!isRetryable);
 
-                url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=46196589bfe26c4c298e1a74646b99005d20a022cabff6434a550283defa8153&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040115v7%2Enc";
-                isRetryable = curl::is_retryable(url);
-                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
-                CPPUNIT_ASSERT(!isRetryable);
+            url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=46196589bfe26c4c298e1a74646b99005d20a022cabff6434a550283defa8153&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040115v7%2Enc";
+            isRetryable = curl::is_retryable(url);
+            if (debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+            CPPUNIT_ASSERT(!isRetryable);
+        }
+        catch (const BESError &be) {
+            stringstream msg;
+            msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
+            CPPUNIT_FAIL(msg.str());
+
+        }
+        catch (const std::exception &se) {
+            stringstream msg;
+            msg << "CAUGHT std::exception message: " << se.what() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        if (debug) cerr << prolog << "END" << endl;
+    }
+
+
+    void retrieve_effective_url_test() {
+        if (debug) cerr << prolog << "BEGIN" << endl;
+        shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap", true));
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        string expected_url = "http://test.opendap.org/opendap/";
+
+        try {
+            if (debug) cerr << prolog << "   target_url: " << target_url->str() << endl;
+
+            auto effective_url = curl::retrieve_effective_url(target_url);
+
+            if (debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
+            if (debug) cerr << prolog << " expected_url: " << expected_url << endl;
+            CPPUNIT_ASSERT(effective_url->str() == expected_url);
+
+            if (debug)
+                cerr << prolog << "   target_url is " << (target_url->is_trusted() ? "" : "NOT ") << "trusted." << endl;
+            if (debug)
+                cerr << prolog << "effective_url is " << (effective_url->is_trusted() ? "" : "NOT ") << "trusted."
+                     << endl;
+            CPPUNIT_ASSERT(effective_url->is_trusted() == target_url->is_trusted());
+
+
+            effective_url = curl::retrieve_effective_url(trusted_target_url);
+
+            if (debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
+            if (debug) cerr << prolog << " expected_url: " << expected_url << endl;
+            CPPUNIT_ASSERT(effective_url->str() == expected_url);
+
+            if (debug)
+                cerr << prolog << "   target_url is " << (trusted_target_url->is_trusted() ? "" : "NOT ") << "trusted."
+                     << endl;
+            if (debug)
+                cerr << prolog << "effective_url is " << (effective_url->is_trusted() ? "" : "NOT ") << "trusted."
+                     << endl;
+            CPPUNIT_ASSERT(effective_url->is_trusted() == trusted_target_url->is_trusted());
+
+
+        }
+        catch (const BESError &be) {
+            stringstream msg;
+            msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
+                << be.get_line() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch (const std::exception &se) {
+            stringstream msg;
+            msg << "CAUGHT std::exception message: " << se.what() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        if (debug) cerr << prolog << "END" << endl;
+    }
+
+    void add_edl_auth_headers_test() {
+        if (debug) cerr << prolog << "BEGIN" << endl;
+        curl_slist *hdrs = NULL;
+        curl_slist *temp = NULL;
+        string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "echo_my_smo:kin_token"};
+        BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+        BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+        BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+
+        try {
+            hdrs = curl::add_edl_auth_headers(hdrs);
+            temp = hdrs;
+            size_t index = 0;
+            while (temp) {
+                string value(temp->data);
+                if (debug) cerr << prolog << "header: " << value << endl;
+                size_t found = value.find(tokens[index]);
+                CPPUNIT_ASSERT(found != string::npos);
+                temp = temp->next;
+                index++;
             }
-            catch (BESError &be){
-                stringstream msg;
-                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
-                CPPUNIT_FAIL(msg.str());
+        }
+        catch (const BESError &be) {
+            stringstream msg;
+            msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
+                << be.get_line() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch (const std::exception &se) {
+            stringstream msg;
+            msg << "CAUGHT std::exception message: " << se.what() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        // The BESContexts are 'unset' in tearDown(). They break some later
+        // tests, causing BESForbiddenErrors to become BESSyntaxUserErrors. jhrg 11/3/22
+        if (debug) cerr << prolog << "END" << endl;
+    }
 
-            }
-            catch( std::exception &se ){
-                stringstream msg;
-                msg << "CAUGHT std::exception message: " << se.what() << endl;
-                cerr << msg.str();
-                CPPUNIT_FAIL(msg.str());
-            }
-        if(debug)  cerr << prolog << "END" << endl;
+    // A case where signing works
+    void sign_s3_url_test_1() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        ac.add(AccessCredentials::ID_KEY, "foo");
+        ac.add(AccessCredentials::KEY_KEY, "secret");
+        ac.add(AccessCredentials::REGION_KEY, "oz-1");
+        ac.add(AccessCredentials::URL_KEY, "http://test.opendap.org");
+
+        // TODO See if the following unique_ptr really does not leak memory. jhrg 11/3//22
+        std::unique_ptr<curl_slist, void (*)(curl_slist *)> headers2(new curl_slist(), &curl_slist_free_all);
+
+        CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers2->next == nullptr);
+        curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers2.get());
+
+        CPPUNIT_ASSERT_MESSAGE("Afterward, it should have three headers", new_headers->next != nullptr);
+        // skip the first element since the data will be NULL given that we passed in
+        // an empty list.
+        new_headers = new_headers->next;
+        string h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected Authorization: AWS4-HMAC-SHA256 Credential=foo/...",
+                               h.find("Authorization: AWS4-HMAC-SHA256 Credential=foo/") != string::npos);
+
+        new_headers = new_headers->next;
+        h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-content-sha256: e3b0c4...",
+                               h.find("x-amz-content-sha256: e3b0c4") != string::npos);
+
+        new_headers = new_headers->next;
+        h = new_headers->data;
+        DBG(cerr << "new_headers->data: " << h << endl);
+        CPPUNIT_ASSERT_MESSAGE("Expected x-amz-date:...", h.find("x-amz-date:") != string::npos);
+
+        new_headers = new_headers->next;
+        CPPUNIT_ASSERT_MESSAGE("There should only be three elements in the list", new_headers == nullptr);
+    }
+
+    // We have credentials, but the target url doesn't match the URL_KEY
+    void sign_s3_url_test_2() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        ac.add(AccessCredentials::ID_KEY, "foo");
+        ac.add(AccessCredentials::KEY_KEY, "secret");
+        ac.add(AccessCredentials::REGION_KEY, "oz-1");
+        ac.add(AccessCredentials::URL_KEY, "http://never.org");
+        auto headers = new curl_slist{};
+        try {
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
+
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
+        }
+        catch (...) {
+            curl_slist_free_all(headers);
+            throw;
         }
 
+        curl_slist_free_all(headers);
+    }
 
-        void retrieve_effective_url_test(){
-            if(debug) cerr << prolog << "BEGIN" << endl;
-            shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap",true));
-            shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap",false));
-            string expected_url = "http://test.opendap.org/opendap/";
-            EffectiveUrl *effective_url;
+    // The credentials are empty
+    void sign_s3_url_test_3() {
+        shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap", false));
+        AccessCredentials ac;
+        auto headers = new curl_slist{};
+        try {
+            CPPUNIT_ASSERT_MESSAGE("Before calling sign_s3_url, headers should be empty", headers->next == nullptr);
+            const curl_slist *new_headers = curl::sign_s3_url(target_url, &ac, headers);
 
-            try {
-                if(debug) cerr << prolog << "   target_url: " << target_url->str() << endl;
-
-                auto effective_url = curl::retrieve_effective_url(target_url);
-
-                if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
-                if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
-                CPPUNIT_ASSERT( effective_url->str() == expected_url );
-
-                if(debug) cerr << prolog << "   target_url is " << (target_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
-                if(debug) cerr << prolog << "effective_url is " << (effective_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
-                CPPUNIT_ASSERT( effective_url->is_trusted() == target_url->is_trusted() );
-
-
-
-                effective_url = curl::retrieve_effective_url(trusted_target_url);
-
-                if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
-                if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
-                CPPUNIT_ASSERT( effective_url->str() == expected_url );
-
-                if(debug) cerr << prolog << "   target_url is " << (trusted_target_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
-                if(debug) cerr << prolog << "effective_url is " << (effective_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
-                CPPUNIT_ASSERT( effective_url->is_trusted() == trusted_target_url->is_trusted() );
-
-
-            }
-            catch(BESError &be){
-                stringstream msg;
-                msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
-                CPPUNIT_FAIL(msg.str());
-            }
-            catch( std::exception &se ){
-                stringstream msg;
-                msg << "CAUGHT std::exception message: " << se.what() << endl;
-                cerr << msg.str();
-                CPPUNIT_FAIL(msg.str());
-            }
-            if(debug) cerr << prolog << "END" << endl;
+            CPPUNIT_ASSERT_MESSAGE("For this test, there should be nothing", new_headers->next != nullptr);
+        }
+        catch (...) {
+            curl_slist_free_all(headers);
+            throw;
         }
 
-        /**
-         * struct curl_slist {  char *data;  struct curl_slist *next;};
-         */
-        void add_edl_auth_headers_test(){
-            if(debug) cerr << prolog << "BEGIN" << endl;
-            curl_slist *hdrs=NULL;
-            curl_slist *temp=NULL;
-            string tokens[]= {"big_bucky_ball","itsa_authy_token_time","echo_my_smo:kin_token"};
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+        curl_slist_free_all(headers);
+    }
 
+    // Test the first version of http_get() function tht takes a fixed size buffer.
+    // If the buffer is too small, buffer overflow.
+    void http_get_test_1() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf(1024);
+        curl::http_get(url, buf.data(), buf.size());
+
+        // In this response, the first line is "<Proxy *>" and the last line
+        // is "ProxyPassReverse /dap ajp://localhost:8009/opendap"
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 1024);
+    }
+
+    // This should throw an exception claiming that the beffer is not big enough
+    void http_get_test_1_0() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf(10);   // This buffer is too small for the response
+        curl::http_get(url, buf.data(), buf.size());
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
+    }
+
+    // Test the http_get() function that extends as needed a vector<char>
+    void http_get_test_2() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf;
+        curl::http_get(url, buf);
+
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>", string(buf.data()).find("<Proxy *>") == 0);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287);
+    }
+
+    // Test the http_get() function that extends as needed a vector<char>.
+    // This what happens if the vector already holds data - it should be
+    // retained.
+    void http_get_test_3() {
+        const string url = "http://test.opendap.org/opendap.conf";
+        vector<char> buf;
+        const string twimc = "To whom it may concern:";
+        buf.resize(twimc.size());
+        memcpy(buf.data(), twimc.c_str(), twimc.size());
+        curl::http_get(url, buf);
+
+        DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find <Proxy *>",
+                               string(buf.data()).find("<Proxy *>") == twimc.size());
+        CPPUNIT_ASSERT_MESSAGE("Should be able to find ProxyPassReverse...",
+                               string(buf.data()).find("ProxyPassReverse /dap ajp://localhost:8009/opendap") !=
+                               string::npos);
+
+        DBG(cerr << "twimc.size() = " << twimc.size() << endl);
+        DBG(cerr << "buf.size() = " << buf.size() << endl);
+        CPPUNIT_ASSERT_MESSAGE("Size should be 1024", buf.size() == 287 + twimc.size());
+    }
+
+    // This test is to an S3 bucket and must be signed. Use the ENV_CRED
+    // option of CredentialsManager. The environment variables are:
+    //
+    // When a bes.conf file includes the key "CredentialsManager.config" and the value
+    // is "ENV_CREDS", the CredentialsManager will use the four env variables CMAC_ID, ...,
+    // for the Id, Secret key, etc., needed for S3 URL signing. The four evn vars are:
+    // CMAC_ID
+    // CMAC_ACCESS_KEY
+    // CMAC_REGION
+    // CMAC_URL
+    //
+    // This test will read from the cloudydap bucket we own.
+
+    void http_get_test_4() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        const string url = "https://fail.nowhere.com/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
+    }
+
+    // This test will fail with a BESForbidden exception
+    void http_get_test_5() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
+    }
+
+    // This test will also fail with a BESForbidden exception
+    void http_get_test_6() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        setenv("CMAC_URL", "https://s3.us-east-1", 1);
+        setenv("CMAC_REGION", "us-east-1", 1);
+        const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+        vector<char> buf;
+        curl::http_get(url, buf);
+
+        CPPUNIT_FAIL("Should have thrown an exception.");
+    }
+
+    void http_get_test_7() {
+        // https://s3.us-west-2.amazonaws.com/DOC-EXAMPLE-BUCKET1/puppy.jpg
+        // s3://cloudydap/samples/README
+        // "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README"
+        setenv("CMAC_URL", "https://s3.us-east-1", 1);
+        setenv("CMAC_REGION", "us-east-1", 1);
+        // If the ID and Secret key are set in the shell/environment where this test
+        // is run, then this should work. Never ever set those values in any file.
+        // The Keys are: CMAC_ID, CMAC_ACCESS_KEY.
+        if (getenv("CMAC_ID") && getenv("CMAC_ACCESS_KEY")) {
             try {
-                hdrs = curl::add_edl_auth_headers(hdrs);
-                temp=hdrs;
-                size_t index = 0;
-                while(temp){
-                    string value(temp->data);
-                    if(debug) cerr << prolog << "header: " << value << endl;
-                    size_t found = value.find(tokens[index]);
-                    CPPUNIT_ASSERT( found != string::npos);
-                    temp = temp->next;
-                    index++;
-                }
+                http::CredentialsManager::theCM()->load_credentials();
+                const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
+                vector<char> buf;
+                curl::http_get(url, buf);
+                DBG(cerr << "buf.data() = " << string(buf.data()) << endl);
+                CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
+                                       string(buf.data()).find("Test data") == 0);
+                CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
+                                       string(buf.data()).find("Do not edit.")
+                                       != string::npos);
+
+                DBG(cerr << "buf.size() = " << buf.size() << endl);
+                CPPUNIT_ASSERT_MESSAGE("Size should be 93", buf.size() == 93);
             }
-            catch(BESError &be){
-                stringstream msg;
-                msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
-                CPPUNIT_FAIL(msg.str());
+            catch(const BESError &e) {
+                CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));
             }
-            catch( std::exception &se ){
-                stringstream msg;
-                msg << "CAUGHT std::exception message: " << se.what() << endl;
-                cerr << msg.str();
-                CPPUNIT_FAIL(msg.str());
-            }
-            if(debug) cerr << prolog << "END" << endl;
         }
-
-
+        else {
+            CPPUNIT_ASSERT("Credentials are not set, so the test passes by default.");
+        }
+    }
 
 /* TESTS END */
 /*##################################################################################################*/
 
+    CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
-    CPPUNIT_TEST_SUITE( CurlUtilsTest );
+    CPPUNIT_TEST(is_retryable_test);
+    CPPUNIT_TEST(retrieve_effective_url_test);
+    CPPUNIT_TEST(add_edl_auth_headers_test);
 
-            CPPUNIT_TEST(is_retryable_test);
-            CPPUNIT_TEST(retrieve_effective_url_test);
-            CPPUNIT_TEST(add_edl_auth_headers_test);
+    CPPUNIT_TEST(sign_s3_url_test_1);
+    CPPUNIT_TEST(sign_s3_url_test_2);
+    CPPUNIT_TEST(sign_s3_url_test_3);
 
-        CPPUNIT_TEST_SUITE_END();
-    };
+    CPPUNIT_TEST(http_get_test_1);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_1_0, BESInternalError);
+    CPPUNIT_TEST(http_get_test_2);
+    CPPUNIT_TEST(http_get_test_3);
 
-    CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_4, BESInternalError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_5, BESForbiddenError);
+    CPPUNIT_TEST_EXCEPTION(http_get_test_6, BESForbiddenError);
 
-} // namespace httpd_catalog
+    CPPUNIT_TEST(http_get_test_7);
 
-int main(int argc, char*argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
+    CPPUNIT_TEST_SUITE_END();
+};
 
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dbD")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                cerr << "debug enabled" << endl;
-                break;
-            case 'D':
-                Debug = true;  // Debug is a static global
-                cerr << "Debug enabled" << endl;
-                break;
-            case 'b':
-                bes_debug = true;  // debug is a static global
-                cerr << "bes_debug enabled" << endl;
-                break;
-            default:
-                break;
-        }
+CPPUNIT_TEST_SUITE_REGISTRATION(CurlUtilsTest);
 
-    argc -= optind;
-    argv += optind;
+} // namespace http
 
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = http::CurlUtilsTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+int main(int argc, char *argv[]) {
+    return bes_run_tests<http::CurlUtilsTest>(argc, argv, "bes,http,curl") ? 0 : 1;
 }

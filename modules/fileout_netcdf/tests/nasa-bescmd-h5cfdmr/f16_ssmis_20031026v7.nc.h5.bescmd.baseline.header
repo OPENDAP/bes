@@ -1,9 +1,31 @@
 netcdf test {
 dimensions:
-	time = 2 ;
 	latitude = 720 ;
 	longitude = 1440 ;
+	time = 2 ;
 variables:
+	float latitude(latitude) ;
+		latitude:units = "degrees_north" ;
+		latitude:standard_name = "latitude" ;
+		latitude:axis = "Y" ;
+		latitude:valid_range = -89.875f, 89.875f ;
+		latitude:_CoordinateAxisType = "lat" ;
+		latitude:origname = "latitude" ;
+		latitude:fullnamepath = "/latitude" ;
+	float longitude(longitude) ;
+		longitude:units = "degrees_east" ;
+		longitude:standard_name = "longitude" ;
+		longitude:axis = "X" ;
+		longitude:valid_range = 0.125f, 359.875f ;
+		longitude:origname = "longitude" ;
+		longitude:fullnamepath = "/longitude" ;
+	short time(time) ;
+		time:units = "hours since removed date-time" ;
+		time:standard_name = "time" ;
+		time:axis = "T" ;
+		time:valid_range = 1.f, 2.f ;
+		time:origname = "time" ;
+		time:fullnamepath = "/time" ;
 	short sst_dtime(time, latitude, longitude) ;
 		sst_dtime:units = "hours since removed date-time" ;
 		sst_dtime:standard_name = "sst_dtime" ;
@@ -57,28 +79,6 @@ variables:
 		rainfall_rate:add_offset = 0.f ;
 		rainfall_rate:origname = "rainfall_rate" ;
 		rainfall_rate:fullnamepath = "/rainfall_rate" ;
-	float latitude(latitude) ;
-		latitude:units = "degrees_north" ;
-		latitude:standard_name = "latitude" ;
-		latitude:axis = "Y" ;
-		latitude:valid_range = -89.875f, 89.875f ;
-		latitude:_CoordinateAxisType = "lat" ;
-		latitude:origname = "latitude" ;
-		latitude:fullnamepath = "/latitude" ;
-	float longitude(longitude) ;
-		longitude:units = "degrees_east" ;
-		longitude:standard_name = "longitude" ;
-		longitude:axis = "X" ;
-		longitude:valid_range = 0.125f, 359.875f ;
-		longitude:origname = "longitude" ;
-		longitude:fullnamepath = "/longitude" ;
-	short time(time) ;
-		time:units = "hours since removed date-time" ;
-		time:standard_name = "time" ;
-		time:axis = "T" ;
-		time:valid_range = 1.f, 2.f ;
-		time:origname = "time" ;
-		time:fullnamepath = "/time" ;
 
 // global attributes:
 		:chunksize = "90" ;

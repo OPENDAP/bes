@@ -30,7 +30,7 @@ HDFSPArray_VDField::read ()
 {
 
     BESDEBUG("h4","Coming to HDFSPArray_VDField read "<<endl);
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
 #if 0
@@ -404,7 +404,7 @@ HDFSPArray_VDField::read ()
 int
 HDFSPArray_VDField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -436,7 +436,7 @@ HDFSPArray_VDField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

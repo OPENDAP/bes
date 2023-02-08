@@ -1,0 +1,70 @@
+netcdf tdset_types {
+dimensions:
+	phony_dim_0 = 2 ;
+variables:
+	float a_float32(phony_dim_0) ;
+		a_float32:attr_a_float32 = 1.1f, 1.1f ;
+	double a_float64(phony_dim_0) ;
+		a_float64:attr_a_float64 = -2.2, -2.2 ;
+	short a_int16(phony_dim_0) ;
+		a_int16:attr_a_int16 = -32767s, -32767s ;
+	int a_int32(phony_dim_0) ;
+		a_int32:attr_a_int32 = -2147483647, -2147483647 ;
+	byte a_int8(phony_dim_0) ;
+		a_int8:attr_a_int8 = -127b, -127b ;
+	ushort a_uint16(phony_dim_0) ;
+		a_uint16:attr_a_uint16 = 65535US, 65535US ;
+	uint a_uint32(phony_dim_0) ;
+		a_uint32:attr_a_uint32 = 4294967295U, 4294967295U ;
+	ubyte a_uint8(phony_dim_0) ;
+		a_uint8:attr_a_uint8 = 255UB, 255UB ;
+	float s_float32 ;
+		s_float32:attr_s_float32 = 1.1f ;
+	double s_float64 ;
+		s_float64:attr_s_float64 = -2.2 ;
+	short s_int16 ;
+		s_int16:attr_s_int16 = -32767s ;
+	int s_int32 ;
+		s_int32:attr_s_int32 = -2147483647 ;
+	byte s_int8 ;
+		s_int8:attr_s_int8 = -127b ;
+	ushort s_uint16 ;
+		s_uint16:attr_s_uint16 = 65535US ;
+	uint s_uint32 ;
+		s_uint32:attr_s_uint32 = 4294967295U ;
+	ubyte s_uint8 ;
+		s_uint8:attr_s_uint8 = 255UB ;
+data:
+
+ a_float32 = 1.1, 1.1 ;
+
+ a_float64 = -2.2, -2.2 ;
+
+ a_int16 = _, _ ;
+
+ a_int32 = _, _ ;
+
+ a_int8 = -127, -127 ;
+
+ a_uint16 = _, _ ;
+
+ a_uint32 = _, _ ;
+
+ a_uint8 = 255, 255 ;
+
+ s_float32 = 1.1 ;
+
+ s_float64 = -2.2 ;
+
+ s_int16 = _ ;
+
+ s_int32 = _ ;
+
+ s_int8 = -127 ;
+
+ s_uint16 = _ ;
+
+ s_uint32 = _ ;
+
+ s_uint8 = 255 ;
+}

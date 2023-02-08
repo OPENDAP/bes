@@ -103,10 +103,10 @@ FONcShort::define(int ncid)
 {
     FONcBaseType::define(ncid);
 
-    if( !_defined )
+    if( !d_defined )
     {
 
-        if(is_dap4) {                                                                                       
+        if(d_is_dap4) {
             D4Attributes *d4_attrs = _bt->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_SHORT);   
         }
@@ -116,11 +116,11 @@ FONcShort::define(int ncid)
         }
 
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _bt,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _bt, isNetCDF4_ENHANCED(), d_is_dap4 ) ;
+	FONcAttributes::add_original_name(ncid, d_varid,
+                                      d_varname, d_orig_varname ) ;
 
-        _defined = true;
+        d_defined = true;
     }
 }
 
@@ -136,11 +136,11 @@ FONcShort::define(int ncid)
 void
 FONcShort::write(int ncid)
 {
-    BESDEBUG("fonc", "FONcShort::write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcShort::write for var " << d_varname << endl);
     size_t var_index[] = {0};
     int stax = 0;
 
-    if (is_dap4)
+    if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
@@ -149,22 +149,22 @@ FONcShort::write(int ncid)
         unsigned char *data_8 = new unsigned char;
         _bt->buf2val((void **) &data_8);
         short temp_8 = (short)(*data_8);
-        stax = nc_put_var1_short(ncid, _varid, var_index, &temp_8);
+        stax = nc_put_var1_short(ncid, d_varid, var_index, &temp_8);
         delete data_8;
     }
     else {
         short *data = new short;
         _bt->buf2val((void **) &data);
-        stax = nc_put_var1_short(ncid, _varid, var_index, data);
+        stax = nc_put_var1_short(ncid, d_varid, var_index, data);
         delete data;
     }
     if (stax != NC_NOERR) {
         string err = (string) "fileout.netcdf - "
                      + "Failed to write short data for "
-                     + _varname;
+                     + d_varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
-    BESDEBUG("fonc", "FONcShort::done write for var " << _varname << endl);
+    BESDEBUG("fonc", "FONcShort::done write for var " << d_varname << endl);
 }
 
 /** @brief returns the name of the DAP Int16 or UInt16

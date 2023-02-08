@@ -54,9 +54,6 @@
 #include <set>
 #include <algorithm>
 
-using std::set;
-using std::less;
-
 // libdap
 #include <libdap/InternalErr.h>
 #include <libdap/util.h>
@@ -64,9 +61,13 @@ using std::less;
 
 // bes
 #include <BESDebug.h>
-
 #include <hcstream.h>
 #include <hdfclass.h>
+
+using std::set;
+using std::less;
+using namespace libdap;
+
 
 static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		hdf_field & f);
@@ -115,8 +116,7 @@ void hdfistream_vdata::_seek(const char *name) {
 void hdfistream_vdata::_seek(int32 ref) {
 	if (_vdata_id != 0)
 		VSdetach(_vdata_id);
-	vector<int32>::iterator r = find(_vdata_refs.begin(), _vdata_refs.end(),
-			ref);
+	auto r = find(_vdata_refs.begin(), _vdata_refs.end(),ref);
 	if (r == _vdata_refs.end())
 		THROW(hcerr_vdatafind);
 	_index = r - _vdata_refs.begin();
@@ -133,10 +133,10 @@ void hdfistream_vdata::_seek(int32 ref) {
 // hdfistream_vdata -- public member functions
 //
 
-hdfistream_vdata::hdfistream_vdata(const string filename) :
+hdfistream_vdata::hdfistream_vdata(const string& filename) :
 	hdfistream_obj(filename) {
 	_init();
-	if (_filename.length() != 0) // if ctor specified a null filename
+	if (_filename.size() != 0) // if ctor specified a null filename
 		open(_filename.c_str());
 	return;
 }
@@ -229,7 +229,7 @@ bool hdfistream_vdata::setrecs(int32 begin, int32 end) {
 // check to see if stream is positioned past the last attribute in the
 // currently open Vdata
 bool hdfistream_vdata::eo_attr(void) const {
-	if (_filename.length() == 0) // no file open
+	if (_filename.size() == 0) // no file open
 		THROW(hcerr_invstream);
 	if (eos() && !bos()) // if eos(), then always eo_attr()
 		return true;
@@ -263,21 +263,23 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_attr & ha) {
 	ha.name = string();
 	ha.values = hdf_genvec();
 
-	if (_filename.length() == 0) // no file open
+	if (_filename.size() == 0) // no file open
 		THROW(hcerr_invstream);
 	if (eo_attr()) // if positioned past last attr, do nothing
 		return *this;
 
 	char name[hdfclass::MAXSTR];
-	int32 number_type, count, size;
+	int32 number_type;
+        int32 count;
+        int32 size;
+
 	if (VSattrinfo(_vdata_id, _HDF_VDATA, _attr_index, name, &number_type,
 			&count, &size) < 0)
 		THROW(hcerr_vdatainfo);
 
 	// allocate a temporary C array to hold data from VSgetattr()
-	char *data;
-	data = new char[count * DFKNTsize(number_type)];
-	if (data == 0)
+	auto data = new char[count * DFKNTsize(number_type)];
+	if (data == nullptr)
 		THROW(hcerr_nomemory);
 
 	// read attribute values and store them in an hdf_genvec
@@ -285,14 +287,8 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_attr & ha) {
 		delete[] data; // problem: clean up and throw an exception
 		THROW(hcerr_vdatainfo);
 	}
-	// try { // try to allocate an hdf_genvec
 	if (count > 0) {
-		ha.values = hdf_genvec(number_type, data, count);
-		// }
-		// catch(...) { // problem allocating hdf_genvec: clean up and rethrow
-		//    delete []data;
-		//    throw;
-		// }
+            ha.values = hdf_genvec(number_type, data, count);
 	}
 	delete[] data; // deallocate temporary C array
 
@@ -322,7 +318,7 @@ hdfistream_vdata & hdfistream_vdata::operator>>(hdf_vdata & hv) {
 	char name[hdfclass::MAXSTR];
 	char vclass[hdfclass::MAXSTR];
 	int32 nrecs;
-	if (VSinquire(_vdata_id, &nrecs, (int32 *) 0, (char *) 0, (int32 *) 0, name)
+	if (VSinquire(_vdata_id, &nrecs, nullptr, nullptr, nullptr, name)
 			< 0)
 		THROW(hcerr_vdatainfo);
 	hv.name = string(name);
@@ -406,8 +402,8 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 
 	// retrieve name of field
 	DBG(cerr << "vid: " << vid << ", index: " << index << endl);
-	char *fieldname = VFfieldname(vid, index);
-	if (fieldname == 0)
+	const char *fieldname = VFfieldname(vid, index);
+	if (fieldname == nullptr)
 		THROW(hcerr_vdatainfo);
 	f.name = string(fieldname);
 
@@ -429,9 +425,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 	// for each component, set type and optionally load data
 	hdf_genvec gv;
 	vector<char> data;
-	// char *data = 0;
 	if (nrecs > 0) { // if nrecs > 0 then load data for field
-		// data = new char[fieldsize * nrecs];
 		data.resize(fieldsize * nrecs);
 		DBG(cerr << "LoadField: vid=" << vid << ", fieldname=" << fieldname << endl);
 		// TODO: Is this correct?
@@ -444,7 +438,6 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		// jhrg 8/17/11
 		if (VSsetfields(vid, fieldname) < 0) {
 			return;
-			// throw InternalErr(__FILE__, __LINE__, "VSsetfields");
 		}
 
 		if (VSread(vid, (uchar8 *)data.data(), nrecs, FULL_INTERLACE) < 0) {
@@ -461,12 +454,11 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 	int stride = fieldorder;
 	for (int i = 0; i < fieldorder; ++i) {
 		if (nrecs == 0)
-			gv = hdf_genvec(fieldtype, 0, 0, 0, 0);
+			gv = hdf_genvec(fieldtype, nullptr, 0, 0, 0);
 		else
 			gv = hdf_genvec(fieldtype, data.data(), i, (nrecs * fieldorder) - 1, stride);
 		f.vals.push_back(gv);
 	}
-	// delete[] data;
 }
 
 //
@@ -477,7 +469,7 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 bool hdf_field::_ok(void) const {
 
 	// make sure that there is some data stored in the hdf_field
-	if (vals.size() == 0)
+	if (vals.empty() == true)
 		return false;
 
 	// if the field has order > 1, check to make sure that the number types of all
@@ -497,18 +489,18 @@ bool hdf_field::_ok(void) const {
 bool hdf_vdata::_ok(void) const {
 
 	// make sure there are fields stored in this vdata
-	if (fields.size() == 0)
+	if (fields.empty() == true)
 		return false;
 
 	// make sure the fields are themselves OK
-	for (int i = 0; i < (int) fields.size(); ++i)
-		if (!fields[i])
+	for (const auto & field:fields)
+		if (!field)
 			return false;
 
 	return true; // passed all the tests
 }
 
-bool IsInternalVdata(int32 fid, int32 ref) {
+static bool IsInternalVdata(int32 fid, int32 ref) {
 	set<string, less<string> > reserved_names;
 	reserved_names.insert("RIATTR0.0N");
 

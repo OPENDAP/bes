@@ -91,19 +91,24 @@
                 <value>Cloudiness Monthly Mean at Surface</value>
             </Attribute>
             <Attribute name="dataset" type="String">
-                <value>COADS 1-degree Equatorial Enhanced\012AI</value>
+                <value>COADS 1-degree Equatorial Enhanced
+AI</value>
             </Attribute>
             <Attribute name="var_desc" type="String">
-                <value>Cloudiness\012C</value>
+                <value>Cloudiness
+C</value>
             </Attribute>
             <Attribute name="level_desc" type="String">
-                <value>Surface\0120</value>
+                <value>Surface
+0</value>
             </Attribute>
             <Attribute name="statistic" type="String">
-                <value>Mean\012M</value>
+                <value>Mean
+M</value>
             </Attribute>
             <Attribute name="parent_stat" type="String">
-                <value>Individual Obs\012I</value>
+                <value>Individual Obs
+I</value>
             </Attribute>
             <Attribute name="add_offset" type="Float32">
                 <value>3276.50000</value>
@@ -191,19 +196,24 @@
                 <value>Latent Heat Parameter Monthly Mean at Surface</value>
             </Attribute>
             <Attribute name="dataset" type="String">
-                <value>COADS 1-degree Equatorial Enhanced\012AI</value>
+                <value>COADS 1-degree Equatorial Enhanced
+AI</value>
             </Attribute>
             <Attribute name="var_desc" type="String">
-                <value>Latent Heat Parameter\012G</value>
+                <value>Latent Heat Parameter
+G</value>
             </Attribute>
             <Attribute name="level_desc" type="String">
-                <value>Surface\0120</value>
+                <value>Surface
+0</value>
             </Attribute>
             <Attribute name="statistic" type="String">
-                <value>Mean\012M</value>
+                <value>Mean
+M</value>
             </Attribute>
             <Attribute name="parent_stat" type="String">
-                <value>Individual Obs\012I</value>
+                <value>Individual Obs
+I</value>
             </Attribute>
             <Attribute name="add_offset" type="Float32">
                 <value>2276.50000</value>

@@ -26,9 +26,11 @@
 
 #include <string>
 
-#include <BESError.h>
-#include <BESDebug.h>
+#include "BESError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
 
+#include "Chunk.h"
 #include "DmrppStr.h"
 
 using namespace libdap;
@@ -59,10 +61,29 @@ DmrppStr::read()
     if (read_p())
         return true;
 
-    string value = read_atomic(name());
+    // The following replaces a call to DmrppCommon::read_atomic() because the
+    // string code requires special processing of the data array and requires information
+    // about the chunk size to produce correct answers.
 
+    if (get_chunks_size() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    auto chunk = get_immutable_chunks()[0];
+    chunk->read_chunk();
+    auto chunk_size= chunk->get_size();
+    char *data = chunk->get_rbuf();
+
+    // It is possible that the string data is not null terminated and/or
+    // Does not span the full width of the chunk.
+    // This should correct those issues.
+    unsigned long long str_len=0;
+    bool done = false;
+    while(!done){
+        done = (data[str_len] == 0) || (str_len >= chunk_size);
+        if(!done) str_len++;
+    }
+    string value(data,str_len);
     set_value(value);   // sets read_p too
-
     return true;
 }
 

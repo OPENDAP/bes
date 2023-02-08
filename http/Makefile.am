@@ -5,7 +5,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
@@ -22,7 +22,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests #tests
+SUBDIRS = . unit-tests tests
 
 noinst_LTLIBRARIES = libbes_http.la
 
@@ -50,7 +50,11 @@ SRCS = CurlUtils.cc \
     EffectiveUrlCache.cc \
     url_impl.cc \
     EffectiveUrl.cc \
-    AllowedHosts.cc
+    AllowedHosts.cc \
+    AccessCredentials.cc \
+    CredentialsManager.cc \
+    NgapS3Credentials.cc \
+    awsv4.cc
 
 HDRS = CurlUtils.h \
     HttpCache.h \
@@ -61,7 +65,11 @@ HDRS = CurlUtils.h \
     EffectiveUrlCache.h \
     url_impl.h \
     EffectiveUrl.h \
-    AllowedHosts.h
+    AllowedHosts.h \
+    AccessCredentials.h \
+    CredentialsManager.h \
+    NgapS3Credentials.h \
+    awsv4.h
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf

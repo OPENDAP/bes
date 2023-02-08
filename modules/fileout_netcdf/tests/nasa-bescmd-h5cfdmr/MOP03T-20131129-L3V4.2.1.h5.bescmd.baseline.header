@@ -1,14 +1,41 @@
 netcdf test {
 dimensions:
-	Longitude = 360 ;
 	Latitude = 180 ;
+	Longitude = 360 ;
 	Pressure = 9 ;
 	Pressure2 = 10 ;
-	Prs2_1 = 10 ;
 	NTWO = 2 ;
+	Prs2_1 = 10 ;
 	StructMetadata_0_len = 19760 ;
 	coremetadata_0_len = 5926 ;
 variables:
+	float Latitude(Latitude) ;
+		Latitude:units = "degrees_north" ;
+		Latitude:origname = "Latitude" ;
+		Latitude:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Latitude" ;
+		Latitude:orig_dimname = "YDim" ;
+	float Longitude(Longitude) ;
+		Longitude:units = "degrees_east" ;
+		Longitude:origname = "Longitude" ;
+		Longitude:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Longitude" ;
+		Longitude:orig_dimname = "XDim" ;
+	float Pressure(Pressure) ;
+		Pressure:units = "hPa" ;
+		Pressure:origname = "Pressure" ;
+		Pressure:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure" ;
+		Pressure:orig_dimname = "Prs" ;
+	float Pressure2(Pressure2) ;
+		Pressure2:units = "hPa" ;
+		Pressure2:origname = "Pressure2" ;
+		Pressure2:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2" ;
+		Pressure2:orig_dimname = "Prs2" ;
+	int NTWO(NTWO) ;
+		NTWO:units = "level" ;
+	float Prs2_1(Prs2_1) ;
+		Prs2_1:units = "hPa" ;
+		Prs2_1:origname = "Pressure2" ;
+		Prs2_1:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2" ;
+		Prs2_1:orig_dimname = "Prs2" ;
 	float APrioriCOMixingRatioProfileDay(Longitude, Latitude, Pressure) ;
 		APrioriCOMixingRatioProfileDay:_FillValue = -9999.f ;
 		APrioriCOMixingRatioProfileDay:units = "ppbv" ;
@@ -463,33 +490,6 @@ variables:
 	char coremetadata_0(coremetadata_0_len) ;
 		coremetadata_0:origname = "coremetadata.0" ;
 		coremetadata_0:fullnamepath = "/HDFEOS INFORMATION/coremetadata.0" ;
-	float Latitude(Latitude) ;
-		Latitude:units = "degrees_north" ;
-		Latitude:origname = "Latitude" ;
-		Latitude:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Latitude" ;
-		Latitude:orig_dimname = "YDim" ;
-	float Longitude(Longitude) ;
-		Longitude:units = "degrees_east" ;
-		Longitude:origname = "Longitude" ;
-		Longitude:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Longitude" ;
-		Longitude:orig_dimname = "XDim" ;
-	float Pressure(Pressure) ;
-		Pressure:units = "hPa" ;
-		Pressure:origname = "Pressure" ;
-		Pressure:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure" ;
-		Pressure:orig_dimname = "Prs" ;
-	float Pressure2(Pressure2) ;
-		Pressure2:units = "hPa" ;
-		Pressure2:origname = "Pressure2" ;
-		Pressure2:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2" ;
-		Pressure2:orig_dimname = "Prs2" ;
-	int NTWO(NTWO) ;
-		NTWO:units = "level" ;
-	float Prs2_1(Prs2_1) ;
-		Prs2_1:units = "hPa" ;
-		Prs2_1:origname = "Pressure2" ;
-		Prs2_1:fullnamepath = "/HDFEOS/GRIDS/MOP03/Data Fields/Pressure2" ;
-		Prs2_1:orig_dimname = "Prs2" ;
 
 // global attributes:
 		:CoreMetadata = "\nGROUP                  = INVENTORYMETADATA\n  GROUPTYPE            = MASTERGROUP\n\n  GROUP                  = ECSDATAGRANULE\n\n    OBJECT                 = LOCALGRANULEID\n      NUM_VAL              = 1\n      VALUE                = \"MOP03T-20131129-L3V4.2.1.he5\"\n    END_OBJECT             = LOCALGRANULEID\n\n    OBJECT                 = PRODUCTIONDATETIME\n      NUM_VAL              = 1\n      VALUE                = \"removed date-time\"\n    END_OBJECT             = PRODUCTIONDATETIME\n\n  END_GROUP              = ECSDATAGRANULE\n\n  GROUP                  = MEASUREDPARAMETER\n\n    OBJECT                 = MEASUREDPARAMETERCONTAINER\n      CLASS                = \"1\"\n\n      OBJECT                 = PARAMETERNAME\n        CLASS                = \"1\"\n        NUM_VAL              = 1\n        VALUE                = \"Carbon Monoxide\"\n      END_OBJECT             = PARAMETERNAME\n\n      GROUP                  = QAFLAGS\n        CLASS                = \"1\"\n\n        OBJECT                 = AUTOMATICQUALITYFLAG\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Passed\"\n        END_OBJECT             = AUTOMATICQUALITYFLAG\n\n        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Process Terminated Normally\"\n        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION\n\n        OBJECT                 = OPERATIONALQUALITYFLAG\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Unknown\"\n        END_OBJECT             = OPERATIONALQUALITYFLAG\n\n        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = \"Process Terminated Normally\"\n        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION\n\n      END_GROUP              = QAFLAGS\n\n      GROUP                  = QASTATS\n        CLASS                = \"1\"\n\n        OBJECT                 = QAPERCENTMISSINGDATA\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = 0\n        END_OBJECT             = QAPERCENTMISSINGDATA\n\n        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = 0\n        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA\n\n        OBJECT                 = QAPERCENTCLOUDCOVER\n          NUM_VAL              = 1\n          CLASS                = \"1\"\n          VALUE                = 75\n        END_OBJECT             = QAPERCENTCLOUDCOVER\n\n      END_GROUP              = QASTATS\n\n    END_OBJECT             = MEASUREDPARAMETERCONTAINER\n\n  END_GROUP              = MEASUREDPARAMETER\n\n  GROUP                  = COLLECTIONDESCRIPTIONCLASS\n\n    OBJECT                 = SHORTNAME\n      NUM_VAL              = 1\n      VALUE                = \"MOP03T\"\n    END_OBJECT             = SHORTNAME\n\n    OBJECT                 = VERSIONID\n      NUM_VAL              = 1\n      VALUE                = 6\n    END_OBJECT             = VERSIONID\n\n  END_GROUP              = COLLECTIONDESCRIPTIONCLASS\n\n  GROUP                  = INPUTGRANULE\n\n    OBJECT                 = INPUTPOINTER\n      NUM_VAL              = 101\n      VALUE                = (\"/MOPITT/V6T/Staging/L3/20131129/M2/MOP02T-20131129-L2V16.2.1.he5\")\n    END_OBJECT             = INPUTPOINTER\n\n  END_GROUP              = INPUTGRANULE\n\n  GROUP                  = SPATIALDOMAINCONTAINER\n\n    GROUP                  = GRANULELOCALITY\n\n      OBJECT                 = LOCALITYVALUE\n        NUM_VAL              = 1\n        VALUE                = \"Global\"\n      END_OBJECT             = LOCALITYVALUE\n\n    END_GROUP              = GRANULELOCALITY\n\n    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER\n\n      GROUP                  = BOUNDINGRECTANGLE\n\n        OBJECT                 = WESTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -180.0\n        END_OBJECT             = WESTBOUNDINGCOORDINATE\n\n        OBJECT                 = NORTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 90.0\n        END_OBJECT             = NORTHBOUNDINGCOORDINATE\n\n        OBJECT                 = EASTBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = 180.0\n        END_OBJECT             = EASTBOUNDINGCOORDINATE\n\n        OBJECT                 = SOUTHBOUNDINGCOORDINATE\n          NUM_VAL              = 1\n          VALUE                = -90.0\n        END_OBJECT             = SOUTHBOUNDINGCOORDINATE\n\n      END_GROUP              = BOUNDINGRECTANGLE\n\n    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER\n\n  END_GROUP              = SPATIALDOMAINCONTAINER\n\n  GROUP                  = RANGEDATETIME\n\n    OBJECT                 = RANGEBEGINNINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2013-11-29\"\n    END_OBJECT             = RANGEBEGINNINGDATE\n\n    OBJECT                 = RANGEBEGINNINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"00:06:54.646\"\n    END_OBJECT             = RANGEBEGINNINGTIME\n\n    OBJECT                 = RANGEENDINGDATE\n      NUM_VAL              = 1\n      VALUE                = \"2013-11-29\"\n    END_OBJECT             = RANGEENDINGDATE\n\n    OBJECT                 = RANGEENDINGTIME\n      NUM_VAL              = 1\n      VALUE                = \"23:59:58.825\"\n    END_OBJECT             = RANGEENDINGTIME\n\n  END_GROUP              = RANGEDATETIME\n\n  GROUP                  = PGEVERSIONCLASS\n\n    OBJECT                 = PGEVERSION\n      NUM_VAL              = 1\n      VALUE                = \"4.2.1\"\n    END_OBJECT             = PGEVERSION\n\n  END_GROUP              = PGEVERSIONCLASS\n\nEND_GROUP              = INVENTORYMETADATA\n\nEND\n" ;

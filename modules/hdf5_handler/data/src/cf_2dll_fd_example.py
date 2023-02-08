@@ -27,9 +27,10 @@ temp_dset = file.create_dataset ('temp', data=temp_array)
 
 temp_dset.attrs["long_name"] = "temperature"
 temp_dset.attrs["units"] = "degC"
+data_val =['lat lon'];
 
 vlen = h5py.special_dtype (vlen = str)
-temp_dset.attrs.create ('coordinates', data = ['lat lon'], 
+temp_dset.attrs.create ('coordinates', data = data_val, 
             dtype=vlen) 
 
 temp_dset2 = file.create_dataset ('temp2', data=temp_array2)
@@ -38,7 +39,7 @@ temp_dset2.attrs["long_name"] = "temperature"
 temp_dset2.attrs["units"] = "degC"
 
 vlen = h5py.special_dtype (vlen = str)
-temp_dset2.attrs.create ('coordinates', data = ['lat lon'], 
+temp_dset2.attrs.create ('coordinates', data = data_val, 
             dtype=vlen) 
 
 temp_dset3 = file.create_dataset ('temp3', data=temp_array3)
@@ -47,7 +48,7 @@ temp_dset3.attrs["long_name"] = "temperature"
 temp_dset3.attrs["units"] = "degC"
 
 vlen = h5py.special_dtype (vlen = str)
-temp_dset3.attrs.create ('coordinates', data = ['lat lon'], 
+temp_dset3.attrs.create ('coordinates', data = data_val, 
             dtype=vlen) 
 
 temp_dset4 = file.create_dataset ('temp4', data=temp_array4)
@@ -56,7 +57,7 @@ temp_dset4.attrs["long_name"] = "temperature"
 temp_dset4.attrs["units"] = "degC"
 
 vlen = h5py.special_dtype (vlen = str)
-temp_dset4.attrs.create ('coordinates', data = ['lat lon'], 
+temp_dset4.attrs.create ('coordinates', data = data_val, 
             dtype=vlen) 
 
 

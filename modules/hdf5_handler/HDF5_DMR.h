@@ -44,7 +44,7 @@ private:
     }
 
 public:
-    explicit HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr) {}
+    explicit HDF5DMR(const libdap::DMR *dmr) : libdap::DMR(*dmr) {}
     HDF5DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name) {}
 
     HDF5DMR(const HDF5DMR &rhs) : libdap::DMR(rhs) {

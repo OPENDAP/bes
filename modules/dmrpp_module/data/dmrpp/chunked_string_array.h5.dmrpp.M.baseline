@@ -8,10 +8,11 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/string_array</Value>
         </Attribute>
-        <dmrpp:chunks fillValue="unsupported-string">
+        <dmrpp:chunks fillValue="">
             <dmrpp:chunkDimensionSizes>5</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3496" nBytes="40" chunkPositionInArray="[0]"/>
         </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="8" pad="null_pad"/>
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">

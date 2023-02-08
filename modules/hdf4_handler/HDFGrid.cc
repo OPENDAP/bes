@@ -67,8 +67,8 @@ HDFGrid::HDFGrid(const string &n, const string &d) :
 	Grid(n, d) {
 }
 
-HDFGrid::~HDFGrid() {
-}
+HDFGrid::~HDFGrid() = default;
+
 BaseType *HDFGrid::ptr_duplicate() {
 	return new HDFGrid(*this);
 }
@@ -121,7 +121,7 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 		vector<int> start;
         vector<int> edge;
         vector<int> stride;
-		HDFArray *primary_array = static_cast<HDFArray *> (array_var());
+		auto primary_array = static_cast<HDFArray *> (array_var());
 		if (!primary_array)
 			throw InternalErr(__FILE__, __LINE__, "Expected an HDFArray.");
 
@@ -164,7 +164,6 @@ bool HDFGrid::read_tagref(int32, int32 ref, int &err) {
 			// but not hdfistream_sds op>>(hdf_dim&).
 			sds.dims = vector<hdf_dim> ();
 			sds.data = hdf_genvec(); // needed?
-			//      sds.ref = SDidtoref(_sds_id);
 			sdsin >> sds.dims;
 		}
 
@@ -235,9 +234,9 @@ void HDFGrid::transfer_attributes(AttrTable *at) {
 				// Get the integer from the end of the name and use that as the
 				// index to find the matching Map variable.
 				BESDEBUG("h4", "dim->name(): " << dim->get_name() << endl);
-				BESDEBUG("h4",  "dim->get_name().substr(i + dim_name_base.length()): "
-						<< dim->get_name().substr(i + dim_name_base.length()) << endl);
-				int n = atoi(dim->get_name().substr(i + dim_name_base.length()).c_str());
+				BESDEBUG("h4",  "dim->get_name().substr(i + dim_name_base.size()): "
+						<< dim->get_name().substr(i + dim_name_base.size()) << endl);
+				int n = atoi(dim->get_name().substr(i + dim_name_base.size()).c_str());
 				// Note that the maps are HDFArray instances, so we use that
 				// for the actual copy operation.
 				BESDEBUG("h4",  "Inside HDFGrid::transfer_attreibutes: n = " << n << endl);

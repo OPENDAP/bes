@@ -56,7 +56,7 @@ void input_hex(std::istream& is, OutIter first, OutIter last){
 
 template<typename OutIter>
 void hex_string_to_bytes(const std::string& hex_str, OutIter first, OutIter last){
-    assert(hex_str.length() >= 2*std::distance(first, last));
+    assert(hex_str.size() >= 2*std::distance(first, last));
     std::istringstream iss(hex_str);
     input_hex(iss, first, last);
 }
@@ -94,7 +94,7 @@ const std::pair<std::string, std::string> sample_message_list[sample_size] = {
 void test(){
     for(std::size_t i = 0; i < sample_size; ++i){
         std::string src_str = sample_message_list[i].first;
-        std::cout << "src_str: " << src_str  << " size: " << src_str.length() << std::endl;
+        std::cout << "src_str: " << src_str  << " size: " << src_str.size() << std::endl;
         std::string ans_hex_str = sample_message_list[i].second;
         std::vector<unsigned char> ans(32);
         hex_string_to_bytes(ans_hex_str, ans);
@@ -208,8 +208,8 @@ void test(){
         std::string file_str((std::istreambuf_iterator<char>(ifs)), 
                 std::istreambuf_iterator<char>());
         std::size_t i = 0;
-        std::size_t block_size = file_str.length()/10;
-        for(i = 0; i+block_size <= file_str.length(); i+=block_size){
+        std::size_t block_size = file_str.size()/10;
+        for(i = 0; i+block_size <= file_str.size(); i+=block_size){
             hasher.process(file_str.begin()+i, file_str.begin()+i+block_size);
         }
         hasher.process(file_str.begin()+i, file_str.end());
@@ -229,8 +229,8 @@ void test(){
             std::string file_str((std::istreambuf_iterator<char>(ifs)), 
                     std::istreambuf_iterator<char>());
             std::size_t i = 0;
-            std::size_t block_size = file_str.length()/10;
-            for(i = 0; i+block_size <= file_str.length(); i+=block_size){
+            std::size_t block_size = file_str.size()/10;
+            for(i = 0; i+block_size <= file_str.size(); i+=block_size){
                 hasher.process(file_str.begin()+i, file_str.begin()+i+block_size);
             }
             hasher.process(file_str.begin()+i, file_str.end());

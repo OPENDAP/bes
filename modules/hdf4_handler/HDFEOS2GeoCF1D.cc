@@ -18,7 +18,7 @@ using namespace libdap;
 
 bool HDFEOS2GeoCF1D::read()
 {
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     // Declaration of offset,count and step
@@ -110,7 +110,7 @@ HDFEOS2GeoCF1D::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }

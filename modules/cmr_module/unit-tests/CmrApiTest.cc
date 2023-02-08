@@ -22,11 +22,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -48,11 +43,13 @@
 #include "CmrApi.h"
 #include "CmrNames.h"
 #include "CmrCatalog.h"
-#include "CmrError.h"
-#include "rjson_utils.h"
+#include "CmrInternalError.h"
+#include "JsonUtils.h"
+
+#include "Provider.h"
+#include "Collection.h"
 
 using namespace std;
-using namespace rapidjson;
 
 static bool debug = false;
 static bool Debug = false;
@@ -191,6 +188,7 @@ public:
             stringstream msg;
             msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
                     << months.size() << " months: ";
+
             for (size_t i = 0; i < months.size(); i++) {
                 if (i > 0)
                     msg << ", ";
@@ -429,10 +427,9 @@ public:
         };
 
         unsigned long  expected_size = 31;
-        vector<string> granules;
+        std::vector<unique_ptr<Granule>> granules;
         try {
             CmrApi cmr;
-            std::vector<Granule *> granules;
             string year ="1985";
             string month = "03";
 
@@ -444,27 +441,22 @@ public:
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
                     << granules.size() << " granules: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 msg << granule->getName() << endl
-                    << "    size:  " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
+                    << "        size:  " << granule->getSizeStr() << endl
+                    << "         lmt:    " << granule->getLastModifiedStr() << endl
+                    << " granule_url: " << granule->getDataGranuleUrl() << endl;
             }
             BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 string pgi = granule->getId();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << pgi;
                 BESDEBUG(MODULE, msg.str() << endl);
                 CPPUNIT_ASSERT(expected[i] == pgi);
-            }
-
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
             }
 
         }
@@ -517,7 +509,7 @@ public:
         vector<string> granules;
         try {
             CmrApi cmr;
-            std::vector<Granule *> granules;
+            std::vector<unique_ptr<Granule>> granules;
             string year ="1985";
             string month = "03";
 
@@ -529,28 +521,24 @@ public:
             msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
                     << granules.size() << " granules. Data Access URLs: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
+                auto &granule = granules[i];
                 msg << granule->getName() << endl
-                    << "    size:   " << granule->getSizeStr() << endl
-                    << "    lmt:    " << granule->getLastModifiedStr() << endl
-                    << "    access: " << granule->getDataAccessUrl() << endl;
+                    << "        size: " << granule->getSizeStr() << endl
+                    << "         lmt: " << granule->getLastModifiedStr() << endl
+                    << " granule_url: " << granule->getDataGranuleUrl() << endl;
             }
             BESDEBUG(MODULE, msg.str());
 
             for (size_t i = 0; i < granules.size(); i++) {
-                Granule *granule = granules[i];
-                string url = granule->getDataAccessUrl();
+                auto &granule = granules[i];
+                string granule_url = granule->getDataGranuleUrl();
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << url;
+                        << " received: " << granule_url;
                 BESDEBUG(MODULE, msg.str() << endl);
                 // CPPUNIT_ASSERT(expected[i] == url);
             }
 
-            for (size_t i = 0; i < granules.size(); i++) {
-                delete granules[i];
-                granules[i] = 0;
-            }
         }
         catch (BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
@@ -613,9 +601,60 @@ public:
 
     }
 
+    void get_provider_test() {
+        stringstream msg;
+        CmrApi cmr;
 
-    CPPUNIT_TEST_SUITE( CmrApiTest );
+        Provider ges_disc = cmr.get_provider("GES_DISC");
+        cerr << ges_disc.to_string() << endl;
 
+    }
+
+    void get_providers_test() {
+        stringstream msg;
+        CmrApi cmr;
+        std::vector<std::unique_ptr<cmr::Provider>> providers;
+
+        cmr.get_providers(providers);
+        for (auto &provider: providers){
+            cerr << provider->to_string() << endl;
+        }
+
+    }
+
+    void get_opendap_providers_test() {
+        stringstream msg;
+        CmrApi cmr;
+        std::map<string, std::unique_ptr<cmr::Provider>> providers;
+
+        cmr.get_opendap_providers(providers);
+
+        for (auto &provider: providers){
+            cerr << provider.second->to_string() << endl;
+        }
+
+    }
+
+    void get_opendap_collections_test() {
+        stringstream msg;
+        CmrApi cmr;
+        string provider_id("GES_DISC");
+        std::map<string, std::unique_ptr<cmr::Collection>> collections;
+
+        cmr.get_opendap_collections(provider_id, collections);
+
+        cerr << prolog << "Got " << collections.size() << " Collections" << endl;
+        for (auto &collection: collections){
+            cerr << collection.second->to_string() << endl;
+        }
+
+    }
+CPPUNIT_TEST_SUITE( CmrApiTest );
+
+    CPPUNIT_TEST(get_provider_test);
+    CPPUNIT_TEST(get_opendap_collections_test);
+    CPPUNIT_TEST(get_opendap_providers_test);
+    CPPUNIT_TEST(get_providers_test);
     CPPUNIT_TEST(get_years_test);
     CPPUNIT_TEST(get_months_test);
     CPPUNIT_TEST(get_days_test);

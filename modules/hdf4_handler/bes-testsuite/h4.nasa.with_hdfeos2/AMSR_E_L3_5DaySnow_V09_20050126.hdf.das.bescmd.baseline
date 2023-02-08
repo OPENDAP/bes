@@ -40,68 +40,68 @@ Attributes {
             ECSDATAGRANULE {
                 LOCALGRANULEID {
                     Int32 NUM_VAL 1;
-                    String VALUE "AMSR_E_L3_5DaySnow_V09_20050126.hdf";
+                    String VALUE "\"AMSR_E_L3_5DaySnow_V09_20050126.hdf\"";
                 }
                 PRODUCTIONDATETIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "2009-07-02T18:48:57Z";
+                    String VALUE "\"2009-07-02T18:48:57Z\"";
                 }
                 REPROCESSINGACTUAL {
                     Int32 NUM_VAL 1;
-                    String VALUE "reprocessed once";
+                    String VALUE "\"reprocessed once\"";
                 }
             }
             MEASUREDPARAMETER {
                 MEASUREDPARAMETERCONTAINER {
-                    String CLASS "1";
+                    String CLASS "\"1\"";
                     PARAMETERNAME {
                         Int32 NUM_VAL 1;
-                        String CLASS "1";
-                        String VALUE "Snow Water Equivalent";
+                        String CLASS "\"1\"";
+                        String VALUE "\"Snow Water Equivalent\"";
                     }
                     QAFLAGS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         AUTOMATICQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         AUTOMATICQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Program Execution Completed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Program Execution Completed\"";
                         }
                         OPERATIONALQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Not Investigated";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Not Investigated\"";
                         }
                         OPERATIONALQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Currently not used";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Currently not used\"";
                         }
                         SCIENCEQUALITYFLAG {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "Passed";
+                            String CLASS "\"1\"";
+                            String VALUE "\"Passed\"";
                         }
                         SCIENCEQUALITYFLAGEXPLANATION {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
-                            String VALUE "At least one normal retrieval";
+                            String CLASS "\"1\"";
+                            String VALUE "\"At least one normal retrieval\"";
                         }
                     }
                     QASTATS {
-                        String CLASS "1";
+                        String CLASS "\"1\"";
                         QAPERCENTMISSINGDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                         QAPERCENTOUTOFBOUNDSDATA {
                             Int32 NUM_VAL 1;
-                            String CLASS "1";
+                            String CLASS "\"1\"";
                             Int32 VALUE 0;
                         }
                     }
@@ -110,7 +110,7 @@ Attributes {
             COLLECTIONDESCRIPTIONCLASS {
                 SHORTNAME {
                     Int32 NUM_VAL 1;
-                    String VALUE "AE_5DSno";
+                    String VALUE "\"AE_5DSno\"";
                 }
                 VERSIONID {
                     Int32 NUM_VAL 1;
@@ -120,7 +120,7 @@ Attributes {
             INPUTGRANULE {
                 INPUTPOINTER {
                     Int32 NUM_VAL 5;
-                    String VALUE "AMSR_E_L3_DailySnow_V09_20050126.hdf", "AMSR_E_L3_DailySnow_V09_20050127.hdf", "AMSR_E_L3_DailySnow_V09_20050128.hdf", "AMSR_E_L3_DailySnow_V09_20050129.hdf", "AMSR_E_L3_DailySnow_V09_20050130.hdf";
+                    String VALUE "\"AMSR_E_L3_DailySnow_V09_20050126.hdf\"", "\"AMSR_E_L3_DailySnow_V09_20050127.hdf\"", "\"AMSR_E_L3_DailySnow_V09_20050128.hdf\"", "\"AMSR_E_L3_DailySnow_V09_20050129.hdf\"", "\"AMSR_E_L3_DailySnow_V09_20050130.hdf\"";
                 }
             }
             SPATIALDOMAINCONTAINER {
@@ -148,25 +148,25 @@ Attributes {
             RANGEDATETIME {
                 RANGEBEGINNINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2005-01-26";
+                    String VALUE "\"2005-01-26\"";
                 }
                 RANGEBEGINNINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "01:16:41.12Z";
+                    String VALUE "\"01:16:41.12Z\"";
                 }
                 RANGEENDINGDATE {
                     Int32 NUM_VAL 1;
-                    String VALUE "2005-01-31";
+                    String VALUE "\"2005-01-31\"";
                 }
                 RANGEENDINGTIME {
                     Int32 NUM_VAL 1;
-                    String VALUE "00:46:12.72Z";
+                    String VALUE "\"00:46:12.72Z\"";
                 }
             }
             PGEVERSIONCLASS {
                 PGEVERSION {
                     Int32 NUM_VAL 1;
-                    String VALUE "09";
+                    String VALUE "\"09\"";
                 }
             }
         }

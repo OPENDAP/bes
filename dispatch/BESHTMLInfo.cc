@@ -85,7 +85,7 @@ void BESHTMLInfo::begin_response(const string &response_name, BESDataHandlerInte
     add_data("<HEAD>\n");
     _indent += "    ";
     add_data((string) "<TITLE>" + response_name + "</TITLE>\n");
-    if (_indent.length() >= 4) _indent = _indent.substr(0, _indent.length() - 4);
+    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</HEAD>\n");
     add_data("<BODY>\n");
     _indent += "    ";
@@ -100,9 +100,9 @@ void BESHTMLInfo::begin_response(const string &response_name, BESDataHandlerInte
  */
 void BESHTMLInfo::end_response()
 {
-    if (_indent.length() >= 4) _indent = _indent.substr(0, _indent.length() - 4);
+    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</BODY>\n");
-    if (_indent.length() >= 4) _indent = _indent.substr(0, _indent.length() - 4);
+    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</HTML>\n");
 }
 
@@ -158,7 +158,7 @@ void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
 void BESHTMLInfo::end_tag(const string &tag_name)
 {
     BESInfo::end_tag(tag_name);
-    if (_indent.length() >= 4) _indent = _indent.substr(0, _indent.length() - 4);
+    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
 }
 
 /** @brief add a space to the informational response

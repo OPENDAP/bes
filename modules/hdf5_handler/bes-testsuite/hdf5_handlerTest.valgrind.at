@@ -473,6 +473,21 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
 
+#nc var dim name same
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_var_dim_name_same_2.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_var_dim_name_same_2.h5.dmr.bescmd])
+
+#cf bound
+AT_BESCMD_RESPONSE_TEST([t_cf_latlon_bounds.h5.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_bounds.h5.das.bescmd])
+
+
 #Test DAP4 coverage
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_1dll.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([t_cf_2dll.h5.dmr.bescmd])
@@ -636,6 +651,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dap.bescmd])
 
 #netcdf4 enhanced simple
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim.h5.dmr.bescmd])
 
 #netcdf4 enhanced compound
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
@@ -643,11 +659,17 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 
+#netcdf4 var and dim share the same name
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bescmd])
+
 #HYRAX-588, check the handling of hardlinks
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
 # The hardlinks that doesn't follow the netCDF-4 model fails.
 # This test is commented out.
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link_no_nc4.h5.dmr.bescmd])
+
+
 
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
@@ -661,6 +683,21 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
 AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
+
+# Test the case when a dimension has multiple hardlinks(HYRAX-588)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
+
+# Test special character handling
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_special_char_attr.h5.dmr.bescmd])
+
+# default HDF-EOS5 DMR tests
+AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd_aug.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_2_2d.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_2_3d_2x2yz.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char_aug.h5.dmr.bescmd])
 
 
 # These two tests check the dynamic configuration change.  The target files are identical

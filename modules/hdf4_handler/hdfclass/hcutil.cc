@@ -45,13 +45,11 @@
 
 #include <string>
 #include <vector>
+#include <mfhdf.h>
+#include <BESDebug.h>
 
 using std::vector;
 using std::string;
-
-#include <mfhdf.h>
-
-#include <BESDebug.h>
 
 using std::endl;    // Added when I removed 'using' from BESDebug.h
 
@@ -63,8 +61,8 @@ vector < string > split(const string & str, const string & delim)
 {
     vector < string > rv;
 
-    string::size_type len = str.length();
-    string::size_type dlen = delim.length();
+    string::size_type len = str.size();
+    string::size_type dlen = delim.size();
     for (string::size_type i = 0, previ = -dlen;; previ = i) {
         i = str.find(delim, previ + dlen);
         if (i == 0)
@@ -85,7 +83,7 @@ vector < string > split(const string & str, const string & delim)
 string join(const vector < string > &sv, const string & delim)
 {
     string str;
-    if (sv.size() > 0) {
+    if (sv.empty() ==  false) {
         str = sv[0];
         for (int i = 1; i < (int) sv.size(); ++i)
             str += (delim + sv[i]);
@@ -96,7 +94,8 @@ string join(const vector < string > &sv, const string & delim)
 bool SDSExists(const char *filename, const char *sdsname)
 {
 
-    int32 sd_id, index;
+    int32 sd_id;
+    int32 index;
     if ((sd_id = SDstart(filename, DFACC_RDONLY)) < 0) {
         BESDEBUG("h4", "hcutil:96 SDstart for " << filename << " error" << endl);
         return false;
@@ -112,7 +111,10 @@ bool SDSExists(const char *filename, const char *sdsname)
 bool GRExists(const char *filename, const char *grname)
 {
 
-    int32 file_id, gr_id, index;
+    int32 file_id;
+    int32 gr_id;
+    int32 index;
+
     if ((file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
         return false;
     if ((gr_id = GRstart(file_id)) < 0)
@@ -128,7 +130,9 @@ bool GRExists(const char *filename, const char *grname)
 bool VdataExists(const char *filename, const char *vdname)
 {
 
-    int32 file_id, ref;
+    int32 file_id;
+    int32 ref;
+
     if ((file_id = Hopen(filename, DFACC_RDONLY, 0)) < 0)
         return false;
     // should return error if Vstart fails. here 

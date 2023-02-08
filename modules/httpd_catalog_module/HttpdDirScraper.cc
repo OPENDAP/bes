@@ -71,6 +71,9 @@ HttpdDirScraper::HttpdDirScraper()
  */
 long HttpdDirScraper::get_size_val(const string size_str) const
 {
+    if(size_str.empty())
+        return 0;
+    
     char scale_c = *size_str.rbegin();
     long scale = 1;
 
@@ -97,7 +100,7 @@ long HttpdDirScraper::get_size_val(const string size_str) const
     BESDEBUG(MODULE, prolog << "scale: " << scale << endl);
 
     string result = size_str;
-    if (isalpha(scale_c)) result = size_str.substr(0, size_str.length() - 1);
+    if (isalpha(scale_c)) result = size_str.substr(0, size_str.size() - 1);
 
     long size = atol(result.c_str());
     BESDEBUG(MODULE, prolog << "raw size: " << size << endl);
@@ -144,6 +147,9 @@ void zero_tm_struct(tm &tms)
 
 string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 {
+    if(httpd_time.empty())
+        return httpd_time;
+
     vector<string> tokens;
     string delimiters = "- :";
     BESUtil::tokenize(httpd_time, tokens, delimiters);
@@ -162,7 +168,7 @@ string HttpdDirScraper::httpd_time_to_iso_8601(const string httpd_time) const
 
     const char *second_field = tokens[1].c_str();
     bool is_alpha = true;
-    for(unsigned long i=0; is_alpha && i< tokens[1].length(); i++){
+    for(unsigned long i=0; is_alpha && i< tokens[1].size(); i++){
         is_alpha = isalpha(second_field[i]);
     }
     time_t theTime;
@@ -316,7 +322,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
             done = true;
         }
         else {
-            int aCloseIndex = pageStr.find(aCloseStr, aOpenIndex + aOpenStr.length());
+            int aCloseIndex = pageStr.find(aCloseStr, aOpenIndex + aOpenStr.size());
             if (aCloseIndex < 0) {
                 done = true;
             }
@@ -326,7 +332,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                 // Locate the entire <a /> element
                 BESDEBUG(MODULE, prolog << "aOpenIndex: " << aOpenIndex << endl);
                 BESDEBUG(MODULE, prolog << "aCloseIndex: " << aCloseIndex << endl);
-                length = aCloseIndex + aCloseStr.length() - aOpenIndex;
+                length = aCloseIndex + aCloseStr.size() - aOpenIndex;
                 string aElemStr = pageStr.substr(aOpenIndex, length);
                 BESDEBUG(MODULE, prolog << "Processing link: " << aElemStr << endl);
 
@@ -338,7 +344,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                 BESDEBUG(MODULE, prolog << "Link Text: " << linkText << endl);
 
                 // Locate the href attribute
-                start = aElemStr.find(hrefStr) + hrefStr.length();
+                start = aElemStr.find(hrefStr) + hrefStr.size();
                 end = aElemStr.find("\"", start);
                 length = end - start;
                 string href = aElemStr.substr(start, length);
@@ -346,7 +352,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
 
                 // attempt to get time string
                 string time_str;
-                int start_pos = getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.length(), time_str);
+                int start_pos = getNextElementText(pageStr, "td", aCloseIndex + aCloseStr.size(), time_str);
                 BESDEBUG(MODULE, prolog << "time_str: '" << time_str << "'" << endl);
 
                 // attempt to get size string
@@ -354,25 +360,25 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                 start_pos = getNextElementText(pageStr, "td", start_pos, size_str);
                 BESDEBUG(MODULE, prolog << "size_str: '" << size_str << "'" << endl);
 
-                if ((linkText.find("<img") != string::npos) || !(linkText.length()) || (linkText.find("<<<") != string::npos)
+                if ((linkText.find("<img") != string::npos) || !(linkText.size()) || (linkText.find("<<<") != string::npos)
                     || (linkText.find(">>>") != string::npos)) {
                     BESDEBUG(MODULE, prolog << "SKIPPING(image|copy|<<<|>>>): " << aElemStr << endl);
                 }
                 else {
-                    if (href.length() == 0 || (((href.find("http://") == 0) || (href.find("https://") == 0)) && !(href.find(url) == 0))) {
+                    if (href.size() == 0 || (((href.find("http://") == 0) || (href.find("https://") == 0)) && !(href.find(url) == 0))) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(null or remote): " << href << endl);
                     }
-                    else if (hrefExcludeRegex.match(href.c_str(), href.length(), 0) > 0) {
+                    else if (hrefExcludeRegex.match(href.c_str(), href.size(), 0) > 0) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(hrefExcludeRegex) - href: '" << href << "'"<< endl);
                     }
-                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.length(), 0) > 0) {
+                    else if (nameExcludeRegex.match(linkText.c_str(), linkText.size(), 0) > 0) {
                         // SKIPPING
                         BESDEBUG(MODULE, prolog << "SKIPPING(nameExcludeRegex) - name: '" << linkText << "'" << endl);
                     }
                     else if (BESUtil::endsWith(href, "/")) {
-                        string node_name = href.substr(0, href.length() - 1);
+                        string node_name = href.substr(0, href.size() - 1);
                         // it's a directory aka a node
                         BESDEBUG(MODULE, prolog << "NODE: " << node_name << endl);
                         bes::CatalogItem *childNode = new bes::CatalogItem();
@@ -403,7 +409,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
                     }
                 }
             }
-            next_start = aCloseIndex + aCloseStr.length();
+            next_start = aCloseIndex + aCloseStr.size();
         }
     }
 }
@@ -427,13 +433,13 @@ int HttpdDirScraper::getNextElementText(const string &page_str, const string ele
 
     // Locate the next "element_name"  element
     int start = page_str.find(e_open_str, startIndex);
-    int end = page_str.find(e_close_str, start + e_open_str.length());
+    int end = page_str.find(e_close_str, start + e_open_str.size());
     if(start<0 || end<0 || end<start){
         resultText="";
         return startIndex;
     }
 
-    int length = end + e_close_str.length() - start;
+    int length = end + e_close_str.size() - start;
     string element_str = page_str.substr(start, length);
 
     // Find the text
@@ -445,7 +451,7 @@ int HttpdDirScraper::getNextElementText(const string &page_str, const string ele
     if (trim) BESUtil::removeLeadingAndTrailingBlanks(resultText);
 
     BESDEBUG(MODULE, prolog << "resultText: '" << resultText << "'" << endl);
-    return startIndex + element_str.length();
+    return startIndex + element_str.size();
 }
 
 /*
@@ -521,7 +527,7 @@ bes::CatalogNode *HttpdDirScraper::get_node(const string &url, const string &pat
         it = pageNodes.begin();
         while (it != pageNodes.end()) {
             string pageNode = *it;
-            if (BESUtil::endsWith(pageNode, "/")) pageNode = pageNode.substr(0, pageNode.length() - 1);
+            if (BESUtil::endsWith(pageNode, "/")) pageNode = pageNode.substr(0, pageNode.size() - 1);
 
             bes::CatalogItem *childNode = new bes::CatalogItem();
             childNode->set_type(CatalogItem::node);

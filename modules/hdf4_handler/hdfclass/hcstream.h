@@ -56,12 +56,12 @@ class hdfistream_obj {          // base class for streams reading HDF objects
     hdfistream_obj(const hdfistream_obj &) {
         THROW(hcerr_copystream);
     }
-    virtual ~hdfistream_obj(void) {
-    }
+    virtual ~hdfistream_obj(void) = default;
+
     void operator=(const hdfistream_obj &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename = 0) = 0;    // open stream
+    virtual void open(const char *filename = nullptr) = 0;    // open stream
     virtual void close(void) = 0;       // close stream
     virtual void seek(int index = 0) = 0;       // seek to index'th object
     virtual void seek_next(void) = 0;   // seek to next object in stream
@@ -71,8 +71,8 @@ class hdfistream_obj {          // base class for streams reading HDF objects
     virtual int index(void) const {
         return _index;
     } // return current position protected:
-    void _init(const string filename = "") {
-        if (filename.length())
+    void _init(const string& filename = "") {
+        if (filename.size())
             _filename = filename;
         _file_id = _index = 0;
     }
@@ -84,25 +84,25 @@ class hdfistream_obj {          // base class for streams reading HDF objects
 class hdfistream_sds:public hdfistream_obj {
   
   public:
-    explicit hdfistream_sds(const string filename = "");
+    explicit hdfistream_sds(const string& filename = "");
     hdfistream_sds(const hdfistream_sds &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
-    virtual ~ hdfistream_sds(void) {
+    ~ hdfistream_sds(void) override{
         _del();
     }
     void operator=(const hdfistream_sds &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename = 0);        // open stream, seek to BOS
-    virtual void close(void);   // close stream
-    virtual void seek(int index = 0);   // seek the index'th SDS array
+    void open(const char *filename = nullptr) override;        // open stream, seek to BOS
+    void close(void) override;   // close stream
+    void seek(int index = 0) override;   // seek the index'th SDS array
     virtual void seek(const char *name);        // seek the SDS array by name
-    virtual void seek_next(void);       // seek the next SDS array
+    void seek_next(void) override;       // seek the next SDS array
     virtual void seek_ref(int ref);     // seek the SDS array by ref
-    virtual void rewind(void);  // position in front of first SDS
-    virtual bool bos(void) const;       // positioned in front of the first SDS?
-    virtual bool eos(void) const;       // positioned past the last SDS?
+    void rewind(void) override;  // position in front of first SDS
+    bool bos(void) const override;       // positioned in front of the first SDS?
+    bool eos(void) const override;       // positioned past the last SDS?
     virtual bool eo_attr(void) const;   // positioned past the last attribute?
     virtual bool eo_dim(void) const;    // positioned past the last dimension?
     void setmeta(bool val) {
@@ -119,10 +119,10 @@ class hdfistream_sds:public hdfistream_obj {
         _map_ce_set = true;
         _map_ce_vec = a_ce;
     }
-    vector < array_ce > get_map_ce() {
+    vector < array_ce > get_map_ce() const {
         return _map_ce_vec;
     }
-    bool is_map_ce_set() {
+    bool is_map_ce_set() const {
         return _map_ce_set;
     }
     hdfistream_sds & operator>>(hdf_attr & ha); // read an attribute
@@ -151,6 +151,7 @@ class hdfistream_sds:public hdfistream_obj {
     static const string long_name;      // label
     static const string units;
     static const string format;
+  private: 
     int32 _sds_id;              // handle of open object in annotation interface
     int32 _attr_index;          // index of current attribute
     int32 _dim_index;           // index of current dimension
@@ -184,35 +185,35 @@ class hdfistream_sds:public hdfistream_obj {
 // class for a stream reading annotations
 class hdfistream_annot:public hdfistream_obj {
   public:
-    hdfistream_annot(const string filename = "");
-    hdfistream_annot(const string filename, int32 tag, int32 ref);
+    explicit hdfistream_annot(const string& filename);
+    hdfistream_annot(const string& filename, int32 tag, int32 ref);
     hdfistream_annot(const hdfistream_annot &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
-     virtual ~ hdfistream_annot(void) {
+     ~ hdfistream_annot(void) override {
         _del();
     }
     void operator=(const hdfistream_annot &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename);    // open file annotations
+    void open(const char *filename) override;    // open file annotations
     virtual void open(const char *filename, int32 tag, int32 ref);
     // open tag/ref in file, seek to BOS
-    virtual void close(void);   // close open file
-    virtual void seek(int index)        // seek to index'th annot in stream
+    void close(void) override;   // close open file
+    void seek(int index) override   // seek to index'th annot in stream
     {
         _index = index;
     }
-    virtual void seek_next(void) {
+    void seek_next(void) override {
         _index++;
     }                           // position to next annot
-    virtual bool eos(void) const {
+    bool eos(void) const override{
         return (_index >= (int) _an_ids.size());
     }
-    virtual bool bos(void) const {
+    bool bos(void) const override {
         return (_index <= 0);
     }
-    virtual void rewind(void) {
+    void rewind(void) override {
         _index = 0;
     }
     virtual void set_annot_type(bool label, bool desc)  // specify types of
@@ -223,8 +224,8 @@ class hdfistream_annot:public hdfistream_obj {
     hdfistream_annot & operator>>(string & an); // read current annotation
     hdfistream_annot & operator>>(vector < string > &anv);      // read all annots
   protected:
-    void _init(const string filename = "");
-    void _init(const string filename, int32 tag, int32 ref);
+    void _init(const string& filename = "");
+    void _init(const string& filename, int32 tag, int32 ref);
     void _del(void) {
         close();
     }
@@ -235,8 +236,11 @@ class hdfistream_annot:public hdfistream_obj {
     void _get_file_anninfo(void);
     void _get_obj_anninfo(void);
     void _open(const char *filename);
+
+private:
     int32 _an_id;               // handle of open annotation interface
-    int32 _tag, _ref;           // tag, ref currently pointed to
+    int32 _tag;
+    int32  _ref;           // tag, ref currently pointed to
     bool _lab;                  // if true, read labels
     bool _desc;                 // if true, read descriptions
     vector < int32 > _an_ids;   // list of id's of anns in stream
@@ -244,34 +248,34 @@ class hdfistream_annot:public hdfistream_obj {
 
 class hdfistream_vdata:public hdfistream_obj {
   public:
-    hdfistream_vdata(const string filename = "");
+    explicit hdfistream_vdata(const string& filename = "");
     hdfistream_vdata(const hdfistream_vdata &) : hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
-    virtual ~hdfistream_vdata(void) {
+    ~hdfistream_vdata(void) override{
         _del();
     }
     void operator=(const hdfistream_vdata &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename);    // open stream, seek to BOS
+    void open(const char *filename) override;    // open stream, seek to BOS
     virtual void open(const string & filename); // open stream, seek to BOS
-    virtual void close(void);   // close stream
-    virtual void seek(int index = 0);   // seek the index'th Vdata
+    void close(void) override;   // close stream
+    void seek(int index = 0) override;   // seek the index'th Vdata
     virtual void seek(const char *name);        // seek the Vdata by name
     virtual void seek(const string & name);     // seek the Vdata by name
-    virtual void seek_next(void) {
+    void seek_next(void) override {
         _seek_next();
     }                           // seek the next Vdata in file
     virtual void seek_ref(int ref);     // seek the Vdata by ref
-    virtual void rewind(void) {
+    void rewind(void) override {
         _rewind();
     }                           // position in front of first Vdata
-    virtual bool bos(void) const        // positioned in front of the first Vdata?
+    bool bos(void) const override  // positioned in front of the first Vdata?
     {
         return (_index <= 0);
     }
-    virtual bool eos(void) const      // positioned past the last Vdata?
+    bool eos(void) const override     // positioned past the last Vdata?
     {
         return (_index >= (int) _vdata_refs.size());
     }
@@ -301,14 +305,17 @@ class hdfistream_vdata:public hdfistream_obj {
     void _rewind(void)          // position to beginning of the stream
     {
         _index = _attr_index = 0;
-        if (_vdata_refs.size() > 0)
+        if (_vdata_refs.empty() == false)
             _seek(_vdata_refs[0]);
     }
+
+    hdfistream_vdata & operator>>(hdf_field & hf);      // read a field
+    hdfistream_vdata & operator>>(vector < hdf_field > &hfv);   // read all fields
+
+private:
     int32 _vdata_id;            // handle of open object in annotation interface
     int32 _attr_index;          // index of current attribute
     int32 _nattrs;              // number of attributes for this Vdata
-    hdfistream_vdata & operator>>(hdf_field & hf);      // read a field
-    hdfistream_vdata & operator>>(vector < hdf_field > &hfv);   // read all fields
     bool _meta;
     vector < int32 > _vdata_refs;       // list of refs for Vdata's in the file
     struct {
@@ -320,35 +327,36 @@ class hdfistream_vdata:public hdfistream_obj {
 
 class hdfistream_vgroup:public hdfistream_obj {
   public:
-    explicit hdfistream_vgroup(const string filename = "");
+    explicit hdfistream_vgroup(const string & filename = "");
     hdfistream_vgroup(const hdfistream_vgroup &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
-    virtual ~hdfistream_vgroup(void) {
+    ~hdfistream_vgroup(void) override {
         _del();
     }
     void operator=(const hdfistream_vgroup &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename);    // open stream, seek to BOS
+    void open(const char *filename) override;    // open stream, seek to BOS
     virtual void open(const string & filename); // open stream, seek to BOS
-    virtual void close(void);   // close stream
-    virtual void seek(int index = 0);   // seek the index'th Vgroup
+    void close(void) override;   // close stream
+    void seek(int index = 0) override;   // seek the index'th Vgroup
     virtual void seek(const char *name);        // seek the Vgroup by name
     virtual void seek(const string & name);     // seek the Vgroup by name
-    virtual void seek_next(void) {
+    void seek_next(void) override {
         _seek_next();
     }                           // seek the next Vgroup in file
     virtual void seek_ref(int ref);     // seek the Vgroup by ref
-    virtual void rewind(void) {
+    void rewind(void) override {
         _rewind();
     }                           // position in front of first Vgroup
-    string memberName(int32 ref);       // find the name of ref'd Vgroup in the stream
-    virtual bool bos(void) const        // positioned in front of the first Vgroup?
+    string memberName(int32 ref) const;       // find the name of ref'd Vgroup in the stream
+    bool bos(void) const override      // positioned in front of the first Vgroup?
     {
         return (_index <= 0);
     }
-    virtual bool eos(void) const      // positioned past the last Vgroup?
+
+    bool eos(void) const override     // positioned past the last Vgroup?
     {
         return (_index >= (int) _vgroup_refs.size());
     }
@@ -372,10 +380,12 @@ class hdfistream_vgroup:public hdfistream_obj {
     void _rewind(void)          // position to beginning of the stream
     {
         _index = _attr_index = 0;
-        if (_vgroup_refs.size() > 0)
+        if (_vgroup_refs.empty() == false)
             _seek(_vgroup_refs[0]);
     }
-    string _memberName(int32 ref);      // find the name of ref'd Vgroup in the stream
+    string _memberName(int32 ref) const;      // find the name of ref'd Vgroup in the stream
+
+private:
     int32 _vgroup_id;           // handle of open object in annotation interface
 #if 0
     int32 _member_id;           // handle of child object in this Vgroup
@@ -394,27 +404,27 @@ class hdfistream_vgroup:public hdfistream_obj {
 // Raster input stream class
 class hdfistream_gri:public hdfistream_obj {
   public:
-    hdfistream_gri(const string filename = "");
+    explicit hdfistream_gri(const string& filename = "");
     hdfistream_gri(const hdfistream_gri &):hdfistream_obj(*this) {
         THROW(hcerr_copystream);
     }
-    virtual ~ hdfistream_gri(void) {
+    ~ hdfistream_gri(void) override {
         _del();
     }
     void operator=(const hdfistream_gri &) {
         THROW(hcerr_copystream);
     }
-    virtual void open(const char *filename = 0);        // open stream
-    virtual void close(void);   // close stream
-    virtual void seek(int index = 0);   // seek the index'th image
+    void open(const char *filename = nullptr) override;        // open stream
+    void close(void) override;   // close stream
+    void seek(int index = 0) override;   // seek the index'th image
     virtual void seek(const char *name);        // seek image by name
-    virtual void seek_next(void) {
+    void seek_next(void) override {
         seek(_index + 1);
     }                           // seek the next RI
     virtual void seek_ref(int ref);     // seek the RI by ref
-    virtual void rewind(void);  // position in front of first RI
-    virtual bool bos(void) const;       // position in front of first RI?
-    virtual bool eos(void) const;       // position past last RI?
+    void rewind(void) override;  // position in front of first RI
+    bool bos(void) const override;       // position in front of first RI?
+    bool eos(void) const override;       // position past last RI?
     virtual bool eo_attr(void) const;   // positioned past last attribute?
     virtual bool eo_pal(void) const;    // positioned past last palette?
     void setmeta(bool val) {
@@ -444,6 +454,7 @@ class hdfistream_gri:public hdfistream_obj {
         _index = -1;
         _attr_index = _pal_index = 0;
     }
+  private:
     int32 _gr_id;               // GR interface id -> can't get rid of this, needed for GRend()
     int32 _ri_id;               // handle for open raster object
     int32 _attr_index;          // index to current attribute

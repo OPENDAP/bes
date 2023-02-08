@@ -124,9 +124,9 @@ void AsciiArray::print_vector(ostream &strm, bool print_name)
     // Added the 'if (dimension_size...' in support of zero-length arrays.
     // jhrg 2/2/16
     if (dimension_size(dim_begin(), true) > 0) {
-        int end = /*bt->*/dimension_size(/*bt->*/dim_begin(), true) - 1;
+        int64_t end = /*bt->*/dimension_size_ll(/*bt->*/dim_begin(), true) - 1;
 
-        for (int i = 0; i < end; ++i) {
+        for (int64_t i = 0; i < end; ++i) {
             BaseType *curr_var = basetype_to_asciitype(bt->var(i));
             dynamic_cast<AsciiOutput &>(*curr_var).print_ascii(strm, false);
             strm << ", ";

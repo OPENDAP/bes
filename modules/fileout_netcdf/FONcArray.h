@@ -35,8 +35,7 @@
 #include <vector>
 #include <string>
 
-#include <libdap/AttrTable.h>
-#include <libdap/D4Attributes.h>
+#include <netcdf.h>
 
 #include "FONcBaseType.h"
 
@@ -57,72 +56,91 @@ class Array;
 class FONcArray: public FONcBaseType {
 private:
     // The array being converted
-    libdap::Array *d_a;
+    libdap::Array *d_a = nullptr;
     // The type of data stored in the array
-    nc_type d_array_type;
+    nc_type d_array_type = NC_NAT;
     // The number of dimensions to be stored in netcdf (if string, 2)
-    int d_ndims;
+    int d_ndims = 0;
     // The actual number of dimensions of this array (if string, 1)
-    int d_actual_ndims;
+    int d_actual_ndims = 0;
     // The number of elements that will be stored in netcdf
-    int d_nelements;
+    size_t d_nelements = 1;
     // The FONcDim dimensions to be used for this variable
     std::vector<FONcDim *> d_dims;
     // The netcdf dimension ids for this array from DAP4
-    std::vector<int> d4_dim_ids;
+    std::vector<int> d4_dim_ids{};
+
     std::vector<bool>use_d4_dim_ids;
     std::vector<int> d4_rds_nums;
-    //std::vector<int> d4_rds_nums_visited;
 
     // The netcdf dimension ids for this array
-    std::vector<int> d_dim_ids;
+    std::vector<int> d_dim_ids{};
     // The netcdf dimension sizes to be written
     //size_t * d_dim_sizes; // changed int to size_t. jhrg 12.27.2011
-    std::vector<size_t> d_dim_sizes;
+    std::vector<size_t> d_dim_sizes{};
     // If string data, we need to do some comparison, so instead of
     // reading it more than once, read it once and save here
     // FIXME std::vector<std::string> d_str_data;
 
     // If the array is already a map in a grid, then we don't want to
     // define it or write it.
-    bool d_dont_use_it;
+    bool d_dont_use_it = false;
 
     // Make this a vector<> jhrg 10/12/15
     // The netcdf chunk sizes for each dimension of this array.
-    std::vector<size_t> d_chunksizes;
+    std::vector<size_t> d_chunksizes{};
 
     // This is vector holds instances of FONcMap* that wrap existing Array
     // objects that are pushed onto the global FONcGrid::Maps vector. These
     // are hand made reference counting pointers. I'm not sure we need to
     // store copies in this object, but it may be the case that without
     // calling the FONcMap->decref() method they are not deleted. jhrg 8/28/13
-    std::vector<FONcMap*> d_grid_maps;
+    std::vector<FONcMap*> d_grid_maps{};
 
     // if DAP4 dim. is defined
-    bool d4_def_dim;
-    FONcDim * find_dim(std::vector<std::string> &embed, const std::string &name, int size, bool ignore_size = false);
+    bool d4_def_dim = false;
 
-    void write_for_nc4_types(int ncid);
+    FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 
     // Used in write()
+    void write_for_nc4_types(int ncid);
+    void write_for_nc3_types(int ncid);
     void write_nc_variable(int ncid, nc_type var_type);
+    static bool equal_length(vector<string> &the_strings);
+    void write_string_array(int ncid);
+    void write_equal_length_string_array(int ncid);
+
+    FONcArray() = default;      // Used in some unit tests
+    friend class FONcArrayTest;
 
 public:
     explicit FONcArray(libdap::BaseType *b);
-    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rds_nums);
-    virtual ~FONcArray() override;
+    FONcArray(libdap::BaseType *b, const std::vector<int>&dim_ids, const std::vector<bool>&use_dim_ids,
+              const std::vector<int>&rds_nums);
+    ~FONcArray() override;
 
     virtual void convert(std::vector<std::string> embed, bool _dap4=false, bool is_dap4_group=false) override;
     virtual void define(int ncid) override;
-    virtual void write(int ncid)override ;
+    virtual void write(int ncid) override;
 
     std::string name() override;
-    virtual libdap::Array *array()
-    {
-        return d_a;
-    }
+
+    virtual libdap::Array *array() { return d_a; }
 
     virtual void dump(std::ostream &strm) const override;
+
+    // The following code is to calcuate the maximum possible chunk size one can use for array.
+    // It is not used now. But keep it for the potential future use.
+#if 0
+    size_t obtain_max_chunk_size(size_t total_size, int m_num_chunks, int chunk_dim_size, int allowed_chunk_dim_size) {
+
+        int actual_num_chunks = total_size/(chunk_dim_size*chunk_dim_size);
+        if ((actual_num_chunks > m_num_chunks) && (chunk_dim_size < allowed_chunk_dim_size)) 
+            chunk_dim_size = obtain_max_chunk_size(total_size,m_num_chunks,2*chunk_dim_size,allowed_chunk_dim_size);
+        return chunk_dim_size;
+
+    }
+#endif
     // The below line is not necessary. Still keep it here for the future use.
     // KY 2021-05-25
 #if 0

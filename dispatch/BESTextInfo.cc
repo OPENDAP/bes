@@ -147,7 +147,7 @@ void BESTextInfo::begin_tag(const string &tag_name, map<string, string> *attrs)
 void BESTextInfo::end_tag(const string &tag_name)
 {
     BESInfo::end_tag(tag_name);
-    if (_indent.length() >= 4) _indent = _indent.substr(0, _indent.length() - 4);
+    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
 }
 
 /** @brief add string data to the informational response

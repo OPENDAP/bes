@@ -133,7 +133,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     string basename;
     string::size_type slash = fullnode.rfind("/");
     if (slash != string::npos) {
-        basename = fullnode.substr(slash + 1, fullnode.length() - slash);
+        basename = fullnode.substr(slash + 1, fullnode.size() - slash);
     }
     else {
         basename = fullnode;

@@ -38,10 +38,10 @@
  */
 class HDF4DDS : public libdap::DDS {
 private:
-    int sdfd;
-    int fileid;
-    int gridfd;
-    int swathfd;
+    int sdfd = -1;
+    int fileid = -1;
+    int gridfd = -1;
+    int swathfd = -1;
 
     void m_duplicate(const HDF4DDS &src) 
     { 
@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    explicit HDF4DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), sdfd(-1),fileid(-1),gridfd(-1),swathfd(-1) {}
+    explicit HDF4DDS(const libdap::DDS *ddsIn) : libdap::DDS(*ddsIn) {}
 
     HDF4DDS(const HDF4DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);

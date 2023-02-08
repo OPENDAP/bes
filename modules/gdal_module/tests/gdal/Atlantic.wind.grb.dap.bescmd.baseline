@@ -4667,7 +4667,7 @@
             <Value>-100.625 1.25 0 48.5 0 -1</Value>
         </Attribute>
         <Attribute name="spatial_ref" type="String">
-            <Value>GEOGCS[\&quot;Coordinate System imported from GRIB file\&quot;,DATUM[\&quot;unnamed\&quot;,SPHEROID[\&quot;Sphere\&quot;,6371200,0]],PRIMEM[\&quot;Greenwich\&quot;,0],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AXIS[\&quot;Latitude\&quot;,NORTH],AXIS[\&quot;Longitude\&quot;,EAST]]</Value>
+            <Value>GEOGCS[&quot;Coordinate System imported from GRIB file&quot;,DATUM[&quot;unnamed&quot;,SPHEROID[&quot;Sphere&quot;,6371200,0]],PRIMEM[&quot;Greenwich&quot;,0],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AXIS[&quot;Latitude&quot;,NORTH],AXIS[&quot;Longitude&quot;,EAST]]</Value>
         </Attribute>
     </Attribute>
 </Dataset>

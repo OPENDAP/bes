@@ -34,6 +34,7 @@
 using std::ostringstream;
 
 #include <netcdf.h>
+#include <BESDebug.h>
 
 #include "FONcDim.h"
 #include "FONcUtils.h"
@@ -46,7 +47,7 @@ int FONcDim::DimNameNum = 0;
  * @param name The name of the dimension
  * @param size The size of the dimension
  */
-FONcDim::FONcDim(const string &name, int size) :
+FONcDim::FONcDim(const string &name, int64_t size) :
     _name(name), _size(size), _dimid(0), _defined(false), _ref(1)
 {
 }
@@ -88,6 +89,8 @@ void FONcDim::define(int ncid)
         else {
             _name = FONcUtils::id2netcdf(_name);
         }
+
+        BESDEBUG("fonc",  "FONcDim:: dimension size is "<<_size <<endl);
         int stax = nc_def_dim(ncid, _name.c_str(), _size, &_dimid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - " + "Failed to add dimension " + _name;

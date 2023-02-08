@@ -173,7 +173,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
         return false;
     }
 
-    string ext = src.substr(dot + 1, src.length() - dot);
+    string ext = src.substr(dot + 1, src.size() - dot);
 
     // If there's no match for the extension, the file is not compressed and we return false.
     // Otherwise, 'p' points to a function that uncompresses the data.
@@ -184,7 +184,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     }
 
     // Get the name of the file in the cache (either the code finds this file or
-    // or it makes it).
+    // it makes it).
     cache_file = cache->get_cache_file_name(src);
 
     try {

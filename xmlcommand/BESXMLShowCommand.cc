@@ -68,13 +68,13 @@ void BESXMLShowCommand::parse_request(xmlNode *node)
         string err = "The specified command " + name + " is not a show command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
-    if (name.length() <= 4) {
+    if (name.size() <= 4) {
         string err = "The specified command " + name + " is not an allowed show command";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
     d_xmlcmd_dhi.action = "show.";
-    string toadd = BESUtil::lowercase(name.substr(4, name.length() - 4));
+    string toadd = BESUtil::lowercase(name.substr(4, name.size() - 4));
     d_xmlcmd_dhi.action += toadd;
     d_cmd_log_info = (string) "show " + toadd + ";";
     BESDEBUG("besxml", "Converted xml element name to command " << d_xmlcmd_dhi.action << endl);

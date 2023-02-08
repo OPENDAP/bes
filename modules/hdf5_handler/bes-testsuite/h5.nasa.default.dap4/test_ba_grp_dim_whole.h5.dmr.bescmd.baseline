@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test_ba_grp_dim_whole.h5">
+    <Dimension name="bigdim" size="5000000000"/>
+    <Dimension name="dim" size="2"/>
+    <Int32 name="y">
+        <Dim name="/dim"/>
+    </Int32>
+    <Attribute name="history" type="String">
+        <Value>2023-02-03 13:37:13 Hyrax test_big_array_dim_whole.xml
+</Value>
+    </Attribute>
+    <Attribute name="history_json" type="String">
+        <Value>[{&quot;$schema&quot;:&quot;https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;2023-02-03 13:37:13&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.16.3&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;test_big_array_dim_whole.xml&quot;}]}]</Value>
+    </Attribute>
+    <Group name="g1">
+        <Byte name="x">
+            <Dim name="/bigdim"/>
+        </Byte>
+    </Group>
+</Dataset>

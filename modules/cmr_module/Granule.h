@@ -33,7 +33,7 @@
 
 #include <string>
 #include <vector>
-#include "rapidjson/document.h"
+#include "nlohmann/json.hpp"
 #include "CatalogItem.h"
 #include "BESCatalogUtils.h"
 
@@ -42,34 +42,37 @@ namespace cmr {
 
 class Granule {
 private:
-    const rapidjson::Value& get_links_array(const rapidjson::Value& go);
 
     std::string d_name;
     std::string d_id;
     std::string d_data_access_url;
+    std::string d_dap_service_url;
     std::string d_metadata_access_url;
     std::string d_size_str;
     std::string d_last_modified_time;
 
-    void setName(const rapidjson::Value& granule_obj);
-    void setId(const rapidjson::Value& granule_obj);
-    void setDataAccessUrl(const rapidjson::Value& granule_obj);
-    void setMetadataAccessUrl(const rapidjson::Value& granule_obj);
-    void setSize(const rapidjson::Value& granule_obj);
-    void setLastModifiedStr(const rapidjson::Value& granule_obj);
+    void setName(const nlohmann::json& jobj);
+    void setId(const nlohmann::json& go);
+    void setDataGranuleUrl(const nlohmann::json& go);
+    void setDapServiceUrl(const nlohmann::json& go);
+    void setMetadataAccessUrl(const nlohmann::json& granule_obj);
+    void setSize(const nlohmann::json& j_obj);
+    void setLastModifiedStr(const nlohmann::json& go);
+    const nlohmann::json& get_links_array(const nlohmann::json& go) const;
 
 public:
-    Granule(const rapidjson::Value& granule_obj);
+    explicit Granule(const nlohmann::json& granule_json);
 
-    std::string getName(){ return d_name; }
-    std::string getId(){ return d_id; }
-    std::string getDataAccessUrl() { return d_data_access_url; }
+    std::string getName() const { return d_name; }
+    std::string getId() const { return d_id; }
+    std::string getDataGranuleUrl() const { return d_data_access_url; }
+    std::string getDapServiceUrl() const { return d_dap_service_url; }
     std::string getMetadataAccessUrl(){ return d_metadata_access_url; }
-    std::string getSizeStr(){ return d_size_str; }
-    std::string getLastModifiedStr() { return d_last_modified_time; }
-    size_t getSize(){ return atol(getSizeStr().c_str()); }
+    std::string getSizeStr() const { return d_size_str; }
+    std::string getLastModifiedStr() const { return d_last_modified_time; }
+    size_t getSize() const;
 
-    bes::CatalogItem *getCatalogItem(BESCatalogUtils *d_catalog_utils);
+    bes::CatalogItem *getCatalogItem(const BESCatalogUtils *d_catalog_utils) const ;
 };
 
 } // namespace cmr

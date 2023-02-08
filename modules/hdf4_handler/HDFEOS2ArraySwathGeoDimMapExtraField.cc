@@ -35,7 +35,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     BESDEBUG("h4","Coming to HDFEOS2ArraySwathGeoDimMapExtraField read "<<endl);
 
-    if(length() == 0)        
+    if(length() == 0)
         return true;
 
     // Declare offset, count and step
@@ -116,27 +116,25 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    char *swathname = new char[swathnamesize + 1];
-    numswath = inqfunc (const_cast < char *>(filename.c_str ()), swathname,
+    vector<char> swathname(swathnamesize+1);
+    numswath = inqfunc (const_cast < char *>(filename.c_str ()), swathname.data(),
                         &swathnamesize);
     if (numswath == -1) {
-        delete[]swathname;
         closefunc (fileid);
         ostringstream eherr;
         eherr << "File " << filename.c_str () << " cannot obtain the swath list.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    swathid = attachfunc (fileid, swathname);
+    swathid = attachfunc (fileid, swathname.data());
     if (swathid < 0) {
         closefunc (fileid);
         ostringstream eherr;
-        eherr << "Grid/Swath " << swathname << " cannot be attached.";
-        delete[]swathname;
+        string swname_str(swathname.begin(),swathname.end());
+        eherr << "Grid/Swath " << swname_str.c_str() << " cannot be attached.";
         throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    delete[]swathname;
 
     int32 tmp_rank = 0;
     int32 tmp_dims[rank];

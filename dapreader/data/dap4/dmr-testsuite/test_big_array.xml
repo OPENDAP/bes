@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- First in a series of very simple tests. jhrg 7/10/12 -->
+
+<Dataset name="test_big_array" dapVersion="4.0" dmrVersion="1.0" xml:base="file:dap4/test_big_array.xml"
+  xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+  xmlns:dap="http://xml.opendap.org/ns/DAP/4.0#">
+
+  <dap:UInt8 name="x">
+    <Dim size="16000000000"/>
+  </dap:UInt8>
+
+</Dataset>

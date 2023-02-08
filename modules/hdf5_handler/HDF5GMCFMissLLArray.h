@@ -38,7 +38,6 @@
 
 // DODS includes
 #include "HDF5CF.h"
-//#include <libdap/Array.h>
 #include "HDF5BaseArray.h"
 
 
@@ -73,20 +72,20 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
 
     //template<class T> 
     template<typename T> 
-    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const std::string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value );
+    void obtain_ll_attr_value(hid_t file_id, hid_t s_root_id,const std::string& s_attr_name, T& attr_value,std::vector<char> & str_attr_value ) const;
     void read_data_NOT_from_mem_cache(bool add_cache,void*buf) override;
-    void obtain_aqu_obpg_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
+    void obtain_aqu_obpg_l3_ll(const int64_t* offset,const int64_t* step,int64_t nelms,bool add_cache, void*buf);
 
-    void obtain_gpm_l3_ll(int* offset,int* step,int nelms,bool add_cache, void*buf);
-    void obtain_gpm_l3_new_grid_info(hid_t fileid,vector<char>& grid_info_value1, vector<char>& grid_info_value2);
+    void obtain_gpm_l3_ll(const int64_t* offset,const int64_t* step,int64_t nelms,bool add_cache, void*buf);
+    void obtain_gpm_l3_new_grid_info(hid_t fileid,vector<char>& grid_info_value1, vector<char>& grid_info_value2) const;
     void obtain_lat_lon_info(const vector<char>& grid_info_value1,
                              const vector<char>& grid_info_value2,int& latsize,int& lonsize,
-                             float& lat_start,float& lon_start,float& lat_res,float& lon_res);
+                             float& lat_start,float& lon_start,float& lat_res,float& lon_res) const;
 #if 0
     //void send_gpm_l3_ll_to_dap(const vector<char>& grid_info_value,int* offset,int* step,int nelms,bool add_cache, void*buf);
 #endif
     void send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,float lat_start,float lon_start,float lat_res, float lon_res, 
-                               const int* offset, const int* step, const int nelms, const bool add_cache, void*buf);
+                               const int64_t* offset, const int64_t* step, const int64_t nelms, const bool add_cache, void*buf);
 };
 
 

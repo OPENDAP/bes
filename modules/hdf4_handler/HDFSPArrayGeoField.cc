@@ -41,7 +41,7 @@ bool HDFSPArrayGeoField::read ()
 
     BESDEBUG("h4","Coming to HDFSPArrayGeoField read "<<endl);
 
-    if(length() == 0)                                                                               
+    if(length() == 0)
         return true; 
 
     // Declare offset, count and step
@@ -204,15 +204,9 @@ bool HDFSPArrayGeoField::read ()
 // geolocation[YDIM][XDIM][1] is longitude
 
 void
-HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
-                                int32 * step32, int nelms)
+HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32,
+                                const int32 * step32, int nelms)
 {
-
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -440,8 +434,8 @@ HDFSPArrayGeoField::readtrmml2_v6 (int32 * offset32, int32 * count32,
 // Read TRMM level 3a version 6 lat/lon. 
 // We follow TRMM document to retrieve the lat and lon.
 void
-HDFSPArrayGeoField::readtrmml3a_v6 (int32 * offset32, int32 * count32,
-                                int32 * step32, int nelms)
+HDFSPArrayGeoField::readtrmml3a_v6 (const int32 * offset32, const int32 * count32,
+                                const int32 * step32, int nelms)
 {
 
     const float slat = 89.5; 
@@ -476,8 +470,8 @@ HDFSPArrayGeoField::readtrmml3a_v6 (int32 * offset32, int32 * count32,
 // TRMM level 3 case. Have to follow http://disc.sci.gsfc.nasa.gov/additional/faq/precipitation_faq.shtml#lat_lon
 // to calculate lat/lon.
 void
-HDFSPArrayGeoField::readtrmml3b_v6 (int32 * offset32, int32 * count32,
-                                int32 * step32, int nelms)
+HDFSPArrayGeoField::readtrmml3b_v6 (const int32 * offset32, const int32 * count32,
+                                const int32 * step32, int nelms)
 {
 
     const float slat = -49.875; 
@@ -511,8 +505,8 @@ HDFSPArrayGeoField::readtrmml3b_v6 (int32 * offset32, int32 * count32,
 // Read TRMM level 3c(CSH) version 6 lat/lon. 
 // We follow TRMM document to retrieve the lat and lon.
 void
-HDFSPArrayGeoField::readtrmml3c_v6 (int32 * offset32, int32 * count32,
-                                int32 * step32, int nelms)
+HDFSPArrayGeoField::readtrmml3c_v6 (const int32 * offset32, const int32 * count32,
+                                const int32 * step32, int nelms)
 {
 
     const float slat = -36.75; 
@@ -545,15 +539,9 @@ HDFSPArrayGeoField::readtrmml3c_v6 (int32 * offset32, int32 * count32,
 // Read latlon of TRMM version 7 products.
 // Lat/lon parameters can be retrieved from attribute GridHeader.
 void
-HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32, 
-                                int32 * step32, int nelms)
+HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32, 
+                                const int32 * step32, int nelms)
 {
-
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -616,7 +604,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32,
         throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
     }
 
-    float lat_start = 0;;
+    float lat_start = 0.;
     float lon_start = 0.;
     float lat_res = 0.;
     float lon_res = 0.;
@@ -626,10 +614,6 @@ HDFSPArrayGeoField::readtrmml3_v7 (int32 * offset32,
     
     HDFCFUtil::parser_trmm_v7_gridheader(attr_value,latsize,lonsize,
                                          lat_start,lon_start,lat_res,lon_res,false);
-//cerr<<"lat_start is "<<lat_start <<endl;
-//cerr<<"lon_start is "<<lon_start<<endl;
-//cerr <<"lat_res is "<<lat_res <<endl;
-//cerr<<"lon_res is "<<lon_res <<endl;
 
     if(0 == latsize || 0 == lonsize) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -668,11 +652,6 @@ void
 HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                                 int32 * step32, int nelms)
 {
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -849,14 +828,15 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 int total_elm = num_scan_data * num_point_data;
                 vector<float32>orival;
                 orival.resize(total_elm); 
-                int32 all_start[2],all_edges[2];
+                int32 all_start[2];
+                int32 all_edges[2];
 
                 all_start[0] = 0;
                 all_start[1] = 0;
                 all_edges[0] = num_scan_data;
                 all_edges[1] = num_point_data;
 
-                r = SDreaddata (sdsid, all_start, NULL, all_edges,
+                r = SDreaddata (sdsid, all_start, nullptr, all_edges,
                                 orival.data());
                 if (r != 0) {
                     SDendaccess (sdsid);
@@ -916,7 +896,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 
                 }
 
-                LatLon2DSubset(val.data(),num_scan_data,num_pixel_data,interp_val.data(),
+                LatLon2DSubset(val.data(),num_pixel_data,interp_val.data(),
                                offset32,count32,step32);
 
             }
@@ -984,14 +964,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
 // lat/lon should be calculated based on the file attribute.
 // Geographic projection: lat,lon starting point and also lat/lon steps.
 void
-HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
+HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int nelms)
 {
-
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -1028,7 +1002,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name(NUM_LAT_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-        //throw InternalErr (__FILE__, __LINE__, "SDfindattr failed,should find this attribute. ");
     }
 
     char attr_name[H4_MAX_NC_NAME];
@@ -1057,7 +1030,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name2(NUM_LON_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-//        throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
 
     status =
@@ -1085,7 +1057,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name2(LAT_STEP_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-//       throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
 
     status =
@@ -1113,7 +1084,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name2(LON_STEP_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-// throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
 
     status =
@@ -1141,7 +1111,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name2(SWP_LAT_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-//throw InternalErr (__FILE__, __LINE__, "SDfindattr failed ");
     }
 
     status =
@@ -1169,7 +1138,6 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
         string attr_name2(SWP_LON_NAME);
         string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
         throw InternalErr (__FILE__, __LINE__, err_mesg);
-//throw InternalErr (__FILE__, __LINE__, "SDfindattr failed,should find this attribute. ");
     }
 
     status =
@@ -1236,7 +1204,7 @@ HDFSPArrayGeoField::readobpgl3 (int *offset,  int *step, int nelms)
 // http://eosweb.larc.nasa.gov/PRODOCS/ceres/SRBAVG/Quality_Summaries/srbavg_ed2d/nestedgrid.html
 // or https://eosweb.larc.nasa.gov/sites/default/files/project/ceres/quality_summaries/srbavg_ed2d/nestedgrid.pdf 
 void
-HDFSPArrayGeoField::readcersavgid2 (int *offset, int *count, int *step,
+HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const int *step,
                                     int nelms)
 {
 
@@ -1377,17 +1345,17 @@ HDFSPArrayGeoField::readcersavgid2 (int *offset, int *count, int *step,
 
 // This function calculate zonal average(longitude is fixed) of CERES SAVG and CERES_ISCCP_DAY_LIKE. 
 void
-HDFSPArrayGeoField::readcersavgid1 (int *offset, int *count, int *step,
-									int nelms)
+HDFSPArrayGeoField::readcersavgid1 (const int *offset, const int *count, const int *step, int nelms) 
 {
 
     // Following CERES Nested grid
     // URL http://eosweb.larc.nasa.gov/PRODOCS/ceres/SRBAVG/Quality_Summaries/srbavg_ed2d/nestedgrid.html
     // or https://eosweb.larc.nasa.gov/sites/default/files/project/ceres/quality_summaries/srbavg_ed2d/nestedgrid.pdf 
     if (fieldtype == 1) {		// Calculate the latitude
+
         const int dimsize0 = 180;
-        float32 val[count[0]];
-        float32 orival[dimsize0];
+        vector<float32> val(count[0]);
+        vector<float32> orival(dimsize0);
 
         for (int i = 0; i < dimsize0; i++)
             orival[i] = 89.5 - i;
@@ -1395,7 +1363,7 @@ HDFSPArrayGeoField::readcersavgid1 (int *offset, int *count, int *step,
         for (int i = 0; i < count[0]; i++) {
             val[i] = orival[offset[0] + step[0] * i];
         }
-        set_value ((dods_float32 *) (&val[0]), nelms);
+        set_value ((dods_float32 *)(val.data()), nelms);
 
     }
 
@@ -1419,11 +1387,6 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
                                    int32 * step32, int nelms)
 {
 
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
     int32 sdid = -1;
@@ -1545,14 +1508,9 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
 // Calculate CERES ES4 and GEO lat/lon.
 // We have to retrieve the original lat/lon and condense it from >1-D to 1-D.
 void
-HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
-                                  int32 * step32, int nelms)
+HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
+                                  const int32 * step32, int nelms)
 {
-#if 0
-    string check_pass_fileid_key_str="H4.EnablePassFileID";
-    bool check_pass_fileid_key = false;
-    check_pass_fileid_key = HDFCFUtil::check_beskeys(check_pass_fileid_key_str);
-#endif
 
     bool check_pass_fileid_key = HDF4RequestHandler::get_pass_fileid();
 
@@ -1746,8 +1704,8 @@ HDFSPArrayGeoField::readceres4ig (int32 * offset32, int32 * count32,
 
 // Read CERES Zonal average latitude field
 void
-HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
-                                 int32 * step32, int nelms)
+HDFSPArrayGeoField::readcerzavg (const int32 * offset32, const int32 * count32,
+                                 const int32 * step32, int nelms)
 {
     if (fieldtype == 1) {
 
@@ -1780,7 +1738,7 @@ HDFSPArrayGeoField::readcerzavg (int32 * offset32, int32 * count32,
 int
 HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 {
-    long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin ();
@@ -1812,7 +1770,7 @@ HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 
         id++;
         p++;
-    }// while (p != dim_end ())
+    }
 
     return nels;
 }
@@ -1822,12 +1780,11 @@ HDFSPArrayGeoField::format_constraint (int *offset, int *step, int *count)
 // Subset of latitude and longitude to follow the parameters from the DAP expression constraint
 template < typename T >
 void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
-                                         int /*majordim //unused SBL 2/7/20*/,
                                          int minordim,
                                          T * latlon,
-                                         int32 * offset,
-                                         int32 * count,
-                                         int32 * step)
+                                         const int32 * offset,
+                                         const int32 * count,
+                                         const int32 * step)
 {
 #if 0
     // 'typeof' is supported only by gcc and not on OSX with --std=c++11.
@@ -1843,8 +1800,8 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
     // Find the correct index
     const int dim0count = count[0];
     const int dim1count = count[1]; 
-    int dim0index[dim0count];
-    int dim1index[dim1count];
+    vector <int> dim0index(dim0count);
+    vector <int> dim1index(dim1count);
 
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];

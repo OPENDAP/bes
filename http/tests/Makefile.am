@@ -1,32 +1,32 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
-# AM_CPPFLAGS =
-AM_CXXFLAGS =
+# TODO Remove this if not needed and noist_... works. jhrg 11/16/22
+# bin_PROGRAMS = remote_resource_tester
+noinst_PROGRAMS = remote_resource_tester
+
+remote_resource_tester_SOURCES = remote_resource_tester.cc
+remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
+remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 BES_CONF_IN = bes.conf.in
 
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+noinst_DATA = bes.conf
 
-#noinst_DATA = bes.conf
+CLEANFILES = bes.conf d1-* d2-* tmp1-* tmp2-* $(srcdir)/package.m4 $(TESTSUITE)
 
-#CLEANFILES = bes.conf
-
-EXTRA_DIST = http $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(srcdir)/package.m4 $(BES_CONF_IN) $(srcdir)/handler_tests_macros.m4
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in $(srcdir)/package.m4 $(BES_CONF_IN)
 
 DISTCLEANFILES =  atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.
+
 bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
@@ -39,15 +39,17 @@ AUTOM4TE = autom4te
 TESTSUITE = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+	-rm -rf $(abs_builddir)/cache/*
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	-rm -f d1-* d2-* tmp1-* tmp2-* $(abs_builddir)/cache/*
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f $(TESTSUITE) $(srcdir)/package.m4
+	-rm -rf cache
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.

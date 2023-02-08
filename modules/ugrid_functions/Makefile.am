@@ -56,8 +56,6 @@ CLEANFILES = *~ ugrid_functions.conf ugrid_functions-*.tar.gz
 sample_datadir = $(datadir)/hyrax/data/ugrids
 sample_data_DATA = data/ugrid_test_01.nc data/ugrid_test_02.nc data/ugrid_test_03.nc data/ugrid_test_04.nc 
 
-# ugrid_functions.spec OSX_Resources
-
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = ugrid_functions.conf
 

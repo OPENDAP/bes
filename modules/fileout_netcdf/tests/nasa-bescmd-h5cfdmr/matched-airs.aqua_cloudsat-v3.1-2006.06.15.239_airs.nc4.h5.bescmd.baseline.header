@@ -1,21 +1,36 @@
 netcdf test {
 dimensions:
-	airs_idx = 141 ;
-	AIRS_RetStd_Cloud = 2 ;
 	AIRS_Radiances_Channel_L1B_AIRS_Science = 2378 ;
-	AIRS_VIS_Radiances_Channel_L1B_VIS_Science = 4 ;
-	AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science = 9 ;
-	AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science = 8 ;
-	CloudSat_cs_idx = 17 ;
-	CloudSat_cs_nbin = 125 ;
 	AIRS_RetStd_CH4Func = 7 ;
 	AIRS_RetStd_COFunc = 9 ;
+	AIRS_RetStd_Cloud = 2 ;
 	AIRS_RetStd_H2OFunc = 11 ;
 	AIRS_RetStd_H2OPressureLay = 14 ;
 	AIRS_RetStd_O3Func = 9 ;
 	AIRS_RetStd_StdPressureLay = 28 ;
 	AIRS_RetStd_StdPressureLev = 28 ;
+	AIRS_VIS_Radiances_Channel_L1B_VIS_Science = 4 ;
+	AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science = 9 ;
+	AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science = 8 ;
+	CloudSat_cs_idx = 17 ;
+	CloudSat_cs_nbin = 125 ;
+	airs_idx = 141 ;
 variables:
+	float AIRS_Radiances_Channel_L1B_AIRS_Science(AIRS_Radiances_Channel_L1B_AIRS_Science) ;
+	float AIRS_RetStd_CH4Func(AIRS_RetStd_CH4Func) ;
+	float AIRS_RetStd_COFunc(AIRS_RetStd_COFunc) ;
+	float AIRS_RetStd_Cloud(AIRS_RetStd_Cloud) ;
+	float AIRS_RetStd_H2OFunc(AIRS_RetStd_H2OFunc) ;
+	float AIRS_RetStd_H2OPressureLay(AIRS_RetStd_H2OPressureLay) ;
+	float AIRS_RetStd_O3Func(AIRS_RetStd_O3Func) ;
+	float AIRS_RetStd_StdPressureLay(AIRS_RetStd_StdPressureLay) ;
+	float AIRS_RetStd_StdPressureLev(AIRS_RetStd_StdPressureLev) ;
+	float AIRS_VIS_Radiances_Channel_L1B_VIS_Science(AIRS_VIS_Radiances_Channel_L1B_VIS_Science) ;
+	float AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science(AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science) ;
+	float AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science(AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science) ;
+	float CloudSat_cs_idx(CloudSat_cs_idx) ;
+	float CloudSat_cs_nbin(CloudSat_cs_nbin) ;
+	float airs_idx(airs_idx) ;
 	float AIRS_RetStd_CldFrcStdErr(airs_idx, AIRS_RetStd_Cloud) ;
 		AIRS_RetStd_CldFrcStdErr:_FillValue = -9999.f ;
 		AIRS_RetStd_CldFrcStdErr:origname = "CldFrcStdErr" ;
@@ -976,21 +991,6 @@ variables:
 		CloudSat_CWC_RO_PCT_single_cloud_type:factor = 1. ;
 		CloudSat_CWC_RO_PCT_single_cloud_type:offset = 0. ;
 		CloudSat_CWC_RO_PCT_single_cloud_type:origname = "PCT_single_cloud_type" ;
-	float AIRS_Radiances_Channel_L1B_AIRS_Science(AIRS_Radiances_Channel_L1B_AIRS_Science) ;
-	float AIRS_RetStd_CH4Func(AIRS_RetStd_CH4Func) ;
-	float AIRS_RetStd_COFunc(AIRS_RetStd_COFunc) ;
-	float AIRS_RetStd_Cloud(AIRS_RetStd_Cloud) ;
-	float AIRS_RetStd_H2OFunc(AIRS_RetStd_H2OFunc) ;
-	float AIRS_RetStd_H2OPressureLay(AIRS_RetStd_H2OPressureLay) ;
-	float AIRS_RetStd_O3Func(AIRS_RetStd_O3Func) ;
-	float AIRS_RetStd_StdPressureLay(AIRS_RetStd_StdPressureLay) ;
-	float AIRS_RetStd_StdPressureLev(AIRS_RetStd_StdPressureLev) ;
-	float AIRS_VIS_Radiances_Channel_L1B_VIS_Science(AIRS_VIS_Radiances_Channel_L1B_VIS_Science) ;
-	float AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science(AIRS_VIS_Radiances_SubTrack_L1B_VIS_Science) ;
-	float AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science(AIRS_VIS_Radiances_SubXTrack_L1B_VIS_Science) ;
-	float CloudSat_cs_idx(CloudSat_cs_idx) ;
-	float CloudSat_cs_nbin(CloudSat_cs_nbin) ;
-	float airs_idx(airs_idx) ;
 
 // global attributes:
 		:title = "AIRS-CloudSat matchups for AIRS granule AIRS.2006.06.15.239.L2.RetStd.v5.0.14.0.G07346074153.hdf (AIRS vars)" ;

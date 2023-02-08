@@ -293,16 +293,16 @@ bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> 
 void BESContainerStorageVolatile::show_containers(BESInfo &info)
 {
     info.add_tag("name", get_name());
-    string::size_type root_len = _root_dir.length();
+    string::size_type root_len = _root_dir.size();
     BESContainerStorageVolatile::Container_iter i = _container_list.begin();
     BESContainerStorageVolatile::Container_iter e = _container_list.end();
     for (; i != e; i++) {
         BESContainer *c = (*i).second;
         string sym = c->get_symbolic_name();
         string real = c->get_real_name();
-        if (real.length() > root_len) {
+        if (real.size() > root_len) {
             if (real.compare(0, root_len, _root_dir) == 0) {
-                real = real.substr(root_len, real.length() - root_len);
+                real = real.substr(root_len, real.size() - root_len);
             }
         }
         string type = c->get_container_type();

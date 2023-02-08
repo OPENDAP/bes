@@ -52,7 +52,7 @@
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
-#include "run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 #include "read_test_baseline.h"
 #include "test_config.h"
 

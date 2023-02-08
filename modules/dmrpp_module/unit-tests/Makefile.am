@@ -1,31 +1,28 @@
 
 # Tests
 
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
+# subdir-objects
 # using .cc files above this dir seems to break 'subdir-objects' jhrg 5/5/22
 
 # TODO set these with configure. jhrg 11/26/19
 OPENSSL_LIBS=-lcrypto
 OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+OPENSSL_LD=-L/usr/local/opt/openssl/lib
 
-AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
-$(DAP_CFLAGS) $(OPENSSL_INC)
+AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir)  -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+    -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
+    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
-STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
-LIBADD = $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
-$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
+LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
+    -L$(top_builddir)/modules/common -lmodules_common $(BES_EXTRA_LIBS) $(H5_LDFLAGS) \
+    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LD) $(OPENSSL_LIBS) \
+    $(XML2_LIBS) -lz
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
 LIBADD += $(CPPUNIT_LIBS)
-endif
-
-if USE_VALGRIND
-TESTS_ENVIRONMENT=valgrind --quiet --trace-children=yes --error-exitcode=1  --dsymutil=yes --leak-check=yes
 endif
 
 # These are not used by automake but are often useful for certain types of
@@ -46,24 +43,19 @@ pugi_xml_test_SOURCES = pugi_xml_test.cc
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
 
-CREDS_CONF = $(builddir)/credentials.conf
-CREDS_CONF_IN = $(srcdir)/input-files/credentials.conf.in
-
 noinst_HEADERS = test_config.h
 
-noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
+noinst_DATA = bes.conf
 
-EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in curl_handle_pool_keys.conf \
-baselines input-files awsv4
+EXTRA_DIST = bes.conf.in test_config.h.in curl_handle_pool_keys.conf baselines input-files
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
-DISTCLEANFILES = bes.conf bes_ngap_s3_creds.conf bes.log $(CREDS_CONF)
+DISTCLEANFILES = bes.conf bes.log
 
 BUILT_SOURCES = test_config.h
 
 BES_CONF_IN = bes.conf.in
-BES_NGAP_CREDS_CONF_IN = bes_ngap_s3_creds.conf.in
 
 test_config.h: $(srcdir)/test_config.h.in Makefile.am
 	@mod_abs_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
@@ -81,14 +73,6 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.conf
 
-bes_ngap_s3_creds.conf: $(srcdir)/$(BES_NGAP_CREDS_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-	    -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_ngap_s3_creds.conf
-
-$(CREDS_CONF):
-	cp $(CREDS_CONF_IN) $(CREDS_CONF)
-	chmod 600 $(CREDS_CONF)
 
 ############################################################################
 # Unit Tests
@@ -96,9 +80,8 @@ $(CREDS_CONF):
 
 if CPPUNIT
 
-UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
-DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest build_dmrpp_util_test \
-DmrppChunkOdometerTest
+UNIT_TESTS = DmrppArrayTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest CurlHandlePoolTest \
+DMZTest build_dmrpp_util_test DmrppChunkOdometerTest
 
 else
 
@@ -126,26 +109,17 @@ ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 SuperChunkTest_SOURCES = SuperChunkTest.cc
 SuperChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
-
-NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(LIBADD)
-
-awsv4_test_SOURCES = awsv4_test.cc
-awsv4_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
-
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
 DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppCommonTest_SOURCES = DmrppCommonTest.cc
 DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+# DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc
+# DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
-DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppArrayTest_SOURCES = DmrppArrayTest.cc
 DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DMZTest_SOURCES = DMZTest.cc
@@ -155,5 +129,5 @@ DmrppChunkOdometerTest_SOURCES = DmrppChunkOdometerTest.cc
 DmrppChunkOdometerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 build_dmrpp_util_test_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
-build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc $(top_srcdir)/modules/hdf5_handler/h5common.cc
+build_dmrpp_util_test_SOURCES = build_dmrpp_util_test.cc ../build_dmrpp_util.cc ../h5common.cc
 build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.a $(LIBADD)

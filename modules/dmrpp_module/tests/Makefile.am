@@ -9,7 +9,7 @@ CLEANFILES = bes.conf bes.log bes_serial.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice \
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays \
 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3)  $(TESTSUITE_S3).at atlocal.in \
 bes.conf.in bes_serial.conf.in $(srcdir)/package.m4
 
@@ -65,9 +65,9 @@ clean-local:
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
-$(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

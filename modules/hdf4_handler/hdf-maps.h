@@ -62,15 +62,15 @@ struct vg_info {
     bool toplevel;
 };
 
-typedef map < int32, sds_info, less < int32 > >sds_map;
-typedef map < int32, vd_info, less < int32 > >vd_map;
-typedef map < int32, gr_info, less < int32 > >gr_map;
-typedef map < int32, vg_info, less < int32 > >vg_map;
+using sds_map =  map < int32, sds_info, less < int32 > >;
+using vd_map = map < int32, vd_info, less < int32 > >;
+using gr_map = map < int32, gr_info, less < int32 > > ;
+using vg_map =  map < int32, vg_info, less < int32 > >;
 
-typedef map < int32, sds_info, less < int32 > >::const_iterator SDSI;
-typedef map < int32, vd_info, less < int32 > >::const_iterator VDI;
-typedef map < int32, gr_info, less < int32 > >::const_iterator GRI;
-typedef map < int32, vg_info, less < int32 > >::const_iterator VGI;
+using SDSI =  map < int32, sds_info, less < int32 > >::const_iterator;
+using VDI =  map < int32, vd_info, less < int32 > >::const_iterator;
+using GRI = map < int32, gr_info, less < int32 > >::const_iterator;
+using VGI = map < int32, vg_info, less < int32 > >::const_iterator;
 
 /* Function prototypes */
 HDFGrid *NewGridFromSDS(const hdf_sds & sds, const string &dataset);
@@ -81,7 +81,7 @@ HDFStructure *NewStructureFromVgroup(const hdf_vgroup & vg,
                                      vg_map & vgmap, sds_map & map,
                                      vd_map & vdmap, gr_map & grmap,
 				     const string &dataset);
-BaseType *NewDAPVar(const string &varname,
+libdap::BaseType *NewDAPVar(const string &varname,
 		    const string &dataset,
-		    int32 hdf_type);
+		    const int32 hdf_type);
 string DAPTypeName(int32 hdf_type);

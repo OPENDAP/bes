@@ -100,33 +100,45 @@ struct delete_elem
 File::~File()
 {
     if(gridfd !=-1) {
+#if 0
         for (vector<GridDataset *>::const_iterator i = grids.begin();
              i != grids.end(); ++i){
             delete *i;
         }
+#endif
+        for (auto i:grids)
+            delete i;
         // Grid file IDs will be closed in HDF4RequestHandler.cc.
     }
 
     if(swathfd !=-1) {
+#if 0
         for (vector<SwathDataset *>::const_iterator i = swaths.begin();
              i != swaths.end(); ++i){
             delete *i;
         }
+#endif
+        for (auto i:swaths)
+            delete i;
 
     }
 
+#if 0
     for (vector<PointDataset *>::const_iterator i = points.begin();
              i != points.end(); ++i){
             delete *i;
     }
+    for (auto i:points)
+        delete i;
+#endif
 
 }
 
 /// Read all the information in this file from the EOS2 APIs.
-File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Exception)
+File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) 
 {
 
-    File *file = new File(path);
+    auto file = new File(path);
     if(file == nullptr)
         throw1("Memory allocation for file class failed. ");
 
@@ -272,11 +284,11 @@ void File::_find_geodim_names()
 {
     set<string> geodim_x_name_set;
     for(size_t i = 0; i<sizeof(_geodim_x_names) / sizeof(const char *); i++)
-        geodim_x_name_set.insert(_geodim_x_names[i]);
+        geodim_x_name_set.emplace(_geodim_x_names[i]);
 
     set<string> geodim_y_name_set;
     for(size_t i = 0; i<sizeof(_geodim_y_names) / sizeof(const char *); i++)
-        geodim_y_name_set.insert(_geodim_y_names[i]);
+        geodim_y_name_set.emplace(_geodim_y_names[i]);
 
 #if 0
     // The following code is only used for grid. It also causes the coverity unhappy
@@ -344,11 +356,11 @@ void File::_find_latlonfield_names()
 {
     set<string> latfield_name_set;
     for(size_t i = 0; i<sizeof(_latfield_names) / sizeof(const char *); i++)
-        latfield_name_set.insert(_latfield_names[i]);
+        latfield_name_set.emplace(_latfield_names[i]);
 
     set<string> lonfield_name_set;
     for(size_t i = 0; i<sizeof(_lonfield_names) / sizeof(const char *); i++)
-        lonfield_name_set.insert(_lonfield_names[i]);
+        lonfield_name_set.emplace(_lonfield_names[i]);
 
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
@@ -410,7 +422,7 @@ void File::_find_geogrid_name()
 {
     set<string> geogrid_name_set;
     for(size_t i = 0; i<sizeof(_geogrid_names) / sizeof(const char *); i++)
-        geogrid_name_set.insert(_geogrid_names[i]);
+        geogrid_name_set.emplace(_geogrid_names[i]);
 
     const size_t gs = grids.size();
     const size_t ss = swaths.size();
@@ -616,7 +628,7 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
 }
 
 // For one grid, need to handle lat/lon(both existing lat/lon and calculated lat/lon from EOS2 APIs)
-void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception) 
+void File::handle_one_grid_latlon(GridDataset* gdset) 
 {
 
     // Obtain "XDim","YDim","Latitude","Longitude" 
@@ -951,7 +963,7 @@ void File::handle_one_grid_latlon(GridDataset* gdset) throw(Exception)
 
 // For the case of which all grids have one dedicated lat/lon grid,
 // this function shows how to handle lat/lon fields.
-void File::handle_onelatlon_grids() throw(Exception) {
+void File::handle_onelatlon_grids() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();       
@@ -1072,7 +1084,7 @@ void File::handle_onelatlon_grids() throw(Exception) {
 }
 
 // Handle the dimension name to coordinate variable map for grid.
-void File::handle_grid_dim_cvar_maps() throw(Exception) {
+void File::handle_grid_dim_cvar_maps() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();
@@ -1112,7 +1124,8 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
 
     //the original dimension field name to the corrected dimension field name
     map<string,string>tempncvarnamelist;
-    string tempcorrectedlatname, tempcorrectedlonname;
+    string tempcorrectedlatname;
+    string tempcorrectedlonname;
       
     int total_fcounter = 0;
 
@@ -1193,7 +1206,7 @@ void File::handle_grid_dim_cvar_maps() throw(Exception) {
 }
 
 // Follow COARDS for grids.
-void File::handle_grid_coards() throw(Exception) {
+void File::handle_grid_coards() {
 
     // Obtain "XDim","YDim","Latitude","Longitude" and "location" set.
     string DIMXNAME = this->get_geodim_x_name();       
@@ -1202,7 +1215,9 @@ void File::handle_grid_coards() throw(Exception) {
     string LONFIELDNAME = this->get_lonfield_name();       
 
     // Now only there is only one geo grid name "location", so don't call it know.
+#if 0
     // string GEOGRIDNAME = this->get_geogrid_name();
+#endif
     string GEOGRIDNAME = "location";
 
 
@@ -1473,7 +1488,7 @@ void File::handle_grid_coards() throw(Exception) {
 }
 
 // Create the corrected dimension vector for each field when COARDS is not followed.
-void File::update_grid_field_corrected_dims() throw(Exception) {
+void File::update_grid_field_corrected_dims() {
 
     // Revisit the lat/lon fields to check if 1-D COARD convention needs to be followed.
     vector<Dimension*> correcteddims;
@@ -1510,7 +1525,7 @@ void File::update_grid_field_corrected_dims() throw(Exception) {
 
 }
 
-void File::handle_grid_cf_attrs() throw(Exception) {
+void File::handle_grid_cf_attrs() {
 
     // Create "coordinates" ,"units"  attributes. The "units" attributes only apply to latitude and longitude.
     // This is the last round of looping through everything, 
@@ -1599,7 +1614,7 @@ void File::handle_grid_cf_attrs() throw(Exception) {
 }
 
 // Special handling SOM(Space Oblique Mercator) projection files
-void File::handle_grid_SOM_projection() throw(Exception) {
+void File::handle_grid_SOM_projection() {
 
     // since the latitude and longitude of the SOM projection are 3-D, so we need to handle this projection in a special way. 
     // Based on our current understanding, the third dimension size is always 180. 
@@ -1721,7 +1736,7 @@ void File::handle_grid_SOM_projection() throw(Exception) {
 
 // Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
 // The input parameter is the number of swath.
-void File::check_swath_dimmap(int numswath) throw(Exception) {
+void File::check_swath_dimmap(int numswath) {
 
     if(HDF4RequestHandler::get_disable_swath_dim_map() == true) 
         return;
@@ -1862,7 +1877,7 @@ void File::check_swath_dimmap_bk_compat(int numswath){
 }
 
 // Create the dimension name to coordinate variable name map for lat/lon. 
-void File::create_swath_latlon_dim_cvar_map() throw(Exception){
+void File::create_swath_latlon_dim_cvar_map(){
 
     vector<Field*> ori_lats;
     vector<Field*> ori_lons;
@@ -2129,7 +2144,7 @@ void File::create_swath_latlon_dim_cvar_map() throw(Exception){
 
 // Create the dimension name to coordinate variable name map for coordinate variables that are not lat/lon. 
 // The input parameter is the number of dimension maps in this file.
-void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
+void File:: create_swath_nonll_dim_cvar_map() 
 {
     // Handle existing and missing fields 
     for (const auto &swath:this->swaths) {
@@ -2312,7 +2327,7 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 }
 
 // Handle swath dimension name to coordinate variable name maps. 
-void File::handle_swath_dim_cvar_maps() throw(Exception) {
+void File::handle_swath_dim_cvar_maps() {
 
     // Start handling name clashing
     vector <string> tempfieldnamelist;
@@ -2571,7 +2586,7 @@ void File::handle_swath_dim_cvar_maps() throw(Exception) {
  
 // Handle CF attributes for swaths. 
 // The CF attributes include "coordinates", "units" for coordinate variables and "_FillValue". 
-void File::handle_swath_cf_attrs() throw(Exception) {
+void File::handle_swath_cf_attrs() {
 
     // Create "coordinates" ,"units"  attributes. The "units" attributes only apply to latitude and longitude.
     // This is the last round of looping through everything, 
@@ -2765,7 +2780,7 @@ bool File::find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string
 }
 
 // Check if the original dimension names in Lat/lon that holds the dimension maps are used by data fields.
-void File::check_dm_geo_dims_in_vars() {
+void File::check_dm_geo_dims_in_vars() const {
 
     if(handle_swath_dimmap == false) 
         return;
@@ -2837,7 +2852,7 @@ void File::check_dm_geo_dims_in_vars() {
 
 // Based on the dimension name and the mapped dimension name,obtain the offset and increment.
 // return false if there is no match.
-bool SwathDataset::obtain_dmap_offset_inc(const string& ori_dimname, const string & mapped_dimname,int &offset,int&inc) {
+bool SwathDataset::obtain_dmap_offset_inc(const string& ori_dimname, const string & mapped_dimname,int &offset,int&inc) const{
     bool ret_value = false;
     for (const auto &sdmap:this->dimmaps) {
         if(sdmap->geodim==ori_dimname && sdmap->datadim == mapped_dimname){
@@ -2855,7 +2870,7 @@ bool SwathDataset::obtain_dmap_offset_inc(const string& ori_dimname, const strin
 // For one swath, we don't need to provide the swath name. Yes, swath name is missed. However. this is
 // what users want. For multi swaths, swath names are added.
 void File::create_geo_varnames_list(vector<string> & geo_varnames,const string & swathname, 
-                                    const string & fieldname,int extra_ll_pairs,bool oneswath) {
+                                    const string & fieldname,int extra_ll_pairs,bool oneswath) const{
     // We will always keep Latitude and Longitude 
     if(true == oneswath)
         geo_varnames.push_back(fieldname);
@@ -2885,7 +2900,7 @@ for(int i =0;i<geo_varnames.size();i++)
 // In longitude part, we just ignore ..
 void File::create_geo_dim_var_maps(SwathDataset*sd, Field*fd,const vector<string>& lat_names, 
                                    const vector<string>& lon_names,vector<Dimension*>& geo_var_dim1,
-                                   vector<Dimension*>& geo_var_dim2) {
+                                   vector<Dimension*>& geo_var_dim2) const{
     string field_lat_dim1_name =(fd->dims)[0]->name;
     string field_lat_dim2_name =(fd->dims)[1]->name;
 
@@ -2957,7 +2972,7 @@ void File::create_geo_dim_var_maps(SwathDataset*sd, Field*fd,const vector<string
 // Original lat/lon variable information is provided.
 void File::create_geo_vars(SwathDataset* sd,Field *orig_lat,Field*orig_lon,
                            const vector<string>& lat_names,const vector<string>& lon_names,
-                          vector<Dimension*>&geo_var_dim1,vector<Dimension*>&geo_var_dim2) throw(Exception){
+                          vector<Dimension*>&geo_var_dim1,vector<Dimension*>&geo_var_dim2){
 
 #if 0
     // Handle existing latitude and longitude. 
@@ -3128,8 +3143,8 @@ cerr<<(*k)->getName() <<": "<<(*k)->getSize() <<endl;
 // We need to update the dimensions for all the swath and all the fields when
 // we can handle the multi-dimension map case. This only applies to >1 swath.
 // For one swath, dimension names are not needed to be updated.
-void File::update_swath_dims_for_dimmap(SwathDataset* sd,const std::vector<Dimension*>&geo_var_dim1, 
-                                        const std::vector<Dimension*>&geo_var_dim2) {
+void File::update_swath_dims_for_dimmap(const SwathDataset* sd,const std::vector<Dimension*>&geo_var_dim1, 
+                                        const std::vector<Dimension*>&geo_var_dim2) const{
 
     // Loop through each field under geofields and data fields. update dimensions.
     // Obtain each dimension name + _+swath_name, if match with geo_var_dim1 or geo_var_dim2;
@@ -3170,7 +3185,7 @@ void File::update_swath_dims_for_dimmap(SwathDataset* sd,const std::vector<Dimen
 // This is the main function to handle the multi-dimension map case.
 // It creates the lat/lon lists, handle dimension names and then
 // provide the dimension name to coordinate variable map.
-void File::create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset* sd, Field* ori_lat, Field* ori_lon) throw(Exception) {
+void File::create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset* sd, Field* ori_lat, Field* ori_lon) {
 
     bool one_swath = ((this->swaths).size() == 1);
 
@@ -3208,7 +3223,7 @@ if(sd->GeoDim_in_vars == true)
 /// Read and prepare. This is the main method to make the DAP output CF-compliant.
 /// All dimension(coordinate variables) information need to be ready.
 /// All special arrangements need to be done in this step.
-void File::Prepare(const char *eosfile_path) throw(Exception)
+void File::Prepare(const char *eosfile_path) 
 {
 
     // check if this is a special HDF-EOS2 grid(MOD08_M3) that have all dimension scales
@@ -3324,7 +3339,7 @@ void File::Prepare(const char *eosfile_path) throw(Exception)
 
 
 #if 0
-void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
+void correct_unlimited_missing_zdim(GridDataset* gdset) {
 
     for (vector<Field *>::const_iterator j =
         gdset->getDataFields().begin();
@@ -3341,7 +3356,7 @@ void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
 }
 #endif
 
-bool File::check_special_1d_grid() throw(Exception) {
+bool File::check_special_1d_grid() {
 
     auto numgrid = (int)(this->grids.size());
     auto numswath = (int)(this->swaths.size());
@@ -3359,7 +3374,7 @@ bool File::check_special_1d_grid() throw(Exception) {
     int var_dimx_size = 0;
     int var_dimy_size = 0;
 
-    GridDataset *mygrid = (this->grids)[0];
+    const GridDataset *mygrid = (this->grids)[0];
 
     int field_xydim_flag = 0;
     for (const auto &dfield:mygrid->getDataFields()) {
@@ -3392,7 +3407,7 @@ bool File::check_special_1d_grid() throw(Exception) {
 }
     
 
-bool File::check_ll_in_coords(const string& vname) throw(Exception) {
+bool File::check_ll_in_coords(const string& vname) {
 
     bool ret_val = false;
     for (const auto &swath:this->swaths) {
@@ -3432,40 +3447,39 @@ bool File::check_ll_in_coords(const string& vname) throw(Exception) {
 // MODIS_MUL_SCALE: raw_data = scale*(data -offset)
 // MODIS_DIV_SCALE: raw_data = (data-offset)/scale
 
-void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
+void Dataset::SetScaleType(const string & EOS2ObjName) {
 
 
     // Group features of MODIS products.
-    // Using vector of strings instead of the following. 
-    // C++11 may allow the vector of string to be assigned as follows
-    // string modis_type1[] = {"L1B", "GEO", "BRDF", "0.05Deg", "Reflectance", "MOD17A2", "North","South","MOD_Swath_Sea_Ice","MOD_Grid_MOD15A2","MODIS_NACP_LAI"};
 
     vector<string> modis_multi_scale_type;
-    modis_multi_scale_type.push_back("L1B");
-    modis_multi_scale_type.push_back("GEO");
-    modis_multi_scale_type.push_back("BRDF");
-    modis_multi_scale_type.push_back("0.05Deg");
-    modis_multi_scale_type.push_back("Reflectance");
-    modis_multi_scale_type.push_back("MOD17A2");
-    modis_multi_scale_type.push_back("North");
-    modis_multi_scale_type.push_back("South");
-    modis_multi_scale_type.push_back("MOD_Swath_Sea_Ice");
-    modis_multi_scale_type.push_back("MOD_Grid_MOD15A2");
-    modis_multi_scale_type.push_back("MOD_Grid_MOD16A2");
-    modis_multi_scale_type.push_back("MOD_Grid_MOD16A3");
-    modis_multi_scale_type.push_back("MODIS_NACP_LAI");
+    modis_multi_scale_type.emplace_back("L1B");
+    modis_multi_scale_type.emplace_back("GEO");
+    modis_multi_scale_type.emplace_back("BRDF");
+    modis_multi_scale_type.emplace_back("0.05Deg");
+    modis_multi_scale_type.emplace_back("Reflectance");
+    modis_multi_scale_type.emplace_back("MOD17A2");
+    modis_multi_scale_type.emplace_back("North");
+    modis_multi_scale_type.emplace_back("South");
+    modis_multi_scale_type.emplace_back("MOD_Swath_Sea_Ice");
+    modis_multi_scale_type.emplace_back("MOD_Grid_MOD15A2");
+    modis_multi_scale_type.emplace_back("MOD_Grid_MOD16A2");
+    modis_multi_scale_type.emplace_back("MOD_Grid_MOD16A3");
+    modis_multi_scale_type.emplace_back("MODIS_NACP_LAI");
         
     vector<string> modis_div_scale_type;
 
     // Always start with MOD or mod.
-    modis_div_scale_type.push_back("VI");
-    modis_div_scale_type.push_back("1km_2D");
-    modis_div_scale_type.push_back("L2g_2d");
-    modis_div_scale_type.push_back("CMG");
-    modis_div_scale_type.push_back("MODIS SWATH TYPE L2");
+    modis_div_scale_type.emplace_back("VI");
+    modis_div_scale_type.emplace_back("1km_2D");
+    modis_div_scale_type.emplace_back("L2g_2d");
+    modis_div_scale_type.emplace_back("CMG");
+    modis_div_scale_type.emplace_back("MODIS SWATH TYPE L2");
 
+#if 0
     // This one doesn't start with "MOD" or "mod".
     //modis_div_scale_type.push_back("VIP_CMG_GRID");
+#endif
 
     string modis_eq_scale_type   = "LST";
     string modis_equ_scale_lst_group1="MODIS_Grid_8Day_1km_LST21";
@@ -3481,7 +3495,7 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
     if(EOS2ObjName=="mod05" || EOS2ObjName=="mod06" || EOS2ObjName=="mod07" 
                             || EOS2ObjName=="mod08" || EOS2ObjName=="atml2")
     {
-        scaletype = MODIS_MUL_SCALE;
+        scaletype = SOType::MODIS_MUL_SCALE;
         return;
     }
 
@@ -3499,9 +3513,9 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
     {
         size_t pos = EOS2ObjName.rfind(modis_eq_scale_type);
         if(pos != string::npos && 
-          (pos== (EOS2ObjName.length()-modis_eq_scale_type.length())))
+          (pos== (EOS2ObjName.size()-modis_eq_scale_type.size())))
         {
-            scaletype = MODIS_EQ_SCALE;
+            scaletype = SOType::MODIS_EQ_SCALE;
             return;
         }
 
@@ -3509,9 +3523,9 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
         {
             pos = EOS2ObjName.rfind(modis_multi_scale_type[k]);
             if (pos !=string::npos && 
-               (pos== (EOS2ObjName.length()-modis_multi_scale_type[k].length())))
+               (pos== (EOS2ObjName.size()-modis_multi_scale_type[k].size())))
             {
-                scaletype = MODIS_MUL_SCALE;
+                scaletype = SOType::MODIS_MUL_SCALE;
                 return;
             }
         }
@@ -3520,8 +3534,8 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
         {
             pos = EOS2ObjName.rfind(modis_div_scale_type[k]);
             if (pos != string::npos && 
-                (pos==(EOS2ObjName.length()-modis_div_scale_type[k].length()))){
-                scaletype = MODIS_DIV_SCALE;
+                (pos==(EOS2ObjName.size()-modis_div_scale_type[k].size()))){
+                scaletype = SOType::MODIS_DIV_SCALE;
 
                 // We have a case that group 
                 // MODIS_Grid_1km_2D should apply the equal scale equation.
@@ -3543,27 +3557,29 @@ void Dataset::SetScaleType(const string & EOS2ObjName) throw(Exception) {
                                  *EOS2ObjName.find(modis_equ_scale_lst_group1)
                                  *EOS2ObjName.find(modis_equ_scale_lst_group2);
             if (0 == eq_scale_pos) 
-                scaletype = MODIS_EQ_SCALE;
+                scaletype = SOType::MODIS_EQ_SCALE;
             else 
-                scaletype = MODIS_DIV_SCALE;
+                scaletype = SOType::MODIS_DIV_SCALE;
         }
         else {
             size_t div_scale_pos = EOS2ObjName.find(modis_div_scale_group);
 
             // Find the "MOD_Grid???" group. 
             if ( 0 == div_scale_pos) 
-                scaletype = MODIS_DIV_SCALE;
+                scaletype = SOType::MODIS_DIV_SCALE;
         }
     }
 
     //  MEASuRES VIP files have the grid name VIP_CMG_GRID. 
     // This applies to all VIP version 2 files. KY 2013-01-24
     if (EOS2ObjName =="VIP_CMG_GRID")
-        scaletype = MODIS_DIV_SCALE;
+        scaletype = SOType::MODIS_DIV_SCALE;
 }
 
-int Dataset::obtain_dimsize_with_dimname(const string & dimname) {
+int Dataset::obtain_dimsize_with_dimname(const string & dimname) const{
+
     int ret_value = -1;
+#if 0
     for(vector<Dimension *>::const_iterator k=
         this->getDimensions().begin();k!=this->getDimensions().end();++k){
         if((*k)->name == dimname){
@@ -3571,6 +3587,15 @@ int Dataset::obtain_dimsize_with_dimname(const string & dimname) {
             break;
         }
     }
+#endif
+
+    for (const auto & dim:this->getDimensions()) {
+        if (dim->name == dimname){
+            ret_value = dim->dimsize;
+            break;
+        }
+    }
+
     return ret_value;
 }
 
@@ -3593,7 +3618,7 @@ Dataset::~Dataset()
 // Retrieve dimensions of grids or swaths
 void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
                              int32 (*inq)(int32, char *, int32 *),
-                             vector<Dimension *> &d_dims) throw(Exception)
+                             vector<Dimension *> &d_dims) 
 {
     // Initialize number of dimensions
     int32 numdims = 0; 
@@ -3624,12 +3649,20 @@ void Dataset::ReadDimensions(int32 (*entries)(int32, int32, int32 *),
         // This split is for global dimension of a Swath or a Grid object.
         HDFCFUtil::Split(namelist.data(), bufsize, ',', dimnames);
         int count = 0;
+#if 0
         for (vector<string>::const_iterator i = dimnames.begin();
             i != dimnames.end(); ++i) {
             Dimension *dim = new Dimension(*i, dimsize[count]);
             d_dims.push_back(dim);
             ++count;
         }
+#endif
+        for (const auto &dimname:dimnames) {
+            auto dim = new Dimension(dimname, dimsize[count]);
+            d_dims.push_back(dim);
+            ++count;
+        }
+        
     }
 }
 
@@ -3638,11 +3671,9 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                          int32 (*inq)(int32, char *, int32 *, int32 *),
                          intn (*fldinfo)
                          (int32, char *, int32 *, int32 *, int32 *, char *),
-                         intn (*readfld) //unused SBL 2/7/20
-                         (int32, char *, int32 *, int32 *, int32 *, VOIDP),
                          intn (*getfill)(int32, char *, VOIDP),
                          bool geofield,
-                         vector<Field *> &fields) throw(Exception)
+                         vector<Field *> &fields) 
 {
 
     // Initalize the number of fields
@@ -3673,13 +3704,12 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         // Split the field namelist, make the "," separated name string to a
         // string list without ",".
         HDFCFUtil::Split(namelist.data(), bufsize, ',', fieldnames);
-        for (vector<string>::const_iterator i = fieldnames.begin();
-            i != fieldnames.end(); ++i) {
+        for (const auto& fdname:fieldnames){
 
-            Field *field = new Field();
+            auto field = new Field();
             if(field == nullptr)
                 throw1("The field is nullptr");
-            field->name = *i;
+            field->name = fdname;
 
             bool throw_error = false;
             string err_msg;
@@ -3711,7 +3741,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
                 }
                 else {
                     for (int k = 0; k < field->rank; ++k) {
-                        Dimension *dim = new Dimension(dimnames[k], dimsize[k]);
+                        auto dim = new Dimension(dimnames[k], dimsize[k]);
                         field->dims.push_back(dim);
                     }
 
@@ -3740,7 +3770,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
 void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
                              intn (*attrinfo)(int32, char *, int32 *, int32 *),
                              intn (*readattr)(int32, char *, VOIDP),
-                             vector<Attribute *> &obj_attrs) throw(Exception)
+                             vector<Attribute *> &obj_attrs) 
 {
     // Initalize the number of attributes to be 0
     int32 numattrs = 0;
@@ -3767,10 +3797,9 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
         // Split the attribute namelist, make the "," separated name string to
         // a string list without ",".
         HDFCFUtil::Split(namelist.data(), bufsize, ',', attrnames);
-        for (vector<string>::const_iterator i = attrnames.begin();
-            i != attrnames.end(); ++i) {
-            Attribute *attr = new Attribute();
-            attr->name = *i;
+        for (const auto &attrname:attrnames) {
+            auto attr = new Attribute();
+            attr->name = attrname;
             attr->newname = HDFCFUtil::get_CF_string(attr->name);
 
             int32 count = 0;
@@ -3813,11 +3842,10 @@ GridDataset::~GridDataset()
 
 // Retrieve all information of the grid dataset
 GridDataset * GridDataset::Read(int32 fd, const string &gridname)
-    throw(Exception)
 {
     string err_msg;
     bool GD_fun_err = false;
-    GridDataset *grid = new GridDataset(gridname);
+    auto grid = new GridDataset(gridname);
 
     // Open this Grid object 
     if ((grid->datasetid = GDattach(fd, const_cast<char *>(gridname.c_str())))
@@ -3870,7 +3898,7 @@ cleanFail:
         grid->ReadDimensions(GDnentries, GDinqdims, grid->dims);
 
         // Read all fields of this Grid.
-        grid->ReadFields(GDnentries, GDinqfields, GDfieldinfo, GDreadfield,
+        grid->ReadFields(GDnentries, GDinqfields, GDfieldinfo, 
                          GDgetfillvalue, false, grid->datafields);
 
         // Read all attributes of this Grid.
@@ -3891,14 +3919,14 @@ GridDataset::Calculated & GridDataset::getCalculated() const
     return this->calculated;
 }
 
-bool GridDataset::Calculated::isYDimMajor() throw(Exception)
+bool GridDataset::Calculated::isYDimMajor() 
 {
     this->DetectMajorDimension();
     return this->ydimmajor;
 }
 
 #if 0
-bool GridDataset::Calculated::isOrthogonal() throw(Exception)
+bool GridDataset::Calculated::isOrthogonal() 
 {
     if (!this->valid)
         this->ReadLongitudeLatitude();
@@ -3906,24 +3934,22 @@ bool GridDataset::Calculated::isOrthogonal() throw(Exception)
 }
 #endif
 
-int GridDataset::Calculated::DetectFieldMajorDimension() throw(Exception)
+int GridDataset::Calculated::DetectFieldMajorDimension() const
 {
     int ym = -1;
 	
     // Traverse all data fields
-    for (vector<Field *>::const_iterator i =
-        this->grid->getDataFields().begin();
-        i != this->grid->getDataFields().end(); ++i) {
+    for (const auto& gfd:this->grid->getDataFields()) { 
 
-        int xdimindex = -1, ydimindex = -1, index = 0;
+        int xdimindex = -1;
+        int ydimindex = -1;
+        int index = 0;
 
         // Traverse all dimensions in each data field
-        for (vector<Dimension *>::const_iterator j =
-            (*i)->getDimensions().begin();
-            j != (*i)->getDimensions().end(); ++j) {
-            if ((*j)->getName() == this->grid->dimxname) 
+        for (const auto& dim:gfd->getDimensions()) { 
+            if (dim->getName() == this->grid->dimxname) 
                 xdimindex = index;
-            else if ((*j)->getName() == this->grid->dimyname) 
+            else if (dim->getName() == this->grid->dimyname) 
                 ydimindex = index;
             ++index;
         }
@@ -3953,7 +3979,7 @@ int GridDataset::Calculated::DetectFieldMajorDimension() throw(Exception)
     return ym;
 }
 
-void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
+void GridDataset::Calculated::DetectMajorDimension() 
 {
     int ym = -1;
     // ydimmajor := true if (YDim, XDim)
@@ -3961,19 +3987,17 @@ void GridDataset::Calculated::DetectMajorDimension() throw(Exception)
 
     // Traverse all data fields
     
-    for (vector<Field *>::const_iterator i =
-        this->grid->getDataFields().begin();
-        i != this->grid->getDataFields().end(); ++i) {
+    for (const auto& fd:this->grid->getDataFields()) {
 
-        int xdimindex = -1, ydimindex = -1, index = 0;
+        int xdimindex = -1;
+        int ydimindex = -1;
+        int index = 0;
 
         // Traverse all dimensions in each data field
-        for (vector<Dimension *>::const_iterator j =
-            (*i)->getDimensions().begin();
-            j != (*i)->getDimensions().end(); ++j) {
-            if ((*j)->getName() == this->grid->dimxname) 
+        for (const auto& dim:fd->getDimensions()) {
+            if (dim->getName() == this->grid->dimxname) 
                 xdimindex = index;
-            else if ((*j)->getName() == this->grid->dimyname) 
+            else if (dim->getName() == this->grid->dimyname) 
                 ydimindex = index;
             ++index;
         }
@@ -4077,9 +4101,9 @@ SwathDataset::~SwathDataset()
 
 // Read all information of this swath
 SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
-    throw(Exception)
+    
 {
-    SwathDataset *swath = new SwathDataset(swathname);
+    auto swath = new SwathDataset(swathname);
     if(swath == nullptr)
         throw1("Cannot allocate HDF5 Swath object");
 
@@ -4091,19 +4115,17 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
         throw2("attach swath", swathname);
     }
 
-    //if(swath != nullptr) {// See if I can make coverity happy.coverity doesn't know I call throw already.
-
     try {
 
         // Read dimensions of this Swath
         swath->ReadDimensions(SWnentries, SWinqdims, swath->dims);
         
         // Read all information related to data fields of this Swath
-        swath->ReadFields(SWnentries, SWinqdatafields, SWfieldinfo, SWreadfield,
+        swath->ReadFields(SWnentries, SWinqdatafields, SWfieldinfo, 
                           SWgetfillvalue, false, swath->datafields);
         
         // Read all information related to geo-location fields of this Swath
-        swath->ReadFields(SWnentries, SWinqgeofields, SWfieldinfo, SWreadfield,
+        swath->ReadFields(SWnentries, SWinqgeofields, SWfieldinfo, 
                           SWgetfillvalue, true, swath->geofields);
         
         // Read all attributes of this Swath
@@ -4126,9 +4148,10 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
 
 // Read dimension map info.
 int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
-    throw(Exception)
+    
 {
-    int32 nummaps, bufsize;
+    int32 nummaps;
+    int32 bufsize;
 
     // Obtain number of dimension maps and the buffer size.
     if ((nummaps = SWnentries(this->datasetid, HDFE_NENTMAP, &bufsize)) == -1)
@@ -4144,7 +4167,8 @@ int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
         
     if (nummaps > 0) {
         vector<char> namelist;
-        vector<int32> offset, increment;
+        vector<int32> offset;
+        vector<int32> increment;
 
         namelist.resize(bufsize + 1);
         offset.resize(nummaps);
@@ -4156,10 +4180,9 @@ int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
         vector<string> mapnames;
         HDFCFUtil::Split(namelist.data(), bufsize, ',', mapnames);
         int count = 0;
-        for (vector<string>::const_iterator i = mapnames.begin();
-            i != mapnames.end(); ++i) {
+        for (const auto& mapname:mapnames) {
             vector<string> parts;
-            HDFCFUtil::Split(i->c_str(), '/', parts);
+            HDFCFUtil::Split(mapname.c_str(), '/', parts);
             if (parts.size() != 2) 
                 throw3("dimmap part", parts.size(),
                         this->name);
@@ -4176,9 +4199,10 @@ int SwathDataset::ReadDimensionMaps(vector<DimensionMap *> &swath_dimmaps)
 
 // The following function is nevered tested and probably will never be used.
 void SwathDataset::ReadIndexMaps(vector<IndexMap *> &swath_indexmaps)
-    throw(Exception)
+    
 {
-    int32 numindices, bufsize;
+    int32 numindices;
+    int32 bufsize;
 
     if ((numindices = SWnentries(this->datasetid, HDFE_NENTIMAP, &bufsize)) ==
         -1)
@@ -4193,11 +4217,10 @@ void SwathDataset::ReadIndexMaps(vector<IndexMap *> &swath_indexmaps)
 
         vector<string> mapnames;
         HDFCFUtil::Split(namelist.data(), bufsize, ',', mapnames);
-        for (vector<string>::const_iterator i = mapnames.begin();
-             i != mapnames.end(); ++i) {
-            IndexMap *indexmap = new IndexMap();
+        for (const auto& mapname: mapnames) {
+            auto indexmap = new IndexMap();
             vector<string> parts;
-            HDFCFUtil::Split(i->c_str(), '/', parts);
+            HDFCFUtil::Split(mapname.c_str(), '/', parts);
             if (parts.size() != 2) 
                 throw3("indexmap part", parts.size(),
                                           this->name);
@@ -4231,9 +4254,8 @@ PointDataset::~PointDataset()
 }
 
 PointDataset * PointDataset::Read(int32 /*fd*/, const string &pointname)
-    throw(Exception)
 {
-    PointDataset *point = new PointDataset(pointname);
+    auto point = new PointDataset(pointname);
     return point;
 }
 

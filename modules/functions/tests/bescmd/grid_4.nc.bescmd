@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+
+  <!-- using 3.2 or 2 seems to make no difference -->
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+
+  <!-- bes:setContainer name="c" space="catalog">/functions/tests/data/coads_climatology.nc</bes:setContainer -->
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/coads_climatology.nc</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <!-- %22 is a double quote and %3E is greater than -->
+      <!-- 45 > COADSY > 35, 140 > COADSX > 120, TIME = 366 -->
+      <!-- bes:dap4constraint>/TIME[0];/COADSX[10:1:12];/COADSY[10:1:11];/SST[0][10:1:12][10:1:11]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/COADSX=[10:1:12];/COADSY=[10:1:11];/TIME;/COADSX;/COADSY;/SST[][][]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/COADSX=[10:1:12];/COADSY=[10:1:11];/SST[][][]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/SST[0][10:1:12][10:1:11]</bes:dap4constraint -->
+      <!-- bes:dap4constraint>/SST</bes:dap4constraint -->
+      <!-- bes:dap4function>grid(%2FSST,%2252%3E%2FCOADSY%3E31%22,%22182%3E%2FCOADSX%3E178%22)</bes:dap4function -->
+      <bes:dap4function>geogrid(SST,51,179,31,-179)</bes:dap4function>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dap" definition="d1">
+  </bes:get>
+  
+</bes:request>

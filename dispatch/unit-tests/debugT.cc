@@ -53,8 +53,7 @@ using std::string;
 #include "BESError.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
-//#include "GetOpt.h"
+#include "test_config.h"
 
 string DebugArgs;
 static bool debug = false;
@@ -230,7 +229,7 @@ int main(int argc, char*argv[])
         case 'h': {     // help - show test names
             cerr << "Usage: debugT has the following tests:" << endl;
             const std::vector<Test*> &tests = debugT::suite()->getTests();
-            unsigned int prefix_len = debugT::suite()->getName().append("::").length();
+            unsigned int prefix_len = debugT::suite()->getName().append("::").size();
             for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }

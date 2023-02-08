@@ -2,8 +2,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/modules -I$(top_srcdir)/rapidjson \
--I$(top_srcdir)/modules/fileout_netcdf $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+    -I$(top_srcdir)/modules -I$(top_srcdir)/rapidjson -I$(top_srcdir)/modules/fileout_netcdf $(DAP_CFLAGS)
 LIBADD =  $(NC_LDFLAGS) $(NC_LIBS)  $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
 if CPPUNIT
@@ -15,7 +15,7 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-inconsistent-missing-override
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -53,7 +53,8 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = HistoryUtilsTest
+UNIT_TESTS = HistoryUtilsTest FONcArrayTest
+
 else
 UNIT_TESTS =
 
@@ -71,3 +72,7 @@ LDFLAGS = -static
 
 HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
 HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
+
+FONcArrayTest_SOURCES = FONcArrayTest.cc
+FONcArrayTest_LDADD = ../.libs/libfonc_module.a $(LIBADD)
+

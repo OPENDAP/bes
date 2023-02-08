@@ -29,7 +29,6 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#define HDF4_CATALOG "catalog"
 #include <iostream>
 #include "HDF4Module.h"
 #include <BESRequestHandlerList.h>
@@ -42,12 +41,13 @@
 #include <BESDebug.h>
 
 using namespace std;
+const string HDF4_CATALOG="catalog";
 
 void HDF4Module::initialize(const string & modname)
 {
     BESDEBUG("h4", "Initializing HDF4 module " << modname << endl);
 
-        BESRequestHandler *handler = new HDF4RequestHandler(modname);
+        auto handler = new HDF4RequestHandler(modname);
         BESRequestHandlerList::TheList()->add_handler(modname, handler);
 
         BESDapService::handle_dap_service( modname );
@@ -58,8 +58,7 @@ void HDF4Module::initialize(const string & modname)
         }
 
         if( !BESContainerStorageList::TheList()->ref_persistence( HDF4_CATALOG ) ) {
-            BESFileContainerStorage *csc =
-            new BESFileContainerStorage(HDF4_CATALOG);
+            auto csc = new BESFileContainerStorage(HDF4_CATALOG);
             BESContainerStorageList::TheList()->add_persistence(csc);
         }
 

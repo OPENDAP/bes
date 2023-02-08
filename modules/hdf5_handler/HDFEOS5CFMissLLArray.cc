@@ -36,7 +36,6 @@
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
-//#include <libdap/Array.h>
 
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDF5RequestHandler.h"
@@ -101,10 +100,10 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
         return;
     }
 
-    int nelms = -1;
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    int64_t nelms = -1;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
 
     if (rank <=  0) 
        throw InternalErr (__FILE__, __LINE__,
@@ -120,6 +119,12 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
        throw InternalErr (__FILE__, __LINE__,
                           "The number of elments is negative.");
 
+    int64_t total_elms = xdimsize*ydimsize;
+    if (total_elms > DODS_INT_MAX)
+       throw InternalErr (__FILE__, __LINE__,
+                          "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.");
+
+
     vector<size_t>pos(rank,0);
     for (int i = 0; i< rank; i++)
         pos[i] = offset[i];
@@ -127,7 +132,6 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     vector<size_t>dimsizes;
     dimsizes.push_back(ydimsize);
     dimsizes.push_back(xdimsize);
-    int total_elms = xdimsize*ydimsize;
 
     double upleft[2];
     double lowright[2];
@@ -249,7 +253,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             else {
                 // short-cut, no need to do subset.
                 if(total_elms == nelms)
-                    set_value((dods_float64 *)var_value.data(),total_elms);
+                    set_value_ll(var_value.data(),total_elms);
                 else {
                     vector<double>val;
                     subset<double>(
@@ -262,7 +266,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-                    set_value((dods_float64 *)val.data(),nelms);
+                    set_value_ll(val.data(),nelms);
                 }
                 return;
             }
@@ -319,7 +323,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     
     if(CV_LON_MISS == cvartype) {
         if(total_elms == nelms)
-            set_value((dods_float64 *)lon.data(),total_elms);
+            set_value_ll(lon.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
@@ -332,14 +336,14 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-            set_value((dods_float64 *)val.data(),nelms);
+            set_value_ll(val.data(),nelms);
         }
        
     }
     else if(CV_LAT_MISS == cvartype) {
 
         if(total_elms == nelms)
-            set_value((dods_float64 *)lat.data(),total_elms);
+            set_value_ll(lat.data(),total_elms);
         else {
             vector<double>val;
             subset<double>(
@@ -352,7 +356,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                            &val,
                            pos,
                            0);
-            set_value((dods_float64 *)val.data(),nelms);
+            set_value_ll(val.data(),nelms);
         }
     }
     return;
@@ -428,10 +432,10 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
 void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*buf){
 
     BESDEBUG("h5","Coming to read_data_NOT_from_mem_cache_geo "<<endl);
-    int nelms = -1;
-    vector<int>offset;
-    vector<int>count;
-    vector<int>step;
+    int64_t nelms = -1;
+    vector<int64_t>offset;
+    vector<int64_t>count;
+    vector<int64_t>step;
 
 
     if (rank <=  0) 
@@ -445,9 +449,9 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
          nelms = format_constraint (offset.data(), step.data(), count.data());
     }
 
-    if (nelms <= 0) 
+    if (nelms <= 0 || nelms >DODS_INT_MAX) 
        throw InternalErr (__FILE__, __LINE__,
-                          "The number of elments is negative.");
+                          "The number of elments for geographic lat/lon is negative or greater than 2G.");
 
     float start = 0.0;
     float end   = 0.0;
@@ -564,7 +568,7 @@ for (int i =0; i <nelms; i++)
 "h5","final data val "<< i <<" is " << val[i] <<endl;
 #endif
 
-    set_value ((dods_float32 *) val.data(), nelms);
+    set_value_ll(val.data(), nelms);
     
  
     return;

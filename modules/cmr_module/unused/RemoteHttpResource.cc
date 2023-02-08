@@ -348,7 +348,7 @@ void RemoteHttpResource::ingest_http_headers_and_type(){
     for(size_t i=0; i<this->d_response_headers->size() ;i++){
         size_t colon_index = (*d_response_headers)[i].find(colon_space);
         string key = BESUtil::lowercase((*d_response_headers)[i].substr(0,colon_index));
-        string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
+        string value = (*d_response_headers)[i].substr(colon_index + colon_space.size());
         BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
         (*d_http_response_headers)[key] = value;
     }
