@@ -192,26 +192,29 @@ void RequestServiceTimer::throw_if_timeout_expired(const string &message, const 
     bool expired = is_expired();
 
     if (expired) {
-        double time_out_seconds = ((double)d_bes_timeout.count())/1000.00;
-        ERROR_LOG(prolog + "ERROR: Time to transmit timeout expired. time_out_seconds: " +
-                    std::to_string(time_out_seconds) + "\n");
+        auto time_out_seconds = std::to_string(((double)d_bes_timeout.count())/1000.00);
+        auto elapsed_time_seconds =  std::to_string(((double)elapsed().count())/1000.00);
+        ERROR_LOG(prolog + "ERROR: Time to transmit timeout expired. "+
+                            "Elapsed Time: " + elapsed_time_seconds + " " +
+                            "max_time_to_transmit: " +  time_out_seconds +
+                            "\n");
 
         std::stringstream errMsg;
-        errMsg << "The request that you submitted timed out. The server was unable to begin transmitting a response in ";
-        errMsg << "the time allowed. Requests processed by this server must begin transmitting a response in less ";
-        errMsg << "than " << time_out_seconds << " seconds. ";
-
-        errMsg << "Some things you can try: Reissue the request but change the amount of data requested. ";
-        errMsg << "You may reduce the size of the request by choosing just the variables you need and/or by ";
-        errMsg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested. ";
-        errMsg << "You can also try requesting a different encoding for the response. If you asked for the response ";
-        errMsg << "to be encoded as a NetCDF-3 or NetCDF-4 file be aware that these response encodings are not " <<
-                  "streamable. In order ";
-        errMsg << "to build these responses the server must write the entire response to a temporary file before it can ";
-        errMsg << "begin to send the response to the requesting client. Changing to a different encoding, such as DAP4 ";
-        errMsg << "data, may allow the server to successfully respond to your request. ";
-
-        errMsg << "The service component that ran out of time said: " <<  message;
+        errMsg << "The request that you submitted timed out. The server was unable to begin transmitting" << endl;
+        errMsg << "a response in the time allowed. Requests processed by this server must begin transmitting" << endl;
+        errMsg << "the response in less than " << time_out_seconds << " seconds." << endl;
+        errMsg << "ElapsedTime: " << elapsed_time_seconds << " seconds" << endl;
+        errMsg << "Some things you can try: Reissue the request but change the amount of data requested." << endl;
+        errMsg << "You may reduce the size of the request by choosing just the variables you need and/or" << endl;
+        errMsg << "by using the DAP index based array sub-setting syntax to additionally limit the amount" << endl;
+        errMsg << "of data requested. You can also try requesting a different encoding for the response." << endl;
+        errMsg << "If you asked for the response to be encoded as a NetCDF-3 or NetCDF-4 file be aware" << endl;
+        errMsg << "that these response encodings are not streamable. In order to build these responses" << endl;
+        errMsg << "the server must write the entire response to a temporary file before it can begin to"<< endl;
+        errMsg << "send the response to the requesting client. Changing to a different encoding, such" << endl;
+        errMsg << "as DAP4 data, may allow the server to successfully respond to your request." << endl;
+        errMsg << "The service component that ran out of time said: " << endl;
+        errMsg << message << endl;
 
         throw BESTimeoutError(errMsg.str(), file, line);
     }
