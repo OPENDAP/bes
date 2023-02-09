@@ -1,17 +1,12 @@
 #!/bin/bash
 
-#export BES_VERSION=${1:-"3.20.10-676"}
-#echo "# bes_version_numbers: ${bes_version_numbers}" >&2
 
-@export HYRAX_VERSION=${2:-"1.16.8-0"}
-#echo "# bes_version_numbers: ${bes_version_numbers}" >&2
-
-export bes_veBES_VERSIONrsion_numbers=$(cat bes_VERSION)"${BES_BUILD_NUMBER}"
+export BES_VERSION=$(cat bes_VERSION)"${BES_BUILD_NUMBER}"
 echo "BES_VERSION: ${BES_VERSION}"
 
 function get_change_log_update_text() {
 
-    local bes_version_numbers=${1:-"3.20.10-676"}
+    local bes_version_numbers=${1:-"NO_VERSION_FOUND"}
     echo "# bes_version_numbers: ${bes_version_numbers}" >&2
 
     #local hyrax_version_numbers=${2:-"1.16.8-0"}
@@ -21,7 +16,10 @@ function get_change_log_update_text() {
     echo "# most_recent: ${most_recent}" >&2
 
 
-    local update_text=$(./travis/gitlog-to-changelog --since="${most_recent}")
+    local update_text=$(./travis/gitlog-to-changelog --since="${most_recent}" )
+
+    # Make the log lines 72 chars max.
+    update_text=$(echo "${update_text}" | fold -s -w 72 | awk '{if(!match($0,"^[0-9]|^[\\t]")){printf("\t%s\n",$0);}else{print $0;}}' -
     echo "# update_text: " >&2
     echo "${update_text}" | awk '{print "##    "$0;}' >&2
 
