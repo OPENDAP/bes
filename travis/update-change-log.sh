@@ -21,7 +21,7 @@ function get_change_log_update_text() {
     echo "# most_recent: ${most_recent}" >&2
 
 
-    local update_text=$(gitlog-to-changelog --since="${most_recent}")
+    local update_text=$(./travis/gitlog-to-changelog --since="${most_recent}")
     echo "# update_text: " >&2
     echo "${update_text}" | awk '{print "##    "$0;}' >&2
 

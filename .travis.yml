@@ -238,7 +238,7 @@ jobs:
         - ./travis/update-change-log.sh
         - cat ChangeLog >&2
         # - git commit -m "TheRobotTravis updating ChangeLog" ChangeLog
-        - git push
+        # - git push
 
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
