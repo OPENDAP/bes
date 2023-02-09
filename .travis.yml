@@ -124,6 +124,8 @@ stages:
   - name: build-and-package
   - name: scan
     if:  branch = master
+  - name: update-change-log
+    if:  branch = master
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
     # A way to skip a stage. jhrg 1/26/23
@@ -227,6 +229,15 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
+
+    - stage: update-change-log
+      name: "Update BES ChangeLog"
+      script:
+        - export STAGE=update-change-log
+        - echo $STAGE
+        - ./travis/update-change-log.sh
+        - git commit -m "TheRobotTravis updating ChangeLog" ChangeLog
+        - git push
 
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
