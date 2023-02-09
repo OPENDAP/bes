@@ -198,7 +198,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
 
     memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
     chunk->set_bytes_read(bytes_read + nbytes);
-
+    
+    BESDEBUG(MODULE, prolog << "total bytes_read " << bytes_read + nbytes <<endl);
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return nbytes;

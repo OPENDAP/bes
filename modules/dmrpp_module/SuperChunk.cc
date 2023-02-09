@@ -50,6 +50,7 @@ namespace dmrpp {
 // ThreadPool state variables.
 std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
 atomic_uint chunk_processing_thread_counter(0);
+//atomic_ullong chunk_processing_thread_counter(0);
 #define COMPUTE_THREADS "compute_threads"
 
 #define DMRPP_ENABLE_THREAD_TIMERS 0
@@ -382,6 +383,7 @@ void process_chunks_unconstrained_concurrent(
         // re-throw the exception
         throw;
     }
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Finished the thread Kent" << endl);
 }
 
 //#####################################################################################################################

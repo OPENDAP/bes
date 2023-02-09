@@ -78,6 +78,7 @@ namespace dmrpp {
 
 // Transfer Thread Pool state variables.
 std::mutex transfer_thread_pool_mtx;     // mutex for critical section
+//atomic_ullong transfer_thread_counter(0);
 atomic_uint transfer_thread_counter(0);
 
 
@@ -96,6 +97,7 @@ atomic_uint transfer_thread_counter(0);
  * method.
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
+//bool get_next_future(list<std::future<bool>> &futures, atomic_ullong &thread_counter, unsigned long timeout, string debug_prefix) {
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix) {
     bool future_finished = false;
     bool done = false;
@@ -569,7 +571,7 @@ DmrppArray::operator=(const DmrppArray &rhs)
 bool DmrppArray::is_projected()
 {
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
-        if (dimension_size(p, true) != dimension_size(p, false)) return true;
+        if (dimension_size_ll(p, true) != dimension_size_ll(p, false)) return true;
 
     return false;
 }
@@ -585,7 +587,7 @@ unsigned long long DmrppArray::get_size(bool constrained)
     // number of array elements in the constrained array
     unsigned long long asize = 1;
     for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
-        auto dim_size =  dimension_size(dim, constrained);
+        auto dim_size =  dimension_size_ll(dim, constrained);
         asize *= dim_size;
     }
     return asize;
@@ -607,7 +609,7 @@ vector<unsigned long long> DmrppArray::get_shape(bool constrained)
     shape.reserve(edim - dim);
 
     for (; dim != edim; dim++) {
-        shape.push_back(dimension_size(dim, constrained));
+        shape.push_back(dimension_size_ll(dim, constrained));
     }
 
     return shape;

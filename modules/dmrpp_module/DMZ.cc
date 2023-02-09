@@ -1152,7 +1152,7 @@ vector<unsigned long long> DMZ::get_array_dims(Array *array)
 {
     vector<unsigned long long> array_dim_sizes;
     for (auto i= array->dim_begin(), e = array->dim_end(); i != e; ++i) {
-        array_dim_sizes.push_back(array->dimension_size(i));
+        array_dim_sizes.push_back(array->dimension_size_ll(i));
     }
 
     return array_dim_sizes;
