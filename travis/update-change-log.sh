@@ -19,7 +19,7 @@ function get_change_log_update_text() {
     local update_text=$(./travis/gitlog-to-changelog --since="${most_recent}" )
 
     # Make the log lines 72 chars max.
-    update_text=$(echo "${update_text}" | fold -s -w 72 | awk '{if(!match($0,"^[0-9]|^[\\t]")){printf("\t%s\n",$0);}else{print $0;}}' -
+    update_text=$(echo "${update_text}" | fold -s -w 72 | awk '{if(!match($0,"^[0-9]|^[\\t]")){printf("\t%s\n",$0);}else{print $0;}}' - )
     echo "# update_text: " >&2
     echo "${update_text}" | awk '{print "##    "$0;}' >&2
 
