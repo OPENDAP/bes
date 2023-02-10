@@ -104,3 +104,5 @@ function main() {
     echo "# Committing and pushing the new ChangeLog."
 
 }
+
+main
