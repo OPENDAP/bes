@@ -1,7 +1,9 @@
 #!/bin/bash
 
 
-export BES_VERSION=$(cat bes_VERSION)"${BES_BUILD_NUMBER}"
+export BES_VERSION=$(cat ./bes_VERSION)
+echo "BES_VERSION: ${BES_VERSION}"
+BES_VERSION="${BES_VERSION}-${BES_BUILD_NUMBER}"
 echo "BES_VERSION: ${BES_VERSION}"
 
 function get_change_log_update_text() {
