@@ -237,7 +237,7 @@ jobs:
         - echo $STAGE
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
-        - ./travis/update-change-log.sh 2>&1
+        - ./travis/update-change-log.sh
 
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"

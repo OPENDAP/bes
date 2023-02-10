@@ -91,9 +91,16 @@ function main() {
         echo "${change_log_update}" > "${tmp_file}"
         cat ChangeLog >> "${tmp_file}"
         mv "${tmp_file}" ChangeLog
-        echo ChangeLog >&2
+        echo "# ChangeLog:"
+        echo ChangeLog | awk '{print "##    "$0;}'
+        echo "#"
+        echo "# Committing and pushing the new ChangeLog."
+        echo "#"
         git checkout "${TRAVIS_BRANCH}"
         #git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
         #git push
     fi
+    echo "##################################################################################################" >&2
+    echo "# Committing and pushing the new ChangeLog."
+
 }
