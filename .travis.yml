@@ -235,6 +235,8 @@ jobs:
       script:
         - export STAGE=update-change-log
         - echo $STAGE
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - ./travis/update-change-log.sh
         - cat ChangeLog >&2
         # - git commit -m "TheRobotTravis updating ChangeLog" ChangeLog
