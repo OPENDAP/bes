@@ -101,7 +101,6 @@ function main() {
         git push
     fi
     echo "##################################################################################################" >&2
-#    echo "# Committing and pushing the new ChangeLog."
 
 }
 
