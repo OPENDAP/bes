@@ -97,11 +97,11 @@ function main() {
         echo "# Committing and pushing the new ChangeLog."
         echo "#"
         git checkout "${TRAVIS_BRANCH}"
-        #git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
-        #git push
+        git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
+        git push
     fi
     echo "##################################################################################################" >&2
-    echo "# Committing and pushing the new ChangeLog."
+#    echo "# Committing and pushing the new ChangeLog."
 
 }
 
