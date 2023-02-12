@@ -848,14 +848,14 @@ void DmrppArray::read_contiguous()
     }
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
-        reserve_value_capacity(get_size(false));
+        reserve_value_capacity_ll(get_size(false));
         val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);
 
         // Reserve space in this array for the constrained size of the data request
-        reserve_value_capacity(get_size(true));
+        reserve_value_capacity_ll(get_size(true));
         unsigned long target_index = 0;
         vector<unsigned long long> subset;
 
@@ -979,7 +979,7 @@ void DmrppArray::read_chunks_unconstrained()
         }
     }
 
-    reserve_value_capacity(get_size());
+    reserve_value_capacity_ll(get_size());
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
@@ -1281,7 +1281,7 @@ void DmrppArray::read_chunks()
         throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__, __LINE__);
     }
 
-    reserve_value_capacity(get_size(true));
+    reserve_value_capacity_ll(get_size(true));
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
@@ -1437,7 +1437,7 @@ void DmrppArray::read_chunks_serial()
     if (chunk_refs.size() == 0) throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Allocate target memory.
-    reserve_value_capacity(get_size(true));
+    reserve_value_capacity_ll(get_size(true));
 
     /*
      * Find the chunks to be read, make curl_easy handles for them, and
