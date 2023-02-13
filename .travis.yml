@@ -25,6 +25,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - test_main
   - /^(.*-test-deploy)$/
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
