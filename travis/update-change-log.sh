@@ -101,7 +101,7 @@ function main() {
         echo "#"
         git checkout "${TRAVIS_BRANCH}"
         git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
-        git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/olfs.git" --all;
+        git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/bes.git" --all;
     else
         echo "# No ChangeLog update was found or performed."
         echo "#"
@@ -111,4 +111,5 @@ function main() {
 }
 
 main
+
 
