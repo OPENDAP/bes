@@ -386,9 +386,9 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 
     Array *a = static_cast<Array*>(top_basetype());
     if (has_size) {
-        size_t dim_size = stoi(get_attribute_val("size", attrs, nb_attributes));
+        size_t dim_size = stoll(get_attribute_val("size", attrs, nb_attributes));
         BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << dim_size << endl);
-        a->append_dim(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
+        a->append_dim_ll(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
         return true;
     }
     else if (has_name) {

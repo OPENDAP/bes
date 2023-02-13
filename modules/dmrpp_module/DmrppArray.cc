@@ -651,9 +651,9 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 
     char *dest_buf = get_buf();
 
-    unsigned int start = this->dimension_start(dim_iter, true);
-    unsigned int stop = this->dimension_stop(dim_iter, true);
-    unsigned int stride = this->dimension_stride(dim_iter, true);
+    uint64_t start = this->dimension_start_ll(dim_iter, true);
+    uint64_t stop = this->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = this->dimension_stride_ll(dim_iter, true);
 
     dim_iter++;
 
@@ -671,9 +671,9 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 
         // Copy data block from start_index to stop_index
         // TODO Replace this loop with a call to std::memcpy()
-        for (unsigned long source_index = start_index; source_index <= stop_index; source_index++) {
-            unsigned long target_byte = *target_index * bytes_per_elem;
-            unsigned long source_byte = source_index * bytes_per_elem;
+        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
+            uint64_t target_byte = *target_index * bytes_per_elem;
+            uint64_t source_byte = source_index * bytes_per_elem;
             // Copy a single value.
             for (unsigned long i = 0; i < bytes_per_elem; i++) {
                 dest_buf[target_byte++] = src_buf[source_byte++];
@@ -683,7 +683,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 
     }
     else {
-        for (unsigned int myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+        for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
 
             // Is it the last dimension?
             if (dim_iter != dim_end()) {
@@ -699,8 +699,8 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 subset_addr.pop_back();
 
                 // Copy a single value.
-                unsigned long target_byte = *target_index * bytes_per_elem;
-                unsigned long source_byte = sourceIndex * bytes_per_elem;
+                uint64_t target_byte = *target_index * bytes_per_elem;
+                uint64_t source_byte = sourceIndex * bytes_per_elem;
 
                 for (unsigned int i = 0; i < bytes_per_elem; i++) {
                     dest_buf[target_byte++] = src_buf[source_byte++];
@@ -1490,7 +1490,7 @@ void DmrppArray::read_contiguous_string()
 
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()){
-        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width_ll());
     }
 
     // FIXME This part will only work if the array contains a single element. See below.

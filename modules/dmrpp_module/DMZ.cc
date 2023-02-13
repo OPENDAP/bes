@@ -294,8 +294,8 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
         throw BESInternalError("Only one of 'size' and 'name' are allowed in a Dim element, but both were used.", __FILE__, __LINE__);
 
     if (!size_value.empty()) {
-        BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << stoi(size_value) << endl);
-        array->append_dim(stoi(size_value));
+        BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << stoll(size_value) << endl);
+        array->append_dim_ll(stoll(size_value));
     }
     else if (!name_value.empty()) {
         BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name_value << endl);

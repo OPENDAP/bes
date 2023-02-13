@@ -85,7 +85,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         // If this chunk used/uses hdf5 fill values, do not attempt to deflate, et., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
@@ -125,7 +125,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 
     if(array){
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
