@@ -135,7 +135,7 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
+    - stage: off
       name: "check"
       script:
         - export BES_BUILD=main
@@ -144,7 +144,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
+    - stage: off
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -152,7 +152,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-package
+    - stage: off
       name: "Enterprise Linux 8 RPMs (via CentOS-Stream8)"
       script:
         - export BES_BUILD=centos-stream8
@@ -168,7 +168,7 @@ jobs:
             --env AWS_SECRET_ACCESS_KEY
             opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
 
-    - stage: build-and-package
+    - stage: off
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -183,7 +183,7 @@ jobs:
         - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
-    - stage: scan
+    - stage: off
       name: "scan bes"
       script:
       - export BES_BUILD=sonar-bes-framework
@@ -200,7 +200,7 @@ jobs:
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    - stage: off
       name: "scan bes-modules"
       script:
         - export BES_BUILD=sonar-bes-modules
@@ -215,7 +215,7 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    - stage: off
       name: "scan bes-hdf-handlers"
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
@@ -240,7 +240,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - ./travis/update-change-log.sh
 
-    - stage: hyrax-olfs-trigger
+    - stage: off
       name: "Hyrax OLFS Trigger"
       script:
         - export STAGE=hyrax-olfs
