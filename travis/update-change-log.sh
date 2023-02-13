@@ -1,5 +1,8 @@
 #!/bin/bash
 
+git config --global user.name "The-Robot-Travis"
+git config --global user.email "npotter@opendap.org"
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 # Figure out the new ChangeLog content (if any)
@@ -98,7 +101,7 @@ function main() {
         echo "#"
         git checkout "${TRAVIS_BRANCH}"
         git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
-        git push
+        git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/olfs.git" --all;
     else
         echo "# No ChangeLog update was found or performed."
         echo "#"
@@ -108,3 +111,4 @@ function main() {
 }
 
 main
+
