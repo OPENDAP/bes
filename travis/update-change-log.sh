@@ -99,6 +99,9 @@ function main() {
         git checkout "${TRAVIS_BRANCH}"
         git commit -m "TheRobotTravis updated ChangeLog [skip ci]" ChangeLog
         git push
+    else
+        echo "# No ChangeLog update was found or performed."
+        echo "#"
     fi
     echo "##################################################################################################" >&2
 

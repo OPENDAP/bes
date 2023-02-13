@@ -125,7 +125,7 @@ stages:
   - name: scan
     if:  branch = master
   - name: update-change-log
-    if:  branch = master
+    if:  branch = test_main
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
     # A way to skip a stage. jhrg 1/26/23
