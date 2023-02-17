@@ -967,7 +967,7 @@ void Chunk::dump(ostream &oss) const {
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
     oss << "[chunk_position_in_array=(";
-    for (unsigned long i = 0; i < d_chunk_position_in_array.size(); i++) {
+    for (unsigned long long i = 0; i < d_chunk_position_in_array.size(); i++) {
         if (i) oss << ",";
         oss << d_chunk_position_in_array[i];
     }
@@ -984,6 +984,9 @@ string Chunk::to_string() const {
 
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
+    // The d_data_url may be nullptr(fillvalue case). 
+    if (d_data_url == nullptr) 
+        return d_data_url;
     std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
 

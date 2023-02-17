@@ -141,11 +141,9 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                 }
                 else {
                     futr++;
-#if 0
                     BESDEBUG(dmrpp_3, debug_prefix << prolog << "future::wait_for() timed out. (timeout: " <<
                         timeout << " ms) There are currently " << futures.size() << " futures in process."
                         << " thread_counter: " << thread_counter << endl);
-#endif
                 }
             }
             else {
@@ -759,6 +757,10 @@ void DmrppArray::read_contiguous()
         // from the child chunks to it.
         the_one_chunk->set_rbuf_to_size();
 
+        // We need to load fill values if using fill values. KY 2023-02-17
+        if (the_one_chunk->get_uses_fill_value()) {
+            the_one_chunk->load_fill_values();
+        }
         // The number of child chunks are determined based on the size of the data.
         // If the size of the the_one_chunk is 3 MB then 3 chunks will be made. We will round down
         // when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.)
@@ -773,7 +775,6 @@ void DmrppArray::read_contiguous()
         // If the size of the the_one_chunk is not evenly divisible by num_chunks, capture
         // the remainder here and increase the size of the last chunk by this number of bytes.
         unsigned long long chunk_remainder = the_one_chunk_size % num_chunks;
-
         auto chunk_url = the_one_chunk->get_data_url();
 
         // Set up a queue to break up the original the_one_chunk and keep track of the pieces
@@ -782,11 +783,19 @@ void DmrppArray::read_contiguous()
         // Make the Chunk objects
         unsigned long long chunk_offset = the_one_chunk_offset;
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
-            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
+            if (chunk_url == nullptr) {
+                BESDEBUG(dmrpp_3, "chunk_url is null, this must be a variable that covers the fill values." <<endl);
+                chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_byteorder,the_one_chunk->get_fill_value(),the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset)));
+            }
+            else
+                chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
             chunk_offset += chunk_size;
         }
         // Make the remainder Chunk, see above for details.
-        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
+        if (chunk_url != nullptr) 
+            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
+        else 
+            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_byteorder,the_one_chunk->get_fill_value(),the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset)));
 
         // We maintain a list  of futures to track our parallel activities.
         list<future<bool>> futures;
@@ -801,7 +810,6 @@ void DmrppArray::read_contiguous()
                 // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
                 // because future::get() was called or a call to future::valid() returned false.
                 BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
-
                 if (!chunks_to_read.empty()) {
                     // Next we try to add a new Chunk compute thread if we can - there might be room.
                     bool thread_started = true;
@@ -810,6 +818,7 @@ void DmrppArray::read_contiguous()
                         BESDEBUG(dmrpp_3, prolog << "Starting thread for " << current_chunk->to_string() << endl);
 
                         auto args = unique_ptr<one_child_chunk_args_new>(new one_child_chunk_args_new(current_chunk, the_one_chunk));
+
                         thread_started = start_one_child_chunk_thread(futures, std::move(args));
 
                         if (thread_started) {

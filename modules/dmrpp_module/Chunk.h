@@ -229,6 +229,19 @@ public:
             d_uses_fill_value(true), d_fill_value_type(fv_type), d_chunk_position_in_array(std::move(pia)) {
     }
 
+    // Add a constructor when the chunk_offset is provided and chunk_position_in_array is not necessary. KY 2023-02-17
+    Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long size,
+          unsigned long long offset, const std::string &pia_str = "") :
+            d_byte_order(std::move(order)),d_fill_value(std::move(fill_value)),
+            d_size(size),  d_uses_fill_value(true), d_fill_value_type(fv_type), d_offset(offset)
+    {
+#if ENABLE_TRACKING_QUERY_PARAMETER
+        add_tracking_query_param();
+#endif
+        set_position_in_array(pia_str);
+    }
+
+
     Chunk(const Chunk &h4bs)
     {
         _duplicate(h4bs);
@@ -277,6 +290,7 @@ public:
 
     /// @return Return true if the the chunk uses 'fill value.'
     virtual bool get_uses_fill_value() const { return d_uses_fill_value; }
+    virtual libdap::Type get_fill_value_type() const { return d_fill_value_type; }
 
     /// @return Return the fill value as a string or "" if get_fill_value() is false
     virtual std::string get_fill_value() const { return d_fill_value; }
