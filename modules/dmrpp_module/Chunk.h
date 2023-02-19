@@ -233,7 +233,7 @@ public:
     Chunk(std::string order, std::string fill_value, libdap::Type fv_type, unsigned long long size,
           unsigned long long offset, const std::string &pia_str = "") :
             d_byte_order(std::move(order)),d_fill_value(std::move(fill_value)),
-            d_size(size),  d_uses_fill_value(true), d_fill_value_type(fv_type), d_offset(offset)
+            d_size(size), d_offset(offset), d_uses_fill_value(true), d_fill_value_type(fv_type)
     {
 #if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();

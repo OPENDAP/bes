@@ -97,7 +97,6 @@ atomic_uint transfer_thread_counter(0);
  * method.
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
-//bool get_next_future(list<std::future<bool>> &futures, atomic_ullong &thread_counter, unsigned long timeout, string debug_prefix) {
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix) {
     bool future_finished = false;
     bool done = false;
@@ -784,7 +783,7 @@ void DmrppArray::read_contiguous()
         unsigned long long chunk_offset = the_one_chunk_offset;
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
             if (chunk_url == nullptr) {
-                BESDEBUG(dmrpp_3, "chunk_url is null, this must be a variable that covers the fill values." <<endl);
+                BESDEBUG(dmrpp_3, "chunk_url is null, this may be a variable that covers the fill values." <<endl);
                 chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_byteorder,the_one_chunk->get_fill_value(),the_one_chunk->get_fill_value_type(), chunk_size, chunk_offset)));
             }
             else
@@ -902,30 +901,21 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
     // chunk 'extends beyond' the Array bounds. Here 'end_element' is the
     // last element of the destination array
     dimension thisDim = this->get_dimension(dim);
-BESDEBUG(dmrpp_3, "chunk_origin is " <<chunk_origin[dim] <<endl);
-BESDEBUG(dmrpp_3, "chunk_shape is " <<chunk_shape[dim] <<endl);
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
     if ((unsigned long long ) thisDim.stop < end_element) {
         end_element = thisDim.stop;
     }
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
-BESDEBUG(dmrpp_3, "chunk_end is " <<chunk_end <<endl);
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
         unsigned int elem_width = prototype()->width();
-BESDEBUG(dmrpp_3, "dim is " <<dim <<endl);
-BESDEBUG(dmrpp_3, "elem_width is " <<elem_width <<endl);
-BESDEBUG(dmrpp_3, "end_element is " <<end_element <<endl);
 
         array_offset += chunk_origin[dim];
 
-BESDEBUG(dmrpp_3, "array_offset is " <<array_offset <<endl);
-BESDEBUG(dmrpp_3, "chunk_offset is " <<chunk_offset <<endl);
         // Compute how much we are going to copy
         unsigned long long chunk_bytes = (end_element - chunk_origin[dim] + 1) * elem_width;
-BESDEBUG(dmrpp_3, "chunk_bytes is " <<chunk_bytes <<endl);
         char *source_buffer = chunk->get_rbuf();
         char *target_buffer = get_buf();
         memcpy(target_buffer + (array_offset * elem_width), source_buffer + (chunk_offset * elem_width), chunk_bytes);
@@ -1820,8 +1810,6 @@ bool DmrppArray::read()
                 array_to_read->read_chunks();
             }
         }
-        //BESDEBUG(MODULE, prolog << array_to_str(*array_to_read,"AFTER READ") );
-        //BESDEBUG(MODULE, prolog << "Buffer contains: " << show_string_buff(array_to_read->get_buf(), array_to_read->length(), sizeof(char)) << endl);
 
         if ((var_type == dods_str_c || var_type == dods_url_c)) {
             BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);

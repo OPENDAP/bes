@@ -50,7 +50,6 @@ namespace dmrpp {
 // ThreadPool state variables.
 std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
 atomic_uint chunk_processing_thread_counter(0);
-//atomic_ullong chunk_processing_thread_counter(0);
 #define COMPUTE_THREADS "compute_threads"
 
 #define DMRPP_ENABLE_THREAD_TIMERS 0
@@ -341,14 +340,12 @@ void process_chunks_unconstrained_concurrent(
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
-            //BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
 
             if (!chunks.empty()){
                 // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    //BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                             new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
@@ -356,14 +353,11 @@ void process_chunks_unconstrained_concurrent(
 
                     if (thread_started) {
                         chunks.pop();
-                        //BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                       #if 0
                         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
                                                             " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
                                                             " futures.size(): " << futures.size() << endl);
-#endif
                     }
                 }
             }
@@ -385,7 +379,6 @@ void process_chunks_unconstrained_concurrent(
         // re-throw the exception
         throw;
     }
-    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Finished the thread Kent" << endl);
 }
 
 //#####################################################################################################################
