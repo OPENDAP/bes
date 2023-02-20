@@ -40,14 +40,23 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/GLAH06_634_2113_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/S-MODE_PFC_OC2108A_adcp_os75nb.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/MLS-Aura_L2GP-Temperature_v03-33-c01_2011d316.he5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/HIRDLS-Aura_L3ZAD_v06-00-00-c02_2005d022-2008d077.he5.bescmd)
-#  big array size tests
+
+#  big array size test - input from dap reader's xml file
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_grp_dim_whole.bescmd)
+
+#  big array size test - input from HDF5 files
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_h5_whole.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_t1.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_t2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_t3.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_t4.bescmd)
 
+#  big array size test - input from DMRPP files
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/t_a_b.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/d_dset_big_1d_cont.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/test_ba_grp_dim_whole.dmrpp.bescmd)
+
+# Big array real NASA file: The size of a variable precip is 365*8075*7814*4/1024/1024/1024=85GB. Note: it takes long time and huge memory.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5.bescmd)
 
 #When looping through the HDF5 attributes of an HDF5 object, the attribute order for SMAP L1C and SMAP_L3 are different
