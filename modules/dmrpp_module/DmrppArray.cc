@@ -529,14 +529,14 @@ get_index(const vector<unsigned long long> &address_in_target, const vector<unsi
  * @param shape The sizes of the dimensions of the array
  * @param k The dimension in question
  */
-static unsigned long multiplier(const vector<unsigned long long> &shape, unsigned int k)
+static unsigned long long multiplier(const vector<unsigned long long> &shape, unsigned int k)
 {
     assert(shape.size() > 1);
     assert(shape.size() > k + 1);
 
     vector<unsigned long long>::const_iterator i = shape.begin(), e = shape.end();
     advance(i, k + 1);
-    unsigned long multiplier = *i++;
+    unsigned long long multiplier = *i++;
     while (i != e) {
         multiplier *= *i++;
     }
@@ -921,11 +921,11 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
         memcpy(target_buffer + (array_offset * elem_width), source_buffer + (chunk_offset * elem_width), chunk_bytes);
     }
     else {
-        unsigned long mc = multiplier(chunk_shape, dim);
-        unsigned long ma = multiplier(array_shape, dim);
+        unsigned long long mc = multiplier(chunk_shape, dim);
+        unsigned long long ma = multiplier(array_shape, dim);
 
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = 0 /*chunk_start*/; chunk_index <= chunk_end; ++chunk_index) {
+        for (unsigned long long  chunk_index = 0 /*chunk_start*/; chunk_index <= chunk_end; ++chunk_index) {
             unsigned long long next_chunk_offset = chunk_offset + (mc * chunk_index);
             unsigned long long next_array_offset = array_offset + (ma * (chunk_index + chunk_origin[dim]));
 
@@ -1027,11 +1027,11 @@ void DmrppArray::read_chunks_unconstrained()
  * @param chunk_origin The chunk's position in the array for this given dimension
  * @return The first _element_ of the chunk to transfer.
  */
-unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigned int chunk_origin)
+unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigned long long  chunk_origin)
 {
     // What's the first element that we are going to access for this dimension of the chunk?
     unsigned long long first_element_offset = 0; // start with 0
-    if ((unsigned) (thisDim.start) < chunk_origin) {
+    if ((unsigned long long) (thisDim.start) < chunk_origin) {
         // If the start is behind this chunk, then it's special.
         if (thisDim.stride != 1) {
             // And if the stride isn't 1, we have to figure our where to begin in this chunk.
@@ -1085,8 +1085,8 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *tar
     dimension thisDim = this->get_dimension(dim);
 
     // Do we even want this chunk?
-    if ((unsigned) thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) ||
-        (unsigned) thisDim.stop < chunk_origin[dim]) {
+    if ((unsigned long long) thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) ||
+        (unsigned long long) thisDim.stop < chunk_origin[dim]) {
         return nullptr; // No. No, we do not. Skip this chunk.
     }
 
@@ -1100,7 +1100,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *tar
 
     // Now we figure out the correct last element, based on the subset expression
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-    if ((unsigned) thisDim.stop < end_element) {
+    if ((unsigned long long) thisDim.stop < end_element) {
         end_element = thisDim.stop;
     }
 
@@ -1113,7 +1113,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *tar
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+        for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
 
             // Re-entry here:
@@ -1169,7 +1169,7 @@ void DmrppArray::insert_chunk(
 
     // Now we figure out the correct last element, based on the subset expression
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-    if ((unsigned) thisDim.stop < end_element) {
+    if ((unsigned long long) thisDim.stop < end_element) {
         end_element = thisDim.stop;
     }
 
@@ -1210,9 +1210,9 @@ void DmrppArray::insert_chunk(
                 (*chunk_element_address)[dim] = chunk_index;
 
                 // These calls to get_index() can be removed as with the insert...unconstrained() code.
-               unsigned int target_char_start_index =
+               unsigned long long  target_char_start_index =
                         get_index(*target_element_address, constrained_array_shape) * elem_width;
-                unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
+                unsigned long long  chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
                 memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, elem_width);
             }
@@ -1220,7 +1220,7 @@ void DmrppArray::insert_chunk(
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+        for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
             (*chunk_element_address)[dim] = chunk_index;
 
@@ -1337,26 +1337,26 @@ void DmrppArray::read_chunks()
  * @param chunk
  * @return
  */
-void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *target_element_address, vector<unsigned int> *chunk_element_address,
+void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned long long> *target_element_address, vector<unsigned long long> *chunk_element_address,
     Chunk *chunk)
 {
     BESDEBUG("dmrpp", __func__ << " dim: "<< dim << " BEGIN "<< endl);
 
     // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
     // Do we even want this chunk?
-    if ((unsigned) thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) || (unsigned) thisDim.stop < chunk_origin[dim]) {
+    if ((unsigned long long) thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) || (unsigned long long) thisDim.stop < chunk_origin[dim]) {
         return; // No. No, we do not. Skip this.
     }
 
     // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned int first_element_offset = get_chunk_start(dim, chunk_origin);
+    unsigned long long first_element_offset = get_chunk_start(dim, chunk_origin);
 
     // Is the next point to be sent in this chunk at all? If no, return.
     if (first_element_offset > chunk_shape[dim]) {
@@ -1365,13 +1365,13 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
 
     // Now we figure out the correct last element, based on the subset expression
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-    if ((unsigned) thisDim.stop < end_element) {
+    if ((unsigned long long) thisDim.stop < end_element) {
         end_element = thisDim.stop;
     }
 
     unsigned long long chunk_start = first_element_offset; //start_element - chunk_origin[dim];
     unsigned long long chunk_end = end_element - chunk_origin[dim];
-    vector<unsigned int> constrained_array_shape = get_shape(true);
+    vector<unsigned long long> constrained_array_shape = get_shape(true);
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
@@ -1395,22 +1395,22 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
             // Compute where we are going to read it from
             (*chunk_element_address)[dim] = first_element_offset;
 
-            unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-            unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
+            unsigned long long target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
+            unsigned long long chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
             memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chunk_constrained_inner_dim_bytes);
         }
         else {
             // Stride != 1
-            for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+            for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
                 // Compute where we need to put it.
                 (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
 
                 // Compute where we are going to read it from
                 (*chunk_element_address)[dim] = chunk_index;
 
-                unsigned int target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
-                unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
+                unsigned long long target_char_start_index = get_index(*target_element_address, constrained_array_shape) * elem_width;
+                unsigned long long  chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
                 memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, elem_width);
             }
@@ -1418,7 +1418,7 @@ void DmrppArray::insert_chunk_serial(unsigned int dim, vector<unsigned int> *tar
     }
     else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+        for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
             (*chunk_element_address)[dim] = chunk_index;
 
@@ -1444,11 +1444,11 @@ void DmrppArray::read_chunks_serial()
      * which utilizes the same code that copies the data from the chunk to
      * the variables.
      */
-    for (unsigned long i = 0; i < chunk_refs.size(); i++) {
+    for (unsigned long long i = 0; i < chunk_refs.size(); i++) {
         Chunk &chunk = chunk_refs[i];
 
-        vector<unsigned int> chunk_source_address(dimensions(), 0);
-        vector<unsigned int> target_element_address = chunk.get_position_in_array();
+        vector<unsigned long long> chunk_source_address(dimensions(), 0);
+        vector<unsigned long long> target_element_address = chunk.get_position_in_array();
 
         // Recursive insertion operation.
         insert_chunk_serial(0, &target_element_address, &chunk_source_address, &chunk);
