@@ -1,0 +1,22 @@
+netcdf test {
+dimensions:
+	bigdim = 5000000000 ;
+	dim = 2 ;
+variables:
+	float bigdim(bigdim) ;
+	float dim(dim) ;
+	int y(dim) ;
+		y:origname = "y" ;
+		y:fullnamepath = "/y" ;
+	ubyte g1_x(bigdim) ;
+		g1_x:origname = "x" ;
+		g1_x:fullnamepath = "/g1/x" ;
+
+// global attributes:
+		:history = "removed date-timex test_big_array_dim_whole.xml\nremoved date-timex test_ba_grp_dim_whole.h5.cf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"test_big_array_dim_whole.xml\"}]}]" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.20.13" ;
+		:build_dmrpp_metadata.bes = "3.20.13" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.20.11" ;
+		:build_dmrpp_metadata.invocation = "/Users/myang6/work/opendap/hyrax-947/bes/modules/dmrpp_module/.libs/build_dmrpp -f test_ba_grp_dim_whole.h5 -r test_ba_grp_dim_whole.h5.cf.dmr -M" ;
+}
