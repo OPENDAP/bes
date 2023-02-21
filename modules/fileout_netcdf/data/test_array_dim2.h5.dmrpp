@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="test_array_dim2.h5" dmrpp:href="data/test_array_dim2.h5" dmrpp:version="3.20.13">
+    <Dimension name="bigdim" size="4194304"/>
+    <Dimension name="dim" size="2"/>
+    <Float32 name="bigdim">
+        <Dim name="/bigdim"/>
+        <dmrpp:chunks fillValue="0"/>
+    </Float32>
+    <Float32 name="dim">
+        <Dim name="/dim"/>
+        <dmrpp:chunks fillValue="0"/>
+    </Float32>
+    <Int32 name="y">
+        <Dim name="/dim"/>
+        <Attribute name="origname" type="String">
+            <Value>y</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/y</Value>
+        </Attribute>
+        <Map name="/dim"/>
+        <dmrpp:chunks compressionType="shuffle deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="10240" nBytes="14" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Byte name="g1_x">
+        <Dim name="/bigdim"/>
+        <Attribute name="origname" type="String">
+            <Value>x</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/g1/x</Value>
+        </Attribute>
+        <Map name="/bigdim"/>
+        <dmrpp:chunks compressionType="deflate" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>65536</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="12350" nBytes="84" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="12434" nBytes="84" chunkPositionInArray="[65536]"/>
+            <dmrpp:chunk offset="12518" nBytes="84" chunkPositionInArray="[131072]"/>
+            <dmrpp:chunk offset="12602" nBytes="84" chunkPositionInArray="[196608]"/>
+            <dmrpp:chunk offset="12686" nBytes="84" chunkPositionInArray="[262144]"/>
+            <dmrpp:chunk offset="12770" nBytes="84" chunkPositionInArray="[327680]"/>
+            <dmrpp:chunk offset="12854" nBytes="84" chunkPositionInArray="[393216]"/>
+            <dmrpp:chunk offset="12938" nBytes="84" chunkPositionInArray="[458752]"/>
+            <dmrpp:chunk offset="13022" nBytes="84" chunkPositionInArray="[524288]"/>
+            <dmrpp:chunk offset="13106" nBytes="84" chunkPositionInArray="[589824]"/>
+            <dmrpp:chunk offset="13190" nBytes="84" chunkPositionInArray="[655360]"/>
+            <dmrpp:chunk offset="13274" nBytes="84" chunkPositionInArray="[720896]"/>
+            <dmrpp:chunk offset="13358" nBytes="84" chunkPositionInArray="[786432]"/>
+            <dmrpp:chunk offset="13442" nBytes="84" chunkPositionInArray="[851968]"/>
+            <dmrpp:chunk offset="13526" nBytes="84" chunkPositionInArray="[917504]"/>
+            <dmrpp:chunk offset="13610" nBytes="84" chunkPositionInArray="[983040]"/>
+            <dmrpp:chunk offset="13694" nBytes="84" chunkPositionInArray="[1048576]"/>
+            <dmrpp:chunk offset="13778" nBytes="84" chunkPositionInArray="[1114112]"/>
+            <dmrpp:chunk offset="13862" nBytes="84" chunkPositionInArray="[1179648]"/>
+            <dmrpp:chunk offset="13946" nBytes="84" chunkPositionInArray="[1245184]"/>
+            <dmrpp:chunk offset="14030" nBytes="84" chunkPositionInArray="[1310720]"/>
+            <dmrpp:chunk offset="14114" nBytes="84" chunkPositionInArray="[1376256]"/>
+            <dmrpp:chunk offset="14198" nBytes="84" chunkPositionInArray="[1441792]"/>
+            <dmrpp:chunk offset="14282" nBytes="84" chunkPositionInArray="[1507328]"/>
+            <dmrpp:chunk offset="14366" nBytes="84" chunkPositionInArray="[1572864]"/>
+            <dmrpp:chunk offset="14450" nBytes="84" chunkPositionInArray="[1638400]"/>
+            <dmrpp:chunk offset="14534" nBytes="84" chunkPositionInArray="[1703936]"/>
+            <dmrpp:chunk offset="14618" nBytes="84" chunkPositionInArray="[1769472]"/>
+            <dmrpp:chunk offset="14702" nBytes="84" chunkPositionInArray="[1835008]"/>
+            <dmrpp:chunk offset="14786" nBytes="84" chunkPositionInArray="[1900544]"/>
+            <dmrpp:chunk offset="14870" nBytes="84" chunkPositionInArray="[1966080]"/>
+            <dmrpp:chunk offset="14954" nBytes="84" chunkPositionInArray="[2031616]"/>
+            <dmrpp:chunk offset="15038" nBytes="84" chunkPositionInArray="[2097152]"/>
+            <dmrpp:chunk offset="15122" nBytes="84" chunkPositionInArray="[2162688]"/>
+            <dmrpp:chunk offset="15206" nBytes="84" chunkPositionInArray="[2228224]"/>
+            <dmrpp:chunk offset="15290" nBytes="84" chunkPositionInArray="[2293760]"/>
+            <dmrpp:chunk offset="15374" nBytes="84" chunkPositionInArray="[2359296]"/>
+            <dmrpp:chunk offset="15458" nBytes="84" chunkPositionInArray="[2424832]"/>
+            <dmrpp:chunk offset="15542" nBytes="84" chunkPositionInArray="[2490368]"/>
+            <dmrpp:chunk offset="15626" nBytes="84" chunkPositionInArray="[2555904]"/>
+            <dmrpp:chunk offset="15710" nBytes="84" chunkPositionInArray="[2621440]"/>
+            <dmrpp:chunk offset="15794" nBytes="84" chunkPositionInArray="[2686976]"/>
+            <dmrpp:chunk offset="15878" nBytes="84" chunkPositionInArray="[2752512]"/>
+            <dmrpp:chunk offset="15962" nBytes="84" chunkPositionInArray="[2818048]"/>
+            <dmrpp:chunk offset="16046" nBytes="84" chunkPositionInArray="[2883584]"/>
+            <dmrpp:chunk offset="16130" nBytes="84" chunkPositionInArray="[2949120]"/>
+            <dmrpp:chunk offset="16214" nBytes="84" chunkPositionInArray="[3014656]"/>
+            <dmrpp:chunk offset="16298" nBytes="84" chunkPositionInArray="[3080192]"/>
+            <dmrpp:chunk offset="16382" nBytes="84" chunkPositionInArray="[3145728]"/>
+            <dmrpp:chunk offset="16466" nBytes="84" chunkPositionInArray="[3211264]"/>
+            <dmrpp:chunk offset="16550" nBytes="84" chunkPositionInArray="[3276800]"/>
+            <dmrpp:chunk offset="16634" nBytes="84" chunkPositionInArray="[3342336]"/>
+            <dmrpp:chunk offset="16718" nBytes="84" chunkPositionInArray="[3407872]"/>
+            <dmrpp:chunk offset="16802" nBytes="84" chunkPositionInArray="[3473408]"/>
+            <dmrpp:chunk offset="16886" nBytes="84" chunkPositionInArray="[3538944]"/>
+            <dmrpp:chunk offset="16970" nBytes="84" chunkPositionInArray="[3604480]"/>
+            <dmrpp:chunk offset="17054" nBytes="84" chunkPositionInArray="[3670016]"/>
+            <dmrpp:chunk offset="17138" nBytes="84" chunkPositionInArray="[3735552]"/>
+            <dmrpp:chunk offset="17222" nBytes="84" chunkPositionInArray="[3801088]"/>
+            <dmrpp:chunk offset="17306" nBytes="84" chunkPositionInArray="[3866624]"/>
+            <dmrpp:chunk offset="17390" nBytes="84" chunkPositionInArray="[3932160]"/>
+            <dmrpp:chunk offset="17474" nBytes="84" chunkPositionInArray="[3997696]"/>
+            <dmrpp:chunk offset="17558" nBytes="84" chunkPositionInArray="[4063232]"/>
+            <dmrpp:chunk offset="17642" nBytes="84" chunkPositionInArray="[4128768]"/>
+        </dmrpp:chunks>
+    </Byte>
+    <Attribute name="history" type="String">
+        <Value>2023-02-15 12:22:52 Hyrax test_array_dim2.xml
+</Value>
+    </Attribute>
+    <Attribute name="history_json" type="String">
+        <Value>[{&quot;$schema&quot;:&quot;https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;2023-02-15 12:22:52&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.16.3&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;test_array_dim2.xml&quot;}]}]</Value>
+    </Attribute>
+    <Attribute name="g1" type="Container"/>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.13</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.11</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/scr/kent/opendap/hyrax-dev/hyrax/bes/modules/dmrpp_module/.libs/build_dmrpp -f test_array_dim2.h5 -r test_array_dim2.h5.dmr -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
