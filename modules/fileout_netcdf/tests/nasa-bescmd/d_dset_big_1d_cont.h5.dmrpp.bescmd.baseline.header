@@ -1,6 +1,6 @@
 netcdf test {
 dimensions:
-	dim1 = 4294967296 ;
+	dim1 = 5368709120 ;
 variables:
 	ubyte dset(dim1) ;
 
