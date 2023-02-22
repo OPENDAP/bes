@@ -1,0 +1,16 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+dnl instructions to run this test
+dnl 1) copy this file(testsuite_big_size.at) to testsuite.at(cp testsuite_big_size.at testsuite.at)
+dnl 2) Go to the HDF5 handler, cd /data.nasa, run download_dap4.sh
+dnl 3) link all the files to the /data of the dmrpp module.
+dnl 4) run make check
+dnl Constrained data responses
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([big_size/dset_big_start.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([big_size/dset_big_stride.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([big_size/dset_big_cont_start.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([big_size/dset_big_cont_stride.dap])
