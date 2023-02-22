@@ -40,6 +40,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -184,12 +185,9 @@ private:
     }
 
 public:
-    catT()
-    {
-    }
-    ~catT()
-    {
-    }
+    catT() = default;
+
+    ~catT() = default;
 
     void setUp()
     {
@@ -207,14 +205,8 @@ public:
             cerr << e.get_message() << endl;
             throw e;
         }
+
         if (bes_debug) BESDebug::SetUp("cerr,bes");
-
-    }
-
-    void tearDown()
-    {
-        delete TheBESKeys::d_instance;
-        TheBESKeys::d_instance = 0;
     }
 
     CPPUNIT_TEST_SUITE( catT );

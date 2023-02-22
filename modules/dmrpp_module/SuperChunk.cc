@@ -84,7 +84,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         // If this chunk used/uses hdf5 fill values, do not attempt to deflate, et., its
         // values since the fill value code makes the chunks 'fully formed.'' jhrg 5/16/22
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
@@ -124,7 +124,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 
     if(array){
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
+            chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width_ll());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
@@ -340,14 +340,12 @@ void process_chunks_unconstrained_concurrent(
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
-            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
 
             if (!chunks.empty()){
                 // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                             new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
@@ -355,7 +353,6 @@ void process_chunks_unconstrained_concurrent(
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<

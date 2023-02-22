@@ -53,7 +53,7 @@ private:
 
 public:
 	ServerApp();
-	~ServerApp() override;
+	~ServerApp() override = default;
 	int initialize(int argC, char **argV) override;
 	int run() override;
 	int terminate(int status = 0) override;

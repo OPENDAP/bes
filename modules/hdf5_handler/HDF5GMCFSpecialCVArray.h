@@ -42,7 +42,7 @@
 
 class HDF5GMCFSpecialCVArray: public HDF5BaseArray {
 public:
-    HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int h5_tnumelm, const std::string &varfullpath, H5GCFProduct h5_product_type,
+    HDF5GMCFSpecialCVArray(H5DataType h5_dtype, int64_t h5_tnumelm, const std::string &varfullpath, H5GCFProduct h5_product_type,
         const std::string & n = "", libdap::BaseType * v = nullptr) :
         HDF5BaseArray(n, v), dtype(h5_dtype), tnumelm(h5_tnumelm), varname(varfullpath), product_type(h5_product_type)
     {
@@ -54,20 +54,22 @@ public:
 
 private:
     H5DataType dtype;
-    int tnumelm;
+    int64_t tnumelm;
     std::string varname;
     H5GCFProduct product_type;
     CVType cvartype = CV_UNSUPPORTED;
 
     // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
-    void obtain_gpm_l3_layer(int, std::vector<int>&, std::vector<int>&, std::vector<int>& );
+    void obtain_gpm_l3_layer(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>& );
 
     // GPM version 4.0 nlayer values are from the document
     // http://www.eorc.jaxa.jp/GPM/doc/product/format/en/03.%20GPM_DPR_L2_L3%20Product%20Format%20Documentation_E.pdf
-    void obtain_gpm_l3_layer2(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
+    void obtain_gpm_l3_layer2(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
 
-    void obtain_gpm_l3_hgt(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
-    void obtain_gpm_l3_nalt(int, std::vector<int>&, std::vector<int>&, const std::vector<int>&);
+    void obtain_gpm_l3_nalt_hgt(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
+#if 0
+    void obtain_gpm_l3_nalt(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>&);
+#endif
     void read_data_NOT_from_mem_cache(bool add_cache, void*buf) override;
 
 };

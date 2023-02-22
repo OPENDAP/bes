@@ -2252,9 +2252,9 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2306,9 +2306,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2347,9 +2347,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++) {
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
@@ -2394,9 +2394,9 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d){
                     if (""==(*it_d)->getNewName()) 
-                        ar->append_dim((int)((*it_d)->getSize()));
+                        ar->append_dim_ll((*it_d)->getSize());
                     else 
-                        ar->append_dim((int)((*it_d)->getSize()), (*it_d)->getNewName());
+                        ar->append_dim_ll((*it_d)->getSize(), (*it_d)->getNewName());
                 }
 
                 ar->set_is_dap4(true);
