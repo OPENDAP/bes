@@ -134,7 +134,7 @@ milliseconds RequestServiceTimer::remaining() const {
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     auto dt = remaining();
-    INFO_LOG(prolog + "remaining: " + std::to_string(dt.count()) + " ms\n");
+    // INFO_LOG(prolog + "remaining: " + std::to_string(dt.count()) + " ms\n");
     return timeout_enabled && (dt <= milliseconds {0});
 }
 
