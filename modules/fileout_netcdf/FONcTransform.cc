@@ -64,6 +64,7 @@
 #include "RequestServiceTimer.h"
 
 #include "DapFunctionUtils.h"
+#include "DapUtils.h"
 
 #include "FONcRequestHandler.h" // for the keys
 
@@ -463,6 +464,7 @@ void FONcTransform::transform_dap2(ostream &strm) {
 #endif
 
     throw_if_dap2_response_too_big(_dds, besDRB.get_ce());
+    dap_utils::throw_for_dap4_typed_vars_or_attrs(_dds,__FILE__,__LINE__);
 
     // Convert the DDS into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
