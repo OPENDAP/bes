@@ -1,0 +1,33 @@
+netcdf test {
+dimensions:
+	time = 2 ;
+	y = 2 ;
+	x = 2 ;
+variables:
+	float prcp(time, y, x) ;
+		prcp:_FillValue = -9999.f ;
+		prcp:long_name = "daily total precipitation" ;
+		prcp:units = "mm/day" ;
+		prcp:missing_value = -9999.f ;
+		prcp:coordinates = "lat lon" ;
+		prcp:grid_mapping = "lambert_conformal_conic" ;
+		prcp:cell_methods = "area: mean time: sum" ;
+
+// global attributes:
+		:start_year = 2010s ;
+		:source = "Daymet Software Version 4.0" ;
+		:Version_software = "Daymet Software Version 4.0" ;
+		:Version_data = "Daymet Data Version 4.0" ;
+		:Conventions = "CF-1.6" ;
+		:citation = "Please see http://daymet.ornl.gov/ for current Daymet data citation information" ;
+		:references = "Please see http://daymet.ornl.gov/ for current information on Daymet references" ;
+		:history = "removed date-timex daymet_v4_daily_na_prcp_2010.nc.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"daymet_v4_daily_na_prcp_2010.nc.h5.dmrpp\"}]}]" ;
+data:
+
+ prcp =
+  _, _,
+  _, _,
+  _, _,
+  _, _ ;
+}
