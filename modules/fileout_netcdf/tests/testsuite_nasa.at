@@ -65,8 +65,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/daymet_start.dmrpp.b
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/daymet_stride.dmrpp.bescmd)
 
 
-# Big array real NASA file: The size of a variable precip is 365*8075*7814*4/1024/1024/1024=85GB. Note: it takes long time and huge memory.
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5.bescmd)
+# Big array real NASA file: The size of a variable precip is 365*8075*7814*4/1024/1024/1024=85GB. Note: it takes long time and huge memory. So we turn it off by default.
+#AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5.bescmd)
 
 #When looping through the HDF5 attributes of an HDF5 object, the attribute order for SMAP L1C and SMAP_L3 are different
 #on Mac. So use platform-specific tests to generate expected failure on Mac.
