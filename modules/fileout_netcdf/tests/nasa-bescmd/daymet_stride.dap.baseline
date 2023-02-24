@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="daymet_v4_daily_na_prcp_2010.nc.h5">
+    <Dimension name="y" size="2"/>
+    <Dimension name="x" size="2"/>
+    <Dimension name="time" size="2"/>
+    <Float32 name="prcp">
+        <Dim name="/time"/>
+        <Dim name="/y"/>
+        <Dim name="/x"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>daily total precipitation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>mm/day</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>lambert_conformal_conic</Value>
+        </Attribute>
+        <Attribute name="cell_methods" type="String">
+            <Value>area: mean time: sum</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+    <Attribute name="start_year" type="Int16">
+        <Value>2010</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Daymet Software Version 4.0</Value>
+    </Attribute>
+    <Attribute name="Version_software" type="String">
+        <Value>Daymet Software Version 4.0</Value>
+    </Attribute>
+    <Attribute name="Version_data" type="String">
+        <Value>Daymet Data Version 4.0</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="citation" type="String">
+        <Value>Please see http://daymet.ornl.gov/ for current Daymet data citation information</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>Please see http://daymet.ornl.gov/ for current information on Daymet references</Value>
+    </Attribute>
+</Dataset>
+
+The data:
+Float32 prcp[time = 2][y = 2][x = 2] = {{{-9999, -9999},{-9999, -9999}},{{-9999, -9999},{-9999, -9999}}};
+
