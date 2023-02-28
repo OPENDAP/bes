@@ -2056,3 +2056,164 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
  
     return ret_value;
 }
+
+void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_coord_names) {
+
+    // We need to construct the var name to Array map,using unordered_map for quick search.
+    unordered_map<string, Array*> d4map_array_maps;
+
+    // This vector holds all variables that can have coverage maps.
+    vector<Array*> has_map_arrays;
+ 
+    Constructor::Vars_iter vi = d4_root->var_begin();
+    Constructor::Vars_iter ve = d4_root->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Array can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+
+            vector<string> coord_names;
+            obtain_coord_names(t_a,coord_names);
+            if (coord_names.empty()==false) 
+                make_coord_names_fpath(d4_root,coord_names);
+
+cerr<<"var FQN is "<<t_a->FQN() <<endl;
+ 
+        }
+    }
+
+    for (D4Group::groupsIter gi = d4_root->grp_begin(), ge = d4_root->grp_end(); gi != ge; ++gi) {
+        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+cerr<<"group name "<<(*gi)->name() <<endl;
+        add_dap4_coverage_default_internal(*gi, handled_coord_names, d4map_array_maps);
+    }
+}
+
+void add_dap4_coverage_default_internal(D4Group* d4_grp, const vector<string>& handled_coord_names,unordered_map<string, Array*> &d4map_array_maps) {
+
+
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Array can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+
+cerr<<"var FQN is "<<t_a->FQN() <<endl;
+
+            vector<string> coord_names;
+            obtain_coord_names(t_a,coord_names);
+            if (coord_names.empty()==false) 
+                make_coord_names_fpath(d4_grp,coord_names);
+
+cerr<<"var FQN is "<<t_a->FQN() <<endl;
+ 
+        }
+
+    }
+
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
+        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+cerr<<"group name "<<(*gi)->name() <<endl;
+        add_dap4_coverage_default_internal(*gi, handled_coord_names, d4map_array_maps);
+    }
+}
+
+void obtain_coord_names(Array* ar, vector<string> & coord_names) {
+
+    D4Attributes *d4_attrs = ar->attributes();
+    D4Attribute *d4_attr = d4_attrs->find("coordinates");
+    if (d4_attr != nullptr) {
+        if (d4_attr->type() == attr_str_c) {
+            if (d4_attr->num_values() == 1) {
+                string tempstring = d4_attr->value(0);
+                char sep=' ';
+                HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
+            }
+            // From our observations, the coordinates is just one string. 
+            // So this else block may never be executed.
+            else {
+
+                for (D4Attribute::D4AttributeIter av_i = d4_attr->value_begin(), av_e = d4_attr->value_end(); av_i != av_e; av_i++) {
+                    vector <string> tempstr_vec;
+                    char sep=' ';
+                    HDF5CFUtil::Split_helper(tempstr_vec,*av_i,sep);
+                    for (unsigned int i =0; i<tempstr_vec.size();i++)
+                        coord_names.push_back(tempstr_vec[i]);
+                }
+            }
+        }
+    }
+
+for (int i = 0; i <coord_names.size();i++)
+cerr<<"coord_names is "<<coord_names[i] <<endl;
+}
+
+void make_coord_names_fpath(D4Group* d4_grp, vector<string> &coord_names) {
+
+    for (auto &cname:coord_names) {
+        if (cname.find('/')==string::npos) { 
+            if (false == obtain_no_path_cv(d4_grp,cname))
+                cname ="";
+        }
+        else if(cname[0] == '/')
+            handle_absolute_path_cv(d4_grp,cname);
+        else 
+            handle_relative_path_cv(d4_grp,cname);
+    }
+
+}
+
+bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
+
+    
+    bool found_cv = false;
+    
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Currently we only consider the cv that is an array.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+            if (coord_name == t_a->name()) {
+                // Find the coordinate variable, But We need to return the absolute path of the variable.
+                coord_name = t_a->FQN();
+                found_cv = true;
+                break;
+            }
+        }
+
+    }
+    if (found_cv == false) {
+        if (d4_grp->get_parent()) {
+            D4Group *d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+            found_cv = obtain_no_path_cv(d4_grp_par,coord_name);
+        }
+    }
+    return found_cv;
+}
+
+void handle_absolute_path_cv(D4Group *d4_grp, string &coord_name) {
+    // For the time being, we don't check if this cv with absolute path exists.
+    return;
+}
+
+void handle_relative_path_cv(D4Group *d4_grp, string &coord_name) {
+
+}
+
+

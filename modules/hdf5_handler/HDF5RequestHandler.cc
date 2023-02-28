@@ -1590,6 +1590,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 vector<link_info_t> hdf5_hls;
  
                 breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
+  
+vector<string> handled_coord_names;
+                add_dap4_coverage_default(root_grp,handled_coord_names);
 
                 // Leave the following block until the HDF-EOS5 is fully supported.
 #if 0
