@@ -32,7 +32,9 @@ NGAP_SRC =  NgapRequestHandler.cc \
             NgapModule.cc \
             NgapContainer.cc \
             NgapContainerStorage.cc \
-            NgapDmrppContainer.cc \
+            BuildDmrppRequestHandler.cc \
+            BuildDmrppContainer.cc \
+            BuildDmrppContainerStorage.cc \
             NgapApi.cc
 
 NGAP_HDR =  NgapNames.h \
@@ -40,7 +42,9 @@ NGAP_HDR =  NgapNames.h \
             NgapModule.h \
             NgapContainer.h \
             NgapContainerStorage.h \
-            NgapDmrppContainer.h \
+            BuildDmrppRequestHandler.cc \
+            BuildDmrppContainer.h \
+            BuildDmrppContainerStorage.cc \
             NgapApi.h
 
 # Not used. jhrg 3/30/22 NgapError.h
