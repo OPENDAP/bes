@@ -42,9 +42,9 @@ NGAP_HDR =  NgapNames.h \
             NgapModule.h \
             NgapContainer.h \
             NgapContainerStorage.h \
-            BuildDmrppRequestHandler.cc \
+            BuildDmrppRequestHandler.h \
             BuildDmrppContainer.h \
-            BuildDmrppContainerStorage.cc \
+            BuildDmrppContainerStorage.h \
             NgapApi.h
 
 # Not used. jhrg 3/30/22 NgapError.h

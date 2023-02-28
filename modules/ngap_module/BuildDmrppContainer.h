@@ -85,26 +85,6 @@ public:
     virtual bool release();
 
     virtual void dump(std::ostream &strm) const;
-
-    /** @brief retrieve the real name for this container, such as a
-     * file name.
-     *
-     * @return real name, such as file name
-     *//*
-    std::string get_real_name() const
-    {
-        return d_real_name;
-    }
-
-    *//** @brief set the real name for this container, such as a file name
-     * if reading a data file.
-     *
-     * @param real_name real name, such as the file name
-     *//*
-    void set_real_name(const std::string &real_name)
-    {
-        d_real_name = real_name;
-    }*/
 };
 
 } // namespace ngap
