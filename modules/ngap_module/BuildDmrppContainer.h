@@ -23,18 +23,16 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef NgapDmrppContainer_h_
-#define NgapDmrppContainer_h_ 1
+#ifndef BuildDmrppContainer_h_
+#define BuildDmrppContainer_h_ 1
 
 #include <string>
 #include <ostream>
 
+#include "BESContainer.h"
 #include "RemoteResource.h"
 
-
 namespace ngap {
-
-
 
 /** @brief Container representing a remote request
  *
@@ -47,7 +45,7 @@ namespace ngap {
  */
 enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-class NgapDmrppContainer {
+class BuildDmrppContainer : public BESContainer {
 
 private:
     http::RemoteResource *d_data_rresource;
@@ -62,24 +60,25 @@ private:
     bool inject_data_url();
 
 protected:
-    void _duplicate(NgapDmrppContainer &copy_to);
+    void _duplicate(BuildDmrppContainer &copy_to);
 
-    NgapDmrppContainer() : d_data_rresource(nullptr)
+    BuildDmrppContainer() :
+            BESContainer(), d_data_rresource(nullptr)
     {
     }
 
 public:
-    NgapDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    BuildDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
-    NgapDmrppContainer(const NgapDmrppContainer &copy_from);
+    BuildDmrppContainer(const BuildDmrppContainer &copy_from);
 
     // void get_granule_path(const std::string &path) const ;
 
     static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
 
-    virtual ~NgapDmrppContainer();
+    virtual ~BuildDmrppContainer();
 
-//    virtual BESContainer * ptr_duplicate();
+    virtual BESContainer * ptr_duplicate();
 
     virtual std::string access();
 
@@ -91,23 +90,23 @@ public:
      * file name.
      *
      * @return real name, such as file name
-     */
+     *//*
     std::string get_real_name() const
     {
         return d_real_name;
     }
 
-    /** @brief set the real name for this container, such as a file name
+    *//** @brief set the real name for this container, such as a file name
      * if reading a data file.
      *
      * @param real_name real name, such as the file name
-     */
+     *//*
     void set_real_name(const std::string &real_name)
     {
         d_real_name = real_name;
-    }
+    }*/
 };
 
 } // namespace ngap
 
-#endif // NgapDmrppContainer_h_
+#endif // BuildDmrppContainer_h_
