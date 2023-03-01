@@ -2060,10 +2060,17 @@ hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname) {
 void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_coord_names) {
 
     // We need to construct the var name to Array map,using unordered_map for quick search.
-    unordered_map<string, Array*> d4map_array_maps;
+    // Dimension scale path to array maps(Grid and non-coordinate dimensions)
+    unordered_map<string, Array*> dsname_array_maps;
+    obtain_ds_name_array_maps(d4_root,dsname_array_maps, handled_coord_names);
 
+    // Coordinate to array(Swath)
+    unordered_map<string, Array*> coname_array_maps;
+
+#if 0
     // This vector holds all variables that can have coverage maps.
     vector<Array*> has_map_arrays;
+#endif
  
     Constructor::Vars_iter vi = d4_root->var_begin();
     Constructor::Vars_iter ve = d4_root->var_end();
@@ -2080,9 +2087,11 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_c
             vector<string> coord_names;
             obtain_coord_names(t_a,coord_names);
             if (coord_names.empty()==false) 
-                make_coord_names_fpath(d4_root,coord_names);
+                make_coord_names_fpath(d4_root,t_a,coord_names);
 
 cerr<<"var FQN is "<<t_a->FQN() <<endl;
+for (unsigned i = 0; i <coord_names.size();i++)
+cerr<<"coordinate name final is "<<coord_names[i] <<endl;
  
         }
     }
@@ -2090,7 +2099,7 @@ cerr<<"var FQN is "<<t_a->FQN() <<endl;
     for (D4Group::groupsIter gi = d4_root->grp_begin(), ge = d4_root->grp_end(); gi != ge; ++gi) {
         //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
 cerr<<"group name "<<(*gi)->name() <<endl;
-        add_dap4_coverage_default_internal(*gi, handled_coord_names, d4map_array_maps);
+        add_dap4_coverage_default_internal(*gi, handled_coord_names, dsname_array_maps);
     }
 }
 
@@ -2114,13 +2123,16 @@ cerr<<"var FQN is "<<t_a->FQN() <<endl;
             vector<string> coord_names;
             obtain_coord_names(t_a,coord_names);
             if (coord_names.empty()==false) 
-                make_coord_names_fpath(d4_grp,coord_names);
-
+                make_coord_names_fpath(d4_grp,t_a,coord_names);
+for (unsigned i = 0; i <coord_names.size();i++)
+cerr<<"coordinate name final is "<<coord_names[i] <<endl;
+ 
 cerr<<"var FQN is "<<t_a->FQN() <<endl;
  
         }
 
     }
+
 
     for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
         //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
@@ -2159,7 +2171,7 @@ for (int i = 0; i <coord_names.size();i++)
 cerr<<"coord_names is "<<coord_names[i] <<endl;
 }
 
-void make_coord_names_fpath(D4Group* d4_grp, vector<string> &coord_names) {
+void make_coord_names_fpath(D4Group* d4_grp, Array *ar, vector<string> &coord_names) {
 
     for (auto &cname:coord_names) {
         if (cname.find('/')==string::npos) { 
@@ -2169,7 +2181,7 @@ void make_coord_names_fpath(D4Group* d4_grp, vector<string> &coord_names) {
         else if(cname[0] == '/')
             handle_absolute_path_cv(d4_grp,cname);
         else 
-            handle_relative_path_cv(d4_grp,cname);
+            handle_relative_path_cv(d4_grp,ar, cname);
     }
 
 }
@@ -2212,8 +2224,109 @@ void handle_absolute_path_cv(D4Group *d4_grp, string &coord_name) {
     return;
 }
 
-void handle_relative_path_cv(D4Group *d4_grp, string &coord_name) {
+void handle_relative_path_cv(D4Group *d4_grp, Array *ar, string &coord_name) {
 
+    // The only valid relative path is among the path of the ancestor groups according to CF.
+    // So if the identified coordinate variable (cv) names are not under the ancestor groups, we
+    // don't consider a valid coordinate and skip it. Also we assume the "../" is used
+    // in the relative path as a way to go to the parent group.
+
+    bool find_coord = true;
+    string sep = "../";
+    unsigned short sep_count = 0;
+    size_t pos = coord_name.find(sep, 0);
+    if (pos !=0)
+        find_coord = false;
+    else {
+        while(pos != string::npos)
+        {   
+            sep_count++;
+            size_t temp_pos = pos;
+            pos = coord_name.find(sep,pos+1);
+            // If we find something not like ../../../??,this is invalid.
+            if ((pos !=string::npos) && (pos !=(temp_pos+3))) {
+                find_coord = false;
+                break;
+            }
+        }
+    }
+    string msg = "The coordinate attribute that includes the relative path ";
+    msg +="must contain at least one ../ string but this coordinate with the value <";
+    msg +=coord_name +'>'+" doesn't contain one.";
+    if (sep_count == 0)
+         throw InternalErr(__FILE__, __LINE__, msg); 
+cerr<<"sep_count is "<<sep_count <<endl;
+
+    // Now we need to find the absolute path of the coordinate variable. 
+    if (find_coord) {
+
+        // Obtain variable's name and FQN
+        string var_name = ar->name();
+        string var_fqn  = ar->FQN();
+
+
+        size_t co_path_pos = 0;
+            
+        size_t var_back_st_pos = var_fqn.size() - var_name.size()-1;
+        if (var_back_st_pos >0)
+            var_back_st_pos--;
+cerr<<"var_back_st_pos is "<<var_back_st_pos <<endl;
+
+        // We need to search backward and then reduce the number of "../".
+        for (size_t i =var_back_st_pos; i >=0;i--) {
+	    if (var_fqn[i] == '/') {
+                sep_count--;
+                if(sep_count == 0) {
+                    co_path_pos = i;
+                    break;
+                }
+            }
+        }
+cerr<<"co_path_pos is "<<co_path_pos <<endl;
+
+        if (sep_count > 0) // Invalid relative paths. 
+            find_coord = false;
+        else {//build up the coordinate variable full path
+
+            string the_path = var_fqn.substr(0,co_path_pos+1);
+cerr<<"the_path is "<<the_path <<endl;
+            string the_name = HDF5CFUtil::obtain_string_after_lastslash(coord_name);
+cerr<<"the_name is "<<the_name <<endl;
+            coord_name = the_path + the_name;
+
+        }
+
+    }
+
+}
+
+void obtain_ds_name_array_maps(libdap::D4Group *d4_grp, std::unordered_map<std::string,libdap::Array*> &dsn_array_maps,const std::vector<std::string>& handled_coord_names) {
+
+
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
+
+    for (; vi != ve; vi++) {
+
+        const BaseType *v = *vi;
+
+        // Only Array can have maps.
+        if (libdap::dods_array_c == v->type()) {
+
+            auto t_a = static_cast<Array *>(*vi);
+            if (t_a->dimensions() == 1) {
+                string t_a_fqn = t_a->FQN();
+                if (find(handled_coord_names.begin(),handled_coord_names.end(),t_a_fqn) != handled_coord_names.end()) 
+                    dsn_array_maps.emplace(t_a_fqn,t_a);
+            }
+        }
+    }
+
+    for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
+        //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
+cerr<<"group name "<<(*gi)->name() <<endl;
+        obtain_ds_name_array_maps(*gi, dsn_array_maps, handled_coord_names);
+    }
 }
 
 
