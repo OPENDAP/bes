@@ -2085,9 +2085,16 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_c
             auto t_a = static_cast<Array *>(*vi);
 
             vector<string> coord_names;
+            unordered_set<string> handled_dim_names;
             obtain_coord_names(t_a,coord_names);
-            if (coord_names.empty()==false) 
+            if (coord_names.empty()==false) {
                 make_coord_names_fpath(d4_root,t_a,coord_names);
+                remove_empty_coord_names(coord_names);
+                add_coord_maps(d4_root,t_a,coord_names,coname_array_maps,handled_dim_names);
+                add_dimscale_maps(d4_root,t_a,dsname_array_maps,handled_dim_names);
+            }
+            else 
+                add_dimscale_maps(d4_root,t_a,dsname_array_maps,handled_dim_names);
 
 cerr<<"var FQN is "<<t_a->FQN() <<endl;
 for (unsigned i = 0; i <coord_names.size();i++)
@@ -2099,11 +2106,11 @@ cerr<<"coordinate name final is "<<coord_names[i] <<endl;
     for (D4Group::groupsIter gi = d4_root->grp_begin(), ge = d4_root->grp_end(); gi != ge; ++gi) {
         //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
 cerr<<"group name "<<(*gi)->name() <<endl;
-        add_dap4_coverage_default_internal(*gi, handled_coord_names, dsname_array_maps);
+        add_dap4_coverage_default_internal(*gi, handled_coord_names, dsname_array_maps,coname_array_maps);
     }
 }
 
-void add_dap4_coverage_default_internal(D4Group* d4_grp, const vector<string>& handled_coord_names,unordered_map<string, Array*> &d4map_array_maps) {
+void add_dap4_coverage_default_internal(D4Group* d4_grp, const vector<string>& handled_coord_names,unordered_map<string, Array*> &d4map_array_maps, unordered_map<string, Array*> &coname_array_maps) {
 
 
     Constructor::Vars_iter vi = d4_grp->var_begin();
@@ -2300,6 +2307,17 @@ cerr<<"the_name is "<<the_name <<endl;
 
 }
 
+void remove_empty_coord_names(vector<string> & coord_names) {
+
+    for (auto it = coord_names.begin(); it !=coord_names.end();) {
+        if (*it =="")
+            it = coord_names.erase(it);
+        else 
+            ++it;
+    }
+
+}
+
 void obtain_ds_name_array_maps(libdap::D4Group *d4_grp, std::unordered_map<std::string,libdap::Array*> &dsn_array_maps,const std::vector<std::string>& handled_coord_names) {
 
 
@@ -2329,4 +2347,123 @@ cerr<<"group name "<<(*gi)->name() <<endl;
     }
 }
 
+void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names, 
+        unordered_map<string,Array*> & coname_array_maps, unordered_set<string> & handled_dim_names) {
 
+    // Search if coord_names can be found in the current coname_array_maps. 
+
+    for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
+
+        unordered_map<string, Array*>::const_iterator it_ma = coname_array_maps.find(*cv_it);
+        if(it_ma != coname_array_maps.end()) {
+cerr<<"it_ma->first " <<it_ma->first <<endl;
+cerr<<"it_ma->second->fqn " <<(it_ma->second)->FQN()<<endl;
+
+#if 0
+            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+            has_map_array->maps()->add_map(d4_map);
+#endif
+
+            // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of 
+            // these dimensions should NOT be included in the final coverage maps. 
+            obtain_handled_dim_names(it_ma->second,handled_dim_names);
+            
+
+            // Also need to remove this coordinate name from the coord_names vector since this coordinate is handled.
+            cv_it = coord_names.erase(cv_it);
+            
+        }
+        else 
+            ++cv_it;
+    }
+    
+
+    for (auto cv_it =coord_names.begin(); cv_it != coord_names.end();) {
+
+        bool found_cv = false;
+        Constructor::Vars_iter vi = d4_grp->var_begin();
+        Constructor::Vars_iter ve = d4_grp->var_end();
+
+        for (; vi != ve; vi++) {
+    
+            const BaseType *v = *vi;
+    
+            // Currently we only consider the cv that is an array.
+            if (libdap::dods_array_c == v->type()) {
+    
+                auto t_a = static_cast<Array *>(*vi);
+                if (*cv_it == t_a->FQN()) {
+    
+                    // Add the maps
+#if 0
+            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+            has_map_array->maps()->add_map(d4_map);
+#endif
+
+                    // Need to add this coordinate to the coname_array_maps 
+                    coname_array_maps.emplace(t_a->FQN(),t_a);
+                    // Obtain the dimension full paths. These dimensions are handled dimensions. The dimension scales of
+                    // these dimensions should NOT be included in the final coverage maps.
+                    obtain_handled_dim_names(t_a,handled_dim_names);
+
+                    found_cv = true;
+                    break;
+                }
+            }
+    
+        }
+
+        if (found_cv) 
+            cv_it = coord_names.erase(cv_it);
+        else
+            ++cv_it;
+    }
+
+    // Need to check the parents() and call recursively.
+    
+    if (coord_names.empty() == false && d4_grp->get_parent()) {
+        D4Group *d4_grp_par = static_cast<D4Group*>(d4_grp->get_parent());
+        add_coord_maps(d4_grp_par,var,coord_names,coname_array_maps,handled_dim_names);
+    }
+}
+
+void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names) {
+
+    // Need to remove handled_dim_names.
+
+    // Loop through dc_array_maps and check the handled_dim_names set.
+    // Also check var's dimensions. Only add var's unhandled dimension scales if these dimension scales exist. 
+
+    Array::Dim_iter di = var->dim_begin();
+    Array::Dim_iter de = var->dim_end();
+
+    for (; di != de; di++) {
+        D4Dimension * d4_dim = var->dimension_D4dim(di);
+        if (handled_dim_names.find(d4_dim->fully_qualified_name() == handled_dim_names.end())) {
+            unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(*cv_it);
+            if (it_ma != dc_array_maps.end()) {
+                // insert map for var., the map is it_ma.
+#if 0
+            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+            has_map_array->maps()->add_map(d4_map);
+#endif
+
+            }
+
+        }
+
+    }
+    return;
+}
+
+void obtain_handled_dim_names((Array *var, unordered_set<string> & handled_dim_names) {
+
+    Array::Dim_iter di = var->dim_begin();
+    Array::Dim_iter de = var->dim_end();
+
+    for (; di != de; di++) {
+        D4Dimension * d4_dim = var->dimension_D4dim(di);
+        handled_dim_names.insert(d4_dim->fully_qualified_name());
+    }
+}
+ 
