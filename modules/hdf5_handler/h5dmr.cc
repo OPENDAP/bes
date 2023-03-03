@@ -329,7 +329,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
 //bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,unordered_map<string, vector<string>>& varpath_to_dims)
-bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info)
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,bool is_eos5, vector<link_info_t> & hdf5_hls,const eos5_dim_info_t & eos5_dim_info, vector<string> & handled_cv_names)
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -426,7 +426,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* p
             // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
             // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
             bool is_pure_dim = false;
-            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls);
+            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_eos5,is_pure_dim,hdf5_hls,handled_cv_names);
                
             if(false == is_pure_dim) {
                 hid_t dset_id = -1;
@@ -607,7 +607,7 @@ cout <<"par_grp_name is "<<par_grp_name <<endl;
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info);
+                    breadth_first(file_id,cgroup, t_fpn.data(), tem_d4_cgroup,fname,use_dimscale,is_eos5,hdf5_hls,eos5_dim_info,handled_cv_names);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
@@ -2064,6 +2064,9 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_c
     // Dimension scale path to array maps(Grid and non-coordinate dimensions)
     unordered_map<string, Array*> dsname_array_maps;
     obtain_ds_name_array_maps(d4_root,dsname_array_maps, handled_coord_names);
+for (const auto &dmap:dsname_array_maps)
+    cout <<"Final dim map name: " << dmap.first <<endl;
+
 
     // Coordinate to array(Swath)
     unordered_map<string, Array*> coname_array_maps;
@@ -2096,6 +2099,7 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_c
             }
             else 
                 add_dimscale_maps(d4_root,t_a,dsname_array_maps,handled_dim_names);
+            
 
 #if 0
 cerr<<"var FQN is "<<t_a->FQN() <<endl;
@@ -2111,6 +2115,40 @@ cerr<<"coordinate name final is "<<coord_names[i] <<endl;
 cerr<<"group name "<<(*gi)->name() <<endl;
         add_dap4_coverage_default_internal(*gi, dsname_array_maps,coname_array_maps);
     }
+
+    // Now we need to remove the maps from the coordinate variables and the dimension scales. 
+    // First dimension scales.
+    for (auto &ds_map:dsname_array_maps) {
+        D4Maps *d4_maps = (ds_map.second)->maps();
+        if (d4_maps->size() !=1) 
+            throw InternalErr(__FILE__, __LINE__, "The number of dims of a dimension scale should be 1");
+        D4Map * d4_map = d4_maps->get_map(0);
+        d4_maps->remove_map(d4_map);
+    }
+
+    // Then coordinates
+    for (auto &cv_map:coname_array_maps) {
+        D4Maps *d4_maps = (cv_map.second)->maps();
+
+        D4Maps::D4MapsIter d4map_i = d4_maps->map_begin();
+        D4Maps::D4MapsIter d4map_e = d4_maps->map_end();
+
+        for(; d4map_i !=d4map_e;d4map_i++) 
+            d4_maps->remove_map(*d4map_i);
+
+    }
+#if 0
+
+cerr<<"d4_map size is "<<d4_maps->size() <<endl;
+        for (int i = 0; i<d4_maps->size();i++) {
+            D4Map * d4_map = d4_maps->get_map(i);
+cerr<<"d4_map name is "<<d4_map->name() <<endl;
+            //d4_maps->remove_map(d4_map);
+        }
+#endif
+
+
+
 }
 
 void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, Array*> &dsname_array_maps, unordered_map<string, Array*> &coname_array_maps) {
@@ -2336,6 +2374,8 @@ void remove_empty_coord_names(vector<string> & coord_names) {
 void obtain_ds_name_array_maps(libdap::D4Group *d4_grp, std::unordered_map<std::string,libdap::Array*> &dsn_array_maps,const std::vector<std::string>& handled_coord_names) {
 
 
+for (const auto & cvname:handled_coord_names)
+cerr<<" cvname is "<< cvname <<endl;
     Constructor::Vars_iter vi = d4_grp->var_begin();
     Constructor::Vars_iter ve = d4_grp->var_end();
 
@@ -2349,17 +2389,25 @@ void obtain_ds_name_array_maps(libdap::D4Group *d4_grp, std::unordered_map<std::
             auto t_a = static_cast<Array *>(*vi);
             if (t_a->dimensions() == 1) {
                 string t_a_fqn = t_a->FQN();
+cerr<<"t_a_fqn is "<<t_a_fqn <<endl;
                 if (find(handled_coord_names.begin(),handled_coord_names.end(),t_a_fqn) != handled_coord_names.end()) 
                     dsn_array_maps.emplace(t_a_fqn,t_a);
             }
         }
     }
+for (const auto &dmap:dsn_array_maps) 
+    cout <<"dim map name before: " << dmap.first <<endl;
+
 
     for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
         //    BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
 cerr<<"group name "<<(*gi)->name() <<endl;
         obtain_ds_name_array_maps(*gi, dsn_array_maps, handled_coord_names);
     }
+
+for (const auto &dmap:dsn_array_maps) 
+    cout <<"dim map name: " << dmap.first <<endl;
+
 }
 
 void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names, 
@@ -2455,11 +2503,15 @@ void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unorder
             unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(dim_fqn);
             if (it_ma != dc_array_maps.end()) {
                 // insert map for var., the map is *it_ma->second.
+cerr<<"var_fqn is "<<var->FQN() <<endl;
 cerr<<"dim_fqn is "<<dim_fqn <<endl;
 #if 0
             auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
             has_map_array->maps()->add_map(d4_map);
 #endif
+                auto d4_map = new D4Map(it_ma->first, it_ma->second);
+                var->maps()->add_map(d4_map);
+
             }
         }
     }
