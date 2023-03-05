@@ -2124,6 +2124,7 @@ cerr<<"group name "<<(*gi)->name() <<endl;
             throw InternalErr(__FILE__, __LINE__, "The number of dims of a dimension scale should be 1");
         D4Map * d4_map = d4_maps->get_map(0);
         d4_maps->remove_map(d4_map);
+        delete d4_map;
     }
 
     // Then coordinates
@@ -2133,8 +2134,11 @@ cerr<<"group name "<<(*gi)->name() <<endl;
         D4Maps::D4MapsIter d4map_i = d4_maps->map_begin();
         D4Maps::D4MapsIter d4map_e = d4_maps->map_end();
 
-        for(; d4map_i !=d4map_e;d4map_i++) 
+        for(; d4map_i !=d4map_e;d4map_i++) { 
+            D4Map *tmp_map = *d4map_i;
             d4_maps->remove_map(*d4map_i);
+            delete tmp_map;
+        }
 
     }
 #if 0
