@@ -769,6 +769,11 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([za_1_3d_yztd.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([swath_1_2d_xyz_special_char_aug.h5.dmr.bescmd])
 
+# Test DAP4 coverage for the default option
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_coverage_special.h5.dmr.bescmd])
+
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_size64_be.h5.dap.bescmd])
 
