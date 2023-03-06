@@ -2504,6 +2504,7 @@ cerr<<"Find map it_ma->second->fqn " <<(it_ma->second)->FQN()<<endl;
 
 void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names) {
 
+    BESDEBUG("h5","Coming to add_dimscale_maps() "<<endl);
     // Loop through dc_array_maps and check the handled_dim_names set.
     // Also check var's dimensions. Only add var's unhandled dimension scales if these dimension scales exist. 
 
@@ -2512,22 +2513,24 @@ void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unorder
 
     for (; di != de; di++) {
         D4Dimension * d4_dim = var->dimension_D4dim(di);
-        string dim_fqn = d4_dim->fully_qualified_name();
-        if (handled_dim_names.find(dim_fqn) == handled_dim_names.end()) {
-            unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(dim_fqn);
-            if (it_ma != dc_array_maps.end()) {
-                // insert map for var., the map is *it_ma->second.
+        if(d4_dim) { 
+            string dim_fqn = d4_dim->fully_qualified_name();
+            if (handled_dim_names.find(dim_fqn) == handled_dim_names.end()) {
+                unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(dim_fqn);
+                if (it_ma != dc_array_maps.end()) {
+                    // insert map for var., the map is *it_ma->second.
 #if 0
-cerr<<"var_fqn is "<<var->FQN() <<endl;
-cerr<<"dim_fqn is "<<dim_fqn <<endl;
+    cerr<<"var_fqn is "<<var->FQN() <<endl;
+    cerr<<"dim_fqn is "<<dim_fqn <<endl;
 #endif
 #if 0
-            auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
-            has_map_array->maps()->add_map(d4_map);
+                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
+                has_map_array->maps()->add_map(d4_map);
 #endif
-                auto d4_map = new D4Map(it_ma->first, it_ma->second);
-                var->maps()->add_map(d4_map);
-
+                    auto d4_map = new D4Map(it_ma->first, it_ma->second);
+                    var->maps()->add_map(d4_map);
+    
+                }
             }
         }
     }
@@ -2541,7 +2544,8 @@ void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_na
 
     for (; di != de; di++) {
         D4Dimension * d4_dim = var->dimension_D4dim(di);
-        handled_dim_names.insert(d4_dim->fully_qualified_name());
+        if (d4_dim) 
+            handled_dim_names.insert(d4_dim->fully_qualified_name());
     }
 }
  
