@@ -2422,8 +2422,10 @@ for (const auto &dmap:dsn_array_maps)
 
 }
 
+// Add the valid coordinate variables(via CF's coordinates attribute) to the var's DAP4 maps.
 void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names, 
-        unordered_map<string,Array*> & coname_array_maps, unordered_set<string> & handled_dim_names) {
+                    unordered_map<string,Array*> & coname_array_maps, 
+                    unordered_set<string> & handled_dim_names) {
 
     // Search if coord_names can be found in the current coname_array_maps. 
 
@@ -2502,34 +2504,36 @@ cerr<<"Find map it_ma->second->fqn " <<(it_ma->second)->FQN()<<endl;
     }
 }
 
+// Add the valid coordinate variables(via dimension scales) to the var's DAP4 maps.
+// Loop through the handled dimension names(by the coordinate variables) set
+// Then check this var's dimensions. Only add this var's unhandled coordinates(dimension scales) if these dimension scales exist. 
 void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names) {
 
     BESDEBUG("h5","Coming to add_dimscale_maps() "<<endl);
-    // Loop through dc_array_maps and check the handled_dim_names set.
-    // Also check var's dimensions. Only add var's unhandled dimension scales if these dimension scales exist. 
 
     Array::Dim_iter di = var->dim_begin();
     Array::Dim_iter de = var->dim_end();
 
     for (; di != de; di++) {
+
         D4Dimension * d4_dim = var->dimension_D4dim(di);
+
+        // DAP4 dimension may not exist, so need to check.
         if(d4_dim) { 
+
+            // Fully Qualified name(absolute path) needs to be used as a key for search.
             string dim_fqn = d4_dim->fully_qualified_name();
+
+            // Find that this dimension is not handled, we need to check if there is a coordinate variable via dimension scale 
+            // for this dimension.
             if (handled_dim_names.find(dim_fqn) == handled_dim_names.end()) {
+
                 unordered_map<string, Array*>::const_iterator it_ma = dc_array_maps.find(dim_fqn);
+
+                // Find a valid coordinate variable for this dimension, insert this coordinate variable as a DAP4 map to this var.
                 if (it_ma != dc_array_maps.end()) {
-                    // insert map for var., the map is *it_ma->second.
-#if 0
-    cerr<<"var_fqn is "<<var->FQN() <<endl;
-    cerr<<"dim_fqn is "<<dim_fqn <<endl;
-#endif
-#if 0
-                auto d4_map = new D4Map((it_ma->second)->FQN(), it_ma->second, has_map_array);
-                has_map_array->maps()->add_map(d4_map);
-#endif
                     auto d4_map = new D4Map(it_ma->first, it_ma->second);
                     var->maps()->add_map(d4_map);
-    
                 }
             }
         }
@@ -2537,6 +2541,8 @@ void add_dimscale_maps(libdap::D4Group* d4_grp, libdap::Array* var, std::unorder
     return;
 }
 
+
+// Obtain handled dimension names of this variable. An unordered set is used for quick search.
 void obtain_handled_dim_names(Array *var, unordered_set<string> & handled_dim_names) {
 
     Array::Dim_iter di = var->dim_begin();
