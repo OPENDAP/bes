@@ -1,5 +1,6 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
+
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
@@ -26,10 +27,10 @@ AM_CPPFLAGS += -DMODULE_VERSION=\"$(M_VER)\"
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 
-AM_LDFLAGS =
+AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests tests data tests_build_dmrpp
+SUBDIRS = . unit-tests tests data tests_build_dmrpp writer
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
