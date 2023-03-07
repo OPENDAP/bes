@@ -119,11 +119,12 @@ void obtain_coord_names(libdap::Array*, std::vector<std::string>& coord_names);
 void make_coord_names_fpath(libdap::D4Group*, libdap::Array*, std::vector<std::string>& coord_names);
 bool obtain_no_path_cv(libdap::D4Group*, std::string &coord_name);
 void handle_absolute_path_cv(libdap::D4Group*, std::string &coord_name);
-void handle_relative_path_cv(libdap::D4Group*, libdap::Array*, std::string &coord_name);
+//void handle_relative_path_cv(libdap::D4Group*, libdap::Array*, std::string &coord_name);
+void handle_relative_path_cv(const libdap::D4Group*, std::string &coord_name);
 void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
-void add_dimscale_maps(libdap::D4Group*, libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
+void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
 
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
