@@ -30,7 +30,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests tests data tests_build_dmrpp writer
+SUBDIRS = writer . unit-tests tests data tests_build_dmrpp
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
@@ -55,7 +55,7 @@ DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestH
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
+    $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types -Lwriter -ldmrpp_writer
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 

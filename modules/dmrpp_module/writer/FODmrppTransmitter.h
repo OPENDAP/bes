@@ -31,8 +31,6 @@
 
 #include <BESTransmitter.h>
 
-/*class BESResponseObject;
-class BESDataHandlerInterface;*/
 
 /** @brief BESTransmitter class named "dmrpp" that transmits an OPeNDAP
  * data object as a DMRPP file
@@ -44,14 +42,12 @@ class BESDataHandlerInterface;*/
  * @see BESTransmitter
  */
 class FODmrppTransmitter: public BESTransmitter {
-private:
-    static std::string temp_dir;
 
 public:
     FODmrppTransmitter();
     virtual ~FODmrppTransmitter() { }
 
-    static void send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+    static void send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
 #endif // A_FODmrppTransmitter_h

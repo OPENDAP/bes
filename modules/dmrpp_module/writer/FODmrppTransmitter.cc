@@ -37,31 +37,6 @@
 #include <thread>
 #include <future>
 
-
-
-
-
-
-/*
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#include <sys/types.h>                  // For umask
-#include <sys/stat.h>
-
-#include <iostream>
-#include <fstream>
-*/
-
-//#include <libdap/DataDDS.h>
-//#include <libdap/BaseType.h>
-//#include <libdap/escaping.h>
-//#include <libdap/ConstraintEvaluator.h>
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/D4ParserSax2.h>
@@ -80,22 +55,18 @@
 #include <BESInternalFatalError.h>
 #include <BESDapError.h>
 #include "BESDMRResponse.h"
-//#include <stringbuffer.h>
 
-#include <modules/dmrpp_module/DMRpp.h>
-#include <modules/dmrpp_module/DmrppTypeFactory.h>
-#include <modules/dmrpp_module/DmrppD4Group.h>
+#include "DMRpp.h"
+#include "DmrppTypeFactory.h"
+#include "DmrppD4Group.h"
 
 #include "FODmrppTransmitter.h"
 
 using namespace libdap;
 using namespace std;
 
-#define MODULE "fodmrpp"
+#define MODULE "dmrpp"
 #define prolog string("FODmrppTransmitter::").append(__func__).append("() - ")
-
-#define FO_DMRPP_TEMP_DIR "/tmp"
-string FODmrppTransmitter::temp_dir;
 
 /** @brief Construct the FoW10nJsonTransmitter
  *
@@ -111,7 +82,7 @@ string FODmrppTransmitter::temp_dir;
 FODmrppTransmitter::FODmrppTransmitter() :
     BESTransmitter()
 {
-    add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dap4_data);
+    add_method(DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
 
     /*if (FODmrppTransmitter::temp_dir.empty()) {
         // Where is the temp directory for creating these files
@@ -145,7 +116,7 @@ FODmrppTransmitter::FODmrppTransmitter() :
  * there are any problems reading the data, writing to a netcdf file, or
  * streaming the netcdf file
  */
-void FODmrppTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
@@ -153,7 +124,7 @@ void FODmrppTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
     auto dmr = bdmr->get_dmr();
 
-    string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
+    //string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
 
     // This object closes the file when it goes out of scope.
     /*bes::TempFile temp_file;
@@ -162,46 +133,37 @@ void FODmrppTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 //    BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
     try {
-    dmrpp::DMRpp dmrpp;
-    dmrpp::DmrppTypeFactory dtf;
-    dmrpp.set_factory(&dtf);
+        dmrpp::DMRpp dmrpp;
+        dmrpp::DmrppTypeFactory dtf;
+        dmrpp.set_factory(&dtf);
 
-//    ifstream in(dmr_name.c_str());
-    D4ParserSax2 parser;
-    /*parser.intern(in, &dmrpp, false);
+        D4ParserSax2 parser;
+        /*parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_name, &dmrpp);
+        add_chunk_information(h5_file_name, &dmrpp);
 
-    if (add_production_metadata) {
-        inject_version_and_configuration(argc, argv, &dmrpp);
-    }
+        if (add_production_metadata) {
+            inject_version_and_configuration(argc, argv, &dmrpp);
+        }
 
-    XMLWriter writer;
-    dmrpp.print_dmrpp(writer, url_name);
-    cout << writer.get_doc();*/
-
-/*
-        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
-        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
-        FODmrppTransform ft(obj, &dhi, temp_file_name);
-
-        // Call the transform function for DAP4.
-        ft.transform_dap4();*/
+        XMLWriter writer;
+        dmrpp.print_dmrpp(writer, url_name);
+        cout << writer.get_doc();*/
 
         ostream &strm = dhi.get_output_stream();
 
 #if !NDEBUG
         stringstream msg;
         msg << prolog << "Using ostream: " << (void *) &strm << endl;
-        BESDEBUG(MODULE,  msg.str());
-        INFO_LOG( msg.str());
+        BESDEBUG(MODULE, msg.str());
+        INFO_LOG(msg.str());
 #endif
 
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
         // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+        RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit",
+                                                                  __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
 
 //        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
@@ -222,5 +184,5 @@ void FODmrppTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
+    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);
 }

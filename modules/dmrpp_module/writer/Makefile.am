@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(DMRPP_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch \
-    -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src
+    -I../ -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src
 AM_CXXFLAGS =
 AM_LDFLAGS = $(DMRPP_LDFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -27,7 +27,7 @@ noinst_LTLIBRARIES = libdmrpp_writer.la
 libdmrpp_writer_la_SOURCES = $(FODMRPP_SRC) $(FODMRPP_HDR)
 libdmrpp_writer_la_LIBADD = $(LIBADD)
 libdmrpp_writer_la_LDFLAGS = $(AM_LDFLAGS)
-libdmrpp_writer_la_LDFLAGS += -no-undefined
+libdmrpp_writer_la_LDFLAGS += -no-undefinedpwd
 
 FODMRPP_SRC = FODmrppTransmitter.cc $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.cc
 
