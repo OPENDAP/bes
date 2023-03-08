@@ -42,18 +42,16 @@
 #include <libdap/D4ParserSax2.h>
 
 #include <BESContextManager.h>
-#include <BESDataDDSResponse.h>
 #include <BESDapNames.h>
-#include <BESDataNames.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
-#include <TempFile.h>
 #include <RequestServiceTimer.h>
 
 #include <BESLog.h>
 #include <BESError.h>
 #include <BESInternalFatalError.h>
 #include <BESDapError.h>
+
 #include "BESDMRResponse.h"
 
 #include "DMRpp.h"
@@ -61,6 +59,7 @@
 #include "DmrppD4Group.h"
 
 #include "FODmrppTransmitter.h"
+#include <modules/dmrpp_module/build_dmrpp_util.h>
 
 using namespace libdap;
 using namespace std;
@@ -104,38 +103,49 @@ FODmrppTransmitter::FODmrppTransmitter() :
  */
 void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    /*BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
+
+    bool add_production_metadata = false;
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
     auto dmr = bdmr->get_dmr();
-
-    //string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
-
-    // This object closes the file when it goes out of scope.
-    *//*bes::TempFile temp_file;
-    string temp_file_name = temp_file.create(FODmrppRequestHandler::temp_dir,  "dmrpp_"+base_name);
-*//*
-//    BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
     try {
         dmrpp::DMRpp dmrpp;
         dmrpp::DmrppTypeFactory dtf;
         dmrpp.set_factory(&dtf);
 
+        XMLWriter dmr_writer;
+        dmr->print_dap4(dmr_writer, false);
+
+        // WORKAROUND: Need to write DMR to stringstream to strip HDF5 specific content
+        // for subsequent parsing by D4ParserSax3 parser.
+        ostringstream oss;
+        oss << dmr_writer.get_doc();
+
+        istringstream iss(oss.str());
+
         D4ParserSax2 parser;
-        *//*parser.intern(in, &dmrpp, false);
+        parser.intern(iss, &dmrpp, false);
 
-        add_chunk_information(h5_file_name, &dmrpp);
+        // WORKAROUND: Because this Transmitter is called after the H5 ResponseHandler building
+        // the DMR, dhi.container is set to null by BESDap4ResponseHandler::execute_each().
+        // BUT we need access to the container::d_real_name so we use an iterator to the dhi.containers
+        // to get the first container.
+        string dataset_name = (*(dhi.containers.begin()))->access();
 
-        if (add_production_metadata) {
+        build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp);
+
+        /*if (add_production_metadata) {
             inject_version_and_configuration(argc, argv, &dmrpp);
-        }
+        }*/
 
-        XMLWriter writer;
-        dmrpp.print_dmrpp(writer, url_name);
-        cout << writer.get_doc();*//*
+        XMLWriter dmrpp_writer;
+        dmrpp.print_dmrpp(dmrpp_writer);
+        cout << dmrpp_writer.get_doc();
 
+        // TODO: send writer.get_doc to dhi_output_stream.
         ostream &strm = dhi.get_output_stream();
 
 #if !NDEBUG
@@ -151,8 +161,6 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         RequestServiceTimer::TheTimer()->throw_if_timeout_expired("ERROR: bes-timeout expired before transmit",
                                                                   __FILE__, __LINE__);
         BESUtil::conditional_timeout_cancel();
-
-//        BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file_name << endl);
 
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
 //        BESUtil::file_to_stream(temp_file_name,strm);
@@ -170,5 +178,5 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);*/
+    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);
 }
