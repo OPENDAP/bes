@@ -45,10 +45,8 @@ class url;
 }
 namespace curl {
 
-//void http_get_and_write_resource(const std::string &url,
-//                                 const int fd,
-//                                 std::vector<std::string> *http_response_headers){}
-
+///@name Get data from a URL
+///@{
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
                                  const int fd,
                                  std::vector<std::string> *http_response_headers);
@@ -56,14 +54,33 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
 void http_get(const std::string &url, char *response_buf, size_t bufsz);
 void http_get(const std::string &target_url, std::vector<char> &buf);
 
-#if 0
-// Never used
-std::string http_get_as_string(const std::string &url);
-#endif
-
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
 std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url);
+
+CURL *init(const std::string &target_url,
+           const struct curl_slist *http_request_headers,
+           std::vector<std::string> *resp_hdrs);
+
+#if 0
+// made static in CurlUtils.cc. jhrg 03/07/23
+CURL *init(CURL *ceh,
+           const std::string &target_url,
+           const struct curl_slist *http_request_headers,
+           std::vector<std::string> *http_response_hdrs);
+#endif
+
+void super_easy_perform(CURL *ceh, const int fd);
+void super_easy_perform(CURL *ceh);
+
+#if 0
+// made static. jhrg 3/7/23
+bool configure_curl_handle_for_proxy(CURL *ceh, const std::string &url);
+#endif
+
+void set_error_buffer(CURL *ceh, char *error_buffer);
+
+void unset_error_buffer(CURL *ceh);
 
 std::string get_netrc_filename();
 
@@ -75,20 +92,6 @@ unsigned long max_redirects();
 
 std::string hyrax_user_agent();
 
-CURL *init(const std::string &target_url,
-           const struct curl_slist *http_request_headers,
-           std::vector<std::string> *resp_hdrs);
-
-CURL *init(CURL *ceh,
-           const std::string &target_url,
-           const struct curl_slist *http_request_headers,
-           std::vector<std::string> *http_response_hdrs);
-
-bool configure_curl_handle_for_proxy(CURL *ceh, const std::string &url);
-
-void set_error_buffer(CURL *ceh, char *error_buffer);
-
-void unset_error_buffer(CURL *ceh);
 
 void eval_curl_easy_setopt_result(CURLcode result,
                                   std::string msg_base,
@@ -103,9 +106,6 @@ bool eval_curl_easy_perform_code(CURL *ceh,
                                  unsigned int attempt);
 
 bool eval_http_get_response(CURL *ceh, char *error_buffer, const std::string &requested_url);
-
-void super_easy_perform(CURL *ceh, const int fd);
-void super_easy_perform(CURL *ceh);
 
 std::string get_effective_url(CURL *ceh, std::string requested_url);
 
