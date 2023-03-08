@@ -29,6 +29,8 @@ libdmrpp_writer_la_LIBADD = $(LIBADD)
 libdmrpp_writer_la_LDFLAGS = $(AM_LDFLAGS)
 libdmrpp_writer_la_LDFLAGS += -no-undefinedpwd
 
-FODMRPP_SRC = FODmrppTransmitter.cc $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.cc
+FODMRPP_SRC = FODmrppTransmitter.cc
+#$(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.cc
 
-FODMRPP_HDR = FODmrppTransmitter.h $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.h
+FODMRPP_HDR = FODmrppTransmitter.h
+#$(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.h

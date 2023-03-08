@@ -82,21 +82,7 @@ using namespace std;
 FODmrppTransmitter::FODmrppTransmitter() :
     BESTransmitter()
 {
-    add_method(DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
-
-    /*if (FODmrppTransmitter::temp_dir.empty()) {
-        // Where is the temp directory for creating these files
-        bool found = false;
-        string key = "FoDmrpp.Tempdir";
-        TheBESKeys::TheKeys()->get_value(key, FODmrppTransmitter::temp_dir, found);
-        if (!found || FODmrppTransmitter::temp_dir.empty()) {
-        	FODmrppTransmitter::temp_dir = FO_DMRPP_TEMP_DIR;
-        }
-        string::size_type len = FODmrppTransmitter::temp_dir.size();
-        if (FODmrppTransmitter::temp_dir[len - 1] == '/') {
-        	FODmrppTransmitter::temp_dir = FODmrppTransmitter::temp_dir.substr(0, len - 1);
-        }
-    }*/
+    add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
 }
 
 /**
@@ -118,7 +104,7 @@ FODmrppTransmitter::FODmrppTransmitter() :
  */
 void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
+    /*BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
@@ -127,9 +113,9 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     //string base_name = dmr->filename().substr(dmr->filename().find_last_of("/\\") + 1);
 
     // This object closes the file when it goes out of scope.
-    /*bes::TempFile temp_file;
+    *//*bes::TempFile temp_file;
     string temp_file_name = temp_file.create(FODmrppRequestHandler::temp_dir,  "dmrpp_"+base_name);
-*/
+*//*
 //    BESDEBUG(MODULE,  prolog << "Building response file " << temp_file_name << endl);
 
     try {
@@ -138,7 +124,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         dmrpp.set_factory(&dtf);
 
         D4ParserSax2 parser;
-        /*parser.intern(in, &dmrpp, false);
+        *//*parser.intern(in, &dmrpp, false);
 
         add_chunk_information(h5_file_name, &dmrpp);
 
@@ -148,7 +134,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 
         XMLWriter writer;
         dmrpp.print_dmrpp(writer, url_name);
-        cout << writer.get_doc();*/
+        cout << writer.get_doc();*//*
 
         ostream &strm = dhi.get_output_stream();
 
@@ -184,5 +170,5 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);
+    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);*/
 }
