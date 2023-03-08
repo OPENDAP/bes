@@ -41,6 +41,7 @@
 #ifndef _h5dmr_H
 #define _h5dmr_H
 #include <unordered_map>
+#include <unordered_set>
 #include <H5Gpublic.h>
 #include <H5Fpublic.h>
 #include <H5Ipublic.h>
@@ -91,7 +92,7 @@ typedef struct {
 } eos5_dim_info_t;
 #endif
 
-bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, const eos5_dim_info_t & );
+bool breadth_first(const hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,std::vector<link_info_t>&, const eos5_dim_info_t & ,std::vector<std::string> &);
 
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool,const std::unordered_map<std::string, std::vector<std::string>>&);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t, bool, bool, const std::unordered_map<std::string, std::vector<std::string>>&);
@@ -110,6 +111,20 @@ void map_h5_attrs_to_dap4(hid_t oid,libdap::D4Group* d4g, libdap::BaseType* d4b,
 /// A function that maps HDF5 object full path as an attribute to DAP4
 void map_h5_varpath_to_dap4_attr(libdap::D4Group* d4g,libdap::BaseType* d4b,libdap::Structure * d4s,const std::string &,short flag);
 
+/// Add DAP4 coverage 
+void add_dap4_coverage_default(libdap::D4Group* d4_grp,const std::vector<std::string>& handled_coord_names);
+void add_dap4_coverage_default_internal(libdap::D4Group* d4_grp, std::unordered_map<std::string,libdap::Array*> &, std::unordered_map<std::string,libdap::Array*> &);
+void obtain_ds_name_array_maps(libdap::D4Group*, std::unordered_map<std::string,libdap::Array*> &,const std::vector<std::string>& handled_coord_names);
+void obtain_coord_names(libdap::Array*, std::vector<std::string>& coord_names);
+void make_coord_names_fpath(libdap::D4Group*, std::vector<std::string>& coord_names);
+bool obtain_no_path_cv(libdap::D4Group*, std::string &coord_name);
+void handle_absolute_path_cv(const libdap::D4Group*, const std::string &coord_name);
+void handle_relative_path_cv(const libdap::D4Group*, std::string &coord_name);
+void remove_empty_coord_names(std::vector<std::string>&);
+void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
+void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name, std::unordered_map<std::string,libdap::Array*> & coname_array_maps, std::unordered_set<std::string>&);
+void add_dimscale_maps(libdap::Array*, std::unordered_map<std::string,libdap::Array*> & dc_array_maps, const std::unordered_set<std::string> & handled_dim_names);
+
 /// EOS5 handling 
 string read_struct_metadata(hid_t s_file_id);
 int get_strmetadata_num(const string & meta_str);
@@ -120,4 +135,5 @@ bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string, vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
 
 hsize_t obtain_unlim_pure_dim_size(hid_t pid, const string &dname);
+
 #endif

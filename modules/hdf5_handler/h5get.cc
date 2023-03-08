@@ -608,7 +608,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// \param[in\out] vector to store hardlink info. of a dataset.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -825,6 +825,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
             else { // AFAIK, NASA netCDF-4 like files are following CF name conventions. So no need to carry out the special character operations.
                 (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
                 (*dt_inst_ptr).dimnames_path.push_back(dname);
+                handled_cv_names.push_back(dname);
             }
 #if 0
            //}
