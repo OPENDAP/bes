@@ -2090,7 +2090,7 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
 
             // Having the coordinate attributes,
             if (coord_names.empty()==false) {
-                make_coord_names_fpath(d4_root,t_a,coord_names);
+                make_coord_names_fpath(d4_root,coord_names);
                 remove_empty_coord_names(coord_names);
                 add_coord_maps(d4_root,t_a,coord_names,coname_array_maps,handled_dim_names);
                 add_dimscale_maps(t_a,dsname_array_maps,handled_dim_names);
@@ -2157,7 +2157,7 @@ void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, A
             if (coord_names.empty()==false) {
 
                 // Obtain FQN of  all coordinates 
-                make_coord_names_fpath(d4_grp,t_a,coord_names);
+                make_coord_names_fpath(d4_grp,coord_names);
                 remove_empty_coord_names(coord_names);
 
                 // Add coordinates to the coordinate-array map. Also need to return handled dimension names.
@@ -2214,7 +2214,7 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
 }
 
 // Generate absolute path(FQN) for all coordinate variables.
-void make_coord_names_fpath(D4Group* d4_grp, Array *ar, vector<string> &coord_names) {
+void make_coord_names_fpath(D4Group* d4_grp,  vector<string> &coord_names) {
 
     for (auto &cname:coord_names) {
 
@@ -2267,7 +2267,7 @@ bool obtain_no_path_cv(D4Group *d4_grp, string &coord_name) {
     return found_cv;
 }
 
-void handle_absolute_path_cv(D4Group *d4_grp, string &coord_name) {
+void handle_absolute_path_cv(const D4Group *d4_grp, const string &coord_name) {
     // For the time being, we don't check if this cv with absolute path exists.
     return;
 }
@@ -2321,7 +2321,6 @@ void handle_relative_path_cv(const D4Group *d4_grp, string &coord_name) {
 
         // To find the coordinate variable path, we need to search backward and then reduce the number of "../".
         for (size_t i =var_back_st_pos; i >=0;i--) {
-	    //if (var_fqn[i] == '/') {
 	    if (grp_fqn[i] == '/') {
                 sep_count--;
                 if(sep_count == 0) {

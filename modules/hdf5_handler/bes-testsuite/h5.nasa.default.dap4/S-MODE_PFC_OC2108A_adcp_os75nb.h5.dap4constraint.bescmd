@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="S-MODE" space="catalog">/data/S-MODE_PFC_OC2108A_adcp_os75nb.h5</setContainer>
+    <define name="d">
+	<container name="S-MODE" />
+        <dap4constraint>zonal_velocity_component[2:1:3][5:1:6]</dap4constraint>
+    </define>
+    <get type="dap" definition="d" />
+</request>

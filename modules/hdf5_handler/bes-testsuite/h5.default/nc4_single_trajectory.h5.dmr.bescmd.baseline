@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_single_trajectory.h5">
+    <Dimension name="obs" size="10"/>
+    <Float64 name="lon">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>X</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="z">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>depth of sensor</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>depth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>10971.</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>down</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="time">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>T</Value>
+        </Attribute>
+        <Attribute name="calendar" type="String">
+            <Value>julian</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="temp">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Temperature</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_temperature</Value>
+        </Attribute>
+        <Attribute name="nodc_name" type="String">
+            <Value>WATER TEMPERATURE</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree_Celsius</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>100.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time lat lon z</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="cell_methods" type="String">
+            <Value>time: point longitude: point latitude: point</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <Map name="/z"/>
+    </Float64>
+    <Int32 name="trajectory">
+        <Attribute name="long_name" type="String">
+            <Value>Leg 1 of cruise AVH2016</Value>
+        </Attribute>
+        <Attribute name="cf_role" type="String">
+            <Value>trajectory_id</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="sal">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Salinity</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>sea_water_salinity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>0.001</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>100.</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>time lat lon z</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>crs</Value>
+        </Attribute>
+        <Attribute name="cell_methods" type="String">
+            <Value>time: point longitude: point latitude: point</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <Map name="/z"/>
+    </Float64>
+    <Float64 name="lat">
+        <Dim name="/obs"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Y</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="crs">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>latitude_longitude</Value>
+        </Attribute>
+        <Attribute name="longitude_of_prime_meridian" type="Float64">
+            <Value>0.</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="epsg_code" type="String">
+            <Value>EPSG:4326</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="featureType" type="String">
+        <Value>trajectory</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>Trajectory</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>CF Standard Name Table v30</Value>
+    </Attribute>
+    <Attribute name="sea_name" type="String">
+        <Value>Cordell Bank National Marine Sanctuary, North Pacific Ocean</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>Freely available</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>This file was created on 2016-09-22T18:49:49.468193Z</Value>
+    </Attribute>
+</Dataset>
