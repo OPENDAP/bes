@@ -27,15 +27,13 @@
 #define NgapContainer_h_ 1
 
 #include <string>
-#include <ostream>
+#include <map>  // TODO unordered_map jhrg 3/9/23
+//#include <ostream>
 
 #include "BESContainer.h"
 #include "RemoteResource.h"
 
-
 namespace ngap {
-
-
 
 /** @brief Container representing a remote request
  *
@@ -51,42 +49,31 @@ enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 class NgapContainer: public BESContainer {
 
 private:
-    http::RemoteResource *d_dmrpp_rresource;
+    http::RemoteResource *d_dmrpp_rresource = nullptr;
 
-    // std::vector<std::string> d_collections;
-    // std::vector<std::string> d_facets;
+    void initialize();
+    void filter_response(const std::map<std::string, std::string> &content_filters) const;
 
-    virtual void initialize();
-
-    bool inject_data_url();
-
+    static bool inject_data_url();
 
 protected:
     void _duplicate(NgapContainer &copy_to);
 
-    NgapContainer() :
-            BESContainer(), d_dmrpp_rresource(nullptr)
-    {
-    }
-
 public:
+    NgapContainer() = default;
     NgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    NgapContainer(const NgapContainer &copy_from) = delete;
 
-    NgapContainer(const NgapContainer &copy_from);
+    ~NgapContainer() override;
+    NgapContainer &operator=(const NgapContainer &rhs) = delete;
 
-    // void get_granule_path(const std::string &path) const ;
+    BESContainer * ptr_duplicate() override;
 
-    static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
+    std::string access() override;
 
-    virtual ~NgapContainer();
+    bool release() override;
 
-    virtual BESContainer * ptr_duplicate();
-
-    virtual std::string access();
-
-    virtual bool release();
-
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace ngap

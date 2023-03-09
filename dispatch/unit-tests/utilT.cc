@@ -498,7 +498,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( utilT );
 
 int main(int argc, char *argv[]) {
     int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
+    while ((option_char = getopt(argc, argv, "dDh")) != EOF)
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a static global
@@ -509,9 +509,9 @@ int main(int argc, char *argv[]) {
             case 'h': {     // help - show test names
                 cerr << "Usage: utilT has the following tests:" << endl;
                 const std::vector<Test *> &tests = utilT::suite()->getTests();
-                unsigned int prefix_len = utilT::suite()->getName().append("::").size();
-                for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+                unsigned long prefix_len = utilT::suite()->getName().append("::").size();
+                for (auto &test: tests) {
+                    cerr << test->getName().replace(0, prefix_len, "") << endl;
                 }
                 break;
             }
@@ -526,7 +526,6 @@ int main(int argc, char *argv[]) {
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
-    string test = "";
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
@@ -535,8 +534,7 @@ int main(int argc, char *argv[]) {
         int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = utilT::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
+            wasSuccessful = wasSuccessful && runner.run(utilT::suite()->getName().append("::").append(argv[i]));
             ++i;
         }
     }

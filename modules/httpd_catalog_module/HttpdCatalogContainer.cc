@@ -138,7 +138,7 @@ string HttpdCatalogContainer::access()
 
     BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
 
-    string cachedResource = d_remoteResource->getCacheFileName();
+    string cachedResource = d_remoteResource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
     string type = d_remoteResource->get_type();
@@ -185,7 +185,7 @@ void HttpdCatalogContainer::dump(ostream &strm) const
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->get_filename()
         << endl;
     }
     else {
