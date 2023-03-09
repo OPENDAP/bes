@@ -27,8 +27,8 @@
 
 #include <string>
 
-#include "DmrppNgapContainerStorage.h"
-#include "DmrppNgapContainer.h"
+#include "NgapBuildDmrppContainerStorage.h"
+#include "NgapBuildDmrppContainer.h"
 
 using namespace std;
 // using namespace gateway;
@@ -42,12 +42,12 @@ namespace dmrpp {
  * @param n name of this persistent store
  * @see GatewayContainer
  */
-    DmrppNgapContainerStorage::DmrppNgapContainerStorage(const string &n) :
+    NgapBuildDmrppContainerStorage::NgapBuildDmrppContainerStorage(const string &n) :
             BESContainerStorageVolatile(n)
     {
     }
 
-    DmrppNgapContainerStorage::~DmrppNgapContainerStorage()
+    NgapBuildDmrppContainerStorage::~NgapBuildDmrppContainerStorage()
     {
     }
 
@@ -58,9 +58,9 @@ namespace dmrpp {
  * @param type ignored. The type of the target response is determined by the
  * request response, or could be passed in
  */
-    void DmrppNgapContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
+    void NgapBuildDmrppContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
     {
-        BESContainer *c = new DmrppNgapContainer(s_name, r_name, type);
+        BESContainer *c = new NgapBuildDmrppContainer(s_name, r_name, "h5");
         BESContainerStorageVolatile::add_container(c);
     }
 
@@ -71,9 +71,9 @@ namespace dmrpp {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-    void DmrppNgapContainerStorage::dump(ostream &strm) const
+    void NgapBuildDmrppContainerStorage::dump(ostream &strm) const
     {
-        strm << BESIndent::LMarg << "DmrppNgapContainerStorage::dump - (" << (void *) this << ")" << endl;
+        strm << BESIndent::LMarg << "NgapBuildDmrppContainerStorage::dump - (" << (void *) this << ")" << endl;
         BESIndent::Indent();
         BESContainerStorageVolatile::dump(strm);
         BESIndent::UnIndent();

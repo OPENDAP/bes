@@ -41,7 +41,7 @@ DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
 SuperChunk.cc DMZ.cc \
-DmrppNgapContainer.cc DmrppNgapContainerStorage.cc
+NgapBuildDmrppContainer.cc NgapBuildDmrppContainerStorage.cc
 
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
@@ -50,7 +50,7 @@ DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 DmrppMetadataStore.h DmrppNames.h byteswap_compat.h  \
 SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h \
-DmrppNgapContainer.h DmrppNgapContainerStorage.h
+NgapBuildDmrppContainer.h NgapBuildDmrppContainerStorage.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 

@@ -23,8 +23,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef DmrppNgapContainerStorage_h_
-#define DmrppNgapContainerStorage_h_ 1
+#ifndef NgapBuildDmrppContainerStorage_h_
+#define NgapBuildDmrppContainerStorage_h_ 1
 
 #include "BESContainerStorageVolatile.h"
 
@@ -42,10 +42,10 @@ namespace dmrpp {
  * @see BESContainerStorageVolatile
  * @see GatewayContainer
  */
-class DmrppNgapContainerStorage: public BESContainerStorageVolatile {
+class NgapBuildDmrppContainerStorage: public BESContainerStorageVolatile {
 public:
-    DmrppNgapContainerStorage(const std::string &n);
-    virtual ~DmrppNgapContainerStorage();
+    NgapBuildDmrppContainerStorage(const std::string &n);
+    virtual ~NgapBuildDmrppContainerStorage();
 
     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
 
@@ -54,4 +54,4 @@ public:
 
 } // namespace dmrpp
 
-#endif // DmrppNgapContainerStorage_h_
+#endif // NgapBuildDmrppContainerStorage_h_

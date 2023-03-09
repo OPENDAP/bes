@@ -43,11 +43,11 @@
 #include "RemoteResource.h"
 #include "url_impl.h"
 
-#include "DmrppNgapContainer.h"
+#include "NgapBuildDmrppContainer.h"
 #include "modules/ngap_module/NgapApi.h"
 #include "modules/ngap_module/NgapNames.h"
 
-#define prolog std::string("DmrppNgapContainer::").append(__func__).append("() - ")
+#define prolog std::string("NgapBuildDmrppContainer::").append(__func__).append("() - ")
 
 using namespace std;
 using namespace bes;
@@ -64,7 +64,7 @@ namespace dmrpp {
  * @throws BESSyntaxUserError if the url does not validate
  * @see NgapUtils
  */
-DmrppNgapContainer::DmrppNgapContainer(const string &sym_name,
+NgapBuildDmrppContainer::NgapBuildDmrppContainer(const string &sym_name,
                              const string &real_name,
                              const string &type) :
         BESContainer(sym_name, real_name, type),
@@ -73,7 +73,7 @@ DmrppNgapContainer::DmrppNgapContainer(const string &sym_name,
 }
 
 
-void DmrppNgapContainer::initialize()
+void NgapBuildDmrppContainer::initialize()
 {
     BESDEBUG(MODULE, prolog << "BEGIN (obj_addr: "<< (void *) this << ")" << endl);
     BESDEBUG(MODULE, prolog << "sym_name: "<< get_symbolic_name() << endl);
@@ -97,7 +97,7 @@ void DmrppNgapContainer::initialize()
 /**
  * TODO: I think this implementation of the copy constructor is incomplete/inadequate. Review and fix as needed.
  */
-DmrppNgapContainer::DmrppNgapContainer(const DmrppNgapContainer &copy_from) :
+NgapBuildDmrppContainer::NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from) :
         BESContainer(copy_from),
         d_data_rresource(copy_from.d_data_rresource) {
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
@@ -111,7 +111,7 @@ DmrppNgapContainer::DmrppNgapContainer(const DmrppNgapContainer &copy_from) :
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
 }
 
-void DmrppNgapContainer::_duplicate(DmrppNgapContainer &copy_to) {
+void NgapBuildDmrppContainer::_duplicate(NgapBuildDmrppContainer &copy_to) {
     if (copy_to.d_data_rresource) {
         string err = (string) "The Container has already been accessed, "
                      + "can not duplicate this resource.";
@@ -123,14 +123,14 @@ void DmrppNgapContainer::_duplicate(DmrppNgapContainer &copy_to) {
 }
 
 BESContainer *
-DmrppNgapContainer::ptr_duplicate() {
-    DmrppNgapContainer *container = new DmrppNgapContainer;
+NgapBuildDmrppContainer::ptr_duplicate() {
+    NgapBuildDmrppContainer *container = new NgapBuildDmrppContainer;
     _duplicate(*container);
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
     return container;
 }
 
-DmrppNgapContainer::~DmrppNgapContainer() {
+NgapBuildDmrppContainer::~NgapBuildDmrppContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
     if (d_data_rresource) {
         release();
@@ -145,7 +145,7 @@ DmrppNgapContainer::~DmrppNgapContainer() {
  * @return full path to the remote request response data file
  * @throws BESError if there is a problem making the remote request
  */
-string DmrppNgapContainer::access() {
+string NgapBuildDmrppContainer::access() {
     BESDEBUG(MODULE, prolog << "BEGIN  (obj_addr: "<< (void *) this << ")" << endl);
 
     // Since this the ngap we know that the real_name is a URL.
@@ -218,7 +218,7 @@ string DmrppNgapContainer::access() {
  *
  * @return true if the resource is released successfully and false otherwise
  */
-bool DmrppNgapContainer::release() {
+bool NgapBuildDmrppContainer::release() {
     // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
     //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
     if (d_data_rresource) {
@@ -238,7 +238,7 @@ bool DmrppNgapContainer::release() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void DmrppNgapContainer::dump(ostream &strm) const {
+void NgapBuildDmrppContainer::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BuildDmrppContainer::dump - (" << (void *) this
          << ")" << endl;
     BESIndent::Indent();
@@ -252,7 +252,7 @@ void DmrppNgapContainer::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-bool DmrppNgapContainer::inject_data_url(){
+bool NgapBuildDmrppContainer::inject_data_url(){
     bool result = false;
     bool found;
     string key_value;

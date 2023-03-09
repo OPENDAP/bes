@@ -23,8 +23,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 
-#ifndef DmrppNgapContainer_h_
-#define DmrppNgapContainer_h_ 1
+#ifndef NgapBuildDmrppContainer_h_
+#define NgapBuildDmrppContainer_h_ 1
 
 #include <string>
 #include <ostream>
@@ -36,16 +36,16 @@ namespace dmrpp {
 
 /** @brief Container representing a remote request
  *
- * The real name of a DmrppNgapContainer is the actual remote request. When the
+ * The real name of a NgapBuildDmrppContainer is the actual remote request. When the
  * access method is called the remote request is made, the response
  * saved to file if successful, and the target response returned as the real
  * container that a data handler would then open.
  *
- * @see DmrppNgapContainerStorage
+ * @see NgapBuildDmrppContainerStorage
  */
 enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
-class DmrppNgapContainer : public BESContainer {
+class NgapBuildDmrppContainer : public BESContainer {
 
 private:
     http::RemoteResource *d_data_rresource;
@@ -60,23 +60,23 @@ private:
     bool inject_data_url();
 
 protected:
-    void _duplicate(DmrppNgapContainer &copy_to);
+    void _duplicate(NgapBuildDmrppContainer &copy_to);
 
-    DmrppNgapContainer() :
+    NgapBuildDmrppContainer() :
             BESContainer(), d_data_rresource(nullptr)
     {
     }
 
 public:
-    DmrppNgapContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    NgapBuildDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
-    DmrppNgapContainer(const DmrppNgapContainer &copy_from);
+    NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from);
 
     // void get_granule_path(const std::string &path) const ;
 
     static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
 
-    virtual ~DmrppNgapContainer();
+    virtual ~NgapBuildDmrppContainer();
 
     virtual BESContainer * ptr_duplicate();
 
@@ -89,4 +89,4 @@ public:
 
 } // namespace dmrpp
 
-#endif // DmrppNgapContainer_h_
+#endif // NgapBuildDmrppContainer_h_
