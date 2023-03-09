@@ -346,6 +346,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
@@ -359,6 +361,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
@@ -372,6 +376,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
@@ -390,6 +396,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_pdf</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
@@ -403,6 +410,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Int32 name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
@@ -424,6 +433,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_stratospheric_column_histogram</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis"/>
     </Int32>
     <Int32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
@@ -445,6 +455,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
     </Int32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
@@ -463,6 +474,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_pdf</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_pdf_axis"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
@@ -476,6 +488,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
@@ -494,6 +508,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_pdf</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_pdf_axis"/>
     </Float32>
     <Float32 name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_bounds">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
@@ -507,6 +522,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_total_column_histogram_bounds</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis"/>
+        <Map name="/METADATA_QA_STATISTICS_vertices"/>
     </Float32>
     <Int32 name="METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram">
         <Dim name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
@@ -528,6 +545,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/METADATA/QA_STATISTICS/nitrogendioxide_tropospheric_column_histogram</Value>
         </Attribute>
+        <Map name="/METADATA_QA_STATISTICS_nitrogendioxide_tropospheric_column_histogram_axis"/>
     </Int32>
     <Float32 name="PRODUCT_tm5_constant_b">
         <Dim name="/PRODUCT_layer"/>
@@ -547,6 +565,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/tm5_constant_b</Value>
         </Attribute>
+        <Map name="/PRODUCT_layer"/>
+        <Map name="/PRODUCT_vertices"/>
     </Float32>
     <Float32 name="PRODUCT_averaging_kernel">
         <Dim name="/PRODUCT_time"/>
@@ -574,6 +594,8 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
+        <Map name="/PRODUCT_layer"/>
     </Float32>
     <Int32 name="PRODUCT_tm5_tropopause_layer_index">
         <Dim name="/PRODUCT_time"/>
@@ -600,6 +622,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Int32>
     <Float32 name="PRODUCT_tm5_constant_a">
         <Dim name="/PRODUCT_layer"/>
@@ -619,6 +642,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/tm5_constant_a</Value>
         </Attribute>
+        <Map name="/PRODUCT_layer"/>
+        <Map name="/PRODUCT_vertices"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_altitude">
         <Dim name="/PRODUCT_time"/>
@@ -682,6 +707,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_solar_zenith_angle">
         <Dim name="/PRODUCT_time"/>
@@ -717,6 +743,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_longitude_bounds">
         <Dim name="/PRODUCT_time"/>
@@ -732,6 +759,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
+        <Map name="/PRODUCT_corner"/>
     </Float32>
     <Byte name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_geolocation_flags">
         <Dim name="/PRODUCT_time"/>
@@ -782,6 +811,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Byte>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_satellite_orbit_phase">
         <Dim name="/PRODUCT_time"/>
@@ -845,6 +875,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_latitude_bounds">
         <Dim name="/PRODUCT_time"/>
@@ -860,6 +891,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
+        <Map name="/PRODUCT_corner"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_GEOLOCATIONS_viewing_azimuth_angle">
         <Dim name="/PRODUCT_time"/>
@@ -895,6 +928,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_water_slant_column_density">
         <Dim name="/PRODUCT_time"/>
@@ -924,6 +958,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_ghost_column">
         <Dim name="/PRODUCT_time"/>
@@ -953,6 +988,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_summed_total_column_precision">
         <Dim name="/PRODUCT_time"/>
@@ -982,6 +1018,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_summed_total_column">
         <Dim name="/PRODUCT_time"/>
@@ -1014,6 +1051,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_chi_square">
         <Dim name="/PRODUCT_time"/>
@@ -1037,6 +1075,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_water_liquid_slant_column_density">
         <Dim name="/PRODUCT_time"/>
@@ -1063,6 +1102,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ring_coefficient">
         <Dim name="/PRODUCT_time"/>
@@ -1089,6 +1129,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <UInt16 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_number_of_spectral_points_in_retrieval">
         <Dim name="/PRODUCT_time"/>
@@ -1109,6 +1150,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </UInt16>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_water_slant_column_density_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1135,6 +1177,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_cloud_radiance_fraction_nitrogendioxide_window">
         <Dim name="/PRODUCT_time"/>
@@ -1167,6 +1210,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_total_column_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1196,6 +1240,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_irradiance_chi_square">
         <Dim name="/PRODUCT_time"/>
@@ -1215,6 +1260,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/wavelength_calibration_irradiance_chi_square</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_stretch_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1238,6 +1284,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_slant_column_density_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1264,6 +1311,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_slant_column_density">
         <Dim name="/PRODUCT_time"/>
@@ -1293,6 +1341,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <UInt32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_processing_quality_flags">
         <Dim name="/PRODUCT_time"/>
@@ -1531,6 +1580,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </UInt32>
     <Int32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_number_of_iterations">
         <Dim name="/PRODUCT_time"/>
@@ -1554,6 +1604,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Int32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_polynomial_coefficients">
         <Dim name="/PRODUCT_time"/>
@@ -1581,6 +1632,8 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
+        <Map name="/PRODUCT_polynomial_exponents"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_air_mass_factor_stratosphere">
         <Dim name="/PRODUCT_time"/>
@@ -1607,6 +1660,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_cloud_fraction_crb_nitrogendioxide_window">
         <Dim name="/PRODUCT_time"/>
@@ -1642,6 +1696,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_total_column">
         <Dim name="/PRODUCT_time"/>
@@ -1674,6 +1729,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_offset_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1697,6 +1753,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_chi_square">
         <Dim name="/PRODUCT_time"/>
@@ -1726,6 +1783,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_stretch">
         <Dim name="/PRODUCT_time"/>
@@ -1755,6 +1813,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_polynomial_coefficients_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1779,6 +1838,8 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
+        <Map name="/PRODUCT_polynomial_exponents"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_offset">
         <Dim name="/PRODUCT_time"/>
@@ -1814,6 +1875,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_oxygen_oxygen_dimer_slant_column_density">
         <Dim name="/PRODUCT_time"/>
@@ -1843,6 +1905,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_irradiance_offset_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1862,6 +1925,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/wavelength_calibration_irradiance_offset_precision</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_root_mean_square_error_of_fit">
         <Dim name="/PRODUCT_time"/>
@@ -1888,6 +1952,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_oxygen_oxygen_dimer_slant_column_density_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1914,6 +1979,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_water_liquid_slant_column_density_precision">
         <Dim name="/PRODUCT_time"/>
@@ -1937,6 +2003,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_irradiance_offset">
         <Dim name="/PRODUCT_time"/>
@@ -1968,6 +2035,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/wavelength_calibration_irradiance_offset</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_stratospheric_column">
         <Dim name="/PRODUCT_time"/>
@@ -2000,6 +2068,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ring_coefficient_precision">
         <Dim name="/PRODUCT_time"/>
@@ -2023,6 +2092,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ozone_slant_column_density_precision">
         <Dim name="/PRODUCT_time"/>
@@ -2052,6 +2122,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_stratospheric_column_precision">
         <Dim name="/PRODUCT_time"/>
@@ -2081,6 +2152,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ozone_slant_column_density">
         <Dim name="/PRODUCT_time"/>
@@ -2113,6 +2185,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_pressure">
         <Dim name="/PRODUCT_time"/>
@@ -2139,6 +2212,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_cloud_pressure_crb">
         <Dim name="/PRODUCT_time"/>
@@ -2166,6 +2240,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Byte name="PRODUCT_SUPPORT_DATA_INPUT_DATA_snow_ice_flag">
         <Dim name="/PRODUCT_time"/>
@@ -2302,6 +2377,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Byte>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_altitude">
         <Dim name="/PRODUCT_time"/>
@@ -2334,6 +2410,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_apparent_scene_pressure">
         <Dim name="/PRODUCT_time"/>
@@ -2361,6 +2438,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_albedo">
         <Dim name="/PRODUCT_time"/>
@@ -2390,6 +2468,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_scene_albedo">
         <Dim name="/PRODUCT_time"/>
@@ -2420,6 +2499,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_albedo_nitrogendioxide_window">
         <Dim name="/PRODUCT_time"/>
@@ -2449,6 +2529,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_cloud_albedo_crb">
         <Dim name="/PRODUCT_time"/>
@@ -2476,6 +2557,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Byte name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_classification">
         <Dim name="/PRODUCT_time"/>
@@ -2579,6 +2661,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Byte>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_surface_altitude_precision">
         <Dim name="/PRODUCT_time"/>
@@ -2614,6 +2697,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_cloud_fraction_crb">
         <Dim name="/PRODUCT_time"/>
@@ -2641,6 +2725,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Int16 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_instrument_configuration_version">
         <Dim name="/PRODUCT_time"/>
@@ -2683,6 +2768,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_scaled_small_pixel_variance">
         <Dim name="/PRODUCT_time"/>
@@ -2712,6 +2798,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Int32 name="PRODUCT_SUPPORT_DATA_INPUT_DATA_instrument_configuration_identifier">
         <Dim name="/PRODUCT_time"/>
@@ -2769,6 +2856,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Byte>
     <Float32 name="PRODUCT_air_mass_factor_troposphere">
         <Dim name="/PRODUCT_time"/>
@@ -2795,6 +2883,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_air_mass_factor_total">
         <Dim name="/PRODUCT_time"/>
@@ -2818,6 +2907,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_longitude">
         <Dim name="/PRODUCT_time"/>
@@ -2850,6 +2940,7 @@
         <Attribute name="bounds" type="String">
             <Value>PRODUCT_SUPPORT_DATA_GEOLOCATIONS_longitude_bounds</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_latitude">
         <Dim name="/PRODUCT_time"/>
@@ -2882,6 +2973,7 @@
         <Attribute name="bounds" type="String">
             <Value>PRODUCT_SUPPORT_DATA_GEOLOCATIONS_latitude_bounds</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Float32 name="PRODUCT_nitrogendioxide_tropospheric_column_precision">
         <Dim name="/PRODUCT_time"/>
@@ -2911,6 +3003,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <String name="PRODUCT_time_utc">
         <Dim name="/PRODUCT_time"/>
@@ -2976,6 +3069,7 @@
         <Attribute name="coordinates" type="String">
             <Value>PRODUCT_longitude PRODUCT_latitude</Value>
         </Attribute>
+        <Map name="/PRODUCT_ground_pixel"/>
     </Float32>
     <Int32 name="PRODUCT_scanline">
         <Dim name="/PRODUCT_scanline"/>

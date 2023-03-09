@@ -43,6 +43,7 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/S-MODE_PFC_OC2108A_adcp_os75nb.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/OMG_Bathy_SBES_L2_20150804000000.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/OMG_Bathy_SBES_L2_20150804000000.h5.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/20160409062000-OSPO-L2P_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.61-v02.0-fv01.0.nc.h5
 
 #GESDISC GPM
 # GPM files. 
