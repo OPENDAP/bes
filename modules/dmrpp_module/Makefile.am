@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
@@ -76,7 +76,7 @@ build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppReques
 build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) $(H5_LDFLAGS) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+    $(XML2_LIBS) $(BYTESWAP_LIBS) $(top_builddir)/modules/ngap_module/.libs/libngap_module.la -lz
 
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
