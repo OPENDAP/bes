@@ -37,6 +37,7 @@
 
 #include "DmrppModule.h"
 #include "DmrppRequestHandler.h"
+#include "DmrppNgapContainerStorage.h"
 
 #include "writer/FODmrppTransmitter.h"
 
@@ -68,6 +69,9 @@ void DmrppModule::initialize(const string &modname)
         BESFileContainerStorage *csc = new BESFileContainerStorage(DAP_CATALOG);
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
+
+    BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl);
+    BESContainerStorageList::TheList()->add_persistence(new DmrppNgapContainerStorage(modname));
 
     // This part of the handler sets up transmitters that return DMRPP responses
     BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new FODmrppTransmitter());
