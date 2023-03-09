@@ -499,11 +499,7 @@ public:
 #endif
 
     CPPUNIT_TEST_SUITE(RemoteResourceTest);
-#if 0
-        CPPUNIT_TEST(is_cached_resource_expired_test);
-        CPPUNIT_TEST(filter_test);
-        CPPUNIT_TEST(filter_test_more_focus);
-#endif
+
         CPPUNIT_TEST(get_http_url_test);
         CPPUNIT_TEST(get_http_url_test_mt);
         CPPUNIT_TEST(get_http_url_test_mt_test_return_content);

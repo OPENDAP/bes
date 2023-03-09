@@ -37,10 +37,10 @@
 #include <sys/resource.h>
 
 #include <fcntl.h>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
 
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
@@ -1419,3 +1419,24 @@ void BESUtil::split(const string &s, const string &delimiter, vector<string> &re
     res.push_back(s.substr (pos_start));
 }
 #endif
+
+string BESUtil::file_to_string(const string &filename) {
+    std::ifstream t(filename);
+    if (!t.is_open()) {
+        throw BESInternalError("Could not open file: " + filename, __FILE__, __LINE__);
+    }
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return {buffer.str()};
+}
+
+string BESUtil::file_to_string(const string &filename, string &error_msg) {
+    std::ifstream t(filename);
+    if (!t.is_open()) {
+        error_msg = "Could not open file: " + filename;
+        return {};
+    }
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return {buffer.str()};
+}

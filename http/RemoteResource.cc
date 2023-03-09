@@ -276,6 +276,8 @@ void RemoteResource::filter_url(const map<string, string> &content_filters) cons
     cr_ostrm << resource_content;
 }
 
+#if 0
+
 /**
  * Returns cache file content in a string..
  */
@@ -309,6 +311,7 @@ string RemoteResource::get_response_as_string() const {
     }
 }
 
+
 /**
  * @brief get_as_json() This function returns the cached resource parsed into a JSON document.
  *
@@ -322,6 +325,7 @@ rapidjson::Document RemoteResource::get_as_json() const {
     d.Parse(response.c_str());
     return d;
 }
+#endif
 
 } //  namespace http
 

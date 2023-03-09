@@ -118,10 +118,14 @@ public:
     /// replace information in the DMR++; currently specific to NGAP (3/8/23)
     void filter_url(const std::map<std::string, std::string> &content_filters) const;
 
+#if 0
+
     /// return the content of the response as a std::string used by get_as_json()
     std::string get_response_as_string() const;
     // TODO this is used only by the NGAP API code and should be moved there. jhrg 3/8/23
     rapidjson::Document get_as_json() const;
+
+#endif
 };
 
 } /* namespace http */

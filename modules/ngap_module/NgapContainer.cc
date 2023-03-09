@@ -206,7 +206,7 @@ string NgapContainer::access() {
 
     // TODO This file should be read locked before leaving this method.
     //  10/8/21 I think the RemoteResource should do that. jhrg
-    string cachedResource = d_dmrpp_rresource->getCacheFileName();
+    string cachedResource = d_dmrpp_rresource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
     type = d_dmrpp_rresource->get_type();
@@ -251,7 +251,7 @@ void NgapContainer::dump(ostream &strm) const {
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_dmrpp_rresource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_dmrpp_rresource->get_filename()
              << endl;
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
@@ -270,4 +270,5 @@ bool NgapContainer::inject_data_url(){
     BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }
-}
+
+} // namespace ngap
