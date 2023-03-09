@@ -57,8 +57,7 @@ class RemoteResource {
 private:
     friend class RemoteResourceTest;
 
-    // FIXME Make this configurable. jhrg 3/8/23
-    const std::string d_temp_file_dir = "/tmp/bes_rr_cache";
+    static std::string d_temp_file_dir;
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;

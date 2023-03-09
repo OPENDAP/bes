@@ -31,7 +31,10 @@
 #include <vector>
 
 #include <cstdio>
+#include <cstdlib>
+#include <cerrno>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -86,6 +89,11 @@ private:
         return "";
     }
 
+    static long long file_size(const string &filename) {
+        ifstream in_file(filename, ios::binary);
+        in_file.seekg(0, ios::end);
+        return in_file.tellg();
+    }
 #if 0
     static void show_file(const string &filename) {
         ifstream t(filename.c_str());
@@ -166,12 +174,26 @@ public:
 
     // Called before each test
     void setUp() override {
-        DBG2(cerr << endl << prolog << "BEGIN" << endl);
-
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
-        DBG2(cerr << "setUp() - END" << endl);
+        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
+            DBG(cerr << prolog << "Creating temp file dir: " << RemoteResource::d_temp_file_dir << endl);
+            if (mkdir(RemoteResource::d_temp_file_dir.c_str(), 0777) != 0) {
+                throw BESInternalError("Failed to create temp file dir: " + RemoteResource::d_temp_file_dir + ": "
+                                        + strerror(errno), __FILE__, __LINE__);
+            }
+        }
+    }
+
+    void tearDown() override {
+        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
+            DBG(cerr << prolog << "Creating temp file dir: " << RemoteResource::d_temp_file_dir << endl);
+            if (system(("rm -rf " + RemoteResource::d_temp_file_dir).c_str()) != 0) {
+                throw BESInternalError("Failed to remove temp file dir: " + RemoteResource::d_temp_file_dir + ": "
+                                       + strerror(errno), __FILE__, __LINE__);
+            }
+        }
     }
 
 /*##################################################################################################*/
@@ -183,8 +205,7 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         DBG(cerr << prolog << "url: " << url << endl);
-        auto url_ptr = make_shared<http::url>(url);
-        http::RemoteResource rhr(url_ptr);
+        http::RemoteResource rhr(make_shared<http::url>(url));
         try {
             rhr.retrieve_resource();
             string filename = rhr.get_filename();
@@ -195,10 +216,8 @@ public:
             DBG(cerr << prolog << "retrieved content: " << content << endl);
             CPPUNIT_ASSERT(content == expected_content);
         }
-        catch (BESError &besE) {
-            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type()
-                 << endl;
-            CPPUNIT_ASSERT(false);
+        catch (const BESError &e) {
+            CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
         DBG(cerr << prolog << "END" << endl);
     }
@@ -206,38 +225,88 @@ public:
     // A multithreaded test of retrieveResource().
     void get_http_url_test_mt() {
         DBG(cerr << "|--------------------------------------------------|" << endl);
-        DBG(cerr << prolog << "BEGIN" << endl);
 
-        string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-        DBG(cerr << prolog << "url: " << url << endl);
-
-        auto url_ptr = make_shared<http::url>(url);
+         vector<string> urls = {"http://test.opendap.org/data/httpd_catalog/READTHIS",
+                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.das",
+                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds",
+                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dmr",
+                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dap",
+                                "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dods"};
         try {
             std::vector<std::future<string>> futures;
 
-            for (size_t i = 0; i < 3; ++i) {
-                futures.emplace_back(std::async(std::launch::async, [url_ptr]() {
-                    http::RemoteResource rhr(url_ptr);
-                    std::cout << "Start RR" << std::endl;
+            for (auto &url : urls) {
+                futures.emplace_back(std::async(std::launch::async, [](const string &url) -> string {
+                    http::RemoteResource rhr(make_shared<http::url>(url));
+                    DBG(cerr << "Start RR" << endl);
                     rhr.retrieve_resource();
-                    std::cout << "End RR" << std::endl;
-                    return rhr.get_filename();
-                }));
+                    DBG(cerr << "End RR" << endl);
+                    CPPUNIT_ASSERT_MESSAGE("Retrieved resource should not be empty", file_size(rhr.get_filename()) > 0);
+                    return {rhr.get_filename() + ", " + to_string(file_size(rhr.get_filename()))};
+                }, url));
             }
 
-            std::cout << "I'm doing my own work!" << std::endl;
+            DBG(cerr << "I'm doing my own work!" << endl);
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            std::cout << "I'm done with my own work!" << std::endl;
+            DBG(cerr << "I'm done with my own work!" << endl);
 
-            std::cout << "Start querying" << std::endl;
+            DBG(cerr << "Start querying" << endl);
             for (auto &future: futures) {
-                std::cout << future.get() << std::endl;
+                CPPUNIT_ASSERT_MESSAGE("Invalid future", future.valid());
+                string result;
+                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception", result = future.get());
+                DBG(cerr << result << endl);
             }
         }
-        catch (BESError &besE) {
-            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type()
-                 << endl;
-            CPPUNIT_ASSERT(false);
+        catch (const BESError &e) {
+            CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
+        }
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    void get_http_url_test_mt_test_return_content() {
+        DBG(cerr << "|--------------------------------------------------|" << endl);
+
+        vector<string> urls = {"http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/data/httpd_catalog/READTHIS",
+                               "http://test.opendap.org/data/httpd_catalog/READTHIS"};
+        try {
+            std::vector<std::future<string>> futures;
+
+            for (auto &url : urls) {
+                futures.emplace_back(std::async(std::launch::async, [](const string &url) -> string {
+                    http::RemoteResource rhr(make_shared<http::url>(url));
+                    DBG(cerr << "Start RR" << endl);
+                    rhr.retrieve_resource();
+                    DBG(cerr << "End RR" << endl);
+                    CPPUNIT_ASSERT_MESSAGE("Retrieved resource should not be empty", file_size(rhr.get_filename()) > 0);
+                    DBG(cerr << prolog << "filename: " << rhr.get_filename() << endl);
+                    string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+                    DBG(cerr << prolog << "expected content: " << expected_content << endl);
+                    string content = get_file_as_string(rhr.get_filename());
+                    DBG(cerr << prolog << "retrieved content: " << content << endl);
+                    CPPUNIT_ASSERT(content == expected_content);
+                    return {rhr.get_filename() + ", " + to_string(file_size(rhr.get_filename()))};
+                }, url));
+            }
+
+            DBG(cerr << "I'm doing my own work!" << endl);
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            DBG(cerr << "I'm done with my own work!" << endl);
+
+            DBG(cerr << "Start querying" << endl);
+            for (auto &future: futures) {
+                CPPUNIT_ASSERT_MESSAGE("Invalid future", future.valid());
+                string result;
+                CPPUNIT_ASSERT_NO_THROW_MESSAGE("Expected a return value, not throw an exception", result = future.get());
+                DBG(cerr << result << endl);
+            }
+        }
+        catch (const BESError &e) {
+            CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
         DBG(cerr << prolog << "END" << endl);
     }
@@ -261,10 +330,7 @@ public:
             CPPUNIT_ASSERT(retrieved == expected);
         }
         catch (const BESError &e) {
-            stringstream msg;
-            msg << prolog << "Caught BESError! message: '" << e.get_message() << "' bes_error_type: "
-                << e.get_bes_error_type() << endl;
-            CPPUNIT_FAIL(msg.str());
+            CPPUNIT_FAIL("Caught BESError! message: " + e.get_verbose_message());
         }
         DBG(cerr << prolog << "END" << endl);
     }
@@ -439,8 +505,8 @@ public:
         CPPUNIT_TEST(filter_test_more_focus);
 #endif
         CPPUNIT_TEST(get_http_url_test);
-        // FIXME Fix RemoteResource so this test passes. jhrg 1/9/23
         CPPUNIT_TEST(get_http_url_test_mt);
+        CPPUNIT_TEST(get_http_url_test_mt_test_return_content);
         CPPUNIT_TEST(get_file_url_test);
 
     CPPUNIT_TEST_SUITE_END();
