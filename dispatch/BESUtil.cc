@@ -1430,17 +1430,6 @@ string BESUtil::file_to_string(const string &filename) {
     return {buffer.str()};
 }
 
-string BESUtil::file_to_string(const string &filename, string &error_msg) {
-    std::ifstream t(filename);
-    if (!t.is_open()) {
-        error_msg = "Could not open file: " + filename;
-        return {};
-    }
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-    return {buffer.str()};
-}
-
 /**
  * @brief Make and open a temporary file.
  * The file is opened such that we know it is unique and not in use by another process.
@@ -1449,7 +1438,7 @@ string BESUtil::file_to_string(const string &filename, string &error_msg) {
  * @param temp_file_name The name of the temporary file. A value-result parameter.
  */
 int BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name) {
-    temp_file_name = BESUtil::assemblePath(temp_file_dir, "/dodsXXXXXX");
+    temp_file_name = BESUtil::assemblePath(temp_file_dir, "/bes_util_XXXXXX");
 
     // Open truncated for update. NB: mkstemp() returns a file descriptor.
     // man mkstemp says "... The file is opened with the O_EXCL flag,
