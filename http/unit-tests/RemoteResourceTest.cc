@@ -150,15 +150,23 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-        DBG(cerr << prolog << "url: " << url << endl);
-
         auto url_ptr = make_shared<http::url>(url);
+        string url2 = "http://test.opendap.org/opendap/data/nc/fnoc1.nc.dds";
+        auto url_ptr2 = make_shared<http::url>(url2);
+
         try {
             std::vector<std::future<string>> futures;
 
-            for (size_t i = 0; i < 3; ++i) {
+            for (size_t i = 0; i < 5; ++i) {
                 futures.emplace_back(std::async(std::launch::async, [url_ptr]() {
                     http::RemoteResource rhr(url_ptr);
+                    std::cout << "Start RR" << std::endl;
+                    rhr.retrieve_resource();
+                    std::cout << "End RR" << std::endl;
+                    return rhr.get_filename();
+                }));
+                futures.emplace_back(std::async(std::launch::async, [url_ptr2]() {
+                    http::RemoteResource rhr(url_ptr2);
                     std::cout << "Start RR" << std::endl;
                     rhr.retrieve_resource();
                     std::cout << "End RR" << std::endl;
