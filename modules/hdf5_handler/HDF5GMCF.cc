@@ -399,7 +399,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
     for (auto ircv = this->cvars.begin(); ircv != this->cvars.end(); ) {
         if (true == include_attr) {
             for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
-                H5DataType temp_dtype = (*ira)->getType();
+                H5DataType temp_dtype = (*ira)->get_type();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
@@ -429,7 +429,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
     for (auto ircv = this->spvars.begin(); ircv != this->spvars.end(); ) {
         if (true == include_attr) {
             for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end(); ) {
-                H5DataType temp_dtype = (*ira)->getType();
+                H5DataType temp_dtype = (*ira)->get_type();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
@@ -497,7 +497,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
             bool is_ignored = ignored_dimscale_ref_list(cvar);
             if (false == cvar->attrs.empty()) {
                 for (const auto &attr:cvar->attrs) {
-                    H5DataType temp_dtype = attr->getType();
+                    H5DataType temp_dtype = attr->get_type();
                     // TODO: check why 64-bit integer is included here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
@@ -520,7 +520,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                 //if (true == spvar->unsupported_attr_dtype) 
 #endif
                 for (const auto &attr:spvar->attrs) {
-                    H5DataType temp_dtype = attr->getType();
+                    H5DataType temp_dtype = attr->get_type();
                     //TODO; check why 64-bit integer is included here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
@@ -541,7 +541,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                 //if (true == cvar->unsupported_attr_dtype) 
 #endif
                 for (const auto &attr:cvar->attrs) {
-                    H5DataType temp_dtype = attr->getType();
+                    H5DataType temp_dtype = attr->get_type();
                     // TODO: check why 64-bit integer is included here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) 
                           this->add_ignored_info_attrs(false,cvar->fullpath,attr->name);
@@ -555,7 +555,7 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                 //if (true == spvar->unsupported_attr_dtype) 
 #endif
                 for (const auto &attr:spvar->attrs) {
-                    H5DataType temp_dtype = attr->getType();
+                    H5DataType temp_dtype = attr->get_type();
                     //TODO: check why 64-bit integer is included here.
                     if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                         this->add_ignored_info_attrs(false,spvar->fullpath,attr->name);
@@ -1599,7 +1599,7 @@ bool GMFile::Check_And_Update_New_GPM_L3() {
     for (auto irv = this->vars.begin(); irv != it_var_end; irv+=sel_steps) {
         for (const auto &attr:(*irv)->attrs) {
 
-            if(H5FSTRING == attr->getType()) {
+            if(H5FSTRING == attr->get_type()) {
                 if(attr->name == dim_name){
                     has_dim_name = true;
                     break;

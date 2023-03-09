@@ -142,7 +142,7 @@ string GatewayContainer::access() {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         std::shared_ptr<http::url> url_ptr(new http::url(url));
         d_remoteResource = new http::RemoteResource(url_ptr);
-        d_remoteResource->retrieveResource();
+        d_remoteResource->retrieve_resource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
@@ -150,7 +150,7 @@ string GatewayContainer::access() {
     string cachedResource = d_remoteResource->getCacheFileName();
     BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
-    type = d_remoteResource->getType();
+    type = d_remoteResource->get_type();
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 

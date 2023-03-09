@@ -133,7 +133,7 @@ string HttpdCatalogContainer::access()
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
         std::shared_ptr<http::url> access_url_ptr(new http::url(access_url));
         d_remoteResource = new http::RemoteResource(access_url_ptr);
-        d_remoteResource->retrieveResource();
+        d_remoteResource->retrieve_resource();
     }
 
     BESDEBUG(MODULE, prolog << "Located remote resource." << endl);
@@ -141,7 +141,7 @@ string HttpdCatalogContainer::access()
     string cachedResource = d_remoteResource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
-    string type = d_remoteResource->getType();
+    string type = d_remoteResource->get_type();
     set_container_type(type);
 
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);

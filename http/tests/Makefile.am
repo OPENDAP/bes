@@ -7,11 +7,11 @@ include $(top_srcdir)/coverage.mk
 
 # TODO Remove this if not needed and noist_... works. jhrg 11/16/22
 # bin_PROGRAMS = remote_resource_tester
-noinst_PROGRAMS = remote_resource_tester
+# noinst_PROGRAMS = remote_resource_tester
 
-remote_resource_tester_SOURCES = remote_resource_tester.cc
-remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
-remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
+# remote_resource_tester_SOURCES = remote_resource_tester.cc
+# remote_resource_tester_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
+# remote_resource_tester_LDFLAGS = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)
 
 BES_CONF_IN = bes.conf.in
 

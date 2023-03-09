@@ -284,7 +284,7 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
     // Go get the text from the remote resource
     std::shared_ptr<http::url> url_ptr(new http::url(url));
     http::RemoteResource rhr(url_ptr);
-    rhr.retrieveResource();
+    rhr.retrieve_resource();
     stringstream buffer;
 
     ifstream cache_file_is(rhr.getCacheFileName().c_str());

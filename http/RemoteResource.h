@@ -27,19 +27,25 @@
 #ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
 #define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
 
+#if 0
+
 #include <curl/curl.h>
 #include <curl/easy.h>
+
+#endif
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "url_impl.h"
-#include "RemoteResource.h"
+//#include "url_impl.h"
+#include "CurlUtils.h"
 #include "rapidjson/document.h"
-#include "HttpCache.h"
+//#include "HttpCache.h"
 
 namespace http {
+
+class url;
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
@@ -51,10 +57,13 @@ class RemoteResource {
 private:
     friend class RemoteResourceTest;
 
-    /// Resource URL that an instance of this class represents
-    std::shared_ptr<http::url> d_remoteResourceUrl;
+    // FIXME Make this configurable. jhrg 3/8/23
+    const std::string d_temp_file_dir = "/tmp/bes_rr_cache";
 
-    /// Open file descriptor for the resource content (Returned from the cache).
+    /// Resource URL that an instance of this class represents
+    std::shared_ptr<http::url> d_url;
+
+    /// Open file descriptor for the resource content
     int d_fd = 0;
 
     /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
@@ -63,75 +72,56 @@ private:
     /// User id associated with this request
     std::string d_uid;
 
-    /// The DAP type of the resource. See RemoteHttpResource::setType() for more.
+    /// The BES type of the resource
     std::string d_type;
 
-    /// The file name in which the content of the remote resource has been cached.
-    std::string d_resourceCacheFileName;
+    /// The file name in which the content is stored.
+    std::string d_filename;
+
+    /// If true, d_filename is a temporary file and should be deleted when the object is destroyed.
+    bool d_delete_file = false;
 
     /// The raw HTTP response headers returned by the request for the remote resource.
     std::vector<std::string> d_response_headers; // Response headers
 
-    /// The interval before a cache resource needs to be refreshed
-    unsigned long d_expires_interval = 3600;    // 1 hour. FIXME Make this configurable.
+    /// Make a temporary file for the resource content
+    void make_temp_file(const std::string &temp_file_dir);
 
-    /**
-     * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
-     * the file descriptor.
-     */
-    void writeResourceToFile(int fd);
-
-    /**
-    * @brief Filter the cache and replaces all occurrences each key in content_filters key with its associated value.
-    *
-    * WARNING: Does not lock cache. This method assumes that the process has already
-    * acquired an exclusive lock on the cache file.
-    *
-    * @param template_str
-    * @param update_str
-    * @return
-    */
-    void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters) const;
-
-    /**
-     * Checks if a cache resource is older than an hour
-     *
-     */
-    bool cached_resource_is_expired() const;
-
-protected:
-    RemoteResource() = default;
+    /// write the url content to a file, set the type, and rewind the file descriptor
+    void get_url(int fd);
 
 public:
-    explicit RemoteResource(std::shared_ptr<http::url> target_url, std::string uid = "",
-                            // FIXME !!!
-                            unsigned long expires_interval = 3600 /*HttpCache::getCacheExpiresTime()*/);
+    /// The default constructor is here to ease testing. Remove if not needed. jhrg 3/8/23
+    RemoteResource() = default;
+    RemoteResource(const RemoteResource &rhs) = delete;
+    RemoteResource &operator=(const RemoteResource &rhs) = delete;
+    explicit RemoteResource(std::shared_ptr<http::url> target_url, std::string uid = "");
 
     virtual ~RemoteResource();
 
-    void retrieveResource();
+    void retrieve_resource();
 
+    /// This should be removed once refactored. jhrg 3/8/23
     void retrieveResource(const std::map<std::string, std::string> &content_filters);
 
     /**
      * Returns the DAP type std::string of the RemoteHttpResource
      * @return Returns the DAP type std::string used by the BES Containers.
      */
-    std::string getType() const {
-        return d_type;
-    }
+    std::string get_type() const { return d_type; }
 
-    /**
-     * Returns the (read-locked) cache file name on the local system in which the content of the remote
-     * resource is stored. Deleting of the instance of this class will release the read-lock.
-     */
-    std::string getCacheFileName() const;
+    /// Returns the file name in which the content of the URL has been stored.
+    std::string get_filename() const {return d_filename; }
 
-    /**
-     * Returns cache file content in a string..
-     */
+    int get_fd() const { return d_fd; }
+
+    // TODO Move this to the DMR++ code. jhrg 3/8/23
+    /// replace information in the DMR++; currently specific to NGAP (3/8/23)
+    void filter_url(const std::map<std::string, std::string> &content_filters) const;
+
+    /// return the content of the response as a std::string used by get_as_json()
     std::string get_response_as_string() const;
-
+    // TODO this is used only by the NGAP API code and should be moved there. jhrg 3/8/23
     rapidjson::Document get_as_json() const;
 };
 

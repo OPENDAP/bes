@@ -101,7 +101,7 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid, uns
  * When this method returns the RemoteResource object is fully initialized and the cache file name for the resource
  * is available along with an open file descriptor for the (now read-locked) cache file.
  */
-void RemoteResource::retrieveResource() {
+void RemoteResource::retrieve_resource() {
     map<string, string> content_filters;
     retrieveResource(content_filters);
 }
@@ -210,7 +210,7 @@ void RemoteResource::retrieveResource(const map<string, string> &content_filters
  *
  * @param fd An open file descriptor the is associated with the target file.
  */
-void RemoteResource::writeResourceToFile(int fd) {
+void RemoteResource::get_url(int fd) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -257,7 +257,7 @@ void RemoteResource::writeResourceToFile(int fd) {
  * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
  * resource will be replaced with its associated value.
  */
-void RemoteResource::filter_retrieved_resource(const map<string, string> &content_filters) const {
+void RemoteResource::filter_url(const map<string, string> &content_filters) const {
 
     // No filters?
     if (content_filters.empty()) {

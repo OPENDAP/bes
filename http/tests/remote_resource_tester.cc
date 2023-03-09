@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
         unique_ptr<RemoteResource> rr(new RemoteResource(url));
 
-        rr->retrieveResource();
+        rr->retrieve_resource();
 
         string name = rr->getCacheFileName();
 

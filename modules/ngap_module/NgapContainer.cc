@@ -209,7 +209,7 @@ string NgapContainer::access() {
     string cachedResource = d_dmrpp_rresource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
-    type = d_dmrpp_rresource->getType();
+    type = d_dmrpp_rresource->get_type();
     set_container_type(type);
     BESDEBUG(MODULE, prolog << "Type: " << type << endl);
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);

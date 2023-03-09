@@ -145,14 +145,14 @@ string CmrContainer::access() {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         shared_ptr<http::url> target_url(new http::url(granule_url,true));
         d_remoteResource = new http::RemoteResource(target_url);
-        d_remoteResource->retrieveResource();
+        d_remoteResource->retrieve_resource();
     }
     BESDEBUG( MODULE, prolog << "Retrieved RemoteResource." << endl );
 
     string cachedResource = d_remoteResource->getCacheFileName();
     BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
 
-    string type = d_remoteResource->getType();
+    string type = d_remoteResource->get_type();
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 

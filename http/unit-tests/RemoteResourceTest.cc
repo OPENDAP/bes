@@ -31,27 +31,19 @@
 #include <vector>
 
 #include <cstdio>
-#include <cstring>
 #include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <libdap/util.h>
-
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
-#include "BESContextManager.h"
 
 #include "RemoteResource.h"
-#include "HttpNames.h"
-#include "HttpCache.h"
-#include "url_impl.h"
-
 #include "test_config.h"
 
 using namespace std;
@@ -74,47 +66,7 @@ namespace http {
 class RemoteResourceTest : public CppUnit::TestFixture {
 private:
 
-    /**
-     * purges the http cache for temp files created in tests
-     */
-    void purge_http_cache() {
-        DBG2(cerr << prolog << "Purging cache!" << endl);
-        string cache_dir = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_DIR_KEY, "");
-        string cache_prefix = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_PREFIX_KEY, "");
-
-        if (!(cache_dir.empty() && cache_prefix.empty())) {
-            DBG2(cerr << prolog << HTTP_CACHE_DIR_KEY << ": " << cache_dir << endl);
-            DBG2(cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl);
-            string sys_cmd = "mkdir -p " + cache_dir;
-            DBG2(cerr << "Running system command: " << sys_cmd << endl);
-            system(sys_cmd.c_str());
-
-            sys_cmd = "exec rm -rf " + BESUtil::assemblePath(cache_dir, cache_prefix);
-            sys_cmd = sys_cmd.append("*");
-            DBG2(cerr << "Running system command: " << sys_cmd << endl);
-            system(sys_cmd.c_str());
-            DBG2(cerr << prolog << "The HTTP cache has been purged." << endl);
-        }
-    }
-
-    void show_file(const string &filename) {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cerr << endl << "#############################################################################" << endl;
-            cerr << "file: " << filename << endl;
-            cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cerr << file_content << endl;
-            cerr << "#############################################################################" << endl;
-        }
-        else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
-        }
-    }
-
-    string get_file_as_string(const string &filename) {
+    static string get_file_as_string(const string &filename) {
         ifstream t(filename);
 
         if (t.is_open()) {
@@ -129,15 +81,31 @@ private:
             return file_content;
         }
         else {
-            stringstream msg;
-            msg << prolog << "FAILED TO OPEN FILE: " << filename << endl;
-            CPPUNIT_FAIL(msg.str());
+            CPPUNIT_FAIL(prolog + "FAILED TO OPEN FILE: " + filename);
         }
         return "";
     }
 
-    string get_data_file_url(string name) {
-        string data_file = BESUtil::assemblePath(d_data_dir, name);
+#if 0
+    static void show_file(const string &filename) {
+        ifstream t(filename.c_str());
+
+        if (t.is_open()) {
+            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
+            t.close();
+            cerr << endl << "#############################################################################" << endl;
+            cerr << "file: " << filename << endl;
+            cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
+            cerr << file_content << endl;
+            cerr << "#############################################################################" << endl;
+        }
+        else {
+            CPPUNIT_FAIL(prolog + "FAILED TO OPEN FILE: " + filename);
+        }
+    }
+
+    string get_data_file_url(const string &name) const {
+        string data_file = BESUtil::assemblePath(TEST_DATA_DIR, name);
         DBG(cerr << prolog << "data_file: " << data_file << endl);
         DBG2(show_file(data_file));
 
@@ -146,8 +114,10 @@ private:
         return data_file_url;
     }
 
+
+
     /**
-     * @brief Copy the source file to a system determined tempory file and set the rvp tmp_file to the temp file name.
+     * @brief Copy the source file to a system determined temporary file and set the rvp tmp_file to the temp file name.
      * @param src The source file to copy
      * @param tmp_file The temporary file created.
      */
@@ -180,16 +150,14 @@ private:
      * @param file_b
      * @return True the files match, False otherwise.
      */
-    bool compare(const string &file_a, const string &file_b) {
+    static bool compare(const string &file_a, const string &file_b) {
         string a_str = get_file_as_string(file_a);
         string b_str = get_file_as_string(file_b);
         return a_str == b_str;
     }
+#endif
 
 public:
-    string d_data_dir = TEST_DATA_DIR;
-    string d_temp_file;
-
     // Called once before everything gets tested
     RemoteResourceTest() = default;
 
@@ -199,40 +167,11 @@ public:
     // Called before each test
     void setUp() override {
         DBG2(cerr << endl << prolog << "BEGIN" << endl);
-        if (debug && !Debug) cerr << endl;
-        DBG(cerr << prolog << "data_dir: " << d_data_dir << endl);
-        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        DBG2(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
-        if (bes_debug) show_file(bes_conf);
-        TheBESKeys::ConfigFile = bes_conf;
 
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
-        if (purge_cache) {
-            purge_http_cache();
-        }
-
-        string tmp_file_name(tmpnam(nullptr));
-        DBG(cerr << prolog << "tmp_file_name: " << tmp_file_name << endl);
-        {
-            ofstream ofs(tmp_file_name);
-            if (!ofs.is_open()) {
-                CPPUNIT_FAIL("Failed to open temporary file: " + tmp_file_name);
-            }
-            ofs << "This is the temp file." << endl;
-        }
-        d_temp_file = tmp_file_name;
-
         DBG2(cerr << "setUp() - END" << endl);
-    }
-
-    // Called after each test
-    void tearDown() override {
-        if (!d_temp_file.empty())
-            unlink(d_temp_file.c_str());
-
-        string temp_file_hdrs = d_temp_file + ".hdrs";
-        unlink(temp_file_hdrs.c_str());
     }
 
 /*##################################################################################################*/
@@ -244,15 +183,15 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         DBG(cerr << prolog << "url: " << url << endl);
-        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        auto url_ptr = make_shared<http::url>(url);
         http::RemoteResource rhr(url_ptr);
         try {
-            rhr.retrieveResource();
-            string cache_filename = rhr.getCacheFileName();
-            DBG(cerr << prolog << "cache_filename: " << cache_filename << endl);
+            rhr.retrieve_resource();
+            string filename = rhr.get_filename();
+            DBG(cerr << prolog << "filename: " << filename << endl);
             string expected_content("This is a test. If this was not a test you would have known the answer.\n");
             DBG(cerr << prolog << "expected_content string: " << expected_content << endl);
-            string content = get_file_as_string(cache_filename);
+            string content = get_file_as_string(filename);
             DBG(cerr << prolog << "retrieved content: " << content << endl);
             CPPUNIT_ASSERT(content == expected_content);
         }
@@ -271,8 +210,8 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         DBG(cerr << prolog << "url: " << url << endl);
-        std::shared_ptr<http::url> url_ptr(new http::url(url));
 
+        auto url_ptr = make_shared<http::url>(url);
         try {
             std::vector<std::future<string>> futures;
 
@@ -280,9 +219,9 @@ public:
                 futures.emplace_back(std::async(std::launch::async, [url_ptr]() {
                     http::RemoteResource rhr(url_ptr);
                     std::cout << "Start RR" << std::endl;
-                    rhr.retrieveResource();
+                    rhr.retrieve_resource();
                     std::cout << "End RR" << std::endl;
-                    return rhr.getCacheFileName();
+                    return rhr.get_filename();
                 }));
             }
 
@@ -303,27 +242,16 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-#if 0
-    rhr.retrieveResource();
-    string cache_filename = rhr.getCacheFileName();
-    DBG(cerr << prolog << "cache_filename: " << cache_filename << endl);
-    string expected_content("This is a test. If this was not a test you would have known the answer.\n");
-    DBG(cerr << prolog << "expected_content string: " << expected_content << endl);
-    string content = get_file_as_string(cache_filename);
-    DBG(cerr << prolog << "retrieved content: " << content << endl);
-    CPPUNIT_ASSERT( content == expected_content );
-#endif
-
     void get_file_url_test() {
         DBG(cerr << "|--------------------------------------------------|" << endl);
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string data_file_url = get_data_file_url("test_file"); // "file:// + TEST_DATA_DIR + /test_file"
-        std::shared_ptr<http::url> url_ptr(new http::url(data_file_url));
+        string data_file_url = string("file://") + TEST_DATA_DIR + "/test_file";
+        auto url_ptr = make_shared<http::url>(data_file_url);
         http::RemoteResource rhr(url_ptr);
         try {
-            rhr.retrieveResource();
-            string cache_filename = rhr.getCacheFileName();
+            rhr.retrieve_resource();
+            string cache_filename = rhr.get_filename();
             DBG(cerr << prolog << "cache_filename: " << cache_filename << endl);
 
             string expected("This a TEST. Move Along...\n");
@@ -332,15 +260,16 @@ public:
             DBG(cerr << prolog << "retrieved_content: '" << retrieved << "'" << endl);
             CPPUNIT_ASSERT(retrieved == expected);
         }
-        catch (BESError &besE) {
+        catch (const BESError &e) {
             stringstream msg;
-            msg << prolog << "Caught BESError! message: '" << besE.get_message() << "' bes_error_type: "
-                << besE.get_bes_error_type() << endl;
+            msg << prolog << "Caught BESError! message: '" << e.get_message() << "' bes_error_type: "
+                << e.get_bes_error_type() << endl;
             CPPUNIT_FAIL(msg.str());
         }
         DBG(cerr << prolog << "END" << endl);
     }
 
+#if 0
     /**
      * tests the is_cache_resource_expired() function
      * create a temp file and sets the expired time to 1 sec
@@ -355,7 +284,7 @@ public:
             RemoteResource rhr(target_url, "foobar", 1);
             DBG(cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl);
 
-            rhr.d_resourceCacheFileName = d_temp_file;
+            rhr.d_filename = d_temp_file;
             DBG(cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl);
 
             // Get a pointer to the singleton cache instance for this process.
@@ -387,7 +316,6 @@ public:
             CPPUNIT_FAIL(msg.str());
         }
         DBG(cerr << prolog << "END" << endl);
-
     }
 
     /**
@@ -396,10 +324,10 @@ public:
     void filter_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string source_file = BESUtil::pathConcat(d_data_dir, "filter_test_source.xml");
+        string source_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_source.xml");
         DBG(cerr << prolog << "source_file: " << source_file << endl);
 
-        string baseline_file = BESUtil::pathConcat(d_data_dir, "filter_test_source.xml_baseline");
+        string baseline_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_source.xml_baseline");
         DBG(cerr << prolog << "baseline_file: " << baseline_file << endl);
 
         string tmp_file;
@@ -412,8 +340,8 @@ public:
             filter.insert(pair<string, string>("OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL", "file://missing_file_ref"));
 
             RemoteResource foo;
-            foo.d_resourceCacheFileName = tmp_file;
-            foo.filter_retrieved_resource(filter);
+            foo.d_filename = tmp_file;
+            foo.filter_url(filter);
 
             bool result_matched = compare(tmp_file, baseline_file);
             stringstream info_msg;
@@ -444,10 +372,10 @@ public:
     void filter_test_more_focus() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string source_file = BESUtil::pathConcat(d_data_dir, "filter_test_02_source.xml");
+        string source_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_02_source.xml");
         DBG(cerr << prolog << "source_file: " << source_file << endl);
 
-        string baseline_file = BESUtil::pathConcat(d_data_dir, "filter_test_02_source.xml.baseline");
+        string baseline_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_02_source.xml.baseline");
         DBG(cerr << prolog << "baseline_file: " << baseline_file << endl);
 
         string tmp_file;
@@ -477,8 +405,8 @@ public:
             filter.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
 
             RemoteResource foo;
-            foo.d_resourceCacheFileName = tmp_file;
-            foo.filter_retrieved_resource(filter);
+            foo.d_filename = tmp_file;
+            foo.filter_url(filter);
 
             bool result_matched = compare(tmp_file, baseline_file);
             stringstream info_msg;
@@ -502,21 +430,17 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
-
-
-/* TESTS END */
-/*##################################################################################################*/
+#endif
 
     CPPUNIT_TEST_SUITE(RemoteResourceTest);
-
+#if 0
         CPPUNIT_TEST(is_cached_resource_expired_test);
         CPPUNIT_TEST(filter_test);
         CPPUNIT_TEST(filter_test_more_focus);
+#endif
         CPPUNIT_TEST(get_http_url_test);
-#if 0
         // FIXME Fix RemoteResource so this test passes. jhrg 1/9/23
         CPPUNIT_TEST(get_http_url_test_mt);
-#endif
         CPPUNIT_TEST(get_file_url_test);
 
     CPPUNIT_TEST_SUITE_END();

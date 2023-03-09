@@ -98,7 +98,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url_k
  * @param source_url
  * @returns The effective URL
 */
-shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> source_url) {
+shared_ptr<EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<url> source_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
