@@ -27,21 +27,12 @@
 #ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
 #define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
 
-#if 0
-
-#include <curl/curl.h>
-#include <curl/easy.h>
-
-#endif
-
 #include <memory>
 #include <string>
 #include <vector>
 
-//#include "url_impl.h"
 #include "CurlUtils.h"
 #include "rapidjson/document.h"
-//#include "HttpCache.h"
 
 namespace http {
 
@@ -58,7 +49,7 @@ private:
     friend class RemoteResourceTest;
 
     // FIXME Make this configurable. jhrg 3/8/23
-    const std::string d_temp_file_dir = "/tmp/bes_rr_cache";
+    static const std::string d_temp_file_dir;
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;

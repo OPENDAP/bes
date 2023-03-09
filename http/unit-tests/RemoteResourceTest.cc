@@ -30,8 +30,10 @@
 #include <chrono>
 #include <vector>
 
-#include <cstdio>
+#include <cstdlib>
+
 #include <unistd.h>
+#include <sys/stat.h>   // mkdir
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -39,8 +41,6 @@
 
 #include "BESError.h"
 #include "BESDebug.h"
-#include "BESUtil.h"
-#include "BESCatalogList.h"
 #include "TheBESKeys.h"
 
 #include "RemoteResource.h"
@@ -86,77 +86,6 @@ private:
         return "";
     }
 
-#if 0
-    static void show_file(const string &filename) {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cerr << endl << "#############################################################################" << endl;
-            cerr << "file: " << filename << endl;
-            cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cerr << file_content << endl;
-            cerr << "#############################################################################" << endl;
-        }
-        else {
-            CPPUNIT_FAIL(prolog + "FAILED TO OPEN FILE: " + filename);
-        }
-    }
-
-    string get_data_file_url(const string &name) const {
-        string data_file = BESUtil::assemblePath(TEST_DATA_DIR, name);
-        DBG(cerr << prolog << "data_file: " << data_file << endl);
-        DBG2(show_file(data_file));
-
-        string data_file_url = "file://" + data_file;
-        DBG(cerr << prolog << "data_file_url: " << data_file_url << endl);
-        return data_file_url;
-    }
-
-
-
-    /**
-     * @brief Copy the source file to a system determined temporary file and set the rvp tmp_file to the temp file name.
-     * @param src The source file to copy
-     * @param tmp_file The temporary file created.
-     */
-    void copy_to_temp(const string &src, string &tmp_file) {
-        ifstream src_is(src);
-        if (!src_is.is_open()) {
-            throw BESInternalError("Failed to open source file: " + src, __FILE__, __LINE__);
-        }
-        DBG(cerr << prolog << "ifstream opened" << endl);
-
-        const auto pointer = tmpnam(nullptr);
-        ofstream tmp_os(pointer);
-        if (!tmp_os.is_open()) {
-            stringstream msg;
-            msg << "Failed to open temp file: " << pointer << endl;
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-
-        char buf[4096];
-        do {
-            src_is.read(buf, 4096);
-            tmp_os.write(buf, src_is.gcount());
-        } while (src_is.gcount() > 0);
-        tmp_file = pointer;
-    }
-
-    /**
-     * @brief Compare two text files as string values.
-     * @param file_a
-     * @param file_b
-     * @return True the files match, False otherwise.
-     */
-    static bool compare(const string &file_a, const string &file_b) {
-        string a_str = get_file_as_string(file_a);
-        string b_str = get_file_as_string(file_b);
-        return a_str == b_str;
-    }
-#endif
-
 public:
     // Called once before everything gets tested
     RemoteResourceTest() = default;
@@ -171,7 +100,19 @@ public:
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
+        if (mkdir(RemoteResource::d_temp_file_dir.c_str(), 0777) < 0) {
+            CPPUNIT_FAIL(prolog + "ERROR: Could not create temp file directory: " + RemoteResource::d_temp_file_dir
+            + " - " + strerror(errno));
+        }
+
         DBG2(cerr << "setUp() - END" << endl);
+    }
+
+    void tearDown() override {
+        if (system((string("rm -rf ") + RemoteResource::d_temp_file_dir).c_str()) < 0) {
+            CPPUNIT_FAIL(prolog + "ERROR: Could not remove temp file directory: " + RemoteResource::d_temp_file_dir
+            + " - " + strerror(errno));
+        }
     }
 
 /*##################################################################################################*/

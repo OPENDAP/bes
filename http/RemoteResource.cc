@@ -62,6 +62,8 @@ using namespace std;
 
 namespace http {
 
+const std::string RemoteResource::d_temp_file_dir = "/tmp/bes_rr_cache";
+
 RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     : d_url(std::move(target_url)), d_uid(std::move(uid)) {
 
