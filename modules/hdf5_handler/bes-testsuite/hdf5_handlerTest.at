@@ -782,9 +782,10 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_point_scalar.h5.dmr.bescmd])
 # local constraint: the maps are removed.
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.d4constraint.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_coord2.h5.d4constraint_dim.bescmd])
-# comment out now. This can be tested after libdap correctly remove all the maps in local contraint
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.d4constraint.dap.bescmd])
-# The constraint with DAP4 dimensions works
+
+# local contraint: remove all additional maps.
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.d4constraint.dap.bescmd])
+# The constraint with DAP4 dimensions. 
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_single_trajectory.h5.d4constraint_dim.dap.bescmd])
 
 
