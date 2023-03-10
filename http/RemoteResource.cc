@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include <cstdio>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -66,7 +67,7 @@ namespace http {
 std::string RemoteResource::d_temp_file_dir = "/tmp/bes_rr_cache";
 
 RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
-    : d_url(std::move(target_url)), d_uid(std::move(uid)) {
+    : d_url(target_url), d_uid(std::move(uid)) {
 
     if (d_url->protocol() == FILE_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "Found FILE protocol." << endl);
@@ -95,6 +96,14 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     else {
         string err = prolog + "Unsupported protocol: " + d_url->protocol();
         throw BESInternalError(err, __FILE__, __LINE__);
+    }
+
+    // Now set d_basename using the URL path (this elides any query string).
+    // d_basename may stay empty (its init value) if the URL path is empty.
+    vector<string> path_elements;
+    BESUtil::tokenize(d_url->path(), path_elements);
+    if (!path_elements.empty()) {
+        d_basename = path_elements.back();
     }
 }
 
@@ -131,6 +140,13 @@ void RemoteResource::retrieve_resource() {
 
     // Get the contents of the URL and put them in the temp file
     get_url(d_fd);
+
+    string new_name = d_filename + d_uid + "#" + d_basename;
+    if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
+        throw BESInternalError("Could not rename " + d_filename + " to " + new_name, __FILE__, __LINE__);
+    }
+
+    d_filename = new_name;
 
     d_initialized = true;
 }

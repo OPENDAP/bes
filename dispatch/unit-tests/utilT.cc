@@ -526,7 +526,7 @@ public:
     }
 
 
-CPPUNIT_TEST_SUITE( utilT );
+    CPPUNIT_TEST_SUITE( utilT );
 
         CPPUNIT_TEST( make_temp_file_test );
         CPPUNIT_TEST( make_temp_file_write_data_test );

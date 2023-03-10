@@ -147,18 +147,18 @@ string GatewayContainer::access() {
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );
 
 
-    string cachedResource = d_remoteResource->get_filename();
-    BESDEBUG( MODULE, prolog << "Using local cache file: " << cachedResource << endl );
+    string local_name = d_remoteResource->get_filename();
+    BESDEBUG( MODULE, prolog << "Using local file: " << local_name << endl );
 
     type = d_remoteResource->get_type();
     set_container_type(type);
     BESDEBUG( MODULE, prolog << "Type: " << type << endl );
 
-    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << cachedResource << endl);
+    BESDEBUG( MODULE, prolog << "Done accessing " << get_real_name() << " returning cached file " << local_name << endl);
     BESDEBUG( MODULE, prolog << "Done accessing " << *this << endl);
     BESDEBUG( MODULE, prolog << "END" << endl);
 
-    return cachedResource;    // this should return the file name from the GatewayCache
+    return local_name;    // this should return the file name from the GatewayCache
 }
 
 

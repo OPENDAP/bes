@@ -77,6 +77,10 @@ private:
     /// The file name in which the content is stored.
     std::string d_filename;
 
+    /// The basename of the URL or file::// path. Used to name the temp file in a way that is meaningful
+    /// to libdap when it builds DDS, etc., objects.
+    std::string d_basename;
+
     /// If true, d_filename is a temporary file and should be deleted when the object is destroyed.
     bool d_delete_file = false;
 
