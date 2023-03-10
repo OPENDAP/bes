@@ -221,7 +221,7 @@ void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr)
     for (auto ircv = this->cvars.begin(); ircv != this->cvars.end();) {
         if (true == include_attr) {
             for (auto ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end();) {
-                H5DataType temp_dtype = (*ira)->get_type();
+                H5DataType temp_dtype = (*ira)->getType();
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
@@ -279,7 +279,7 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info()
         bool is_ignored = ignored_dimscale_ref_list(cvar);
         if (false == cvar->attrs.empty()) {
             for (const auto &attr:cvar->attrs) {
-                H5DataType temp_dtype = attr->get_type();
+                H5DataType temp_dtype = attr->getType();
                 // TODO: check why 64-bit integer is included.
                 if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
                     // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"

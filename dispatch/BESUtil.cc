@@ -37,10 +37,10 @@
 #include <sys/resource.h>
 
 #include <fcntl.h>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
 
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
@@ -1419,3 +1419,51 @@ void BESUtil::split(const string &s, const string &delimiter, vector<string> &re
     res.push_back(s.substr (pos_start));
 }
 #endif
+
+string BESUtil::file_to_string(const string &filename) {
+    std::ifstream t(filename);
+    if (!t.is_open()) {
+        throw BESInternalError("Could not open file: " + filename, __FILE__, __LINE__);
+    }
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    return {buffer.str()};
+}
+
+/**
+ * @brief Make and open a temporary file.
+ * The file is opened such that we know it is unique and not in use by another process.
+ * The name and file descriptor are set in the RemoteResource object.
+ * @param temp_file_dir The directory to hold the temporary file.
+ * @param temp_file_name The name of the temporary file. A value-result parameter.
+ */
+int BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name) {
+    temp_file_name = BESUtil::assemblePath(temp_file_dir, "/bes_util_XXXXXX");
+
+    // Open truncated for update. NB: mkstemp() returns a file descriptor.
+    // man mkstemp says "... The file is opened with the O_EXCL flag,
+    // guaranteeing that when mkstemp returns successfully we are the only
+    // user." 09/19/02 jhrg
+    // The 'hack' &temp_file_name[0] is explicitly allowed by the C++ 11 standard.
+    // jhrg 3/9/23
+    int fd = mkstemp(&temp_file_name[0]); // fd mode is 666 or 600 (Unix)
+    if (fd < 0) {
+        throw BESInternalError("mkstemp() failed.", __FILE__, __LINE__);
+    }
+
+    return fd;
+}
+
+/**
+ * @brief Write a string to a file
+ * @note Truncates the file if it exists.
+ * @param filename
+ * @param content
+ */
+void BESUtil::string_to_file(const string &filename, const string &content) {
+    std::ofstream t(filename, std::ios::out | std::ios::trunc);
+    if (!t.is_open()) {
+        throw BESInternalError("Could not open file: " + filename, __FILE__, __LINE__);
+    }
+    t << content;
+}

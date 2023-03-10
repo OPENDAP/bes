@@ -58,11 +58,16 @@ namespace cmr {
 json JsonUtils::get_as_json(const string &url) const
 {
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
+#if 0
     shared_ptr<http::url> target_url(new http::url(url));
-    http::RemoteResource remoteResource(target_url);
+#endif
+    http::RemoteResource remoteResource(make_shared<http::url>(url));
+#if 0
     remoteResource.retrieveResource();
     string cache_filename = remoteResource.getCacheFileName();
-    std::ifstream f(cache_filename);
+#endif
+    remoteResource.retrieve_resource();
+    std::ifstream f(remoteResource.get_filename());
     json data = json::parse(f);
     return data;
 }

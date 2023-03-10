@@ -48,8 +48,7 @@ class RemoteResource {
 private:
     friend class RemoteResourceTest;
 
-    // FIXME Make this configurable. jhrg 3/8/23
-    static const std::string d_temp_file_dir;
+    static std::string d_temp_file_dir;
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;
@@ -69,14 +68,15 @@ private:
     /// The file name in which the content is stored.
     std::string d_filename;
 
+    /// The basename of the URL or file::// path. Used to name the temp file in a way that is meaningful
+    /// to libdap when it builds DDS, etc., objects.
+    std::string d_basename;
+
     /// If true, d_filename is a temporary file and should be deleted when the object is destroyed.
     bool d_delete_file = false;
 
     /// The raw HTTP response headers returned by the request for the remote resource.
     std::vector<std::string> d_response_headers; // Response headers
-
-    /// Make a temporary file for the resource content
-    void make_temp_file(const std::string &temp_file_dir);
 
     /// write the url content to a file, set the type, and rewind the file descriptor
     void get_url(int fd);
@@ -92,9 +92,6 @@ public:
 
     void retrieve_resource();
 
-    /// This should be removed once refactored. jhrg 3/8/23
-    void retrieveResource(const std::map<std::string, std::string> &content_filters);
-
     /**
      * Returns the DAP type std::string of the RemoteHttpResource
      * @return Returns the DAP type std::string used by the BES Containers.
@@ -104,16 +101,11 @@ public:
     /// Returns the file name in which the content of the URL has been stored.
     std::string get_filename() const {return d_filename; }
 
+    /// Return the file descriptor to the open temp file
     int get_fd() const { return d_fd; }
 
-    // TODO Move this to the DMR++ code. jhrg 3/8/23
-    /// replace information in the DMR++; currently specific to NGAP (3/8/23)
-    void filter_url(const std::map<std::string, std::string> &content_filters) const;
-
-    /// return the content of the response as a std::string used by get_as_json()
-    std::string get_response_as_string() const;
-    // TODO this is used only by the NGAP API code and should be moved there. jhrg 3/8/23
-    rapidjson::Document get_as_json() const;
+    /// Set the file descriptor to the open temp file. Useful when
+    void set_fd(int fd) { d_fd = fd; }
 };
 
 } /* namespace http */

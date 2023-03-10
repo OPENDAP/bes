@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
         rr->retrieve_resource();
 
-        string name = rr->getCacheFileName();
+        string name = rr->get_filename();
 
         ifstream rr_cache_file(name);
         while (rr_cache_file) {

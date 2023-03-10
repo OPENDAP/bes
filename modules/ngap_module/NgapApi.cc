@@ -435,16 +435,26 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(
     BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
     BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-    std::shared_ptr<http::url> cmr_query_url_ptr(new http::url(cmr_query_url));
+    auto cmr_query_url_ptr = make_shared<http::url>(cmr_query_url);
     http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
     {
+#ifndef NDEBUG
         BESStopWatch besTimer;
         if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
             besTimer.start("CMR Query: " + cmr_query_url);
         }
+#endif
         cmr_query.retrieve_resource();
     }
-    rapidjson::Document cmr_response = cmr_query.get_as_json();
+
+    rapidjson::Document cmr_response;
+    string cmr_json_string = BESUtil::file_to_string(cmr_query.get_filename());
+    cmr_response.Parse(cmr_json_string.c_str());
+
+#if 0
+    string cmr_json = BESUtil::file_to_string(cmr_query.get_filename());
+    //rapidjson::Document cmr_response = cmr_query.get_as_json();
+#endif
 
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
