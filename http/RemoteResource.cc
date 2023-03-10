@@ -55,8 +55,8 @@
 
 using namespace std;
 
-// FIXME I don't know how, but this key should not be hard coded. jhrg 2/8/23
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
+#define REMOTE_RESOURCE_CACHE_DIR_KEY "BES.Catalog.RemoteResource.CacheDir"
 
 #define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
@@ -105,6 +105,11 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     if (!path_elements.empty()) {
         d_basename = path_elements.back();
     }
+
+    http::get_type_from_url(d_url->str(), d_type);
+    if (d_type.empty()) {
+        d_type = "unknown";
+    }
 }
 
 /**
@@ -128,11 +133,6 @@ RemoteResource::~RemoteResource() {
 void RemoteResource::retrieve_resource() {
     if (d_initialized) {
         return;
-    }
-
-    http::get_type_from_url(d_url->str(), d_type);
-    if (d_type.empty()) {
-        d_type = "unknown";
     }
 
     // Make a temporary file, get an open descriptor for it, and read the remote resource into it.

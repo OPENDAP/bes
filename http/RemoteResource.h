@@ -99,7 +99,7 @@ public:
     std::string get_type() const { return d_type; }
 
     /// Returns the file name in which the content of the URL has been stored.
-    std::string get_filename() const {return d_filename; }
+    std::string get_filename() const { return d_filename; }
 
     /// Return the file descriptor to the open temp file
     int get_fd() const { return d_fd; }

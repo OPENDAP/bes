@@ -603,7 +603,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  * @param target_url The URL to target
  * @param req_headers A curl_slist containing any necessary request headers
  * to be transmitted with the HTTP request.
- * @param resp_hdrs A vector into which any response headeres associated
+ * @param resp_hdrs A vector into which any response headers associated
  * the servers response will be placed.
  * @return A cURL easy handle configured as described above,
  */
@@ -1115,7 +1115,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 /**
  * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
  * CURLcode code.
- * @ note Used here and in dmrpp_module in one place. jhrg 3/8/23
+ * @note Used here and in dmrpp_module in one place. jhrg 3/8/23
  * @param response_code
  * @param error_buf
  * @return
