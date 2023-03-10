@@ -33,9 +33,8 @@
 #include <unistd.h>
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cstdlib>
+#include <cstring>
 #include <fcntl.h>
 #include <list>
 
@@ -48,7 +47,6 @@
 #include "BESInternalError.h"
 #include "TheBESKeys.h"
 #include "test_config.h"
-#include <unistd.h>
 
 using namespace CppUnit;
 using namespace std;
