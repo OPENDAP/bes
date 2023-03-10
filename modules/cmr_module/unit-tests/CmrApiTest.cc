@@ -649,7 +649,8 @@ public:
         }
 
     }
-CPPUNIT_TEST_SUITE( CmrApiTest );
+
+    CPPUNIT_TEST_SUITE( CmrApiTest );
 
     CPPUNIT_TEST(get_provider_test);
     CPPUNIT_TEST(get_opendap_collections_test);
@@ -663,7 +664,6 @@ CPPUNIT_TEST_SUITE( CmrApiTest );
     CPPUNIT_TEST(get_granules_month_test);
     CPPUNIT_TEST(get_granules_data_access_urls_month_test);
     CPPUNIT_TEST(granule_count_test);
-
 
     CPPUNIT_TEST_SUITE_END();
 };
