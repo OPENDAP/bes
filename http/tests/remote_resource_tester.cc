@@ -8,6 +8,8 @@
 #include <fstream>
 #include <string>
 
+#include <sys/stat.h>
+
 #include "TheBESKeys.h"
 #include "RemoteResource.h"
 #include "url_impl.h"
@@ -28,6 +30,9 @@ int main(int argc, char *argv[])
 {
     cerr << "Hello, world!" << endl;
     string bes_conf = "bes.conf";
+
+    // TODO undo this hack. jhrg 3/9/23
+    mkdir("/tmp/bes_rr_cache", 0777);
 
     try {
         string debug_dest = argv[3];
