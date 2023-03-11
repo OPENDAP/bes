@@ -27,24 +27,19 @@
 #include "config.h"
 
 #include <cstdio>
-#include <sys/stat.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include <sstream>
-#include <fstream>
 #include <string>
 #include <utility>
 #include <memory>
 
-#include "rapidjson/document.h"
-
 #include "BESInternalError.h"
-#include "BESNotFoundError.h"
 
 #include "BESDebug.h"
 #include "BESUtil.h"
 
-#include "HttpCache.h"
 #include "HttpUtils.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
@@ -56,37 +51,42 @@
 using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
-#define REMOTE_RESOURCE_CACHE_DIR_KEY "BES.Catalog.RemoteResource.CacheDir"
+#define REMOTE_RESOURCE_TMP_DIR_KEY "BES.RemoteResource.TmpDir"
 
 #define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
 
 namespace http {
 
-// FIXME Make this configurable. jhrg 3/8/23
-std::string RemoteResource::d_temp_file_dir = "/tmp/bes_rr_cache";
+std::string RemoteResource::d_temp_file_dir;
+
+/**
+ * @brief Set the directory where the temporary files are created.
+ *
+ * @note A static method.
+ *
+ * This method is called by the constructor and sets the directory where the temporary files are created.
+ * The directory is set using the REMOTE_RESOURCE_TMP_DIR_KEY key. If the key is not set then the
+ * directory is set to /tmp/bes_rr_cache.
+ */
+void RemoteResource::set_temp_file_dir()
+{
+    d_temp_file_dir = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_cache");
+
+    if (access(d_temp_file_dir.c_str(), W_OK | R_OK) != 0 && mkdir(d_temp_file_dir.c_str(), 0775) != 0) {
+        throw BESInternalError("The directory '" + d_temp_file_dir + "' could not be created or is not writable ("
+                               + strerror(errno) + ")", __FILE__, __LINE__);
+    }
+}
 
 RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
-    : d_url(target_url), d_uid(std::move(uid)) {
+    : d_url(std::move(target_url)), d_uid(std::move(uid)) {
+
+    set_temp_file_dir();
 
     if (d_url->protocol() == FILE_PROTOCOL) {
-        BESDEBUG(MODULE, prolog << "Found FILE protocol." << endl);
-        d_filename = d_url->path();
-        while (BESUtil::endsWith(d_filename, "/")) {
-            // Strip trailing slashes, because this about files, not directories
-            d_filename = d_filename.substr(0, d_filename.size() - 1);
-        }
-        // Now we check that the data is in the BES_CATALOG_ROOT
-        string catalog_root;
-        bool found;
-        TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY, catalog_root, found);
-        if (!found) {
-            throw BESInternalError(prolog + "ERROR - " + BES_CATALOG_ROOT_KEY + "is not set", __FILE__, __LINE__);
-        }
-        if (d_filename.find(catalog_root) != 0) {
-            d_filename = BESUtil::pathConcat(catalog_root, d_filename);
-        }
-        BESDEBUG(MODULE, "d_resourceCacheFileName: " << d_filename << endl);
+        set_filename_for_file_url();
+        // d_delete_file is false by default; don't delete the file
         d_initialized = true;
     }
     else if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
@@ -122,6 +122,33 @@ RemoteResource::~RemoteResource() {
     if (d_fd != -1)
         close(d_fd);
 }
+
+/// @name Private methods used by the constructor
+/// @{
+/**
+ * @brief Set the filename field for a file URL
+ */
+void RemoteResource::set_filename_for_file_url() {
+    BESDEBUG(MODULE, prolog << "Found FILE protocol." << endl);
+    d_filename = d_url->path();
+    while (BESUtil::endsWith(d_filename, "/")) {
+        // Strip trailing slashes, because this about files, not directories
+        d_filename = d_filename.substr(0, d_filename.size() - 1);
+    }
+
+    // Now we check that the data is in the BES_CATALOG_ROOT
+    string catalog_root = TheBESKeys::TheKeys()->read_string_key(BES_CATALOG_ROOT_KEY, "");
+    if (catalog_root.empty()) {
+        throw BESInternalError(prolog + "ERROR - " + BES_CATALOG_ROOT_KEY + "is not set", __FILE__, __LINE__);
+    }
+
+    if (d_filename.find(catalog_root) != 0) {
+        d_filename = BESUtil::pathConcat(catalog_root, d_filename);
+    }
+    BESDEBUG(MODULE, "d_resourceCacheFileName: " << d_filename << endl);
+}
+
+/// @}
 
 /**
  * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve

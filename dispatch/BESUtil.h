@@ -131,6 +131,10 @@ public:
     static uint64_t file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done,
                                         std::ostream &o_strm);
 
+    static std::string get_dir_name(const std::string &p);
+    static bool is_directory(const std::string &p);
+
+    static int mkdir_p(const std::string &path, mode_t mode);
     static std::string file_to_string(const std::string &filename);
     static std::string file_to_string(const std::string &filename, std::string &error_msg);
     static int make_temp_file(const std::string &temp_file_dir, std::string &temp_file_name);

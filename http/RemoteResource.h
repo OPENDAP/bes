@@ -32,7 +32,6 @@
 #include <vector>
 
 #include "CurlUtils.h"
-#include "rapidjson/document.h"
 
 namespace http {
 
@@ -49,6 +48,9 @@ private:
     friend class RemoteResourceTest;
 
     static std::string d_temp_file_dir;
+
+    /// Initializer for the temp file dir.
+    static void set_temp_file_dir();
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;
@@ -81,6 +83,8 @@ private:
     /// write the url content to a file, set the type, and rewind the file descriptor
     void get_url(int fd);
 
+    void set_filename_for_file_url();
+
 public:
     /// The default constructor is here to ease testing. Remove if not needed. jhrg 3/8/23
     RemoteResource() = default;
@@ -103,9 +107,6 @@ public:
 
     /// Return the file descriptor to the open temp file
     int get_fd() const { return d_fd; }
-
-    /// Set the file descriptor to the open temp file. Useful when
-    void set_fd(int fd) { d_fd = fd; }
 };
 
 } /* namespace http */

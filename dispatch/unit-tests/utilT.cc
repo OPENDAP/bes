@@ -523,8 +523,80 @@ public:
         system(("rm " + temp_file_name).c_str());  // cleanup
     }
 
+    void mkdir_p_simple_test() {
+        string dir = "/tmp/bes_util_test";
+        // initial condition: bes_util_test does not exist
+        CPPUNIT_ASSERT_MESSAGE("bes_util_test should not exist", access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system(("rm -rf " + dir).c_str());  // cleanup
+    }
 
-    CPPUNIT_TEST_SUITE( utilT );
+    void mkdir_p_w_missing_parent_test() {
+        string dir = "/tmp/bes_util_test/parent";
+        // initial condition: neither bes_util_test nor parent exists
+        CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
+                               access("/tmp/bes_util_test", F_OK) == -1
+                               && access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system("rm -rf /tmp/bes_util_test");  // cleanup
+    }
+
+    void mkdir_p_exists_test() {
+        string dir = "/tmp";
+        // Unlike mkdir(2), mkdir_p returns 0 (success) if the directory exists.
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Call to make an existing dir should fail", status == 0);
+    }
+
+    void mkdir_p_exists_trailing_slash_test() {
+        string dir = "/tmp/";
+        // Unlike mkdir(2), mkdir_p returns 0 (success) if the directory exists.
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Call to make an existing dir should fail", status == 0);
+    }
+
+    void mkdir_p_w_missing_parent_trailing_slash_test() {
+        string dir = "/tmp/bes_util_test/parent/";
+        // initial condition: neither bes_util_test nor parent exists
+        CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
+                               access("/tmp/bes_util_test", F_OK) == -1
+                               && access(dir.c_str(), F_OK) == -1);
+        BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
+        system("rm -rf /tmp/bes_util_test");  // cleanup
+    }
+
+    void mkdir_p_not_allowed_test() {
+        string dir = "/dev/mkdir_p_not_allowed";
+        // initial conditions: /dev/mkdir_p_not_allowed does not exist and we cannot write to /dev
+        CPPUNIT_ASSERT_MESSAGE("/dev/mkdir_p_not_allowed should not exist", access(dir.c_str(), F_OK) == -1);
+        CPPUNIT_ASSERT_MESSAGE("/dev not writable by this process", access("/dev", W_OK) == -1);
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("mkdir_p() should return an error", status == -1);
+        DBG(cerr << "errno: " << strerror(errno) << " (" << errno << ")" << endl);
+        CPPUNIT_ASSERT_MESSAGE("Error code should be EACCES or EPERM", errno == EACCES || errno == EPERM);
+        CPPUNIT_ASSERT_MESSAGE("Directory should not exist because we are not allowed to write there",
+                               access(dir.c_str(), F_OK) == -1);
+    }
+
+    void mkdir_p_empty_path_test() {
+        string dir = "";
+        int status = BESUtil::mkdir_p(dir, 0775);
+        CPPUNIT_ASSERT_MESSAGE("An empty path will succeed", status == 0);
+    }
+
+
+CPPUNIT_TEST_SUITE( utilT );
+
+        CPPUNIT_TEST( mkdir_p_simple_test );
+        CPPUNIT_TEST( mkdir_p_w_missing_parent_test );
+        CPPUNIT_TEST( mkdir_p_exists_test );
+        CPPUNIT_TEST( mkdir_p_exists_trailing_slash_test );
+        CPPUNIT_TEST( mkdir_p_w_missing_parent_trailing_slash_test );
+        CPPUNIT_TEST( mkdir_p_not_allowed_test );
+        CPPUNIT_TEST( mkdir_p_empty_path_test );
 
         CPPUNIT_TEST( make_temp_file_test );
         CPPUNIT_TEST( make_temp_file_write_data_test );
