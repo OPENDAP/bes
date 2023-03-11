@@ -106,6 +106,7 @@ public:
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
+#if 0
         if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
             DBG(cerr << prolog << "Creating temp file dir: " << RemoteResource::d_temp_file_dir << endl);
             if (mkdir(RemoteResource::d_temp_file_dir.c_str(), 0777) != 0) {
@@ -113,6 +114,7 @@ public:
                                         + strerror(errno), __FILE__, __LINE__);
             }
         }
+#endif
     }
 
 #if 0
@@ -130,9 +132,8 @@ public:
 #endif
 
     void tearDown() override {
-        if (system((string("rm -rf ") + RemoteResource::d_temp_file_dir).c_str()) < 0) {
-            CPPUNIT_FAIL(prolog + "ERROR: Could not remove temp file directory: " + RemoteResource::d_temp_file_dir
-            + " - " + strerror(errno));
+        if (system(string("rm -rf /tmp/bes_rr_cache").c_str()) < 0) {
+            CPPUNIT_FAIL(prolog + "Could not remove temp file directory: /tmp/bes_rr_cache - " + strerror(errno));
         }
     }
 

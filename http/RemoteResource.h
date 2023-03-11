@@ -30,6 +30,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "CurlUtils.h"
 
@@ -47,10 +48,11 @@ class RemoteResource {
 private:
     friend class RemoteResourceTest;
 
-    static std::string d_temp_file_dir;
+    std::string d_temp_file_dir;
 
     /// Initializer for the temp file dir.
-    static void set_temp_file_dir();
+    void set_temp_file_dir();
+    std::mutex d_temp_file_dir_mutex;
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;
@@ -82,6 +84,7 @@ private:
 
     /// write the url content to a file, set the type, and rewind the file descriptor
     void get_url(int fd);
+    std::mutex d_retrieve_resource_mutex;
 
     void set_filename_for_file_url();
 

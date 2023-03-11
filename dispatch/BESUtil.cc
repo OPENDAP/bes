@@ -1507,7 +1507,8 @@ int BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name)
     // jhrg 3/9/23
     int fd = mkstemp(&temp_file_name[0]); // fd mode is 666 or 600 (Unix)
     if (fd < 0) {
-        throw BESInternalError(string("mkstemp() failed (") + strerror(errno) + ").", __FILE__, __LINE__);
+        throw BESInternalError(string("mkstemp() for ") + temp_file_name + " failed (" + strerror(errno) + ").",
+                               __FILE__, __LINE__);
     }
 
     return fd;

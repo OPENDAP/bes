@@ -51,38 +51,15 @@
 using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
-#define REMOTE_RESOURCE_TMP_DIR_KEY "BES.RemoteResource.TmpDir"
+#define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"
 
 #define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
 
 namespace http {
 
-std::string RemoteResource::d_temp_file_dir;
-
-/**
- * @brief Set the directory where the temporary files are created.
- *
- * @note A static method.
- *
- * This method is called by the constructor and sets the directory where the temporary files are created.
- * The directory is set using the REMOTE_RESOURCE_TMP_DIR_KEY key. If the key is not set then the
- * directory is set to /tmp/bes_rr_cache.
- */
-void RemoteResource::set_temp_file_dir()
-{
-    d_temp_file_dir = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_cache");
-
-    if (access(d_temp_file_dir.c_str(), W_OK | R_OK) != 0 && mkdir(d_temp_file_dir.c_str(), 0775) != 0) {
-        throw BESInternalError("The directory '" + d_temp_file_dir + "' could not be created or is not writable ("
-                               + strerror(errno) + ")", __FILE__, __LINE__);
-    }
-}
-
 RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     : d_url(std::move(target_url)), d_uid(std::move(uid)) {
-
-    set_temp_file_dir();
 
     if (d_url->protocol() == FILE_PROTOCOL) {
         set_filename_for_file_url();
@@ -91,6 +68,8 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     }
     else if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "URL: " << d_url->str() << endl);
+
+        set_temp_file_dir();    // only set for http/https URLs
         d_delete_file = true;
     }
     else {
@@ -125,6 +104,29 @@ RemoteResource::~RemoteResource() {
 
 /// @name Private methods used by the constructor
 /// @{
+
+/**
+ * @brief Set the directory where the temporary files are created.
+ *
+ * @note Private
+ *
+ * This method is called by the constructor and sets the directory where the temporary files are created.
+ * The directory is set using the REMOTE_RESOURCE_TMP_DIR_KEY key. If the key is not set then the
+ * directory is set to /tmp/bes_rr_cache.
+ */
+void RemoteResource::set_temp_file_dir()
+{
+    lock_guard<mutex> lock(d_temp_file_dir_mutex);
+    d_temp_file_dir = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_cache");
+    if (access(d_temp_file_dir.c_str(), W_OK & R_OK) == 0)
+        return;
+
+    if (BESUtil::mkdir_p(d_temp_file_dir, 0775) != 0) {
+        throw BESInternalError("Temporary file directory '" + d_temp_file_dir + "' error: " + strerror(errno),
+                               __FILE__, __LINE__);
+    }
+}
+
 /**
  * @brief Set the filename field for a file URL
  */
@@ -161,6 +163,8 @@ void RemoteResource::retrieve_resource() {
     if (d_initialized) {
         return;
     }
+
+    lock_guard<mutex> lock(d_retrieve_resource_mutex);
 
     // Make a temporary file, get an open descriptor for it, and read the remote resource into it.
     d_fd = BESUtil::make_temp_file(d_temp_file_dir, d_filename);

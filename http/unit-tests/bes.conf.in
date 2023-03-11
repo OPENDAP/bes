@@ -10,6 +10,8 @@ Http.Cache.prefix=hut_
 Http.Cache.size=500
 Http.Cache.expires.time=300
 
+Http.RemoteResource.TmpDir = /tmp/bes_rr_cache
+
 Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
 Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 
