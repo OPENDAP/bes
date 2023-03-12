@@ -105,35 +105,16 @@ public:
     void setUp() override {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
-
-#if 0
-        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
-            DBG(cerr << prolog << "Creating temp file dir: " << RemoteResource::d_temp_file_dir << endl);
-            if (mkdir(RemoteResource::d_temp_file_dir.c_str(), 0777) != 0) {
-                throw BESInternalError("Failed to create temp file dir: " + RemoteResource::d_temp_file_dir + ": "
-                                        + strerror(errno), __FILE__, __LINE__);
-            }
-        }
-#endif
     }
 
-#if 0
-
     void tearDown() override {
-        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
+        DBG(cerr << prolog << "RemoteResource::d_temp_file_dir: " << RemoteResource::d_temp_file_dir << endl);
+        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) == 0) {
             DBG(cerr << prolog << "Removing temp file dir: " << RemoteResource::d_temp_file_dir << endl);
             if (system(("rm -rf " + RemoteResource::d_temp_file_dir).c_str()) != 0) {
                 throw BESInternalError("Failed to remove temp file dir: " + RemoteResource::d_temp_file_dir + ": "
                                        + strerror(errno), __FILE__, __LINE__);
             }
-        }
-    }
-
-#endif
-
-    void tearDown() override {
-        if (system(string("rm -rf /tmp/bes_rr_cache").c_str()) < 0) {
-            CPPUNIT_FAIL(prolog + "Could not remove temp file directory: /tmp/bes_rr_cache - " + strerror(errno));
         }
     }
 
