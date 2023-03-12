@@ -105,6 +105,10 @@ public:
     void setUp() override {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
+
+        // Force re-init for every test. We need this because the temp file
+        // dir is removed in the tearDown() method.
+        RemoteResource::d_temp_file_dir = "";
     }
 
     void tearDown() override {
