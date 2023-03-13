@@ -10,13 +10,15 @@
 # The user agent that Hyrax will utilize when making HTTP requests.
 # Http.UserAgent=hyrax
 
+Http.RemoteResource.TmpDir = /tmp/bes_rr_tmp
+
 # Http.Cache.dir - defines which directory to use for caching web
 # resources retrieved by the gateway_module
 #
 # Http.Cache.prefix - defines the prefix for cache files so that
 # they will be easily identifiable.
 #
-# Http.Cache.size - The maxium size of the Gateway cache, in megabytes.
+# Http.Cache.size - The maximum size of the Gateway cache, in megabytes.
 #
 # Http.Cache.expires - The expiration time in seconds for cached resources
 # 60 is equal to 1 minute

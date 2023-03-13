@@ -28,7 +28,6 @@
 
 #include <cstdio>
 #include <unistd.h>
-#include <sys/stat.h>
 
 #include <sstream>
 #include <string>
@@ -150,6 +149,10 @@ void RemoteResource::set_temp_file_dir()
 
 /**
  * @brief Set the filename field for a file URL
+ *
+ * @note Private
+ *
+ * This method makes sure that the file is within the BES 'catalog' root directory.
  */
 void RemoteResource::set_filename_for_file_url() {
     BESDEBUG(MODULE, prolog << "Found FILE protocol." << endl);
