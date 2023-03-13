@@ -63,6 +63,19 @@ string RemoteResource::d_temp_file_dir;
 std::mutex RemoteResource::d_temp_file_dir_mutex;
 std::mutex RemoteResource::d_mkstemp_mutex;
 
+/**
+ * @brief Construct a new RemoteResource object
+ *
+ * If the target_url is a file:// url then this will check make sure
+ * that file is within the BES 'catalog' root directory. If it is a
+ * remote resource then this will make sure the directory set by the
+ * Http.RemoteResource.TmpDir key exists and is writable.
+ *
+ * To get a remote resource, use the retrieve_resource() method.
+ *
+ * @param target_url An instance of http::url that points to the resource to be retrieved.
+ * @param uid The user ID to use when retrieving the resource.
+ */
 RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
     : d_url(std::move(target_url)), d_uid(std::move(uid)) {
 
@@ -97,8 +110,8 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
 }
 
 /**
- * Releases any memory resources and also any existing cache file locks for the cached resource.
- * ( Closes the file descriptor opened when retrieve_resource() was called.)
+ * Unlink the temporary file and close its open file descriptor. This
+ * will remove the temporary file from the file system.
  */
 RemoteResource::~RemoteResource() {
     if (!d_filename.empty() && d_delete_file)

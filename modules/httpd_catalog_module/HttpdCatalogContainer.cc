@@ -185,7 +185,7 @@ void HttpdCatalogContainer::dump(ostream &strm) const
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_remoteResource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_remoteResource->get_filename()
+        strm << BESIndent::LMarg << "RemoteResource.get_filename(): " << d_remoteResource->get_filename()
         << endl;
     }
     else {
