@@ -62,7 +62,7 @@
 // Note: if it is necessary to retrieve all the link paths, uncomment
 // vector<string>link_paths and change corresponding code.
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)) || (H5_VERS_MINOR == 14))
 typedef struct {
     H5O_token_t  link_addr;
     string slink_path;
