@@ -3,8 +3,9 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2023 OPeNDAP, Inc.
+// Authors: Daniel Holloway <dholloway@opendap.org>
+// Authors: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -31,8 +32,6 @@
 #include "NgapBuildDmrppContainer.h"
 
 using namespace std;
-// using namespace gateway;
-
 
 namespace dmrpp {
     /** @brief create an instance of this persistent store with the given name.
@@ -61,6 +60,10 @@ namespace dmrpp {
     void NgapBuildDmrppContainerStorage::add_container(const string &s_name, const string &r_name, const string &type)
     {
         BESContainer *c = new NgapBuildDmrppContainer(s_name, r_name, "h5");
+
+        NgapBuildDmrppContainer *d = dynamic_cast<NgapBuildDmrppContainer *>(c);
+        string cacheName = d->access();
+
         BESContainerStorageVolatile::add_container(c);
     }
 

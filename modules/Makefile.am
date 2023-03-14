@@ -10,7 +10,7 @@ EXTRA_DIST = data/README
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
-SUBDIRS = common csv_handler freeform_handler functions usage asciival
+SUBDIRS = common csv_handler freeform_handler functions usage asciival ngap_module
 
 if WITH_CMR
 SUBDIRS += cmr_module
@@ -40,7 +40,7 @@ SUBDIRS += netcdf_handler fileout_netcdf fileout_covjson
 endif
 
 # Why are these here? Because they have tests that depend on netcdf.
-SUBDIRS +=  httpd_catalog_module ngap_module fileout_json w10n_handler gateway_module xml_data_handler
+SUBDIRS +=  httpd_catalog_module fileout_json w10n_handler gateway_module xml_data_handler
 
 if BUILD_GDAL
 SUBDIRS += gdal_module

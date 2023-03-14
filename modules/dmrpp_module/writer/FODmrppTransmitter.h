@@ -2,10 +2,11 @@
 //
 // FoW10JsonTransmitter.h
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES DMRPP Module
 //
-// Copyright (c) 2014 OPeNDAP, Inc.
+// Copyright (c) 2023 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Author: Daniel Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public

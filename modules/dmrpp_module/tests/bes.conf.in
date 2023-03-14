@@ -52,6 +52,5 @@ CredentialsManager.config=ENV_CREDS
 Http.Cache.dir=/tmp/hyrax_http
 Http.Cache.prefix=dmrpp_
 Http.Cache.size=100
-Http.Cache.expires.time=15
 
 AllowedHosts += ^https:\/\/cmr\.earthdata\.nasa\.gov\/.*$

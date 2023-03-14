@@ -3,8 +3,9 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
+// Copyright (c) 2023 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Author: Danbiel Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public

@@ -2,10 +2,11 @@
 //
 // FoDapJsonTransmitter.cc
 //
-// This file is part of BES JSON File Out Module
+// This file is part of BES DMRPP Module
 //
-// Copyright (c) 2014 OPeNDAP, Inc.
+// Copyright (c) 2023 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
+// Author: Daniel Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -85,21 +86,20 @@ FODmrppTransmitter::FODmrppTransmitter() :
 }
 
 /**
- * Follow the send_data()
- * @brief The static method registered to transmit OPeNDAP data objects as
- * a netcdf file.
+ * Follow the send_dmrpp()
+ * @brief The static method registered to transmit OPeNDAP DMRPP XML metadata.
  *
  * This function takes the OPeNDAP DMR object, reads in the data (can be
- * used with any data handler), transforms the data into a netcdf file, and
- * streams back that netcdf file back to the requester using the stream
+ * used with any data handler), transforms the DMR into a DMRPP, and
+ * streams back that DMRPP XML back to the requester using the stream
  * specified in the BESDataHandlerInterface.
  *
  * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
  * @param dhi BESDataHandlerInterface containing information about the
  * request and response
  * @throws BESInternalError if the response is not an OPeNDAP DMR or if
- * there are any problems reading the data, writing to a netcdf file, or
- * streaming the netcdf file
+ * there are any problems reading the data, generating DMRPP XML, or
+ * streaming the DMRPP XML
  */
 void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {

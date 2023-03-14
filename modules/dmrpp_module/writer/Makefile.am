@@ -4,8 +4,8 @@
 # 11/1/12 jhrg
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(DMRPP_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch \
-    -I../ -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src
+AM_CPPFLAGS = $(DMRPP_CFLAGS) $(DAP_CFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch \
+    -I../ -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_builddir)/deps/include/
 AM_CXXFLAGS =
 AM_LDFLAGS = $(DMRPP_LDFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -28,6 +28,14 @@ libdmrpp_writer_la_SOURCES = $(FODMRPP_SRC) $(FODMRPP_HDR)
 libdmrpp_writer_la_LIBADD = $(LIBADD)
 libdmrpp_writer_la_LDFLAGS = $(AM_LDFLAGS)
 libdmrpp_writer_la_LDFLAGS += -no-undefinedpwd
+
+BUILT_SOURCES = h5common.cc h5common.h
+
+h5common.cc: Makefile
+	cp $(top_srcdir)/modules/hdf5_handler/h5common.cc ./h5common.cc
+
+h5common.h: Makefile
+	cp $(top_srcdir)/modules/hdf5_handler/h5common.h ./h5common.h
 
 FODMRPP_SRC = FODmrppTransmitter.cc $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.cc h5common.cc
 

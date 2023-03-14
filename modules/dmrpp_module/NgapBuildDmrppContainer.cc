@@ -5,8 +5,9 @@
 // This file is part of ngap_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2023 OPeNDAP, Inc.
+// Authors: Daniel Holloway <dholloway@opendap.org>
+// Authors: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Authors:
+//      dan       Daniel Holloway <dholloway@opendap.org>
 //      ndp       Nathan Potter <ndp@opendap.org>
 
 #include "config.h"
@@ -90,6 +92,7 @@ void NgapBuildDmrppContainer::initialize()
     string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
 
     set_real_name(data_access_url);
+
     BESDEBUG(MODULE, prolog << "END (obj_addr: "<< (void *) this << ")" << endl);
 
 }
@@ -130,14 +133,17 @@ NgapBuildDmrppContainer::ptr_duplicate() {
     return container;
 }
 
+/**
+ * TODO: I think this implementation of the destructor is incomplete/inadequate. Review and fix as needed.
+ * TODO: The release() function is removed due to an inconsistency with the how this container is copied and used.
+ */
 NgapBuildDmrppContainer::~NgapBuildDmrppContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
     if (d_data_rresource) {
-        release();
+//        release();
     }
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
-
 
 
 /** @brief access the remote target response by making the remote request
@@ -151,12 +157,8 @@ string NgapBuildDmrppContainer::access() {
     // Since this the ngap we know that the real_name is a URL.
     string data_access_url_str = get_real_name();
 
-    // And if there's a missing data file (side-car) it should be "right there" too.
-    string missing_data_url_str = data_access_url_str + ".missing";
-
     BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
-    BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
-
+/*
     string href="href=\"";
     string trusted_url_hack="\" dmrpp:trust=\"true\"";
 
@@ -171,21 +173,17 @@ string NgapBuildDmrppContainer::access() {
 
     string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
     BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
-
-    string type = get_container_type();
-    if (type == "build")
-        type = "";
-
+*/
     if (!d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
         map<string, string> content_filters;
-        if (inject_data_url()) {
+        /*if (inject_data_url()) {
             content_filters.insert(
                     pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
             content_filters.insert(
                     pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
-        }
-        shared_ptr<http::url> data_url(new http::url(data_access_url_with_trusted_attr_str, true));
+        }*/
+        shared_ptr<http::url> data_url(new http::url(data_access_url_str, true));
         {
             d_data_rresource = new http::RemoteResource(data_url);
             BESStopWatch besTimer;
@@ -201,9 +199,6 @@ string NgapBuildDmrppContainer::access() {
     //  10/8/21 I think the RemoteResource should do that. jhrg
     string cachedResource = d_data_rresource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
-    type = d_data_rresource->getType();
-    set_container_type(type);
-    BESDEBUG(MODULE, prolog << "Type: " << type << endl);
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << data_access_url_str << " returning cached file " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
@@ -239,10 +234,10 @@ bool NgapBuildDmrppContainer::release() {
  * @param strm C++ i/o stream to dump the information to
  */
 void NgapBuildDmrppContainer::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "BuildDmrppContainer::dump - (" << (void *) this
+    strm << BESIndent::LMarg << "NgapBuildDmrppContainer::dump - (" << (void *) this
          << ")" << endl;
     BESIndent::Indent();
-//    BESContainer::dump(strm);
+    BESContainer::dump(strm);
     if (d_data_rresource) {
         strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->getCacheFileName()
              << endl;
@@ -263,4 +258,5 @@ bool NgapBuildDmrppContainer::inject_data_url(){
     BESDEBUG(MODULE, prolog << "NGAP_INJECT_DATA_URL_KEY(" << NGAP_INJECT_DATA_URL_KEY << "): " << result << endl);
     return result;
 }
-}
+
+}   // namespace dmrpp
