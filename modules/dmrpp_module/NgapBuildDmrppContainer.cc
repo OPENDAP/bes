@@ -45,9 +45,9 @@
 #include "RemoteResource.h"
 #include "url_impl.h"
 
+#include "NgapApi.h"
+#include "NgapNames.h"
 #include "NgapBuildDmrppContainer.h"
-#include "modules/ngap_module/NgapApi.h"
-#include "modules/ngap_module/NgapNames.h"
 
 #define prolog std::string("NgapBuildDmrppContainer::").append(__func__).append("() - ")
 
@@ -158,7 +158,7 @@ string NgapBuildDmrppContainer::access() {
     string data_access_url_str = get_real_name();
 
     BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
-/*
+
     string href="href=\"";
     string trusted_url_hack="\" dmrpp:trust=\"true\"";
 
@@ -168,20 +168,20 @@ string NgapBuildDmrppContainer::access() {
     string data_access_url_with_trusted_attr_str = href + data_access_url_str + trusted_url_hack;
     BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
 
-    string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+ /*   string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
     BESDEBUG(MODULE, prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
 
     string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
-    BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
-*/
+    BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);*/
+
     if (!d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
         map<string, string> content_filters;
         /*if (inject_data_url()) {
             content_filters.insert(
                     pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-            content_filters.insert(
-                    pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+            *//*content_filters.insert(
+                    pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));*//*
         }*/
         shared_ptr<http::url> data_url(new http::url(data_access_url_str, true));
         {

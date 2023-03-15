@@ -59,8 +59,8 @@
 #include "DmrppTypeFactory.h"
 #include "DmrppD4Group.h"
 
+#include "build_dmrpp_util.h"
 #include "FODmrppTransmitter.h"
-#include <modules/dmrpp_module/build_dmrpp_util.h>
 
 using namespace libdap;
 using namespace std;
