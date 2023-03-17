@@ -30,11 +30,9 @@
 #include <chrono>
 #include <vector>
 
-#include <cstdio>
 #include <cstdlib>
 #include <cerrno>
 #include <unistd.h>
-#include <sys/stat.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -106,34 +104,19 @@ public:
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR) + "/bes.conf";
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
-#if 0
-        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
-            DBG(cerr << prolog << "Creating temp file dir: " << RemoteResource::d_temp_file_dir << endl);
-            if (mkdir(RemoteResource::d_temp_file_dir.c_str(), 0777) != 0) {
-                throw BESInternalError("Failed to create temp file dir: " + RemoteResource::d_temp_file_dir + ": "
-                                        + strerror(errno), __FILE__, __LINE__);
-            }
-        }
-#endif
+        // Force re-init for every test. We need this because the temp file
+        // dir is removed in the tearDown() method.
+        RemoteResource::d_temp_file_dir = "";
     }
 
-#if 0
-
     void tearDown() override {
-        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) != 0) {
+        DBG(cerr << prolog << "RemoteResource::d_temp_file_dir: " << RemoteResource::d_temp_file_dir << endl);
+        if (access(RemoteResource::d_temp_file_dir.c_str(), F_OK) == 0) {
             DBG(cerr << prolog << "Removing temp file dir: " << RemoteResource::d_temp_file_dir << endl);
             if (system(("rm -rf " + RemoteResource::d_temp_file_dir).c_str()) != 0) {
                 throw BESInternalError("Failed to remove temp file dir: " + RemoteResource::d_temp_file_dir + ": "
                                        + strerror(errno), __FILE__, __LINE__);
             }
-        }
-    }
-
-#endif
-
-    void tearDown() override {
-        if (system(string("rm -rf /tmp/bes_rr_cache").c_str()) < 0) {
-            CPPUNIT_FAIL(prolog + "Could not remove temp file directory: /tmp/bes_rr_cache - " + strerror(errno));
         }
     }
 
@@ -275,169 +258,6 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
-
-#if 0
-    /**
-     * tests the is_cache_resource_expired() function
-     * create a temp file and sets the expired time to 1 sec
-     * allows temp file to expire and checks if the expiration is noticed
-     */
-    void is_cached_resource_expired_test() {
-        DBG(cerr << "|--------------------------------------------------|" << endl);
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        try {
-            std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
-            RemoteResource rhr(target_url, "foobar", 1);
-            DBG(cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl);
-
-            rhr.d_filename = d_temp_file;
-            DBG(cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl);
-
-            // Get a pointer to the singleton cache instance for this process.
-            HttpCache *cache = HttpCache::get_instance();
-            if (!cache) {
-                ostringstream oss;
-                oss << prolog << "FAILED to get local cache. ";
-                oss << "Unable to proceed with request for " << d_temp_file;
-                oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-                CPPUNIT_FAIL(oss.str());
-            }
-            if (!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)) {
-                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: " + d_temp_file);
-            }
-            rhr.d_initialized = true;
-
-            sleep(2);
-
-            bool refresh = rhr.cached_resource_is_expired();
-            DBG(cerr << prolog << "is_cached_resource_expired() called, refresh: " << refresh << endl);
-
-            CPPUNIT_ASSERT(refresh);
-        }
-        catch (BESError &besE) {
-            stringstream msg;
-            msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
-            msg << " type: " << besE.get_bes_error_type() << endl;
-            DBG(cerr << msg.str());
-            CPPUNIT_FAIL(msg.str());
-        }
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    /**
-     * Test of the RemoteResource content filtering method.
-     */
-    void filter_test() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        string source_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_source.xml");
-        DBG(cerr << prolog << "source_file: " << source_file << endl);
-
-        string baseline_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_source.xml_baseline");
-        DBG(cerr << prolog << "baseline_file: " << baseline_file << endl);
-
-        string tmp_file;
-        try {
-            copy_to_temp(source_file, tmp_file);
-            DBG(cerr << prolog << "temp_file: " << tmp_file << endl);
-
-            std::map<std::string, std::string> filter;
-            filter.insert(pair<string, string>("OPeNDAP_DMRpp_DATA_ACCESS_URL", "file://original_file_ref"));
-            filter.insert(pair<string, string>("OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL", "file://missing_file_ref"));
-
-            RemoteResource foo;
-            foo.d_filename = tmp_file;
-            foo.filter_url(filter);
-
-            bool result_matched = compare(tmp_file, baseline_file);
-            stringstream info_msg;
-            info_msg << prolog << "The filtered file: " << tmp_file
-                     << (result_matched ? " MATCHED " : " DID NOT MATCH ")
-                     << "the baseline file: " << baseline_file << endl;
-            DBG(cerr << info_msg.str());
-            CPPUNIT_ASSERT_MESSAGE(info_msg.str(), result_matched);
-        }
-        catch (const BESError &be) {
-            stringstream msg;
-            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
-            msg << be.get_file() << " " << be.get_line() << endl;
-            DBG(cerr << msg.str());
-            CPPUNIT_FAIL(msg.str());
-        }
-        // By unlinking here we only are doing it if the test is successful. This allows for forensic on broke tests.
-        if (!tmp_file.empty()) {
-            unlink(tmp_file.c_str());
-            DBG(cerr << prolog << "unlink call on: " << tmp_file << endl);
-        }
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    /**
-     * Test of the RemoteResource content filtering method.
-     */
-    void filter_test_more_focus() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        string source_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_02_source.xml");
-        DBG(cerr << prolog << "source_file: " << source_file << endl);
-
-        string baseline_file = BESUtil::pathConcat(TEST_DATA_DIR, "filter_test_02_source.xml.baseline");
-        DBG(cerr << prolog << "baseline_file: " << baseline_file << endl);
-
-        string tmp_file;
-        try {
-            copy_to_temp(source_file, tmp_file);
-            DBG(cerr << prolog << "temp_file: " << tmp_file << endl);
-            string href = "href=\"";
-            string trusted_url_hack = "\" dmrpp:trust=\"true\"";
-
-            string data_access_url_key = "href=\"OPeNDAP_DMRpp_DATA_ACCESS_URL\"";
-            DBG(cerr << prolog << "                   data_access_url_key: " << data_access_url_key << endl);
-
-            string data_access_url_with_trusted_attr_str = "href=\"file://original_file_ref\" dmrpp=\"trust\"";
-            DBG(cerr << prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str
-                     << endl);
-
-            string missing_data_access_url_key = "href=\"OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL\"";
-            DBG(cerr << prolog << "           missing_data_access_url_key: " << missing_data_access_url_key << endl);
-
-            string missing_data_url_with_trusted_attr_str = "href=\"file://missing_file_ref\' dmrpp:trust=\"true\"";
-            DBG(cerr << prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str
-                     << endl);
-
-
-            std::map<std::string, std::string> filter;
-            filter.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-            filter.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
-
-            RemoteResource foo;
-            foo.d_filename = tmp_file;
-            foo.filter_url(filter);
-
-            bool result_matched = compare(tmp_file, baseline_file);
-            stringstream info_msg;
-            info_msg << prolog << "The filtered file: " << tmp_file
-                     << (result_matched ? " MATCHED " : " DID NOT MATCH ")
-                     << "the baseline file: " << baseline_file << endl;
-            DBG(cerr << info_msg.str());
-            CPPUNIT_ASSERT_MESSAGE(info_msg.str(), result_matched);
-        }
-        catch (const BESError &be) {
-            stringstream msg;
-            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
-            msg << be.get_file() << " " << be.get_line() << endl;
-            DBG(cerr << msg.str());
-            CPPUNIT_FAIL(msg.str());
-        }
-        // By unlinking here we only are doing it if the test is successful. This allows for forensic on broke tests.
-        if (!tmp_file.empty()) {
-            unlink(tmp_file.c_str());
-            DBG(cerr << prolog << "unlink call on: " << tmp_file << endl);
-        }
-        DBG(cerr << prolog << "END" << endl);
-    }
-#endif
 
     CPPUNIT_TEST_SUITE(RemoteResourceTest);
 

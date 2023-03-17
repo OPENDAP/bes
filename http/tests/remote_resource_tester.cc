@@ -39,8 +39,7 @@ int main(int argc, char *argv[])
         debug_dest.append(",http");
         BESDebug::SetUp(debug_dest);
         TheBESKeys::ConfigFile = argv[1];
-        shared_ptr<http::url> url(new http::url(argv[2]));
-
+        auto url = make_shared<http::url>(argv[2]);
         unique_ptr<RemoteResource> rr(new RemoteResource(url));
 
         rr->retrieve_resource();

@@ -48,11 +48,12 @@ class RemoteResource {
 private:
     friend class RemoteResourceTest;
 
-    std::string d_temp_file_dir;
+    static std::string d_temp_file_dir;
 
     /// Initializer for the temp file dir.
     void set_temp_file_dir();
-    std::mutex d_temp_file_dir_mutex;
+    /// Protect the temp file dir create operation
+    static std::mutex d_temp_file_dir_mutex;
 
     /// Resource URL that an instance of this class represents
     std::shared_ptr<http::url> d_url;
@@ -84,7 +85,9 @@ private:
 
     /// write the url content to a file, set the type, and rewind the file descriptor
     void get_url(int fd);
-    std::mutex d_retrieve_resource_mutex;
+
+    /// Protect the mkstemp() call
+    static std::mutex d_mkstemp_mutex;
 
     void set_filename_for_file_url();
 
