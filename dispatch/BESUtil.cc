@@ -1420,6 +1420,65 @@ void BESUtil::split(const string &s, const string &delimiter, vector<string> &re
 }
 #endif
 
+/// Is the given path a directory?
+bool BESUtil::is_directory(const string &p) {
+    struct stat st{};
+    if (stat(p.c_str(), &st) == 0) {
+        return S_ISDIR(st.st_mode);
+    }
+    return false;
+}
+
+/**
+ * For the given path, return the directory name. If the path is a directory,
+ * return the path. If the path is a file, return the directory name. This
+ * does not check if the path exists, but instead just parses the path.
+ */
+string BESUtil::get_dir_name(const string &p) {
+    size_t pos = p.find_last_of('/');
+    if (pos == string::npos) {
+        return ".";
+    }
+    else if (pos == 0) {
+        return "/";
+    }
+    else {
+        return p.substr(0, pos);
+    }
+}
+
+/**
+ * Create a directory and any parent directories that do not exist.
+ * @param path
+ * @param mode
+ * @return The return value from mkdir() or 0 if the directory already exists.
+ */
+int BESUtil::mkdir_p(const string &path, mode_t mode) {
+    if (path.empty()) {
+        return 0;
+    }
+
+    string p = path;
+    if (p[p.size() - 1] == '/') {
+        p = p.substr(0, p.size() - 1);
+    }
+
+    if (p.empty()) {
+        return 0;
+    }
+
+    if (is_directory(p)) {
+        return 0;
+    }
+
+    int rc = mkdir_p(get_dir_name(p), mode);
+    if (rc == 0) {
+        rc = mkdir(p.c_str(), mode);
+    }
+
+    return rc;
+}
+
 string BESUtil::file_to_string(const string &filename) {
     std::ifstream t(filename);
     if (!t.is_open()) {
@@ -1448,7 +1507,8 @@ int BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name)
     // jhrg 3/9/23
     int fd = mkstemp(&temp_file_name[0]); // fd mode is 666 or 600 (Unix)
     if (fd < 0) {
-        throw BESInternalError("mkstemp() failed.", __FILE__, __LINE__);
+        throw BESInternalError(string("mkstemp() for ") + temp_file_name + " failed (" + strerror(errno) + ").",
+                               __FILE__, __LINE__);
     }
 
     return fd;
