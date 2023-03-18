@@ -40,9 +40,9 @@ class url;
 
 /**
  * This class encapsulates a remote resource available via HTTP GET. It will
- * retrieve the content of the resource and place it in a local disk cache
- * for rapid (subsequent) access. It can be configured to use a proxy server
- * for the outgoing requests.
+ * retrieve the content of the resource and place it in a local temporary file.
+ * It can be configured to use a proxy server for the outgoing requests using
+ * features of the CurlUtils functions.
  */
 class RemoteResource {
 private:
@@ -78,7 +78,7 @@ private:
     std::string d_basename;
 
     /// If true, d_filename is a temporary file and should be deleted when the object is destroyed.
-    bool d_delete_file = false;
+    bool d_delete_file = true;
 
     /// The raw HTTP response headers returned by the request for the remote resource.
     std::vector<std::string> d_response_headers; // Response headers
@@ -90,6 +90,8 @@ private:
     static std::mutex d_mkstemp_mutex;
 
     void set_filename_for_file_url();
+
+    void set_delete_temp_file();
 
 public:
     /// The default constructor is here to ease testing. Remove if not needed. jhrg 3/8/23

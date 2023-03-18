@@ -1503,7 +1503,7 @@ int BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name)
     // man mkstemp says "... The file is opened with the O_EXCL flag,
     // guaranteeing that when mkstemp returns successfully we are the only
     // user." 09/19/02 jhrg
-    // The 'hack' &temp_file_name[0] is explicitly allowed by the C++ 11 standard.
+    // The 'hack' &temp_file_name[0] is explicitly supported by the C++ 11 standard.
     // jhrg 3/9/23
     int fd = mkstemp(&temp_file_name[0]); // fd mode is 666 or 600 (Unix)
     if (fd < 0) {

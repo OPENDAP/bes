@@ -10,7 +10,9 @@
 # The user agent that Hyrax will utilize when making HTTP requests.
 # Http.UserAgent=hyrax
 
-Http.RemoteResource.TmpDir = /tmp/bes_rr_tmp
+# These are the default values for the RemoteResource class. jhrg 3/18/23
+# Http.RemoteResource.TmpDir = /tmp/bes_rr_tmp
+# Http.RemoteResource.TmpFile.Delete = true
 
 # Http.Cache.dir - defines which directory to use for caching web
 # resources retrieved by the gateway_module
