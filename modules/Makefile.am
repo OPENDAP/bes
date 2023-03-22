@@ -10,7 +10,7 @@ EXTRA_DIST = data/README
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
-SUBDIRS = common csv_handler freeform_handler functions usage asciival ngap_module
+SUBDIRS = common csv_handler freeform_handler functions usage asciival ngap_module builddmrpp_module
 
 if WITH_CMR
 SUBDIRS += cmr_module
