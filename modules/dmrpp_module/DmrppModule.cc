@@ -38,7 +38,6 @@
 #include "DmrppModule.h"
 #include "DmrppRequestHandler.h"
 
-#include "NgapBuildDmrppContainerStorage.h"
 #include "writer/FODmrppTransmitter.h"
 
 #define RETURNAS_DMRPP "dmrpp"

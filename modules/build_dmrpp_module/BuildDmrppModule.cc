@@ -45,10 +45,10 @@ void BuildDmrppModule::initialize(const string &modname)
     BESDEBUG(modname, "Initializing BuildDmrpp Module " << modname << endl);
 
     BESDEBUG(modname, "    adding " << modname << " request handler" << endl);
-    BESRequestHandlerList::TheList()->add_handler(modname, new BuidlDmrppRequestHandler(modname));
+    BESRequestHandlerList::TheList()->add_handler(modname, new BuildDmrppRequestHandler(modname));
 
     BESDEBUG(modname, "    adding " << modname << " container storage" << endl);
-    BESContainerStorageList::TheList()->add_persistence(new BuildDmrppContainerStorage(modname));
+    BESContainerStorageList::TheList()->add_persistence(new NgapBuildDmrppContainerStorage(modname));
 
 #if 0
     BESDEBUG(modname, "    initialize the NGAP utilities and params" << endl);

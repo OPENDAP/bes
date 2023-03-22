@@ -35,8 +35,8 @@ BUILDDMRPP_SRC =  BuildDmrppRequestHandler.cc \
 
 BUILDDMRPP_HDR =  BuildDmrppRequestHandler.h \
             BuildDmrppModule.h \
-            NgapBulidDmrppContainer.h \
-            NgapBuldDmrppContainerStorage.h 
+            NgapBuildDmrppContainer.h \
+            NgapBuildDmrppContainerStorage.h
 
 # Not used. jhrg 3/30/22 NgapError.h
 
