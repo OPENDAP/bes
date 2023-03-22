@@ -1,4 +1,4 @@
-// NgapContainer.cc
+// NgapBuildDmrppContainer.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
@@ -7,7 +7,6 @@
 
 // Copyright (c) 2023 OPeNDAP, Inc.
 // Authors: Daniel Holloway <dholloway@opendap.org>
-// Authors: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -56,7 +55,7 @@ using namespace bes;
 
 namespace dmrpp {
 
-/** @brief Creates an instances of NgapDmrppContainer with symbolic name and real
+/** @brief Creates an instances of NgapBuildDmrppContainer with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
