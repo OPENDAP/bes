@@ -190,14 +190,16 @@ string NgapBuildDmrppContainer::access() {
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
                 besTimer.start("DMR++ retrieval: " + data_url->str());
             }
-            d_data_rresource->retrieveResource(content_filters);
+            //d_data_rresource->retrieveResource(content_filters);
+            d_data_rresource->retrieve_resource();
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << data_url->str() << endl);
     }
 
     // TODO This file should be read locked before leaving this method.
     //  10/8/21 I think the RemoteResource should do that. jhrg
-    string cachedResource = d_data_rresource->getCacheFileName();
+    //string cachedResource = d_data_rresource->getCacheFileName();
+    string cachedResource = d_data_rresource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << data_access_url_str << " returning cached file " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
@@ -239,7 +241,8 @@ void NgapBuildDmrppContainer::dump(ostream &strm) const {
     BESIndent::Indent();
     BESContainer::dump(strm);
     if (d_data_rresource) {
-        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->getCacheFileName()
+        //strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->getCacheFileName()
+        strm << BESIndent::LMarg << "RemoteResource.getCacheFileName(): " << d_data_rresource->get_filename()
              << endl;
     } else {
         strm << BESIndent::LMarg << "response not yet obtained" << endl;
