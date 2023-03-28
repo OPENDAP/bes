@@ -14,6 +14,10 @@
 # Http.RemoteResource.TmpDir = /tmp/bes_rr_tmp
 # Http.RemoteResource.TmpFile.Delete = true
 
+# NB: The RemoteResource class does not current cache responses. These
+# keys are here for future use and by the HttpCache class and its test
+# code. Hopefully we will be able to use that in the future. jhrg 3/28/23
+#
 # Http.Cache.dir - defines which directory to use for caching web
 # resources retrieved by the gateway_module
 #
@@ -26,50 +30,48 @@
 # 60 is equal to 1 minute
 # 3600 is equal to 1 hour
 
-Http.Cache.dir=/tmp/hyrax_http
-Http.Cache.prefix=http_
-Http.Cache.size=500
-Http.Cache.expires.time=3600
-
-# Cookie Files base (one file for each beslistener pid)
-Http.Cookies.File=/tmp/.hyrax-cookies
+# Cookie Files base (one file for each beslistener pid). These directories
+# are not automatically removed by the server. jhrg 3/28/23
+Http.Cookies.File = /tmp/.hyrax-cookies
 
 # The Http.No.Retry.Regex is used to exclude certain URL patterns from retry attempts
 # This is useful for services, such as OAuth2 where certain redirect URLs contain
 # "one-time" codes that may not be reused. Retrying these URLs will never work and doing
 # so just makes the inevitable failure take much longer.
 #
-# Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+# Http.No.Retry.Regex = ^https:\/\/.*\?code\=.*$
 #
 # Since many URLs result in a number of time consuming redirects (ex: OAuth2)
 # We cache the "effective URL" for each to improve speed and reduce authentication churn
 #
-# Http.cache.effective.urls=true
+# Http.cache.effective.urls = true
 #
 # But we also know that many URLs (ex: AWS S3) will never redirect so we can skip the caching
 # for those destinations. Any URL matching these patterns will not hae redirects followed
 # and cached.
+#
 # Matches any "virtual host" style S3 bucket URL
-# Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$
+# Http.cache.effective.urls.skip.regex.pattern = ^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$
+#
 # Matches any "path" style S3 bucket URL
-# Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$
+# Http.cache.effective.urls.skip.regex.pattern = ^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$
 
-Http.MimeTypes=nc:application/x-netcdf
-Http.MimeTypes+=h4:application/x-hdf
-Http.MimeTypes+=h5:application/x-hdf5
+Http.MimeTypes = nc:application/x-netcdf
+Http.MimeTypes += h4:application/x-hdf
+Http.MimeTypes += h5:application/x-hdf5
 
 # Http.ProxyProtocol, Http.ProxyHost and Http.ProxyPort -
 # provides a way to define a proxy server that must be used to make the
 # remote request, and the port to use.
 
-#Http.ProxyProtocol=https
-#Http.ProxyHost=warsaw.wonderproxy.com
-#Http.ProxyPort=8080
-#Http.ProxyAuthType=basic
-#Http.ProxyUser=username
-#Http.ProxyPassword=password
-#Http.ProxyUserPW=username:password
-#Http.NoProxy=^http:\/\/test\.opendap\.org\/.*$
-#Http.UseInternalCache=true
+# Http.ProxyProtocol = https
+# Http.ProxyHost = warsaw.wonder-proxy.com
+# Http.ProxyPort = 8080
+# Http.ProxyAuthType = basic
+# Http.ProxyUser = username
+# Http.ProxyPassword = password
+# Http.ProxyUserPW = username:password
+# Http.NoProxy = ^http:\/\/test\.opendap\.org\/.*$
+# Http.UseInternalCache = true
 
 
