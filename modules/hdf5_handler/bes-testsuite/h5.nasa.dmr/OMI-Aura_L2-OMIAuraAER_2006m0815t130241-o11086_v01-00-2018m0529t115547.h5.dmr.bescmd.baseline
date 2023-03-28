@@ -245,6 +245,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nWavel3"/>
     </Float32>
     <Float32 name="ANCILLARY_DATA_TerrainPressure">
         <Dim name="/nTimes"/>
@@ -340,6 +341,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GEOLOCATION_DATA/FoV75CornerLatitude</Value>
         </Attribute>
+        <Map name="/nCorners"/>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_FoV75CornerLongitude">
         <Dim name="/nTimes"/>
@@ -369,6 +371,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GEOLOCATION_DATA/FoV75CornerLongitude</Value>
         </Attribute>
+        <Map name="/nCorners"/>
     </Float32>
     <Int32 name="GEOLOCATION_DATA_GroundPixelQualityFlags">
         <Dim name="/nTimes"/>
@@ -429,6 +432,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GEOLOCATION_DATA/Level</Value>
         </Attribute>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="GEOLOCATION_DATA_RelativeAzimuthAngle">
         <Dim name="/nTimes"/>
@@ -640,6 +644,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight388">
         <Dim name="/nTimes"/>
@@ -674,6 +679,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500">
         <Dim name="/nTimes"/>
@@ -708,6 +714,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight354">
         <Dim name="/nTimes"/>
@@ -742,6 +749,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight388">
         <Dim name="/nTimes"/>
@@ -776,6 +784,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500">
         <Dim name="/nTimes"/>
@@ -810,6 +819,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight354">
         <Dim name="/nTimes"/>
@@ -844,6 +854,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight388">
         <Dim name="/nTimes"/>
@@ -878,6 +889,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500">
         <Dim name="/nTimes"/>
@@ -912,6 +924,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Int32 name="SCIENCE_DATA_AerosolType354and388">
         <Dim name="/nTimes"/>
@@ -979,6 +992,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Int32>
     <Float32 name="SCIENCE_DATA_CloudFraction388">
         <Dim name="/nTimes"/>
@@ -1541,6 +1555,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex388">
         <Dim name="/nTimes"/>
@@ -1575,6 +1590,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_ImaginaryPartOfRefractiveIndex500">
         <Dim name="/nTimes"/>
@@ -1609,6 +1625,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nLevels"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_NormalizedRadiance">
         <Dim name="/nTimes"/>
@@ -1643,6 +1660,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nWavel3"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_Reflectivity">
         <Dim name="/nTimes"/>
@@ -1677,6 +1695,7 @@
         </Attribute>
         <Map name="/GEOLOCATION_DATA_Latitude"/>
         <Map name="/GEOLOCATION_DATA_Longitude"/>
+        <Map name="/nWavel2"/>
     </Float32>
     <Float32 name="SCIENCE_DATA_Residue354and388">
         <Dim name="/nTimes"/>
@@ -1773,6 +1792,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SENSOR_DATA/Wavelength</Value>
         </Attribute>
+        <Map name="/nWavel3"/>
     </Float32>
     <Int32 name="nTimes">
         <Dim name="/nTimes"/>

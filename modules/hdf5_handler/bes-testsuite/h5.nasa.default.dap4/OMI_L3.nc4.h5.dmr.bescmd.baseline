@@ -192,6 +192,8 @@
                 <Attribute name="MissingValue" type="Float32">
                     <Value>-1.2676506e+30</Value>
                 </Attribute>
+                <Map name="/OMI_Column_Amount_O3/lat"/>
+                <Map name="/OMI_Column_Amount_O3/lon"/>
             </Float32>
             <Float32 name="Reflectivity331">
                 <Dim name="/OMI_Column_Amount_O3/lat"/>
@@ -221,6 +223,8 @@
                 <Attribute name="MissingValue" type="Float32">
                     <Value>-1.2676506e+30</Value>
                 </Attribute>
+                <Map name="/OMI_Column_Amount_O3/lat"/>
+                <Map name="/OMI_Column_Amount_O3/lon"/>
             </Float32>
             <Float32 name="UVAerosolIndex">
                 <Dim name="/OMI_Column_Amount_O3/lat"/>
@@ -250,6 +254,8 @@
                 <Attribute name="Units" type="String">
                     <Value>NoUnits</Value>
                 </Attribute>
+                <Map name="/OMI_Column_Amount_O3/lat"/>
+                <Map name="/OMI_Column_Amount_O3/lon"/>
             </Float32>
         </Group>
     </Group>

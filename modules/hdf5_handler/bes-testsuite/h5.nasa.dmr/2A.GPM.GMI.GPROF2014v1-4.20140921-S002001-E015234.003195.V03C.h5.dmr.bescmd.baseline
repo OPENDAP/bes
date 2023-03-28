@@ -90,6 +90,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GprofDHeadr/speciesDescription</Value>
         </Attribute>
+        <Map name="/nspecies"/>
+        <Map name="/sddim"/>
     </Byte>
     <Float32 name="GprofDHeadr_hgtTopLayer">
         <Dim name="/nlyrs"/>
@@ -108,6 +110,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nlyrs"/>
     </Float32>
     <Float32 name="GprofDHeadr_temperatureDescriptions">
         <Dim name="/ntemps"/>
@@ -126,6 +129,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/ntemps"/>
     </Float32>
     <Float32 name="GprofDHeadr_clusterProfiles">
         <Dim name="/nprf"/>
@@ -144,6 +148,10 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/nprf"/>
+        <Map name="/nlyrs"/>
+        <Map name="/ntemps"/>
+        <Map name="/nspecies"/>
     </Float32>
     <Float32 name="S1_totalColumnWaterVapor">
         <Dim name="/nscan"/>
