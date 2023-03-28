@@ -255,7 +255,7 @@ public:
      *
      * @return name of file to access
      */
-    virtual std::string access() = 0;
+    virtual std::string  access() = 0;
     virtual bool release() = 0;
 
     virtual void dump(std::ostream &strm) const;
