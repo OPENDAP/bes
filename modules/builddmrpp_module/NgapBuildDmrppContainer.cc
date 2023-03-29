@@ -2,7 +2,7 @@
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of builddmrpp_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
 // Copyright (c) 2023 OPeNDAP, Inc.
@@ -198,7 +198,6 @@ string NgapBuildDmrppContainer::access() {
 
     // TODO This file should be read locked before leaving this method.
     //  10/8/21 I think the RemoteResource should do that. jhrg
-    //string cachedResource = d_data_rresource->getCacheFileName();
     string cachedResource = d_data_rresource->get_filename();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
     BESDEBUG(MODULE, prolog << "Done retrieving:  " << data_access_url_str << " returning cached file " << cachedResource << endl);
