@@ -23,6 +23,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="mask">
         <Dim name="/nscan"/>
@@ -33,6 +35,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Longitude Latitude</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="opt_depth_c2">
         <Dim name="/nscan"/>
@@ -52,6 +56,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="res_c1">
         <Dim name="/nscan"/>
@@ -74,6 +80,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c2">
         <Dim name="/nscan"/>
@@ -96,6 +104,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c1">
         <Dim name="/nscan"/>
@@ -118,6 +128,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float32 name="Longitude">
         <Dim name="/nscan"/>
@@ -153,6 +165,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="opt_depth_c1">
         <Dim name="/nscan"/>
@@ -172,6 +186,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Float64 name="scantime">
         <Dim name="/nscan"/>
@@ -188,6 +204,8 @@
         <Attribute name="_FillValue" type="Float64">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Float64>
     <Float32 name="Latitude">
         <Dim name="/nscan"/>
@@ -211,6 +229,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Longitude Latitude</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="opt_depth_x">
         <Dim name="/nscan"/>
@@ -230,6 +250,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="res_x">
         <Dim name="/nscan"/>
@@ -252,6 +274,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_c1_error">
         <Dim name="/nscan"/>
@@ -274,6 +298,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="ts">
         <Dim name="/nscan"/>
@@ -296,6 +322,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="rfi_code1">
         <Dim name="/nscan"/>
@@ -306,6 +334,8 @@
         <Attribute name="coordinates" type="String">
             <Value>Longitude Latitude</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_x">
         <Dim name="/nscan"/>
@@ -328,6 +358,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Int16 name="soil_moisture_x_error">
         <Dim name="/nscan"/>
@@ -350,6 +382,8 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
+        <Map name="/Longitude"/>
+        <Map name="/Latitude"/>
     </Int16>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.0</Value>

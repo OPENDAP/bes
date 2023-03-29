@@ -49,7 +49,7 @@
 #include "BESLog.h"
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
-#define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"
+// See HttpNames.h for the key definitions.
 
 #define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
@@ -80,14 +80,16 @@ RemoteResource::RemoteResource(shared_ptr<http::url> target_url, string uid)
 
     if (d_url->protocol() == FILE_PROTOCOL) {
         set_filename_for_file_url();
-        // d_delete_file is false by default; don't delete the file
+        // d_delete_file is true by default; don't delete things referenced by file:// URLs
+        d_delete_file = false;
         d_initialized = true;
     }
     else if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         BESDEBUG(MODULE, prolog << "URL: " << d_url->str() << endl);
 
+        // d_initialized is false until the resource is retrieved (for http/s URLs)
+        set_delete_temp_file();
         set_temp_file_dir();
-        d_delete_file = true;
     }
     else {
         string err = prolog + "Unsupported protocol: " + d_url->protocol();
@@ -129,22 +131,33 @@ RemoteResource::~RemoteResource() {
  *
  * This method is called by the constructor and sets the directory where the temporary files are created.
  * The directory is set using the REMOTE_RESOURCE_TMP_DIR_KEY key. If the key is not set then the
- * directory is set to /tmp/bes_rr_cache.
+ * directory is set to /tmp/bes_rr_tmp.
  */
 void RemoteResource::set_temp_file_dir()
 {
     lock_guard<mutex> lock(d_temp_file_dir_mutex);
 
-    // d_temp_file_dir is static, so we only need to set it once. Always
-    // call this from within thread safe methods/regions. jhrg 3/10/23
+    // d_temp_file_dir is static, so we only need to set it once.
     if (!d_temp_file_dir.empty())
         return;
 
-    d_temp_file_dir = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_cache");
+    d_temp_file_dir = TheBESKeys::TheKeys()->read_string_key(REMOTE_RESOURCE_TMP_DIR_KEY, "/tmp/bes_rr_tmp");
+
     if (BESUtil::mkdir_p(d_temp_file_dir, 0775) != 0) {
         throw BESInternalError("Temporary file directory '" + d_temp_file_dir + "' error: " + strerror(errno),
                                __FILE__, __LINE__);
     }
+}
+
+/**
+ * @brief Set the delete_file flag based on the REMOTE_RESOURCE_DELETE_TMP_FILE key.
+ *
+ * @note URLs that start with 'file://' are not deleted. By default, http/s URLs are deleted.
+ * However, the behaviour for http/s URLs can be changed by setting the REMOTE_RESOURCE_DELETE_TMP_FILE
+ * key to false.
+ */
+void RemoteResource::set_delete_temp_file() {
+    d_delete_file = TheBESKeys::TheKeys()->read_bool_key(REMOTE_RESOURCE_DELETE_TMP_FILE, true);
 }
 
 /**
@@ -171,17 +184,17 @@ void RemoteResource::set_filename_for_file_url() {
     if (d_filename.find(catalog_root) != 0) {
         d_filename = BESUtil::pathConcat(catalog_root, d_filename);
     }
-    BESDEBUG(MODULE, "d_resourceCacheFileName: " << d_filename << endl);
+    BESDEBUG(MODULE, "d_filename: " << d_filename << endl);
 }
 
 /// @}
 
 /**
- * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
- * the remote resource content using HTTP GET.
+ * This method will retrieve the remote resource content using HTTP GET.
  *
- * When this method returns the RemoteResource object is fully initialized and the cache file name for the resource
- * is available along with an open file descriptor for the (now read-locked) cache file.
+ * When this method returns the RemoteResource object is fully initialized
+ * URL contents are available in the temporary file. For file:// URLs this
+ * method is a no-op.
  */
 void RemoteResource::retrieve_resource() {
     if (d_initialized) {
@@ -190,7 +203,8 @@ void RemoteResource::retrieve_resource() {
 
     {
         lock_guard<mutex> lock(d_mkstemp_mutex);
-        // Make a temporary file, get an open descriptor for it.
+        // Make a temporary file, get an open descriptor for it. The make_temp_file() function
+        // throws BESInternalError if it can't make the file.
         d_fd = BESUtil::make_temp_file(d_temp_file_dir, d_filename);
     }
 
@@ -199,7 +213,8 @@ void RemoteResource::retrieve_resource() {
 
     string new_name = d_filename + d_uid + "#" + d_basename;
     if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
-        throw BESInternalError("Could not rename " + d_filename + " to " + new_name, __FILE__, __LINE__);
+        throw BESInternalError("Could not rename " + d_filename + " to " + new_name + " ("
+                                + ::strerror(errno) + ")", __FILE__, __LINE__);
     }
 
     d_filename = new_name;
@@ -214,6 +229,8 @@ void RemoteResource::retrieve_resource() {
  *
  * @note The file descriptor 'fd' is passed in so this is easy to test. Nominally, the file
  * descriptor is the one held by the RemoteResource object.
+ *
+ * @note Private
  *
  * @param fd An open file descriptor the is associated with the target file.
  */
@@ -231,7 +248,7 @@ void RemoteResource::get_url(int fd) {
 
     // Throws BESInternalError if there is a curl error.
     curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
-    BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to cache file " << d_filename << endl);
+    BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
 
     // rewind the file
     auto status = lseek(fd, 0, SEEK_SET);

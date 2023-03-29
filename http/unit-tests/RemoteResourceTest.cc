@@ -2,8 +2,9 @@
 
 // This file is part of the BES component of the Hyrax Data Server.
 
-// Copyright (c) 2018 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2018,2023 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>,
+// James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -259,12 +260,63 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-    CPPUNIT_TEST_SUITE(RemoteResourceTest);
+    void set_delete_temp_file_default_ctor_test() {
+        // Http.RemoteResource.TmpFile.Delete
+        http::RemoteResource rhr;
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be true",
+                                     true, rhr.d_delete_file);
+    }
+
+    void set_delete_temp_file_URL_default_test() {
+        // Http.RemoteResource.TmpFile.Delete
+        auto http_url = make_shared<http::url>("http://test.opendap.org/data/httpd_catalog/READTHIS");
+        http::RemoteResource rhr(http_url);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be true for a http:// URL.",
+                                     true, rhr.d_delete_file);
+    }
+
+    void set_delete_temp_file_FILE_default_test() {
+        // Http.RemoteResource.TmpFile.Delete
+        // Because d_delete_file is set to false for a file:// url, we need to use a http:// url for this test.
+        auto http_url = make_shared<http::url>(string("file://") + TEST_DATA_DIR + "/test_file");
+        http::RemoteResource rhr(http_url);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The default value for d_delete_file should be false for a file:// URL.",
+                                     false, rhr.d_delete_file);
+    }
+
+    void set_delete_temp_file_URL_test() {
+        // Http.RemoteResource.TmpFile.Delete
+        TheBESKeys::TheKeys()->set_key("Http.RemoteResource.TmpFile.Delete", "false");
+        auto http_url = make_shared<http::url>("http://test.opendap.org/data/httpd_catalog/READTHIS");
+        http::RemoteResource rhr(http_url);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The value for d_delete_file should be false since Http.RemoteResource.TmpFile.Delete is false.",
+                                     false, rhr.d_delete_file);
+    }
+
+    // Test that when the Http.RemoteResource.TmpFile.Delete key is set to true, and
+    // the URL is a file:// URL, the value of d_delete_file is still false. We should
+    // never delete the stuff reference by a file URL.
+    void set_delete_temp_file_set_with_file_test() {
+        // Http.RemoteResource.TmpFile.Delete
+        TheBESKeys::TheKeys()->set_key("Http.RemoteResource.TmpFile.Delete", "true");
+        auto http_url = make_shared<http::url>(string("file://") + TEST_DATA_DIR + "/test_file");
+        http::RemoteResource rhr(http_url);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The value for d_delete_file should be false for a file:// URL no matter what",
+                                     false, rhr.d_delete_file);
+    }
+
+CPPUNIT_TEST_SUITE(RemoteResourceTest);
 
         CPPUNIT_TEST(get_http_url_test);
         CPPUNIT_TEST(get_http_url_test_mt);
         CPPUNIT_TEST(get_http_url_test_mt_test_return_content);
         CPPUNIT_TEST(get_file_url_test);
+
+        CPPUNIT_TEST(set_delete_temp_file_default_ctor_test);
+        CPPUNIT_TEST(set_delete_temp_file_URL_default_test);
+        CPPUNIT_TEST(set_delete_temp_file_FILE_default_test);
+        CPPUNIT_TEST(set_delete_temp_file_URL_test);
+        CPPUNIT_TEST(set_delete_temp_file_set_with_file_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

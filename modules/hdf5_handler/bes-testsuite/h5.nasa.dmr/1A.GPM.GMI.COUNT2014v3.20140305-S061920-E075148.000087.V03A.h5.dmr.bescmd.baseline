@@ -266,6 +266,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/gmi1aHeader/sampleRangeFile</Value>
         </Attribute>
+        <Map name="/dim7"/>
+        <Map name="/dim6"/>
     </UInt16>
     <Int16 name="S2_ScanTime_MilliSecond">
         <Dim name="/nscan1"/>
@@ -447,6 +449,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/GMIxyz"/>
     </Float32>
     <Byte name="S2_ephemerisUsed">
         <Dim name="/nscan1"/>
@@ -463,6 +466,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/ephemerisUsed</Value>
         </Attribute>
+        <Map name="/dim10"/>
     </Byte>
     <UInt16 name="S2_coldSky">
         <Dim name="/nscan2"/>
@@ -480,6 +484,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/coldSky</Value>
         </Attribute>
+        <Map name="/npixelcs"/>
+        <Map name="/nchannel2"/>
     </UInt16>
     <Float32 name="S2_sunGlintAngle">
         <Dim name="/nscan2"/>
@@ -523,6 +529,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/XYZ"/>
     </Float32>
     <Float64 name="S2_navigation_timeMidScanOffset">
         <Dim name="/nscan1"/>
@@ -578,6 +585,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/XYZ"/>
     </Float32>
     <Float32 name="S2_navigation_scAttRollGeod">
         <Dim name="/nscan1"/>
@@ -793,6 +801,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/hotLoad</Value>
         </Attribute>
+        <Map name="/npixelht"/>
+        <Map name="/nchannel2"/>
     </UInt16>
     <UInt16 name="S2_earthView">
         <Dim name="/nscan2"/>
@@ -982,6 +992,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="S2_satAzimuthAngle">
         <Dim name="/nscan2"/>
@@ -4670,6 +4681,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/ephemerisUsed</Value>
         </Attribute>
+        <Map name="/dim10"/>
     </Byte>
     <Int8 name="S3_secHeaderFlag">
         <Dim name="/nscan2"/>
@@ -7749,6 +7761,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S4/ephemerisUsed</Value>
         </Attribute>
+        <Map name="/dim10"/>
     </Byte>
     <UInt16 name="S4_fullRotation">
         <Dim name="/nscan2"/>
@@ -7997,6 +8010,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S5/ephemerisUsed</Value>
         </Attribute>
+        <Map name="/dim10"/>
     </Byte>
     <Int16 name="S5_ScanTime_MilliSecond">
         <Dim name="/nscan1"/>
@@ -8223,6 +8237,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/hotLoadBlanking</Value>
         </Attribute>
+        <Map name="/npixelht"/>
+        <Map name="/VH"/>
     </Byte>
     <Int16 name="S1_ScanTime_MilliSecond">
         <Dim name="/nscan1"/>
@@ -8404,6 +8420,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/GMIxyz"/>
     </Float32>
     <Byte name="S1_ephemerisUsed">
         <Dim name="/nscan1"/>
@@ -8420,6 +8437,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/ephemerisUsed</Value>
         </Attribute>
+        <Map name="/dim10"/>
     </Byte>
     <UInt16 name="S1_coldSky">
         <Dim name="/nscan1"/>
@@ -8437,6 +8455,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/coldSky</Value>
         </Attribute>
+        <Map name="/npixelcs"/>
+        <Map name="/nchannel1"/>
     </UInt16>
     <Float32 name="S1_sunGlintAngle">
         <Dim name="/nscan1"/>
@@ -8480,6 +8500,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/XYZ"/>
     </Float32>
     <Float64 name="S1_navigation_timeMidScanOffset">
         <Dim name="/nscan1"/>
@@ -8535,6 +8556,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/XYZ"/>
     </Float32>
     <Float32 name="S1_navigation_scAttRollGeod">
         <Dim name="/nscan1"/>
@@ -8750,6 +8772,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/hotLoad</Value>
         </Attribute>
+        <Map name="/npixelht"/>
+        <Map name="/nchannel1"/>
     </UInt16>
     <UInt16 name="S1_earthView">
         <Dim name="/nscan1"/>
@@ -8939,6 +8963,7 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>-9999.9</Value>
         </Attribute>
+        <Map name="/FakeDim0"/>
     </Float32>
     <Float32 name="S1_satAzimuthAngle">
         <Dim name="/nscan1"/>
@@ -9196,6 +9221,8 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/coldSkyBlanking</Value>
         </Attribute>
+        <Map name="/npixelcs"/>
+        <Map name="/VH"/>
     </Byte>
     <Byte name="S1_earthViewBlanking">
         <Dim name="/nscan1"/>

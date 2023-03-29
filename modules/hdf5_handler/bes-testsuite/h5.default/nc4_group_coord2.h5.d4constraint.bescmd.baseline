@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_coord2.h5">
+    <Group name="g1">
+        <Group name="g1_1">
+            <Float32 name="d2">
+                <Dim size="1"/>
+                <Dim size="2"/>
+                <Dim size="2"/>
+                <Attribute name="coordinates" type="String">
+                    <Value>../../c1 ../c2</Value>
+                </Attribute>
+                <Attribute name="DAP4_Checksum_CRC32" type="String">
+                    <Value>63031402</Value>
+                </Attribute>
+            </Float32>
+        </Group>
+    </Group>
+</Dataset>
+
+The data:
+Float32 d2[1][2][2] = {{{1.4, 1.6},{2.2, 2.4}}};
+
