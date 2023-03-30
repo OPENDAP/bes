@@ -30,6 +30,7 @@
 #include "config.h"
 
 #include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 
@@ -66,11 +67,8 @@ namespace builddmrpp {
  * @throws BESSyntaxUserError if the url does not validate
  * @see NgapUtils
  */
-NgapBuildDmrppContainer::NgapBuildDmrppContainer(const string &sym_name,
-                             const string &real_name,
-                             const string &type) :
-        BESContainer(sym_name, real_name, type),
-        d_data_rresource(nullptr) {
+NgapBuildDmrppContainer::NgapBuildDmrppContainer(const string &sym_name, const string &real_name,  const string &type) :
+        BESContainer(sym_name, real_name, type) {
     initialize();
 }
 
@@ -114,14 +112,19 @@ NgapBuildDmrppContainer::NgapBuildDmrppContainer(const NgapBuildDmrppContainer &
     BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
 }
 
+/**
+ * @brief Duplicate the contents of this instance into 'copy_to.'
+ * @param copy_to
+ */
 void NgapBuildDmrppContainer::_duplicate(NgapBuildDmrppContainer &copy_to) {
     if (copy_to.d_data_rresource) {
-        string err = (string) "The Container has already been accessed, "
-                     + "can not duplicate this resource.";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("The Container has already been accessed, cannot duplicate this resource.", __FILE__, __LINE__);
     }
     BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
+
+    copy_to.d_real_name = d_real_name;
     copy_to.d_data_rresource = d_data_rresource;
+
     BESContainer::_duplicate(copy_to);
 }
 
@@ -139,9 +142,11 @@ NgapBuildDmrppContainer::ptr_duplicate() {
  */
 NgapBuildDmrppContainer::~NgapBuildDmrppContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
+#if 0
     if (d_data_rresource) {
         release();
     }
+#endif
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
 
@@ -183,14 +188,15 @@ string NgapBuildDmrppContainer::access() {
             *//*content_filters.insert(
                     pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));*//*
         }*/
-        shared_ptr<http::url> data_url(new http::url(data_access_url_str, true));
+        auto data_url(std::make_shared<http::url>(data_access_url_str, true));
         {
-            d_data_rresource = new http::RemoteResource(data_url);
+            d_data_rresource = std::make_shared<http::RemoteResource>(data_url);
+#ifndef NDEBUG
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
                 besTimer.start("DMR++ retrieval: " + data_url->str());
             }
-            //d_data_rresource->retrieveResource(content_filters);
+#endif
             d_data_rresource->retrieve_resource();
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << data_url->str() << endl);
@@ -204,7 +210,6 @@ string NgapBuildDmrppContainer::access() {
     BESDEBUG(MODULE, prolog << "END  (obj_addr: "<< (void *) this << ")" << endl);
 
     return cachedResource;    // this should return the dmr++ file name from the NgapCache
-
 }
 
 
@@ -217,11 +222,13 @@ string NgapBuildDmrppContainer::access() {
 bool NgapBuildDmrppContainer::release() {
     // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
     //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
+#if 0
     if (d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_data_rresource;
         d_data_rresource = nullptr;
     }
+#endif
 
     BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
     return true;

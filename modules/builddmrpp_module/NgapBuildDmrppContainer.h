@@ -30,11 +30,18 @@
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "BESContainer.h"
-#include "RemoteResource.h"
+// #include "RemoteResource.h"
+
+namespace http {
+class RemoteResource;
+}
 
 namespace builddmrpp {
+
+enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
 /** @brief Container representing a remote request
  *
@@ -45,12 +52,10 @@ namespace builddmrpp {
  *
  * @see NgapBuildDmrppContainerStorage
  */
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-
 class NgapBuildDmrppContainer : public BESContainer {
 
 private:
-    http::RemoteResource *d_data_rresource;
+    std::shared_ptr<http::RemoteResource> d_data_rresource = nullptr;
 
     std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
 
@@ -61,27 +66,26 @@ private:
 protected:
     void _duplicate(NgapBuildDmrppContainer &copy_to);
 
-    NgapBuildDmrppContainer() :
-            BESContainer(), d_data_rresource(nullptr)
-    {
-    }
+    NgapBuildDmrppContainer() = default;
 
 public:
     NgapBuildDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from);
 
+#if 0
     static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
+#endif
 
-    virtual ~NgapBuildDmrppContainer();
+    ~NgapBuildDmrppContainer() override;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace builddmrpp

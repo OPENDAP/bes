@@ -35,7 +35,8 @@
 using namespace std;
 
 namespace builddmrpp {
-    /** @brief create an instance of this persistent store with the given name.
+
+/** @brief create an instance of this persistent store with the given name.
  *
  * Creates an instances of GatewayContainerStorage with the given name.
  *

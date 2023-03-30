@@ -28,12 +28,13 @@
 
 #include <string>
 #include <map>  // TODO unordered_map jhrg 3/9/23
-//#include <ostream>
 
 #include "BESContainer.h"
 #include "RemoteResource.h"
 
 namespace ngap {
+
+enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
 /** @brief Container representing a remote request
  *
@@ -44,12 +45,10 @@ namespace ngap {
  *
  * @see NgapContainerStorage
  */
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-
 class NgapContainer: public BESContainer {
 
 private:
-    http::RemoteResource *d_dmrpp_rresource = nullptr;
+    std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
 
     void initialize();
     void filter_response(const std::map<std::string, std::string> &content_filters) const;

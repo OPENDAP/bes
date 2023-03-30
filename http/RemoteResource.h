@@ -51,7 +51,7 @@ private:
     static std::string d_temp_file_dir;
 
     /// Initializer for the temp file dir.
-    void set_temp_file_dir();
+    static void set_temp_file_dir();
     /// Protect the temp file dir create operation
     static std::mutex d_temp_file_dir_mutex;
 

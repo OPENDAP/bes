@@ -116,9 +116,11 @@ NgapContainer::ptr_duplicate() {
 
 NgapContainer::~NgapContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
+#if 0
     if (d_dmrpp_rresource) {
         release();
     }
+#endif
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
 
@@ -198,7 +200,7 @@ string NgapContainer::access() {
         auto dmrpp_url = make_shared<http::url>(dmrpp_url_str, true);
         {
             // TODO unique_ptr. Needs work in the release() method, too. jhrg 3/9/23
-            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+            d_dmrpp_rresource = make_shared<http::RemoteResource>(dmrpp_url);
 #ifndef NDEBUG
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
@@ -232,11 +234,13 @@ string NgapContainer::access() {
  * @return true if the resource is released successfully and false otherwise
  */
 bool NgapContainer::release() {
+#if 0
     if (d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_dmrpp_rresource;
         d_dmrpp_rresource = nullptr;
     }
+#endif
 
     BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
     return true;
