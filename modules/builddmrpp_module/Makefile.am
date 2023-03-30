@@ -19,7 +19,8 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests tests
+# There are currently no tests for this module. jhrg 3/30/23
+# SUBDIRS = . unit-tests tests
 
 lib_besdir=$(libdir)/bes
 
