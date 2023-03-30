@@ -10,7 +10,9 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=builddmrpp_module
 M_VER=1.0.0
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
+-I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module $(DAP_CFLAGS)
+
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -41,7 +43,7 @@ BUILDDMRPP_HDR =  BuildDmrppRequestHandler.h \
 
 # Not used. jhrg 3/30/22 NgapError.h
 
-EXTRA_DIST = builddmrpp.conf.in data
+EXTRA_DIST = builddmrpp.conf.in
 
 CLEANFILES = *~ builddmrpp.conf
 

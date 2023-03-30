@@ -1177,10 +1177,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/w10n_handler/tests/Makefile 
     modules/w10n_handler/tests/atlocal
 
-    modules/builddmrpp_module/Makefile
-    modules/builddmrpp_module/tests/Makefile
-    modules/builddmrpp_module/tests/atlocal
-    modules/builddmrpp_module/unit-tests/Makefile])
+    modules/builddmrpp_module/Makefile])
 
     dnl Move these into the autotest.at files using an autotest option.
     AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
