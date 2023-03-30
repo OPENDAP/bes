@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="nscat" space="catalog">/data/nc4_group_coord2.h5  </setContainer>
+    <define name="d">
+	<container name="nscat" />
+    <dap4constraint>/dim1=[1:1];/dim2=[1:2];/dim3=[1:3];/c1;/g1/c2;/dim3;/g1/g1_1/d2</dap4constraint>
+    </define>
+    <get type="dap" definition="d" />
+</request>

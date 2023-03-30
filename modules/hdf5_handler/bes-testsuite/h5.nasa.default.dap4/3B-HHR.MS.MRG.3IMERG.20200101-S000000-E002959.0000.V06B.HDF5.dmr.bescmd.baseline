@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5">
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/IMERG/3B-HH/06;
+DOIauthority=http://dx.doi.org/;
+DOIshortName=3IMERGHH;
+AlgorithmID=3IMERGHH;
+AlgorithmVersion=3IMERGH_6.3;
+FileName=3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5;
+SatelliteName=MULTI;
+InstrumentName=MERGED;
+GenerationDateTime=2020-05-04T06:20:10.000Z;
+StartGranuleDateTime=2020-01-01T00:00:00.000Z;
+StopGranuleDateTime=2020-01-01T00:29:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=HALF_HOUR;
+ProcessingSystem=PPS;
+ProductVersion=V06B;
+EmptyGranule=NOT_EMPTY;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=6a;
+TKCodeBuildVersion=0;
+MetadataVersion=6a;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V6.3IMERGHH.blueprint.xml;
+BlueprintVersion=BV_62;
+TKIOVersion=3.93;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Group name="Grid">
+        <Dimension name="time" size="1"/>
+        <Dimension name="lon" size="3600"/>
+        <Dimension name="lat" size="1800"/>
+        <Dimension name="latv" size="2"/>
+        <Dimension name="lonv" size="2"/>
+        <Dimension name="nv" size="2"/>
+        <Float32 name="precipitationQualityIndex">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Int16 name="IRkalmanFilterWeight">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Int16>
+        <Int16 name="HQprecipSource">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Int16>
+        <Float32 name="lon">
+            <Dim name="/Grid/lon"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>longitude</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Longitude at the center of
+			0.10 degree grid intervals of longitude 
+			from -180 to 180.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>lon_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>X</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="precipitationCal">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Int32 name="time">
+            <Dim name="/Grid/time"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>time</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Representative time of data in 
+			seconds since 1970-01-01 00:00:00 UTC.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>time_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>T</Value>
+            </Attribute>
+            <Attribute name="calendar" type="String">
+                <Value>julian</Value>
+            </Attribute>
+        </Int32>
+        <Float32 name="lat_bnds">
+            <Dim name="/Grid/lat"/>
+            <Dim name="/Grid/latv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lat,latv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lat latv</Value>
+            </Attribute>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Float32 name="precipitationUncal">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Float32 name="lat">
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="standard_name" type="String">
+                <Value>latitude</Value>
+            </Attribute>
+            <Attribute name="LongName" type="String">
+                <Value>Latitude at the center of
+			0.10 degree grid intervals of latitude
+			from -90 to 90.</Value>
+            </Attribute>
+            <Attribute name="bounds" type="String">
+                <Value>lat_bnds</Value>
+            </Attribute>
+            <Attribute name="axis" type="String">
+                <Value>Y</Value>
+            </Attribute>
+        </Float32>
+        <Float32 name="HQprecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Int16 name="probabilityLiquidPrecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>percent</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Int16>
+        <Int16 name="HQobservationTime">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>minutes</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>minutes</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-9999</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Int16>
+        <Float32 name="randomError">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Int32 name="time_bnds">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/nv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,nv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>seconds since 1970-01-01 00:00:00 UTC</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time nv</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+        </Int32>
+        <Float32 name="IRprecipitation">
+            <Dim name="/Grid/time"/>
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lat"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>time,lon,lat</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>mm/hr</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>time lon lat</Value>
+            </Attribute>
+            <Attribute name="_FillValue" type="Float32">
+                <Value>-9999.900391</Value>
+            </Attribute>
+            <Attribute name="CodeMissingValue" type="String">
+                <Value>-9999.9</Value>
+            </Attribute>
+            <Map name="/Grid/time"/>
+            <Map name="/Grid/lon"/>
+            <Map name="/Grid/lat"/>
+        </Float32>
+        <Float32 name="lon_bnds">
+            <Dim name="/Grid/lon"/>
+            <Dim name="/Grid/lonv"/>
+            <Attribute name="DimensionNames" type="String">
+                <Value>lon,lonv</Value>
+            </Attribute>
+            <Attribute name="Units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="coordinates" type="String">
+                <Value>lon lonv</Value>
+            </Attribute>
+            <Map name="/Grid/lon"/>
+        </Float32>
+        <Attribute name="GridHeader" type="String">
+            <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.1;
+LongitudeResolution=0.1;
+NorthBoundingCoordinate=90;
+SouthBoundingCoordinate=-90;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+        </Attribute>
+    </Group>
+</Dataset>

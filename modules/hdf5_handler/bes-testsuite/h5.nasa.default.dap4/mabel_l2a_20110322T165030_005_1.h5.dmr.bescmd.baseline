@@ -5025,6 +5025,8 @@
                 <Attribute name="coordinates" type="String">
                     <Value>latitude longitude time</Value>
                 </Attribute>
+                <Map name="/novatel_ins/geolocation/latitude"/>
+                <Map name="/novatel_ins/geolocation/longitude"/>
             </Float32>
             <Float64 name="ht_ell">
                 <Dim size="3201"/>
@@ -5049,6 +5051,8 @@
                 <Attribute name="coordinates" type="String">
                     <Value>latitude longitude time</Value>
                 </Attribute>
+                <Map name="/novatel_ins/geolocation/latitude"/>
+                <Map name="/novatel_ins/geolocation/longitude"/>
             </Float64>
             <Float64 name="latitude">
                 <Dim size="3201"/>
@@ -5338,6 +5342,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="618679"/>
@@ -5362,6 +5367,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="618679"/>
@@ -5386,6 +5392,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="618679"/>
@@ -5434,6 +5441,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="618679"/>
@@ -5458,6 +5466,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="618679"/>
@@ -5482,6 +5491,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel001/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5511,6 +5521,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="309120"/>
@@ -5535,6 +5546,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="309120"/>
@@ -5559,6 +5571,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="309120"/>
@@ -5607,6 +5620,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="309120"/>
@@ -5631,6 +5645,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="309120"/>
@@ -5655,6 +5670,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel002/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5684,6 +5700,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="436183"/>
@@ -5708,6 +5725,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="436183"/>
@@ -5732,6 +5750,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="436183"/>
@@ -5780,6 +5799,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="436183"/>
@@ -5804,6 +5824,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="436183"/>
@@ -5828,6 +5849,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel003/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5857,6 +5879,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="514530"/>
@@ -5881,6 +5904,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="514530"/>
@@ -5905,6 +5929,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="514530"/>
@@ -5953,6 +5978,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="514530"/>
@@ -5977,6 +6003,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="514530"/>
@@ -6001,6 +6028,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel004/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6030,6 +6058,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="607097"/>
@@ -6054,6 +6083,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="607097"/>
@@ -6078,6 +6108,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="607097"/>
@@ -6126,6 +6157,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="607097"/>
@@ -6150,6 +6182,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="607097"/>
@@ -6174,6 +6207,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel005/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6203,6 +6237,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="700876"/>
@@ -6227,6 +6262,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="700876"/>
@@ -6251,6 +6287,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="700876"/>
@@ -6299,6 +6336,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="700876"/>
@@ -6323,6 +6361,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="700876"/>
@@ -6347,6 +6386,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel006/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6376,6 +6416,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="624647"/>
@@ -6400,6 +6441,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="624647"/>
@@ -6424,6 +6466,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="624647"/>
@@ -6472,6 +6515,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="624647"/>
@@ -6496,6 +6540,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="624647"/>
@@ -6520,6 +6565,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel007/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6549,6 +6595,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="663574"/>
@@ -6573,6 +6620,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="663574"/>
@@ -6597,6 +6645,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="663574"/>
@@ -6645,6 +6694,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="663574"/>
@@ -6669,6 +6719,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="663574"/>
@@ -6693,6 +6744,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel008/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6722,6 +6774,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="602075"/>
@@ -6746,6 +6799,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="602075"/>
@@ -6770,6 +6824,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="602075"/>
@@ -6818,6 +6873,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="602075"/>
@@ -6842,6 +6898,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="602075"/>
@@ -6866,6 +6923,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel009/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6895,6 +6953,7 @@
                 <Attribute name="standard_name" type="String">
                     <Value>time</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="328883"/>
@@ -6919,6 +6978,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="328883"/>
@@ -6943,6 +7003,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="328883"/>
@@ -6991,6 +7052,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="328883"/>
@@ -7015,6 +7077,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="328883"/>
@@ -7039,6 +7102,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel010/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7068,6 +7132,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="660249"/>
@@ -7092,6 +7157,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="660249"/>
@@ -7116,6 +7182,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="660249"/>
@@ -7164,6 +7231,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="660249"/>
@@ -7188,6 +7256,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="660249"/>
@@ -7212,6 +7281,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel011/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7241,6 +7311,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="323035"/>
@@ -7265,6 +7336,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="323035"/>
@@ -7289,6 +7361,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="323035"/>
@@ -7337,6 +7410,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="323035"/>
@@ -7361,6 +7435,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="323035"/>
@@ -7385,6 +7460,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel012/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7414,6 +7490,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="620312"/>
@@ -7438,6 +7515,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="620312"/>
@@ -7462,6 +7540,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="620312"/>
@@ -7510,6 +7589,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="620312"/>
@@ -7534,6 +7614,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="620312"/>
@@ -7558,6 +7639,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel013/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7587,6 +7669,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="564108"/>
@@ -7611,6 +7694,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="564108"/>
@@ -7635,6 +7719,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="564108"/>
@@ -7683,6 +7768,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="564108"/>
@@ -7707,6 +7793,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="564108"/>
@@ -7731,6 +7818,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel014/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7760,6 +7848,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="690287"/>
@@ -7784,6 +7873,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="690287"/>
@@ -7808,6 +7898,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="690287"/>
@@ -7856,6 +7947,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="690287"/>
@@ -7880,6 +7972,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="690287"/>
@@ -7904,6 +7997,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel015/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7933,6 +8027,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="269975"/>
@@ -7957,6 +8052,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="269975"/>
@@ -7981,6 +8077,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="269975"/>
@@ -8029,6 +8126,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="269975"/>
@@ -8053,6 +8151,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="269975"/>
@@ -8077,6 +8176,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel016/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8106,6 +8206,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1213072"/>
@@ -8130,6 +8231,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1213072"/>
@@ -8154,6 +8256,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1213072"/>
@@ -8202,6 +8305,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1213072"/>
@@ -8226,6 +8330,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1213072"/>
@@ -8250,6 +8355,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel043/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8279,6 +8385,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1915326"/>
@@ -8303,6 +8410,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1915326"/>
@@ -8327,6 +8435,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1915326"/>
@@ -8375,6 +8484,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1915326"/>
@@ -8399,6 +8509,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1915326"/>
@@ -8423,6 +8534,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel044/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8452,6 +8564,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1555014"/>
@@ -8476,6 +8589,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1555014"/>
@@ -8500,6 +8614,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1555014"/>
@@ -8548,6 +8663,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1555014"/>
@@ -8572,6 +8688,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1555014"/>
@@ -8596,6 +8713,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel045/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8625,6 +8743,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1455315"/>
@@ -8649,6 +8768,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1455315"/>
@@ -8673,6 +8793,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1455315"/>
@@ -8721,6 +8842,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1455315"/>
@@ -8745,6 +8867,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1455315"/>
@@ -8769,6 +8892,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel046/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8798,6 +8922,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1832405"/>
@@ -8822,6 +8947,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1832405"/>
@@ -8846,6 +8972,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1832405"/>
@@ -8894,6 +9021,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1832405"/>
@@ -8918,6 +9046,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1832405"/>
@@ -8942,6 +9071,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel047/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8971,6 +9101,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1614168"/>
@@ -8995,6 +9126,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1614168"/>
@@ -9019,6 +9151,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1614168"/>
@@ -9067,6 +9200,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1614168"/>
@@ -9091,6 +9225,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1614168"/>
@@ -9115,6 +9250,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel048/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -9144,6 +9280,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1763478"/>
@@ -9168,6 +9305,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1763478"/>
@@ -9192,6 +9330,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1763478"/>
@@ -9240,6 +9379,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1763478"/>
@@ -9264,6 +9404,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1763478"/>
@@ -9288,6 +9429,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel049/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -9317,6 +9459,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </Float64>
             <Float32 name="elev">
                 <Dim size="1593309"/>
@@ -9341,6 +9484,7 @@
                 <Attribute name="hertz" type="String">
                     <Value> per photon</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </Float32>
             <Byte name="flag">
                 <Dim size="1593309"/>
@@ -9365,6 +9509,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </Byte>
             <Float64 name="latitude">
                 <Dim size="1593309"/>
@@ -9413,6 +9558,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </Float64>
             <UInt16 name="photon_id">
                 <Dim size="1593309"/>
@@ -9437,6 +9583,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1593309"/>
@@ -9461,6 +9608,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Map name="/photon/channel050/latitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
