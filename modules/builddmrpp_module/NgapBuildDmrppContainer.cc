@@ -140,7 +140,7 @@ NgapBuildDmrppContainer::ptr_duplicate() {
 NgapBuildDmrppContainer::~NgapBuildDmrppContainer() {
     BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
     if (d_data_rresource) {
-//        release();
+        release();
     }
     BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
 }
@@ -220,7 +220,7 @@ bool NgapBuildDmrppContainer::release() {
     if (d_data_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_data_rresource;
-        d_data_rresource = 0;
+        d_data_rresource = nullptr;
     }
 
     BESDEBUG(MODULE, prolog << "Done releasing Ngap response" << endl);
