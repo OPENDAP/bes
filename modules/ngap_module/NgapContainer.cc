@@ -172,7 +172,9 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
 
     string href=R"(href=")";
-    string trusted_url_hack=R"( dmrpp:trust="true")";
+
+    // Yes, the value below really does begin with a " which is unbalanced. This is correct. LEAVE IT BE.
+    string trusted_url_hack=R"(" dmrpp:trust="true")"; 
 
     string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
     BESDEBUG(MODULE, prolog << "                   data_access_url_key: " << data_access_url_key << endl);
