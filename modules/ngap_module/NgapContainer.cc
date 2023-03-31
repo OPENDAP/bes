@@ -134,7 +134,6 @@ NgapContainer::~NgapContainer() {
  * resource will be replaced with its associated value.
  */
 void NgapContainer::filter_response(const map<string, string> &content_filters) const {
-
     string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
 
     for (const auto &apair: content_filters) {
