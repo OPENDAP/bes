@@ -143,7 +143,6 @@ void NgapContainer::filter_response(const map<string, string> &content_filters) 
                                 apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
     }
 
-    // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
     BESUtil::string_to_file(d_dmrpp_rresource->get_filename(), resource_content);
 }
 
