@@ -211,8 +211,7 @@ void RemoteResource::retrieve_resource() {
     // Get the contents of the URL and put them in the temp file
     get_url(d_fd);
 
-    // bes_util_s27wQvndp_opendap#granules.umm_json_v1_4
-    string new_name = d_filename + "_" + d_uid + "#" + d_basename;
+    string new_name = d_filename + d_uid + "#" + d_basename;
     if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
         throw BESInternalError("Could not rename " + d_filename + " to " + new_name + " ("
                                 + ::strerror(errno) + ")", __FILE__, __LINE__);
