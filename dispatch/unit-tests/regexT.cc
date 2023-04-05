@@ -37,7 +37,7 @@
 #include "BESRegex.h"
 #include "BESError.h"
 
-#include "modules/run_tests_cppunit.h"
+#include "modules/common/run_tests_cppunit.h"
 
 using namespace CppUnit;
 using namespace std;

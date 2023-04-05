@@ -1597,6 +1597,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiance</Value>
         </Attribute>
+        <Map name="/nTimesSmallPixel"/>
     </Float32>
     <Int16 name="SmallPixelRadiancePointer">
         <Dim name="/nTimes"/>
@@ -1628,6 +1629,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiancePointer</Value>
         </Attribute>
+        <Map name="/nSmallPixelPointer"/>
     </Int16>
     <Int16 name="TerrainHeight">
         <Dim name="/nTimes"/>

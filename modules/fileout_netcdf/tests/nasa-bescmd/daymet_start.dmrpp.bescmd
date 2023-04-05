@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="d_int" space="catalog">/data/daymet_v4_daily_na_prcp_2010.nc.h5.dmrpp</setContainer>
+    <define name="d">
+	<container name="d_int" >
+	<dap4constraint>time=[363:1:364];x=[7812:1:7813];y=[8072:1:8074];prcp</dap4constraint>
+	</container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4" />
+</request>

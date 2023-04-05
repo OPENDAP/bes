@@ -2,7 +2,7 @@
 
 AT_INIT([DMR++ MDS])
 
-m4_include([../../../modules/handler_tests_macros.m4])
+m4_include([../../common/handler_tests_macros.m4])
 
 
 dnl Using http://... URLs (data are in S3 bucket 'cloudydap')

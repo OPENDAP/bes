@@ -608,7 +608,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// \param[in\out] vector to store hardlink info. of a dataset.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -825,6 +825,7 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
             else { // AFAIK, NASA netCDF-4 like files are following CF name conventions. So no need to carry out the special character operations.
                 (*dt_inst_ptr).dimnames.push_back(dname.substr(dname.find_last_of("/")+1));
                 (*dt_inst_ptr).dimnames_path.push_back(dname);
+                handled_cv_names.push_back(dname);
             }
 #if 0
            //}
@@ -2077,7 +2078,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
 
                     // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
                     for (const auto & hdf5_hl:hdf5_hls) {
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
                         int token_cmp = -1;                                                                                 
                         if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hl.link_addr),&token_cmp) <0)                   
                             throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
@@ -2094,7 +2095,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     // The hard link is not in the hdf5_hls, need to iterate all objects and find those hardlinks.
                     if(link_find == false) {
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
                         typedef struct {
                             unsigned link_unvisited;
                             H5O_token_t  link_addr;
@@ -2111,7 +2112,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                         t_link_info_t t_li_info;
                         t_li_info.link_unvisited = obj_info.rc;
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
                         memcpy(&t_li_info.link_addr,&obj_info.token,sizeof(H5O_token_t));
 #else
                         t_li_info.link_addr = obj_info.addr;
@@ -2142,7 +2143,7 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
     
                        // Save this link that holds the shortest path for future use.
                        link_info_t new_hdf5_hl;
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
                         memcpy(&new_hdf5_hl.link_addr,&obj_info.token,sizeof(H5O_token_t));
 #else
                        new_hdf5_hl.link_addr = obj_info.addr;
@@ -2416,7 +2417,7 @@ static int
 visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
     void *_op_data)
 {
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
      typedef struct {
         unsigned link_unvisited;
         H5O_token_t  link_addr;
@@ -2435,7 +2436,7 @@ visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
 
     // We only need the hard link info.
     if(linfo->type == H5L_TYPE_HARD) {
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
     int token_cmp = -1;
     if(H5Otoken_cmp(group_id,&(op_data->link_addr),&(linfo->u.token),&token_cmp) <0)
         throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");

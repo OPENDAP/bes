@@ -119,7 +119,7 @@ HDF5DiskCache::get_instance(const long _cache_size, const string &_cache_dir, co
 }
 
 // Check whether the real lat/lon file size is the same as the expected lat/lon size. If not, return false. 
-bool HDF5DiskCache::is_valid(const string & cache_file_name, const int expected_file_size) const
+bool HDF5DiskCache::is_valid(const string & cache_file_name, int64_t expected_file_size) const
 {
 
     struct stat st;
@@ -135,7 +135,7 @@ bool HDF5DiskCache::is_valid(const string & cache_file_name, const int expected_
 }
 
 // This call will try to obtain the read lock.
-bool HDF5DiskCache::get_data_from_cache(const string & cache_file_name, const int expected_file_size, int &fd)
+bool HDF5DiskCache::get_data_from_cache(const string & cache_file_name, int64_t expected_file_size, int &fd)
 {
 #if 0
     cerr<<"coming to get_data_from_cache "<<endl;
@@ -158,7 +158,7 @@ bool HDF5DiskCache::get_data_from_cache(const string & cache_file_name, const in
         return true;
 }
 
-bool HDF5DiskCache::write_cached_data(const string & cache_file_name, const int expected_file_size,
+bool HDF5DiskCache::write_cached_data(const string & cache_file_name, int64_t expected_file_size,
     const vector<double> &val)
 {
 
@@ -196,7 +196,7 @@ bool HDF5DiskCache::write_cached_data(const string & cache_file_name, const int 
 
 }
 
-bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, const int expected_file_size, const void *buf)
+bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t expected_file_size, const void *buf)
 {
 
     BESDEBUG("cache", "In HDF5DiskCache::write_cached_data()" << endl);
