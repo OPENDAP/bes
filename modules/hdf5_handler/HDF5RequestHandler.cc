@@ -1483,6 +1483,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             if(true ==_usecf) {// CF option
        
                 if(true == _usecfdmr) { 
+
                     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
                     if (cf_fileid < 0){
                         string invalid_file_msg="Could not open this HDF5 file ";

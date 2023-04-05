@@ -68,7 +68,8 @@ namespace ngap {
 const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
 
-NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
+NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL),
+                     d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
     bool found;
     string cmr_hostname;
     TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostname, found);
@@ -85,10 +86,9 @@ NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endp
 
 }
 
-std::string NgapApi::get_cmr_search_endpoint_url(){
-    return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+std::string NgapApi::get_cmr_search_endpoint_url() {
+    return BESUtil::assemblePath(d_cmr_hostname, d_cmr_search_endpoint_path);
 }
-
 
 
 /**
@@ -101,16 +101,16 @@ std::string NgapApi::get_cmr_search_endpoint_url(){
 std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &restified_path) {
 
     // Make sure it starts with a '/' (see key strings above)
-    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+    string r_path = (restified_path[0] != '/' ? "/" : "") + restified_path;
 
-    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
-    if(provider_index == string::npos){
+    size_t provider_index = r_path.find(NGAP_PROVIDERS_KEY);
+    if (provider_index == string::npos) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " does not contain the required path element '" << NGAP_PROVIDERS_KEY << "'";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    if(provider_index != 0){
+    if (provider_index != 0) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position (";
@@ -120,8 +120,8 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
     provider_index += string(NGAP_PROVIDERS_KEY).size();
 
     bool use_collection_concept_id = false;
-    size_t collection_index  = r_path.find(NGAP_COLLECTIONS_KEY);
-    if(collection_index == string::npos) {
+    size_t collection_index = r_path.find(NGAP_COLLECTIONS_KEY);
+    if (collection_index == string::npos) {
         size_t concepts_index = r_path.find(NGAP_CONCEPTS_KEY);
         if (concepts_index == string::npos) {
             stringstream msg;
@@ -134,32 +134,34 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         collection_index = concepts_index;
         use_collection_concept_id = true;
     }
-    if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
+    if (collection_index <= provider_index + 1) {  // The value of provider has to be at least 1 character
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << (use_collection_concept_id?NGAP_CONCEPTS_KEY:NGAP_COLLECTIONS_KEY) << "' located in the incorrect position (";
-        msg << collection_index << ") expected at least " << provider_index+1;
+        msg << " has the path element '" << (use_collection_concept_id ? NGAP_CONCEPTS_KEY : NGAP_COLLECTIONS_KEY)
+            << "' located in the incorrect position (";
+        msg << collection_index << ") expected at least " << provider_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    string provider = r_path.substr(provider_index,collection_index - provider_index);
-    collection_index += use_collection_concept_id?string(NGAP_CONCEPTS_KEY).size():string(NGAP_COLLECTIONS_KEY).size();
+    string provider = r_path.substr(provider_index, collection_index - provider_index);
+    collection_index += use_collection_concept_id ? string(NGAP_CONCEPTS_KEY).size() : string(
+            NGAP_COLLECTIONS_KEY).size();
 
 
-    size_t granule_index  = r_path.find(NGAP_GRANULES_KEY);
-    if(granule_index == string::npos){
+    size_t granule_index = r_path.find(NGAP_GRANULES_KEY);
+    if (granule_index == string::npos) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
+    if (granule_index <= collection_index + 1) { // The value of collection must have at least one character.
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
-        msg << granule_index << ") expected at least " << collection_index+1;
+        msg << granule_index << ") expected at least " << collection_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    string collection = r_path.substr(collection_index,granule_index - collection_index);
+    string collection = r_path.substr(collection_index, granule_index - collection_index);
     granule_index += string(NGAP_GRANULES_KEY).size();
 
     // The granule value is the path terminus so it's every thing after the key
@@ -178,7 +180,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
         curl_free(esc_url_content);
 
         esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
-        if(use_collection_concept_id){
+        if (use_collection_concept_id) {
             // Add collection_concept_id
             cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
         }
@@ -217,15 +219,15 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
 std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
 
     // Make sure it starts with a '/' (see key strings above)
-    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+    string r_path = (restified_path[0] != '/' ? "/" : "") + restified_path;
 
-    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
-    if(provider_index != string::npos){
+    size_t provider_index = r_path.find(NGAP_PROVIDERS_KEY);
+    if (provider_index != string::npos) {
         return build_cmr_query_url_old_rpath_format(restified_path);
     }
 
-    size_t collections_key_index  = r_path.find(NGAP_COLLECTIONS_KEY);
-    if(collections_key_index == string::npos) {
+    size_t collections_key_index = r_path.find(NGAP_COLLECTIONS_KEY);
+    if (collections_key_index == string::npos) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
@@ -233,7 +235,7 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
         msg << " one must be provided.";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    if(collections_key_index != 0){  // The COLLECTIONS_KEY comes first
+    if (collections_key_index != 0) {  // The COLLECTIONS_KEY comes first
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position (";
@@ -241,10 +243,10 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     // This is now the beginning of the collection_concept_id value.
-    size_t collections_index =  collections_key_index + string(NGAP_COLLECTIONS_KEY).size();
+    size_t collections_index = collections_key_index + string(NGAP_COLLECTIONS_KEY).size();
 
-    size_t granules_key_index  = r_path.find(NGAP_GRANULES_KEY);
-    if(granules_key_index == string::npos){
+    size_t granules_key_index = r_path.find(NGAP_GRANULES_KEY);
+    if (granules_key_index == string::npos) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
@@ -253,14 +255,14 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
 
     // The collection key must precede the granules key in the path,
     // and the collection name must have at least one character.
-    if(granules_key_index <= collections_index + 1){
+    if (granules_key_index <= collections_index + 1) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
         msg << granules_key_index << ") expected at least " << collections_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    size_t granules_index =  granules_key_index + string(NGAP_GRANULES_KEY).size();
+    size_t granules_index = granules_key_index + string(NGAP_GRANULES_KEY).size();
     // The granule_name value is the path terminus so it's every thing after the key
     string granule_name = r_path.substr(granules_index);
 
@@ -273,11 +275,11 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
     // part is separated from the collection_concept_id by a '/' we look for that and of we find it we truncate
     // the value at that spot.
     string optional_part;
-    size_t slash_pos  = collection_name.find('/');
-    if(slash_pos != string::npos){
+    size_t slash_pos = collection_name.find('/');
+    if (slash_pos != string::npos) {
         optional_part = collection_name.substr(slash_pos);
         BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
-        collection_name = collection_name.substr(0,slash_pos);
+        collection_name = collection_name.substr(0, slash_pos);
     }
     BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
 
@@ -311,8 +313,8 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
-std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
-{
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path,
+                                                                 rapidjson::Document &cmr_granule_response) {
 
     string data_access_url;
 
@@ -326,9 +328,10 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     rapidjson::Value &items = cmr_granule_response["items"];
     if (items.IsArray()) {
         stringstream ss;
-        if(BESDebug::IsSet(MODULE)){
-            const string RJ_TYPE_NAMES[] = {string("kNullType"),string("kFalseType"),string("kTrueType"),
-                    string("kObjectType"),string("kArrayType"),string("kStringType"),string("kNumberType")};
+        if (BESDebug::IsSet(MODULE)) {
+            const string RJ_TYPE_NAMES[] = {string("kNullType"), string("kFalseType"), string("kTrueType"),
+                                            string("kObjectType"), string("kArrayType"), string("kStringType"),
+                                            string("kNumberType")};
             for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
                 ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
             BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
@@ -379,11 +382,11 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                                     " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
 
             if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-                
+
                 // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
                 // as well as a Type GET DATA URL which uses https:// or http://
                 string candidate_url = r_url.GetString();
-                if(candidate_url.substr(0,8) == "https://" || candidate_url.substr(0,7) == "http://"){
+                if (candidate_url.substr(0, 8) == "https://" || candidate_url.substr(0, 7) == "http://") {
                     data_access_url = candidate_url;
                 }
             }
@@ -398,133 +401,138 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     return data_access_url;
 }
 
+/**
+ * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
+ *
+ * The NGAP module's "restified" interface utilizes a google-esque set of
+ * ordered key value pairs using the "/" character as field seperatror.
+ *
+ * The NGAP container the "restified_path" will follow the template:
+ *
+ *   provider/daac_name/datasets/collection_name/granules/granule_name(s?)
+ *
+ * Where "provider", "datasets", and "granules" are NGAP keys and
+ * "ddac_name", "collection_name", and "granule_name" the their respective values.
+ *
+ * For example, "provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc"
+ *
+ * https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
+ *   provider=GHRC_CLOUD &entry_title=ACES_CONTINUOUS_DATA_V1 &native_id=aces1cont.nc
+ *   provider=GHRC_CLOUD &entry_title=ACES CONTINUOUS DATA V1 &native_id=aces1cont_2002.191_v2.50.tar
+ *   provider=GHRC_CLOUD &native_id=olslit77.nov_analog.hdf &pretty=true
+ *
+ * @param restified_path The name to decompose.
+ */
+string NgapApi::convert_ngap_resty_path_to_data_access_url(
+        const std::string &restified_path,
+        const std::string &uid
+) {
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    string data_access_url;
 
+    string cmr_query_url = build_cmr_query_url(restified_path);
 
-    /**
-     * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
-     *
-     * The NGAP module's "restified" interface utilizes a google-esque set of
-     * ordered key value pairs using the "/" character as field seperatror.
-     *
-     * The NGAP container the "restified_path" will follow the template:
-     *
-     *   provider/daac_name/datasets/collection_name/granules/granule_name(s?)
-     *
-     * Where "provider", "datasets", and "granules" are NGAP keys and
-     * "ddac_name", "collection_name", and "granule_name" the their respective values.
-     *
-     * For example, "provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc"
-     *
-     * https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?
-     *   provider=GHRC_CLOUD &entry_title=ACES_CONTINUOUS_DATA_V1 &native_id=aces1cont.nc
-     *   provider=GHRC_CLOUD &entry_title=ACES CONTINUOUS DATA V1 &native_id=aces1cont_2002.191_v2.50.tar
-     *   provider=GHRC_CLOUD &native_id=olslit77.nov_analog.hdf &pretty=true
-     *
-     * @param restified_path The name to decompose.
-     */
-    string NgapApi::convert_ngap_resty_path_to_data_access_url(
-            const std::string &restified_path,
-            const std::string &uid
-            ) {
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-        string data_access_url;
+    BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
-        string cmr_query_url = build_cmr_query_url(restified_path);
-
-        BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
-
-        BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        std::shared_ptr<http::url> cmr_query_url_ptr(new http::url(cmr_query_url));
-        http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
-        {
-            BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                besTimer.start("CMR Query: " + cmr_query_url);
-            }
-            cmr_query.retrieveResource();
-        }
-        rapidjson::Document cmr_response = cmr_query.get_as_json();
-
-        data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
-
-        BESDEBUG(MODULE, prolog << "END (data_access_url: "<< data_access_url << ")" << endl);
-
-        return data_access_url;
-    }
-
-
-
-
-    bool NgapApi::signed_url_is_expired(const http::url &signed_url)
+    BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
+    auto cmr_query_url_ptr = make_shared<http::url>(cmr_query_url);
+    http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
     {
-        bool is_expired;
-        time_t now;
-        time(&now);  /* get current time; same as: timer = time(NULL)  */
-        BESDEBUG(MODULE, prolog << "now: " << now << endl);
-
-        time_t expires = now;
-        string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
-        string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
-        time_t ingest_time = signed_url.ingest_time();
-
-        if(!cf_expires.empty()){ // CloudFront expires header?
-            expires = stoll(cf_expires);
-            BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+#ifndef NDEBUG
+        BESStopWatch besTimer;
+        if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
+            besTimer.start("CMR Query: " + cmr_query_url);
         }
-        else if(!aws_expires.empty()){
-            // AWS Expires header?
-            //
-            // By default we'll use the time we made the URL object, ingest_time
-            time_t start_time = ingest_time;
-            // But if there's an AWS Date we'll parse that and compute the time
-            // @TODO move to NgapApi::decompose_url() and add the result to the map
-            string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
-            if(!aws_date.empty()){
-                string date = aws_date; // 20200624T175046Z
-                string year = date.substr(0,4);
-                string month = date.substr(4,2);
-                string day = date.substr(6,2);
-                string hour = date.substr(9,2);
-                string minute = date.substr(11,2);
-                string second = date.substr(13,2);
-
-                BESDEBUG(MODULE, prolog << "date: "<< date <<
-                                        " year: " << year << " month: " << month << " day: " << day <<
-                                        " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
-
-                struct tm *ti = gmtime(&now);
-                ti->tm_year = stoll(year) - 1900;
-                ti->tm_mon = stoll(month) - 1;
-                ti->tm_mday = stoll(day);
-                ti->tm_hour = stoll(hour);
-                ti->tm_min = stoll(minute);
-                ti->tm_sec = stoll(second);
-
-                BESDEBUG(MODULE, prolog << "ti->tm_year: "<< ti->tm_year <<
-                                        " ti->tm_mon: " << ti->tm_mon <<
-                                        " ti->tm_mday: " << ti->tm_mday <<
-                                        " ti->tm_hour: " << ti->tm_hour <<
-                                        " ti->tm_min: " << ti->tm_min <<
-                                        " ti->tm_sec: " << ti->tm_sec << endl);
-
-
-                start_time = mktime(ti);
-                BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
-            }
-            expires = start_time + stoll(aws_expires);
-            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
-                                    " (expires: " << expires << ")" << endl);
-        }
-        time_t remaining = expires - now;
-        BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
-                                "  remaining_time: " << remaining <<
-                                " refresh_threshold: " << REFRESH_THRESHOLD << endl);
-
-        is_expired = remaining < REFRESH_THRESHOLD;
-        BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
-
-        return is_expired;
+#endif
+        cmr_query.retrieve_resource();
     }
+
+    rapidjson::Document cmr_response;
+    string cmr_json_string = BESUtil::file_to_string(cmr_query.get_filename());
+    cmr_response.Parse(cmr_json_string.c_str());
+
+#if 0
+    string cmr_json = BESUtil::file_to_string(cmr_query.get_filename());
+    //rapidjson::Document cmr_response = cmr_query.get_as_json();
+#endif
+
+    data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
+
+    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ")" << endl);
+
+    return data_access_url;
+}
+
+
+bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
+    bool is_expired;
+    time_t now;
+    time(&now);  /* get current time; same as: timer = time(NULL)  */
+    BESDEBUG(MODULE, prolog << "now: " << now << endl);
+
+    time_t expires = now;
+    string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+    string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+    time_t ingest_time = signed_url.ingest_time();
+
+    if (!cf_expires.empty()) { // CloudFront expires header?
+        expires = stoll(cf_expires);
+        BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+    }
+    else if (!aws_expires.empty()) {
+        // AWS Expires header?
+        //
+        // By default we'll use the time we made the URL object, ingest_time
+        time_t start_time = ingest_time;
+        // But if there's an AWS Date we'll parse that and compute the time
+        // @TODO move to NgapApi::decompose_url() and add the result to the map
+        string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
+        if (!aws_date.empty()) {
+            string date = aws_date; // 20200624T175046Z
+            string year = date.substr(0, 4);
+            string month = date.substr(4, 2);
+            string day = date.substr(6, 2);
+            string hour = date.substr(9, 2);
+            string minute = date.substr(11, 2);
+            string second = date.substr(13, 2);
+
+            BESDEBUG(MODULE, prolog << "date: " << date <<
+                                    " year: " << year << " month: " << month << " day: " << day <<
+                                    " hour: " << hour << " minute: " << minute << " second: " << second << endl);
+
+            struct tm *ti = gmtime(&now);
+            ti->tm_year = stoll(year) - 1900;
+            ti->tm_mon = stoll(month) - 1;
+            ti->tm_mday = stoll(day);
+            ti->tm_hour = stoll(hour);
+            ti->tm_min = stoll(minute);
+            ti->tm_sec = stoll(second);
+
+            BESDEBUG(MODULE, prolog << "ti->tm_year: " << ti->tm_year <<
+                                    " ti->tm_mon: " << ti->tm_mon <<
+                                    " ti->tm_mday: " << ti->tm_mday <<
+                                    " ti->tm_hour: " << ti->tm_hour <<
+                                    " ti->tm_min: " << ti->tm_min <<
+                                    " ti->tm_sec: " << ti->tm_sec << endl);
+
+
+            start_time = mktime(ti);
+            BESDEBUG(MODULE, prolog << "AWS (computed) start_time: " << start_time << endl);
+        }
+        expires = start_time + stoll(aws_expires);
+        BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
+                                " (expires: " << expires << ")" << endl);
+    }
+    time_t remaining = expires - now;
+    BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
+                            "  remaining_time: " << remaining <<
+                            " refresh_threshold: " << REFRESH_THRESHOLD << endl);
+
+    is_expired = remaining < REFRESH_THRESHOLD;
+    BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired ? "true" : "false") << endl);
+
+    return is_expired;
+}
 
 } // namespace ngap
 

@@ -5523,7 +5523,7 @@
 
 	Fixed BESStopWatch so that only debug or verbose output is produced, not both. Priority is VERBOSE befor DEBUG
 
-	restored earlier timing triggers for CMR queries and dmr++ retrieval. Keeping new timer in RemoteResource::writeResourceToFile()
+	restored earlier timing triggers for CMR queries and dmr++ retrieval. Keeping new timer in RemoteResource::get_url()
 
 	Timing refinements
 

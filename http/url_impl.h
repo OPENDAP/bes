@@ -40,9 +40,6 @@ namespace http {
  * @brief Parse a URL into the protocol, host, path and query parts
  * @note This class also manages time and time-based expiration using
  * KVP info that AWS puts in the query string of the URL.
- * @todo Should the expiration be moved out of this class (to an HTTP
- *   cache class - maybe even EffectiveUrlCache)?
- * @todo Remove the use of shared_ptr in the class interface.
  */
 class  url {
 public:
