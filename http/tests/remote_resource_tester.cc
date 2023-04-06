@@ -8,6 +8,8 @@
 #include <fstream>
 #include <string>
 
+#include <sys/stat.h>
+
 #include "TheBESKeys.h"
 #include "RemoteResource.h"
 #include "url_impl.h"
@@ -29,18 +31,20 @@ int main(int argc, char *argv[])
     cerr << "Hello, world!" << endl;
     string bes_conf = "bes.conf";
 
+    // TODO undo this hack. jhrg 3/9/23
+    mkdir("/tmp/bes_rr_cache", 0777);
+
     try {
         string debug_dest = argv[3];
         debug_dest.append(",http");
         BESDebug::SetUp(debug_dest);
         TheBESKeys::ConfigFile = argv[1];
-        shared_ptr<http::url> url(new http::url(argv[2]));
-
+        auto url = make_shared<http::url>(argv[2]);
         unique_ptr<RemoteResource> rr(new RemoteResource(url));
 
-        rr->retrieveResource();
+        rr->retrieve_resource();
 
-        string name = rr->getCacheFileName();
+        string name = rr->get_filename();
 
         ifstream rr_cache_file(name);
         while (rr_cache_file) {

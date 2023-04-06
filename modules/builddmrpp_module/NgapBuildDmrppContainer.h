@@ -1,10 +1,10 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of builddmrpp_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2023 OPeNDAP, Inc.
+// Author: Daniel Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,18 +21,26 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+//      dan       Daniel Holloway <dholloway@opendap.org>
 
 #ifndef NgapBuildDmrppContainer_h_
 #define NgapBuildDmrppContainer_h_ 1
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "BESContainer.h"
-#include "RemoteResource.h"
+
+namespace http {
+class RemoteResource;
+}
 
 namespace builddmrpp {
+
+enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
 
 /** @brief Container representing a remote request
  *
@@ -43,17 +51,12 @@ namespace builddmrpp {
  *
  * @see NgapBuildDmrppContainerStorage
  */
-enum RestifiedPathValues { cmrProvider, cmrDatasets, cmrGranuleUR };
-
 class NgapBuildDmrppContainer : public BESContainer {
 
 private:
-    http::RemoteResource *d_data_rresource;
+    std::shared_ptr<http::RemoteResource> d_data_rresource = nullptr;
 
     std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
-
-    // std::vector<std::string> d_collections;
-    // std::vector<std::string> d_facets;
 
     virtual void initialize();
 
@@ -62,29 +65,26 @@ private:
 protected:
     void _duplicate(NgapBuildDmrppContainer &copy_to);
 
-    NgapBuildDmrppContainer() :
-            BESContainer(), d_data_rresource(nullptr)
-    {
-    }
+    NgapBuildDmrppContainer() = default;
 
 public:
     NgapBuildDmrppContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     NgapBuildDmrppContainer(const NgapBuildDmrppContainer &copy_from);
 
-    // void get_granule_path(const std::string &path) const ;
-
+#if 0
     static bool signed_url_is_expired(std::map<std::string,std::string> url_info);
+#endif
 
-    virtual ~NgapBuildDmrppContainer();
+    ~NgapBuildDmrppContainer() override;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace builddmrpp

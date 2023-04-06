@@ -126,6 +126,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/HALOE/time"/>
@@ -155,6 +158,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/HALOE/time"/>
@@ -172,6 +178,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lst_min">
             <Dim name="/HALOE/time"/>
@@ -188,6 +197,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="std_dev">
             <Dim name="/HALOE/time"/>
@@ -205,6 +216,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lat_avg">
             <Dim name="/HALOE/time"/>
@@ -222,6 +236,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="average">
             <Dim name="/HALOE/time"/>
@@ -239,6 +256,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="sza_avg">
             <Dim name="/HALOE/time"/>
@@ -255,6 +275,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lat">
             <Dim name="/HALOE/lat"/>
@@ -283,6 +305,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="rms_uncertainty">
             <Dim name="/HALOE/time"/>
@@ -300,6 +324,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="minimum">
             <Dim name="/HALOE/time"/>
@@ -317,6 +344,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="maximum">
             <Dim name="/HALOE/time"/>
@@ -334,6 +364,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="sza_min">
             <Dim name="/HALOE/time"/>
@@ -350,6 +383,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Int8 name="days_used">
             <Dim name="/HALOE/time"/>
@@ -368,6 +403,9 @@
             <Attribute name="_FillValue" type="Int8">
                 <Value>0</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Int8>
         <Float32 name="lst_max">
             <Dim name="/HALOE/time"/>
@@ -384,6 +422,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Float32 name="lst_avg">
             <Dim name="/HALOE/time"/>
@@ -400,6 +440,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lat"/>
         </Float32>
         <Int32 name="nvalues">
             <Dim name="/HALOE/time"/>
@@ -417,6 +459,9 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-999</Value>
             </Attribute>
+            <Map name="/HALOE/time"/>
+            <Map name="/HALOE/lev"/>
+            <Map name="/HALOE/lat"/>
         </Int32>
         <Float32 name="lev">
             <Dim name="/HALOE/lev"/>
@@ -470,6 +515,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/ACE-FTS/time"/>
@@ -499,6 +547,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/ACE-FTS/time"/>
@@ -516,6 +567,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lst_min">
             <Dim name="/ACE-FTS/time"/>
@@ -532,6 +586,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="std_dev">
             <Dim name="/ACE-FTS/time"/>
@@ -549,6 +605,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lat_avg">
             <Dim name="/ACE-FTS/time"/>
@@ -566,6 +625,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="average">
             <Dim name="/ACE-FTS/time"/>
@@ -583,6 +645,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="sza_avg">
             <Dim name="/ACE-FTS/time"/>
@@ -599,6 +664,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lat">
             <Dim name="/ACE-FTS/lat"/>
@@ -627,6 +694,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="rms_uncertainty">
             <Dim name="/ACE-FTS/time"/>
@@ -644,6 +713,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="minimum">
             <Dim name="/ACE-FTS/time"/>
@@ -661,6 +733,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="maximum">
             <Dim name="/ACE-FTS/time"/>
@@ -678,6 +753,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="sza_min">
             <Dim name="/ACE-FTS/time"/>
@@ -694,6 +772,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Int8 name="days_used">
             <Dim name="/ACE-FTS/time"/>
@@ -712,6 +792,9 @@
             <Attribute name="_FillValue" type="Int8">
                 <Value>0</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Int8>
         <Float32 name="lst_max">
             <Dim name="/ACE-FTS/time"/>
@@ -728,6 +811,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Float32 name="lst_avg">
             <Dim name="/ACE-FTS/time"/>
@@ -744,6 +829,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lat"/>
         </Float32>
         <Int32 name="nvalues">
             <Dim name="/ACE-FTS/time"/>
@@ -761,6 +848,9 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-999</Value>
             </Attribute>
+            <Map name="/ACE-FTS/time"/>
+            <Map name="/ACE-FTS/lev"/>
+            <Map name="/ACE-FTS/lat"/>
         </Int32>
         <Float32 name="lev">
             <Dim name="/ACE-FTS/lev"/>
@@ -814,6 +904,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Int32 name="time">
             <Dim name="/Aura MLS/time"/>
@@ -843,6 +936,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lat_min">
             <Dim name="/Aura MLS/time"/>
@@ -860,6 +956,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lst_min">
             <Dim name="/Aura MLS/time"/>
@@ -876,6 +975,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="std_dev">
             <Dim name="/Aura MLS/time"/>
@@ -893,6 +994,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lat_avg">
             <Dim name="/Aura MLS/time"/>
@@ -910,6 +1014,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="average">
             <Dim name="/Aura MLS/time"/>
@@ -927,6 +1034,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="sza_avg">
             <Dim name="/Aura MLS/time"/>
@@ -943,6 +1053,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lat">
             <Dim name="/Aura MLS/lat"/>
@@ -971,6 +1083,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="rms_uncertainty">
             <Dim name="/Aura MLS/time"/>
@@ -988,6 +1102,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="minimum">
             <Dim name="/Aura MLS/time"/>
@@ -1005,6 +1122,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="maximum">
             <Dim name="/Aura MLS/time"/>
@@ -1022,6 +1142,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="sza_min">
             <Dim name="/Aura MLS/time"/>
@@ -1038,6 +1161,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Int8 name="days_used">
             <Dim name="/Aura MLS/time"/>
@@ -1056,6 +1181,9 @@
             <Attribute name="_FillValue" type="Int8">
                 <Value>0</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Int8>
         <Float32 name="lst_max">
             <Dim name="/Aura MLS/time"/>
@@ -1072,6 +1200,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Float32 name="lst_avg">
             <Dim name="/Aura MLS/time"/>
@@ -1088,6 +1218,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-999.</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lat"/>
         </Float32>
         <Int32 name="nvalues">
             <Dim name="/Aura MLS/time"/>
@@ -1105,6 +1237,9 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-999</Value>
             </Attribute>
+            <Map name="/Aura MLS/time"/>
+            <Map name="/Aura MLS/lev"/>
+            <Map name="/Aura MLS/lat"/>
         </Int32>
         <Float32 name="lev">
             <Dim name="/Aura MLS/lev"/>

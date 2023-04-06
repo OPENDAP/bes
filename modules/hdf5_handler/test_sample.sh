@@ -94,9 +94,16 @@
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/grid_1_3d_xyz_aug.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/za_1_3d_yztd_aug.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/swath_1_2d_xyz.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_group_atomic.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_group_coord.h5.dmr.bescmd
+besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_group_coord2.h5.dmr.bescmd
+
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.nasa.default.dap4/3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.nasa/S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5.dmr.bescmd
 
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/d_dset_big.h5.data.bescmd 
-besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.local/d_dset_big.h5.dap.bescmd 
 #besstandalone -c bes-testsuite/bes.cfdmr.conf -i bes-testsuite/h5.local/d_dset_big.h5.dap.bescmd | getdap4 -D -M -
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/d_dset_big.h5.data.bescmd | getdap -M -
-
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/d_int.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_coverage_special.h5.dmr.bescmd
+besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_single_trajectory.h5.dmr.bescmd

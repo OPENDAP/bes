@@ -1846,7 +1846,8 @@ bool DmrppArray::read()
     }
 
     if (this->twiddle_bytes()) {
-        int num = this->length();
+
+        int64_t num = this->length_ll();
 
         switch (var_type) {
             case dods_int16_c:

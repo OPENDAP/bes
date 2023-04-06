@@ -1,18 +1,27 @@
 
-BES.ServerAdministrator=root@localhost
+BES.ServerAdministrator = root@localhost
 
-BES.User=user_name
-BES.Group=group_name
+BES.User = user_name
+BES.Group = group_name
 
-BES.LogName=./bes.log
-BES.LogVerbose=no
+BES.LogName = ./bes.log
+BES.LogVerbose = no
 
+<<<<<<< HEAD
 BES.modules=dap,cmd,dmrpp,h5,builddmrpp
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 BES.module.builddmrpp=@abs_top_builddir@/modules/builddmrpp_module/.libs/libbuilddmrpp_module.so
 BES.module.h5=/Users/dan/OPeNDAP/Developers/hyrax-latest/bes/modules/hdf5_handler/.libs/libhdf5_module.so
+=======
+BES.modules = dap,cmd,dmrpp,h5,builddmrpp
+BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.builddmrpp = @abs_top_builddir@/modules/builddmrpp_module/.libs/libbuilddmrpp_module.so
+BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+>>>>>>> master
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
@@ -22,7 +31,7 @@ BES.Catalog.catalog.FollowSymLinks=No
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
-BES.FollowSymLinks=No
+BES.FollowSymLinks=Yes
 BES.Data.RootDirectory=/dev/null
 
 BES.Info.Buffered=no

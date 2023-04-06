@@ -14,11 +14,12 @@ BES.module.dapcmd=@bes_modules_dir@/libdap_xml_module.so
 
 BES.Catalog.Default=catalog
 
-# This parameter is set in the various data module configuration files,
+# The BES.Catalog.catalog.TypeMatch parameter is set in the various data module configuration files,
 # such as nc.conf, under the <prefix>/etc/bes/modules/ directory. Does
-# not need to be set here.
-
-BES.Catalog.catalog.TypeMatch=
+# not need to be set here. Note that setting like this:
+#     BES.Catalog.catalog.TypeMatch=
+# Will cause any previously assigned value(s) to be purged. 3/29/23 - ndp
+# BES.Catalog.catalog.TypeMatch=
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=(^\..*$)|(^.*\.das$);

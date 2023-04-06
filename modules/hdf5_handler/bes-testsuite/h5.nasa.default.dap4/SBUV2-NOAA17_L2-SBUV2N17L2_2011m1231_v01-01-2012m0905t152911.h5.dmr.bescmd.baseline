@@ -333,6 +333,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="PressureLevels">
             <Dim name="/nLevels21"/>
@@ -354,6 +355,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nLevels21"/>
         </Float32>
         <Float32 name="PressureLevelsMixingRatio">
             <Dim name="/nLevels15"/>
@@ -375,6 +377,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nLevels15"/>
         </Float32>
         <Float32 name="ProfileO3APrioriLayer">
             <Dim name="/nTimes"/>
@@ -397,6 +400,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels21"/>
         </Float32>
         <Int32 name="SnowIceIndicator">
             <Dim name="/nTimes"/>
@@ -418,6 +423,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Int32 name="SurfaceCategory">
             <Dim name="/nTimes"/>
@@ -439,6 +445,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="TemperatureProfile">
             <Dim name="/nTimes"/>
@@ -461,6 +468,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLayers13"/>
         </Float32>
         <Float32 name="TerrainPressure">
             <Dim name="/nTimes"/>
@@ -482,6 +491,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
     </Group>
     <Group name="GEOLOCATION_DATA">
@@ -505,6 +515,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="Latitude">
             <Dim name="/nTimes"/>
@@ -526,6 +537,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="Longitude">
             <Dim name="/nTimes"/>
@@ -547,6 +559,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Int32 name="OrbitNumber">
             <Dim name="/nTimes"/>
@@ -568,6 +581,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="SecondsInDay">
             <Dim name="/nTimes"/>
@@ -589,6 +603,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="SolarZenithAngle">
             <Dim name="/nTimes"/>
@@ -610,6 +625,7 @@
             <Attribute name="description" type="String">
                 <Value>The solar zenith angle (in degrees) at the center of the ground pixel for retrieved ozone (306 nm).</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Int32 name="Year">
             <Dim name="/nTimes"/>
@@ -631,6 +647,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
     </Group>
     <Group name="SCIENCE_DATA">
@@ -656,6 +673,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels20"/>
+            <Map name="/nLevels20b"/>
         </Float32>
         <Float32 name="AveragingKernelTrace">
             <Dim name="/nTimes"/>
@@ -677,6 +697,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="CloudFraction">
             <Dim name="/nTimes"/>
@@ -698,6 +719,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Int32 name="IndexLongestProfileChannel">
             <Dim name="/nTimes"/>
@@ -719,6 +741,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="KMatrix">
             <Dim name="/nTimes"/>
@@ -742,6 +765,9 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels20"/>
+            <Map name="/nChannels10"/>
         </Float32>
         <Float32 name="LambertianEquivalentReflectivity">
             <Dim name="/nTimes"/>
@@ -764,6 +790,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels03"/>
         </Float32>
         <Float32 name="LayerEfficiency">
             <Dim name="/nTimes"/>
@@ -786,6 +814,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLayers11"/>
         </Float32>
         <Float32 name="NValue">
             <Dim name="/nTimes"/>
@@ -808,6 +838,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels12"/>
         </Float32>
         <Float32 name="NValueAdjustmentFactors">
             <Dim name="/nChannels13"/>
@@ -829,6 +861,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nChannels13"/>
         </Float32>
         <Float32 name="NValuePhotometer">
             <Dim name="/nTimes"/>
@@ -851,6 +884,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels12"/>
         </Float32>
         <Float32 name="NValueResidualsFinal">
             <Dim name="/nTimes"/>
@@ -873,6 +908,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels10"/>
         </Float32>
         <Float32 name="NValueResidualsInitial">
             <Dim name="/nTimes"/>
@@ -895,6 +932,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels10"/>
         </Float32>
         <Float32 name="NValueSingleScattering">
             <Dim name="/nTimes"/>
@@ -917,6 +956,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels10"/>
         </Float32>
         <Int32 name="NumberOfIterations">
             <Dim name="/nTimes"/>
@@ -938,6 +979,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="O3BelowCloud">
             <Dim name="/nTimes"/>
@@ -959,6 +1001,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="O3MixingRatio">
             <Dim name="/nTimes"/>
@@ -981,6 +1024,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels15"/>
         </Float32>
         <Float32 name="O3MixingRatioError">
             <Dim name="/nTimes"/>
@@ -1003,6 +1048,8 @@
             <Attribute name="valid_min" type="Float32">
                 <Value>0.</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels15"/>
         </Float32>
         <Float32 name="PhotometerReflectivity">
             <Dim name="/nTimes"/>
@@ -1025,6 +1072,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels08"/>
         </Float32>
         <Float32 name="PhotometerResidual">
             <Dim name="/nTimes"/>
@@ -1046,6 +1095,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Int32 name="ProfileO3ErrorFlag">
             <Dim name="/nTimes"/>
@@ -1067,6 +1117,7 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="ProfileO3FirstGuess">
             <Dim name="/nTimes"/>
@@ -1089,6 +1140,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels21"/>
         </Float32>
         <Float32 name="ProfileO3Retrieved">
             <Dim name="/nTimes"/>
@@ -1111,6 +1164,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels21"/>
         </Float32>
         <Float32 name="ProfileO3RetrievedError">
             <Dim name="/nTimes"/>
@@ -1133,6 +1188,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLevels20"/>
         </Float32>
         <Float32 name="ProfileTotalO3">
             <Dim name="/nTimes"/>
@@ -1154,6 +1211,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="ProfileTotalO3Error">
             <Dim name="/nTimes"/>
@@ -1175,6 +1233,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="QualityFitParameter">
             <Dim name="/nTimes"/>
@@ -1196,6 +1255,7 @@
             <Attribute name="valid_max" type="Float32">
                 <Value>20.</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="Reflectivity">
             <Dim name="/nTimes"/>
@@ -1217,6 +1277,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="ReflectivityCorrection">
             <Dim name="/nTimes"/>
@@ -1238,6 +1299,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="Sigma">
             <Dim name="/nTimes"/>
@@ -1259,6 +1321,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="StepOneO3">
             <Dim name="/nTimes"/>
@@ -1280,6 +1343,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="StepTwoO3">
             <Dim name="/nTimes"/>
@@ -1301,6 +1365,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="TOVSCloudPressure">
             <Dim name="/nTimes"/>
@@ -1322,6 +1387,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="TotalO3">
             <Dim name="/nTimes"/>
@@ -1343,6 +1409,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="TotalO3APrioriProfile">
             <Dim name="/nTimes"/>
@@ -1365,6 +1432,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nLayers11"/>
         </Float32>
         <Int32 name="TotalO3AlgorithmFlag">
             <Dim name="/nTimes"/>
@@ -1386,6 +1455,7 @@
             <Attribute name="description" type="String">
                 <Value>The total ozone algorithm flag:  0 = no retrieval, 1 = nominal B-pair retrieval (318 nm, 331 nm) with aerosol index adjustment (SolarZenithAngle &lt;= 70 degrees), 2 = nominal B-pair retrieval (318 nm, 331 nm) with A-pair residual adjustment (SolarZenithAngle &gt; 70 degrees), and 3 = C-pair retrieval (331 nm, 340 nm).  The value of this flag is increased by 10 if the value of SnowIceIndicator is 10.</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Int32 name="TotalO3ErrorFlag">
             <Dim name="/nTimes"/>
@@ -1407,6 +1477,7 @@
             <Attribute name="long_name" type="String">
                 <Value>Total Ozone Error Flag</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Int32>
         <Float32 name="UVAerosolIndex">
             <Dim name="/nTimes"/>
@@ -1428,6 +1499,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
         <Float32 name="dN_dOmega">
             <Dim name="/nTimes"/>
@@ -1450,6 +1522,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels08"/>
         </Float32>
         <Float32 name="dN_dR">
             <Dim name="/nTimes"/>
@@ -1472,6 +1546,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels08"/>
         </Float32>
         <Float32 name="dN_dR_CCR">
             <Dim name="/nTimes"/>
@@ -1493,6 +1569,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
         </Float32>
     </Group>
     <Group name="SENSOR_DATA">
@@ -1516,6 +1593,7 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nChannels13"/>
         </Float32>
         <Int32 name="Gain">
             <Dim name="/nTimes"/>
@@ -1538,6 +1616,8 @@
             <Attribute name="_FillValue" type="Int32">
                 <Value>-2147483647</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels12"/>
         </Int32>
         <Float32 name="GratingPositionError">
             <Dim name="/nTimes"/>
@@ -1560,6 +1640,8 @@
             <Attribute name="_FillValue" type="Float32">
                 <Value>-1.2676506e+30</Value>
             </Attribute>
+            <Map name="/nTimes"/>
+            <Map name="/nChannels12"/>
         </Float32>
     </Group>
 </Dataset>

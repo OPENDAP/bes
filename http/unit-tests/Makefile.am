@@ -90,6 +90,7 @@ HttpUtilsTest_SOURCES = HttpUtilsTest.cc
 HttpUtilsTest_LDADD = $(LIBADD)
 
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
+RemoteResourceTest_CXXFLAGS = -static
 RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc

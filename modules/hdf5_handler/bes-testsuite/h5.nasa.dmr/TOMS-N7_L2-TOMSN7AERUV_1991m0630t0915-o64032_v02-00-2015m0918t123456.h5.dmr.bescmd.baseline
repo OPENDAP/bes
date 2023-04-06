@@ -2953,6 +2953,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SENSOR_DATA/Wavelength</Value>
         </Attribute>
+        <Map name="/nWavel"/>
     </Float32>
     <Float64 name="nTimes">
         <Dim name="/nTimes"/>

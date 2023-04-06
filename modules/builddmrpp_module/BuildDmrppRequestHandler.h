@@ -1,12 +1,12 @@
-// NgapContainer.cc
+// BuildDmrppRequestHandler.cc
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of builddmrpp_module, A C++ module that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2023 OPeNDAP, Inc.
+// Author: Daniel Holloway <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+//      dan       Daniel Holloway <dholloway@opendap.org>
 
 #ifndef I_BuildDmrppRequestHandler_H
 #define I_BuildDmrppRequestHandler_H

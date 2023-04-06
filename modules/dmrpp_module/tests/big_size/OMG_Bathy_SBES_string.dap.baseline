@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMG_Bathy_SBES_L2_20150804000000.h5">
+    <String name="UTM_Projection">
+        <Attribute name="long_name" type="String">
+            <Value>UTM_Projection</Value>
+        </Attribute>
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Int64">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <Attribute name="title" type="String">
+        <Value>OMG Bathymetry SBES Level 2 Data</Value>
+    </Attribute>
+    <Attribute name="summary" type="String">
+        <Value>This file contains Singlebeam Echo Sounder System (SBES) survey measurements of sea floor depth along a ship track.  The SBES system records only a single depth, directly below each ship location.</Value>
+    </Attribute>
+    <Attribute name="keywords" type="String">
+        <Value>Bathymetry, Seafloor Topography, Water Depth</Value>
+    </Attribute>
+    <Attribute name="keywords_vocabulary" type="String">
+        <Value>NASA Global Change Master Directory (GCMD) Science Keywords</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6, ACDD-1.3</Value>
+    </Attribute>
+    <Attribute name="id" type="String">
+        <Value>OMG_Bathy_SBES_L2</Value>
+    </Attribute>
+    <Attribute name="uuid" type="String">
+        <Value>1924772a-1aa9-4186-90e3-4d158275861f</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>gov.nasa.jpl</Value>
+    </Attribute>
+    <Attribute name="cdm_data_type" type="String">
+        <Value>Trajectory</Value>
+    </Attribute>
+    <Attribute name="history" type="String">
+        <Value>Transformed input product 11-Feb-2016all_filtered_100.csv into NetCDF format. This product was updated on August 1, 2019 to be consistent with the improved precision update of the lat and lon variables in the other SBES products. The lat and lon values in this product remain unchanged after the update.</Value>
+    </Attribute>
+    <Attribute name="source" type="String">
+        <Value>Bathymetry data collected with a 1 Kw singlebeam sonar with an integrated GPS that has a maximum 2100 feet depth range.</Value>
+    </Attribute>
+    <Attribute name="platform" type="String">
+        <Value>R/V Ault Vessel</Value>
+    </Attribute>
+    <Attribute name="instrument" type="String">
+        <Value>Multiple Singlebeam Echo Sounder Systems (SBES)</Value>
+    </Attribute>
+    <Attribute name="processing_level" type="String">
+        <Value>L2</Value>
+    </Attribute>
+    <Attribute name="comment" type="String">
+        <Value>This data was collected during the 2015 survey of the Greenland's Western coastline.</Value>
+    </Attribute>
+    <Attribute name="standard_name_vocabulary" type="String">
+        <Value>NetCDF Climate and Forecast (CF) Metadata Convention</Value>
+    </Attribute>
+    <Attribute name="acknowledgement" type="String">
+        <Value>This research was carried out by the Jet Propulsion Laboratory, managed by the California Institute of Technology under a contract with the National Aeronautics and Space Administration.</Value>
+    </Attribute>
+    <Attribute name="license" type="String">
+        <Value>Freely Distributed</Value>
+    </Attribute>
+    <Attribute name="product_version" type="String">
+        <Value>1.0</Value>
+    </Attribute>
+    <Attribute name="references" type="String">
+        <Value>DOI:10.5067/OMGEV-SBES1</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>Joshua K. Willis</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>Joshua.K.Willis@jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>https://dx.doi.org/10.5067/OMGEV-SBES1</Value>
+    </Attribute>
+    <Attribute name="creator_type" type="String">
+        <Value>Person</Value>
+    </Attribute>
+    <Attribute name="creator_institution" type="String">
+        <Value>NASA Jet Propulsion Laboratory</Value>
+    </Attribute>
+    <Attribute name="institution" type="String">
+        <Value>NASA Jet Propulsion Laboratory</Value>
+    </Attribute>
+    <Attribute name="project" type="String">
+        <Value>Oceans Melting Greenland (OMG)</Value>
+    </Attribute>
+    <Attribute name="program" type="String">
+        <Value>NASA Earth Venture Suborbital-2 (EVS-2)</Value>
+    </Attribute>
+    <Attribute name="contributor_name" type="String">
+        <Value>Ocean Research Project (ORP)</Value>
+    </Attribute>
+    <Attribute name="contributor_role" type="String">
+        <Value>Ocean Research Project performed the survey in the field, collected the data and performed the initial processing.</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>PO.DAAC</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>podaac@podaac.jpl.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>https://dx.doi.org/10.5067/OMGEV-SBES1</Value>
+    </Attribute>
+    <Attribute name="publisher_type" type="String">
+        <Value>group</Value>
+    </Attribute>
+    <Attribute name="publisher_institution" type="String">
+        <Value>NASA Jet Propulsion Laboratory</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_min" type="String">
+        <Value>72.777</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_max" type="String">
+        <Value>78.302</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_units" type="String">
+        <Value>degrees north</Value>
+    </Attribute>
+    <Attribute name="geospatial_lat_resolution" type="String">
+        <Value>0.001f</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_min" type="String">
+        <Value>-74.42</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_max" type="String">
+        <Value>-55.267</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_units" type="String">
+        <Value>degrees east</Value>
+    </Attribute>
+    <Attribute name="geospatial_lon_resolution" type="String">
+        <Value>0.001f</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_min" type="String">
+        <Value>-718.93</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_max" type="String">
+        <Value>-3.93</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_resolution" type="String">
+        <Value>0.001f</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_units" type="String">
+        <Value>meters</Value>
+    </Attribute>
+    <Attribute name="geospatial_vertical_positive" type="String">
+        <Value>up</Value>
+    </Attribute>
+    <Attribute name="time_coverage_start" type="String">
+        <Value>removed date-time</Value>
+    </Attribute>
+    <Attribute name="time_coverage_end" type="String">
+        <Value>removed date-time</Value>
+    </Attribute>
+    <Attribute name="time_coverage_duration" type="String">
+        <Value>P33D</Value>
+    </Attribute>
+    <Attribute name="date_created" type="String">
+        <Value>removed date-time</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed-version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>/Users/myang6/work/opendap/hyrax-955/bes/modules/dmrpp_module/.libs/build_dmrpp -f OMG_Bathy_SBES_L2_20150804000000.h5 -r OMG_Bathy_SBES_L2_20150804000000.h5.dmr.bescmd.baseline -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+String UTM_Projection = " ";
+

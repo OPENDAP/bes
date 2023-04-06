@@ -138,15 +138,14 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp);
 
         /*if (add_production_metadata) {
-            inject_version_and_configuration(argc, argv, &dmrpp);
+            inject_version_and_configuration(&dmrpp);
         }*/
 
         XMLWriter dmrpp_writer;
         dmrpp.print_dmrpp(dmrpp_writer);
-        cout << dmrpp_writer.get_doc();
 
-        // TODO: send writer.get_doc to dhi_output_stream.
-        ostream &strm = dhi.get_output_stream();
+        auto &strm = dhi.get_output_stream();
+        strm << dmrpp_writer.get_doc() << flush;
 
 #if !NDEBUG
         stringstream msg;

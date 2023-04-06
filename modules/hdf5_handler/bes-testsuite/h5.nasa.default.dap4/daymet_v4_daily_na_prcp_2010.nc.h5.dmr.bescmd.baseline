@@ -79,6 +79,7 @@
         <Attribute name="long_name" type="String">
             <Value>day of year (DOY) starting with day 1 on Januaray 1st</Value>
         </Attribute>
+        <Map name="/time"/>
     </Int16>
     <Float32 name="lat">
         <Dim name="/y"/>
@@ -118,10 +119,14 @@
         <Attribute name="cell_methods" type="String">
             <Value>area: mean time: sum</Value>
         </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <Map name="/time"/>
     </Float32>
     <Float32 name="time_bnds">
         <Dim name="/time"/>
         <Dim name="/nv"/>
+        <Map name="/time"/>
     </Float32>
     <Float32 name="x">
         <Dim name="/x"/>
