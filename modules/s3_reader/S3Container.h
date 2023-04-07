@@ -62,6 +62,9 @@ public:
 
     // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
     BESContainer *ptr_duplicate() override;
+
+    void filter_response(const std::map<std::string, std::string> &content_filters) const;
+
     std::string access() override;
 
     bool release() override;

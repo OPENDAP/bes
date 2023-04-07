@@ -37,6 +37,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESContextManager.h"
+#include "BESUtil.h"
 #include "CurlUtils.h"
 #include "RemoteResource.h"
 
@@ -110,6 +111,31 @@ S3Container::~S3Container()
     }
 }
 
+/**
+ * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
+ *
+ * WARNING: Does not lock cache. This method assumes that the process has already
+ * acquired an exclusive lock on the cache file.
+ *
+ * WARNING: This method will overwrite the cached data with the filtered result.
+ *
+ * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
+ * resource will be replaced with its associated value.
+ */
+void S3Container::filter_response(const map<string, string> &content_filters) const {
+
+    string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
+
+    for (const auto &apair: content_filters) {
+        unsigned int replace_count = BESUtil::replace_all(resource_content, apair.first, apair.second);
+        BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
+                                apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
+    }
+
+    // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
+    BESUtil::string_to_file(d_dmrpp_rresource->get_filename(), resource_content);
+}
+
 /** @brief access the remote target response by making the remote request
  *
  * @return full path to the remote request response data file
@@ -167,6 +193,9 @@ string S3Container::access()
 #endif
             //d_dmrpp_rresource->retrieveResource(content_filters); // <- previous code
             d_dmrpp_rresource->retrieve_resource();
+
+            // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
+            filter_response(content_filters);
         }
 
         //BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url->str() << " returning cached file "
